@@ -1,0 +1,348 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "StmLink 文档",
+  "url": "https://docs.stmlink.com",
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "favicon": "/favicon.png",
+  "colors": {
+    "primary": "#0066FF",
+    "light": "#3385FF",
+    "dark": "#0052CC"
+  },
+  "footer": {
+    "socials": {
+      "website": "https://www.stmlink.com"
+    },
+    "links": [
+      {
+        "header": "产品",
+        "items": [
+          { "label": "官网", "href": "https://www.stmlink.com" },
+          { "label": "SRTC 音视频 SDK", "href": "https://docs.stmlink.com/zh/rtc/overview" },
+          { "label": "SMeeting 会议 SDK", "href": "https://docs.stmlink.com/zh/meeting/quickstart" }
+        ]
+      },
+      {
+        "header": "支持",
+        "items": [
+          { "label": "联系我们", "href": "https://www.stmlink.com" }
+        ]
+      }
+    ]
+  },
+  "navigation": {
+    "languages": [
+      {
+        "language": "zh",
+        "tabs": [
+          {
+            "tab": "SRTC 音视频 SDK",
+            "groups": [
+              {
+                "group": "概览",
+                "pages": [
+                  "zh/rtc/overview",
+                  "zh/rtc/quickstart"
+                ]
+              },
+              {
+                "group": "iOS SDK",
+                "pages": [
+                  "zh/rtc/ios/integration",
+                  "zh/rtc/ios/quickstart",
+                  "zh/rtc/ios/instant-messaging",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/ios/advanced/screen-recording",
+                      "zh/rtc/ios/advanced/beauty"
+                    ]
+                  },
+                  {
+                    "group": "接口列表",
+                    "pages": [
+                      "zh/rtc/ios/api-reference",
+                      "zh/rtc/ios/api-reference/RTCEngineKit",
+                      "zh/rtc/ios/api-reference/RTCEngineDelegate",
+                      "zh/rtc/ios/api-reference/RTCEngineIMDelegate"
+                    ]
+                  },
+                  "zh/rtc/ios/types",
+                  "zh/rtc/ios/error-codes",
+                  "zh/rtc/ios/changelog",
+                  "zh/rtc/ios/faq"
+                ]
+              },
+              {
+                "group": "Android SDK",
+                "pages": [
+                  "zh/rtc/android/integration",
+                  "zh/rtc/android/quickstart",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/android/advanced/audio-routing"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/android/api-reference/RTCEngine",
+                      "zh/rtc/android/api-reference/LocalCameraTrack",
+                      "zh/rtc/android/api-reference/LocalScreenTrack",
+                      "zh/rtc/android/api-reference/LocalMicTrack",
+                      "zh/rtc/android/api-reference/CustomVideoTrack",
+                      "zh/rtc/android/api-reference/RemoteVideoTrack",
+                      "zh/rtc/android/api-reference/RemoteAudioMixTrack",
+                      "zh/rtc/android/api-reference/RTCClientEvent",
+                      "zh/rtc/android/api-reference/RTCMediaEvent",
+                      "zh/rtc/android/api-reference/RTCImEvent",
+                      "zh/rtc/android/api-reference/AudioRouterManager",
+                      "zh/rtc/android/api-reference/LogUtil"
+                    ]
+                  },
+                  {
+                    "group": "预设配置项",
+                    "pages": [
+                      "zh/rtc/android/presets/camera",
+                      "zh/rtc/android/presets/microphone",
+                      "zh/rtc/android/presets/screen-sharing"
+                    ]
+                  },
+                  "zh/rtc/android/types",
+                  "zh/rtc/android/enums",
+                  "zh/rtc/android/media-quality",
+                  "zh/rtc/android/error-codes"
+                ]
+              },
+              {
+                "group": "Windows SDK",
+                "pages": [
+                  "zh/rtc/windows/integration",
+                  "zh/rtc/windows/quickstart",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/windows/api-reference/IRTCEngine",
+                      "zh/rtc/windows/api-reference/IRTCLocalScreenTrack",
+                      "zh/rtc/windows/api-reference/IRTCLocalCameraTrack",
+                      "zh/rtc/windows/api-reference/IRTCLocalMicTrack",
+                      "zh/rtc/windows/api-reference/IRTCRemoteAudioTrack",
+                      "zh/rtc/windows/api-reference/IRTCRemoteVideoTrack",
+                      "zh/rtc/windows/api-reference/IRTCLocalAudioTrack",
+                      "zh/rtc/windows/api-reference/IRTCLocalVideoTrack",
+                      "zh/rtc/windows/api-reference/IRTCView",
+                      "zh/rtc/windows/api-reference/IRTCTrack",
+                      "zh/rtc/windows/api-reference/IRTCSetting",
+                      "zh/rtc/windows/api-reference/callbacks"
+                    ]
+                  },
+                  "zh/rtc/windows/types",
+                  "zh/rtc/windows/enums",
+                  "zh/rtc/windows/error-codes",
+                  "zh/rtc/windows/changelog"
+                ]
+              },
+              {
+                "group": "Web SDK",
+                "pages": [
+                  "zh/rtc/web/integration",
+                  "zh/rtc/web/quickstart",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/web/api-reference/SRTC",
+                      "zh/rtc/web/api-reference/media-tracks"
+                    ]
+                  },
+                  "zh/rtc/web/channel-messages",
+                  "zh/rtc/web/events",
+                  "zh/rtc/web/network-quality",
+                  "zh/rtc/web/types",
+                  "zh/rtc/web/error-codes"
+                ]
+              },
+              {
+                "group": "微信小程序 SDK",
+                "pages": [
+                  "zh/rtc/wechat-miniprogram/integration",
+                  "zh/rtc/wechat-miniprogram/quickstart",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/wechat-miniprogram/api-reference/SRTC",
+                      "zh/rtc/wechat-miniprogram/api-reference/streaming"
+                    ]
+                  },
+                  "zh/rtc/wechat-miniprogram/channel-messages",
+                  "zh/rtc/wechat-miniprogram/events",
+                  "zh/rtc/wechat-miniprogram/types",
+                  "zh/rtc/wechat-miniprogram/error-codes"
+                ]
+              },
+              {
+                "group": "服务端 API",
+                "pages": [
+                  "zh/rtc/server-api/overview",
+                  "zh/rtc/server-api/api-list",
+                  "zh/rtc/server-api/error-codes",
+                  "zh/rtc/server-api/server-demo",
+                  {
+                    "group": "全平台 C++ SDK",
+                    "pages": [
+                      "zh/rtc/server-api/cpp/integration",
+                      "zh/rtc/server-api/cpp/quickstart",
+                      {
+                        "group": "接口文档",
+                        "pages": [
+                          "zh/rtc/server-api/cpp/api-reference/IRTCEngine",
+                          "zh/rtc/server-api/cpp/api-reference/ILocalVideoStream",
+                          "zh/rtc/server-api/cpp/api-reference/ILocalAudioStream",
+                          "zh/rtc/server-api/cpp/api-reference/IRemoteVideoStream",
+                          "zh/rtc/server-api/cpp/api-reference/IRemoteAudioStream"
+                        ]
+                      },
+                      "zh/rtc/server-api/cpp/types",
+                      "zh/rtc/server-api/cpp/error-codes"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "SMeeting 会议 SDK",
+            "groups": [
+              {
+                "group": "概览",
+                "pages": [
+                  "zh/meeting/quickstart"
+                ]
+              },
+              {
+                "group": "带 UI 极简对接",
+                "pages": [
+                  "zh/meeting/ui-sdk/ios",
+                  "zh/meeting/ui-sdk/android",
+                  "zh/meeting/ui-sdk/web",
+                  "zh/meeting/ui-sdk/windows"
+                ]
+              },
+              {
+                "group": "iOS SDK",
+                "pages": [
+                  "zh/meeting/ios/quickstart",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/meeting/ios/advanced/screen-recording"
+                    ]
+                  },
+                  {
+                    "group": "接口列表",
+                    "pages": [
+                      "zh/meeting/ios/api-reference/MeetingKit",
+                      "zh/meeting/ios/api-reference/MeetingKitDelegate",
+                      "zh/meeting/ios/api-reference/MeetingKitIMDelegate"
+                    ]
+                  },
+                  "zh/meeting/ios/types",
+                  "zh/meeting/ios/error-codes",
+                  "zh/meeting/ios/changelog",
+                  "zh/meeting/ios/faq"
+                ]
+              },
+              {
+                "group": "Android SDK",
+                "pages": [
+                  "zh/meeting/android/integration",
+                  "zh/meeting/android/quickstart",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/meeting/android/api-reference/MeetingEngine",
+                      "zh/meeting/android/api-reference/InfosManager",
+                      "zh/meeting/android/api-reference/AudioRouterManager",
+                      "zh/meeting/android/api-reference/RemoteVideoTrack",
+                      "zh/meeting/android/api-reference/ImEvent",
+                      "zh/meeting/android/api-reference/RoomEvent",
+                      "zh/meeting/android/api-reference/UserEvent",
+                      "zh/meeting/android/api-reference/RoomMsgEvent",
+                      "zh/meeting/android/api-reference/MediaEvent",
+                      "zh/meeting/android/api-reference/MeetingResultCallback",
+                      "zh/meeting/android/api-reference/Callback"
+                    ]
+                  },
+                  {
+                    "group": "预设配置项",
+                    "pages": [
+                      "zh/meeting/android/presets/camera",
+                      "zh/meeting/android/presets/microphone",
+                      "zh/meeting/android/presets/screen-sharing"
+                    ]
+                  },
+                  "zh/meeting/android/types",
+                  "zh/meeting/android/enums",
+                  "zh/meeting/android/media-quality",
+                  "zh/meeting/android/error-codes",
+                  "zh/meeting/android/changelog"
+                ]
+              },
+              {
+                "group": "Windows SDK",
+                "pages": [
+                  "zh/meeting/windows/integration",
+                  "zh/meeting/windows/quickstart",
+                  {
+                    "group": "接口列表",
+                    "pages": [
+                      "zh/meeting/windows/api-reference/ISMeetingEngine"
+                    ]
+                  },
+                  "zh/meeting/windows/types",
+                  "zh/meeting/windows/error-codes"
+                ]
+              },
+              {
+                "group": "Web SDK",
+                "pages": [
+                  "zh/meeting/web/overview",
+                  "zh/meeting/web/integration",
+                  "zh/meeting/web/quickstart",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/meeting/web/api-reference",
+                      "zh/meeting/web/api-reference/SMeeting"
+                    ]
+                  },
+                  "zh/meeting/web/events",
+                  "zh/meeting/web/types"
+                ]
+              },
+              {
+                "group": "微信小程序 SDK",
+                "pages": [
+                  "zh/meeting/wechat-miniprogram/overview",
+                  "zh/meeting/wechat-miniprogram/integration",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/meeting/wechat-miniprogram/api-reference",
+                      "zh/meeting/wechat-miniprogram/api-reference/SMeeting"
+                    ]
+                  },
+                  "zh/meeting/wechat-miniprogram/events",
+                  "zh/meeting/wechat-miniprogram/types"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
