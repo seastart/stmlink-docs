@@ -1,640 +1,542 @@
-### ChannelInfo
+### SdkInitParams
+
+SRTC 构造函数参数。
+
 ```typescript
-/**
- * 频道信息
- */
-export interface ChannelInfo {
-	/** 应用id */
-	app_id: string;
-	/** 频道名 */
-	channel: string;
-	/** 频道扩展属性 */
-	props?: Record<string, any>;
-	/** 频道创建时间 */
-	created_at: number;
-	/** 频道更新时间 */
-	updated_at: number;
+export interface SdkInitParams {
+  /** 日志打印等级，默认 LogLevel.WARN */
+  logLevel?: LogLevel;
+  /** 日志打印目标，默认 LogTarget.CONSOLE */
+  logTarget?: LogTarget;
 }
 ```
+
+---
+
+### JoinOptions
+
+`srtc.join(token, options?)` 的可选参数。
+
+```typescript
+export interface JoinOptions {
+  /**
+   * 用户自定义属性，加入频道后其他用户可通过 UserInfo.props 获取
+   */
+  props?: Record<string, any>;
+}
+```
+
+---
+
+### ChannelInfo
+
+频道信息，由 `srtc.join` 返回，也可通过 `srtc.getChannelInfo()` 获取。
+
+```typescript
+export interface ChannelInfo {
+  /** 应用 ID */
+  app_id: string;
+  /** 频道名 */
+  channel: string;
+  /** 流媒体服务商标识 */
+  stream_vendor?: string;
+  /** 白板配置信息 */
+  white_board?: Record<string, any>;
+  /** 频道自定义扩展属性 */
+  props?: Record<string, any>;
+  /** 频道创建时间（Unix 时间戳，秒） */
+  created_at: number;
+  /** 频道最近更新时间（Unix 时间戳，秒） */
+  updated_at: number;
+}
+```
+
+---
 
 ### UserInfo
+
+频道内用户信息，包含本人和远端用户。
+
 ```typescript
-/**
- * 用户信息
- */
 export interface UserInfo {
-	/** 应用id */
-	app_id: string;
-	/** 用户id */
-	uid: string;
-	/** 会中昵称 */
-	name: string;
-	/** 设备类型 */
-	device_type: DeviceType;
-	/** 设备ID */
-	device_id: string;
-	/** 客户端RTCsdk版本号 */
-	version: string;
-	/** 用户扩展属性 */
-	props?: Record<string, any>;
-	/** 网络号 */
-	net: string;
-	/** 服务分组 */
-	sg: string;
-	/** 更新时间 */
-	updated_at: number;
-	/** 频道名 */
-	channel: string;
-	/** 会话id */
-	sid: string;
-	/** 是否观众，类似研讨会观众，只收流 */
-	is_audience: boolean;
-	/** 进入时间 */
-	join_at: number;
-	/** 退出时间 */
-	leave_at: number;
-	/** 流轨道 */
-	stream_tracks?: TrackInfo[];
+  /** 应用 ID */
+  app_id: string;
+  /** 用户 ID */
+  uid: string;
+  /** 会中昵称 */
+  name: string;
+  /** 设备类型 */
+  device_type: DeviceType;
+  /** 设备 ID */
+  device_id: string;
+  /** 客户端 RTC SDK 版本号 */
+  version: string;
+  /** 用户自定义扩展属性 */
+  props?: Record<string, any>;
+  /** 网络标识 */
+  net: string;
+  /** 服务分组 */
+  sg: string;
+  /** 信息最近更新时间（Unix 时间戳，秒） */
+  updated_at: number;
+  /** 所在频道名 */
+  channel: string;
+  /** 会话 ID */
+  sid: string;
+  /**
+   * 是否为观众模式（类似研讨会观众，只收流不推流）
+   * 由服务端签发 Token 时决定
+   */
+  is_audience: boolean;
+  /** 加入时间（Unix 时间戳，秒） */
+  join_at: number;
+  /** 退出时间（Unix 时间戳，秒），0 表示仍在频道中 */
+  leave_at: number;
+  /** 用户当前发布的流轨道列表 */
+  stream_tracks?: TrackInfo[];
 }
 
-/**
- * 终端类型枚举
- */
+/** 终端类型枚举 */
 export enum DeviceType {
-    /**
-     * 未知设备
-     */
-    Unknown = 0,
-    /**
-     * Windows
-     */
-    Windows = 1,
-    /**
-     * Android
-     */
-    Android = 2,
-    /**
-     * iOS
-     */
-    IOS = 3,
-    /**
-     * Linux
-     */
-    Linux = 4,
-    /**
-     * MacOS
-     */
-    MacOS = 5,
-    /**
-     * webrtc
-     */
-    WebRTC = 6,
-    /**
-     * 小程序
-     */
-    XCX = 7
+  Unknown = 0,
+  Windows = 1,
+  Android = 2,
+  IOS = 3,
+  Linux = 4,
+  MacOS = 5,
+  WebRTC = 6,
+  /** 微信小程序 */
+  XCX = 7,
 }
 ```
+
+---
 
 ### TrackInfo
+
+流轨道信息，归属于某个 `BaseTrack`，可通过 `track.getInfo()` 获取。
+
 ```typescript
-/**
- * 流轨道信息
- */
 export interface TrackInfo {
-    /** 轨道id，在stream里唯一，在全局不一定唯一 */
-    id: string;
-    /** 自定义描述，如摄像头大流、摄像头小流、共享桌面流等 */
-    desc: string;
-    /** 轨道类型 */
-    kind: TrackKind;
-    /** 编码类型 */
-    codec: Codec;
-    /** 视频宽 */
-    width: number;
-    /** 视频高 */
-    height: number;
-    /** 视频帧率 */
-    fps: number;
-    /** 视频角度 */
-    angle: number;
-    /** 码率 */
-    bitrate: number;
-    /** 音频采样率 */
-    sampleRate: number;
-    /** 流扩展属性 */
-    props?: Record<string, any>;
+  /** 轨道 ID，在频道内唯一 */
+  id: string;
+  /** 轨道描述，如 'camera_big'、'screen' */
+  desc: string;
+  /** 轨道类型 */
+  kind: TrackKind;
+  /** 编码类型 */
+  codec: Codec;
+  /** 视频宽（音频轨道为 0） */
+  width: number;
+  /** 视频高（音频轨道为 0） */
+  height: number;
+  /** 视频帧率（音频轨道为 0） */
+  fps: number;
+  /** 视频旋转角度 */
+  angle: number;
+  /** 码率（bps） */
+  bitrate: number;
+  /** 音频采样率（视频轨道为 0） */
+  sampleRate: number;
+  /** 自定义扩展属性 */
+  props?: Record<string, any>;
 }
 
-/** 
- * 流轨道类型 
- */
 export enum TrackKind {
-    Video = 'video',
-    Audio = 'audio',
+  Video = 'video',
+  Audio = 'audio',
 }
 ```
 
+---
 
+### 音频采集、播放、发布相关
 
-### EnvWebInfo
 ```typescript
-/**
- * web环境详情
- */
-export interface EnvWebInfo {
-  /**
-   * 浏览器
-   */
-  browser: {
-    name?: string;
-    version?: string;
-  };
-  /**
-   * 操作系统
-   */
-  os: {
-    name?: string;
-    version?: string;
-    versionName?: string;
-  };
-  /**
-   * 平台
-   */
-  platform: {
-    type?: string;
-    vendor?: string;
-    model?: string;
-  };
-  /**
-   * 浏览器渲染引擎
-   */
-  engine: {
-    name?: string;
-    version?: string;
-  };
-	/**
-	 * 是否支持webrtc
-	 */
-	supported: boolean;
-	/**
-	 * 当前上下文是否安全(https或localhost或127.0.0.1)
-	 */
-	secure: boolean;
-	/**
-	 * 是否支持获取麦克风、摄像头等媒体设备进行枚举、音视频采集、推流
-	 */
-	mediaDevices: boolean;
-	/**
-	 * 是否支持发起屏幕共享
-	 */
-	screenshare: boolean;
-	/**
-	 * 是否支持h264编码
-	 */
-	h264Enc: boolean;
-	/**
-	 * 是否支持h264解码
-	 */
-	h264Dec: boolean;
-	/**
-	 * 是否支持vp8编码
-	 */
-	vp8Enc: boolean;
-	/**
-	 * 是否支持vp8解码
-	 */
-	vp8Dec: boolean;
-	/**
-	 * 是否支持opus编码
-	 */
-	opusEnc: boolean;
-	/**
-	 * 是否支持opus解码
-	 */
-	opusDec: boolean;
-	/**
-	 * 当前支持的视频编码
-	 */
-	videoEncCodecs: RTCRtpCapabilities | null;
-	/**
-	 * 当前支持的视频解码
-	 */
-	videoDecCodecs: RTCRtpCapabilities | null;
-	/**
-	 * 当前支持的音频编码
-	 */
-	audeoEncCodecs: RTCRtpCapabilities | null;
-	/**
-	 * 当前支持的音频解码
-	 */
-	audeoDecCodecs: RTCRtpCapabilities | null;
-	/**
-	 * ua
-	 */
-	ua: string;
-	/**
-	 * 屏幕宽度
-	 */
-	screenWidth: number;
-	/**
-	 * 屏幕高度
-	 */
-	screenHeight: number;
-	/**
-	 * 可视区域宽度
-	 */
-	clientWidth: number;
-	/**
-	 * 可视区域高度
-	 */
-	clientHeight: number;
-	/**
-	 * 设备的物理像素分辨率与CSS像素分辨率之比
-	 */
-	devicePixelRatio: number;
-}
-```
-
-
-
-### 声音采集、播放、发布相关
-```typescript
-/**
- * 麦克风采集配置
- */
+/** 麦克风采集配置 */
 export interface MicCaptureOptions {
-	/**
-	 * 设备id
-	 */
-	deviceId?: string;
-	/**
-	 * AEC回声消除
-	 */
-	echoCancellation?: boolean;
-	/**
-	 * ANS降噪
-	 */
-	noiseSuppression?: boolean;
-	/**
-	 * AGC自动增益
-	 */
-	autoGainControl?: boolean;
-	/**
-	 * 声道数，目前只支持单声道
-	 */
-	channelCount?: number;
-	/**
-	 * 采样率16k/48k，目前固定16k
-	 */
-	sampleRate?: number;
-	/**
-	 * 每个采样点大小的位数(bits per sample)，默认16
-	 */
-	sampleSize?: number;
-	/**
-	 * the latency or range of latencies which are acceptable and/or required.
-	 */
-	latency?: ConstrainDouble;
+  /** 设备 ID */
+  deviceId?: string;
+  /** 回声消除（AEC） */
+  echoCancellation?: boolean;
+  /** 降噪（ANS） */
+  noiseSuppression?: boolean;
+  /** 自动增益（AGC） */
+  autoGainControl?: boolean;
+  /** 声道数（目前仅支持单声道） */
+  channelCount?: number;
+  /** 采样率，目前固定 16kHz */
+  sampleRate?: number;
+  /** 每个采样点位数（bits per sample），默认 16 */
+  sampleSize?: number;
+  /** 延迟约束 */
+  latency?: ConstrainDouble;
 }
 
-/**
- * 扬声器配置
- */
+/** 扬声器播放配置 */
 export interface AudioOutputOptions {
-	/**
-	 * deviceId to output audio
-	 *
-	 * Only supported on browsers where `setSinkId` is available
-	 */
-	deviceId?: string;
-	/**
-	 * 当因权限问题自动播放失败时，禁用sdk自带的播放弹窗，手动处理
-	 */
-	disableAutoPlayDialog?: boolean;
+  /**
+   * 输出设备 ID
+   * 仅在浏览器支持 setSinkId 时有效
+   */
+  deviceId?: string;
+  /**
+   * 音量（0 ~ 1），默认 1
+   */
+  volume?: number;
+  /**
+   * 当自动播放因权限被阻止时，禁用 SDK 内置的播放引导弹窗，改为手动处理
+   */
+  disableAutoPlayDialog?: boolean;
 }
 
-/**
- * 音频发布配置
- */
+/** 音频发布配置 */
 export interface AudioPublishOptions {
-	/** 描述 */
-	desc: string;
-	/** 编码格式 */
-	codec?: Codec;
-	/** 最大码率 */
-	maxBitrate?: number;
-	/**
-	 * dtx (Discontinuous Transmission of audio), enabled by default for mono tracks.
-	 */
-	dtx?: boolean;
-	/**
-	 * red (Redundant Audio Data), enabled by default for mono tracks.
-	 */
-	red?: boolean;
-	/**
-	 * 优先级，默认音频优先
-	 */
-	priority?: RTCPriorityType;
-	/** 自定义属性 */
-	props?: Record<string, any>;
+  /** 轨道描述 */
+  desc: string;
+  /** 编码格式 */
+  codec?: Codec;
+  /** 最大码率（bps） */
+  maxBitrate?: number;
+  /** 不连续传输（DTX），默认对单声道启用 */
+  dtx?: boolean;
+  /** 冗余音频数据（RED），默认对单声道启用 */
+  red?: boolean;
+  /** 发送优先级，默认音频优先 */
+  priority?: RTCPriorityType;
+  /** 自定义扩展属性 */
+  props?: Record<string, any>;
 }
 
-/**
- * 麦克风预设值
- */
+/** 麦克风预设值 */
 export interface MicPreset {
-	capture: MicCaptureOptions;
-	publish: AudioPublishOptions;
+  capture: MicCaptureOptions;
+  publish: AudioPublishOptions;
 }
 
-/**
- * 麦克风预设参数
- */
+/** 麦克风内置预设参数 */
 export declare const MicPresets: {
-	/** 单声道，采样率48kHz，码率24Kbps */
-	speech: MicPreset;
-	/** 单声道，采样率48kHz，码率32Kbps，createLocalMicTrack的默认预设参数 */
-	music: MicPreset;
-	/** 双声道，采样率48kHz，码率48Kbps */
-	musicStereo: MicPreset;
-	/** 单声道，采样率48kHz，码率64Kbps */
-	musicHighQuality: MicPreset;
-	/** 双声道，采样率48kHz，码率96Kbps */
-	musicHighQualityStereo: MicPreset;
+  /** 单声道，48kHz，24 Kbps */
+  speech: MicPreset;
+  /** 单声道，48kHz，32 Kbps（默认） */
+  music: MicPreset;
+  /** 双声道，48kHz，48 Kbps */
+  musicStereo: MicPreset;
+  /** 单声道，48kHz，64 Kbps */
+  musicHighQuality: MicPreset;
+  /** 双声道，48kHz，96 Kbps */
+  musicHighQualityStereo: MicPreset;
 };
-
 ```
+
+---
 
 ### 视频采集、播放、发布相关
+
 ```typescript
-/**
- * 摄像头采集配置
- */
+/** 摄像头采集配置 */
 export interface CameraCaptureOptions {
-	/**
-	 * 设备id
-	 */
-	deviceId?: string;
-	/**
-	 * webrtc专用：摄像头朝向
-	 * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode
-	 */
-	facingMode?: "user" | "environment" | "left" | "right";
-	/**
-	 * 宽
-	 */
-	width?: number;
-	/**
-	 * 高
-	 */
-	height?: number;
-	/**
-	 * 最大帧率
-	 */
-	frameRate?: number;
+  /** 设备 ID */
+  deviceId?: string;
+  /** 摄像头朝向（移动端） */
+  facingMode?: 'user' | 'environment' | 'left' | 'right';
+  /** 采集宽度 */
+  width?: number;
+  /** 采集高度 */
+  height?: number;
+  /** 最大帧率 */
+  frameRate?: number;
 }
 
-/**
- * 视频发布配置
- */
+/** 视频发布配置 */
 export interface VideoPublishOptions {
-	/** 描述 */
-	desc: string;
-	/** 编码格式 */
-	codec?: Codec;
-	/**
-	 * 宽(默认采集到的宽)
-	 */
-	width?: number;
-	/**
-	 * 高(默认采集到的高)
-	 */
-	height?: number;
-	/** 最大码率 */
-	maxBitrate?: number;
-	/** 最大帧率 */
-	maxFramerate?: number;
-	/**
-	 * 优先级，默认音频优先
-	 */
-	priority?: RTCPriorityType;
-	/** 自定义属性 */
-	props?: Record<string, any>;
+  /** 轨道描述 */
+  desc: string;
+  /** 编码格式 */
+  codec?: Codec;
+  /** 发布宽度（默认与采集宽度一致） */
+  width?: number;
+  /** 发布高度（默认与采集高度一致） */
+  height?: number;
+  /** 最大码率（bps） */
+  maxBitrate?: number;
+  /** 最大帧率 */
+  maxFramerate?: number;
+  /**
+   * 带宽受限时的降级策略
+   * 'maintain-framerate' | 'maintain-resolution' | 'balanced'
+   */
+  degradationPreference?: RTCDegradationPreference;
+  /**
+   * 联播（Simulcast）配置，配置后会同时发布多路不同清晰度的流
+   */
+  simulcasts?: SimulcastLayer[];
+  /** 发送优先级 */
+  priority?: RTCPriorityType;
+  /** 自定义扩展属性 */
+  props?: Record<string, any>;
 }
 
-/**
- * 摄像头预设值
- */
+/** 摄像头预设值 */
 export interface CameraPreset {
-	capture: CameraCaptureOptions;
-	publish: VideoPublishOptions;
+  capture: CameraCaptureOptions;
+  publish: VideoPublishOptions;
 }
 
-/**
- * 摄像头预设参数
- */
+/** 摄像头内置预设参数 */
 export declare const CameraPresets: {
-	/** 分辨率1920*1080，帧率15，码率2.5Mbps */
-	"1080p": CameraPreset;
-	/** 分辨率1280*720，帧率15，码率1.2Mbps，createLocalCameraTrack的默认预设参数 */
-	"720p": CameraPreset;
-	/** 分辨率640*360，帧率15，码率550Kbps */
-	"360p": CameraPreset;
-	/** 分辨率320*180，帧率15，码率250Kbps */
-	"180p": CameraPreset;
+  /** 1920×1080，15fps，2.5 Mbps */
+  '1080p': CameraPreset;
+  /** 1280×720，15fps，1.2 Mbps（默认） */
+  '720p': CameraPreset;
+  /** 640×360，15fps，550 Kbps */
+  '360p': CameraPreset;
+  /** 320×180，15fps，250 Kbps */
+  '180p': CameraPreset;
 };
+```
 
-/**
- * 屏幕采集配置
- */
+---
+
+### 屏幕共享相关
+
+```typescript
+/** 屏幕采集配置 */
 export interface ScreenCaptureOptions {
-	/**
-	 * 宽
-	 */
-	width?: number;
-	/**
-	 * 高
-	 */
-	height?: number;
-	/**
-	 * 帧率
-	 */
-	frameRate?: number;
+  /** 期望采集宽度 */
+  width?: number;
+  /** 期望采集高度 */
+  height?: number;
+  /** 期望帧率 */
+  frameRate?: number;
+  /**
+   * 内容类型提示，影响编码策略
+   * 'motion'  → 视频/游戏，优化流畅度
+   * 'detail'  → 图片/图形，优化清晰度
+   * 'text'    → 文档/代码，优化文字清晰度
+   */
+  contentHint?: 'motion' | 'detail' | 'text';
+  /**
+   * 是否显示鼠标指针
+   * 'always' | 'motion' | 'never'
+   */
+  showCursor?: 'always' | 'motion' | 'never';
+  /**
+   * 采集区域裁剪（部分浏览器支持）
+   */
+  rect?: { x: number; y: number; width: number; height: number };
 }
 
-/**
- * 屏幕采集预设值
- */
+/** 屏幕共享预设值 */
 export interface ScreenPreset {
-	capture: ScreenCaptureOptions;
-	publish: VideoPublishOptions;
+  capture: ScreenCaptureOptions;
+  publish: VideoPublishOptions;
 }
 
-/**
- * 屏幕采集预设值
- */
-export interface ScreenPreset {
-	capture: ScreenCaptureOptions;
-	publish: VideoPublishOptions;
-}
-
-/**
- * 屏幕共享预设参数
- */
+/** 屏幕共享内置预设参数 */
 export declare const ScreenPresets: {
-	/** 分辨率1920*1080，帧率10，码率2Mbps，createLocalScreenTrack时的默认预设参数 */
-	"1080p": ScreenPreset;
-	/** 分辨率1280*720，帧率10，码率1.5Mbps */
-	"720p": ScreenPreset;
+  /** 1920×1080，10fps，2 Mbps（默认） */
+  '1080p': ScreenPreset;
+  /** 1280×720，10fps，1.5 Mbps */
+  '720p': ScreenPreset;
+};
+
+/** 系统音频采集配置 */
+export interface ScreenAudioCaptureOptions {
+  /** 回声消除 */
+  echoCancellation?: boolean;
+  /** 降噪 */
+  noiseSuppression?: boolean;
+  /** 自动增益 */
+  autoGainControl?: boolean;
+}
+
+/** 系统音频预设值 */
+export interface ScreenAudioPreset {
+  capture: ScreenAudioCaptureOptions;
+  publish: AudioPublishOptions;
+}
+
+/** 系统音频内置预设参数 */
+export declare const ScreenAudioPresets: {
+  /** 默认系统音频预设 */
+  default: ScreenAudioPreset;
 };
 ```
 
-### DisconnectEventData
+---
+
+### 事件数据类型
+
 ```typescript
-/**
- * 强制离开事件data
- */
+/** 强制离开事件 data */
 export interface DisconnectEventData {
-	/** 离开原因 */
-	reason: DisconnectReason;
-	/** 错误 */
-	error?: any;
+  reason: DisconnectReason;
+  error?: any;
 }
 
-/**
- * 用户离开频道的原因
- */
-export declare enum DisconnectReason {
-	/** 错误 */
-	Error = -1,
-	/** 主动离开 */
-	Self = 1,
-	/** 被踢离开 */
-	Kicked = 2,
-	/** 被顶号 */
-	Replace = 3,
-	/** 心跳超时离开 */
-	Timeout = 4,
-	/** 频道销毁离开 */
-	Destroy = 5
+export enum DisconnectReason {
+  Error = -1,
+  /** 主动离开 */
+  Self = 1,
+  /** 被踢出 */
+  Kicked = 2,
+  /** 被顶号（同一账号在另一端登录） */
+  Replace = 3,
+  /** 心跳超时 */
+  Timeout = 4,
+  /** 频道销毁 */
+  Destroy = 5,
 }
-```
 
-### UserLeaveEventData
-```typescript
-/**
- * 用户离开事件data
- */
+/** 用户离开事件 data */
 export interface UserLeaveEventData {
-	/** 用户id */
-	uid: string;
-	/** 离开原因 */
-	reason: DisconnectReason;
+  uid: string;
+  reason: DisconnectReason;
 }
-```
 
-
-
-### CustomMsgData
-```typescript
-/**
- * 自定义消息
- */
+/** 频道内自定义消息 data */
 export interface CustomMsgData {
-    /** 消息命令 */
-    action: string;
-    /** 消息体 */
-    content: any;
-    /** 发送者会话id */
-    sid: string;
-    /** 发送者ID */
-    uid: string;
-    /** 频道名(如果非频道内自定义消息，为空) */
-    channel: string;
+  /** 消息命令 */
+  action: string;
+  /** 消息内容 */
+  content: any;
+  /** 发送者会话 ID */
+  sid: string;
+  /** 发送者用户 ID */
+  uid: string;
+  /** 所在频道名 */
+  channel: string;
 }
 ```
 
+---
 
+### IM 相关类型
 
-### ImDisconnectEventData
 ```typescript
-/**
- * im断开事件data
- */
+/** IM 断开事件 data */
 export interface ImDisconnectEventData {
-	/** 断开原因 */
-	reason: ImDisconnectReason;
-	/** 错误 */
-	error?: any;
+  reason: ImDisconnectReason;
+  error?: any;
 }
 
-/**
- * 用户断开im的原因
- */
-export declare enum ImDisconnectReason {
-	/** 错误 */
-	Error = -1,
-	/** 主动离开 */
-	Self = 1,
-	/** 被踢离开 */
-	Kicked = 2,
-	/** 心跳超时离开 */
-	Timeout = 4
+export enum ImDisconnectReason {
+  Error = -1,
+  Self = 1,
+  Kicked = 2,
+  Timeout = 4,
 }
-```
 
-
-
-### ImMsgData
-```typescript
-/**
- * im频道外消息
- */
+/** IM 消息 data */
 export interface ImMsgData {
-	/** 消息命令 */
-	action: string;
-	/** 消息体 */
-	content: any;
-	/** 发送者im会话id */
-	sid: string;
-	/** 发送者ID */
-	uid: string;
-	/** 发送者昵称 */
-	name: string;
+  /** 消息命令 */
+  action: string;
+  /** 消息内容 */
+  content: any;
+  /** 发送者 IM 会话 ID */
+  sid: string;
+  /** 发送者用户 ID */
+  uid: string;
+  /** 发送者昵称 */
+  name: string;
 }
 ```
 
+---
 
+### EnvWebInfo
 
-### LogLevel / LogTarget / BuildInfo
+浏览器环境检测结果，由 `srtc.getEnvInfo()` 返回。
+
+```typescript
+export interface EnvWebInfo {
+  /** 浏览器信息 */
+  browser: { name?: string; version?: string };
+  /** 操作系统信息 */
+  os: { name?: string; version?: string; versionName?: string };
+  /** 平台信息 */
+  platform: { type?: string; vendor?: string; model?: string };
+  /** 渲染引擎 */
+  engine: { name?: string; version?: string };
+  /** 是否支持 WebRTC */
+  supported: boolean;
+  /** 当前上下文是否安全（HTTPS / localhost / 127.0.0.1） */
+  secure: boolean;
+  /** 是否可访问媒体设备（麦克风、摄像头） */
+  mediaDevices: boolean;
+  /** 是否支持屏幕共享 */
+  screenshare: boolean;
+  /** 是否支持 H.264 编码 */
+  h264Enc: boolean;
+  /** 是否支持 H.264 解码 */
+  h264Dec: boolean;
+  /** 是否支持 VP8 编码 */
+  vp8Enc: boolean;
+  /** 是否支持 VP8 解码 */
+  vp8Dec: boolean;
+  /** 是否支持 Opus 编码 */
+  opusEnc: boolean;
+  /** 是否支持 Opus 解码 */
+  opusDec: boolean;
+  /** 支持的视频编码能力 */
+  videoEncCodecs: RTCRtpCapabilities | null;
+  /** 支持的视频解码能力 */
+  videoDecCodecs: RTCRtpCapabilities | null;
+  /** 支持的音频编码能力 */
+  audeoEncCodecs: RTCRtpCapabilities | null;
+  /** 支持的音频解码能力 */
+  audeoDecCodecs: RTCRtpCapabilities | null;
+  /** User-Agent 字符串 */
+  ua: string;
+  screenWidth: number;
+  screenHeight: number;
+  clientWidth: number;
+  clientHeight: number;
+  devicePixelRatio: number;
+}
+```
+
+---
+
+### 日志与编译信息
+
+```typescript
+export enum LogLevel {
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error',
+}
+
+export enum LogTarget {
+  /** 输出到控制台 */
+  CONSOLE = 'console',
+  /** 不打印任何日志 */
+  NONE = 'none',
+}
+
+export interface BuildInfo {
+  /** 编译时间戳（秒） */
+  timestamp: number;
+  /** SDK 版本号 */
+  version: string;
+}
+```
+
+---
+
+### MixedAudioMediaStreamTrack
+
+`createMixedAudioMediaStreamTrack` 工具函数返回的混音轨道，继承自浏览器原生 `MediaStreamTrack`，可直接传入 `srtc.createLocalCustomAudioTrack`。
+
 ```typescript
 /**
- * 日志打印等级
+ * 将多路 MediaStreamTrack 混合为单路音频轨道
+ * @param tracks 要混合的音频 MediaStreamTrack 数组
+ * @returns 合并后的 MediaStreamTrack
  */
-export declare enum LogLevel {
-	DEBUG = "debug",
-	INFO = "info",
-	WARN = "warn",
-	ERROR = "error"
-}
-/**
- * 日志打印目标
- */
-export declare enum LogTarget {
-	/** 控制台打印 */
-	CONSOLE = "console",
-	/** 不打任何日志 */
-	NONE = "none"
-}
-/**
- * sdk编译信息
- */
-export interface BuildInfo {
-	/** 编译时间s */
-	timestamp: number;
-	/** sdk版本号 */
-	version: string;
-}
+export declare function createMixedAudioMediaStreamTrack(
+  tracks: MediaStreamTrack[]
+): MediaStreamTrack;
 ```
-

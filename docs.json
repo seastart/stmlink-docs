@@ -151,6 +151,15 @@
                 "pages": [
                   "zh/rtc/web/integration",
                   "zh/rtc/web/quickstart",
+                  "zh/rtc/web/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/web/advanced/mute-vs-unpublish",
+                      "zh/rtc/web/advanced/screen-sharing",
+                      "zh/rtc/web/advanced/custom-track"
+                    ]
+                  },
                   {
                     "group": "接口文档",
                     "pages": [
@@ -158,11 +167,11 @@
                       "zh/rtc/web/api-reference/media-tracks"
                     ]
                   },
-                  "zh/rtc/web/channel-messages",
                   "zh/rtc/web/events",
-                  "zh/rtc/web/network-quality",
                   "zh/rtc/web/types",
-                  "zh/rtc/web/error-codes"
+                  "zh/rtc/web/error-codes",
+                  "zh/rtc/web/changelog",
+                  "zh/rtc/web/faq"
                 ]
               },
               {

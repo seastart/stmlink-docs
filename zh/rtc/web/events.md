@@ -1,165 +1,79 @@
-### 频道内事件
-所有频道内事件都可通过`srtc.onNotifyChannelEvent`来监听
+### 频道内事件（onNotifyChannelEvent）
+
+通过 `srtc.onNotifyChannelEvent` 注册回调，在 `join` 前设置：
 
 ```typescript
-// 回调事件响应
 srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
-  console.log('收到频道事件', evt);
   switch (evt.type) {
-      // ...
+    case ChannelEventType.USER_JOIN:
+      // evt.data as UserInfo
+      break;
+    // ...
   }
-})
+};
 ```
 
+---
 
+#### 频道与连接
 
-`ChannelEvent`定义如下：
+| 事件常量 | 字符串值 | 触发时机 | data 类型 |
+| --- | --- | --- | --- |
+| `CHANNEL_UPDATE` | `'channel_update'` | 频道自定义属性（props）被更新 | `ChannelInfo` |
+| `ME_UPDATE` | `'me_update'` | 自己的用户信息被服务端或管理员更新 | `UserInfo` |
+| `RECONNECTING` | `'reconnecting'` | 网络波动，开始自动重连 | 无 |
+| `RECONNECTED` | `'reconnected'` | 重连成功 | 无 |
+| `DISCONNECTED` | `'disconnected'` | 被强制踢出或发生不可恢复错误 | `DisconnectEventData` |
+| `CUSTOM_MSG` | `'custom_msg'` | 收到频道内自定义消息 | `CustomMsgData` |
 
-```typescript
-/** 频道事件通知 */
-export declare class ChannelEvent {
-	/** 事件类型 */
-	type: ChannelEventType;
-	/** 事件携带的数据 */
-	data?: any;
-}
-```
+---
 
+#### 远端用户与流
 
+| 事件常量 | 字符串值 | 触发时机 | data 类型 |
+| --- | --- | --- | --- |
+| `USER_JOIN` | `'user_join'` | 远端用户加入频道 | `UserInfo` |
+| `USER_UPDATE` | `'user_update'` | 远端用户信息更新 | `UserInfo` |
+| `USER_LEAVE` | `'user_leave'` | 远端用户离开频道 | `UserLeaveEventData` |
+| `USER_TRACK_ADD` | `'user_track_add'` | 远端用户发布了新轨道 | `{ user: UserInfo, track: TrackInfo }` |
+| `USER_TRACK_UPDATE` | `'user_track_update'` | 远端用户更新了轨道信息 | `{ user: UserInfo, track: TrackInfo }` |
+| `USER_TRACK_REMOVE` | `'user_track_remove'` | 远端用户停止发布了某轨道 | `{ user: UserInfo, track: TrackInfo }` |
 
-`ChannelEventType`及对应`data`定义如下：
+> SDK 内部会在远端用户离开时（`USER_LEAVE`）自动取消订阅该用户的所有轨道；在 `USER_TRACK_REMOVE` 时自动取消订阅对应轨道。
 
-```typescript
-//
-// 频道及连接相关
-//
+---
 
-/** 频道自定义props更新，对应data为ChannelInfo */
-static readonly CHANNEL_UPDATE = 'channel_update';
+#### 轨道与外设
 
-/** 开始断线自动重连，无data */
-static readonly RECONNECTING = 'reconnecting';
+| 事件常量 | 字符串值 | 触发时机 | data 类型 |
+| --- | --- | --- | --- |
+| `TRACK_MUTED` | `'track_muted'` | 某轨道暂停发送数据（静音/画面暂停） | `BaseTrack` |
+| `TRACK_UNMUTED` | `'track_unmuted'` | 某轨道恢复发送数据 | `BaseTrack` |
+| `TRACK_ENDED` | `'track_ended'` | 轨道停止（设备拔出 / 用户点击浏览器"停止共享"） | `BaseTrack` |
+| `TRACK_AUTOPLAY_FAIL` | `'track_autoplay_fail'` | 浏览器阻止自动播放，需在用户手势后重新调用 `startPlay` | `BaseTrack` |
+| `DEVICE_ADD` | `'device_add'` | 外设插入 | `MediaDeviceInfo` |
+| `DEVICE_REMOVE` | `'device_remove'` | 外设拔出 | `MediaDeviceInfo` |
 
-/** 重连成功，断线重连成功后会触发 */
-static readonly RECONNECTED = 'reconnected';
+---
 
-/** 自己被强制离开频道，对应data为DisconnectEventData */
-static readonly DISCONNECTED = 'disconnected';
+### 频道外消息事件（onNotifyImEvent）
 
-/** 自己信息被改变，对应data为UserInfo */
-static readonly ME_UPDATE = 'me_update';
-
-/** 频道内自定义消息，对应data为CustomMsgData */
-static readonly CUSTOM_MSG = 'custom_msg';
-
-
-//
-// 远端用户、远端流相关
-//
-
-/** 其他用户加入频道，对应data为UserInfo */
-static readonly USER_JOIN = 'user_join';
-/** 其他用户信息改变，对应data为UserInfo */
-static readonly USER_UPDATE = 'user_update';
-/** 其他用户离开频道，对应data为UserLeaveEventData */
-static readonly USER_LEAVE = 'user_leave';
-
-/** 其他用户发布流轨道，对应data为{ user: UserInfo, track: TrackInfo } */
-static readonly USER_TRACK_ADD = 'user_track_add';
-/** 其他用户更新流轨道，对应data为{ user: UserInfo, track: TrackInfo } */
-static readonly USER_TRACK_UPDATE = 'user_track_update';
-/** 其他用户删除流轨道，对应data为{ user: UserInfo, track: TrackInfo } */
-static readonly USER_TRACK_REMOVE = 'user_track_remove';
-
-
-//
-// 流轨道事件
-// 
-
-/** 流轨道没有数据，对应data为BaseTrack */
-static readonly TRACK_MUTED = 'track_muted';
-
-/** 流轨道恢复数据，对应data为BaseTrack */
-static readonly TRACK_UNMUTED = 'track_unmuted';
-
-/** 流轨道停止，对应data为BaseTrack */
-static readonly TRACK_ENDED = 'track_ended';
-
-/** 轨道自动播放失败，对应data为BaseTrack */
-static readonly TRACK_AUTOPLAY_FAIL = 'track_autoplay_fail';
-
-
-//
-// 外设相关
-// 
-
-/** 外设插入，对应data为MediaDeviceInfo */
-static readonly DEVICE_ADD = 'device_add';
-
-/** 外设移除，对应data为MediaDeviceInfo */
-static readonly DEVICE_REMOVE = 'device_remove';
-
-```
-
-### 频道外消息事件
-所有频道外事件都可通过`srtc.onNotifyImEvent`来监听
+通过 `srtc.onNotifyImEvent` 注册回调（需先调用 `srtc.enableIm(token)` 启用 IM）：
 
 ```typescript
 srtc.onNotifyImEvent = (evt: ImEvent) => {
-    console.log('收到im事件', evt);
-    switch (evt.type) {
-        case ImEventType.IM_MSG:
-          // 收到im消息
-          // evt.data as ImMsgData
-          break;
-        case ImEventType.RECONNECTING:
-          // 开始重连
-          break;
-        case ImEventType.RECONNECTED:
-          // 重连成功
-          break;
-        case ImEventType.DISCONNECTED:
-          let data = (evt.data as ImDisconnectEventData);
-          // 可根据reason提示退出原因
-          alert('im已断开 reason:' + data.reason);
-          // 界面刷新清理
-          imSid = "";
-          break;
-    }
-}
+  switch (evt.type) {
+    case ImEventType.IM_MSG:
+      // evt.data as ImMsgData
+      break;
+  }
+};
 ```
 
-
-
-`ImEvent`定义如下：
-
-```typescript
-/** 频道外事件通知 */
-export declare class ImEvent {
-	/** 事件类型 */
-	type: ImEventType;
-	/** 事件携带的数据 */
-	data?: any;
-}
-```
-
-
-
-`ImEventType`及对应`data`定义如下：
-
-```typescript
-/** 频道外事件类型 */
-declare class ImEventType {
-	/** 首次连接im成功，无data */
-	static readonly ENABLE_SUCCEED = "enable_succeed";
-	/** im开始断线自动重连，无data */
-	static readonly RECONNECTING = "reconnecting";
-	/** im重连成功，断线重连成功后会触发 */
-	static readonly RECONNECTED = "reconnected";
-	/** 自己被强制断开im，对应data为ImDisconnectEventData */
-	static readonly DISCONNECTED = "disconnected";
-	/** im消息，对应data为ImMsgData */
-	static readonly IM_MSG = "im_msg";
-}
-```
-
+| 事件常量 | 字符串值 | 触发时机 | data 类型 |
+| --- | --- | --- | --- |
+| `ENABLE_SUCCEED` | `'enable_succeed'` | IM 首次连接成功 | 无 |
+| `IM_MSG` | `'im_msg'` | 收到 IM 消息 | `ImMsgData` |
+| `RECONNECTING` | `'reconnecting'` | IM 连接断开，开始重连 | 无 |
+| `RECONNECTED` | `'reconnected'` | IM 重连成功 | 无 |
+| `DISCONNECTED` | `'disconnected'` | IM 被强制断开 | `ImDisconnectEventData` |
