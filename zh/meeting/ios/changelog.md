@@ -1,3 +1,8 @@
+---
+title: "更新日志"
+description: "iOS SMeeting 会议 SDK 版本更新记录"
+---
+
 ### [1.1.9] - 2026.02.28
 #### 新增
 + 流媒体配置新增`forceLandscape`参数，用来业务层强制横屏设置；

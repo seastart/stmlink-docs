@@ -1,3 +1,8 @@
+---
+title: "错误码"
+description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
+---
+
 ### SEAError
 错误码
 

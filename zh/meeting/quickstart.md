@@ -1,16 +1,21 @@
+---
+title: "快速开始"
+description: "SMeeting 会议 SDK 快速对接概述"
+---
+
 # 1、概述
-<font style="color:rgb(36, 41, 47);">本开发对接文档旨在指导开发者与meeting视频会议系统进行快速便捷的集成。</font>
+本开发对接文档旨在指导开发者与meeting视频会议系统进行快速便捷的集成。
 
-<font style="color:rgb(36, 41, 47);"></font>
 
-<font style="color:rgb(36, 41, 47);">meeting没有自己的用户(</font>`<font style="color:rgb(36, 41, 47);">User</font>`<font style="color:rgb(36, 41, 47);">)体系，所有用户信息都需要由业务方来自定义。</font>
 
-<font style="color:rgb(36, 41, 47);">meeting客户端提供带UI源码(极简对接)、不带UI SDK(自定义对接)两种对接方式。</font>
+meeting没有自己的用户(`User`)体系，所有用户信息都需要由业务方来自定义。
 
-<font style="color:rgb(36, 41, 47);">meeting服务端提供http接口供业务后端主动调用，同时支持http事件回调业务后端。</font>
+meeting客户端提供带UI源码(极简对接)、不带UI SDK(自定义对接)两种对接方式。
 
-# <font style="color:rgb(36, 41, 47);">2、对接流程</font>
-## <font style="color:rgb(36, 41, 47);">带UI极简对接</font>
+meeting服务端提供http接口供业务后端主动调用，同时支持http事件回调业务后端。
+
+# 2、对接流程
+## 带UI极简对接
 业务系统客户端直接源码引入meeting ui，无需关注会议业务逻辑。
 
 业务系统服务端和meeting后端做好账号打通，其余均由meeting后端系统完成。

@@ -1,3 +1,8 @@
+---
+title: "枚举类型"
+description: "Android SMeeting 会议 SDK 枚举值定义"
+---
+
 ### ChatMsgType
 聊天消息类型
 

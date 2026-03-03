@@ -1,3 +1,8 @@
+---
+title: "常见问题"
+description: "Web SRTC 音视频 SDK 集成与使用常见问题解答"
+---
+
 ### 浏览器提示"不允许访问摄像头/麦克风"怎么办？
 
 **原因：** 浏览器权限被拒绝或页面不在安全上下文（HTTPS / localhost）下。
@@ -19,7 +24,7 @@ if (!env.secure) {
 } else if (!env.mediaDevices) {
   alert('浏览器不支持媒体设备访问，请检查权限设置');
 }
-```
+```typescript
 
 ---
 
@@ -75,7 +80,7 @@ const env = srtc.getEnvInfo();
 if (!env.screenshare) {
   alert('当前浏览器不支持屏幕共享，请使用 Chrome 或桌面版 Safari 15.4+');
 }
-```
+```typescript
 
 ---
 

@@ -1,0 +1,24 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3385FF"/>
+      <stop offset="100%" stop-color="#0044CC"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    Favicon 版本：32×32，去掉外环，节点适当放大以保证小尺寸清晰度
+    节点位置按 40→32 等比缩放（×0.8）
+  -->
+  <path
+    d="M 24 6 C 24 14 8 10 8 16 S 24 22 24 26"
+    stroke="url(#g)"
+    stroke-width="2"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <circle cx="24" cy="6"  r="5"   fill="url(#g)"/>
+  <circle cx="8"  cy="16" r="3.8" fill="url(#g)"/>
+  <circle cx="24" cy="26" r="5"   fill="url(#g)"/>
+</svg>

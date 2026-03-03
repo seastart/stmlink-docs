@@ -1,7 +1,12 @@
+---
+title: "概览"
+description: "SRTC 音视频 SDK 产品概览"
+---
+
 服务端接口是供业务方后端（可参考服务端demo）调用的接口。
 
 ### 基本概念
-**<font style="color:#333333;">频道</font>**<font style="color:#333333;">：频道是一个音视频空间（可以理解为一场会议），同一频道内的用户可以互相接收对方的实时音视频数据。</font>
+**频道**：频道是一个音视频空间（可以理解为一场会议），同一频道内的用户可以互相接收对方的实时音视频数据。
 
 #### 加入频道流程
 1. 业务方客户端调用业务方后端的进入频道接口
@@ -39,12 +44,12 @@
 
 
 #### 签名算法
-第一步：拼接待签名字符串，将`app_id` `nonce` `timestamp`以及请求body的json字符串用<font style="background-color:#D8DAD9;">&</font>拼接
+第一步：拼接待签名字符串，将`app_id` `nonce` `timestamp`以及请求body的json字符串用&拼接
 
 ```typescript
 // 假定app_id=1 nonce=2 timestamp=3 请求体为{}
 app_id=1&nonce=2&timestamp=3&{}
-```
+```typescript
 
 第二步：使用HMAC-SHA256加密字符串。key是`app_key`秘钥。
 
@@ -64,7 +69,7 @@ HMACSHA256(key, 待签名字符串)
     "code": 0,
     "data": 123
 }
-```
+```typescript
 
 有错误，`code`为错误码，`msg`为错误描述
 

@@ -1,3 +1,8 @@
+---
+title: "IRemoteAudioStream"
+description: "全平台 C++ SRTC 音视频 SDK IRemoteAudioStream 接口参考"
+---
+
 ### void setFrameEvent(FrameEvent onFrameEvent,void* ctx)
 设置码流数据接收回调。
 

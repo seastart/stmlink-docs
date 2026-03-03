@@ -1,10 +1,15 @@
+---
+title: "IRTCEngine"
+description: "Windows SRTC 音视频 SDK IRTCEngine 接口参考"
+---
+
 
 
 ## IRTCEngine
 ### 创建IRTCEngine
 ```cpp
 RTCENGINE_API StatusCode RTCENGINE_CALL RTCEngine_Init(IRTCEngine** rtc);
-```
+```cpp
 
 **参数**
 
@@ -30,7 +35,7 @@ RTCENGINE_API void RTCENGINE_CALL RTCEngine_Free(IRTCEngine** rtc);
 ### 获取版本号信息
 ```cpp
 RTCENGINE_API StatusCode RTCENGINE_CALL RTCEngine_Version(const char*v1);
-```
+```cpp
 
 **参数**
 
@@ -38,7 +43,7 @@ RTCENGINE_API StatusCode RTCENGINE_CALL RTCEngine_Version(const char*v1);
 | --- | --- |
 
 
-<font style="color:#E8323C;">注：需要传入的时候需要外面分配内存，至少100长度</font>
+注：需要传入的时候需要外面分配内存，至少100长度
 
 ### 
 ### 获取错误码描述
@@ -53,15 +58,15 @@ RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetStatusMsg(StatusCode code, char* 
 | msg | 错误码描述信息 |
 
 
-<font style="color:#E8323C;">注：msg需要传入的时候需要外面分配内存，至少100长度，中文编码gbk</font>
+注：msg需要传入的时候需要外面分配内存，至少100长度，中文编码gbk
 
-<font style="color:#E8323C;"></font>
+
 
 ## 基础函数
 ### 获取配置信息对象
 ```cpp
 virtual StatusCode getSetting(IRTCSetting** set) = 0;
-```
+```cpp
 
 **参数**
 
@@ -87,7 +92,7 @@ virtual StatusCode setEventHandler(IRTCEngineEvent* e) = 0;
 ### 加入频道
 ```cpp
 virtual StatusCode joinChannel(const char* token) = 0;
-```
+```cpp
 
 **参数**
 
@@ -106,7 +111,7 @@ virtual void leaveChannel() = 0;
 ### 获取自身用户信息
 ```cpp
 virtual StatusCode getMe(char** s, int* c) = 0;
-```
+```cpp
 
 **参数**
 
@@ -133,7 +138,7 @@ virtual StatusCode getChannel(char** s, int* c) = 0;
 ### 获取频道所有成员信息
 ```cpp
 virtual StatusCode getMembers(char** s, int* c) = 0;
-```
+```typescript
 
 **参数**
 
@@ -170,7 +175,7 @@ virtual StatusCode getMemberByLinkId(int linkId, char** s, int* c) = 0;
 ### 网络测速
 ```cpp
 	virtual StatusCode probeNetwork(int time, int upindex, int downindex) = 0;
-```
+```cpp
 
 **参数**
 
@@ -180,7 +185,7 @@ virtual StatusCode getMemberByLinkId(int linkId, char** s, int* c) = 0;
 | downindex | 测速下行（单位KB），0 为不进行此项测速 |
 
 
-<font style="color:#E8323C;">注：测速结果将在</font>[回调](https://www.yuque.com/anyconf/rtcengine/yrwtcw/edit#wR50G)<font style="color:#E8323C;">内返回</font>
+注：测速结果将在[回调](https://www.yuque.com/anyconf/rtcengine/yrwtcw/edit#wR50G)内返回
 
 
 
@@ -203,7 +208,7 @@ virtual StatusCode getEnumVideo(char** devices, int* iSize) = 0;
 ### 获取屏幕信息
 ```cpp
 virtual StatusCode getEnumScreen(char** devices, int* iSize) = 0;
-```
+```cpp
 
 **参数**
 
@@ -231,7 +236,7 @@ virtual StatusCode getEnumAudio(char** devices, int* iSize) = 0;
 ### 获取扬声器信息
 ```cpp
 virtual StatusCode getEnumSpeaker(char** devices, int* iSize) = 0;
-```
+```typescript
 
 **参数**
 
@@ -259,7 +264,7 @@ virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** 
 ### 获取共享屏幕流对象
 ```cpp
 virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** track) = 0;
-```
+```typescript
 
 **参数**
 
@@ -287,7 +292,7 @@ virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track
 ### 获取成员音频轨道对象
 ```cpp
 virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackid, IRTCRemoteAudioTrack** track) = 0;
-```
+```typescript
 
 **参数**
 
@@ -317,7 +322,7 @@ virtual StatusCode getRemoteVideoTrack(const char* uid, const char* trackid, IRT
 ### 获取合成流视频轨道对象
 ```cpp
 virtual StatusCode getMCUVideoTrack(IRTCRemoteVideoTrack** track) = 0;
-```
+```cpp
 
 **参数**
 
@@ -343,7 +348,7 @@ virtual StatusCode subscribe(IRTCTrack* tk ) = 0;
 ### 取消订阅流轨道
 ```cpp
 virtual StatusCode unsubscribe(IRTCTrack* tk ) = 0;
-```
+```cpp
 
 **参数**
 
@@ -366,7 +371,7 @@ virtual StatusCode publish(IRTCTrack* tk, RTCVideoPublishOptions* opt = nullptr)
 ### 发布音频轨道
 ```cpp
 virtual StatusCode publish(IRTCTrack* tk, RTCAudioPublishOptions* opt = nullptr) = 0;
-```
+```typescript
 
 **参数**
 

@@ -1,3 +1,8 @@
+---
+title: "核心概念"
+description: "Web SRTC 音视频 SDK 核心概念与架构说明"
+---
+
 ### SRTC 实例
 
 通过 `new SRTC(initParams)` 创建实例，绝大多数操作都通过该实例对外提供。
@@ -13,7 +18,7 @@ const srtc = new SRTC({
   logLevel: LogLevel.DEBUG,   // 开发阶段建议使用 DEBUG
   logTarget: LogTarget.CONSOLE,
 });
-```
+```typescript
 
 ---
 
@@ -43,7 +48,7 @@ const usersMap = srtc.getUsersInfo(true);   // Record<uid, UserInfo>
 
 // 获取频道内所有用户（数组形式）
 const usersArr = srtc.getUsersInfo(false);  // UserInfo[]
-```
+```typescript
 
 ---
 
@@ -63,7 +68,7 @@ BaseTrack
 ├── RemoteAudioTrack         ← 远端单路音频流
 │   └── RemoteAudioMixTrack  ← 远端全频道混音流
 └── RemoteVideoTrack         ← 远端视频流
-```
+```typescript
 
 #### 分类说明
 
@@ -86,7 +91,7 @@ createLocalXxxTrack()
   → publishLocalTrack()   // 发布到频道（其他用户可以订阅）
   → unpublishLocalTrack() // 停止发布（其他用户看不到，但本地仍在采集）
   → stopCapture()         // 停止采集，释放设备
-```
+```typescript
 
 ---
 
@@ -122,7 +127,7 @@ srtc.onNotifyImEvent = (evt: ImEvent) => {
     // evt.data 为 ImMsgData
   }
 };
-```
+```typescript
 
 完整事件列表详见 [事件参考](/zh/rtc/web/events)。
 

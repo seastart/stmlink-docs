@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "Web SRTC 音视频 SDK 完整类型与结构体定义"
+---
+
 ### SdkInitParams
 
 SRTC 构造函数参数。
@@ -9,7 +14,7 @@ export interface SdkInitParams {
   /** 日志打印目标，默认 LogTarget.CONSOLE */
   logTarget?: LogTarget;
 }
-```
+```typescript
 
 ---
 
@@ -49,7 +54,7 @@ export interface ChannelInfo {
   /** 频道最近更新时间（Unix 时间戳，秒） */
   updated_at: number;
 }
-```
+```typescript
 
 ---
 
@@ -146,7 +151,7 @@ export enum TrackKind {
   Video = 'video',
   Audio = 'audio',
 }
-```
+```typescript
 
 ---
 
@@ -294,7 +299,7 @@ export declare const CameraPresets: {
   /** 320×180，15fps，250 Kbps */
   '180p': CameraPreset;
 };
-```
+```typescript
 
 ---
 
@@ -408,7 +413,7 @@ export interface CustomMsgData {
   /** 所在频道名 */
   channel: string;
 }
-```
+```typescript
 
 ---
 
@@ -495,7 +500,7 @@ export interface EnvWebInfo {
   clientHeight: number;
   devicePixelRatio: number;
 }
-```
+```typescript
 
 ---
 
@@ -539,4 +544,4 @@ export interface BuildInfo {
 export declare function createMixedAudioMediaStreamTrack(
   tracks: MediaStreamTrack[]
 ): MediaStreamTrack;
-```
+```typescript

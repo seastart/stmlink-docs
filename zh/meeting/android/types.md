@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "Android SMeeting 会议 SDK 完整类型与结构体定义"
+---
+
 ### CreateImmediateMeetingOption
 创建即时会议参数
 
@@ -5,14 +10,14 @@
 | --- | --- | --- |
 | roomNo | String | 房间号 |
 | content | String | 会议说明 |
-| attendType | AttendType | 入会方式类型，默认 ATTEND_NOT_LIMIT<br/>ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
-| conferees | MutableList<String> | 参会成员列表 |
+| attendType | AttendType | 入会方式类型，默认 `ATTEND_NOT_LIMIT<br/>`ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
+| conferees | `MutableList<String>` | 参会成员列表 |
 | password | String | 密码 |
 | mode | MeetingMode | 会议模式 |
 | planTime | Long | 开始时间时间戳 |
 | planDur | Int | 会议时长 |
 | autoRecord | Boolean | 是否开启自动录制 |
-| entryMutePolicy | MuteState | 入会静音状态 默认 MuteState1<br/>详见 [MuteState](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#alagF) |
+| entryMutePolicy | MuteState | 入会静音状态 默认 `MuteState1<br/>`详见 [MuteState](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#alagF) |
 | watermarkDisabled | Boolean | 水印状态 默认false <br/>true:禁用 <br/>false:不禁用 |
 | screenshotDisabled | Boolean | 截屏状态 默认false <br/>true：禁用 <br/>false:不禁用 |
 | chatDisabled | Boolean | 聊天模式 默认false <br/>true:禁用 <br/>false:不禁用 |
@@ -26,14 +31,14 @@
 | --- | --- | --- |
 | title | String | 会议标题 |
 | content | String | 会议说明 |
-| attendType | AttendType | 入会方式类型，默认 ATTEND_NOT_LIMIT<br/>ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
-| conferees | MutableList<String> | 参会成员列表 |
+| attendType | AttendType | 入会方式类型，默认 `ATTEND_NOT_LIMIT<br/>`ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
+| conferees | `MutableList<String>` | 参会成员列表 |
 | password | String | 密码 |
 | mode | MeetingMode | 会议模式 |
 | planTime | Long | 开始时间时间戳 |
 | planDur | Int | 会议时长 |
 | autoRecord | Boolean | 是否开启自动录制 |
-| entryMutePolicy | MuteState | 入会静音状态 默认 MuteState1<br/>详见：[MuteState](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#alagF) |
+| entryMutePolicy | MuteState | 入会静音状态 默认 `MuteState1<br/>`详见：[MuteState](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#alagF) |
 | watermarkDisabled | Boolean | 水印状态 默认false <br/>true:禁用 <br/>false:不禁用 |
 | screenshotDisabled | Boolean | 截屏状态 默认false <br/>true：禁用 <br/>false:不禁用 |
 | chatDisabled | Boolean | 聊天模式 默认false <br/>true:禁用 <br/>false:不禁用 |
@@ -95,7 +100,7 @@
 | title | String | 会议标题 |
 | roomNo | String | 房间号 |
 | password | String | 会议密码 |
-| attendType | AttendType | 入会方式类型，默认 ATTEND_NOT_LIMIT<br/>ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
+| attendType | AttendType | 入会方式类型，默认 `ATTEND_NOT_LIMIT<br/>`ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
 | meetingStatus | MeetingStatus | 会议状态，<br/>STATUS_UNKNOW：未知，值为 -1<br/>STATUS_PRE：未开始，值为 1<br/>STATUS_ING：进行中，值为 2<br/>STATUS_END：结束，值为 3 |
 | meetingType | MeetingType | 会议类型，详见 [MeetingType](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#XPYPA) |
 | planTime | Long | 预计开始时间 |
@@ -103,7 +108,7 @@
 | beginTime | Long | 开始时间 |
 | endTime | Long | 结束时间 |
 | creator | String | 创建者ID |
-| conferee | ArrayList<String> | 会前邀请参加的成员列表，value 为成员 uid |
+| conferee | `ArrayList<String>` | 会前邀请参加的成员列表，value 为成员 uid |
 | createAt | Long | 创建时间，单位 秒 |
 
 
@@ -118,7 +123,7 @@
 | content | String | 会议说明 |
 | password | String | 入会密码 |
 | creator | String | 创建者ID |
-| attendType | AttendType | 入会方式类型，默认 ATTEND_NOT_LIMIT<br/>ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
+| attendType | AttendType | 入会方式类型，默认 `ATTEND_NOT_LIMIT<br/>`ATTEND_NOT_LIMIT：无限制，值为 1 <br/>ATTEND_BY_PWD：密码进入，值为 2 <br/>ATTEND_ONLY_INVITE：仅邀请人员参会，值为 3 |
 | meetingStatus | MeetingStatus | 会议状态，<br/>STATUS_UNKNOW：未知，值为 -1<br/>STATUS_PRE：未开始，值为 1<br/>STATUS_ING：进行中，值为 2<br/>STATUS_END：结束，值为 3 |
 | meetingType | MeetingType | 会议类型，详见 [MeetingType](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#XPYPA) |
 | meetingMode | MeetingMode | 会议模式，详见 [MeetingMode](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#avINM) |
@@ -138,7 +143,7 @@
 | cameraDisabled | Boolean | 摄像头禁用状态 |
 | selfUnmuteMicDisabled | Boolean | 房间是否允许自我解除禁音状态 |
 | selfUnmuteCameraDisabled | Boolean | 房间是否允许自我解除禁画状态 |
-| conferee | ArrayList<String> | 会前邀请参加的成员列表，value 为成员 uid |
+| conferee | `ArrayList<String>` | 会前邀请参加的成员列表，value 为成员 uid |
 
 
 ### SubMeetingBean
@@ -173,7 +178,7 @@
 | uid | String | 用户 id |
 | nickname | String | 用户昵称 |
 | deviceType | Int | 设备类型，详见 [DeviceType](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#IiY5L) |
-| joinAt | Long | 加入时间<font style="color:#DF2A3F;">（后端使用，前端不必在意）</font> |
+| joinAt | Long | 加入时间（后端使用，前端不必在意） |
 
 
 ### WaitingRoomUserBean
@@ -210,7 +215,7 @@
 | shareUid | String | 共享者ID |
 | creator | String | 创建者ID |
 | hostUid | String | 主持人 |
-| coHosts | MutableList<String> | 主持人ID列表 |
+| coHosts | `MutableList<String>` | 主持人ID列表 |
 | extendInfo | JsonElement | 自定义扩展 |
 
 

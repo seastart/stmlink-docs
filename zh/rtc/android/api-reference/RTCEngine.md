@@ -1,9 +1,14 @@
+---
+title: "RTCEngine"
+description: "Android SRTC 音视频 SDK RTCEngine 接口参考"
+---
+
 ### version()
 获取 RTC-SDK 版本号
 
 ```kotlin
 fun version(): String
-```
+```kotlin
 
 返回值
 
@@ -28,7 +33,7 @@ fun buildTime(): String
 ### create()
 用于创建实例
 
-+ <font style="color:#DF2A3F;">PS：在这个方法中初始化了通用的能力，如日志模块。可以在应用刚启动的时候就执行这一步操作。</font>
++ PS：在这个方法中初始化了通用的能力，如日志模块。可以在应用刚启动的时候就执行这一步操作。
 
 ```kotlin
 fun create(
@@ -37,7 +42,7 @@ fun create(
     localLogPath: String? = null, 
     version: String = ""
 )
-```
+```html
 
 参数
 
@@ -51,7 +56,7 @@ fun create(
 ### initSDK()
 用于初始化 SDK
 
-+ <font style="color:#DF2A3F;">PS：在这个方法中初始化了与 RTC 相关的能力。可以在适当的时机调用，但是必须调用。</font>
++ PS：在这个方法中初始化了与 RTC 相关的能力。可以在适当的时机调用，但是必须调用。
 
 ```kotlin
 fun initSDK()
@@ -60,11 +65,11 @@ fun initSDK()
 ### releaseSDK()
 用于释放 SDK
 
-+ <font style="color:#DF2A3F;">PS：在这个方法中释放了与 RTC 相关的资源。</font>
++ PS：在这个方法中释放了与 RTC 相关的资源。
 
 ```kotlin
 fun releaseSDK()
-```
+```kotlin
 
 ## 参数配置
 ### setRtcClientEvent()
@@ -85,7 +90,7 @@ fun setRtcClientEvent(event: RTCClientEvent)
 
 ```kotlin
 fun setRtcMediaEvent(event: RTCMediaEvent)
-```
+```kotlin
 
 参数
 
@@ -111,7 +116,7 @@ fun setRtcImEvent(e: RTCImEvent)
 
 ```kotlin
 fun mediaOptions():RTCMediaOptions
-```
+```kotlin
 
 返回值
 
@@ -120,7 +125,7 @@ fun mediaOptions():RTCMediaOptions
 
 
 ### setMediaOptions()
-设置全局流媒体配置参数，可以只配置需要修改的值，不需要修改的值置null。<font style="color:#DF2A3F;">如无特殊需求，不需要配置。</font>
+设置全局流媒体配置参数，可以只配置需要修改的值，不需要修改的值置null。如无特殊需求，不需要配置。
 
 ```kotlin
 fun setMediaOptions(options:RTCMediaOptions)
@@ -132,7 +137,7 @@ fun setMediaOptions(options:RTCMediaOptions)
 
 ```kotlin
 fun enableIm(token: String, resultListener: RTCResultListener?)
-```
+```kotlin
 
 参数
 
@@ -153,7 +158,7 @@ fun disableIm()
 
 ```kotlin
 fun startAsr()
-```
+```kotlin
 
 ### stopAsr()
 停止语音转写
@@ -167,7 +172,7 @@ fun stopAsr()
 
 ```kotlin
 fun isStartAsr(): Boolean
-```
+```kotlin
 
 ### join()
 加入频道，需要收到 onJoinSucceed 回调，才算加入频道成功
@@ -189,7 +194,7 @@ fun join(activity: Activity, token: String, resultListener: RTCResultListener?)
 
 ```kotlin
 fun leave()
-```
+```kotlin
 
 ### resume()
 恢复操作，一般用于移动端息屏后恢复时，立即发送一个心跳
@@ -203,7 +208,7 @@ fun resume()
 
 ```kotlin
 fun getAudioRouterManager(): AudioRouterManager
-```
+```kotlin
 
 返回值
 
@@ -223,7 +228,7 @@ fun releaseAudioRouterManager()
 
 ```kotlin
 fun getLocalCameraTrack(preOpt: PreOptionCamera): LocalCameraTrack
-```
+```kotlin
 
 参数
 
@@ -261,7 +266,7 @@ fun getLocalMicTrack(preOpt: PreOptionMic): LocalMicTrack
 
 ```kotlin
 fun getLocalScreenTrack(activity: Activity, preOpt: PreOptionScreen): LocalScreenTrack
-```
+```kotlin
 
 参数
 
@@ -294,7 +299,7 @@ fun getCustomVideoTrack(): CustomVideoTrack
 
 ```kotlin
 fun getRemoteVideoTrack(uid: String, trackDesc: String): RemoteVideoTrack?
-```
+```kotlin
 
 参数
 
@@ -327,7 +332,7 @@ fun getRemoteMixtureTrack(): RemoteVideoTrack?
 
 ```kotlin
 fun getRemoteAudioMixTrack(): RemoteAudioMixTrack
-```
+```kotlin
 
 返回值
 
@@ -362,7 +367,7 @@ fun publishLocalVideo(track: LocalVideoTrack,
 fun publishLocalAudio(track: LocalAudioTrack, 
                       publishCustomOpt: PublishCustomOptions?, 
                       listener: RTCResultListener?)
-```
+```kotlin
 
 参数
 
@@ -391,7 +396,7 @@ fun unPublishLocalVideo(track: LocalVideoTrack, listener: RTCResultListener?)
 
 ```kotlin
 fun unPublishLocalAudio(track: LocalAudioTrack, listener: RTCResultListener?)
-```
+```kotlin
 
 参数
 
@@ -420,7 +425,7 @@ fun subscribeRemoteTrack(uid: String, trackId: String, listener: RTCResultListen
 
 ```kotlin
 fun unSubscribeRemoteTrack(uid: String, trackId: String)
-```
+```kotlin
 
 参数
 
@@ -441,7 +446,7 @@ fun subscribeRemoteMixture()
 
 ```kotlin
 fun unSubscribeRemoteMixture()
-```
+```kotlin
 
 ## 信息获取
 ### getChannelInfo()
@@ -462,7 +467,7 @@ fun getChannelInfo(): ChannelInfo?
 
 ```kotlin
 fun getMeInfo(): UserInfo?
-```
+```html
 
 返回值
 
@@ -488,7 +493,7 @@ fun getUserInfos(): MutableList<UserInfo>
 
 ```kotlin
 fun getUserInfo(uid: String): UserInfo?
-```
+```html
 
 参数
 
@@ -526,7 +531,7 @@ fun getTrackInfos(uid: String): List<TrackInfo>
 
 ```kotlin
 fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
-```
+```kotlin
 
 参数
 

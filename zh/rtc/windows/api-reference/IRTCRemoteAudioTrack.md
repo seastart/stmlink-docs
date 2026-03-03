@@ -1,3 +1,8 @@
+---
+title: "IRTCRemoteAudioTrack"
+description: "Windows SRTC 音视频 SDK IRTCRemoteAudioTrack 接口参考"
+---
+
 ## 函数说明
 远端音频混音对象。
 
@@ -14,7 +19,7 @@
 ### 开启音频输出
 ```cpp
 virtual StatusCode startPlay(RTCAudioOutputOptions* opt = nullptr) = 0;
-```
+```cpp
 
 **参数**
 

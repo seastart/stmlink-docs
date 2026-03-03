@@ -1,7 +1,12 @@
+---
+title: "AudioRouterManager"
+description: "Android SRTC 音视频 SDK AudioRouterManager 接口参考"
+---
+
 ### 构造方法
 ```java
 public AudioRouterManager(Context context, @Nullable AudioRouterCallback callback)
-```
+```kotlin
 
 参数
 
@@ -27,8 +32,8 @@ AudioRouterCallback  接口说明
 
 | 接口名称 | 接口说明 | 返回值 |
 | --- | --- | --- |
-| exitOutputDeviceChange | 当前存在的音频输出设备变化 | audioOutputDevices： HashMap<AudioOutputDeviceType, AudioDeviceInfo> 类型，当前存在的音频输出设备列表 |
-| activeOutputDeviceChange | 当前活跃的音频输出设备变化 | audioOutputDevice：Pair<AudioOutputDeviceType, AudioDeviceInfo> 类型，当前活跃的音频输出设备 |
+| exitOutputDeviceChange | 当前存在的音频输出设备变化 | audioOutputDevices： `HashMap<AudioOutputDeviceType, AudioDeviceInfo>` 类型，当前存在的音频输出设备列表 |
+| activeOutputDeviceChange | 当前活跃的音频输出设备变化 | audioOutputDevice：`Pair<AudioOutputDeviceType, AudioDeviceInfo>` 类型，当前活跃的音频输出设备 |
 | onAudioBecomingNoisy | 路由变化后可能会产生噪音 |  |
 
 
@@ -37,7 +42,7 @@ AudioRouterCallback  接口说明
 
 ```java
 public void setAutoChangeAudioRouter(boolean isAutoChange)
-```
+```kotlin
 
 参数
 
@@ -58,22 +63,22 @@ public void setAutoChangeAudioRouter(
 
 | isAutoChange | 是否由内部自动切换音频路由。<br/>true：是；false：否 |
 | --- | --- |
-| isPrioritySpeaker | 扬声器和听筒的优先级。默认 false<br/>true：扬声器优先级更高；false：听筒优先级更高 |
-| isPriorityWiredEarphone | 蓝牙耳机和有线耳机的优先级。默认 false<br/>true：有线耳机优先级更高；false：蓝牙耳机优先级更高 |
+| isPrioritySpeaker | 扬声器和听筒的优先级。默认 `false<br/>`true：扬声器优先级更高；false：听筒优先级更高 |
+| isPriorityWiredEarphone | 蓝牙耳机和有线耳机的优先级。默认 `false<br/>`true：有线耳机优先级更高；false：蓝牙耳机优先级更高 |
 
 
 ### setMode()
 设置音频音频模式。
 
-<font style="color:#DF2A3F;">ps：切换场景时，需要设置一次音频模式</font>
+ps：切换场景时，需要设置一次音频模式
 
 ```kotlin
 public void setMode(int mode)
-```
+```html
 
 参数
 
-| mode | 音频模式。<br/>AudioManager.MODE_NORMAL<br/>AudioManager.MODE_RINGTONE<br/>AudioManager.MODE_IN_CALL<br/>AudioManager.MODE_IN_COMMUNICATION<br/>AudioManager.MODE_CALL_SCREENING<br/>AudioManager.MODE_CALL_REDIRECT<br/>AudioManager.MODE_COMMUNICATION_REDIRECT |
+| mode | 音频模式。<br/>`AudioManager.MODE_NORMAL<br/>``AudioManager.MODE_RINGTONE<br/>``AudioManager.MODE_IN_CALL<br/>``AudioManager.MODE_IN_COMMUNICATION<br/>``AudioManager.MODE_CALL_SCREENING<br/>``AudioManager.MODE_CALL_REDIRECT<br/>`AudioManager.MODE_COMMUNICATION_REDIRECT |
 | --- | --- |
 
 
@@ -89,7 +94,7 @@ public void init()
 
 ```kotlin
 public void switchAudioRouter(AudioOutputDeviceType type)
-```
+```kotlin
 
 参数
 
@@ -126,7 +131,7 @@ public void release(boolean changeMode)
 
 ```kotlin
 public HashMap<AudioOutputDeviceType, AudioDeviceInfo> getExitAudioOutputDevices()
-```
+```html
 
 返回值
 
@@ -150,11 +155,11 @@ public Pair<AudioOutputDeviceType, AudioDeviceInfo> getActiveAudioOutputDevice()
 ### getValidBluetoothName()
 修正蓝牙耳机名称
 
-<font style="color:#DF2A3F;">ps：由于部分机型无法通过 AudioDeviceInfo#getProductName() 获取到正确的蓝牙耳机名称，可以通过该方法对名称做纠正</font>
+ps：由于部分机型无法通过 AudioDeviceInfo#getProductName() 获取到正确的蓝牙耳机名称，可以通过该方法对名称做纠正
 
 ```kotlin
 public static synchronized void getValidBluetoothName(String curName, Context context, ValidBluetoothNameCallback callback)
-```
+```kotlin
 
 参数
 

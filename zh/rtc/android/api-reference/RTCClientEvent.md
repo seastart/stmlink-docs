@@ -1,3 +1,8 @@
+---
+title: "RTCClientEvent"
+description: "Android SRTC 音视频 SDK RTCClientEvent 接口参考"
+---
+
 会控事件监听接口
 
 ### onJoinSucceed()
@@ -5,7 +10,7 @@
 
 ```kotlin
 fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?)
-```
+```kotlin
 
 参数
 
@@ -34,7 +39,7 @@ fun onUserUpdate(channel: String, uid: String)
 
 ```kotlin
 fun onRemoteUserJoin(channel: String, uid: String)
-```
+```kotlin
 
 参数
 
@@ -75,7 +80,7 @@ LeaveReason 属性说明
 
 ```kotlin
 fun onRemoteUserUpdate(channel: String, uid: String)
-```
+```kotlin
 
 参数
 
@@ -105,7 +110,7 @@ fun onStreamTrackAdd(uid: String, channel: String, trackId: String, trackDesc: S
 
 ```kotlin
 fun onStreamTrackUpdate(uid: String, channel: String, trackId: String, trackDesc: String)
-```
+```kotlin
 
 参数
 
@@ -136,7 +141,7 @@ fun onStreamTrackRemove(uid: String, channel: String, trackInfo: TrackInfo)
 
 ```kotlin
 fun onChannelUpdate(channel: String, props: String?)
-```
+```kotlin
 
 参数
 
@@ -165,7 +170,7 @@ fun onCustomMessage(uid: String, action: String, content: String)
 
 ```kotlin
 fun onDisconnected(leaveReason: LeaveReason, statusCode: Int, message: String)
-```
+```kotlin
 
 参数
 
@@ -199,5 +204,5 @@ fun onReconnected()
 
 ```kotlin
 fun onReconnecting()
-```
+```kotlin
 

@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
+---
+
 ### RTCEngineConfig
 初始化RTC配置参数
 
@@ -29,7 +34,7 @@
 | NSInteger joinAt | 否 | 加入时间 |
 | NSInteger updatedAt | 否 | 更新时间 |
 | NSInteger leaveAt | 否 | 离开时间 |
-| NSMutableArray <[RTCEngineStreamTrackModel](#o95yb) *> *streamTracks | 否 | 码流轨道列表 |
+| NSMutableArray &lt;[RTCEngineStreamTrackModel](#o95yb) \*&gt; \*streamTracks | 否 | 码流轨道列表 |
 | id props | 否 | 自定义属性 |
 
 

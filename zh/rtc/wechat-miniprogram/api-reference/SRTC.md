@@ -1,3 +1,8 @@
+---
+title: "SRTC"
+description: "微信小程序 SRTC 音视频 SDK SRTC 接口参考"
+---
+
 srtc是绝大多数操作的入口。
 
 ```typescript
@@ -175,5 +180,5 @@ enableIm(token: string): Promise<string>;
  * 关闭频道外消息
  */
 disableIm(): Promise<void>;
-```
+```typescript
 

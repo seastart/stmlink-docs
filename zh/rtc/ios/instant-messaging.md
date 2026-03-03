@@ -1,3 +1,8 @@
+---
+title: "即时消息"
+description: "iOS SRTC 音视频 SDK 即时消息（IM）功能集成指南"
+---
+
 ### step 1：初始化SDK
 在调用 SDK 的任何其他函数之前，需要进行 SDK 初始化。详情请参看 [组件初始化](https://www.yuque.com/anyconf/rtcengine/am4ult#LfkAQ)。
 
@@ -10,7 +15,7 @@ RTCEngineError errorCode = [[RTCEngineKit sharedEngine] enableImWithToken:@"Your
 if (errorCode != RTCEngineErrorOK) {
     NSLog(@"即时通讯连接建立失败");
 }
-```
+```typescript
 
 #### 设置委托
 若要订阅委托事件，必须创建 `RTCEngineIMDelegate` 的实例，并使您的类符合 `RTCEngineIMDelegate` 协议。
@@ -21,7 +26,7 @@ if (errorCode != RTCEngineErrorOK) {
 ```
 
 #### 实现回调函数
-+ **<font style="color:rgb(51, 51, 51);">连接成功回调</font>**
++ **连接成功回调**
 
 ```objectivec
 /// 连接成功回调
@@ -33,9 +38,9 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"im连接建立成功 userId = %@, sessionId = %@", userId, sessionId);
 }
-```
+```swift
 
-+ **<font style="color:rgb(51, 51, 51);">开始重连回调</font>**
++ **开始重连回调**
 
 ```objectivec
 /// 开始重连回调
@@ -46,7 +51,7 @@ if (errorCode != RTCEngineErrorOK) {
 }
 ```
 
-+ **<font style="color:rgb(51, 51, 51);">重连成功回调</font>**
++ **重连成功回调**
 
 ```objectivec
 /// 重连成功回调
@@ -55,9 +60,9 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"im连接已经恢复。");
 }
-```
+```swift
 
-+ **<font style="color:rgb(51, 51, 51);">连接断开回调</font>**
++ **连接断开回调**
 
 ```objectivec
 /// 连接断开回调
@@ -71,7 +76,7 @@ if (errorCode != RTCEngineErrorOK) {
 }
 ```
 
-+ **<font style="color:rgb(51, 51, 51);">接收消息回调</font>**
++ **接收消息回调**
 
 ```objectivec
 /// 接收消息回调
@@ -85,7 +90,7 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"im接收到消息 action = %@ content = %@ userId = %@", action, content, userId);
 }
-```
+```swift
 
 ### step 3：停用即时通讯
 ```objectivec
@@ -95,5 +100,5 @@ if (errorCode != RTCEngineErrorOK) {
 ### step 4：销毁资源
 ```objectivec
 [[RTCEngineKit sharedEngine] destroy];
-```
+```swift
 

@@ -1,3 +1,8 @@
+---
+title: "接口列表"
+description: "服务端 API 完整接口列表"
+---
+
 **完整api接口列表请参考：**
 
 [https://doc.apipost.net/docs/detail/3ca3c5a4a003000?target_id=51c6eda](https://doc.apipost.net/docs/detail/3ca3c5a4a003000?target_id=51c6eda)
@@ -22,7 +27,7 @@ Body请求参数（raw-json）
     },
     "is_audience": false
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -70,7 +75,7 @@ Body请求参数（raw-json）
     "per-page": 10,
     "page": 1
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -154,7 +159,7 @@ Body请求参数（raw-json）
         "watermark_disabled": true
     }
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -192,7 +197,7 @@ Body请求参数（raw-json）
 {
     "channel": "fire"
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -255,7 +260,7 @@ Body请求参数（raw-json）
     "per-page": 10,
     "page": 1
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -351,7 +356,7 @@ Body请求参数（raw-json）
     "channel": "fire",
     "uid": "1"
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -432,7 +437,7 @@ Body请求参数（raw-json）
         "watermark_disabled": true
     }
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -477,7 +482,7 @@ Body请求参数（raw-json）
     "is_audience": false,
     "stream_tracks": []
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -523,7 +528,7 @@ Body请求参数（raw-json）
     "ruids": [],
 	  "important": false
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -565,7 +570,7 @@ Body请求参数（raw-json）
     "channel": "fire",
     "uid": "1"
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -602,7 +607,7 @@ Body请求参数（raw-json）
 {
     "channel": "fire"
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -647,7 +652,7 @@ Body请求参数（raw-json）
     "per-page": 10,
     "page": 1
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
@@ -731,7 +736,7 @@ Body请求参数（raw-json）
     "per-page": 10,
     "page": 1
 }
-```
+```typescript
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |

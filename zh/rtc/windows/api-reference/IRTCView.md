@@ -1,3 +1,8 @@
+---
+title: "IRTCView"
+description: "Windows SRTC 音视频 SDK IRTCView 接口参考"
+---
+
 ## 函数说明
 渲染对象虚对象，提供渲染数据回调与渲染句柄设置
 
@@ -12,7 +17,7 @@
 ### 获取渲染类型
 ```cpp
 virtual ViewEnumType ViewType() = 0;
-```
+```html
 
 **返回值**
 
@@ -33,14 +38,14 @@ virtual void* getHwnd() = 0;
 | --- | --- |
 
 
-<font style="color:#DF2A3F;">注：仅再ViewType() 返回HWND 生效</font>
+注：仅再ViewType() 返回HWND 生效
 
 
 
 ### 渲染数据
 ```cpp
 virtual void updatePlanes(const unsigned char* buf, int w, int h, int fourcc, int label) = 0;
-```
+```typescript
 
 **参数**
 
@@ -52,7 +57,7 @@ virtual void updatePlanes(const unsigned char* buf, int w, int h, int fourcc, in
 | label | int | 数据角度 |
 
 
-<font style="color:#DF2A3F;">注：仅再ViewType() 返回CallBack 生效</font>
+注：仅再ViewType() 返回CallBack 生效
 
 
 
@@ -69,5 +74,5 @@ virtual void updateFull(int r, int g, int b) = 0;
 | b | int | 蓝颜色（0-255） |
 
 
-<font style="color:#DF2A3F;">注：仅再ViewType() 返回CallBack 生效</font>
+注：仅再ViewType() 返回CallBack 生效
 

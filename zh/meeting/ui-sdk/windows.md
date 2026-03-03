@@ -1,3 +1,8 @@
+---
+title: "Windows UI SDK 极简对接"
+description: "SMeeting Windows UI 套件快速集成指南"
+---
+
 这是一个集成window SDK基于msvc + qt 构建的视频会议系统windows端项目。
 
 github源码地址：[https://github.com/seastart/meeting-windows-demo](https://github.com/seastart/meeting-windows-demo)
@@ -39,7 +44,7 @@ smeeting-windows-demo                   // 提供 C++（qt框架） 语言 Demo
 │  ├─ Test                				// 测试视图
 ├─ MainWidget                			// 父级主窗口
 ├─ DemoControl                			// 快捷方法调用
-```
+```typescript
 
 
 
@@ -49,7 +54,7 @@ smeeting-windows-demo                   // 提供 C++（qt框架） 语言 Demo
 
 如果您的开发语言，恰好也是msvc+qt 此方式，可以直接将整部代码拷贝到工程文件内。通过快捷方法调用内提供的方法（DemoControl.h）进行窗口的跳转或功能调用（当然了，您也可以修改其中代码将达到你想要的目的）
 
-<font style="color:#DF2A3F;">注：因为使用了QWKWidgets 窗口请在QApplication 初始化前调用</font>
+注：因为使用了QWKWidgets 窗口请在QApplication 初始化前调用
 
 ```cpp
 QGuiApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
@@ -71,7 +76,7 @@ reutrn a.exec();
 //c# 加载方式（示例）
 [DllImport(DllPath, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
 public static extern int MEETING_DEMO_Init();
-```
+```typescript
 
 ### 界面窗口展示
 #### 登录界面
@@ -96,7 +101,7 @@ public static extern int MEETING_DEMO_Init();
 │  │  │  ├─ WidInvite             		// 会议预约
 │  │  │  ├─ WidMeetingList             	// 会议列表
 │  │  │  ├─ WidPhoneList             	// 通讯录
-```
+```typescript
 
 ![](images/299698_1736990171509-d9c591c2-6a39-4c2d-a2f1-7f72d7fdf906.png)
 
@@ -156,7 +161,7 @@ public static extern int MEETING_DEMO_Init();
 #### 参数设置定义
 ```csharp
 #define MEETINGDEMO_SETTING_URL_S					0//字符串类型服务器地址
-```
+```typescript
 
 #### 窗口枚举定义
 ```csharp
@@ -190,7 +195,7 @@ public static extern int MEETING_DEMO_Init();
 #define MEETINGDEMO_VIEWTYPE_Layout_LT1_BR7		1003  //左上1 右下7
 
 #define MEETINGDEMO_VIEWTYPE_Layout_BR1_LT7		1004  //右下1 左上7
-```
+```typescript
 
 #### 方法说明
 ##### 整体初始化
@@ -205,7 +210,7 @@ MEETING_DEMO_ShowView(MEETINGDEMO_VIEWTYPE_MAIN);
 ##### 整体释放
 ```csharp
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_Free();
-```
+```typescript
 
 
 
@@ -222,12 +227,12 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_Login(const char* token);
 | token | sdk 登录所需的token |
 
 
-<font style="color:#DF2A3F;">注：调用成功后，ui窗口如果已经展示，将跳转到主窗口视图</font>
+注：调用成功后，ui窗口如果已经展示，将跳转到主窗口视图
 
 ##### 提供全局参数配置
 ```csharp
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_SettingData(int tp,int idata,const char* sdata);
-```
+```typescript
 
 ###### 参数
 | tp | 参数类型 |
@@ -236,7 +241,7 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_SettingData(int tp,int idata
 | token | sdk 登录所需的token |
 
 
-<font style="color:#DF2A3F;">注：调用成功后，ui窗口如果已经展示，将跳转到主窗口视图</font>
+注：调用成功后，ui窗口如果已经展示，将跳转到主窗口视图
 
 
 
@@ -254,14 +259,14 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_GotoView(int tp);
 ```csharp
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_ShowView(int tp);
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_HideView(int tp);
-```
+```typescript
 
 ###### 参数
 | tp | 窗口枚举 |
 | --- | --- |
 
 
-<font style="color:#DF2A3F;">注意：初始化后，主界面默认时隐藏的。需要调用showView 显示主页面，您也可以通过直接进行登录入会后显示主页面。</font>
+注意：初始化后，主界面默认时隐藏的。需要调用showView 显示主页面，您也可以通过直接进行登录入会后显示主页面。
 
 ##### 修改更新窗口显示视图
 ```csharp
@@ -278,12 +283,12 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_RoomUpdateLayout(int tp);
 ##### 获取版本信息
 ```csharp
 MEETING_DEMO_API void MEETING_DEMO_CALL RTCEngine_Version(const char* version);
-```
+```typescript
 
 ###### 参数
 | version | 版本信息 |
 | --- | --- |
 
 
-<font style="color:#DF2A3F;">注：version必须是已经 分配内存的指针，至少100字节，此函式只负责版本信息的拷贝。</font>
+注：version必须是已经 分配内存的指针，至少100字节，此函式只负责版本信息的拷贝。
 

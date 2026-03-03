@@ -1,3 +1,8 @@
+---
+title: "快速开始"
+description: "Web SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
+---
+
 ### 前提条件
 
 + 已完成 [SDK 集成](/zh/rtc/web/integration)
@@ -114,7 +119,7 @@ async function leaveChannel() {
   await srtc.leave();
   console.log('已离开频道');
 }
-```
+```typescript
 
 ---
 

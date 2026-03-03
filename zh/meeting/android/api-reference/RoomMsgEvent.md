@@ -1,3 +1,8 @@
+---
+title: "RoomMsgEvent"
+description: "Android SMeeting 会议 SDK RoomMsgEvent 接口参考"
+---
+
 房间内消息监听接口
 
 ### onReceiveChatMessage()
@@ -5,7 +10,7 @@
 
 ```java
 void onReceiveChatMessage(String operatorUid, String message, ChatMsgType chatMsgType);
-```
+```kotlin
 
 参数
 

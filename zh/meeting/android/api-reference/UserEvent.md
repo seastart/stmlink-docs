@@ -1,3 +1,8 @@
+---
+title: "UserEvent"
+description: "Android SMeeting 会议 SDK UserEvent 接口参考"
+---
+
 用户事件监听接口
 
 ### onExitRoom()
@@ -5,7 +10,7 @@
 
 ```java
 void onExitRoom(LeaveMeetingReason reason);
-```
+```kotlin
 
 参数
 
@@ -31,7 +36,7 @@ void onUserEnter(String uid);
 
 ```java
 void onUserExit(String uid);
-```
+```kotlin
 
 参数
 
@@ -58,7 +63,7 @@ void onUserNameChanged(String targetUid, String nick);
 
 ```java
 void onUserRoleChanged(String targetUid, MemberRoleType roleType);
-```
+```html
 
 参数
 
@@ -93,7 +98,7 @@ void onUserCameraStateChanged(
 
 ```java
 void onUserMicStateChanged(String targetUid, DeviceState micState, ChangeReason reason);
-```
+```kotlin
 
 参数
 
@@ -122,7 +127,7 @@ void onUserChatDisabledChange(String operatorUid, boolean disabled);
 
 ```java
 void onHandupConfirm(String operatorUid, Boolean approve, HandupType handupType);
-```
+```kotlin
 
 参数
 
@@ -154,7 +159,7 @@ void onRequestOpenCamera(String operatorUid);
 
 ```java
 void onRequestOpenMic(String operatorUid);
-```
+```kotlin
 
 参数
 
@@ -185,7 +190,7 @@ void onUserConfirmOpenCamera(String operatorUid, Boolean approve);
 
 ```java
 void onUserConfirmOpenMic(String operatorUid, Boolean approve);
-```
+```kotlin
 
 参数
 
@@ -213,7 +218,7 @@ void onMoveInWaitingRoom(String operatorUid, String nickName);
 
 ```java
 void onUserEnterWaitingRoom(String uid, String nickName);
-```
+```kotlin
 
 参数
 
@@ -241,7 +246,7 @@ void onUserExitWaitingRoom(String uid, String nickName);
 
 ```java
 void onRequestMoveToMainMeetOrSubMeet(String targetMeetingId, String targetMeetingTitle);
-```
+```kotlin
 
 参数
 

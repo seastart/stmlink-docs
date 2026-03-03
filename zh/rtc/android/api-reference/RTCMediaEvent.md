@@ -1,3 +1,8 @@
+---
+title: "RTCMediaEvent"
+description: "Android SRTC 音视频 SDK RTCMediaEvent 接口参考"
+---
+
 流媒体事件回调监听
 
 ### onMediaConnected()
@@ -5,7 +10,7 @@
 
 ```kotlin
 fun onMediaConnected()
-```
+```kotlin
 
 ### onRemoteVideoFrame()
 远端视频流回调
@@ -40,7 +45,7 @@ fun onPreviewFrame(
     yuv: ByteArray?, width: Int, height: Int, 
     stamp: Long, format: Int, facing: Int
 )
-```
+```html
 
 参数
 
@@ -73,7 +78,7 @@ fun onPreviewRealSize(width: Int, height: Int, facing: Int)
 
 ```kotlin
 fun onMediaMetric(metric: MediaMetric.Metric)
-```
+```html
 
 参数
 

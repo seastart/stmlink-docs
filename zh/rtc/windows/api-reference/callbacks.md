@@ -1,8 +1,13 @@
+---
+title: "callbacks"
+description: "Windows SRTC 音视频 SDK callbacks 接口参考"
+---
+
 ## 房间相关回调
 ### 加入房间成功回调
 ```cpp
 virtual void onJoinChannel(const char* channel, int channelSize, const char* me, int meSize, const char* members, int memberSize, const char* opts, int optSize) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -45,7 +50,7 @@ virtual void onChannelUpdate(const char* channelId,const char * props, int props
 ### 用户加入回调
 ```cpp
 virtual void onUserJoin(const char* channelId, const char* user, int userSize) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -83,7 +88,7 @@ virtual void onUserUpdate(const char* channelId, const char* user, int userSize)
 ### 用户流信息添加
 ```cpp
 virtual void onUserStreamAdd(const char* channelId, const char* uid,const char* stream, int streamSize) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -119,7 +124,7 @@ virtual void onUserStreamUpdate(const char* channelId, const char* user, const c
 ### 用户流信息删除
 ```cpp
 virtual void onUserStreamRemove(const char* channelId, const char* user, const char* stream, int streamSize) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -160,7 +165,7 @@ virtual void onUserLeave(const char* channelId, const char* user, int userSize) 
 ### 自定义消息回调
 ```cpp
 virtual void onCustomMessage(const char* action, const char* message, int messageSize, const char* senderid) = 0;
-```
+```cpp
 
 **触发条件**
 
@@ -196,7 +201,7 @@ virtual void onStreamUpLevel(int level) = 0;
 ### 流媒体下行成为挡位改变回调
 ```cpp
 virtual void onStreamDownLevel(const char* uid, int level) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -227,14 +232,14 @@ virtual void onStreamUpStat(const char* upstat, int upstatsize) = 0;
 | upstatsize | 上行数据json长度 |
 
 
-<font style="color:#E8323C;">注：需要设置需要在</font>[_getSetting_](https://www.yuque.com/anyconf/rtcengine/ec4ggd#Mn3Gb)_<font style="color:#E8323C;">，</font>_<font style="color:#E8323C;">设置</font><font style="color:#008000;">stat_interval</font><font style="color:#E8323C;">后才会触发回调</font>
+注：需要设置需要在[_getSetting_](https://www.yuque.com/anyconf/rtcengine/ec4ggd#Mn3Gb)_，_设置stat_interval后才会触发回调
 
-<font style="color:#E8323C;"></font>
+
 
 ### 流媒体下行回调
 ```cpp
 virtual void onStreamDownStat(const char* downstat, int downstatsize) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -247,9 +252,9 @@ virtual void onStreamDownStat(const char* downstat, int downstatsize) = 0;
 | downstatsize | 成员下行集合json长度 |
 
 
-<font style="color:#E8323C;">注：需要设置需要在</font>[_getSetting_](https://www.yuque.com/anyconf/rtcengine/ec4ggd#Mn3Gb)_<font style="color:#E8323C;">，</font>_<font style="color:#E8323C;">设置</font><font style="color:#008000;">stat_interval</font><font style="color:#E8323C;">后才会触发回调</font>
+注：需要设置需要在[_getSetting_](https://www.yuque.com/anyconf/rtcengine/ec4ggd#Mn3Gb)_，_设置stat_interval后才会触发回调
 
-<font style="color:#E8323C;"></font>
+
 
 ### 流媒体音柱回调
 ```cpp
@@ -266,14 +271,14 @@ virtual void onStreamSpeakers(const char* Speakers) = 0;
 | --- | --- |
 
 
-<font style="color:#E8323C;">注：需要设置需要在</font>[_getSetting_](https://www.yuque.com/anyconf/rtcengine/ec4ggd#Mn3Gb)_<font style="color:#E8323C;">，</font>_<font style="color:#E8323C;">设置</font><font style="color:#008000;">speaker_interval</font><font style="color:#E8323C;">后才会触发回调</font>
+注：需要设置需要在[_getSetting_](https://www.yuque.com/anyconf/rtcengine/ec4ggd#Mn3Gb)_，_设置speaker_interval后才会触发回调
 
-<font style="color:#E8323C;"></font>
+
 
 ### 测速回调
 ```cpp
 virtual void onProbeResult(int action,const char* result) = 0;
-```
+```cpp
 
 **触发条件**
 
@@ -309,7 +314,7 @@ virtual void onDeviceStatusChange(int devtype,int status) = 0;
 ### 系统设备发生改变
 ```cpp
 virtual void onDeviceChange(int devtype,int action,const char* name,int namesize) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -349,7 +354,7 @@ virtual void onDeviceDefChange(int devtype, const char* name, int namesize) = 0;
 ### 断开连接（无法连接）
 ```cpp
 virtual void onDisconnected(int reason, StatusCode code, const char* message, size_t message_size) = 0;
-```
+```typescript
 
 **触发条件**
 
@@ -388,7 +393,7 @@ virtual void onReconnected(const char* channel, const char* options, size_t opti
 ### 尝试重连
 ```cpp
 virtual void onReconnecting() = 0;
-```
+```cpp
 
 **触发条件**
 

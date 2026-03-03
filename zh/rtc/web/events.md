@@ -1,3 +1,8 @@
+---
+title: "事件参考"
+description: "Web SRTC 音视频 SDK 全量事件列表与触发时机说明"
+---
+
 ### 频道内事件（onNotifyChannelEvent）
 
 通过 `srtc.onNotifyChannelEvent` 注册回调，在 `join` 前设置：
@@ -11,7 +16,7 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
     // ...
   }
 };
-```
+```typescript
 
 ---
 

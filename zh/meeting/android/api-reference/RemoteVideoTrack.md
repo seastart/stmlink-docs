@@ -1,3 +1,8 @@
+---
+title: "RemoteVideoTrack"
+description: "Android SMeeting 会议 SDK RemoteVideoTrack 接口参考"
+---
+
 + 提供远端视频流渲染，事件回调
 
 ### setRemoteVideoEvent()
@@ -5,7 +10,7 @@
 
 ```kotlin
 fun setRemoteVideoEvent(event: RTCRemoteVideoEvent)
-```
+```html
 
 RTCRemoteVideoEvent  接口说明
 
@@ -26,7 +31,7 @@ fun removeRemoteVideoEvent()
 
 ```kotlin
 fun addPlayView(view: View): Boolean
-```
+```html
 
 参数
 
@@ -50,7 +55,7 @@ fun replacePlayView(views: MutableList<View>)
 
 ```kotlin
 fun removePlayView(view: View)
-```
+```html
 
 参数
 
@@ -61,7 +66,7 @@ fun removePlayView(view: View)
 ### removeAllPlayView()
 移除所有渲染控件
 
-+ <font style="color:#DF2A3F;">此处移除所有渲染控件，本质上是清空当前 uid、trackId 对应的渲染控件列表</font>
++ 此处移除所有渲染控件，本质上是清空当前 uid、trackId 对应的渲染控件列表
 
 ```kotlin
 fun removeAllPlayView()

@@ -1,3 +1,8 @@
+---
+title: "MediaEvent"
+description: "Android SMeeting 会议 SDK MediaEvent 接口参考"
+---
+
 流媒体事件监听接口
 
 ### onMediaConnected()
@@ -5,7 +10,7 @@
 
 ```java
 fun onMediaConnected()
-```
+```kotlin
 
 ### onRemoteVideoFrame()
 远端视频流
@@ -40,7 +45,7 @@ fun onPreviewFrame(
     yuv: ByteArray?, width: Int, height: Int, 
     stamp: Long, format: Int, facing: Int
 )
-```
+```html
 
 参数
 
@@ -73,7 +78,7 @@ fun onPreviewRealSize(width: Int, height: Int, facing: Int)
 
 ```java
 fun onMediaMetric(metric: MediaMetric.Metric)
-```
+```html
 
 参数
 

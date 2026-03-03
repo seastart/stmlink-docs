@@ -1,6 +1,11 @@
+---
+title: "media-tracks"
+description: "Web SRTC 音视频 SDK media-tracks 接口参考"
+---
+
 ### 继承关系
 
-```
+```typescript
 BaseTrack
 ├── LocalAudioTrack          ← 本地音频基类（自定义音频流）
 │   └── LocalMicTrack        ← 麦克风流
@@ -22,7 +27,7 @@ BaseTrack
 
 ```typescript
 get id(): string
-```
+```typescript
 
 轨道 ID，在频道内唯一标识该轨道。
 
@@ -38,7 +43,7 @@ get kind(): TrackKind
 
 ```typescript
 get desc(): string
-```
+```typescript
 
 轨道描述，由发布时指定（如 `'camera_big'`、`'screen'`）。
 
@@ -58,7 +63,7 @@ getInfo(): TrackInfo
 
 ```typescript
 getUid(): string
-```
+```typescript
 
 #### getMediaStreamTrack
 
@@ -82,7 +87,7 @@ getMediaStreamTrack(): MediaStreamTrack | undefined
 
 ```typescript
 startPlay(opt?: AudioOutputOptions): Promise<void>
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -102,7 +107,7 @@ stopPlay(): void
 
 ```typescript
 getVolume(): number
-```
+```typescript
 
 #### isPlaying
 
@@ -124,7 +129,7 @@ isPlaying(): boolean
 
 ```typescript
 startCapture(opt?: MicCaptureOptions): Promise<void>
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -144,7 +149,7 @@ stopCapture(): void
 
 ```typescript
 changeDeviceId(deviceId: string): Promise<void>
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -172,7 +177,7 @@ addPlayView(container: HTMLElement): void
 
 ```typescript
 hasPlayView(): boolean
-```
+```typescript
 
 #### removePlayView
 
@@ -188,7 +193,7 @@ removePlayView(container: HTMLElement): void
 
 ```typescript
 removeAllPlayViews(): void
-```
+```typescript
 
 #### getSimulcastTrack
 
@@ -214,7 +219,7 @@ getSimulcastTrack(layer: 'high' | 'medium' | 'low'): MediaStreamTrack | undefine
 
 ```typescript
 startCapture(opt?: CameraCaptureOptions): Promise<void>
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -234,7 +239,7 @@ stopCapture(): void
 
 ```typescript
 changeDeviceId(deviceId: string): Promise<void>
-```
+```typescript
 
 #### switchFacingMode
 
@@ -256,7 +261,7 @@ switchFacingMode(): Promise<void>
 
 ```typescript
 startCapture(opt?: ScreenCaptureOptions): Promise<void>
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -276,7 +281,7 @@ stopCapture(): void
 
 ```typescript
 getAudioTrack(): LocalAudioTrack | undefined
-```
+```typescript
 
 > 详细用法见 [屏幕共享 - 同时采集系统音频](/zh/rtc/web/advanced/screen-sharing#同时采集系统音频)
 
@@ -306,7 +311,7 @@ startPlay(opt?: AudioOutputOptions): Promise<void>
 
 ```typescript
 stopPlay(): void
-```
+```typescript
 
 ---
 
@@ -340,7 +345,7 @@ getFilterUids(): string[]
 
 ```typescript
 addPlayView(container: HTMLElement): void
-```
+```typescript
 
 #### hasPlayView
 
@@ -356,7 +361,7 @@ hasPlayView(): boolean
 
 ```typescript
 removePlayView(container: HTMLElement): void
-```
+```typescript
 
 #### removeAllPlayViews
 

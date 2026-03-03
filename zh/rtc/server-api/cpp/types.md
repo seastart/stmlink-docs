@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "全平台 C++ SRTC 音视频 SDK 完整类型与结构体定义"
+---
+
 ### RTCClientOptions
 ```cpp
 struct RTCClientOptions
@@ -13,7 +18,7 @@ struct RTCClientOptions
     const char* logPath = nullptr;  //日志文件存放目录
     LogLevel logLevel = LogLevel::Trace;  //日志打印级别
 };
-```
+```cpp
 
 ### Stream
 ```json
@@ -60,7 +65,7 @@ enum class MediaType
   avatar:"",    //用户头像地址
   props:{}    //自定义属性
 }
-```
+```cpp
 
 ### RoomUser
 ```typescript
@@ -91,7 +96,7 @@ enum class UserRole
   linkId:"",  //流媒体连接id
   props:{}   //自定义属性
 }
-```
+```cpp
 
 
 

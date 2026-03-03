@@ -1,3 +1,8 @@
+---
+title: "LogUtil"
+description: "Android SRTC 音视频 SDK LogUtil 接口参考"
+---
+
 用户日志收集，使用该日志工具，可以将日志打印到控制台、本地文件、远端日志中心
 
 ### v()
@@ -5,7 +10,7 @@
 
 ```kotlin
 fun v(msg: String, tag: String = TAG)
-```
+```kotlin
 
 参数
 
@@ -33,7 +38,7 @@ fun d(msg: String, tag: String = TAG)
 
 ```kotlin
 fun i(msg: String, tag: String = TAG)
-```
+```kotlin
 
 参数
 
@@ -61,7 +66,7 @@ fun w(msg: String, tag: String = TAG)
 
 ```java
 fun e(msg: String, tag: String = TAG)
-```
+```kotlin
 
 参数
 
@@ -91,7 +96,7 @@ fun e(t: Throwable, tag: String = TAG)
 fun addFormatLog(type: String, attr: Any?, 
                  body: String?, 
                  level: LoggerLevel = LoggerLevel.Info)
-```
+```kotlin
 
 参数
 

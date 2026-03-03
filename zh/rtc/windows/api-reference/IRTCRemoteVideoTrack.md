@@ -1,3 +1,8 @@
+---
+title: "IRTCRemoteVideoTrack"
+description: "Windows SRTC 音视频 SDK IRTCRemoteVideoTrack 接口参考"
+---
+
 ## 函数说明
 远端视频对象。
 
@@ -12,7 +17,7 @@
 ### 添加渲染对象
 ```cpp
 virtual StatusCode addPlayView(IRTCView* v) = 0;
-```
+```cpp
 
 **参数**
 
@@ -33,14 +38,14 @@ virtual StatusCode removePlayView(IRTCView* v) = 0;
 | --- | --- |
 
 
-<font style="color:#DF2A3F;">注：移除渲染对象，如果是CallBack类型，将对比对象地址，如果是HWND 类型将对比HWND</font>
+注：移除渲染对象，如果是CallBack类型，将对比对象地址，如果是HWND 类型将对比HWND
 
-<font style="color:#DF2A3F;"></font>
 
-### <font style="color:#000000;">移除所有渲染对象</font>
+
+### 移除所有渲染对象
 ```cpp
 virtual StatusCode removePlayView() = 0;
-```
+```cpp
 
 
 

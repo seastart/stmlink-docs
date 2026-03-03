@@ -1,3 +1,8 @@
+---
+title: "iOS UI SDK 极简对接"
+description: "SMeeting iOS UI 套件快速集成指南"
+---
+
 视频会议 SDK 提供了上层 UI 开源套件，目前 iOS 平台仅支持 Objective-C 语言，通过简单 API 调用即可唤起会议 UI。
 
 > 说明：如果您有自己的 UI 设计，想结合会议业务自行开发，我们同时提供有灵活性更好，功能更全面的 MeetingKit SDK，您可以通过查看我们的 [MeetingKit API](https://www.yuque.com/anyconf/eanoso/fb2vg0nhmwue9kvd) 文档，了解更多功能。
@@ -33,7 +38,7 @@
 
 ```objectivec
  git clone https://github.com/seastart/meeting-iOS-demo.git
-```
+```typescript
 
 #### 2、添加依赖库
 ```objectivec
@@ -43,7 +48,7 @@ pod 'MeetingKit', :git => "https://github.com/seastart/meeting-ios-cocoapods.git
 #### 3、安装依赖库
 ```objectivec
 pod install
-```
+```typescript
 
 ### 跑通示例
 #### 1、生成您自己的证书
@@ -89,7 +94,7 @@ meetingParam.title = @"Meeting Title";
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"创建房间失败，code = %ld, message = %@", code, message);
 }];
-```
+```typescript
 
 #### 加入房间
 ##### 构建入会参数
@@ -107,9 +112,9 @@ enterModel.avatar = @"Your Avatar";
 ```objectivec
 /// 加入会议主界面
 [self push:@"FWRoomViewController" info:enterModel block:nil];
-```
+```typescript
 
-| **<font style="color:rgb(46, 48, 51);background-color:rgb(245, 247, 250);">会中界面</font>** | **<font style="color:rgb(46, 48, 51);background-color:rgb(245, 247, 250);">会控界面</font>** |
+| **会中界面** | **会控界面** |
 | --- | --- |
 | ![](images/171180_1736993893112-9a82acbf-c8ce-4b46-86f6-622701c3f815.png) | ![](images/930920_1736937496822-4040d787-cc39-4179-8580-cb9c1e9f134b.png) |
 
@@ -117,7 +122,7 @@ enterModel.avatar = @"Your Avatar";
 ### 普通成员加入会议
 按照上述**加入房间**示例创建并跳转会议主页面，即可加入一场会议。
 
-| **<font style="color:rgb(46, 48, 51);background-color:rgb(245, 247, 250);">加入会议界面</font>** | **<font style="color:rgb(46, 48, 51);background-color:rgb(245, 247, 250);">会中界面</font>** |
+| **加入会议界面** | **会中界面** |
 | --- | --- |
 | ![](images/453018_1736935601794-818414d9-aa1d-410b-aa9e-82398ad92cc7.png) | ![](images/873379_1736993916062-da596a22-fffb-4b6d-a369-495955fc8191.png) |
 
@@ -222,7 +227,7 @@ meetingParam.entryMutePolicy = SEAMeetingMuteState3;
 meetingParam.conferee = @[@"target id"];
 /// 创建房间
 [[MeetingKit sharedInstance] createRoom:meetingParam onSuccess:nil onFailed:nil];
-```
+```typescript
 
 + 您可以通过以下方式加入房间，并设置进房参数，完成会前控制：
 
@@ -259,7 +264,7 @@ enterModel.avatar = @"User avatar";
 ### 使用说明
 用户进入房间后，通过点击底部工具栏共享按钮，可以实现屏幕共享操作。
 
-| **<font style="color:rgb(46, 48, 51);background-color:rgb(245, 247, 250);">屏幕共享</font>** | **<font style="color:rgb(46, 48, 51);background-color:rgb(245, 247, 250);">唤醒屏幕采集</font>** |
+| **屏幕共享** | **唤醒屏幕采集** |
 | :---: | :---: |
 | ![](images/424226_1736937948724-d202827c-856b-4119-8270-676ef5225c6c.png) | ![](images/618148_1736942451310-dab938c3-218b-4d4b-b8d9-792f36398bdf.png) |
 
@@ -284,24 +289,24 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
 8. 重新下载 **Provisioning Profile** 文件，并配置到 **Xcode** 中
 
 #### 2、创建 Broadcast Upload Extension
-<font style="color:#333333;">在现有工程选择【New】->【Target…】，选择【Broadcast Upload Extension】，如图所示：</font>
+在现有工程选择【New】->【Target…】，选择【Broadcast Upload Extension】，如图所示：
 
 ![](images/377016_1591942375623-34530649-a3fe-4a08-8a5d-f2eb0d2a9a85.png)
 
-<font style="color:#333333;">配置好 Product Name。单击【Finish】后可以看到，工程多了所输 Product Name 的目录，目录下有个系统自动生成的 SampleHandler类，这个类负责录屏的相关处理。</font>
+配置好 Product Name。单击【Finish】后可以看到，工程多了所输 Product Name 的目录，目录下有个系统自动生成的 SampleHandler类，这个类负责录屏的相关处理。
 
 #### 3、为扩展添加SDK依赖
-1. 手动集成方式需要将`**MeetingKit.framework**`导入上述<font style="color:#333333;">Product Name 的工程目录，并配置</font>依赖的系统库；
+1. 手动集成方式需要将`**MeetingKit.framework**`导入上述Product Name 的工程目录，并配置依赖的系统库；
 2. 自动集成方式需更改`Podfile`文件，并执行`pod install`，如下图所示：
 
 ![](images/486570_1736940851016-5ec8f955-6e57-4c56-9c04-5ec68e2f656d.png)
 
 #### 4、为宿主工程添加后台权限
-<font style="color:#333333;">工程宿主【TARGETS】->【Signing & Capabilities】->【Capability】，选择【Background Modes】，如图所示：</font>
+工程宿主【TARGETS】->【Signing & Capabilities】->【Capability】，选择【Background Modes】，如图所示：
 
 ![](images/236350_1591942975317-bd2e2df2-2452-44cb-b652-3db10a7d3928.png)
 
-<font style="color:#333333;">双击添加后勾选【Audio, AirPlay, and Picture in Picture】选项，如下图所示：</font>
+双击添加后勾选【Audio, AirPlay, and Picture in Picture】选项，如下图所示：
 
 ![](images/875454_1591943083527-5e406fa3-2988-48ed-a8b0-eaf1bb6b9def.png)
 
@@ -381,14 +386,14 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
     /// 完成屏幕录制
     [self finishBroadcastWithError:error];
 }
-```
+```html
 
 ### 接入流程
 1、在需要使用录制服务的位置引入 `#import <MeetingKit/MeetingKit.h>` 并创建`RPSystemBroadcastPickerView`对象，如下图：
 
 ![](images/692079_1721979921917-cdc69773-454e-4a1b-84d6-0cdbf3c744f0.png)
 
-2、为实现业务细节，采用如下方式替换`RPSystemBroadcastPickerView`按钮，`broadcastButton`按钮事件后出现以下页面说明<font style="color:#333333;">扩展集成成功</font>：
+2、为实现业务细节，采用如下方式替换`RPSystemBroadcastPickerView`按钮，`broadcastButton`按钮事件后出现以下页面说明扩展集成成功：
 
 ![](images/574588_1721979942480-41eb9848-2602-43ef-a2e4-66080d0af1fd.png)
 
@@ -422,7 +427,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
 ```objectivec
 @interface SampleHandler : NSObject <MeetingKitScreenDelegate>
 /// 根据需要，在此处添加以下任何回调函数。
-```
+```typescript
 
 ```objectivec
 /// 录屏完成回调
@@ -447,7 +452,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
     /// User has requested to start the broadcast. Setup info from the UI extension can be supplied but optional.
     [[MeetingKit sharedInstance] broadcastStartedWithAppGroup:@"Application Group Identifier" delegate:self];
 }
-```
+```typescript
 
 6、屏幕扩展`SampleHandler`中实现发送共享屏幕帧数据：
 
@@ -483,7 +488,7 @@ Message
   └── FWRoomMessageMineFileTableViewCell.h      // 自己的文本聊天信息单元格
   └── FWRoomMessageTableViewCell.h      // 成员的文本聊天信息单元格
   └── FWRoomMessageFileTableViewCell.h      // 成员的文件聊天信息单元格
-```
+```typescript
 
 
 

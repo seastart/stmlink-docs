@@ -1,3 +1,8 @@
+---
+title: "静音与停止发布"
+description: "轻操作（静音）与重操作（停止发布）的区别与使用场景"
+---
+
 ### 概述
 
 控制本地音视频推流有两种粒度不同的操作，选错方式会导致不必要的资源浪费或功能异常：
@@ -35,7 +40,7 @@ await srtc.disableLocalTrack(localMicTrack);
 // ── 取消静音 ──────────────────────────────────────────────────────────────────
 await srtc.enableLocalTrack(localMicTrack);
 // 远端会收到 ChannelEventType.TRACK_UNMUTED 事件
-```
+```typescript
 
 > **注意：** `disableLocalTrack` 后麦克风采集仍在进行（指示灯仍亮），只是不往频道推数据。
 > 如果希望完全停止采集以释放麦克风，请使用 `unpublishLocalTrack` + `stopCapture`。

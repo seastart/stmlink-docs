@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "Web SMeeting 会议 SDK 完整类型与结构体定义"
+---
+
 #### 轨道描述 TrackDesc
 ```typescript
 /** 轨道描述 */
@@ -11,7 +16,7 @@ export enum TrackDesc {
     /** 桌面共享流 */
     SCREEN = 'screen',
 }
-```
+```typescript
 
 #### 举手类型 HandupType
 ```typescript
@@ -57,7 +62,7 @@ export enum UserHandupStep {
      */
     RejectOpen = 4,
 }
-```
+```typescript
 
 #### 摄像头状态 CameraState
 ```typescript
@@ -92,7 +97,7 @@ export enum MicState {
     Off = 2,
 }
 
-```
+```typescript
 
 #### 房间共享类型 ShareType 
 ```typescript
@@ -115,7 +120,7 @@ export enum ShareType {
 #### 共享状态 ShareState
 ```typescript
 export type ShareState = 0 | ShareType;
-```
+```typescript
 
 #### 角色类型 Role
 ```typescript
@@ -161,7 +166,7 @@ export enum ChatMsgType {
      */
     Sound = 4,
 }
-```
+```typescript
 
 #### 用户离开房间的原因 DisconnectReason
 ```typescript
@@ -195,7 +200,7 @@ export enum MeetingType {
     /** 预约会议 */
     Appointment = 2
 }
-```
+```typescript
 
 #### 入会静音状态 EntryMutePolicy
 ```typescript
@@ -229,7 +234,7 @@ export interface MeetingToken {
     /** sdk接口前缀 */
     client_api: string;
 }
-```
+```typescript
 
 #### 用户类型 UserType
 ```typescript
@@ -257,7 +262,7 @@ export interface SdkInitParams {
     /** 日志目标 */
     logTarget?: LogTarget;
 }
-```
+```typescript
 
 #### 创建/修改会议参数 MeetingCreateReq
 ```typescript
@@ -319,7 +324,7 @@ export interface MeetingEnterReq {
     /** 扩展字段 */
     extend_info?: string;
 }
-```
+```typescript
 
 #### 房间信息
 ```typescript
@@ -410,7 +415,7 @@ export interface UserInfo {
     /** 自定义扩展，json串表示的键值对 */
     extend_info: string;
 }
-```
+```typescript
 
 #### 当前会议  Room
 ```typescript
@@ -471,7 +476,7 @@ export interface MeetingInfo {
     creator: string;
     /** 会议主持人 */
 }
-```
+```typescript
 
 #### 分页参数
 ```typescript
@@ -491,7 +496,7 @@ export interface MetaRes {
     currentPage: number;
     perPage: number;
 }
-```
+```typescript
 
 #### 参会人员信息
 ```typescript
@@ -529,7 +534,7 @@ export enum AgentType {
     /** AI */
     AI = 9,
 }
-```
+```typescript
 
 #### 入会设备状态
 ```typescript
@@ -559,7 +564,7 @@ export interface AgentInfo {
     /** 备注 */
     remark: string;
 }
-```
+```typescript
 
 #### 布局类型
 ```typescript
@@ -671,7 +676,7 @@ export interface LayoutData {
 }
 
 
-```
+```typescript
 
 #### mcu录制相关
 ```typescript

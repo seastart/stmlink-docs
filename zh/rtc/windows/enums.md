@@ -1,3 +1,8 @@
+---
+title: "枚举类型"
+description: "Windows SRTC 音视频 SDK 枚举值定义"
+---
+
 ### 数据编码类型StreamCodec
 | 参数名称 | 参数类型 | 值定义 |
 | --- | --- | --- |

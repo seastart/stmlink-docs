@@ -1,9 +1,14 @@
+---
+title: "AudioRouterManager"
+description: "Android SMeeting 会议 SDK AudioRouterManager 接口参考"
+---
+
 ### setAudioRouterCalllback()
 设置音频路由监听事件
 
 ```java
 public void setAudioRouterCalllback(AudioRouterCallback callback)
-```
+```html
 
 参数
 
@@ -40,7 +45,7 @@ public void setAutoChangeAudioRouter(boolean isAutoChange)
 public void setAutoChangeAudioRouter(
     boolean isAutoChange, boolean isPrioritySpeaker, boolean isPriorityWiredEarphone
 )
-```
+```html
 
 参数
 
@@ -53,7 +58,7 @@ public void setAutoChangeAudioRouter(
 ### setMode()
 设置音频音频模式。
 
-<font style="color:#DF2A3F;">ps：切换场景时，需要设置一次音频模式</font>
+ps：切换场景时，需要设置一次音频模式
 
 ```kotlin
 public void setMode(int mode)
@@ -70,7 +75,7 @@ public void setMode(int mode)
 
 ```kotlin
 public void init()
-```
+```kotlin
 
 ### switchAudioRouter()
 切换路由
@@ -101,7 +106,7 @@ AudioOutputDeviceType 属性说明
 
 ```java
 public void release(boolean changeMode)
-```
+```html
 
 参数
 
@@ -127,7 +132,7 @@ public HashMap<AudioOutputDeviceType, AudioDeviceInfo> getExitAudioOutputDevices
 
 ```kotlin
 public Pair<AudioOutputDeviceType, AudioDeviceInfo> getActiveAudioOutputDevice()
-```
+```kotlin
 
 返回值
 
@@ -138,7 +143,7 @@ public Pair<AudioOutputDeviceType, AudioDeviceInfo> getActiveAudioOutputDevice()
 ### getValidBluetoothName()
 修正蓝牙耳机名称
 
-<font style="color:#DF2A3F;">ps：由于部分机型无法通过 AudioDeviceInfo#getProductName() 获取到正确的蓝牙耳机名称，可以通过该方法对名称做纠正</font>
+ps：由于部分机型无法通过 AudioDeviceInfo#getProductName() 获取到正确的蓝牙耳机名称，可以通过该方法对名称做纠正
 
 ```kotlin
 public static synchronized void getValidBluetoothName(String curName, Context context, ValidBluetoothNameCallback callback)

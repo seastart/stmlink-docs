@@ -1,3 +1,8 @@
+---
+title: "LocalCameraTrack"
+description: "Android SRTC 音视频 SDK LocalCameraTrack 接口参考"
+---
+
 + 提供摄像头打开、关闭操作，摄像头预览画面渲染
 + 为 publishLocalVideo 提供配置参数
 
@@ -6,7 +11,7 @@
 
 ```kotlin
 fun startCapture(listener: RTCResultListener?)
-```
+```kotlin
 
 参数
 
@@ -26,7 +31,7 @@ fun stopCapture()
 
 ```kotlin
 fun switchCameraPosition(position: CameraCaptureOptions.CamraPosition) 
-```
+```html
 
 参数
 
@@ -37,7 +42,7 @@ fun switchCameraPosition(position: CameraCaptureOptions.CamraPosition)
 ### setCameraAngleOffset(）
 设置摄像头偏移角度
 
-<font style="color:#DF2A3F;">ps: 这个方法是用于应对特殊设备的，有些设备摄像头安置角度与普通手机不一致，可以通过这个方法调整。</font>
+ps: 这个方法是用于应对特殊设备的，有些设备摄像头安置角度与普通手机不一致，可以通过这个方法调整。
 
 ```kotlin
 fun setCameraAngleOffset(offset: Int)
@@ -54,7 +59,7 @@ fun setCameraAngleOffset(offset: Int)
 
 ```kotlin
 fun addPlayView(view: View): Boolean
-```
+```html
 
 参数
 
@@ -78,7 +83,7 @@ fun replacePlayView(views: MutableList<View>)
 
 ```kotlin
 fun removePlayView(view: View)
-```
+```html
 
 参数
 
@@ -89,7 +94,7 @@ fun removePlayView(view: View)
 ### removeAllPlayView()
 移除所有渲染控件
 
-+ <font style="color:#DF2A3F;">此处移除所有渲染控件，本质上是清空当前 uid、trackDesc 对应的渲染控件列表</font>
++ 此处移除所有渲染控件，本质上是清空当前 uid、trackDesc 对应的渲染控件列表
 
 ```kotlin
 fun removeAllPlayView()

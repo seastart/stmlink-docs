@@ -1,3 +1,8 @@
+---
+title: "快速开始"
+description: "Android SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能"
+---
+
 ### step 1：初始化 SDK 和释放 SDK 资源
 #### 初始化 SDK
 在调用 SDK 的任何其他函数之前，需要进行 SDK 初始化操作，这个步骤非常关键，因为只有在初始化成功后才能正常使用 MeetingSDK 的各项功能。
@@ -17,7 +22,7 @@ engine?.initSdk(meetToken, options, object : MeetingResultCallback {
         // 会议组件初始化成功
     }
 })
-```
+```kotlin
 
 #### 释放 SDK
 ```kotlin
@@ -41,7 +46,7 @@ engine?.createImmediateMeeting(
         }
     }
 )
-```
+```html
 
 #### 创建预约会议
 ```kotlin
@@ -75,7 +80,7 @@ engine?.enterMeeting(
         }
     }
 )
-```
+```kotlin
 
 #### 离开会议
 ```kotlin
@@ -95,7 +100,7 @@ engine?.adminDestroyMeeting(
         }
     }
 )
-```
+```html
 
 ### step 4：开启和关闭摄像头
 参数说明详见 [MeetingEngine](https://www.yuque.com/anyconf/smeeting/nbyi00d99zh2sbig) 
@@ -119,7 +124,7 @@ engine?.requestOpenCamera(
 #### 关闭摄像头
 ```kotlin
 engine?.closeCamera()
-```
+```kotlin
 
 #### 切换摄像头
 ```kotlin
@@ -142,7 +147,7 @@ engine?.requestOpenMic(PreOptionMic.getDef(),
         }
     }
 )
-```
+```kotlin
 
 #### 关闭麦克风
 ```kotlin
@@ -158,7 +163,7 @@ engine?.closeMic()
 ```kotlin
 val remoteVideoTrack = engine?.startPlayRemoteVideo(uid, trackDesc.value, view, event)
 remoteVideoTrack?.addPlayView(view)
-```
+```kotlin
 
 #### 取消订阅远端用户画面
 ```kotlin

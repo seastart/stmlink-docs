@@ -1,3 +1,8 @@
+---
+title: "IRTCEngine"
+description: "全平台 C++ SRTC 音视频 SDK IRTCEngine 接口参考"
+---
+
 ### StatusCode login(const char* user, uint32_t userSize, const char* args = nullptr, uint32_t argsSize=0);
 登录，当手动onLogin事件后才是真正登录成功。
 

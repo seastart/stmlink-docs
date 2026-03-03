@@ -1,3 +1,8 @@
+---
+title: "错误码"
+description: "iOS SRTC 音视频 SDK 错误码枚举与处理说明"
+---
+
 ### RTCEngineError
 错误码
 

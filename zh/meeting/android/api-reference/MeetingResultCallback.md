@@ -1,3 +1,8 @@
+---
+title: "MeetingResultCallback"
+description: "Android SMeeting 会议 SDK MeetingResultCallback 接口参考"
+---
+
 通用回调，一般在函数中使用
 
 ### onSuccess()
@@ -5,7 +10,7 @@
 
 ```java
 fun onSuccess()
-```
+```kotlin
 
 ### onFail()
 操作失败

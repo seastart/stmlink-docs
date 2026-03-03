@@ -1,10 +1,15 @@
+---
+title: "Android UI SDK 极简对接"
+description: "SMeeting Android UI 套件快速集成指南"
+---
+
 ## 集成方式
 带 UI 的库主要是通过导入代码的方式集成，可以整体集成，也可以模块/组件集成
 
 github源码地址：[https://github.com/seastart/meeting-andriod-demo](https://github.com/seastart/meeting-andriod-demo)
 
 ### 整体集成
-+ <font style="color:rgb(38, 38, 38);">在根目录下的 build.gradle 中，添加 maven</font>
++ 在根目录下的 build.gradle 中，添加 maven
 
 ```plain
 allprojects {
@@ -12,7 +17,7 @@ allprojects {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
     }
 }
-```
+```typescript
 
 + 引入 StmLink 库
 + 在app目录下的build.gradle中添加依赖
@@ -24,7 +29,7 @@ dependencies {
 ```
 
 ### 模块/组件集成
-+ <font style="color:rgb(38, 38, 38);">在根目录下的 build.gradle 中，添加 maven</font>
++ 在根目录下的 build.gradle 中，添加 maven
 
 ```plain
 allprojects {
@@ -32,7 +37,7 @@ allprojects {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
     }
 }
-```
+```typescript
 
 + 在app目录下的build.gradle中添加依赖
 
@@ -58,7 +63,7 @@ override fun onCreate() {
     // 注册监听 activity 的生命周期比变化
     registerActivityLifecycleCallbacks(MyLifecycleCallback())
 }
-```
+```typescript
 
 3. 在 MainActivity 中执行跳转操作，跳转到 StmLink 库中的界面
 
@@ -109,7 +114,7 @@ class MyLifecycleCallback: Application.ActivityLifecycleCallbacks {
         lifecycleListener.onActivityDestroyed(activity)
     }
 }
-```
+```typescript
 
 ## 模块/组件集成
 ### 项目结构
@@ -155,7 +160,7 @@ stmlink/
 ├── ui/                     # 自定义 UI
 ├── utils/                  # 工具类
 └── MeetingEngineHelper     # sdk 统一调用帮助类
-```
+```typescript
 
 #### 使用说明
 ##### sdk 入口文件使用
@@ -213,7 +218,7 @@ ApiHelper.instance.release()
 /**
  * 各种网络请求接口
  */
-```
+```typescript
 
 ##### 自定义 ui 包使用
 其中包含各种在项目中使用到的自定义组件，可以通过在 xml 布局文件中引入的方式使用
@@ -224,11 +229,11 @@ ApiHelper.instance.release()
 ### 登录注册模块
 登录注册模块主要包括：登录页、注册页、成员信息修改页
 
-<font style="color:#DF2A3F;">这是一个很重要的模块，没有实现登录，后续所有操作都无法被正确执行。</font>
+这是一个很重要的模块，没有实现登录，后续所有操作都无法被正确执行。
 
 在这个模块中实现了 应用登录授权、Meet授权、初始化 SDK 组件、初始化 IM 组件。
 
-<font style="color:#DF2A3F;">应用登录授权执行完成后，会获得一个 应用层的用户 token，所有应用层的网络请求，都必须将这个 token 放入请求头</font>
+应用登录授权执行完成后，会获得一个 应用层的用户 token，所有应用层的网络请求，都必须将这个 token 放入请求头
 
 #### 引入
 + 将 cn.seastart.stmlink 路径下的 authorize 文件夹 拷贝到项目目录下，即可使用
@@ -247,7 +252,7 @@ stmlink/
  * 跳转到登录界面
  */
 LoginActivity.startActivity(this)
-```
+```typescript
 
 ##### SdkLoginHelper 工具说明
 + 在这个类中统一实现登录功能，主要步骤包括：授权->sdk登录->im登录，该类功能依赖于 MeetingEngineHelper（这是应用层封装的 sdk 入口类），一定要先初始化完成 MeetingEngineHelper
@@ -286,7 +291,7 @@ stmlink/
 │   └── meet/                 # 待加入会议列表页
 │   └── mine/                 # 我的页面
 ├── meetDetail/             # 会议详情
-```
+```typescript
 
 #### 使用说明
 ```kotlin
@@ -324,7 +329,7 @@ HomeActivity.startActivity(this)
 | ![](images/531412_1736945837121-71798d95-d38e-4a04-913d-270f57130e39.png) | ![](images/624938_1736945869039-76b0e4e8-e732-484d-a6a5-b06438f09f7a.png) |
 
 
-| <font style="background-color:#D8DAD9;">通讯录页面</font> | <font style="background-color:#D8DAD9;">联系人详情页面</font> | <font style="background-color:#D8DAD9;">联系人信息修改页面</font> |
+| 通讯录页面 | 联系人详情页面 | 联系人信息修改页面 |
 | :---: | :---: | :---: |
 | ![](images/459351_1736945902308-925c8a8a-3d35-432e-82ef-3db652719fca.png) | ![](images/451994_1736945920675-323a546f-499f-4806-a8a6-639dee9c02f3.png) | ![](images/305696_1736946154201-8de1fb5a-e78d-44e7-a5c7-17901b05273c.png) |
 
@@ -346,7 +351,7 @@ HomeActivity.startActivity(this)
 stmlink/
 ├── inviteMember/           # 邀请成员模块
 ├── preMeetingRoom/         # 加入会议模块
-```
+```typescript
 
 #### 使用说明
 ```kotlin
@@ -394,7 +399,7 @@ stmlink/
 │   └── chat/                 # 聊天页面
 │   └── member/               # 会中成员页面
 │   └── room/                 # 会中主页
-```
+```typescript
 
 #### 使用说明
 ```kotlin

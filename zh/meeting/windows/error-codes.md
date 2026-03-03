@@ -1,3 +1,8 @@
+---
+title: "错误码"
+description: "Windows SMeeting 会议 SDK 错误码枚举与处理说明"
+---
+
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
 | OK | 0 | 无错误 |
@@ -31,7 +36,7 @@
 | VideoCapturerError | 101202 | 摄像头异常 |
 | NotFindStreamTrack | 101203 | 没有指定流id |
 | ExceedingSpecifiedQuantity | 101204 | 超过规定数量 |
-| **windows错误码（SMEET）****<font style="background-color:#D8DAD9;"></font>** | | |
+| **windows错误码（SMEET）****** | | |
 | SDKMeetingFail | 201000 | sdk 内部错误 |
 | MeetingStatusReject | 201001 | 房间权限拒绝 |
 | MeetingHostFail | 201002 | host 异常或未设置 |

@@ -1,3 +1,8 @@
+---
+title: "快速开始"
+description: "微信小程序 SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
+---
+
 ### 基本概念
 + 小程序音视频基于`[live-pusher](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html)``[live-player](https://developers.weixin.qq.com/miniprogram/dev/component/live-player.html)`实现
 + `SRTC`实例：通过`new SRTC`得到操作实例，绝大部分接口都通过该实例对外提供，所有事件都可通过`srtc.onNotifyChannelEvent`来监听。（如果你想同时加入多个频道，目前只能new多个实例来操作）
@@ -35,7 +40,7 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
 })
 
 // ...
-```
+```typescript
 
 ### 加入频道
 ```typescript
@@ -60,7 +65,7 @@ let channelInfo: ChannelInfo = srtc.getChannelInfo();
 let userInfo: UserInfo = srtc.getUserInfo(uid);
 // 获取频道内用户信息列表
 let usersInfo: UserInfo[] = srtc.getUsersInfo();
-```
+```typescript
 
 ### 推流live-pusher参数相关
 ```typescript
@@ -191,7 +196,7 @@ onPushVolumeNotify(event: WechatMiniprogram.CustomEvent) {
   bindstatechange="onPushStateChange" bindnetstatus="onPushNetStatus"
   binderror="onPushError" bindaudiovolumenotify="onPushVolumeNotify"
   ></live-pusher>
-```
+```typescript
 
 
 
@@ -334,7 +339,7 @@ async onTapCameraBtn() {
         }
     }
 },
-```
+```typescript
 
 
 
@@ -398,7 +403,7 @@ case ChannelEventType.ME_UPDATE:
       users: users,
   });
   break;
-```
+```typescript
 
 ### 订阅/取消订阅远端视频流
 ```typescript
@@ -503,7 +508,7 @@ onPlayNetStatus(event: WechatMiniprogram.CustomEvent) {
       ></live-player>
   </view>
 </block>
-```
+```typescript
 
 **关于播放画面的旋转、镜像：**
 
@@ -541,7 +546,7 @@ async freshStyle(id:string): void {
         [`remoteVideoTracks.${id}`] : rtrack
     });
 }
-```
+```typescript
 
 ### 收全频道音频混音流
 一般场景下，我们不需要单独收每一个远端用户的声音，而只用收全频道的混音流进行播放
@@ -565,7 +570,7 @@ srtc.subscribeRemoteAudioMixTrack().then((track) => {
   bindstatechange="onPlayStateChange" bindnetstatus="onPlayNetStatus"
   bindaudiovolumenotify="onPlayVolumeNotify"
   ></live-player>
-```
+```typescript
 
 ```css
 /* 隐藏混音流播放器 */
@@ -595,7 +600,7 @@ case ChannelEventType.RECONNECTED:
       reconnecting: false,
   });
   break;
-```
+```html
 
 ```html
 <!-- 网络重连提示 -->
@@ -625,5 +630,5 @@ case ChannelEventType.DISCONNECTED:
       }
   });
   break;
-```
+```typescript
 

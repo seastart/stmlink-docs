@@ -1,3 +1,8 @@
+---
+title: "RoomEvent"
+description: "Android SMeeting 会议 SDK RoomEvent 接口参考"
+---
+
 房间事件监听接口
 
 ### onRoomCameraStateChanged()
@@ -7,7 +12,7 @@
 void onRoomCameraStateChanged(
     String operatorUid, boolean selfUnMuteCameraDisabled, boolean disabled
 );
-```
+```kotlin
 
 参数
 
@@ -39,7 +44,7 @@ void onRoomMicStateChanged(
 
 ```java
 void onRoomChatDisabledChanged(String operatorUid, boolean disabled);
-```
+```kotlin
 
 参数
 
@@ -67,7 +72,7 @@ void onRoomScreenshotDisabledChanged(String operatorUid, boolean disabled);
 
 ```java
 void onRoomWatermarkDisabledChanged(String operatorUid, boolean disabled);
-```
+```kotlin
 
 参数
 
@@ -95,7 +100,7 @@ void onRoomLockedChanged(String operatorUid, boolean locked);
 
 ```java
 void onWaitingRoomDisabledChanged(String operatorUid, boolean disabled);
-```
+```kotlin
 
 参数
 
@@ -127,7 +132,7 @@ void onCloudRecordStatusChange(
     CloudRecordStatus status, 
     String errMsg
 );
-```
+```html
 
 参数
 
@@ -156,7 +161,7 @@ void onRoomShareStart(String shareUid, ShareType shareType);
 
 ```java
 void onRoomShareStop(String shareUid, ShareType shareType);
-```
+```kotlin
 
 参数
 
@@ -184,7 +189,7 @@ void onAdminRoomShareStop(String shareUid, ShareType shareType);
 
 ```java
 void onRoomHandUpChanged(String operatorUid, Boolean enable, HandupType handupType);
-```
+```html
 
 参数
 
@@ -206,15 +211,15 @@ void onAdminRoomStartSubMeeting(String subMeetingId, String subTitle, List<Strin
 | subMeetingId | String 类型，子会议关联的会议 id |
 | --- | --- |
 | subTitle | String 类型，子会议的会议标题 |
-| uids | List<String> 类型，子会议中包含的成员 |
+| uids | `List<String>` 类型，子会议中包含的成员 |
 
 
-### <font style="color:#bcbec4;background-color:#1e1f22;">onAdminRoomStopSubMeeting()</font>
+### onAdminRoomStopSubMeeting()
 主持人停止子会议，在主会场的成员收到
 
 ```java
 void onAdminRoomStopSubMeeting(String mainMeetingId, String subMeetingId, String subTitle);
-```
+```kotlin
 
 参数
 
@@ -227,7 +232,7 @@ void onAdminRoomStopSubMeeting(String mainMeetingId, String subMeetingId, String
 ### onError()
 错误事件回调
 
-+ <font style="color:#DF2A3F;">无法恢复的错误，需要执行退会操作</font>
++ 无法恢复的错误，需要执行退会操作
 
 ```java
 void onError(int errorCode, String errMsg);
@@ -245,7 +250,7 @@ void onError(int errorCode, String errMsg);
 
 ```java
 void onReconnecting();
-```
+```kotlin
 
 ### onReconnected()
 重连成功事件

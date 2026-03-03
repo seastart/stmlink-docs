@@ -1,3 +1,8 @@
+---
+title: "屏幕共享"
+description: "Web SRTC 音视频 SDK 屏幕共享功能集成指南"
+---
+
 ### 基本屏幕共享
 
 屏幕共享使用 `LocalScreenTrack`，流程与摄像头类似：
@@ -33,7 +38,7 @@ const closeScreen = async () => {
   localScreenTrack.stopCapture();
   localScreenTrack = undefined;
 };
-```
+```typescript
 
 ---
 
@@ -90,7 +95,7 @@ if (screenAudioTrack) {
 
 // 发布屏幕共享视频
 await srtc.publishLocalTrack(localScreenTrack, { desc: 'screen' });
-```
+```typescript
 
 > **注意：**
 > + 系统音频采集仅在 Chrome（Windows/macOS）下稳定支持

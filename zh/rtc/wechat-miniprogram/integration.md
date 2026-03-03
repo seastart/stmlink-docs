@@ -1,3 +1,8 @@
+---
+title: "集成"
+description: "微信小程序 SRTC 音视频 SDK 环境配置与 SDK 安装指南"
+---
+
 ## 前提条件
 开通小程序类目与推拉流标签权限（如不开通则无法正常使用）
 
@@ -12,7 +17,7 @@
 ### npm
 ```bash
 npm install @seastart/srtc-wx-sdk@latest --save
-```
+```typescript
 
 
 

@@ -1,3 +1,8 @@
+---
+title: "RTCImEvent"
+description: "Android SRTC 音视频 SDK RTCImEvent 接口参考"
+---
+
 即时通讯事件回调监听
 
 ### onImConnectSucceed()
@@ -5,7 +10,7 @@ im 连接成功
 
 ```kotlin
 fun onImConnectSucceed(uid: String, sid: String)
-```
+```kotlin
 
 参数
 
@@ -15,7 +20,7 @@ fun onImConnectSucceed(uid: String, sid: String)
 
 
 ### onImDisconnected()
-<font style="color:#a9b7c6;background-color:#2b2b2b;">i</font>m 断开连接
+im 断开连接
 
 ```kotlin
 fun onImDisconnected(reason: LeaveReason, statusCode: Int, message: String)
@@ -36,7 +41,7 @@ im 开始重连
 
 ```kotlin
 fun onImReconnecting()
-```
+```kotlin
 
 ### onImReconnected()
 im 重新连接成功
@@ -50,7 +55,7 @@ im 接收消息
 
 ```kotlin
 fun onImMessage(uid: String, sid: String, name: String, action: String, content: String)
-```
+```kotlin
 
 参数
 

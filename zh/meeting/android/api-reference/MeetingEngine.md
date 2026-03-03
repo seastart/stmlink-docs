@@ -1,3 +1,8 @@
+---
+title: "MeetingEngine"
+description: "Android SMeeting 会议 SDK MeetingEngine 接口参考"
+---
+
 Meeting SDK 对外总入口
 
 ### version()
@@ -5,7 +10,7 @@ Meeting SDK 对外总入口
 
 ```kotlin
 fun version(): String
-```
+```kotlin
 
 返回值
 
@@ -32,7 +37,7 @@ fun buildTime(): String
 
 ```kotlin
 fun create(app: Application): MeetingEngine
-```
+```kotlin
 
 参数
 
@@ -59,7 +64,7 @@ fun initSdk(
 
 | meetToken | String 类型，会议 token |
 | --- | --- |
-| options | RTCMediaOptions 类型，流媒体参数，详见数据类型中的  [RTCMediaOptions](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#UxRKh)，<font style="color:#DF2A3F;">如无特殊要求，无需设置 。</font> |
+| options | RTCMediaOptions 类型，流媒体参数，详见数据类型中的  [RTCMediaOptions](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#UxRKh)，如无特殊要求，无需设置 。 |
 | listener | 结果回调，详见 [MeetingResultCallback](https://www.yuque.com/anyconf/eanoso/put57w0owgogyplo)  |
 
 
@@ -68,7 +73,7 @@ fun initSdk(
 
 ```kotlin
 fun release()
-```
+```kotlin
 
 ### updateMediaOptions()
 更新流媒体参数
@@ -79,7 +84,7 @@ fun updateMediaOptions(options: RTCMediaOptions)
 
 参数
 
-| options | RTCMediaOptions 类型，流媒体参数，详见数据类型中的  [RTCMediaOptions](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#UxRKh)，<font style="color:#DF2A3F;">如无特殊要求，无需设置 。</font> |
+| options | RTCMediaOptions 类型，流媒体参数，详见数据类型中的  [RTCMediaOptions](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#UxRKh)，如无特殊要求，无需设置 。 |
 | --- | --- |
 
 
@@ -88,7 +93,7 @@ fun updateMediaOptions(options: RTCMediaOptions)
 
 ```java
 var imEvent: ImEvent?
-```
+```typescript
 
 参数
 
@@ -114,7 +119,7 @@ var roomEvent: RoomEvent?
 
 ```java
 var userEvent: UserEvent?
-```
+```typescript
 
 参数
 
@@ -140,7 +145,7 @@ var roomMsgEvent: RoomMsgEvent?
 
 ```java
 var mediaEvent: MediaEvent?
-```
+```kotlin
 
 参数
 
@@ -165,7 +170,7 @@ EnableImCallback 详细说明
 
 | 接口名称 | 接口说明 | 返回值 |
 | --- | --- | --- |
-| onSucceed | 启动即时通讯成功 | uid：String 类型，成员的 uid<br/>sid：String 类型，成员的会话 id |
+| onSucceed | 启动即时通讯成功 | uid：String 类型，成员的 `uid<br/>`sid：String 类型，成员的会话 id |
 | onFail | 启动即时通讯失败 | code：错误码<br/>msg：错误信息 |
 
 
@@ -174,7 +179,7 @@ EnableImCallback 详细说明
 
 ```java
 fun disableIm()
-```
+```html
 
 ## 会议外操作
 ### createImmediateMeeting()
@@ -192,7 +197,7 @@ fun createImmediateMeeting(
 | title | String 类型，会议名称 |
 | --- | --- |
 | option | CreateImmediateMeetingOption 类型，创建即时会议的可选参数，详见 [CreateImmediateMeetingOption](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#bZLl6) |
-| callback | Callback 类型，详见 [Callback<T extends BaseBean>](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>MeetingCreatedBean，会议创建成功结果信息，详见 [MeetingCreatedBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#rgrtP) |
+| callback | Callback 类型，详见 [`Callback<T extends BaseBean>`](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>MeetingCreatedBean，会议创建成功结果信息，详见 [MeetingCreatedBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#rgrtP) |
 
 
 ### createScheduleMeeting
@@ -204,7 +209,7 @@ fun createScheduleMeeting(
         option: CreateScheduleMeetingOption,
         callback: Callback<Data<MeetingCreatedBean>>?
 )
-```
+```html
 
 参数
 
@@ -213,7 +218,7 @@ fun createScheduleMeeting(
 | planTime | Long 类型，计划开始时间 |
 | planDur | Int 类型，计划持续时间 |
 | option | CreateImmediateMeetingOption 类型，详见 [CreateImmediateMeetingOption](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#bZLl6) |
-| callback | Callback 类型，详见 [Callback<T extends BaseBean>](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>MeetingCreatedBean，会议创建成功结果信息，详见 [MeetingCreatedBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#rgrtP) |
+| callback | Callback 类型，详见 [`Callback<T extends BaseBean>`](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>MeetingCreatedBean，会议创建成功结果信息，详见 [MeetingCreatedBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#rgrtP) |
 
 
 ### updateMeetingBeforeStart()
@@ -231,7 +236,7 @@ fun updateMeetingBeforeStart(
 | meetingId | String 类型，会议 id |
 | --- | --- |
 | option | UpdateMeetingOption 类型，更新会议参数，详见 [UpdateMeetingOption](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#KbkQL) |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### getMeetingList()
@@ -242,14 +247,14 @@ fun getMeetingList(
         page: Int, perPage: Int,
         callback: Callback<Data2<List<MeetInfo>>>
 )
-```
+```html
 
 参数
 
 | page | Int 类型，页码 |
 | --- | --- |
 | perPage | Int 类型，当前页的元素项数 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)，    MeetInfo：会议信息，详见 [MeetInfo](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#ZYzii) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)，    MeetInfo：会议信息，详见 [MeetInfo](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#ZYzii) |
 
 
 ### getHistoryMeetingList
@@ -267,7 +272,7 @@ fun getHistoryMeetingList(
 | page | Int 类型，页码 |
 | --- | --- |
 | perPage | Int 类型，当前页的元素项数 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MeetInfo：会议信息，详见 [MeetInfo](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#ZYzii) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MeetInfo：会议信息，详见 [MeetInfo](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#ZYzii) |
 
 
 ### getMeetingDetail
@@ -278,13 +283,13 @@ fun getMeetingDetail(
         meetingId: String,
         callback: Callback<Data<MeetDetail>>
 )
-```
+```html
 
 参数
 
 | meetingId | String 类型，会议 id |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MeetDetail：会议详情，详见 [MeetDetail](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#lAg3T) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MeetDetail：会议详情，详见 [MeetDetail](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#lAg3T) |
 
 
 ### getMeetingDetailByRoomNo
@@ -301,7 +306,7 @@ fun getMeetingDetailByRoomNo(
 
 | roomNo | String 类型，房间号 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MeetDetail：会议详情，详见 [MeetDetail](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#lAg3T) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MeetDetail：会议详情，详见 [MeetDetail](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#lAg3T) |
 
 
 ### cancelMeetingBeforeStart()
@@ -312,13 +317,13 @@ fun cancelMeetingBeforeStart(
         meetingId: String,
         callback: Callback<Data<String?>>
 )
-```
+```html
 
 参数
 
 | meetingId | String 类型，会议 id |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### enterMeeting()
@@ -348,7 +353,7 @@ EnterMeetingCallback 说明
 
 | 接口名称 | 接口说明 | 返回值 |
 | --- | --- | --- |
-| onSucceed | 入会成功 | meetingId：String 类型，会议 id<br/>uid：String 类型，成员 uid |
+| onSucceed | 入会成功 | meetingId：String 类型，会议 `id<br/>`uid：String 类型，成员 uid |
 | onFail | 入会失败 | code：错误码<br/>msg：错误信息 |
 
 
@@ -360,7 +365,7 @@ fun enterMeetingByMeetingId(
     activity: Activity, meetingId: String, password: String?, nick: String,
     avatar: String, extendInfo: String?, callback: EnterMeetingCallback
 )
-```
+```html
 
 参数
 
@@ -378,7 +383,7 @@ EnterMeetingCallback 说明
 
 | 接口名称 | 接口说明 | 返回值 |
 | --- | --- | --- |
-| onSucceed | 入会成功 | meetingId：String 类型，会议 id<br/>uid：String 类型，成员 uid |
+| onSucceed | 入会成功 | meetingId：String 类型，会议 `id<br/>`uid：String 类型，成员 uid |
 | onFail | 入会失败 | code：错误码<br/>msg：错误信息 |
 
 
@@ -394,11 +399,11 @@ fun exitMeeting()
 
 ```kotlin
 fun exitWaitingRoom(callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 | --- | --- |
 
 
@@ -412,7 +417,7 @@ fun adminDestroyMeeting(callback: Callback<Data<String?>>?)
 
 参数
 
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 | --- | --- |
 
 
@@ -424,13 +429,13 @@ fun adminUpdateConferee(
     onferees: MutableList<String>, 
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
-| onferees | MutableList<String> 类型，受邀成员列表，item 为 uid |
+| onferees | `MutableList<String>` 类型，受邀成员列表，item 为 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomCameraState()
@@ -448,7 +453,7 @@ fun adminUpdateRoomCameraState(
 | selfUnMuteCameraDisabled | Boolean 类型，房间是否自我解除禁画状态<br/>默认true，true-禁解除 false-不限制 |
 | --- | --- |
 | cameraDisabled | Boolean 类型，房间视频禁用状态<br/>默认true true-禁止 false-不禁止 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomSelfUnmuteCameraDisabled()
@@ -459,13 +464,13 @@ fun adminUpdateRoomSelfUnmuteCameraDisabled(
     selfUnMuteCameraDisabled: Boolean,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | selfUnMuteCameraDisabled | Boolean 类型，房间是否允许自我解除禁画状态<br/>默认true，true-禁解除；false-不限制 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomMicState()
@@ -483,7 +488,7 @@ fun adminUpdateRoomMicState(
 | selfUnMuteMicDisabled | Boolean 类型，房间允许自我解除禁音状态<br/>默认true，true-禁解除 false-不限制 |
 | --- | --- |
 | micDisabled | Boolean 类型，房间音频禁用状态<br/>默认true true-禁止 false-不禁止 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomSelfUnmuteMicDisabled()
@@ -494,13 +499,13 @@ fun adminUpdateRoomSelfUnmuteMicDisabled(
     selfUnMuteMicDisabled: Boolean,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | selfUnMuteMicDisabled | Boolean 类型，房间是否允许自我解除禁音状态<br/>默认true，true-禁解除 false-不限制 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomState()
@@ -517,7 +522,7 @@ fun adminUpdateRoomState(
 
 | shareDisabled | Boolean 类型，房间共享禁用状态<br/>默认false，true-禁用 false-不禁用 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomChatDisabled()
@@ -528,13 +533,13 @@ fun adminUpdateRoomChatDisabled(
     chatDisabled: Boolean,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | chatDisabled | Boolean 类型， 房间文本消息禁用状态。<br/>默认false，true-禁用；false-不禁用 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomScreenshotDisabled()
@@ -551,7 +556,7 @@ fun adminUpdateRoomScreenshotDisabled(
 
 | screenshotDisabled | Boolean 类型， 截屏功能禁用状态<br/>默认false，true-禁用；false-不禁用 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomWatermarkDisabled()
@@ -562,13 +567,13 @@ fun adminUpdateRoomWatermarkDisabled(
     watermarkDisabled: Boolean,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | watermarkDisabled | Boolean 类型， 水印禁用状态<br/>默认false，true-禁用；false-不禁用 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateRoomLocked()
@@ -585,7 +590,7 @@ fun adminUpdateRoomLocked(
 
 | locked | Boolean 类型， 房间锁定状态<br/>默认false，true-启用；false-不启用 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateUserName()
@@ -596,14 +601,14 @@ fun adminUpdateUserName(
     targetId: String, name: String,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
 | name | String 类型，新昵称 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateUserRole()
@@ -621,7 +626,7 @@ fun adminUpdateUserRole(
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
 | role | MemberRoleType 类型，新的成员角色<br/>详见枚举类型中的 [MemberRoleType](https://www.yuque.com/anyconf/eanoso/sly78y2qziqggiwx#nFCVP) |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminMoveHost()
@@ -629,13 +634,13 @@ fun adminUpdateUserRole(
 
 ```kotlin
 fun adminMoveHost(targetId: String, callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminUpdateUserChatDisabled()
@@ -653,7 +658,7 @@ fun adminUpdateUserChatDisabled(
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
 | chatDisabled | Boolean 类型，聊天禁用状态<br/>默认 false，true-禁用 false-不禁用 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminRequestUserOpenCamera()
@@ -664,13 +669,13 @@ fun adminRequestUserOpenCamera(
     targetId: String,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminCloseUserCamera()
@@ -687,7 +692,7 @@ fun adminCloseUserCamera(
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminDisableUserCamera()
@@ -698,14 +703,14 @@ fun adminDisableUserCamera(
     targetId: String, cameraDisabled: Boolean,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
 | cameraDisabled | Boolean 类型，摄像头禁用状态<br/>默认值 false，ture-禁用  false-不禁用 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminRequestUserOpenMic()
@@ -722,7 +727,7 @@ fun adminRequestUserOpenMic(
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminCloseUserMic()
@@ -733,13 +738,13 @@ fun adminCloseUserMic(
     targetId: String,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminDisableUserMic()
@@ -757,7 +762,7 @@ fun adminDisableUserMic(
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
 | micDisabled | Boolean 类型，麦克风禁用状态<br/>默认值 false，true-禁用 false-不禁用 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminStopRoomShare()
@@ -765,11 +770,11 @@ fun adminDisableUserMic(
 
 ```kotlin
 fun adminStopRoomShare(callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 | --- | --- |
 
 
@@ -782,9 +787,9 @@ fun adminInviteAgent(agents: List<AgentRequestBean>, callback: Callback<Data<Str
 
 参数
 
-| agents | List<AgentRequestBean> 类型，邀请设备请求列表<br/>AgentRequestBean，邀请设备请求信息，详见 [AgentRequestBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#RmlXb) |
+| agents | `List<AgentRequestBean>` 类型，邀请设备请求列表<br/>AgentRequestBean，邀请设备请求信息，详见 [AgentRequestBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#RmlXb) |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminKickUserOut()
@@ -795,13 +800,13 @@ fun adminKickUserOut(
     targetId: String,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminConfirmHandup()
@@ -822,7 +827,7 @@ fun adminConfirmHandup(
 | --- | --- |
 | code | HandupType 类型，举手申请类型，详见枚举类型中的 [HandupType](https://www.yuque.com/anyconf/eanoso/sly78y2qziqggiwx#lWByu) |
 | approve | Boolean 类型，处理结果，true-同意，false-不同意 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminGetOnlineMembers()
@@ -833,7 +838,7 @@ fun adminGetOnlineMembers(
     meetingId: String?, page: Int, prePage: Int, 
     callback: Callback<Data2<List<MemberBean>>> 
 )
-```
+```html
 
 参数
 
@@ -841,7 +846,7 @@ fun adminGetOnlineMembers(
 | --- | --- |
 | page | Int 类型，分页页码，从 1 开始 |
 | prePage | Int 类型，每页数量，最大 1000，默认 20 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MemberBean：成员信息，详见 [MemberBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#QbfVP) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>MemberBean：成员信息，详见 [MemberBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#QbfVP) |
 
 
 ### adminWaitingRoomDisabled()
@@ -858,7 +863,7 @@ fun adminWaitingRoomDisabled(
 
 | waitingRoomDisabled | Boolean 类型，是否禁用等候室。ture：禁用；false：不禁用。默认为 false |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminMoveOutWaitingRoom()
@@ -869,13 +874,13 @@ fun adminMoveOutWaitingRoom(
     uid: String?,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | uid | String 类型，用户 id |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminMoveInWaitingRoom(）
@@ -894,7 +899,7 @@ fun adminMoveInWaitingRoom(
 | uid | String 类型，用户 id |
 | --- | --- |
 | nickName | String 类型，用户昵称 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### adminGetWaitingRoomUsers()
@@ -904,11 +909,11 @@ fun adminMoveInWaitingRoom(
 fun adminGetWaitingRoomUsers(
     callback: Callback<Data<List<WaitingRoomUserBean>>>
 )
-```
+```html
 
 参数
 
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>WaitingRoomUserBean：等候室成员信息，详见 [WaitingRoomUserBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#txWLy) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>WaitingRoomUserBean：等候室成员信息，详见 [WaitingRoomUserBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#txWLy) |
 | --- | --- |
 
 
@@ -926,7 +931,7 @@ fun createSubMeeting(
 
 | subMeetingTitles | MutableList 类型，子会议名称列表 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>WaitingRoomUserBean：等候室成员信息，详见 [WaitingRoomUserBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#txWLy) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>WaitingRoomUserBean：等候室成员信息，详见 [WaitingRoomUserBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#txWLy) |
 
 
 ### updateSubMeetingTitle(）
@@ -937,13 +942,13 @@ fun updateSubMeetingTitle(
     id: String, title: String, 
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | id | String 类型，子会议 id |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### updateSubMeetingUsers()
@@ -961,7 +966,7 @@ fun updateSubMeetingUsers(
 | id | String 类型，子会议 id |
 | --- | --- |
 | members | MutableList 类型，成员列表 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### deleteSubMeeting()
@@ -971,13 +976,13 @@ fun updateSubMeetingUsers(
 fun deleteSubMeeting(
     ids: MutableList<String>, callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | ids | MutableList 类型，子会议 id 列表 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### getSubMeetingList()
@@ -989,7 +994,7 @@ fun getSubMeetingList(callback: Callback<Data<MutableList<SubMeetingBean>?>>)
 
 参数
 
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>SubMeetingBean：子会议信息，[SubMeetingBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#lyedF) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5)<br/>SubMeetingBean：子会议信息，[SubMeetingBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#lyedF) |
 | --- | --- |
 
 
@@ -1001,13 +1006,13 @@ fun startSubMeeting(
     ids: MutableList<String>,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
 | ids | MutableList 类型，子会议 id 列表 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### stopSubMeeting()
@@ -1023,7 +1028,7 @@ fun stopSubMeeting(
 
 | ids | MutableList 类型，子会议 id 列表 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### moveSubMeetingUser()
@@ -1034,7 +1039,7 @@ fun moveSubMeetingUser(
     fromId: String, toId: String, uid: String,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
@@ -1042,7 +1047,7 @@ fun moveSubMeetingUser(
 | --- | --- |
 | toId | String 类型，目标子会议 id，null 表示主会场 |
 | uid | String 类型，用户 id |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### helpSubMeeting()
@@ -1058,7 +1063,7 @@ fun helpSubMeeting(
 
 | meetingId | String 类型，会议 id |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### updateEnterBeforeHostDisabled()
@@ -1069,7 +1074,7 @@ fun updateEnterBeforeHostDisabled(
     meetingId: String, enterBeforeHostDisabled: Boolean,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
@@ -1077,7 +1082,7 @@ fun updateEnterBeforeHostDisabled(
 | --- | --- |
 | enterBeforeHostDisabled | Boolean 类型，是否禁止在主持人之前进入会议，<br/>true：禁止；false：不禁止。默认 false |
 | uid | String 类型，用户 id |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ## 用户操作
@@ -1092,7 +1097,7 @@ fun updateName(name: String, callback: Callback<Data<String?>>?)
 
 | name | String 类型，新昵称 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### requestOpenCamera()
@@ -1105,7 +1110,7 @@ fun requestOpenCamera(
     preOpt: PreOptionCamera?, 
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
@@ -1113,7 +1118,7 @@ fun requestOpenCamera(
 | --- | --- |
 | view | View 类型，渲染器控件<br/>必须是 VcsPlayerGlTextureView 或 VcsPlayerGlSurfaceView 之一 |
 | preOpt | PreOptionCamera 类型，打开摄像头预设值。<br/>目前有四个值：<br/>PreOptionCamera.get_1080P()、PreOptionCamera.get_720P()<br/>PreOptionCamera.get_480P()、PreOptionCamera.get_180P()<br/>预设值相关内容详见 [摄像头预设值说明](https://www.yuque.com/anyconf/eanoso/gw4l6xvp8ct5aco0) |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### closeCamera()
@@ -1128,13 +1133,13 @@ fun closeCamera()
 
 ```kotlin
 fun switchCamera(isFrontCamera: Boolean)
-```
+```html
 
 参数
 
 | isFrontCamera | Boolean 类型，前后置摄像头，true-前置摄像头，false-后置摄像头 |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### addPreview()
@@ -1155,7 +1160,7 @@ fun addPreview(view: View)
 
 ```kotlin
 fun removePreview(view: View?)
-```
+```html
 
 参数
 
@@ -1181,7 +1186,7 @@ fun replacePreView(mViews: MutableList<View>)
 
 ```kotlin
 fun getAllPreview(): ArrayList<View>
-```
+```html
 
 返回值
 
@@ -1198,9 +1203,9 @@ fun requestOpenMic(preOpt: PreOptionMic?, callback: Callback<Data<String?>>?)
 
 参数
 
-| preOpt | PreOptionMic 类型，打开麦克风预设值。<br/>目前只有唯一值：PreOptionMic.def<br/>预设值相关内容详见 [麦克风预设值说明](https://www.yuque.com/anyconf/eanoso/cyi8zdiamn9dss8d) |
+| preOpt | PreOptionMic 类型，打开麦克风预设值。<br/>目前只有唯一值：`PreOptionMic.def<br/>`预设值相关内容详见 [麦克风预设值说明](https://www.yuque.com/anyconf/eanoso/cyi8zdiamn9dss8d) |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### closeMic()
@@ -1208,7 +1213,7 @@ fun requestOpenMic(preOpt: PreOptionMic?, callback: Callback<Data<String?>>?)
 
 ```kotlin
 fun closeMic()
-```
+```kotlin
 
 ### initScreenShare()
 用户初始化屏幕共享
@@ -1224,8 +1229,8 @@ fun initScreenShare(
 
 | activity | Activity 类型，上下文环境 |
 | --- | --- |
-| notificationParam | NotificationParam 类型，通知栏参数<br/><font style="color:#DF2A3F;">如果不启用通知栏，这个参数可以不设置</font> |
-| preOpt | PreOptionScreen 类型，打开屏幕共享预设值。<br/>目前只有唯一值：PreOptionScreen.def<br/>预设值相关内容详见 [屏幕共享预设值说明](https://www.yuque.com/anyconf/eanoso/ndfl7ceqhcfdyghd) |
+| notificationParam | NotificationParam 类型，通知栏参数<br/>如果不启用通知栏，这个参数可以不设置 |
+| preOpt | PreOptionScreen 类型，打开屏幕共享预设值。<br/>目前只有唯一值：`PreOptionScreen.def<br/>`预设值相关内容详见 [屏幕共享预设值说明](https://www.yuque.com/anyconf/eanoso/ndfl7ceqhcfdyghd) |
 | event | 录屏事件 |
 
 
@@ -1241,7 +1246,7 @@ ScreenShareEvent 接口说明
 
 ```kotlin
 fun startScreenShare(hasBar: Boolean, listener: MeetingResultCallback?)
-```
+```kotlin
 
 参数
 
@@ -1262,7 +1267,7 @@ fun stopScreenShare()
 
 ```kotlin
 fun requestShareBoard(callback: BoardShareCallback)
-```
+```html
 
 参数
 
@@ -1293,15 +1298,15 @@ fun sendRoomChatMessage(
     targetId: String?, msg: String, msgType: ChatMsgType,
     callback: Callback<Data<String?>>?
 )
-```
+```html
 
 参数
 
-| targetId | String 类型，目标用户 uid；<font style="color:#DF2A3F;">如果 为 null，表示发送给全体</font> |
+| targetId | String 类型，目标用户 uid；如果 为 null，表示发送给全体 |
 | --- | --- |
 | msg | String 类型，消息内容 |
 | msgType | ChatMsgType 类型，消息类型，详见枚举类型中的 [ChatMsgType](https://www.yuque.com/anyconf/eanoso/sly78y2qziqggiwx#dmcbX) |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### sendRoomCustomMessage()
@@ -1316,10 +1321,10 @@ fun sendRoomCustomMessage(
 
 参数
 
-| targetId | String 类型，目标用户 uid；<font style="color:#DF2A3F;">如果 为 null，表示发送给全体</font> |
+| targetId | String 类型，目标用户 uid；如果 为 null，表示发送给全体 |
 | --- | --- |
 | msg | String 类型，消息内容 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### getRoomChatMsgList()
@@ -1330,14 +1335,14 @@ fun getRoomChatMsgList(
     page: Int, prePage: Int,
     callback: Callback<Data2<List<ChatMsgBean?>>>
 )
-```
+```html
 
 参数
 
 | page | Int 类型，页码 |
 | --- | --- |
 | prePage | Int 类型，每页条数 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### requestHandup()
@@ -1351,7 +1356,7 @@ fun requestHandup(code: HandupType, callback: Callback<Data<String?>>?)
 
 | code | HandupType 类型，举手申请类型，详见枚举类型中的 [HandupType](https://www.yuque.com/anyconf/eanoso/sly78y2qziqggiwx#dWRbl) |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### cancelHandup()
@@ -1359,7 +1364,7 @@ fun requestHandup(code: HandupType, callback: Callback<Data<String?>>?)
 
 ```kotlin
 fun cancelHandup(code: HandupType)
-```
+```html
 
 参数
 
@@ -1385,7 +1390,7 @@ fun confirmOpenCameraAgree(
 | --- | --- |
 | view | View 类型，渲染器控件<br/>必须是 VcsPlayerGlTextureView 或 VcsPlayerGlSurfaceView 之一 |
 | preOpt | PreOptionCamera 类型，打开摄像头预设值。<br/>目前有四个值：<br/>PreOptionCamera.get_1080P()、PreOptionCamera.get_720P()<br/>PreOptionCamera.get_480P()、PreOptionCamera.get_180P()<br/>预设值相关内容详见 [摄像头预设值说明](https://www.yuque.com/anyconf/eanoso/gw4l6xvp8ct5aco0) |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmOpenCameraRefuse()
@@ -1393,13 +1398,13 @@ fun confirmOpenCameraAgree(
 
 ```kotlin
 fun confirmOpenCameraRefuse(targetId: String, callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmOpenMicAgree()
@@ -1416,8 +1421,8 @@ fun confirmOpenMicAgree(
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| preOpt | PreOptionMic 类型，打开麦克风预设值。<br/>目前只有唯一值：PreOptionMic.def<br/>预设值相关内容详见 [麦克风预设值说明](https://www.yuque.com/anyconf/eanoso/cyi8zdiamn9dss8d) |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| preOpt | PreOptionMic 类型，打开麦克风预设值。<br/>目前只有唯一值：`PreOptionMic.def<br/>`预设值相关内容详见 [麦克风预设值说明](https://www.yuque.com/anyconf/eanoso/cyi8zdiamn9dss8d) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmOpenMicRefuse()
@@ -1425,13 +1430,13 @@ fun confirmOpenMicAgree(
 
 ```kotlin
 fun confirmOpenMicRefuse(targetId: String, callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmStartScreenShareAgree()
@@ -1450,7 +1455,7 @@ fun confirmStartScreenShareAgree(
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
 | hasBar | 是否显示通知栏 |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmStartScreenShareRefuse()
@@ -1458,13 +1463,13 @@ fun confirmStartScreenShareAgree(
 
 ```kotlin
 fun confirmStartScreenShareRefuse(targetId: String, callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmStartWhiteBoardShareAgree()
@@ -1478,7 +1483,7 @@ fun confirmStartWhiteBoardShareAgree(targetId: String, callback: BoardShareCallb
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### confirmStartWhiteBoardShareRefuse()
@@ -1486,13 +1491,13 @@ fun confirmStartWhiteBoardShareAgree(targetId: String, callback: BoardShareCallb
 
 ```kotlin
 fun confirmStartWhiteBoardShareRefuse(targetId: String, callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
 | targetId | String 类型，目标用户 uid |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### startCloudRecord()
@@ -1506,7 +1511,7 @@ fun startCloudRecord(layoutData: LayoutData?, callback: Callback<Data<String?>>?
 
 | layoutData | LayoutData 类型，布局信息，详见 LayoutData |
 | --- | --- |
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 
 
 ### stopCloudRecord()
@@ -1514,11 +1519,11 @@ fun startCloudRecord(layoutData: LayoutData?, callback: Callback<Data<String?>>?
 
 ```kotlin
 fun stopCloudRecord(callback: Callback<Data<String?>>?)
-```
+```html
 
 参数
 
-| callback | 结果回调，详见 [Callback<Data<T extends BaseBean>>](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
+| callback | 结果回调，详见 [`Callback<Data<T extends BaseBean>>`](https://www.yuque.com/anyconf/eanoso/dqkggccykfrgogq5) |
 | --- | --- |
 
 
@@ -1540,7 +1545,7 @@ fun switchSpeaker(mute: Boolean)
 
 ```kotlin
 fun getAudioRouterManager(): AudioRouterManager?
-```
+```kotlin
 
 返回值
 
@@ -1565,7 +1570,7 @@ fun startPlayRemoteVideo(
     view: View? = null, 
     event: RTCRemoteVideoEvent? = null
 ): RemoteVideoTrack?
-```
+```html
 
 参数
 
@@ -1586,7 +1591,7 @@ RTCRemoteVideoEvent 接口说明
 
 | 接口名称 | 接口说明 | 返回值 |
 | --- | --- | --- |
-| onReceiveStreamStatusChange | 流媒体接收远端流状态变更回调 | uid：String 类型，用户 id<br/>trackDesc：String 类型，轨道描述<br/>isChoke：Boolean 类型，流是否停止 |
+| onReceiveStreamStatusChange | 流媒体接收远端流状态变更回调 | uid：String 类型，用户 `id<br/>`trackDesc：String 类型，轨道描述<br/>isChoke：Boolean 类型，流是否停止 |
 
 
 ### stopPlayRemoteVideo()
@@ -1608,7 +1613,7 @@ fun stopPlayRemoteVideo(uid: String, trackDesc: String)
 
 ```kotlin
 fun getRemoteVideoTrack(uid: String, trackDesc: String): RemoteVideoTrack?
-```
+```kotlin
 
 参数
 
@@ -1649,7 +1654,7 @@ RTCRemoteVideoEvent 接口说明
 
 | 接口名称 | 接口说明 | 返回值 |
 | --- | --- | --- |
-| onReceiveStreamStatusChange | 流媒体接收远端流状态变更回调 | uid：String 类型，用户 id<br/>trackDesc：String 类型，轨道描述<br/>isChoke：Boolean 类型，流是否停止 |
+| onReceiveStreamStatusChange | 流媒体接收远端流状态变更回调 | uid：String 类型，用户 `id<br/>`trackDesc：String 类型，轨道描述<br/>isChoke：Boolean 类型，流是否停止 |
 
 
 ### stopPlayRemoteMixture()
@@ -1657,7 +1662,7 @@ RTCRemoteVideoEvent 接口说明
 
 ```kotlin
 fun stopPlayRemoteMixture()
-```
+```kotlin
 
 ### getRemoteMixtureTrack()
 获取远端合成流的 RemoteVideoTrack
@@ -1678,11 +1683,11 @@ fun getRemoteMixtureTrack(): RemoteVideoTrack?
 
 ```kotlin
 fun getSelfInfo(callback: Callback<Data<UserBean?>?>?)
-```
+```html
 
 参数
 
-| callback | Callback 类型，详见 [Callback<T extends BaseBean>](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>UserBean：用户信息，详见 [UserBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#BlxfD) |
+| callback | Callback 类型，详见 [`Callback<T extends BaseBean>`](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>UserBean：用户信息，详见 [UserBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#BlxfD) |
 | --- | --- |
 
 
@@ -1699,12 +1704,12 @@ fun getAgentList(
 
 参数
 
-| types | MutableList<AgentType> 类型，需要获取的设备类型列表，<br/>枚举类型详见：[AgentType](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#vcRSD) |
+| types | `MutableList<AgentType>` 类型，需要获取的设备类型列表，<br/>枚举类型详见：[AgentType](https://www.yuque.com/anyconf/smeeting/sly78y2qziqggiwx#vcRSD) |
 | --- | --- |
 | keyword | String 类型，搜索关键字 |
 | page | Int 类型，页号 |
 | perPage | Int 类型，每页 item 个数 |
-| callback | Callback 类型，详见 [Callback<T extends BaseBean>](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>AgentBean，设备信息，详见 [AgentBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#hAhBk) |
+| callback | Callback 类型，详见 [`Callback<T extends BaseBean>`](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5)<br/>AgentBean，设备信息，详见 [AgentBean](https://www.yuque.com/anyconf/smeeting/mzyftti7zsfhs417#hAhBk) |
 
 
 ### callUser()
@@ -1713,12 +1718,12 @@ fun callUser(
     targetUids: MutableList<String>,
     callback: Callback<Data<String>>
 )
-```
+```html
 
 参数
 
-| targetUids | MutableList<String> 类型，目标用户的 uid 列表 |
+| targetUids | `MutableList<String>` 类型，目标用户的 uid 列表 |
 | --- | --- |
-| callback | Callback 类型，详见 [Callback<T extends BaseBean>](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5) |
+| callback | Callback 类型，详见 [`Callback<T extends BaseBean>`](https://www.yuque.com/anyconf/smeeting/dqkggccykfrgogq5) |
 
 

@@ -1,3 +1,8 @@
+---
+title: "LocalScreenTrack"
+description: "Android SRTC 音视频 SDK LocalScreenTrack 接口参考"
+---
+
 + 提供屏幕共享相关操作
 + 为 publishLocalVideo 提供配置参数
 
@@ -6,7 +11,7 @@
 
 ```kotlin
 fun setEvent(event: RTCScreenStateEvent)
-```
+```html
 
 参数
 
@@ -38,7 +43,7 @@ fun request(result: (Boolean, Intent?) -> Unit)
 
 ```kotlin
 fun setRecordNotification(smallIcon: Int, title: String?, desc: String?, buttonText: String?)
-```
+```kotlin
 
 参数
 
@@ -68,5 +73,5 @@ fun startCapture(intent: Intent, hasBar:Boolean)
 
 ```kotlin
 fun stopCapture()
-```
+```kotlin
 

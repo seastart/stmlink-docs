@@ -1,3 +1,8 @@
+---
+title: "屏幕共享预设配置"
+description: "Android SRTC 音视频 SDK 屏幕共享编码参数预设说明"
+---
+
 ### PreOptionScreen 
 PreOptionScreen 类中包含 ScreenCaptureOptions、VideoPublishOptions 两个属性
 
@@ -27,8 +32,8 @@ VideoPublishOptions 类主要用于配置视频流发布参数，具体参数如
 | width | Int 类型，发布的画面宽度 |
 | height | Int 类型，发布的画面高度 |
 | maxFps | Int 类型，最大帧率 |
-| props | Any 类型，自定义属性。<font style="color:#DF2A3F;">可空</font> |
-| simulcasts | MutableList<VideoPublishOptions> 类型。<br/>+ <font style="color:#DF2A3F;">目前只有摄像头流存在发布多路流的情况，所以此处用不上这个属性</font> |
+| props | Any 类型，自定义属性。可空 |
+| simulcasts | `MutableList<VideoPublishOptions>` 类型。<br/>+ 目前只有摄像头流存在发布多路流的情况，所以此处用不上这个属性 |
 
 
 ### PublishCustomOptions
@@ -37,7 +42,7 @@ PublishCustomOptions 类是用于在发布时对 desc、props 这两个参数做
 | desc | String 类型，轨道描述。<br/>+ 可空，表示不做修改 |
 | --- | --- |
 | props | Any 类型，自定义属性。<br/>+ 可空，表示不做修改 |
-| simulcasts | MutableList<PublishCustomOptions> 类型。<br/>+ <font style="color:#DF2A3F;">目前只有摄像头流存在发布多路流的情况，所以此处用不上这个属性</font> |
+| simulcasts | `MutableList<PublishCustomOptions>` 类型。<br/>+ 目前只有摄像头流存在发布多路流的情况，所以此处用不上这个属性 |
 
 
 ## 预设值
@@ -60,7 +65,7 @@ screenTrack = rtcEngine.getLocalScreenTrack(requireContext(), preOpt)
 val publishCustomOptions = PublishCustomOptions(TrackDesc.TRACK_SHARE.value, null, null)
 // 在发布时使用 publishCustomOptions 修改轨道描述和扩展信息
 rtcEngine.publishLocalVideo(track, publishCustomOptions, null)
-```
+```kotlin
 
 ### PreOptionScreen.def
 配置如下：

@@ -1,3 +1,8 @@
+---
+title: "事件参考"
+description: "Web SMeeting 会议 SDK 全量事件列表与触发时机说明"
+---
+
 所有事件都可通过`smeeting.onNotifyRoomEvent`来监听
 
 ```typescript
@@ -8,9 +13,9 @@ smeeting.onNotifyRoomEvent = (evt: RoomEvent) => {
       // ...
   }
 })
-```
+```typescript
 
-<font style="background-color:#EFF0F0;">RoomEvent </font>定义如下：
+RoomEvent 定义如下：
 
 ```typescript
 /** 房间事件通知 */
@@ -22,7 +27,7 @@ declare class RoomEvent {
 }
 ```
 
-<font style="background-color:#EFF0F0;">CommonRoomEventType</font>及对应`data`定义如下：
+CommonRoomEventType及对应`data`定义如下：
 
 ```typescript
     /** 开始断线自动重连，无data */
@@ -81,9 +86,9 @@ declare class RoomEvent {
     /** 主持人请求您开摄像头，对应data为 AdminRequestOpenCameraEventData */
     static readonly ADMIN_REQUEST_OPEN_CAMERA = 'admin_request_open_camera';
 
-```
+```typescript
 
-<font style="background-color:#EFF0F0;">RoomEventType</font>及对应`data`定义如下：
+RoomEventType及对应`data`定义如下：
 
 ```typescript
 /** 房间事件类型 */

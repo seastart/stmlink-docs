@@ -1,3 +1,8 @@
+---
+title: "ILocalVideoStream"
+description: "全平台 C++ SRTC 音视频 SDK ILocalVideoStream 接口参考"
+---
+
 ### StatusCode publish();
 发布视频流。
 

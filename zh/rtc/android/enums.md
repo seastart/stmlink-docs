@@ -1,3 +1,8 @@
+---
+title: "枚举类型"
+description: "Android SRTC 音视频 SDK 枚举值定义"
+---
+
 ### CodecType
 编码格式枚举
 

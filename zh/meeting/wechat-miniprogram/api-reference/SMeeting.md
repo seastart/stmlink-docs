@@ -1,3 +1,8 @@
+---
+title: "SMeeting"
+description: "微信小程序 SMeeting 会议 SDK SMeeting 接口参考"
+---
+
 SMeeting是绝大多数操作的入口。
 
 ```typescript
@@ -304,5 +309,5 @@ SMeeting是绝大多数操作的入口。
      */
     updatePlayerStateChange(uid: string, trackId: string, detail: any): void;
     
-```
+```typescript
 

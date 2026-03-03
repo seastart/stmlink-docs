@@ -1,3 +1,8 @@
+---
+title: "RTCEngineDelegate"
+description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
+---
+
 ## **连接相关回调**
 ### onReconnecting()
 `- (void)onReconnecting`
@@ -16,18 +21,18 @@
 ### onDisconnected:errCode:errMsg:()
 `- (void)onDisconnected:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg`
 
-<font style="color:rgb(0, 0, 0);">连连接断开事件或者被动离开频道回调</font>
+连连接断开事件或者被动离开频道回调
 
-<font style="color:rgb(0, 0, 0);">当离开原因为</font>`<font style="color:rgb(0, 0, 0);">RTCLeaveReasonError</font>`<font style="color:rgb(0, 0, 0);">时，表示 SDK 抛出的不可恢复的错误，比如加入频道失败等，此时需要重新获取鉴权令牌才可重新加入频道。具体错误码参考文档：</font>[错误码表](https://www.yuque.com/anyconf/rtcengine/hf08uk#aP2yB)
+当离开原因为`RTCLeaveReasonError`时，表示 SDK 抛出的不可恢复的错误，比如加入频道失败等，此时需要重新获取鉴权令牌才可重新加入频道。具体错误码参考文档：[错误码表](https://www.yuque.com/anyconf/rtcengine/hf08uk#aP2yB)
 
-当离开原因非`<font style="color:rgb(0, 0, 0);">RTCLeaveReasonError</font>`<font style="color:rgb(0, 0, 0);">时，表示被动离开频道。具体离开原因参考文档：</font>[离开原因](https://www.yuque.com/anyconf/rtcengine/yi50z7#WgkRO)
+当离开原因非`RTCLeaveReasonError`时，表示被动离开频道。具体离开原因参考文档：[离开原因](https://www.yuque.com/anyconf/rtcengine/yi50z7#WgkRO)
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| reason | <font style="color:rgb(0, 0, 0);">离开原因</font> |
+| reason | 离开原因 |
 | --- | --- |
-| errCode | <font style="color:rgb(0, 0, 0);">错误码</font> |
-| errMsg | <font style="color:rgb(0, 0, 0);">错误信息</font> |
+| errCode | 错误码 |
+| errMsg | 错误信息 |
 
 
 ## **消息相关回调**
@@ -38,7 +43,7 @@
 
 应用层业务功能通过服务出发操作事件，SDK 会通过这个回调通知您。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | content | 消息内容 |
 | --- | --- |
@@ -54,9 +59,9 @@
 
 加入频道成功回调
 
-<font style="color:rgb(0, 0, 0);">调用</font>`RTCEngineKit`<font style="color:rgb(0, 0, 0);">中的</font>`joinChannelWithToken:<font style="color:rgb(0, 0, 0);">()</font>`<font style="color:rgb(0, 0, 0);">接口执行加入频道操作后，会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onJoinSucceed:userId:()`<font style="color:rgb(0, 0, 0);">回调，</font>如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调。
+调用`RTCEngineKit`中的`joinChannelWithToken:()`接口执行加入频道操作后，会收到来自`RTCEngineDelegate`的`onJoinSucceed:userId:()`回调，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -68,9 +73,9 @@
 
 自己数据更新回调
 
-<font style="color:rgb(0, 0, 0);">服务端修改当前用户</font>数据<font style="color:rgb(0, 0, 0);">操作后，会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onUserUpdate:userId:()`<font style="color:rgb(0, 0, 0);">回调，来通知当前用户数据发生了改变。</font>
+服务端修改当前用户数据操作后，会收到来自`RTCEngineDelegate`的`onUserUpdate:userId:()`回调，来通知当前用户数据发生了改变。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -83,9 +88,9 @@
 
 频道更新回调
 
-<font style="color:rgb(0, 0, 0);">应用层调用服务接口执行</font>变更频道信息<font style="color:rgb(0, 0, 0);">操作后，会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onChannelUpdate:props:()`<font style="color:rgb(0, 0, 0);">回调。</font>
+应用层调用服务接口执行变更频道信息操作后，会收到来自`RTCEngineDelegate`的`onChannelUpdate:props:()`回调。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -98,9 +103,9 @@
 
 有用户加入频道回调
 
-<font style="color:rgb(0, 0, 0);">事件回调</font>`<font style="color:rgb(0, 0, 0);">onRemoteUserJoinChannel:</font>`<font style="color:rgb(0, 0, 0);">和</font>`<font style="color:rgb(0, 0, 0);">onRemoteUserLeaveChannel:</font>`<font style="color:rgb(0, 0, 0);">只适用于维护当前频道里的“用户列表”，有此事件回调不代表一定有视频画面，需要使用成员信息中的</font>`streamTracks`<font style="color:rgb(0, 0, 0);">来判断用户是否推流以及获取轨道号码等信息。</font>
+事件回调`onRemoteUserJoinChannel:`和`onRemoteUserLeaveChannel:`只适用于维护当前频道里的“用户列表”，有此事件回调不代表一定有视频画面，需要使用成员信息中的`streamTracks`来判断用户是否推流以及获取轨道号码等信息。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -112,9 +117,9 @@
 
 当前频道有成员数据更新回调
 
-<font style="color:rgb(0, 0, 0);">业务层通过服务端接口执行</font>变更用户数据<font style="color:rgb(0, 0, 0);">操作后，会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onRemoteUserUpdate:userId:()`<font style="color:rgb(0, 0, 0);">回调。</font>
+业务层通过服务端接口执行变更用户数据操作后，会收到来自`RTCEngineDelegate`的`onRemoteUserUpdate:userId:()`回调。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -126,9 +131,9 @@
 
 有用户离开频道回调
 
-<font style="color:rgb(0, 0, 0);">该回调与</font>`<font style="color:rgb(0, 0, 0);">onRemoteUserJoinChannel</font>`<font style="color:rgb(0, 0, 0);">相对应。</font>
+该回调与`onRemoteUserJoinChannel`相对应。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -141,9 +146,9 @@
 
 当前频道有用户码流数据变更回调
 
-<font style="color:rgb(0, 0, 0);">频道中用户变更自己的码流数据，SDK 会通过该接口通知您。</font>
+频道中用户变更自己的码流数据，SDK 会通过该接口通知您。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | channel | 频道名称 |
 | --- | --- |
@@ -158,9 +163,9 @@
 
 音频路由变更回调
 
-<font style="color:rgb(0, 0, 0);">音频路由发生变化时，SDK 会通过</font>`onAudioRouteChange:previousRoute:`<font style="color:rgb(0, 0, 0);">调用通知业务层。</font>
+音频路由发生变化时，SDK 会通过`onAudioRouteChange:previousRoute:`调用通知业务层。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | route | 音频路由，详情请参照 [RTCAudioRoute](https://www.yuque.com/anyconf/rtcengine/yi50z7#fcHdd) |
 | --- | --- |
@@ -172,9 +177,9 @@
 
 远程成员音频状态回调
 
-<font style="color:rgb(0, 0, 0);">频道成员音频状态回调，包括：音频的分贝值、功率等信息，业务层可通过该回调统计音频数据进行语音激励操作。</font>
+频道成员音频状态回调，包括：音频的分贝值、功率等信息，业务层可通过该回调统计音频数据进行语音激励操作。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | audioArray | 成员音频数据列表，详情请参见 [RTCStreamAudioModel](https://www.yuque.com/anyconf/rtcengine/yi50z7#zj1s4) |
 | --- | --- |
@@ -185,7 +190,7 @@
 
 服务是否允许发言回调
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | enabled | 是否允许发言，YES-允许发言 NO-不允许发言 |
 | --- | --- |
@@ -206,11 +211,11 @@
 
 开启码率自适应后，SDK 会根据网络情况动态调整下行成员链路的码率自适应等级。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | userId | 用户标识 |
 | --- | --- |
-| state | 下行码率自适应状态，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCDownBitrateAdaptiveState](https://www.yuque.com/anyconf/rtcengine/yi50z7#hHKyj) |
+| state | 下行码率自适应状态，详情请参考 [RTCDownBitrateAdaptiveState](https://www.yuque.com/anyconf/rtcengine/yi50z7#hHKyj) |
 
 
 ### onUploadBitrateAdaptiveState:()
@@ -220,9 +225,9 @@
 
 开启码率自适应后，SDK 会根据网络情况动态调整上行链路的码率自适应等级。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| state | 上行码率自适应状态，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCUploadBitrateAdaptiveState](https://www.yuque.com/anyconf/rtcengine/yi50z7#ZryAr) |
+| state | 上行码率自适应状态，详情请参考 [RTCUploadBitrateAdaptiveState](https://www.yuque.com/anyconf/rtcengine/yi50z7#ZryAr) |
 | --- | --- |
 
 
@@ -231,9 +236,9 @@
 
 下行平均丢包档位变化回调
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| state | 下行平均丢包档位，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCDownLossLevelState](https://www.yuque.com/anyconf/rtcengine/yi50z7#yMw23) |
+| state | 下行平均丢包档位，详情请参考 [RTCDownLossLevelState](https://www.yuque.com/anyconf/rtcengine/yi50z7#yMw23) |
 | --- | --- |
 
 
@@ -242,7 +247,7 @@
 
 下行平均丢包率回调
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | average | 下行平均丢包率 |
 | --- | --- |
@@ -253,11 +258,11 @@
 
 流媒体发送状态数据回调
 
-会在固定时间间隔，<font style="color:rgb(0, 0, 0);">会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onSendStreamModel:()`<font style="color:rgb(0, 0, 0);">回调，描述当前数据发送状态延迟、丢包率等信息。</font>
+会在固定时间间隔，会收到来自`RTCEngineDelegate`的`onSendStreamModel:()`回调，描述当前数据发送状态延迟、丢包率等信息。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| sendModel | 发送状态数据，<font style="color:rgb(0, 0, 0);">内容包含：延迟、丢包率等基本信息详情请参考 </font>[RTCStreamSendModel](https://www.yuque.com/anyconf/rtcengine/yi50z7#tSKwL) |
+| sendModel | 发送状态数据，内容包含：延迟、丢包率等基本信息详情请参考 [RTCStreamSendModel](https://www.yuque.com/anyconf/rtcengine/yi50z7#tSKwL) |
 | --- | --- |
 
 
@@ -266,11 +271,11 @@
 
 流媒体接收状态数据回调
 
-会在固定时间间隔，<font style="color:rgb(0, 0, 0);">会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onReceiveStreamModel:()`<font style="color:rgb(0, 0, 0);">回调，描述当前数据接收状态延迟、丢包率等信息。</font>
+会在固定时间间隔，会收到来自`RTCEngineDelegate`的`onReceiveStreamModel:()`回调，描述当前数据接收状态延迟、丢包率等信息。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| receiveModel | 接收状态数据，<font style="color:rgb(0, 0, 0);">内容包含：延迟、丢包率等基本信息详情请参考 </font>[RTCStreamReceiveModel](https://www.yuque.com/anyconf/rtcengine/yi50z7#d6fij) |
+| receiveModel | 接收状态数据，内容包含：延迟、丢包率等基本信息详情请参考 [RTCStreamReceiveModel](https://www.yuque.com/anyconf/rtcengine/yi50z7#d6fij) |
 | --- | --- |
 
 
@@ -279,13 +284,13 @@
 
 流媒体接收远端流状态变更回调
 
-订阅成员远程视频流后，如果持续一段时间没有收到该成员的视频流，<font style="color:rgb(0, 0, 0);">会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onReceiveStreamStatusChange:status:()`<font style="color:rgb(0, 0, 0);">回调。同时，接收视频流恢复后也会收到该回调。</font>
+订阅成员远程视频流后，如果持续一段时间没有收到该成员的视频流，会收到来自`RTCEngineDelegate`的`onReceiveStreamStatusChange:status:()`回调。同时，接收视频流恢复后也会收到该回调。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | userId | 用户标识 |
 | --- | --- |
-| trackId | 轨道标识，，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
+| trackId | 轨道标识，，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
@@ -295,11 +300,11 @@
 
 屏幕共享状态回调
 
-<font style="color:rgb(0, 0, 0);">扩展程序调用</font>`RTCEngineKit`<font style="color:rgb(0, 0, 0);">中的</font>`startScreenRecordingClient:<font style="color:rgb(0, 0, 0);">()</font>`<font style="color:rgb(0, 0, 0);">接口执行开启屏幕共享操作后， SDK 会通过</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onScreenRecordStatus:()`<font style="color:rgb(0, 0, 0);">回调通知宿主程序当前的屏幕共享状态。</font>
+扩展程序调用`RTCEngineKit`中的`startScreenRecordingClient:()`接口执行开启屏幕共享操作后， SDK 会通过`RTCEngineDelegate`的`onScreenRecordStatus:()`回调通知宿主程序当前的屏幕共享状态。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| status | 屏幕共享状态码，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCScreenRecordStatus](https://www.yuque.com/anyconf/rtcengine/yi50z7#JwIlf) |
+| status | 屏幕共享状态码，详情请参考 [RTCScreenRecordStatus](https://www.yuque.com/anyconf/rtcengine/yi50z7#JwIlf) |
 | --- | --- |
 
 
@@ -309,21 +314,21 @@
 
 网络测速开始回调
 
-<font style="color:rgb(0, 0, 0);">调用</font>`RTCEngineKit`<font style="color:rgb(0, 0, 0);">中的</font>`startSpeedTest:<font style="color:rgb(0, 0, 0);">()</font>`<font style="color:rgb(0, 0, 0);">接口执行</font>开始网络测速<font style="color:rgb(0, 0, 0);">操作后，会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onSpeedTestBegined()`<font style="color:rgb(0, 0, 0);">回调。</font>
+调用`RTCEngineKit`中的`startSpeedTest:()`接口执行开始网络测速操作后，会收到来自`RTCEngineDelegate`的`onSpeedTestBegined()`回调。
 
 ### onSpeedTestUploadResult:downResult:connectResult:()
 `- (void)onSpeedTestUploadResult:(nullable RTCSpeedTestResult *)uploadResult downResult:(nullable RTCSpeedTestResult *)downResult connectResult:(nullable RTCSpeedTestConnectResult *)connectResult`
 
 网络测速的结果回调
 
-<font style="color:rgb(0, 0, 0);">调用</font>`RTCEngineKit`<font style="color:rgb(0, 0, 0);">中的</font>`startSpeedTest:<font style="color:rgb(0, 0, 0);">()</font>`<font style="color:rgb(0, 0, 0);">接口执行</font>开始网络测速<font style="color:rgb(0, 0, 0);">操作后，底层监测完成之后会收到来自</font>`RTCEngineDelegate`<font style="color:rgb(0, 0, 0);">的</font>`onSpeedTestUploadResult:downResult:connectResult:()`<font style="color:rgb(0, 0, 0);">回调。</font>
+调用`RTCEngineKit`中的`startSpeedTest:()`接口执行开始网络测速操作后，底层监测完成之后会收到来自`RTCEngineDelegate`的`onSpeedTestUploadResult:downResult:connectResult:()`回调。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
-| uploadResult | 上行网速测试结果，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCSpeedTestResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#ApYUD) |
+| uploadResult | 上行网速测试结果，详情请参考 [RTCSpeedTestResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#ApYUD) |
 | --- | --- |
-| downResult | 下行网速测试结果，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCSpeedTestResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#ApYUD) |
-| connectResult | 连接情况测试结果，<font style="color:rgb(0, 0, 0);">详情请参考 </font>[RTCSpeedTestConnectResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#I9DK2) |
+| downResult | 下行网速测试结果，详情请参考 [RTCSpeedTestResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#ApYUD) |
+| connectResult | 连接情况测试结果，详情请参考 [RTCSpeedTestConnectResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#I9DK2) |
 
 
 ## **其它相关回调**
@@ -332,9 +337,9 @@
 
 应用性能使用情况回调
 
-<font style="color:rgb(0, 0, 0);">频道内当前性能使用情况回调。</font>
+频道内当前性能使用情况回调。
 
-**<font style="color:rgb(0, 0, 0);">参数</font>**
+**参数**
 
 | memory | 内存使用情况 |
 | --- | --- |

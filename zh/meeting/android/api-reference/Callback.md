@@ -1,3 +1,8 @@
+---
+title: "Callback"
+description: "Android SMeeting 会议 SDK Callback 接口参考"
+---
+
 结果回调，一般用于 HTTP 请求的结果回调
 
 ### onStart()
@@ -5,7 +10,7 @@
 
 ```kotlin
 public void onStart()
-```
+```kotlin
 
 ### onCancel()
 请求取消
@@ -19,7 +24,7 @@ public void onCancel()
 
 ```kotlin
 public void onSuccess(T data)
-```
+```kotlin
 
 参数
 

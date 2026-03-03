@@ -1,3 +1,8 @@
+---
+title: "CustomVideoTrack"
+description: "Android SRTC 音视频 SDK CustomVideoTrack 接口参考"
+---
+
 + 提供自定义推流相关操作
 
 ### startCustomVideo()
@@ -5,7 +10,7 @@
 
 ```kotlin
 fun startCustomVideo(option: CustomVideoOptions, listener: RTCResultListener?)
-```
+```html
 
 参数
 
@@ -46,7 +51,7 @@ fun stopCustomVideo(listener: RTCResultListener?)
 
 ```kotlin
 fun inputData(stamp:Long,data:ByteArray,angle:Int)
-```
+```kotlin
 
 参数
 

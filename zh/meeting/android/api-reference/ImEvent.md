@@ -1,3 +1,8 @@
+---
+title: "ImEvent"
+description: "Android SMeeting 会议 SDK ImEvent 接口参考"
+---
+
 即时通讯事件监听
 
 ### onImDisconnected()
@@ -5,7 +10,7 @@
 
 ```java
 fun onImDisconnected(reason: DisconnectedImReason)
-```
+```kotlin
 
 参数
 
@@ -32,7 +37,7 @@ fun onError(errorCode: Int, errorMsg: String)
 
 ```java
 fun onImReconnecting()
-```
+```kotlin
 
 ### onImReconnected()
 即时通讯重连成功
@@ -49,7 +54,7 @@ fun onImMessage(
     uid: String, sid: String, name: String, 
     action: String, content: String
 )
-```
+```kotlin
 
 参数
 
@@ -82,7 +87,7 @@ fun onCallReceived(uid: String, nickname: String, roomNo: String, title: String)
 
 ```java
 fun onMeetingRemind(uid: String, meetingRemind: ImContent.MeetingRemind)
-```
+```kotlin
 
 参数
 
@@ -129,7 +134,7 @@ MoveOutWaitingRoom 说明
 
 ```kotlin
 fun onUserHelpSubMeeting(uid: String, userHelpSubMeeting: ImContent.UserHelpSubMeeting)
-```
+```kotlin
 
 参数
 

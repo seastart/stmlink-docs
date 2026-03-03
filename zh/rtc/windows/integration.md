@@ -1,7 +1,12 @@
-### 头文件
-#include <srtc.h>
+---
+title: "集成"
+description: "Windows SRTC 音视频 SDK 环境配置与 SDK 安装指南"
+---
 
-#include <srtc_def.h>
+### 头文件
+`#include <srtc.h>`
+
+`#include <srtc_def.h>`
 
 
 

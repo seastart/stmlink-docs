@@ -1,3 +1,8 @@
+---
+title: "IRTCSetting"
+description: "Windows SRTC 音视频 SDK IRTCSetting 接口参考"
+---
+
 | 参数 | 默认 | 说明 | 备注 |
 | --- | --- | --- | --- |
 | stream_model | 3 | 流媒体模式[查看](https://www.yuque.com/anyconf/rtcengine/pfzomlthc9l03830#Cz51I) | 入会前设置 |

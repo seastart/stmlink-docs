@@ -1,3 +1,8 @@
+---
+title: "快速开始"
+description: "Android SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
+---
+
 ### step 1: 初始化SDK
 #### 创建 rtcEngine
 + 此操作建议在应用启动时执行，会在创建 rtcEngine 时初始化一些基础功能模块，例如日志模块
@@ -8,7 +13,7 @@ rtcEngine = RTCEngine.create(
     app, enableLocalLog, localLogPath, 
     "app: ${BuildConfig.VERSION_NAME}"
 )
-```
+```kotlin
 
 #### 初始化 sdk
 ```kotlin
@@ -22,9 +27,9 @@ rtcEngine?.initSDK()
 rtcEngine.setRtcClientEvent(this)
 // 设置流媒体监听事件
 rtcEngine.setRtcMediaEvent(this)
-```
+```kotlin
 
-#### 配置流媒体参数，<font style="color:#DF2A3F;">若无特殊需求，不必配置</font>
+#### 配置流媒体参数，若无特殊需求，不必配置
 ```kotlin
 //RTCMediaOptions 在入会前配置流媒体全局参数，没有特殊需要可以不调用
 rtcEngine.setMediaOptions(RTCMediaOptions())
@@ -46,7 +51,7 @@ rtcEngine.join(activity, token, object : RTCResultListener {
 
 // 等待回调 RTCClientEvent 中的 onJoinSucceed 
 override fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?)
-```
+```kotlin
 
 #### 离开频道
 ```kotlin
@@ -56,7 +61,7 @@ rtcEngine.leave()
 
 ### step 3：流控制
 #### 摄像头流控制
-<font style="color:#E8323C;">注意：控制实例可以在初始化后就获取，但是采集和发布方法必须等加入房间后再调用</font>
+注意：控制实例可以在初始化后就获取，但是采集和发布方法必须等加入房间后再调用
 
 + 摄像头主码流、辅码流控制
 
@@ -132,10 +137,10 @@ rtcEngine?.unPublishLocalVideo(
         }
     }
 )
-```
+```kotlin
 
 #### 麦克风流控制
-<font style="color:#E8323C;">注意：控制实例可以在初始化后就获取，但是采集和发布方法必须等加入房间后再调用</font>
+注意：控制实例可以在初始化后就获取，但是采集和发布方法必须等加入房间后再调用
 
 ```kotlin
 // 获取麦克风控制实例，需要传入预设参数，目前只有一组：PreOptionMic.def
@@ -177,7 +182,7 @@ val volume = micTrack.getVolume()
 ```
 
 #### 录屏流控制
-<font style="color:#E8323C;">注意：控制实例可以在初始化后就获取，但是采集和发布方法必须等加入房间后再调用</font>
+注意：控制实例可以在初始化后就获取，但是采集和发布方法必须等加入房间后再调用
 
 ```kotlin
 // 获取录屏流控制实例
@@ -241,7 +246,7 @@ rtcEngine?.unPublishLocalVideo(screenTrack, object : RTCResultListener {
 
 })
 
-```
+```kotlin
 
 #### 自定义流控制
 ```kotlin
@@ -275,7 +280,7 @@ customVideoTrack.stopCustomVideo(object : RTCResultListener {
 ```
 
 #### 订阅远端视频流
-<font style="color:#E8323C;">注意：控制实例可以在初始化后就获取，但是订阅方法必须等加入房间后再调用</font>
+注意：控制实例可以在初始化后就获取，但是订阅方法必须等加入房间后再调用
 
 ```kotlin
 // 获取远端视频流控制类
@@ -311,10 +316,10 @@ rtcEngine?.subscribeRemoteTrack(
 
 // 取消订阅远端流。参数：用户 id，轨道id
 remoteVideoTrack.unSubscribeRemoteTrack(uid, trackId)
-```
+```kotlin
 
 #### 订阅远端合成视频流
-<font style="color:#E8323C;">注意：控制实例可以在初始化后就获取，但是订阅方法必须等加入房间后再调用</font>
+注意：控制实例可以在初始化后就获取，但是订阅方法必须等加入房间后再调用
 
 ```kotlin
 // 获取远端合成视频流控制类
@@ -346,7 +351,7 @@ remoteVideoTrack.unSubscribeRemoteTrack()
 ```
 
 #### 订阅房间混音流
-<font style="color:#E8323C;">注意：控制实例可以在初始化后就获取，但是操作方法必须等加入房间后再调用</font>
+注意：控制实例可以在初始化后就获取，但是操作方法必须等加入房间后再调用
 
 ```kotlin
 // 获取房间混音流控制类
@@ -357,7 +362,7 @@ remoteAudioMixTrack.startPlay()
 
 // 停止播放混音流
 remoteAudioMixTrack.stopPlay()
-```
+```kotlin
 
 ### step 4：信息获取
 ```kotlin
@@ -384,12 +389,12 @@ val trackInfo = rtcEngine.getTrackInfoByTrackId(uid, trackId)
 ```
 
 ### step 5：释放资源
-<font style="color:#DF2A3F;">注意：该接口与 initSDK 配对使用</font>
+注意：该接口与 initSDK 配对使用
 
 ```kotlin
 // 释放资源
 rtcEngine.releaseSDK()
-```
+```kotlin
 
 
 

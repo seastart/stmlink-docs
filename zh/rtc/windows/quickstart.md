@@ -1,3 +1,8 @@
+---
+title: "快速开始"
+description: "Windows SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
+---
+
 ### 初始化SDK
 ```cpp
 SRTC::StatusCode ret = SRTC::RTCEngine_Init(&_irtc);
@@ -5,7 +10,7 @@ if((ret |= SRTC::StatusCode::OK) || !_irtc)
 {
     return false;
 }
-```
+```cpp
 
 
 
@@ -26,7 +31,7 @@ _irtc->setEventHandler(this);
 std::string token = "";
 _irtc->joinChannel(token);
 //触发 IRTCEngineEvent.onJoinRoom 事件之后才是真正的入会成功
-```
+```typescript
 
 更多参数设置[参看](https://www.yuque.com/anyconf/rtcengine/rhsp7k/edit#RlyqM)
 
@@ -58,7 +63,7 @@ _irtc->joinChannel(token);
     _camStream->stopCapture();
     _camStream->removeAllPlayView();
     _irtc->unpublish(_camStream);
-```
+```typescript
 
 更多本地摄像头方法[参看](https://www.yuque.com/anyconf/rtcengine/tqhsrn)
 
@@ -88,7 +93,7 @@ _irtc->joinChannel(token);
 
     _micStream->stopCapture();
     _irtc->unpublish(_micStream); 
-```
+```typescript
 
 更多本地麦克风方法[参看](https://www.yuque.com/anyconf/rtcengine/slm5sw)
 
@@ -118,7 +123,7 @@ _irtc->joinChannel(token);
 
     _screenStream->stopCapture();
     _irtc->unpublish(_screenStream); 
-```
+```cpp
 
 更多本地桌面共享方法[参看](https://www.yuque.com/anyconf/rtcengine/tqhsrn)
 
@@ -144,7 +149,7 @@ _irtc->joinChannel(token);
     }
 
     _speakerStream->stopPlay();
-```
+```typescript
 
 更多本地扬声器方法[参看](https://www.yuque.com/anyconf/rtcengine/dvvov9)
 
@@ -177,7 +182,7 @@ _irtc->joinChannel(token);
 
     _remoteStream->removeAllPlayView();
     _irtc->unsubscribe(_remoteStream);
-```
+```cpp
 
 ### 
 ### 退出频道

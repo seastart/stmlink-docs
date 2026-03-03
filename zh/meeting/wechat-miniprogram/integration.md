@@ -1,3 +1,8 @@
+---
+title: "集成"
+description: "微信小程序 SMeeting 会议 SDK 环境配置与 SDK 安装指南"
+---
+
 ## 前提条件
 开通小程序类目与推拉流标签权限（如不开通则无法正常使用）
 
@@ -9,21 +14,21 @@
 
 
 
-## <font style="color:rgb(38, 38, 38);">引用</font>
-### <font style="color:rgb(38, 38, 38);">npm</font>
+## 引用
+### npm
 ```bash
 npm install @seastart/smeeting-wx-sdk@latest --save
-```
+```typescript
 
-### **<font style="color:rgb(38, 38, 38);">本地引用</font>**
+### **本地引用**
 手动下载 sdk 包：
 
-1. <font style="color:rgb(38, 38, 38);">下载 </font>[smeeting-wx.js](https://www.unpkg.com/@seastart/smeeting-wx-sdk@latest/smeeting-wx.js)<font style="color:rgb(38, 38, 38);"> </font>[smeeting-wx.d.ts](https://www.unpkg.com/@seastart/smeeting-wx-sdk@latest/smeeting-wx.d.ts)<font style="color:rgb(38, 38, 38);"> </font>
-2. <font style="color:rgb(38, 38, 38);">将 </font>`<font style="color:rgb(38, 38, 38);">smeeting-wx.js</font>`<font style="color:rgb(38, 38, 38);"> </font>`<font style="color:rgb(38, 38, 38);">smeeting-wx.d.ts</font>`<font style="color:rgb(38, 38, 38);"> 复制到您的项目中。</font>
+1. 下载 [smeeting-wx.js](https://www.unpkg.com/@seastart/smeeting-wx-sdk@latest/smeeting-wx.js) [smeeting-wx.d.ts](https://www.unpkg.com/@seastart/smeeting-wx-sdk@latest/smeeting-wx.d.ts) 
+2. 将 `smeeting-wx.js` `smeeting-wx.d.ts` 复制到您的项目中。
 
-<font style="color:rgb(38, 38, 38);"></font>
 
-## <font style="color:rgb(38, 38, 38);">使用</font>
+
+## 使用
 可通过本地引用，也可通过 [小程序构建npm](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html) 直接引入。
 
 ```typescript
@@ -32,9 +37,9 @@ import SMeeting from './lib/smeeting-wx'; // 静态文件引入
 import SMeeting from '@seastart/smeeting-wx-sdk'; // 小程序构建npm引入
 ```
 
-<font style="color:rgb(38, 38, 38);">  
-</font><font style="color:rgb(38, 38, 38);">  
-</font>
+  
+  
+
 
   
  

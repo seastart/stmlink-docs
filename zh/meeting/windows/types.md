@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "Windows SMeeting 会议 SDK 完整类型与结构体定义"
+---
+
 ## 结构体类型
 ### IRTCSetting
 会议默认参数设置

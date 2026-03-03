@@ -1,3 +1,8 @@
+---
+title: "ISMeetingEngine"
+description: "Windows SMeeting 会议 SDK ISMeetingEngine 接口参考"
+---
+
 # ISMeetingEngine 创建
 ### 创建ISMeetingEngine
 ```cpp
@@ -6,7 +11,7 @@ SMEETING_API StatusCode SMEETING_CALL SMeetingEngine_Init(ISMeetingEngine** meet
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_Init_C();
-```
+```typescript
 
 **参数**
 
@@ -38,7 +43,7 @@ SMEETING_API void SMEETING_CALL SMeetingEngine_GetStatusMsg(StatusCode code, std
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C void SMEETING_CALL_C SMeetingEngine_GetStatusMsg_C(StatusCodeC code, char* msg,int len);
-```
+```typescript
 
 **参数**
 
@@ -79,7 +84,7 @@ virtual StatusCode setEventHandler(ISMeetingEngineEvent* e) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_setEventHandler(SMeet_CBF_RoomEvent e,void* t);
-```
+```typescript
 
 **参数**
 
@@ -110,7 +115,7 @@ virtual StatusCode logout(Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_logout();
-```
+```cpp
 
 **参数**
 
@@ -140,7 +145,7 @@ virtual StatusCode listAgent(std::vector<int> type, int page,std::string find_ke
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_listAgent(char* types, int page,const char* find_key,char** out_put,int* out_put_len);
-```
+```typescript
 
 **参数**
 
@@ -174,7 +179,7 @@ virtual StatusCode attendeeRoom(int page, Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_attendeeRoom(int page, char** out_put, int* out_put_len);
-```
+```cpp
 
 **参数**
 
@@ -206,7 +211,7 @@ virtual StatusCode detailRoom(std::string meeting_id, Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_detailRoom(const char* meeting_id, char** out_put, int* out_put_len);
-```
+```typescript
 
 **参数**
 
@@ -238,7 +243,7 @@ virtual StatusCode participantRoom(std::string meeting_id, int page, Callback ba
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_participantRoom(const char* meeting_id,int page, char** out_put, int* out_put_len);
-```
+```typescript
 
 **参数**
 
@@ -271,7 +276,7 @@ virtual StatusCode enterRoom(std::string roomno, std::string name, std::string p
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_enterRoom(const char* roomno, const char* name, const char* pass);
-```
+```cpp
 
 **参数**
 
@@ -305,7 +310,7 @@ virtual StatusCode adminDestroyRoom(Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminDestroyRoom();
-```
+```cpp
 
 **参数**
 
@@ -337,7 +342,7 @@ SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateRoomCameraS
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateRoomMicState(bool self_unmute_mic_disabled, bool mic_disabled);
-```
+```cpp
 
 **参数**
 
@@ -370,7 +375,7 @@ virtual StatusCode adminUpdateRoomScreenshotDisabled(bool screenshot_disabled, C
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateRoomScreenshotDisabled(bool screenshot_disabled);
-```
+```cpp
 
 **参数**
 
@@ -402,7 +407,7 @@ virtual StatusCode adminStopRoomShare(Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminStopRoomShare();
-```
+```typescript
 
 **参数**
 
@@ -434,7 +439,7 @@ virtual StatusCode adminCloseUserCamera(std::string uid, Callback back = NULL) =
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminCloseUserCamera(const char* uid);
-```
+```typescript
 
 **参数**
 
@@ -466,7 +471,7 @@ virtual StatusCode adminRequestUserOpenCamera(std::string uid, Callback back = N
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminRequestUserOpenCamera(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -500,7 +505,7 @@ virtual StatusCode adminKickUserOut(std::string uid, Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -534,7 +539,7 @@ virtual StatusCode adminUpdateConferee(std::vector<std::string> conferee, Callba
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -568,7 +573,7 @@ virtual StatusCode updateName(std::string name, Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -602,7 +607,7 @@ virtual StatusCode sendRoomCustomMessage(std::string, std::string, Callback back
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -636,7 +641,7 @@ virtual StatusCode mcuStop(Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -670,7 +675,7 @@ virtual StatusCode mcuRecordDetail(Callback back = NULL) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -704,7 +709,7 @@ virtual StatusCode getRoom(std::string& s) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -740,7 +745,7 @@ virtual StatusCode getMember(std::string uid, std::string& s) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -774,7 +779,7 @@ virtual StatusCode getEnumVideo(std::string& dev) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -808,7 +813,7 @@ virtual StatusCode getEnumAudio(std::string& dev) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -842,7 +847,7 @@ virtual StatusCode getLocalMic(IMEETLocalMic**) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -876,7 +881,7 @@ virtual StatusCode getLocalScreen(IMEETLocalScreen**) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -910,7 +915,7 @@ virtual StatusCode getRemoteAudio(std::string uid, IMEETRemoteAudio**) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```typescript
 
 **参数**
 
@@ -944,7 +949,7 @@ virtual StatusCode addUploadLog(const char* type, const char* msg) = 0;
 
 //----------其他语言或便捷调用----------
 SMEETING_API_C StatusCodeC SMEETING_CALL_C SMeetingEngine_adminUpdateUserName(const char* uid, const char* name);
-```
+```cpp
 
 **参数**
 

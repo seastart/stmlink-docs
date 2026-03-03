@@ -1,3 +1,8 @@
+---
+title: "SMeeting"
+description: "Web SMeeting 会议 SDK SMeeting 接口参考"
+---
+
 SMeeting是绝大多数操作的入口。
 
 ```typescript
@@ -386,7 +391,7 @@ SMeeting是绝大多数操作的入口。
      * @returns
      */
     getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaDeviceInfo[]>;
-```
+```typescript
 
 
 

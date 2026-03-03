@@ -1,3 +1,8 @@
+---
+title: "IRemoteVideoStream"
+description: "全平台 C++ SRTC 音视频 SDK IRemoteVideoStream 接口参考"
+---
+
 ### void setFrameEvent(FrameEvent onFrameEvent,void* ctx)
 设置码流数据接收回调。
 
@@ -34,7 +39,7 @@ static int mask_to_track(int mask) {
     }
     return std::log2(mask);
 }
-```
+```cpp
 
 ### StatusCode unsubscribe()
 取消订阅。

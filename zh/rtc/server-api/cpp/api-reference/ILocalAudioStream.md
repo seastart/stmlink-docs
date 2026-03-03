@@ -1,3 +1,8 @@
+---
+title: "ILocalAudioStream"
+description: "全平台 C++ SRTC 音视频 SDK ILocalAudioStream 接口参考"
+---
+
 ### StatusCode publish();
 发布音频流。
 

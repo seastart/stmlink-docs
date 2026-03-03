@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "Android SRTC 音视频 SDK 完整类型与结构体定义"
+---
+
 ### RTCOptions
 RTC 配置参数
 
@@ -42,13 +47,13 @@ RTC 配置参数
 ### PublishCustomOptions
 自定义参数配置
 
-+ <font style="color:#DF2A3F;">PS：只有摄像头流可以设置辅流的自定义发布参数，但只能设置一路且不允许嵌套设置。</font>
++ PS：只有摄像头流可以设置辅流的自定义发布参数，但只能设置一路且不允许嵌套设置。
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
 | desc | String | 轨道描述<br/>默认描述：camera_big、camera_small、screen、mic、custom |
 | props | Any | 扩展信息 |
-| simulcasts | MutableList<PublishCustomOptions> | 辅流的自定义发布参数 |
+| simulcasts | `MutableList<PublishCustomOptions>` | 辅流的自定义发布参数 |
 
 
 ### ChannelInfo
@@ -89,7 +94,7 @@ RTC 配置参数
 | join_at | Long | 加入时间 |
 | updated_at | Long | 更新时间 |
 | leave_at | Long | 离开时间 |
-| stream_tracks | ArrayList<TrackInfo> | 正在推流的码流信息集合 |
+| stream_tracks | `ArrayList<TrackInfo>` | 正在推流的码流信息集合 |
 | link_id | Int | 流媒体连接ID |
 | session_key | String | 流媒体连接key |
 | upload_id | String | 当前所属流媒体服务ID |

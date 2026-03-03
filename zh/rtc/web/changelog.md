@@ -1,10 +1,15 @@
+---
+title: "更新日志"
+description: "Web SRTC 音视频 SDK 版本更新记录"
+---
+
 ### 最新版本
 
 请通过 npm 查看最新版本：
 
 ```bash
 npm info @seastart/srtc-web-sdk version
-```
+```typescript
 
 ---
 

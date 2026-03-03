@@ -1,14 +1,19 @@
+---
+title: "媒体质量"
+description: "Android SMeeting 会议 SDK 媒体质量统计指标说明"
+---
+
 ### Metric
 质量监测数据类
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
 | localAudios | MutableMap | 本地音频信息统计<br/>key：UserTrackDesc；<br/>value：[AudioSenderStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#MB8TV) |
-| localVideos | MutableMap | 本地视频信息统计<br/>key：UserTrackDesc<br/>value：[VideoSenderStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#FsVir) |
-| remoteAudios | MutableMap | 远端音频信息统计<br/>key：UserTrackDesc<br/>value：[AudioReceiverStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#qTngM) |
-| remoteVideos | MutableMap | 远端视频信息统计<br/>key：UserTrackDesc<br/>value：[VideoReceiverStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#L2yco) |
+| localVideos | MutableMap | 本地视频信息统计<br/>key：`UserTrackDesc<br/>`value：[VideoSenderStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#FsVir) |
+| remoteAudios | MutableMap | 远端音频信息统计<br/>key：`UserTrackDesc<br/>`value：[AudioReceiverStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#qTngM) |
+| remoteVideos | MutableMap | 远端视频信息统计<br/>key：`UserTrackDesc<br/>`value：[VideoReceiverStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#L2yco) |
 | localUploadStats | [LocalUploadStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#XwMxq) | 本地上传信息统计 |
-| remoteDownloadStats | MutableMap | 远端下载信息统计<br/>Key：uid<br/>value：[RemoteDownloadStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#mBM7l) |
+| remoteDownloadStats | MutableMap | 远端下载信息统计<br/>Key：`uid<br/>`value：[RemoteDownloadStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#mBM7l) |
 | networkStats | [NetworkStats](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#wn1qC) | 网络状态统计 |
 
 
@@ -54,7 +59,7 @@
 | framesPerSecond | Float | 视频帧率 |
 | frameSent | Long | 视频帧数 |
 | qualityLimitationReason | String | 当前限制视频质量的主要原因<br/>none、cpu、bandwidth、other、inactive |
-| qualityLimitationDurations | Map<String, Float> | 每种原因导致的总限制时长（单位秒） |
+| qualityLimitationDurations | `Map<String, Float>` | 每种原因导致的总限制时长（单位秒） |
 | qualityLImitationResolutionChange | Long | 分辨率因质量限制而发生改变的次数 |
 | retransmittedPacketsSent | Long | 已经重传的 RTP 包数，只有视频存在该数据 |
 | targetBitrate | Float | 编码器当前的目标比特率，单位（比特每秒 bps） |

@@ -1,3 +1,8 @@
+---
+title: "集成"
+description: "Web SRTC 音视频 SDK 环境配置与 SDK 安装指南"
+---
+
 ### 支持的浏览器
 
 SRTC Web SDK 支持主流桌面端及移动端浏览器：
@@ -36,7 +41,7 @@ WebRTC API 对页面协议有限制，请根据部署场景选择合适的协议
 
 ```bash
 npm install @seastart/srtc-web-sdk --save
-```
+```typescript
 
 #### CDN 直接引用
 
@@ -75,7 +80,7 @@ import SRTC, {
   LogLevel,
   LogTarget,
 } from '@seastart/srtc-web-sdk';
-```
+```typescript
 
 #### Script 标签（配合 CDN 或本地文件）
 

@@ -1,3 +1,8 @@
+---
+title: "SRTC"
+description: "Web SRTC 音视频 SDK SRTC 接口参考"
+---
+
 SRTC 是绝大多数操作的入口，通过 `new SRTC(initParams)` 创建实例。
 
 ---
@@ -6,7 +11,7 @@ SRTC 是绝大多数操作的入口，通过 `new SRTC(initParams)` 创建实例
 
 ```typescript
 constructor(initParams: SdkInitParams)
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -32,7 +37,7 @@ buildInfo(): BuildInfo
 
 ```typescript
 getEnvInfo(): EnvWebInfo
-```
+```typescript
 
 **返回值：** `EnvWebInfo`，详见 [EnvWebInfo](/zh/rtc/web/types#envwebinfo)
 
@@ -56,7 +61,7 @@ onNotifyChannelEvent?: ((event: ChannelEvent) => void) | null
 
 ```typescript
 onNotifyImEvent?: ((event: ImEvent) => void) | null
-```
+```typescript
 
 ---
 
@@ -83,7 +88,7 @@ join(token: string, options?: JoinOptions): Promise<ChannelInfo>
 
 ```typescript
 leave(): Promise<void>
-```
+```typescript
 
 ---
 
@@ -103,7 +108,7 @@ getChannelInfo(): ChannelInfo | null
 
 ```typescript
 getUserInfo(uid: string): UserInfo
-```
+```html
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -128,7 +133,7 @@ getUsersInfo(map: false): UserInfo[]
 
 ```typescript
 getStreamMetric(): Record<string, any> | undefined
-```
+```typescript
 
 ---
 
@@ -155,7 +160,7 @@ getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaD
 
 ```typescript
 createLocalMicTrack(preset?: MicPreset): LocalMicTrack
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -183,7 +188,7 @@ createLocalCustomAudioTrack(msTrack: MediaStreamTrack): LocalAudioTrack
 
 ```typescript
 createLocalCameraTrack(preset?: CameraPreset): LocalCameraTrack
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -212,7 +217,7 @@ createLocalScreenTrack(preset?: ScreenPreset, audioPreset?: ScreenAudioPreset): 
 
 ```typescript
 createLocalCustomVideoTrack(msTrack: MediaStreamTrack): LocalVideoTrack
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -244,7 +249,7 @@ publishLocalTrack(
 
 ```typescript
 unpublishLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
-```
+```typescript
 
 ---
 
@@ -266,7 +271,7 @@ enableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
 
 ```typescript
 disableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
-```
+```typescript
 
 > 远端会收到 `TRACK_MUTED` 事件。与 `unpublishLocalTrack` 的区别详见 [静音 vs 停止发布](/zh/rtc/web/advanced/mute-vs-unpublish)。
 
@@ -292,7 +297,7 @@ subscribeRemoteAudioMixTrack(filterUids?: string[]): Promise<RemoteAudioMixTrack
 
 ```typescript
 subscribeRemoteAudioTrack(uid: string, id: string): Promise<RemoteAudioTrack>
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -322,7 +327,7 @@ subscribeRemoteVideoTrack(uid: string, id: string): Promise<RemoteVideoTrack>
 
 ```typescript
 subscribeRemoteVideoMcuTrack(): Promise<RemoteVideoTrack>
-```
+```typescript
 
 ---
 
@@ -344,7 +349,7 @@ unsubscribeRemoteTrack(
 
 ```typescript
 getRemoteTrack(uid: string, id?: string, desc?: string): RemoteAudioTrack | RemoteVideoTrack
-```
+```typescript
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -376,4 +381,4 @@ enableIm(token: string): Promise<string>
 
 ```typescript
 disableIm(): Promise<void>
-```
+```typescript

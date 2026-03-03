@@ -1,3 +1,8 @@
+---
+title: "网络质量"
+description: "Web SRTC 音视频 SDK 流媒体网络质量监测接口说明"
+---
+
 当前流媒体网络质量可以通过`srtc.getStreamMetric`来获取
 
 获取到的是一个map，包括最核心`network`数据，这是一个网络总体统计，说明如下
@@ -28,7 +33,7 @@ export interface NetworkStats {
   /** 下行丢包数 */
   pkt_loss_down: number;
 }
-```
+```typescript
 
 如果需要更详细的数据，包括`local_audios``local_videos``remote_audios``remote_videos`数据，说明如下
 

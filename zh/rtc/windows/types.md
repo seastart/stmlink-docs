@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "Windows SRTC 音视频 SDK 完整类型与结构体定义"
+---
+
 ### 视频轨道推流信息（RTCVideoPublishOptions）
 | 参数名称 | 参数类型 | 参数说明 |
 | --- | --- | --- |
@@ -101,7 +106,7 @@
 | name | string | 昵称 |
 | props | json | 扩展信息 |
 | sid | string | sid |
-| stream_tracks | list<stream_track> | 流轨道集合 |
+| stream_tracks | `list<stream_track>` | 流轨道集合 |
 | uid | string | uid |
 | version | string | 版本信息 |
 
@@ -141,13 +146,13 @@ stream_track
         }
     ]
 }
-```
+```html
 
 | count | int | 设备个数 |
 | --- | --- | --- |
-| equip_list | list<obj> | 设备信息集合 |
+| equip_list | `list<obj>` | 设备信息集合 |
 | equip_list[0].name | string | 设备名称 |
-| equip_list[0].resolutions | list<obj> | 设备分辨率集合 |
+| equip_list[0].resolutions | `list<obj>` | 设备分辨率集合 |
 | equip_list[0].resolutions[0].width | int | 设备分辨率宽 |
 | equip_list[0].resolutions[0].height | int | 设备分辨率高 |
 | equip_list[0].resolutions[0].type | int | 设备分辨率类型 |
@@ -165,7 +170,7 @@ stream_track
 
 | count | int | 设备个数 |
 | --- | --- | --- |
-| equip_list | list<obj> | 设备信息集合 |
+| equip_list | `list<obj>` | 设备信息集合 |
 | equip_list[0].name | string | 设备名称 |
 | equip_list[0].type | string | 表示是否为系统默认设备 |
 
@@ -184,11 +189,11 @@ stream_track
         }
     ]
 }
-```
+```html
 
 | count | int | 设备个数 |
 | --- | --- | --- |
-| equip_list | list<obj> | 设备信息集合 |
+| equip_list | `list<obj>` | 设备信息集合 |
 | equip_list[0].name | string | 设备名称 |
 | equip_list[0].x | int | 设备左上坐标x |
 | equip_list[0].y | int | 设备左上坐标y |
@@ -223,7 +228,7 @@ av_frame_s
 
 
 ### 上行回调
-| delay | int | 延迟<font style="color:#E8323C;">,delay = -1 表示流媒体短线</font> |
+| delay | int | 延迟,delay = -1 表示流媒体短线 |
 | --- | --- | --- |
 | rate | int | 速率 |
 | first_lost | double | 丢包 |
@@ -264,7 +269,7 @@ av_frame_s
         "userid":"123131231"
     }
 ]
-```
+```cpp
 
 
 
@@ -342,7 +347,7 @@ av_frame_s
         "test_data":1024
     }
 }
-```
+```cpp
 
 
 

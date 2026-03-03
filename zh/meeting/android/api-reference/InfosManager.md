@@ -1,3 +1,8 @@
+---
+title: "InfosManager"
+description: "Android SMeeting 会议 SDK InfosManager 接口参考"
+---
+
 会中信息管理类，通过该类的实例，可以获取到会议信息、成员信息、轨道信息
 
 ### meUid
@@ -5,7 +10,7 @@
 
 ```kotlin
 val meUid: String?
-```
+```kotlin
 
 ### meetingId
 获取会议的 id
@@ -19,7 +24,7 @@ val meetingId: String?
 
 ```kotlin
 val whiteBoard: String?
-```
+```kotlin
 
 ### meetingIdForWaitingRoom
 为了等候室存储的 meetingId
@@ -33,7 +38,7 @@ val meetingIdForWaitingRoom: String?
 
 ```java
 fun getMeetingInfo(): MeetingInfo?
-```
+```kotlin
 
 返回值
 
@@ -59,7 +64,7 @@ fun getMeInfo(): MemberInfo?
 
 ```java
 fun getMembersInfo(): MutableList<MemberInfo>
-```
+```kotlin
 
 返回值
 
@@ -91,7 +96,7 @@ fun getMemberByUid(uid: String): MemberInfo?
 
 ```java
 fun isExistMember(uid: String): Boolean
-```
+```html
 
 参数
 
@@ -129,7 +134,7 @@ fun getTrackInfos(uid: String): MutableList<TrackInfo>
 
 ```java
 fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
-```
+```kotlin
 
 参数
 

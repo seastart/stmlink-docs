@@ -1,3 +1,8 @@
+---
+title: "麦克风预设配置"
+description: "Android SRTC 音视频 SDK 麦克风采样率等预设参数说明"
+---
+
 ### PreOptionMic
 PreOptionMic 类中包含 MicCaptureOptions、AudioPublishOptions 两个属性
 
@@ -29,7 +34,7 @@ AudioPublishOptions 类主要用于配置音频流发布参数，具体参数如
 | maxBitrate | Int 类型，最大码率 |
 | dtx | Boolean 类型，是否启用 dtx(音频的不连续传输) |
 | red | Boolean 类型，是否启用 red(冗余音频数据) |
-| props | Any 类型，自定义属性。<font style="color:#DF2A3F;">可空</font> |
+| props | Any 类型，自定义属性。可空 |
 
 
 ### PublishCustomOptions
@@ -38,7 +43,7 @@ PublishCustomOptions 类是用于在发布时对 desc、props 这两个参数做
 | desc | String 类型，轨道描述。<br/>+ 可空，表示不做修改 |
 | --- | --- |
 | props | Any 类型，自定义属性。<br/>+ 可空，表示不做修改 |
-| simulcasts | MutableList<PublishCustomOptions> 类型。<br/>+ <font style="color:#DF2A3F;">目前只有摄像头流存在发布多路流的情况，所以此处用不上这个属性</font> |
+| simulcasts | `MutableList<PublishCustomOptions>` 类型。<br/>+ 目前只有摄像头流存在发布多路流的情况，所以此处用不上这个属性 |
 
 
 ## 预设值
@@ -61,7 +66,7 @@ micTrack = rtcEngine.getLocalMicTrack(PreOptionMic.def)
 val publishCustomOptions = PublishCustomOptions(TrackDesc.TRACK_AUDIO.value, null, null)
 // 在发布时使用 publishCustomOptions 修改轨道描述和扩展信息
 rtcEngine.publishLocalAudio(track, publishCustomOptions, null)
-```
+```kotlin
 
 ### PreOptionMic.def
 配置如下：

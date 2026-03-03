@@ -1,3 +1,8 @@
+---
+title: "频道消息"
+description: "微信小程序 SRTC 音视频 SDK 频道外消息通道使用说明"
+---
+
 SRTC提供便捷易用的频道外消息通道，方便开发者集成使用，如会前呼叫、通知等。
 
 ### 启用
@@ -11,7 +16,7 @@ let enableIm = async () => {
     let token = "后台返回的启用im token";
     imSid = await srtc.enableIm(token);
 }
-```
+```typescript
 
 
 
@@ -37,7 +42,7 @@ srtc.onNotifyImEvent = (evt: ImEvent) => {
 ```typescript
 // 调后台api发送im消息
 // api.sendImMsg
-```
+```typescript
 
 
 
@@ -73,5 +78,5 @@ case ImEventType.DISCONNECTED:
   // 界面刷新清理
   imSid = "";
   break;
-```
+```typescript
 

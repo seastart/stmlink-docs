@@ -1,3 +1,8 @@
+---
+title: "类型定义"
+description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
+---
+
 ## 结构体类型
 ### SEAMeetingParam
 会议参数
@@ -143,7 +148,7 @@
 | messageId | 【字段含义】消息标识 |
 | meetingId | 【字段含义】会议标识 |
 | message | 【字段含义】消息内容 |
-| messageType | 【字段含义】消息类型，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAMessageType](#xlxGu) |
+| messageType | 【字段含义】消息类型，详情参考：[SEAMessageType](#xlxGu) |
 | senderId | 【字段含义】发送者标识 |
 | senderName | 【字段含义】发送者昵称 |
 | createdAt | 【字段含义】创建时间 |
@@ -154,8 +159,8 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEASectionModel](#aObbp) |
-| listData | 【字段含义】聊天消息对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAChatModel](#dseM1) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
+| listData | 【字段含义】聊天消息对象列表，详情参考：[SEAChatModel](#dseM1) |
 
 
 ### SEAMeetingModel
@@ -176,8 +181,8 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEASectionModel](#aObbp) |
-| listData | 【字段含义】会议信息对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAMeetingModel](#NwAZR) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
+| listData | 【字段含义】会议信息对象列表，详情参考：[SEAMeetingModel](#NwAZR) |
 
 
 ### SEAMemberModel
@@ -197,8 +202,8 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEASectionModel](#aObbp) |
-| listData | 【字段含义】参会成员对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAMemberModel](#LfPnO) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
+| listData | 【字段含义】参会成员对象列表，详情参考：[SEAMemberModel](#LfPnO) |
 
 
 ### SEAStreamAudioModel
@@ -259,8 +264,8 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEASectionModel](#aObbp) |
-| listData | 【字段含义】设备对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAAgentModel](#YRsDA) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
+| listData | 【字段含义】设备对象列表，详情参考：[SEAAgentModel](#YRsDA) |
 
 
 ### SEAInviteModel
@@ -269,7 +274,7 @@
 | **属性名称** | **描述** |
 | --- | --- |
 | contact | 【字段含义】设备标识 |
-| type | 【字段含义】设备类型，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAAgentType](#rv0G4) |
+| type | 【字段含义】设备类型，详情参考：[SEAAgentType](#rv0G4) |
 
 
 ### SEAConfereeModel
@@ -288,8 +293,8 @@
 | --- | --- |
 | layout | 【字段含义】布局类型，默认 auto |
 | isPolling | 【字段含义】是否轮询，默认 NO |
-| watermark | 【字段含义】布局水印，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEALayoutWatermarkModel](#ktKP5) |
-| label | 【字段含义】布局标签，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEALayoutLabelModel](#PfK8y) |
+| watermark | 【字段含义】布局水印，详情参考：[SEALayoutWatermarkModel](#ktKP5) |
+| label | 【字段含义】布局标签，详情参考：[SEALayoutLabelModel](#PfK8y) |
 | viewLists | 【字段含义】布局视图列表，即：逻辑块, 包含宫格与用户<br/>【特别说明】布局视图列表，请参见 [SEALayoutViewListModel](#Ww9uW) 中的相关说明。 |
 
 
@@ -332,7 +337,7 @@
 | --- | --- |
 | index | 【字段含义】格子序号<br/>【特别说明】排序规则按HTML中标签的顺序，默认 0 |
 | bindShare | 【字段含义】是否优先绑定频道内的共享流，默认 NO |
-| label | 【字段含义】单元格标签，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEALayoutLabelModel](#PfK8y) |
+| label | 【字段含义】单元格标签，详情参考：[SEALayoutLabelModel](#PfK8y) |
 
 
 ### SEACloudRecordParam
@@ -344,7 +349,7 @@
 | --- | --- |
 | recordType | 【字段含义】录制类型<br/>【推荐取值】默认：[SEARecordTypeVideo](#QYWNw) |
 | title | 【字段含义】录制文件标题 |
-| layoutData | 【字段含义】录制布局<br/>【推荐取值】详情可<font style="color:rgb(0, 0, 0);">参考：</font>[SEALayoutDataModel](#SobrR) |
+| layoutData | 【字段含义】录制布局<br/>【推荐取值】详情可参考：[SEALayoutDataModel](#SobrR) |
 
 
 ### SEACloudRecordDetailsModel
@@ -358,7 +363,7 @@
 | title | 【字段含义】录制文件标题 |
 | opUid | 【字段含义】操作人标识 |
 | opName | 【字段含义】操作人名称 |
-| recordStatus | 【字段含义】云录制状态，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEARecordStatus](#XOsJa) |
+| recordStatus | 【字段含义】云录制状态，详情参考：[SEARecordStatus](#XOsJa) |
 | videoKey | 【字段含义】视频地址 |
 | videoSize | 【字段含义】视频大小 |
 | tags | 【字段含义】录制标签 |
@@ -449,7 +454,7 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| listData | 【字段含义】等候室成员对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAWaitingRoomMemberModel](#BomRa) |
+| listData | 【字段含义】等候室成员对象列表，详情参考：[SEAWaitingRoomMemberModel](#BomRa) |
 
 
 ### SEARoomSubMeetingModel
@@ -462,7 +467,7 @@
 | parentMid | 【字段含义】主会议标识 |
 | title | 【字段含义】小组会议名称 |
 | meetingStatus | 【字段含义】小组会议状态，详情参考：[SEAMeetingStatus](#YzZHH) |
-| conferee | 【字段含义】小组会议参会成员列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAConfereeModel](#ipu1S) |
+| conferee | 【字段含义】小组会议参会成员列表，详情参考：[SEAConfereeModel](#ipu1S) |
 
 
 ### SEARoomSubMeetingListModel
@@ -470,7 +475,7 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| listData | 【字段含义】小组会议对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEARoomSubMeetingModel](#n9tEd) |
+| listData | 【字段含义】小组会议对象列表，详情参考：[SEARoomSubMeetingModel](#n9tEd) |
 
 
 ### SEAOnlineMemberModel
@@ -480,7 +485,7 @@
 | --- | --- |
 | userId | 【字段含义】用户标识 |
 | nickname | 【字段含义】用户昵称 |
-| deviceType | 【字段含义】设备类型，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEADeviceType](#xpfl9) |
+| deviceType | 【字段含义】设备类型，详情参考：[SEADeviceType](#xpfl9) |
 | joinAt | 【字段含义】加入时间 |
 
 
@@ -489,8 +494,8 @@
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEASectionModel](https://www.yuque.com/anyconf/smeeting/gkeau9oyh5vms80z#aObbp) |
-| listData | 【字段含义】在线成员对象列表，详情<font style="color:rgb(0, 0, 0);">参考：</font>[SEAOnlineMemberModel](#DpBFV) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](https://www.yuque.com/anyconf/smeeting/gkeau9oyh5vms80z#aObbp) |
+| listData | 【字段含义】在线成员对象列表，详情参考：[SEAOnlineMemberModel](#DpBFV) |
 
 
 ## 枚举类型
@@ -593,7 +598,7 @@
 | SEAMeetingModeMixture | `2` | 合成会议模式 |
 | SEAMeetingModeVoice | `3` | 语音会议模式 |
 | SEAMeetingModeTraining | `4` | 培训会议模式 |
-| SEAMeetingModeGroups | `5` | 小组会议模式<font style="color:#5dd8ff;background-color:#1e2028;"></font> |
+| SEAMeetingModeGroups | `5` | 小组会议模式 |
 
 
 ### SEAMeetingStatus

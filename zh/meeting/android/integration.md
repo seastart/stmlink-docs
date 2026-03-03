@@ -1,5 +1,10 @@
+---
+title: "集成"
+description: "Android SMeeting 会议 SDK 环境配置与 SDK 安装指南"
+---
+
 # 远程依赖
-<font style="color:rgb(38, 38, 38);">在根目录下的 build.gradle 中，添加 maven</font>
+在根目录下的 build.gradle 中，添加 maven
 
 ```plain
 allprojects {
@@ -7,7 +12,7 @@ allprojects {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
     }
 }
-```
+```kotlin
 
 
 

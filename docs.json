@@ -1,12 +1,12 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "StmLink 文档",
-  "url": "https://docs.stmlink.com",
+  "theme": "mint",
+  "name": "STMLink 文档",
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon.svg",
   "colors": {
     "primary": "#0066FF",
     "light": "#3385FF",
@@ -152,6 +152,8 @@
                   "zh/rtc/web/integration",
                   "zh/rtc/web/quickstart",
                   "zh/rtc/web/key-concepts",
+                  "zh/rtc/web/channel-messages",
+                  "zh/rtc/web/network-quality",
                   {
                     "group": "进阶实践",
                     "pages": [
@@ -198,26 +200,26 @@
                   "zh/rtc/server-api/overview",
                   "zh/rtc/server-api/api-list",
                   "zh/rtc/server-api/error-codes",
-                  "zh/rtc/server-api/server-demo",
+                  "zh/rtc/server-api/server-demo"
+                ]
+              },
+              {
+                "group": "全平台 C++ SDK",
+                "pages": [
+                  "zh/rtc/server-api/cpp/integration",
+                  "zh/rtc/server-api/cpp/quickstart",
                   {
-                    "group": "全平台 C++ SDK",
+                    "group": "接口文档",
                     "pages": [
-                      "zh/rtc/server-api/cpp/integration",
-                      "zh/rtc/server-api/cpp/quickstart",
-                      {
-                        "group": "接口文档",
-                        "pages": [
-                          "zh/rtc/server-api/cpp/api-reference/IRTCEngine",
-                          "zh/rtc/server-api/cpp/api-reference/ILocalVideoStream",
-                          "zh/rtc/server-api/cpp/api-reference/ILocalAudioStream",
-                          "zh/rtc/server-api/cpp/api-reference/IRemoteVideoStream",
-                          "zh/rtc/server-api/cpp/api-reference/IRemoteAudioStream"
-                        ]
-                      },
-                      "zh/rtc/server-api/cpp/types",
-                      "zh/rtc/server-api/cpp/error-codes"
+                      "zh/rtc/server-api/cpp/api-reference/IRTCEngine",
+                      "zh/rtc/server-api/cpp/api-reference/ILocalVideoStream",
+                      "zh/rtc/server-api/cpp/api-reference/ILocalAudioStream",
+                      "zh/rtc/server-api/cpp/api-reference/IRemoteVideoStream",
+                      "zh/rtc/server-api/cpp/api-reference/IRemoteAudioStream"
                     ]
-                  }
+                  },
+                  "zh/rtc/server-api/cpp/types",
+                  "zh/rtc/server-api/cpp/error-codes"
                 ]
               }
             ]
