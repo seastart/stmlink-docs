@@ -10,7 +10,7 @@ description: "iOS SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
 ```objectivec
 RTCEngineConfig *engineConfig = [[RTCEngineConfig alloc] init];
 engineConfig.enableLocalLog = YES;
-```swift
+```
 
 + **下表描述了**`**RTCEngineConfig**`**对象的所有属性。**
 
@@ -36,7 +36,7 @@ if (errorCode != RTCEngineErrorOK) {
 ```objectivec
 @interface YourClass : NSObject <RTCEngineDelegate>
 /// 根据需要，在此处添加以下任何回调函数。
-```swift
+```
 
 #### 实现回调函数
 + **加入频道成功回调**
@@ -61,7 +61,7 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"加入频道成功 channel = %@, userId = %@", channel, userId);
 }
-```swift
+```
 
 + **开始重连回调**
 
@@ -81,7 +81,7 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"服务连接/重连成功。");
 }
-```swift
+```
 
 + **连接断开回调**
 
@@ -108,7 +108,7 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"接收到自定义消息 action = %@ content = %@", action, content);
 }
-```swift
+```
 
 + **频道更新回调**
 
@@ -132,7 +132,7 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"通知有用户加入频道 channel = %@, userId = %@", channel, userId);
 }
-```swift
+```
 
 + **成员数据更新回调**
 
@@ -157,7 +157,7 @@ if (errorCode != RTCEngineErrorOK) {
     
     NSLog(@"通知有用户离开频道 channel = %@, userId = %@", channel, userId);
 }
-```swift
+```
 
 + **用户码流数据变更回调**
 
@@ -180,7 +180,7 @@ RTCEngineError errorCode = [[RTCEngineKit sharedEngine] joinChannelWithToken:@"Y
 if (errorCode != RTCEngineErrorOK) {
     NSLog(@"加入频道失败");
 }
-```swift
+```
 
 #### 离开频道
 ```objectivec
@@ -193,7 +193,7 @@ if (errorCode != RTCEngineErrorOK) {
 #### **开启预览画面**
 ```objectivec
 [[RTCEngineKit sharedEngine] startLocalPreview:YES view:self.localView];
-```swift
+```
 
 #### **更新预览画面**
 ```objectivec
@@ -203,7 +203,7 @@ if (errorCode != RTCEngineErrorOK) {
 #### **停止预览画面**
 ```objectivec
 [[RTCEngineKit sharedEngine] stopLocalPreview];
-```swift
+```
 
 #### **恢复/暂停推流**
 ```objectivec
@@ -214,9 +214,9 @@ if (errorCode != RTCEngineErrorOK) {
 #### **订阅远端用户的视频流**
 ```objectivec
 [[RTCEngineKit sharedEngine] startRemoteView:userId trackId:trackId view:self.previewView];
-```swift
+```
 
-+ **下表描述了 **`**RTCTrackIdentifierFlags**`** 轨道标识枚举类型的所有值。**
++ **下表描述了`RTCTrackIdentifierFlags`轨道标识枚举类型的所有值。**
 
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
@@ -237,7 +237,7 @@ if (errorCode != RTCEngineErrorOK) {
 #### **停止订阅远端用户的视频流**
 ```objectivec
 [[RTCEngineKit sharedEngine] stopRemoteView:userId trackId:trackId];
-```swift
+```
 
 #### **停止订阅指定远端用户的所有视频流**
 ```objectivec
@@ -247,5 +247,5 @@ if (errorCode != RTCEngineErrorOK) {
 ### step 5：销毁资源
 ```objectivec
 [[RTCEngineKit sharedEngine] destroy];
-```swift
+```
 

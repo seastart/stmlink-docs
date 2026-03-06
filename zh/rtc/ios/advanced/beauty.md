@@ -12,7 +12,7 @@ description: "iOS SRTC 音视频 SDK 视频渲染与美颜组件集成"
 /// @param authDataSize 密钥长度
 /// @param logLevel 日志等级
 [[RTCEngineKit sharedEngine] installRenderModule:g_auth_package authDataSize:sizeof(g_auth_package) logLevel:RTCEngineLogLevelError];
-```swift
+```
 
 ### step 2：**美颜效果参数设置**
 当前视频渲染组件只提供基础美颜效果，加载视频渲染组件之后，可通过以下属性来设置相应的美颜效果：
@@ -84,5 +84,5 @@ description: "iOS SRTC 音视频 SDK 视频渲染与美颜组件集成"
 ```objectivec
 /// 卸载视频渲染组件
 [[RTCEngineKit sharedEngine] uninstallRenderModule];
-```swift
+```
 

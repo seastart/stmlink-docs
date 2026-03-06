@@ -18,14 +18,12 @@ description: "iOS SRTC 音视频 SDK 集成与使用常见问题解答"
 	<key>NSAllowsArbitraryLoads</key>
 	<true/>
 </dict>
-```swift
-
+```
 
 
 #### 3、集成SDK打包上传苹果商店失败问题。
 > 目前SDK只支持arm64，请检查本地的工程配置，是否还有其他的支持，有的话请移除。
 >
-
 
 
 #### 4、手动集成时出现启动异常崩溃：dyld: Library not loaded: @rpath/xxxxx.framework/xxxxx

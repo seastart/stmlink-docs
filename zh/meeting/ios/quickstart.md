@@ -13,7 +13,7 @@ description: "iOS SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
 
 ```objectivec
 pod 'MeetingKit'
-```swift
+```
 
 2、执行以下命令，安装组件。
 
@@ -28,7 +28,7 @@ pod install
 
 ```objectivec
 pod repo update
-```swift
+```
 
 > 如果，还是拉取不到最新版本可以尝试指定 MeetingKit 的源：
 >
@@ -41,7 +41,7 @@ pod 'MeetingKit', :git => "https://github.com/seastart/meeting-ios-cocoapods.git
 
 ```objectivec
 #import <MeetingKit/MeetingKit.h>
-```html
+```
 
 #### 配置 App 权限
 使用音视频功能，需要授权麦克风、摄像头以及相册的使用权限。在 App 的 Info.plist 中添加以下几项，分别对应麦克风、摄像头和相册在系统弹出授权对话框时的提示信息。
@@ -65,7 +65,7 @@ pod 'MeetingKit', :git => "https://github.com/seastart/meeting-ios-cocoapods.git
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"会议组件登录失败(%ld，%@)", code, message);
 }];
-```swift
+```
 
 #### 登出
 ```objectivec
@@ -79,7 +79,7 @@ pod 'MeetingKit', :git => "https://github.com/seastart/meeting-ios-cocoapods.git
 ```objectivec
 SEAMeetingParam *meetingParam = [[SEAMeetingParam alloc] init];
 meetingParam.title = @"Meeting Title";
-```swift
+```
 
 + **下表描述了**`**SEAMeetingParam**`**对象的部分属性。**
 
@@ -111,7 +111,7 @@ meetingParam.title = @"Meeting Title";
 ```objectivec
 @interface YourClass : NSObject <MeetingKitDelegate>
 /// 根据需要，在此处添加以下任何回调函数。
-```swift
+```
 
 #### 实现回调事件
 + **错误事件回调**
@@ -140,7 +140,7 @@ meetingParam.title = @"Meeting Title";
     
     NSLog(@"加入房间成功，%@ %@", meetingId, userId);
 }
-```swift
+```
 
 + **远端用户加入房间回调**
 
@@ -164,7 +164,7 @@ meetingParam.title = @"Meeting Title";
 
     NSLog(@"远端用户离开房间通知，userId = %@", userId);
 }
-```swift
+```
 
 + **用户摄像头状态变化回调**
 
@@ -192,7 +192,7 @@ meetingParam.title = @"Meeting Title";
 
     NSLog(@"用户麦克风状态变化，userId = %@ micState = %ld", targetUserId, micState);
 }
-```swift
+```
 
 #### 创建加入会议参数
 在调用 enterRoom 接口时，需要填写 SEAMeetingEnterParam 关键参数，详情可参看 [SEAMeetingEnterParam](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#OLcoA)。
@@ -217,7 +217,7 @@ meetingEnterParam.avatar = @"Your Portrait";
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"加入房间失败，code = %ld, message = %@", code, message);
 }];
-```swift
+```
 
 #### 离开房间
 > 调用该接口会让用户离开自己所在的房间，并释放摄像头、麦克风、扬声器等设备资源。 等资源释放完毕之后，SDK 会通过`onSuccess`回调向您通知。 如果您要再次调用`enterRoom:()`，建议等待`onSuccess`回调到来之后再执行之后的操作，以避免摄像头或麦克风被占用等异常问题。
@@ -239,7 +239,7 @@ meetingEnterParam.avatar = @"Your Portrait";
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"请求开启摄像头失败，code = %ld, message = %@", code, message);
 }];
-```swift
+```
 
 #### 关闭摄像头
 ```objectivec
@@ -263,7 +263,7 @@ meetingEnterParam.avatar = @"Your Portrait";
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"请求打开麦克风失败，code = %ld, message = %@", code, message);
 }];
-```swift
+```
 
 #### 关闭麦克风
 ```objectivec
@@ -281,9 +281,9 @@ meetingEnterParam.avatar = @"Your Portrait";
 #### 订阅远端用户画面
 ```objectivec
 [[MeetingKit sharedInstance] startRemoteView:@"Remote User ID" streamType:SEAVideoStreamTypeBig view:playerView];
-```swift
+```
 
-+ **下表描述了 **`**SEAVideoStreamType**`** 视频流类型的所有值。**
++ **下表描述了`SEAVideoStreamType`视频流类型的所有值。**
 
 | **枚举类型** | **枚举值** | **描述** |
 | --- | :---: | --- |
@@ -300,7 +300,7 @@ meetingEnterParam.avatar = @"Your Portrait";
 #### **取消订阅指定远端用户的所有视频画面**
 ```objectivec
 [[MeetingKit sharedInstance] stopAllRemoteViewWithUserId:@"Remote User ID"];
-```swift
+```
 
 #### **取消订阅所有远端用户的视频画面**
 ```objectivec

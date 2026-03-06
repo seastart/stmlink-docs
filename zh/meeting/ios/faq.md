@@ -17,7 +17,7 @@ description: "iOS SMeeting 会议 SDK 集成与使用常见问题解答"
 	<key>NSAllowsArbitraryLoads</key>
 	<true/>
 </dict>
-```swift
+```
 
 #### 集成SDK打包上传苹果商店失败问题。
 > 目前SDK只支持 arm64，请检查本地的工程配置，是否还有其他的支持，有的话请移除。
