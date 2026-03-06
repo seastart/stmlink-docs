@@ -12,7 +12,7 @@ RTCEngineConfig *engineConfig = [[RTCEngineConfig alloc] init];
 engineConfig.enableLocalLog = YES;
 ```
 
-+ **下表描述了**`**RTCEngineConfig**`**对象的所有属性。**
++ **下表描述了`RTCEngineConfig`对象的所有属性。**
 
 | **参数名** | **必填** | **说明** |
 | --- | :---: | --- |
