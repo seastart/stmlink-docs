@@ -30,6 +30,8 @@ srtc.dll
 
 srtclive.dll
 
+swebrtc.dll
+
 plugin/anyLiveM.dll
 
 plugin/cocktail_service.dll

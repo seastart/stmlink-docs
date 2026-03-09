@@ -7,7 +7,7 @@ description: "Windows SRTC 音视频 SDK 完整类型与结构体定义"
 | 参数名称 | 参数类型 | 参数说明 |
 | --- | --- | --- |
 | desc | char * | 轨道描述信息 |
-| codec | int | 编码类型[查看](https://www.yuque.com/anyconf/rtcengine/pfzomlthc9l03830#oRuFU) |
+| codec | int | 编码类型[查看](./enums.md#数据编码类型 StreamCodec) |
 | width | int | 编码宽度，-1为自动匹配采集宽度 |
 | height | int | 编码高度，-1为自动匹配采集高度 |
 | maxFps | int | 最大帧率，-1为自动匹配采集帧率 |
@@ -47,7 +47,7 @@ description: "Windows SRTC 音视频 SDK 完整类型与结构体定义"
 | 参数名称 | 参数类型 | 参数说明 |
 | --- | --- | --- |
 | desc | char * | 轨道描述信息 |
-| codec | int | 编码类型[查看](https://www.yuque.com/anyconf/rtcengine/pfzomlthc9l03830#oRuFU) |
+| codec | int | 编码类型[查看](./enums.md#数据编码类型 StreamCodec) |
 | maxBitrate | int | 最大码率，-1为自动匹配合适码率 |
 
 
@@ -81,7 +81,7 @@ description: "Windows SRTC 音视频 SDK 完整类型与结构体定义"
 | id | char* | 轨道id |
 | desc | char* | 轨道描述 |
 | kind | char* | 轨道种类 |
-| codec | int | 编码类型：[StreamCodec](https://www.yuque.com/anyconf/rtcengine/pfzomlthc9l03830#oRuFU) |
+| codec | int | 编码类型：[StreamCodec](./enums.md#数据编码类型 StreamCodec) |
 | width | int | 视频宽度 |
 | height | int | 视频高度 |
 | fps | int | 视频帧率 |
@@ -130,7 +130,7 @@ stream_track
 
 ### 
 ### 摄像头枚举信息
-```cpp
+```json
 {
     "count":1,
     "equip_list":[
@@ -146,7 +146,7 @@ stream_track
         }
     ]
 }
-```html
+```
 
 | count | int | 设备个数 |
 | --- | --- | --- |
@@ -176,12 +176,12 @@ stream_track
 
 
 ### 共享屏幕枚举信息
-```cpp
+```json
 {
     "count":1,
     "equip_list":[
         {
-            "name":"//display"
+            "name":"//display",
             "height":1080,
             "width":1920,
             "x":0,
@@ -189,7 +189,7 @@ stream_track
         }
     ]
 }
-```html
+```
 
 | count | int | 设备个数 |
 | --- | --- | --- |
@@ -269,8 +269,7 @@ av_frame_s
         "userid":"123131231"
     }
 ]
-```cpp
-
+```
 
 
 ### 音柱回调
@@ -347,7 +346,43 @@ av_frame_s
         "test_data":1024
     }
 }
-```cpp
+```
+
+### 录制布局成员视图配置
+设置录制布局时使用的成员视图配置 JSON 格式：
+
+```json
+{
+    "layout": 0,
+    "all_member": 20,
+    "member": [
+        {
+            "uid": "__uid__",
+            "name": "昵称",
+            "track_id": "camera",
+            "portrait": "",
+            "layout_index": 0,
+            "cam_st": 1,
+            "mic_st": 1
+        }
+    ]
+}
+```
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| layout | int | 布局类型（0：自动布局） |
+| all_member | int | 用户总数 |
+| member | list | 成员配置数组 |
+| member[].uid | string | 用户 ID |
+| member[].name | string | 用户昵称 |
+| member[].track_id | string | 流 ID 或推流的 key（如 camera、screen） |
+| member[].portrait | string | 头像地址 |
+| member[].layout_index | int | 用户所在位置索引 |
+| member[].cam_st | int | 摄像头开关状态（1：关，2：开） |
+| member[].mic_st | int | 麦克风开关状态（1：关，2：开） |
+
+
 
 
 

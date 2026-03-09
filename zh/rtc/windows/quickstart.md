@@ -1,4 +1,4 @@
----
+﻿---
 title: "快速开始"
 description: "Windows SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
 ---
@@ -10,7 +10,7 @@ if((ret |= SRTC::StatusCode::OK) || !_irtc)
 {
     return false;
 }
-```cpp
+```
 
 
 
@@ -19,7 +19,7 @@ if((ret |= SRTC::StatusCode::OK) || !_irtc)
 _irtc->setEventHandler(this);
 ```
 
-更多消息回调内容[查看](https://www.yuque.com/anyconf/rtcengine/yrwtcw/edit?toc_node_uuid=a7YN2NnqnFeB_lOy)
+更多消息回调内容[查看](./api-reference/IRTCEngineEvent.md)
 
 
 
@@ -31,9 +31,9 @@ _irtc->setEventHandler(this);
 std::string token = "";
 _irtc->joinChannel(token);
 //触发 IRTCEngineEvent.onJoinRoom 事件之后才是真正的入会成功
-```typescript
+```
 
-更多参数设置[参看](https://www.yuque.com/anyconf/rtcengine/rhsp7k/edit#RlyqM)
+更多参数设置[参看](./api-reference/IRTCSetting.md)
 
 
 
@@ -63,9 +63,9 @@ _irtc->joinChannel(token);
     _camStream->stopCapture();
     _camStream->removeAllPlayView();
     _irtc->unpublish(_camStream);
-```typescript
+```
 
-更多本地摄像头方法[参看](https://www.yuque.com/anyconf/rtcengine/tqhsrn)
+更多本地摄像头方法[参看](./api-reference/IRTCLocalScreenTrack.md)
 
 
 
@@ -93,9 +93,9 @@ _irtc->joinChannel(token);
 
     _micStream->stopCapture();
     _irtc->unpublish(_micStream); 
-```typescript
+```
 
-更多本地麦克风方法[参看](https://www.yuque.com/anyconf/rtcengine/slm5sw)
+更多本地麦克风方法[参看](./api-reference/IRTCLocalAudioTrack.md)
 
 
 
@@ -123,9 +123,9 @@ _irtc->joinChannel(token);
 
     _screenStream->stopCapture();
     _irtc->unpublish(_screenStream); 
-```cpp
+```
 
-更多本地桌面共享方法[参看](https://www.yuque.com/anyconf/rtcengine/tqhsrn)
+更多本地桌面共享方法[参看](./api-reference/IRTCLocalScreenTrack.md)
 
 
 
@@ -149,9 +149,9 @@ _irtc->joinChannel(token);
     }
 
     _speakerStream->stopPlay();
-```typescript
+```
 
-更多本地扬声器方法[参看](https://www.yuque.com/anyconf/rtcengine/dvvov9)
+更多本地扬声器方法[参看](./api-reference/IRTCRemoteAudioTrack.md)
 
 
 
@@ -182,7 +182,29 @@ _irtc->joinChannel(token);
 
     _remoteStream->removeAllPlayView();
     _irtc->unsubscribe(_remoteStream);
+```
+
+### 开关本地录制
 ```cpp
+    std::string mid = sdkInfo.meeting_id().toStdString();
+    SMeeting::IMEETRecord* _rc;
+    _imeet->getLocalRecord(mid, &_rc);
+    //录制指定窗口
+    HWND hwnd = (HWND)this->widID();
+    _rc->setRecordHwnd(hwnd, 0, 0, 0, 0);
+    //录制画面配置
+    //_rc->setRecordLayoutMemberView(dt.c_str(),dt.size());
+    _rc->startRecord();
+```
+
+```cpp
+    std::string mid = sdkInfo.meeting_id().toStdString();
+    SMeeting::IMEETRecord* _rc;
+    _imeet->getLocalRecord(mid, &_rc);
+    _rc->stopRecord();
+```
+更多本地录制方法[参看](./api-reference/IRTCRecord.md)
+
 
 ### 
 ### 退出频道

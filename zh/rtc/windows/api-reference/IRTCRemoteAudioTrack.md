@@ -9,7 +9,7 @@ description: "Windows SRTC 音视频 SDK IRTCRemoteAudioTrack 接口参考"
 
 
 ## 继承关系
-[IRTCTrack](https://www.yuque.com/anyconf/rtcengine/fkp5s07gsry40a9i) ->IRTCRemoteAudioTrack
+[IRTCTrack](./IRTCTrack.md) ->IRTCRemoteAudioTrack
 
 
 
@@ -19,11 +19,11 @@ description: "Windows SRTC 音视频 SDK IRTCRemoteAudioTrack 接口参考"
 ### 开启音频输出
 ```cpp
 virtual StatusCode startPlay(RTCAudioOutputOptions* opt = nullptr) = 0;
-```cpp
+```
 
 **参数**
 
-| opt | 音频轨道输出信息[查看](https://www.yuque.com/anyconf/rtcengine/rhsp7k#aqSxT) |
+| opt | 音频轨道输出信息[查看](../types.md#音频轨道输出信息（RTCAudioOutputOptions）) |
 | --- | --- |
 
 

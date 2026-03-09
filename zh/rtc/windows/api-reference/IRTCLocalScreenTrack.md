@@ -11,7 +11,7 @@ description: "Windows SRTC 音视频 SDK IRTCLocalScreenTrack 接口参考"
 
 
 ## 继承关系
-[IRTCTrack](https://www.yuque.com/anyconf/rtcengine/fkp5s07gsry40a9i) -> [IRTCLocalVideoTrack](https://www.yuque.com/anyconf/rtcengine/wupb3vgmah8ggqp5) ->IRTCLocalScreenTrack
+[IRTCTrack](./IRTCTrack.md) -> [IRTCLocalVideoTrack](./IRTCLocalVideoTrack.md) ->IRTCLocalScreenTrack
 
 
 
@@ -19,11 +19,11 @@ description: "Windows SRTC 音视频 SDK IRTCLocalScreenTrack 接口参考"
 ### 更新采集参数
 ```cpp
 virtual StatusCode updateOptions(RTCScreenCaptureOptions* cap) = 0;
-```cpp
+```
 
 **参数**
 
-| cap | 屏幕轨道采集对象[查看](https://www.yuque.com/anyconf/rtcengine/rhsp7k#AgitR) |
+| cap | 屏幕轨道采集对象[查看](../types.md#屏幕轨道采集信息（RTCScreenCaptureOptions）) |
 | --- | --- |
 
 
@@ -40,7 +40,7 @@ virtual StatusCode startCapture(RTCScreenCaptureOptions* cap = nullptr) = 0;
 
 **参数**
 
-| cap | 屏幕轨道采集对象[查看](https://www.yuque.com/anyconf/rtcengine/rhsp7k#AgitR) |
+| cap | 屏幕轨道采集对象[查看](../types.md#屏幕轨道采集信息（RTCScreenCaptureOptions）) |
 | --- | --- |
 
 
@@ -49,7 +49,7 @@ virtual StatusCode startCapture(RTCScreenCaptureOptions* cap = nullptr) = 0;
 ### 停止采集
 ```cpp
 virtual StatusCode stopCapture() = 0;
-```cpp
+```
 
 
 

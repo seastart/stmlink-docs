@@ -17,7 +17,7 @@ description: "Windows SRTC 音视频 SDK IRTCView 接口参考"
 ### 获取渲染类型
 ```cpp
 virtual ViewEnumType ViewType() = 0;
-```html
+```
 
 **返回值**
 
@@ -45,7 +45,7 @@ virtual void* getHwnd() = 0;
 ### 渲染数据
 ```cpp
 virtual void updatePlanes(const unsigned char* buf, int w, int h, int fourcc, int label) = 0;
-```typescript
+```
 
 **参数**
 

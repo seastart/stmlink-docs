@@ -9,7 +9,7 @@ description: "Windows SRTC 音视频 SDK IRTCLocalAudioTrack 接口参考"
 
 
 ## 继承关系
-[IRTCTrack](https://www.yuque.com/anyconf/rtcengine/fkp5s07gsry40a9i) -> IRTCLocalAudioTrack
+[IRTCTrack](./IRTCTrack.md) -> IRTCLocalAudioTrack
 
 
 

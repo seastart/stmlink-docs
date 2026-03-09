@@ -1,3 +1,5 @@
 .DS_Store
 .mintlify/
 node_modules/
+/zh/rtc/windows/.vs
+/zh/rtc/windows/include

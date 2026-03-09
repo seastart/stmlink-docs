@@ -9,7 +9,7 @@ description: "Windows SRTC 音视频 SDK IRTCLocalMicTrack 接口参考"
 
 
 ## 继承关系
-[IRTCTrack](https://www.yuque.com/anyconf/rtcengine/fkp5s07gsry40a9i) -> [IRTCLocalAudioTrack](https://www.yuque.com/anyconf/rtcengine/slm5sw) ->IRTCLocalMicTrack
+[IRTCTrack](./IRTCTrack.md) -> [IRTCLocalAudioTrack](./IRTCLocalAudioTrack.md) ->IRTCLocalMicTrack
 
 
 
@@ -21,11 +21,11 @@ description: "Windows SRTC 音视频 SDK IRTCLocalMicTrack 接口参考"
 ### 更新采集参数
 ```cpp
 virtual StatusCode updateOptions(RTCMicCaptureOptions* cap) = 0;
-```cpp
+```
 
 **参数**
 
-| cap | 音频轨道采集对象[查看](https://www.yuque.com/anyconf/rtcengine/rhsp7k#g52cN) |
+| cap | 音频轨道采集对象[查看](../types.md#音频轨道采集信息（RTCMicCaptureOptions）) |
 | --- | --- |
 
 
@@ -44,7 +44,7 @@ virtual StatusCode startCapture(RTCMicCaptureOptions* cap = nullptr) = 0;
 
 **参数**
 
-| cap | 视频轨道采集对象[查看](https://www.yuque.com/anyconf/rtcengine/rhsp7k#g52cN) |
+| cap | 视频轨道采集对象[查看](../types.md#音频轨道采集信息（RTCMicCaptureOptions）) |
 | --- | --- |
 
 
@@ -53,7 +53,7 @@ virtual StatusCode startCapture(RTCMicCaptureOptions* cap = nullptr) = 0;
 ### 停止采集
 ```cpp
 virtual StatusCode stopCapture() = 0;
-```cpp
+```
 
 
 

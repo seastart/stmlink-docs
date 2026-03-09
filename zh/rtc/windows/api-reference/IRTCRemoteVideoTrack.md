@@ -9,7 +9,7 @@ description: "Windows SRTC 音视频 SDK IRTCRemoteVideoTrack 接口参考"
 
 
 ## 继承关系
-[IRTCTrack](https://www.yuque.com/anyconf/rtcengine/fkp5s07gsry40a9i) ->IRTCRemoteVideoTrack
+[IRTCTrack](./IRTCTrack.md) ->IRTCRemoteVideoTrack
 
 
 
@@ -17,11 +17,11 @@ description: "Windows SRTC 音视频 SDK IRTCRemoteVideoTrack 接口参考"
 ### 添加渲染对象
 ```cpp
 virtual StatusCode addPlayView(IRTCView* v) = 0;
-```cpp
+```
 
 **参数**
 
-| v | 渲染对象类[查看](https://www.yuque.com/anyconf/rtcengine/pebezuucwg2v9m1g) |
+| v | 渲染对象类[查看](./IRTCView.md) |
 | --- | --- |
 
 
@@ -34,7 +34,7 @@ virtual StatusCode removePlayView(IRTCView* v) = 0;
 
 **参数**
 
-| v | 渲染对象类[查看](https://www.yuque.com/anyconf/rtcengine/pebezuucwg2v9m1g) |
+| v | 渲染对象类[查看](./IRTCView.md) |
 | --- | --- |
 
 
@@ -45,7 +45,7 @@ virtual StatusCode removePlayView(IRTCView* v) = 0;
 ### 移除所有渲染对象
 ```cpp
 virtual StatusCode removePlayView() = 0;
-```cpp
+```
 
 
 
