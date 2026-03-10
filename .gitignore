@@ -3,3 +3,6 @@
 node_modules/
 /zh/rtc/windows/.vs
 /zh/rtc/windows/include
+/zh/meeting/windows/.vs
+/zh/meeting/windows/include
+/zh/meeting/windows/readme.txt
