@@ -3,6 +3,12 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [2.4.4] - 2026.03.12
+#### 新增
++ 共享流连接新增`Audio Track`，共用麦克风采集的轨道；
++ 新增发布视图录制的共享流接口`publishScreenViewCaptureWithPixelBuffer:displayAngle:`；
++ 新增设置视图采集共享接口`enabledViewCaptureShare:`。
+
 ### [2.4.3] - 2026.02.28
 #### 新增
 + 流媒体配置新增`forceLandscape`参数，用来业务层强制横屏设置；

@@ -3,6 +3,13 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.2.0] - 2026.03.12
+#### 新增
++ 成员共享屏幕事件逻辑重构，由事件和轨道列表共同解决；
++  录制状态`SEARecordStatus`新增`SEARecordStatuUnknown`枚举；
++ 新增发布视图录制的共享流接口`publishScreenViewCaptureWithPixelBuffer:displayAngle:`；
++ 新增设置视图采集共享接口`enabledViewCaptureShare:`。
+
 ### [1.1.9] - 2026.02.28
 #### 新增
 + 流媒体配置新增`forceLandscape`参数，用来业务层强制横屏设置；

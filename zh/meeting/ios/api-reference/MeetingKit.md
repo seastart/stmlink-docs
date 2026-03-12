@@ -1262,6 +1262,27 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 | sampleBuffer | 数据帧 |
 | sampleBufferType | 数据帧类型，包括：视频、音频等 |
 
+### publishScreenViewCaptureWithPixelBuffer:displayAngle:()
+`- (void)publishScreenViewCaptureWithPixelBuffer:(CVPixelBufferRef)pixelBuffer displayAngle:(int)displayAngle`
+
+发布视图录制的共享流，即：用户可以通过该接口送入与屏幕共享共用轨道的视频流数据。
+
+**参数**
+
+| pixelBuffer |  UIView采集的像素数据(CVPixelBufferRef) |
+| --- | --- |
+| displayAngle | 显示角度(0/90/180/270) |
+
+### enabledViewCaptureShare:()
+`- (RTCEngineError)enabledViewCaptureShare:(BOOL)enabled`
+
+设置视图采集共享，该接口用来通知SDK，当前共享屏幕轨道推送的是屏幕采集流还是视图录制流；在调用`publishScreenViewCaptureWithPixelBuffer:displayAngle:()`之前需先调该接口进行SDK标记。
+
+**参数**
+
+| enabled |  启用状态 YES-开启 NO-关闭 |
+| --- | --- |
+
 
 ## 数据管理接口
 ### getMySelf()

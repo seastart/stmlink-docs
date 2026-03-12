@@ -782,6 +782,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **枚举类型** | **枚举值** | **描述** |
 | --- | :---: | --- |
+| SEARecordStatuUnknown | `-1` | 无任务 |
 | SEARecordStatusNotStart | `0` | 未开始 |
 | SEARecordStatusIng | `1` | 进行中 |
 | SEARecordStatusNotEnded | `2` | 未结束 |
