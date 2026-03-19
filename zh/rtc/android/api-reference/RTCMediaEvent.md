@@ -3,113 +3,93 @@ title: "RTCMediaEvent"
 description: "Android SRTC 音视频 SDK RTCMediaEvent 接口参考"
 ---
 
-流媒体事件回调监听
+## 说明
+
+`RTCMediaEvent` 为媒体层事件回调接口。
+
+## 接口方法
 
 ### onMediaConnected()
-流媒体服务器连接成功回调
-
 ```kotlin
 fun onMediaConnected()
-```kotlin
+```
+方法说明：流媒体服务器连接成功回调。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
-### onRemoteVideoFrame()
-远端视频流回调
-
+### onRemoteVideoFrame(uid, trackDesc, y, u, v, width, height, format, angle)
 ```kotlin
 fun onRemoteVideoFrame(
-    uid: String, trackDesc: String, 
-    y: ByteArray?, u: ByteArray?, v: ByteArray?, 
-    width: Int, height: Int, format: Int, angle: Int
+    uid: String,
+    trackDesc: String,
+    y: ByteArray?,
+    u: ByteArray?,
+    v: ByteArray?,
+    width: Int,
+    height: Int,
+    format: Int,
+    angle: Int
 )
 ```
+方法说明：远端视频帧回调。  
+参数说明：
+- `uid`：`String`，远端用户 ID。
+- `trackDesc`：`String`，轨道描述。
+- `y`：`ByteArray?`，Y 分量数据。
+- `u`：`ByteArray?`，U 分量数据。
+- `v`：`ByteArray?`，V 分量数据。
+- `width`：`Int`，帧宽度。
+- `height`：`Int`，帧高度。
+- `format`：`Int`，像素格式标识。
+- `angle`：`Int`，帧角度。
+返回值说明：无（`Unit`）。
 
-参数
-
-| uid | String 类型，用户 id |
-| --- | --- |
-| trackDesc | String 类型，轨道描述 |
-| y | ByteArray 类型，y 分量数据 |
-| u | ByteArray 类型，u 分量数据 |
-| v | ByteArray 类型，v 分量数据 |
-| width | Int 类型，画面宽度 |
-| height | Int 类型，画面高度 |
-| format | Int 类型，编码格式 |
-| angle | Int 类型，画面角度 |
-
-
-### onPreviewFrame()
-本地视频流回调
-
+### onPreviewFrame(yuv, width, height, stamp, format, facing)
 ```kotlin
 fun onPreviewFrame(
-    yuv: ByteArray?, width: Int, height: Int, 
-    stamp: Long, format: Int, facing: Int
+    yuv: ByteArray?,
+    width: Int,
+    height: Int,
+    stamp: Long,
+    format: Int,
+    facing: Int
 )
-```html
+```
+方法说明：本地预览视频帧回调。  
+参数说明：
+- `yuv`：`ByteArray?`，YUV 数据。
+- `width`：`Int`，帧宽度。
+- `height`：`Int`，帧高度。
+- `stamp`：`Long`，时间戳。
+- `format`：`Int`，像素格式标识。
+- `facing`：`Int`，摄像头朝向标识。
+返回值说明：无（`Unit`）。
 
-参数
-
-| yuv | ByteArray 类型，yuv 数据 |
-| --- | --- |
-| width | Int 类型，画面宽度 |
-| height | Int 类型，画面高度 |
-| stamp | Long 类型，时间戳 |
-| format | Int 类型，编码格式 |
-| facing | Int 类型，前后置摄像头标识<br/>        1：前置摄像头<br/>        0：后置摄像头 |
-
-
-### onPreviewRealSize()
-本地视频流参数改变
-
+### onPreviewRealSize(width, height, facing)
 ```kotlin
 fun onPreviewRealSize(width: Int, height: Int, facing: Int)
 ```
+方法说明：本地预览尺寸变化回调。  
+参数说明：
+- `width`：`Int`，画面宽度。
+- `height`：`Int`，画面高度。
+- `facing`：`Int`，摄像头朝向标识。
+返回值说明：无（`Unit`）。
 
-参数
-
-| width | Int 类型，画面宽度 |
-| --- | --- |
-| height | Int 类型，画面高度 |
-| facing | Int 类型，前后置摄像头标识<br/>        1：前置摄像头<br/>        0：后置摄像头 |
-
-
-### onMediaMetric()
-媒体性能指标回调
-
+### onMediaMetric(metric)
 ```kotlin
 fun onMediaMetric(metric: MediaMetric.Metric)
-```html
+```
+方法说明：媒体性能指标回调。  
+参数说明：
+- `metric`：`MediaMetric.Metric`，媒体性能指标对象（对象字段请参考 `MediaMetric` 文档）。
+返回值说明：无（`Unit`）。
 
-参数
-
-| metric | [MediaMetric](https://www.yuque.com/anyconf/rtcengine/itob61730h4gr5rq#gVNM8) 类型，媒体性能指标数据 |
-| --- | --- |
-
-
-### onVolumesReport()
-音量信息回调
-
+### onVolumesReport(volumes)
 ```kotlin
 fun onVolumesReport(volumes: MutableMap<UserTrackDesc, VolumeInfo>)
 ```
-
-参数
-
-| volumes | MutableMap 类型，key：UserTrackDesc 类型，用户id、轨道描述的封装类；value：VolumeInfo 类型，音量信息 |
-| --- | --- |
-
-
-UserTrackDesc 属性说明
-
-| uid | String 类型，用户 id |
-| --- | --- |
-| trackDesc | String 类型，轨道描述 |
-
-
-VolumeInfo 属性说明
-
-| uid | String 类型，用户 id |
-| --- | --- |
-| db | Int 类型，音频能量，单位分贝 |
-
-
+方法说明：音量信息回调。  
+参数说明：
+- `volumes`：`MutableMap<UserTrackDesc, VolumeInfo>`，音量映射（对象字段请分别参考 `UserTrackDesc` 与 `VolumeInfo` 文档）。
+返回值说明：无（`Unit`）。

@@ -1,29 +1,22 @@
 ---
 title: "集成"
-description: "Android SRTC 音视频 SDK 环境配置与 SDK 安装指南"
+description: "Android SRTC 音视频 SDK 环境配置与依赖安装"
 ---
 
-# 远程依赖
-在根目录下的 build.gradle 中，添加 maven
+在项目根目录 `build.gradle`（或 `settings.gradle` 的仓库配置）中添加 Maven 仓库：
 
-```plain
+```gradle
 allprojects {
     repositories {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
     }
 }
-```kotlin
-
-
-
-在app目录下的build.gradle中添加依赖
-
-```plain
-
-	dependencies {
-    implementation 'cn.seastart.rtc:rtc:xxx'
-	}
 ```
 
+在 App 模块中添加依赖：
 
-
+```gradle
+dependencies {
+    implementation 'cn.seastart.rtc:rtc:xxx'
+}
+```

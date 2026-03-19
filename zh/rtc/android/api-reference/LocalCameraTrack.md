@@ -3,100 +3,92 @@ title: "LocalCameraTrack"
 description: "Android SRTC 音视频 SDK LocalCameraTrack 接口参考"
 ---
 
-+ 提供摄像头打开、关闭操作，摄像头预览画面渲染
-+ 为 publishLocalVideo 提供配置参数
+## 说明
 
-### startCapture()
-开始采集
+`LocalCameraTrack` 用于本地摄像头采集、预览渲染与摄像头控制，并作为 `publishLocalVideo` 的输入轨道。
 
+## LocalCameraTrack 自身方法
+
+### startCapture(listener)
 ```kotlin
 fun startCapture(listener: RTCResultListener?)
-```kotlin
-
-参数
-
-| listener | 操作结果回调 |
-| --- | --- |
-
+```
+方法说明：启动摄像头采集。调用前需具备相机权限。  
+参数说明：
+- `listener`：`RTCResultListener?`，启动结果回调；无权限时会回调 `onFail(StatusCode.LACK_PERMISSION.value)`。
+返回值说明：无（`Unit`）。
 
 ### stopCapture()
-停止采集
-
 ```kotlin
 fun stopCapture()
 ```
+方法说明：停止摄像头采集。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
-### switchCameraPosition()
-切换前后摄像头
-
+### switchCameraPosition(position)
 ```kotlin
-fun switchCameraPosition(position: CameraCaptureOptions.CamraPosition) 
-```html
+fun switchCameraPosition(position: CameraCaptureOptions.CamraPosition)
+```
+方法说明：切换摄像头朝向。  
+参数说明：
+- `position`：`CameraCaptureOptions.CamraPosition`，目标摄像头位置：
+  - `FRONT`：前置摄像头
+  - `BACK`：后置摄像头
+  - `External`：外接摄像头
+返回值说明：无（`Unit`）。
 
-参数
-
-| position | 前后摄像头标识，<br/>CamraPosition.FRONT  前置摄像头<br/>CamraPosition.BACK  后置摄像头 |
-| --- | --- |
-
-
-### setCameraAngleOffset(）
-设置摄像头偏移角度
-
-ps: 这个方法是用于应对特殊设备的，有些设备摄像头安置角度与普通手机不一致，可以通过这个方法调整。
-
+### setCameraAngleOffset(offset)
 ```kotlin
 fun setCameraAngleOffset(offset: Int)
 ```
+方法说明：设置摄像头角度偏移，用于特殊设备方向校正。SDK 会自动归一化为 `0/90/180/270`。  
+参数说明：
+- `offset`：`Int`，角度偏移值，建议传 `0/90/180/270`。
+返回值说明：无（`Unit`）。
 
-参数
+### switchLight(open)
+```kotlin
+fun switchLight(open: Boolean)
+```
+方法说明：切换摄像头闪光灯状态。  
+参数说明：
+- `open`：`Boolean`，`true` 打开闪光灯，`false` 关闭闪光灯。
+返回值说明：无（`Unit`）。
 
-| offset | 摄像头角度偏移量，<br/>参考值：0, 90, 180, 270 |
-| --- | --- |
+## 继承自 VideoTrack 的渲染方法
 
-
-### addPlayView()
-添加渲染控件
-
+### addPlayView(view)
 ```kotlin
 fun addPlayView(view: View): Boolean
-```html
+```
+方法说明：添加单个渲染控件。仅支持 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。  
+参数说明：
+- `view`：`View`，渲染控件。
+返回值说明：`Boolean`，`true` 表示添加成功；类型不支持或重复添加时为 `false`。
 
-参数
-
-| view | 渲染控件，View的类型必须是下述中的一种<br/>VcsPlayerGlTextureView<br/>VcsPlayerGlSurfaceView |
-| --- | --- |
-
-
-### replacePlayView()
-替换渲染控件
-
+### replacePlayView(views)
 ```kotlin
 fun replacePlayView(views: MutableList<View>)
 ```
+方法说明：替换全部渲染控件列表。  
+参数说明：
+- `views`：`MutableList<View>`，渲染控件集合，仅支持 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。
+返回值说明：无（`Unit`）。
 
-| views | 渲染控件集合，View的类型必须是下述中的一种<br/>VcsPlayerGlTextureView<br/>VcsPlayerGlSurfaceView |
-| --- | --- |
-
-
-### removePlayView()
-移除指定的渲染控件
-
+### removePlayView(view)
 ```kotlin
 fun removePlayView(view: View)
-```html
-
-参数
-
-| view | 渲染控件，View的类型必须是下述中的一种<br/>VcsPlayerGlTextureView<br/>VcsPlayerGlSurfaceView |
-| --- | --- |
-
+```
+方法说明：移除指定渲染控件。  
+参数说明：
+- `view`：`View`，目标渲染控件。
+返回值说明：无（`Unit`）。
 
 ### removeAllPlayView()
-移除所有渲染控件
-
-+ 此处移除所有渲染控件，本质上是清空当前 uid、trackDesc 对应的渲染控件列表
-
 ```kotlin
 fun removeAllPlayView()
 ```
-
+方法说明：移除全部渲染控件。  
+参数说明：无。  
+返回值说明：无（`Unit`）。

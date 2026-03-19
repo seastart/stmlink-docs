@@ -3,566 +3,429 @@ title: "RTCEngine"
 description: "Android SRTC 音视频 SDK RTCEngine 接口参考"
 ---
 
-### version()
-获取 RTC-SDK 版本号
+## 静态方法
 
+### version()
 ```kotlin
 fun version(): String
-```kotlin
-
-返回值
-
-| RTC-SDK 版本信息 |
-| --- |
-
+```
+方法说明：获取 SDK 版本号。  
+参数说明：无。  
+返回值说明：`String`，SDK 版本号。
 
 ### buildTime()
-获取 RTC-SDK 构建时间信息
-
 ```kotlin
 fun buildTime(): String
 ```
+方法说明：获取 SDK 构建时间。  
+参数说明：无。  
+返回值说明：`String`，构建时间字符串。
 
-返回值 
-
-| RTC-SDK 构建时间，精确到年月日 |
-| --- |
-
-
-## 初始化 SDK
-### create()
-用于创建实例
-
-+ PS：在这个方法中初始化了通用的能力，如日志模块。可以在应用刚启动的时候就执行这一步操作。
-
+### create(app, enableLocalLog, localLogPath, version)
 ```kotlin
 fun create(
-    app: Application, 
+    app: Application,
     enableLocalLog: Boolean,
-    localLogPath: String? = null, 
+    localLogPath: String? = null,
     version: String = ""
-)
-```html
+): RTCEngine
+```
+方法说明：创建 `RTCEngine` 实例。  
+参数说明：
+- `app`：`Application`，应用上下文。
+- `enableLocalLog`：`Boolean`，是否启用本地日志存储。
+- `localLogPath`：`String?`，日志目录；`null` 时使用默认路径。
+- `version`：`String`，上层应用版本标识（可用于日志/排障）。
+返回值说明：`RTCEngine`，引擎实例。
 
-参数
-
-| app | application 上下文 |
-| --- | --- |
-| enableLocalLog | 是否允许存储本地日志 |
-| localLogPath | 本地日志存储地址。不填会有默认值：Android\data\<包名>\files\logs |
-| version | 上层版本信息。会在管理后台体现 |
-
+## 生命周期
 
 ### initSDK()
-用于初始化 SDK
-
-+ PS：在这个方法中初始化了与 RTC 相关的能力。可以在适当的时机调用，但是必须调用。
-
 ```kotlin
 fun initSDK()
 ```
+方法说明：初始化 RTC SDK。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
 ### releaseSDK()
-用于释放 SDK
-
-+ PS：在这个方法中释放了与 RTC 相关的资源。
-
 ```kotlin
 fun releaseSDK()
-```kotlin
-
-## 参数配置
-### setRtcClientEvent()
-设置会控事件监听器
-
-```kotlin
-fun setRtcClientEvent(event: RTCClientEvent)
 ```
+方法说明：释放 RTC SDK 相关资源。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
-参数
+## IM 相关
 
-| event | 会控事件监听器，详见 [RTCClientEvent](https://www.yuque.com/anyconf/rtcengine/vncb76) |
-| --- | --- |
-
-
-### setRtcMediaEvent()
-设置流媒体事件监听器
-
-```kotlin
-fun setRtcMediaEvent(event: RTCMediaEvent)
-```kotlin
-
-参数
-
-| event | 流媒体事件监听器，详见 [RTCMediaEvent](https://www.yuque.com/anyconf/rtcengine/hcv144) |
-| --- | --- |
-
-
-### setRtcImEvent()
-设置即时通讯事件监听器
-
-```kotlin
-fun setRtcImEvent(e: RTCImEvent)
-```
-
-参数
-
-| event | 即时通讯事件监听器，详见 [RTCImEvent](https://www.yuque.com/anyconf/rtcengine/rw76z9extiv1sbnd) |
-| --- | --- |
-
-
-### mediaOptions()
-获取全局流媒体配置参数
-
-```kotlin
-fun mediaOptions():RTCMediaOptions
-```kotlin
-
-返回值
-
-| 全局流媒体配置参数，详见“数据类型”中 [RTCMediaOptions](https://www.yuque.com/anyconf/rtcengine/linzbg) |
-| --- |
-
-
-### setMediaOptions()
-设置全局流媒体配置参数，可以只配置需要修改的值，不需要修改的值置null。如无特殊需求，不需要配置。
-
-```kotlin
-fun setMediaOptions(options:RTCMediaOptions)
-```
-
-## 操作相关
-### enableIm()
-启动即时通讯
-
+### enableIm(token, resultListener)
 ```kotlin
 fun enableIm(token: String, resultListener: RTCResultListener?)
-```kotlin
-
-参数
-
-| token | 授权token |
-| --- | --- |
-| RTCResultListener | 操作结果回调，其中包含onSuccess、onFail 接口 |
-
+```
+方法说明：启动即时通讯能力。  
+参数说明：
+- `token`：`String`，IM/频道鉴权令牌。
+- `resultListener`：`RTCResultListener?`，启动结果回调，可为 `null`。
+返回值说明：无（`Unit`）。
 
 ### disableIm()
-关闭即时通讯
-
 ```kotlin
 fun disableIm()
 ```
+方法说明：关闭即时通讯能力。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
+
+## 语音转写相关
 
 ### startAsr()
-开启语音转写
-
 ```kotlin
 fun startAsr()
-```kotlin
+```
+方法说明：开启语音转写。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
 ### stopAsr()
-停止语音转写
-
 ```kotlin
 fun stopAsr()
 ```
+方法说明：停止语音转写。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
 ### isStartAsr()
-获取语音转写是否开启
-
 ```kotlin
 fun isStartAsr(): Boolean
-```kotlin
-
-### join()
-加入频道，需要收到 onJoinSucceed 回调，才算加入频道成功
-
-```kotlin
-fun join(activity: Activity, token: String, resultListener: RTCResultListener?)
 ```
+方法说明：查询语音转写当前是否开启。  
+参数说明：无。  
+返回值说明：`Boolean`，`true` 表示已开启。
 
-参数
+## 频道相关
 
-| activity | activity 实例 |
-| --- | --- |
-| token | 包含加入 channel 所必要的信息，来源于后端加入会议的接口 |
-| resultListener | 操作结果回调，其中包含onSuccess、onFail 接口 |
-
+### join(activity, token, options, resultListener)
+```kotlin
+fun join(
+    activity: Activity,
+    token: String,
+    options: JoinOptions? = null,
+    resultListener: RTCResultListener?
+)
+```
+方法说明：加入频道。  
+参数说明：
+- `activity`：`Activity`，当前页面上下文。
+- `token`：`String`，包含入会必要信息的令牌。
+- `options`：`JoinOptions?`，入会选项（如自动订阅音视频），可为 `null`。
+- `resultListener`：`RTCResultListener?`，调用结果回调。
+返回值说明：无（`Unit`）。
 
 ### leave()
-离开频道
-
 ```kotlin
 fun leave()
-```kotlin
+```
+方法说明：离开当前频道。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
 ### resume()
-恢复操作，一般用于移动端息屏后恢复时，立即发送一个心跳
-
 ```kotlin
 fun resume()
 ```
+方法说明：恢复操作（常用于息屏恢复后触发心跳）。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
+
+## 回调设置
+
+### setRtcImEvent(e)
+```kotlin
+fun setRtcImEvent(e: RTCImEvent)
+```
+方法说明：设置 IM 事件监听器。  
+参数说明：
+- `e`：`RTCImEvent`，IM 回调实现。
+返回值说明：无（`Unit`）。
+
+### setRtcClientEvent(e)
+```kotlin
+fun setRtcClientEvent(e: RTCClientEvent)
+```
+方法说明：设置会控事件监听器。  
+参数说明：
+- `e`：`RTCClientEvent`，会控回调实现。
+返回值说明：无（`Unit`）。
+
+### setRtcMediaEvent(e)
+```kotlin
+fun setRtcMediaEvent(e: RTCMediaEvent)
+```
+方法说明：设置媒体事件监听器。  
+参数说明：
+- `e`：`RTCMediaEvent`，媒体回调实现。
+返回值说明：无（`Unit`）。
+
+### setRtcTestEvent(e)
+```kotlin
+fun setRtcTestEvent(e: RTCTestEvent)
+```
+方法说明：设置测试事件监听器。  
+参数说明：
+- `e`：`RTCTestEvent`，测试回调实现。
+返回值说明：无（`Unit`）。
+
+## 媒体配置
+
+### mediaOptions()
+```kotlin
+fun mediaOptions(): RTCMediaOptions
+```
+方法说明：获取当前媒体配置。  
+参数说明：无。  
+返回值说明：`RTCMediaOptions`，当前生效的媒体参数。
+
+### setMediaOptions(options)
+```kotlin
+fun setMediaOptions(options: RTCMediaOptions)
+```
+方法说明：设置媒体配置。  
+参数说明：
+- `options`：`RTCMediaOptions`，新的媒体参数。
+返回值说明：无（`Unit`）。
+
+## 音频路由
 
 ### getAudioRouterManager()
-获取音频路由管理类
-
 ```kotlin
 fun getAudioRouterManager(): AudioRouterManager
-```kotlin
-
-返回值
-
-| 音频路由管理类，详见 [AudioRouterManager](https://www.yuque.com/anyconf/rtcengine/aee6xrbwtbdapvtv) |
-| --- |
-
+```
+方法说明：获取音频路由管理器。  
+参数说明：无。  
+返回值说明：`AudioRouterManager`，路由管理实例。
 
 ### releaseAudioRouterManager()
-释放音频路由相关资源
-
 ```kotlin
 fun releaseAudioRouterManager()
 ```
+方法说明：释放音频路由相关资源。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
-### getLocalCameraTrack()
-获取本地摄像头控制类
+## Track 获取
 
+### getLocalCameraTrack(preOpt)
 ```kotlin
-fun getLocalCameraTrack(preOpt: PreOptionCamera): LocalCameraTrack
-```kotlin
-
-参数
-
-| preOpt | 预设参数，目前只有唯一值：PreOptionCamera.def |
-| --- | --- |
-
-
-返回值
-
-| 本地摄像头流控制类，详见 [LocalCameraTrack](https://www.yuque.com/anyconf/rtcengine/oitcx8) |
-| --- |
-
-
-### getLocalMicTrack()
-获取本地麦克风流控制类
-
-```kotlin
-fun getLocalMicTrack(preOpt: PreOptionMic): LocalMicTrack
+fun getLocalCameraTrack(preOpt: PreOptionCamera = PreOptionCamera._480P): LocalCameraTrack
 ```
+方法说明：获取本地摄像头轨道控制器。  
+参数说明：
+- `preOpt`：`PreOptionCamera`，摄像头采集/发布预设。
+返回值说明：`LocalCameraTrack`，本地摄像头轨道实例。
 
-参数
-
-| preOpt | 预设参数，目前只有唯一值：PreOptionCamera.def |
-| --- | --- |
-
-
-返回值
-
-| 本地麦克风流控制类，详见 [LocalMicTrack](https://www.yuque.com/anyconf/rtcengine/cvxzep) |
-| --- |
-
-
-### getLocalScreenTrack()
-获取录屏流控制类
-
+### getLocalScreenTrack(activity, preOpt)
 ```kotlin
-fun getLocalScreenTrack(activity: Activity, preOpt: PreOptionScreen): LocalScreenTrack
+fun getLocalScreenTrack(activity: Activity, preOpt: PreOptionScreen = PreOptionScreen.def): LocalScreenTrack
+```
+方法说明：获取本地屏幕共享轨道控制器。  
+参数说明：
+- `activity`：`Activity`，用于发起录屏权限请求。
+- `preOpt`：`PreOptionScreen`，录屏采集/发布预设。
+返回值说明：`LocalScreenTrack`，本地屏幕轨道实例。
+
+### getLocalMicTrack(preOpt)
 ```kotlin
-
-参数
-
-| activity | activity 实例 |
-| --- | --- |
-| preOpt | 预设参数，目前只有唯一值：PreOptionScreen.def |
-
-
-返回值
-
-| 本地录屏流控制类，详见 [LocalScreenTrack](https://www.yuque.com/anyconf/rtcengine/buff33) |
-| --- |
-
+fun getLocalMicTrack(preOpt: PreOptionMic = PreOptionMic.def): LocalMicTrack
+```
+方法说明：获取本地麦克风轨道控制器。  
+参数说明：
+- `preOpt`：`PreOptionMic`，麦克风采集/发布预设。
+返回值说明：`LocalMicTrack`，本地麦克风轨道实例。
 
 ### getCustomVideoTrack()
-获取自定义视频流控制类
-
 ```kotlin
-fun getCustomVideoTrack(): CustomVideoTrack
+fun getCustomVideoTrack(): CustomVideoTrack?
 ```
+方法说明：获取自定义编码视频轨道控制器。  
+参数说明：无。  
+返回值说明：`CustomVideoTrack?`，可能为 `null`。
 
-返回值
+### getLocalCustomVideoTrack(preOpt)
+```kotlin
+fun getLocalCustomVideoTrack(preOpt: PreOptionCustomVideo = PreOptionCustomVideo.def): LocalCustomVideoTrack
+```
+方法说明：获取本地自定义原始视频轨道控制器（向已发布轨道输入外部帧）。  
+参数说明：
+- `preOpt`：`PreOptionCustomVideo`，自定义视频预设。
+返回值说明：`LocalCustomVideoTrack`，本地自定义轨道实例。
 
-| 自定义流控制类，详见 [CustomVideoTrack](https://www.yuque.com/anyconf/rtcengine/dz0lyh) |
-| --- |
-
-
-### getRemoteVideoTrack()
-获取远端视频流控制类，可能为空，表示未找到指定的远端视频流控制类
-
+### getRemoteVideoTrack(uid, trackDesc)
 ```kotlin
 fun getRemoteVideoTrack(uid: String, trackDesc: String): RemoteVideoTrack?
-```kotlin
-
-参数
-
-| uid | 用户 id |
-| --- | --- |
-| trackDesc | 轨道描述 |
-
-
-返回值
-
-| 远端视频流控制类，详见 [RemoteVideoTrack](https://www.yuque.com/anyconf/rtcengine/zt5ybe) |
-| --- |
-
+```
+方法说明：按用户与轨道描述获取远端视频轨道。  
+参数说明：
+- `uid`：`String`，远端用户 ID。
+- `trackDesc`：`String`，轨道描述（如 `camera_big` / `screen`）。
+返回值说明：`RemoteVideoTrack?`，未找到时为 `null`。
 
 ### getRemoteMixtureTrack()
-获取远端合成视频流控制类
-
 ```kotlin
 fun getRemoteMixtureTrack(): RemoteVideoTrack?
 ```
-
-返回值
-
-| 远端视频流控制类，详见 [RemoteVideoTrack](https://www.yuque.com/anyconf/rtcengine/zt5ybe) |
-| --- |
-
+方法说明：获取远端合成视频轨道。  
+参数说明：无。  
+返回值说明：`RemoteVideoTrack?`，未找到时为 `null`。
 
 ### getRemoteAudioMixTrack()
-获取远端混音流控制类
-
 ```kotlin
-fun getRemoteAudioMixTrack(): RemoteAudioMixTrack
-```kotlin
-
-返回值
-
-| 远端混音流控制类，详见 [RemoteAudioMixTrack](https://www.yuque.com/anyconf/rtcengine/cqghwx) |
-| --- |
-
-
-### publishLocalVideo()
-发布本地视频流
-
-+ 可以通过 PublishCustomOptions 配置流描述，如果不配置 PublishCustomOptions，sdk 中会设置默认的流描述，详见枚举类型的 [TrackDesc](https://www.yuque.com/anyconf/rtcengine/co4luv4dhreapv0g)
-+ 摄像头流可以通过 PublishCustomOptions 配置辅码流，但只能配置一条辅码流且辅码流不能嵌套配置辅码流。
-
-```kotlin
-fun publishLocalVideo(track: LocalVideoTrack, 
-                      publishCustomOpt: PublishCustomOptions?, 
-                      listener: RTCResultListener?)
+fun getRemoteAudioMixTrack(): RemoteAudioMixTrack?
 ```
+方法说明：获取远端混音轨道。  
+参数说明：无。  
+返回值说明：`RemoteAudioMixTrack?`，未找到时为 `null`。
 
-参数
+## 发布与订阅
 
-| track | 本地视频控制类。这是一个抽象类，具体实现包括：LocalCameraTrack、LocalScreenTrack |
-| --- | --- |
-| publishCustomOpt | 自定义发布参数。详见数据类型的 [PublishCustomOptions](https://www.yuque.com/anyconf/rtcengine/linzbg) |
-| listener | 结果回调 |
-
-
-### publishLocalAudio()
-发布本地音频流
-
+### publishLocalVideo(track, publishCustomOpt, listener)
 ```kotlin
-fun publishLocalAudio(track: LocalAudioTrack, 
-                      publishCustomOpt: PublishCustomOptions?, 
-                      listener: RTCResultListener?)
+fun publishLocalVideo(track: LocalVideoTrack, publishCustomOpt: PublishCustomOptions?, listener: RTCResultListener?)
+```
+方法说明：发布本地视频轨道。  
+参数说明：
+- `track`：`LocalVideoTrack`，本地视频轨道（摄像头/录屏/本地自定义）。
+- `publishCustomOpt`：`PublishCustomOptions?`，发布自定义参数，可为 `null`。
+- `listener`：`RTCResultListener?`，发布结果回调，可为 `null`。
+返回值说明：无（`Unit`）。
+
+### publishLocalAudio(track, publishCustomOpt, listener)
 ```kotlin
+fun publishLocalAudio(track: LocalAudioTrack, publishCustomOpt: PublishCustomOptions?, listener: RTCResultListener?)
+```
+方法说明：发布本地音频轨道。  
+参数说明：
+- `track`：`LocalAudioTrack`，本地音频轨道。
+- `publishCustomOpt`：`PublishCustomOptions?`，发布自定义参数，可为 `null`。
+- `listener`：`RTCResultListener?`，发布结果回调，可为 `null`。
+返回值说明：无（`Unit`）。
 
-参数
-
-| track | 本地音频控制类。这是一个抽象类，具体实现包括：LocalMicTrack |
-| --- | --- |
-| publishCustomOpt | 自定义发布参数。详见数据类型的 [PublishCustomOptions](https://www.yuque.com/anyconf/rtcengine/linzbg) |
-| listener | 结果回调 |
-
-
-### unPublishLocalVideo()
-取消发布本地视频流
-
+### unPublishLocalVideo(track, listener)
 ```kotlin
 fun unPublishLocalVideo(track: LocalVideoTrack, listener: RTCResultListener?)
 ```
+方法说明：取消发布本地视频轨道。  
+参数说明：
+- `track`：`LocalVideoTrack`，目标视频轨道。
+- `listener`：`RTCResultListener?`，取消发布结果回调，可为 `null`。
+返回值说明：无（`Unit`）。
 
-参数
-
-| track | 本地视频控制类。这是一个抽象类，具体实现包括：LocalCameraTrack、LocalScreenTrack |
-| --- | --- |
-| listener | 结果回调 |
-
-
-### unPublishLocalAudio()
-取消发布本地音频流
-
+### unPublishLocalAudio(track, listener)
 ```kotlin
 fun unPublishLocalAudio(track: LocalAudioTrack, listener: RTCResultListener?)
-```kotlin
-
-参数
-
-| track | 本地音频控制类。这是一个抽象类，具体实现包括：LocalMicTrack |
-| --- | --- |
-| listener | 结果回调 |
-
-
-### subscribeRemoteTrack() 
-订阅远端流
-
-```kotlin
-fun subscribeRemoteTrack(uid: String, trackId: String, listener: RTCResultListener?)
 ```
+方法说明：取消发布本地音频轨道。  
+参数说明：
+- `track`：`LocalAudioTrack`，目标音频轨道。
+- `listener`：`RTCResultListener?`，取消发布结果回调，可为 `null`。
+返回值说明：无（`Unit`）。
 
-参数
+### subscribeRemoteTrack(uid, trackId, result)
+```kotlin
+fun subscribeRemoteTrack(uid: String, trackId: String, result: RTCResultListener?)
+```
+方法说明：订阅指定远端视频轨道。  
+参数说明：
+- `uid`：`String`，远端用户 ID。
+- `trackId`：`String`，远端轨道 ID。
+- `result`：`RTCResultListener?`，订阅结果回调，可为 `null`。
+返回值说明：无（`Unit`）。
 
-| uid | 用户 id |
-| --- | --- |
-| trackId | 轨道 id |
-| listener | 结果回调 |
-
-
-### unSubscribeRemoteTrack()
-取消订阅远端流
-
+### unSubscribeRemoteTrack(uid, trackId)
 ```kotlin
 fun unSubscribeRemoteTrack(uid: String, trackId: String)
-```kotlin
-
-参数
-
-| uid | 用户 id |
-| --- | --- |
-| trackId | 轨道id |
-
+```
+方法说明：取消订阅指定远端视频轨道。  
+参数说明：
+- `uid`：`String`，远端用户 ID。
+- `trackId`：`String`，远端轨道 ID。
+返回值说明：无（`Unit`）。
 
 ### subscribeRemoteMixture()
-订阅合成视频流
-
 ```kotlin
 fun subscribeRemoteMixture()
 ```
+方法说明：订阅远端合成视频轨道。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
 ### unSubscribeRemoteMixture()
-取消订阅合成视频流
-
 ```kotlin
 fun unSubscribeRemoteMixture()
-```kotlin
+```
+方法说明：取消订阅远端合成视频轨道。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
-## 信息获取
+## 信息查询
+
 ### getChannelInfo()
-获取频道信息
-
 ```kotlin
 fun getChannelInfo(): ChannelInfo?
 ```
-
-返回值
-
-| 频道信息，详见“数据类型”中  [ChannelInfo](https://www.yuque.com/anyconf/rtcengine/linzbg) |
-| --- |
-
+方法说明：获取当前频道信息。  
+参数说明：无。  
+返回值说明：`ChannelInfo?`，未入会或无数据时可能为 `null`。
 
 ### getMeInfo()
-获取自己的用户信息
-
 ```kotlin
 fun getMeInfo(): UserInfo?
-```html
-
-返回值
-
-| 自己的用户信息，详见“数据类型”中  [UserInfo](https://www.yuque.com/anyconf/rtcengine/linzbg) |
-| --- |
-
+```
+方法说明：获取当前用户信息。  
+参数说明：无。  
+返回值说明：`UserInfo?`，未入会或无数据时可能为 `null`。
 
 ### getUserInfos()
-获取全部成员的用户信息，包括自己
-
 ```kotlin
 fun getUserInfos(): MutableList<UserInfo>
 ```
+方法说明：获取频道内全部成员信息（含自己）。  
+参数说明：无。  
+返回值说明：`MutableList<UserInfo>`，成员列表。
 
-返回值
-
-| 所有成员信息的集合 |
-| --- |
-
-
-### getUserInfo()
-获取指定 uid 的其他成员信息
-
+### getUserInfo(uid)
 ```kotlin
 fun getUserInfo(uid: String): UserInfo?
-```html
+```
+方法说明：按用户 ID 获取成员信息。  
+参数说明：
+- `uid`：`String`，目标用户 ID。
+返回值说明：`UserInfo?`，未找到时为 `null`。
 
-参数
-
-| uid | 用户 id |
-| --- | --- |
-
-
-返回值
-
-| 指定成员的用户信息，详见“数据类型”中  [UserInfo](https://www.yuque.com/anyconf/rtcengine/linzbg) |
-| --- |
-
-
-### getTrackInfos()
-根据 uid 获取轨道信息列表
-
+### getTrackInfos(uid)
 ```kotlin
 fun getTrackInfos(uid: String): List<TrackInfo>
 ```
+方法说明：获取指定用户的轨道列表。  
+参数说明：
+- `uid`：`String`，目标用户 ID。
+返回值说明：`List<TrackInfo>`，轨道信息列表。
 
-参数
-
-| uid | 用户 id |
-| --- | --- |
-
-
-返回值
-
-| 指定成员的轨道信息集合 |
-| --- |
-
-
-### getTrackInfoByTrackDesc()
-根据 uid、trackDes 获取 trackInfo
-
+### getTrackInfoByTrackDesc(uid, trackDesc)
 ```kotlin
 fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
-```kotlin
+```
+方法说明：按用户 ID + 轨道描述获取轨道信息。  
+参数说明：
+- `uid`：`String`，目标用户 ID。
+- `trackDesc`：`String`，轨道描述。
+返回值说明：`TrackInfo?`，未找到时为 `null`。
 
-参数
-
-| uid | 用户 id |
-| --- | --- |
-| trackDesc | 轨道描述 |
-
-
-返回值
-
-| 指定成员和轨道描述的轨道信息 |
-| --- |
-
-
-### getTrackInfoByTrackId()
-根据 uid、trackId 获取 trackInfo
-
+### getTrackInfoByTrackId(uid, trackId)
 ```kotlin
 fun getTrackInfoByTrackId(uid: String, trackId: String): TrackInfo?
 ```
-
-参数
-
-| uid | 用户 id |
-| --- | --- |
-| trackId | 轨道id |
-
-
-返回值
-
-| 指定成员和轨道号的轨道信息 |
-| --- |
-
-
+方法说明：按用户 ID + 轨道 ID 获取轨道信息。  
+参数说明：
+- `uid`：`String`，目标用户 ID。
+- `trackId`：`String`，轨道 ID。
+返回值说明：`TrackInfo?`，未找到时为 `null`。

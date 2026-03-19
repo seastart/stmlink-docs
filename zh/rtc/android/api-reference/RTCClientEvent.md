@@ -3,206 +3,155 @@ title: "RTCClientEvent"
 description: "Android SRTC 音视频 SDK RTCClientEvent 接口参考"
 ---
 
-会控事件监听接口
+## 说明
 
-### onJoinSucceed()
-自己加入频道成功回调
+`RTCClientEvent` 为会控相关事件回调接口。
 
+## 接口方法
+
+### onJoinSucceed(channel, uid, whiteBoard)
 ```kotlin
 fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?)
-```kotlin
+```
+方法说明：自己加入频道成功回调。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `uid`：`String`，当前用户 ID。
+- `whiteBoard`：`String?`，白板相关信息，可为 `null`。
+返回值说明：无（`Unit`）。
 
-参数
-
-| channel | String 类型，频道号 |
-| --- | --- |
-| uid | String 类型，用户 id |
-| whiteBoard | String 类型， 电子白板地址 |
-
-
-### onUserUpdate()
-自己的信息更新回调
-
+### onUserUpdate(channel, uid)
 ```kotlin
 fun onUserUpdate(channel: String, uid: String)
 ```
+方法说明：自己的用户信息更新回调。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `uid`：`String`，当前用户 ID。
+返回值说明：无（`Unit`）。
 
-参数
-
-| channel | String 类型，频道号 |
-| --- | --- |
-| uid | String 类型，用户 id |
-
-
-### onRemoteUserJoin()
-远端用户加入频道回调
-
+### onRemoteUserJoin(channel, uid)
 ```kotlin
 fun onRemoteUserJoin(channel: String, uid: String)
-```kotlin
+```
+方法说明：其他用户加入频道回调。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `uid`：`String`，远端用户 ID。
+返回值说明：无（`Unit`）。
 
-参数
-
-| channel | String 类型，频道号 |
-| --- | --- |
-| uid | String 类型，用户 id |
-
-
-### onRemoteUserLeave()
-远端用户离开频道回调
-
+### onRemoteUserLeave(channel, userInfo, leaveReason)
 ```kotlin
 fun onRemoteUserLeave(channel: String, userInfo: UserInfo, leaveReason: LeaveReason)
 ```
+方法说明：其他用户离开频道回调。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `userInfo`：`UserInfo`，离会用户信息（对象字段请参考 `UserInfo` 文档）。
+- `leaveReason`：`LeaveReason`，离会原因（枚举定义请参考 `LeaveReason` 文档）。
+返回值说明：无（`Unit`）。
 
-参数
-
-| channel | String 类型，频道号 |
-| --- | --- |
-| userInfo | [UserInfo ](https://www.yuque.com/anyconf/rtcengine/linzbg#KHDlE)类型，用户信息 |
-| leaveReason | LeaveReason 枚举类型，离开原因 |
-
-
-LeaveReason 属性说明
-
-| Error(-1) | 因为出错离开 |
-| --- | --- |
-| Unknown(0) | 原因未知 |
-| VoluntarilyLeave(1) | 主动离开 |
-| KickOut(2) | 被踢出 |
-| BeReplaced(3) | 被顶号 |
-| HeartbeatTimeout(4) | 心跳超时 |
-| ChannelDestroy(5) | 频道销毁 |
-
-
-### onRemoteUserUpdate()
-用户信息更新回调
-
+### onRemoteUserUpdate(channel, uid)
 ```kotlin
 fun onRemoteUserUpdate(channel: String, uid: String)
-```kotlin
+```
+方法说明：其他用户信息更新回调。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `uid`：`String`，远端用户 ID。
+返回值说明：无（`Unit`）。
 
-参数
-
-| channel | String 类型，频道号 |
-| --- | --- |
-| uid | String 类型，用户 id |
-
-
-### onStreamTrackAdd()
-码流增加回调
-
+### onStreamTrackAdd(uid, channel, trackId, trackDesc)
 ```kotlin
 fun onStreamTrackAdd(uid: String, channel: String, trackId: String, trackDesc: String)
 ```
+方法说明：新增码流回调。  
+参数说明：
+- `uid`：`String`，所属用户 ID。
+- `channel`：`String`，频道标识。
+- `trackId`：`String`，轨道 ID。
+- `trackDesc`：`String`，轨道描述。
+返回值说明：无（`Unit`）。
 
-参数
-
-| uid | String 类型，成员的 uid |
-| --- | --- |
-| channel | String 类型，频道号 |
-| trackId | String 类型，轨道 id |
-| trackDesc | String 类型，轨道描述 |
-
-
-### onStreamTrackUpdate()
-码流更新回调
-
+### onStreamTrackUpdate(uid, channel, trackId, trackDesc)
 ```kotlin
 fun onStreamTrackUpdate(uid: String, channel: String, trackId: String, trackDesc: String)
-```kotlin
+```
+方法说明：码流更新回调。  
+参数说明：
+- `uid`：`String`，所属用户 ID。
+- `channel`：`String`，频道标识。
+- `trackId`：`String`，轨道 ID。
+- `trackDesc`：`String`，轨道描述。
+返回值说明：无（`Unit`）。
 
-参数
-
-| uid | String 类型，成员的 uid |
-| --- | --- |
-| channel | String 类型，频道号 |
-| trackId | String 类型，轨道 id |
-| trackDesc | String 类型，轨道描述 |
-
-
-### onStreamTrackRemove()
-码流移除回调
-
+### onStreamTrackRemove(uid, channel, trackInfo)
 ```kotlin
 fun onStreamTrackRemove(uid: String, channel: String, trackInfo: TrackInfo)
 ```
+方法说明：码流移除回调。  
+参数说明：
+- `uid`：`String`，所属用户 ID。
+- `channel`：`String`，频道标识。
+- `trackInfo`：`TrackInfo`，被移除的轨道信息（对象字段请参考 `TrackInfo` 文档）。
+返回值说明：无（`Unit`）。
 
-参数
-
-| uid | String 类型，成员的 uid |
-| --- | --- |
-| channel | String 类型，频道号 |
-| trackInfo | [TrackInfo](https://www.yuque.com/anyconf/rtcengine/linzbg#YnYlM) 类型，轨道信息 |
-
-
-### onChannelUpdate()
-频道更新回调
-
+### onChannelUpdate(channel, props)
 ```kotlin
 fun onChannelUpdate(channel: String, props: String?)
-```kotlin
-
-参数
-
-| channel | String 类型，频道号 |
-| --- | --- |
-| props | String 类型，扩展信息 |
-
-
-### onCustomMessage()
-返回自定义消息
-
-```kotlin
-fun onCustomMessage(uid: String, action: String, content: String)
 ```
+方法说明：频道属性更新回调。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `props`：`String?`，频道属性 JSON 字符串，可为 `null`。
+返回值说明：无（`Unit`）。
 
-参数
+### onCustomMessage(uid, sid, name, action, content)
+```kotlin
+fun onCustomMessage(uid: String, sid: String, name: String, action: String, content: String)
+```
+方法说明：自定义消息回调。  
+参数说明：
+- `uid`：`String`，消息发送者用户 ID。
+- `sid`：`String`，消息发送者会话 ID。
+- `name`：`String`，发送者名称。
+- `action`：`String`，消息动作标识。
+- `content`：`String`，消息内容。
+返回值说明：无（`Unit`）。
 
-| channel | String 类型，频道号 |
-| --- | --- |
-| action | String 类型，消息标识 |
-| content | String 类型，消息内容 |
-
-
-### onDisconnected()
-断开连接回调，发生不可恢复的错误，这个事件触发需要重新登录
-
+### onDisconnected(leaveReason, statusCode, message)
 ```kotlin
 fun onDisconnected(leaveReason: LeaveReason, statusCode: Int, message: String)
-```kotlin
-
-参数
-
-| leaveReason | LeaveReason 枚举类型，断开连接的原因 |
-| --- | --- |
-| statusCode | String 类型，发生错误时的状态码 |
-| message | String 类型，消息内容 |
-
-
-LeaveReason 属性说明
-
-| Error(-1) | 因为出错离开 |
-| --- | --- |
-| Unknown(0) | 原因未知 |
-| VoluntarilyLeave(1) | 主动离开 |
-| KickOut(2) | 被踢出 |
-| BeReplaced(3) | 被顶号 |
-| HeartbeatTimeout(4) | 心跳超时 |
-| ChannelDestroy(5) | 频道销毁 |
-
+```
+方法说明：服务断开连接且不可恢复时回调（需要重新登录）。  
+参数说明：
+- `leaveReason`：`LeaveReason`，断开原因（枚举定义请参考 `LeaveReason` 文档）。
+- `statusCode`：`Int`，状态码。
+- `message`：`String`，状态描述。
+返回值说明：无（`Unit`）。
 
 ### onReconnected()
-断线重连成功
-
 ```kotlin
 fun onReconnected()
 ```
+方法说明：服务重连成功回调。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
 ### onReconnecting()
-服务断开并触发重连
-
 ```kotlin
 fun onReconnecting()
-```kotlin
+```
+方法说明：服务断开后开始重连回调。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
+### onError(errorCode, message)
+```kotlin
+fun onError(errorCode: Int, message: String)
+```
+方法说明：频道级错误回调（例如频道未启动）。  
+参数说明：
+- `errorCode`：`Int`，错误码。
+- `message`：`String`，错误描述。
+返回值说明：无（`Unit`）。
