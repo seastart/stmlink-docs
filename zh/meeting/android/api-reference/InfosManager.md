@@ -3,169 +3,117 @@ title: "InfosManager"
 description: "Android SMeeting 会议 SDK InfosManager 接口参考"
 ---
 
-会中信息管理类，通过该类的实例，可以获取到会议信息、成员信息、轨道信息
+说明：`InfosManager` 是会中信息管理器，用于读取当前会议、成员与轨道的本地状态快照。
 
-### meUid
-获取自己的 uid
+## 核心属性
 
+### meUid（属性）
 ```kotlin
 val meUid: String?
-```kotlin
+```
+方法说明：当前登录成员的 UID。  
+参数说明：无。  
+返回值说明：`String?`，当前用户 UID；未入会或未就绪时为 `null`。
 
-### meetingId
-获取会议的 id
-
+### meetingId（属性）
 ```kotlin
 val meetingId: String?
 ```
+方法说明：当前会议 ID。  
+参数说明：无。  
+返回值说明：`String?`，当前会议 ID；未入会时为 `null`。
 
-### whiteBoard
-白板地址
-
+### whiteBoard（属性）
 ```kotlin
 val whiteBoard: String?
-```kotlin
+```
+方法说明：当前会议白板地址。  
+参数说明：无。  
+返回值说明：`String?`，白板 URL/地址；未配置时为 `null`。
 
-### meetingIdForWaitingRoom
-为了等候室存储的 meetingId
-
+### meetingIdForWaitingRoom（属性）
 ```kotlin
 val meetingIdForWaitingRoom: String?
 ```
+方法说明：等候室场景下缓存的会议 ID。  
+参数说明：无。  
+返回值说明：`String?`，等候室关联会议 ID；无数据时为 `null`。
+
+## 会议信息
 
 ### getMeetingInfo()
-获取房间信息
-
-```java
-fun getMeetingInfo(): MeetingInfo?
 ```kotlin
+fun getMeetingInfo(): MeetingInfo?
+```
+方法说明：获取当前会议信息。  
+参数说明：无。  
+返回值说明：`MeetingInfo?`，会议信息对象；无会议上下文时返回 `null`。
 
-返回值
-
-| 会议信息，详见数据类型中的 [MeetingInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#NkjUb) |
-| --- |
-
+## 成员信息
 
 ### getMeInfo()
-获取自己的用户信息
-
-```java
+```kotlin
 fun getMeInfo(): MemberInfo?
 ```
-
-返回值
-
-| 自己的信息，详见数据类型中的 [MemberInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#CoQJN) |
-| --- |
-
+方法说明：获取当前用户成员信息。  
+参数说明：无。  
+返回值说明：`MemberInfo?`，当前成员信息；未入会或数据未同步时返回 `null`。
 
 ### getMembersInfo()
-获取所有成员的用户信息，包括自己的用户信息
-
-```java
-fun getMembersInfo(): MutableList<MemberInfo>
 ```kotlin
+fun getMembersInfo(): MutableList<MemberInfo>
+```
+方法说明：获取当前会议全部成员信息（包含自己）。  
+参数说明：无。  
+返回值说明：`MutableList<MemberInfo>`，成员信息列表；无成员时返回空列表。
 
-返回值
-
-| 成员信息集合，详见数据类型中的 [MemberInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#CoQJN) |
-| --- |
-
-
-### getMemberByUid()
-获取指定 uid 的成员的用户信息
-
-```java
+### getMemberByUid(uid)
+```kotlin
 fun getMemberByUid(uid: String): MemberInfo?
 ```
+方法说明：按用户 UID 获取成员信息。  
+参数说明：
+- `uid`：`String`，目标成员 UID。
+返回值说明：`MemberInfo?`，目标成员信息；未找到时返回 `null`。
 
-参数
-
-| uid | String 类型，成员 uid |
-| --- | --- |
-
-
-返回值
-
-| 成员信息集合，详见数据类型中的 [MemberInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#CoQJN) |
-| --- |
-
-
-### isExistMember()
-是否存在指定成员
-
-```java
+### isExistMember(uid)
+```kotlin
 fun isExistMember(uid: String): Boolean
-```html
+```
+方法说明：判断指定 UID 的成员是否存在于当前会议。  
+参数说明：
+- `uid`：`String`，目标成员 UID。
+返回值说明：`Boolean`，`true` 表示存在，`false` 表示不存在。
 
-参数
+## 轨道信息
 
-| uid | String 类型，成员 uid |
-| --- | --- |
-
-
-返回值
-
-| Boolean 类型，是否存在指定 uid 的成员 |
-| --- |
-
-
-### getTrackInfos()
-获取指定 uid 的 trackInfo 列表
-
-```java
+### getTrackInfos(uid)
+```kotlin
 fun getTrackInfos(uid: String): MutableList<TrackInfo>
 ```
+方法说明：获取指定成员的全部轨道信息。  
+参数说明：
+- `uid`：`String`，目标成员 UID。
+返回值说明：`MutableList<TrackInfo>`，该成员轨道列表；无轨道时返回空列表。
 
-参数
-
-| uid | String 类型，成员 uid |
-| --- | --- |
-
-
-返回值
-
-| 轨道集合，TrackInfo，轨道信息，详见数据类型中的 [TrackInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#NhiSN) |
-| --- |
-
-
-### getTrackInfoByTrackDesc()
-获取指定 uid、trackDesc 的 trackInfo
-
-```java
-fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
+### getTrackInfoByTrackDesc(uid, trackDesc)
 ```kotlin
+fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
+```
+方法说明：按成员 UID 与轨道描述查询轨道信息。  
+参数说明：
+- `uid`：`String`，目标成员 UID。
+- `trackDesc`：`String`，轨道描述（如 `camera_big`、`camera_small`、`screen`、`mic`）。
+返回值说明：`TrackInfo?`，匹配到的轨道信息；未找到时返回 `null`。
 
-参数
-
-| uid | String 类型，成员 uid |
-| --- | --- |
-| trackDesc | String 类型，轨道描述 |
-
-
-返回值
-
-| 轨道信息，详见数据类型中的 [TrackInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#NhiSN) |
-| --- |
-
-
-### getTrackInfoByTrackId()
-获取指定 uid、trackId 的 trackInfo
-
-```java
+### getTrackInfoByTrackId(uid, trackId)
+```kotlin
 fun getTrackInfoByTrackId(uid: String, trackId: String): TrackInfo?
 ```
-
-参数
-
-| uid | String 类型，成员 uid |
-| --- | --- |
-| trackId | String 类型，轨道 id |
-
-
-返回值
-
-| 轨道信息，详见数据类型中的 [TrackInfo](https://www.yuque.com/anyconf/eanoso/mzyftti7zsfhs417#NhiSN) |
-| --- |
+方法说明：按成员 UID 与轨道 ID 查询轨道信息。  
+参数说明：
+- `uid`：`String`，目标成员 UID。
+- `trackId`：`String`，轨道 ID。
+返回值说明：`TrackInfo?`，匹配到的轨道信息；未找到时返回 `null`。
 
 

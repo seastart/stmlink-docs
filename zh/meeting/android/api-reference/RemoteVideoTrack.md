@@ -3,72 +3,66 @@ title: "RemoteVideoTrack"
 description: "Android SMeeting 会议 SDK RemoteVideoTrack 接口参考"
 ---
 
-+ 提供远端视频流渲染，事件回调
+## 说明
 
-### setRemoteVideoEvent()
-设置远端流监听事件
+`RemoteVideoTrack` 用于远端视频渲染与远端流状态监听。
 
+## RemoteVideoTrack 自身方法
+
+### setRemoteVideoEvent(event)
 ```kotlin
 fun setRemoteVideoEvent(event: RTCRemoteVideoEvent)
-```html
+```
+方法说明：设置远端视频流状态监听，并注册全局时钟检测。  
+参数说明：
+- `event`：`RTCRemoteVideoEvent`，远端流状态事件回调实现。
+返回值说明：无（`Unit`）。
 
-RTCRemoteVideoEvent  接口说明
-
-| 接口名称 | 接口说明 | 参数 |
-| --- | --- | --- |
-| onReceiveStreamStatusChange | 流媒体接收远端流状态变更回调 | uid：String类型，用户id<br/>trackDesc：String类型，轨道描述<br/>isChoke：Boolean类型，是否阻塞 |
-
+状态触发说明：
+- 订阅后连续约 3 秒未收到有效帧时，回调 `isChoke = true`。
+- 收到有效帧并恢复后，回调 `isChoke = false`。
 
 ### removeRemoteVideoEvent()
-移除远端流监听事件
-
-```java
+```kotlin
 fun removeRemoteVideoEvent()
 ```
+方法说明：移除远端流状态监听，并取消全局时钟检测。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
 
-### addPlayView(view: View)
-添加渲染控件
+## 继承自 VideoTrack 的渲染方法
 
+### addPlayView(view)
 ```kotlin
 fun addPlayView(view: View): Boolean
-```html
+```
+方法说明：添加单个渲染控件。仅支持 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。  
+参数说明：
+- `view`：`View`，渲染控件。
+返回值说明：`Boolean`，`true` 表示添加成功；类型不支持或重复添加时为 `false`。
 
-参数
-
-| view | 渲染控件，View的类型必须是下述中的一种<br/>VcsPlayerGlTextureView<br/>VcsPlayerGlSurfaceView |
-| --- | --- |
-
-
-### replacePlayView()
-替换渲染控件
-
+### replacePlayView(views)
 ```kotlin
 fun replacePlayView(views: MutableList<View>)
 ```
+方法说明：替换全部渲染控件列表。  
+参数说明：
+- `views`：`MutableList<View>`，渲染控件集合，仅支持 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。
+返回值说明：无（`Unit`）。
 
-| views | 渲染控件集合，View的类型必须是下述中的一种<br/>VcsPlayerGlTextureView<br/>VcsPlayerGlSurfaceView |
-| --- | --- |
-
-
-### removePlayView()
-移除指定的渲染控件
-
+### removePlayView(view)
 ```kotlin
 fun removePlayView(view: View)
-```html
-
-参数
-
-| view | 渲染控件，View的类型必须是下述中的一种<br/>VcsPlayerGlTextureView<br/>VcsPlayerGlSurfaceView |
-| --- | --- |
-
+```
+方法说明：移除指定渲染控件。  
+参数说明：
+- `view`：`View`，目标渲染控件。
+返回值说明：无（`Unit`）。
 
 ### removeAllPlayView()
-移除所有渲染控件
-
-+ 此处移除所有渲染控件，本质上是清空当前 uid、trackId 对应的渲染控件列表
-
 ```kotlin
 fun removeAllPlayView()
 ```
-
+方法说明：移除全部渲染控件。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
