@@ -318,7 +318,7 @@ callback: EnterMeetingCallback
 - `avatar`：`String`，用户头像 URL 或头像标识。
 - `streamVendor`：`String`，流媒体厂商
 - `extendInfo`：`String?`，扩展属性
-- `callback`：`EnterMeetingCallback`，回调JoinRoomInfo  Room room，User me，List<User> members;
+- `callback`：`EnterMeetingCallback`，回调参数：`JoinRoomInfo`、`Room room`、`User me`、`List<User> members`。
 返回值说明：无（`Unit`）。
 
 ### enterMeetingByMeetingId()
@@ -338,7 +338,7 @@ callback: EnterMeetingCallback
 - `avatar`：`String`，用户头像 URL 或头像标识。
 - `streamVendor`：`String`，流媒体厂商
 - `extendInfo`：`String?`，扩展属性
-- `callback`：`EnterMeetingCallback`，回调JoinRoomInfo  Room room，User me，List<User> members;
+- `callback`：`EnterMeetingCallback`，回调参数：`JoinRoomInfo`、`Room room`、`User me`、`List<User> members`。
 返回值说明：无（`Unit`）。
 
 ### exitMeeting()
@@ -510,7 +510,7 @@ callback: Callback<Data<String?>>?
 参数说明：
 - `targetId`：`String`，String  目标用户ID
 - `name`：`String`，String  名称
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminUpdateUserRole()
@@ -524,7 +524,7 @@ callback: Callback<Data<String?>>?
 参数说明：
 - `targetId`：`String`，String  目标用户ID
 - `role`：`MemberRoleType`，Int  角色 0普通成员 1主持人
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminMoveHost()
@@ -534,7 +534,7 @@ fun adminMoveHost(targetId: String, callback: Callback<Data<String?>>?)
 方法说明：主持人转移  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminUpdateUserDrawDisabled()
@@ -548,7 +548,7 @@ callback: Callback<Data<String?>>?
 参数说明：
 - `targetId`：`String`，String  目标用户ID
 - `drawDisabled`：`Boolean`，涂鸦禁用状态，默认 true，true-禁用 false-不禁用
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminUpdateUserChatDisabled()
@@ -562,7 +562,7 @@ callback: Callback<Data<String?>>?
 参数说明：
 - `targetId`：`String`，String  目标用户ID
 - `chatDisabled`：`Boolean`，聊天禁用状态，默认 false，true-禁用 false-不禁用
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminRequestUserOpenCamera()
@@ -575,7 +575,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人请求远端用户打开摄像头  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminCloseUserCamera()
@@ -588,7 +588,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人关闭远端用户摄像头  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminDisableUserCamera()
@@ -615,7 +615,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人请求远端用户打开麦克风  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminCloseUserMic()
@@ -628,7 +628,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人关闭远端用户麦克风  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminDisableUserMic()
@@ -664,7 +664,7 @@ fun adminStopRoomShare(callback: Callback<Data<String?>>?)
 ```
 方法说明：主持人停止房间共享  
 参数说明：
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminInviteAgent()
@@ -673,8 +673,8 @@ fun adminInviteAgent(agents: List<AgentRequestBean>, callback: Callback<Data<Str
 ```
 方法说明：主持人邀请设备入会  
 参数说明：
-- `agents`：`List<AgentRequestBean>`，List<AgentRequestBean>  邀请设备请求列表
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `agents`：`List<AgentRequestBean>`，邀请设备请求列表
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminKickUserOut()
@@ -687,7 +687,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人将远端用户踢出房间  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminConfirmHandUp()
@@ -702,7 +702,7 @@ callback: Callback<Data<String?>>?
 - `targetId`：`String`，String  目标用户ID
 - `code`：`HandUpType`，举手类型，1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦
 - `approve`：`Boolean`，处理用户举手 true-同意 false-拒绝
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### adminGetOnlineMembers()
@@ -926,7 +926,7 @@ view: View?, preOpt: PreOptionCamera?, callback: Callback<Data<String?>>?
 参数说明：
 - `view`：`View?`，预览画面渲染工具
 - `preOpt`：`PreOptionCamera?`，打开摄像头预设参数
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### closeCamera()
@@ -997,7 +997,7 @@ fun requestOpenMic(preOpt: PreOptionMic?, callback: Callback<Data<String?>>?)
 方法说明：用户请求打开麦克风  
 参数说明：
 - `preOpt`：`PreOptionMic?`，打开麦克风预设参数
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### closeMic()
@@ -1049,7 +1049,7 @@ fun requestShareBoard(callback: BoardShareCallback)
 ```
 方法说明：用户请求共享白板  
 参数说明：
-- `callback`：`BoardShareCallback`，Callback<Data<String?>>? 结果回调
+- `callback`：`BoardShareCallback`，结果回调
 返回值说明：无（`Unit`）。
 
 ### stopShareWhiteBoard()
@@ -1074,7 +1074,7 @@ callback: Callback<Data<String?>>?
 - `targetId`：`String?`，String  目标用户ID,传null发送为全体
 - `msg`：`String`，String   消息
 - `msgType`：`ChatMsgType`，Int   消息类型 1:文本(默认) 2:文件 3:图片 4:语音
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>  结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### sendRoomCustomMessage()
@@ -1088,7 +1088,7 @@ callback: Callback<Data<String?>>?
 参数说明：
 - `targetId`：`String?`，String?  目标用户ID,传null发送为全体
 - `msg`：`String`，String?   消息内容
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>  结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### getRoomChatMsgList()
@@ -1102,7 +1102,7 @@ callback: Callback<Data2<List<ChatMsgBean?>>>
 参数说明：
 - `page`：`Int`，Int  页码
 - `prePage`：`Int`，Int   每页个数
-- `callback`：`Callback<Data2<List<ChatMsgBean?>>>`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data2<List<ChatMsgBean?>>>`，结果回调
 返回值说明：无（`Unit`）。
 
 ### requestHandUp()
@@ -1112,7 +1112,7 @@ fun requestHandUp(code: HandUpType, callback: Callback<Data<String?>>?)
 方法说明：用户请求举手  
 参数说明：
 - `code`：`HandUpType`，举手申请类型 1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦
-- `callback`：`Callback<Data<String?>>?`，Callback<Data<String?>>? 结果回调
+- `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
 ### cancelHandUp()
@@ -1347,4 +1347,3 @@ fun getRemoteMixtureTrack(): RemoteVideoTrack?
 方法说明：获取远端合成流的 VideoTrack  
 参数说明：无。  
 返回值说明：`RemoteVideoTrack?`，远端视频轨道实例；未找到或未订阅时返回 `null`。
-

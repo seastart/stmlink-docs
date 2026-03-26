@@ -144,7 +144,7 @@ virtual StatusCode listAgent(std::vector<int> type, int page, std::string find_k
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| type | std::vector<int> | 设备类型列表 |
+| type | `std::vector<int>` | 设备类型列表 |
 | page | int | 页码 |
 | find_key | std::string | 搜索关键词 |
 | back | Callback | 异步回调函数 |
@@ -281,7 +281,7 @@ virtual StatusCode updateBgAndAttach(std::string meeting_id, std::string backgro
 | --- | --- | --- |
 | meeting_id | std::string | 会议 ID |
 | background | std::string | 背景 URL |
-| attachments | std::vector<SMeetingMeetingAttachments> | 附件列表 |
+| attachments | `std::vector<SMeetingMeetingAttachments>` | 附件列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -688,7 +688,7 @@ virtual StatusCode adminInviteAgent(std::string no, int tp, std::vector<std::str
 | --- | --- | --- |
 | no | std::string | 房间号 |
 | tp | int | 类型 |
-| devs | std::vector<std::string> | 设备列表 |
+| devs | `std::vector<std::string>` | 设备列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -704,7 +704,7 @@ virtual StatusCode adminUpdateConferee(std::vector<std::string> conferee, Callba
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| conferee | std::vector<std::string> | 与会者列表 |
+| conferee | `std::vector<std::string>` | 与会者列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -736,7 +736,7 @@ virtual StatusCode adminCallUsers(std::vector<std::string> users, Callback back 
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| users | std::vector<std::string> | 用户列表 |
+| users | `std::vector<std::string>` | 用户列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -768,7 +768,7 @@ virtual StatusCode adminRemind(std::vector<std::string> users, bool sms, Callbac
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| users | std::vector<std::string> | 用户列表 |
+| users | `std::vector<std::string>` | 用户列表 |
 | sms | bool | 是否发送短信 |
 | back | Callback | 异步回调函数 |
 
@@ -977,7 +977,7 @@ virtual StatusCode createSubMeeting(std::string par_meet_id, std::vector<std::st
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
 | par_meet_id | std::string | 主会议 ID |
-| title | std::vector<std::string> | 分组标题列表 |
+| title | `std::vector<std::string>` | 分组标题列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -1011,7 +1011,7 @@ virtual StatusCode updateSubMeetingUsers(std::string sub_id, std::vector<SMeetin
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
 | sub_id | std::string | 分组 ID |
-| users | std::vector<SMeetingMeetingAttachments> | 用户列表 |
+| users | `std::vector<SMeetingMeetingAttachments>` | 用户列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -1027,7 +1027,7 @@ virtual StatusCode deleteSubMeeting(std::vector<std::string> sub_id, Callback ba
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| sub_id | std::vector<std::string> | 分组 ID 列表 |
+| sub_id | `std::vector<std::string>` | 分组 ID 列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -1059,7 +1059,7 @@ virtual StatusCode startSubMeeting(std::vector<std::string> sub_id, Callback bac
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| sub_id | std::vector<std::string> | 分组 ID 列表 |
+| sub_id | `std::vector<std::string>` | 分组 ID 列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -1075,7 +1075,7 @@ virtual StatusCode stopSubMeeting(std::vector<std::string> sub_id, Callback back
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| sub_id | std::vector<std::string> | 分组 ID 列表 |
+| sub_id | `std::vector<std::string>` | 分组 ID 列表 |
 | back | Callback | 异步回调函数 |
 
 **返回值**
@@ -2269,8 +2269,8 @@ virtual StatusCode removeAllPlayView() = 0;
 | meeting_mode | int | 会议模式 (1:普通 2:合成 3:培训 4:培训 5:小组) | 1 |
 | plan_time | long long | 计划时间 (Unix 时间戳) | 0 |
 | plan_dur | int | 计划时长 | 0 |
-| conferee | std::vector<std::string> | 与会者列表 | - |
-| co_host | std::vector<std::string> | 联合主持人列表 | - |
+| conferee | `std::vector<std::string>` | 与会者列表 | - |
+| co_host | `std::vector<std::string>` | 联合主持人列表 | - |
 | maximum | int | 最大人数 | 0 |
 | end_type | int | 结束类型 (0:延长 1:强制结束) | 1 |
 | entry_mute_policy | int | 入场静音策略 (1:强制 2:关闭 3:超 6 人静音) | 3 |
