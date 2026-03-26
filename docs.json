@@ -62,9 +62,8 @@
                     ]
                   },
                   {
-                    "group": "接口列表",
+                    "group": "接口文档",
                     "pages": [
-                      "zh/rtc/ios/api-reference",
                       "zh/rtc/ios/api-reference/RTCEngineKit",
                       "zh/rtc/ios/api-reference/RTCEngineDelegate",
                       "zh/rtc/ios/api-reference/RTCEngineIMDelegate"
@@ -163,6 +162,7 @@
                     "pages": [
                       "zh/rtc/web/advanced/mute-vs-unpublish",
                       "zh/rtc/web/advanced/screen-sharing",
+                      "zh/rtc/web/advanced/multi-window-video-layout",
                       "zh/rtc/web/advanced/custom-track"
                     ]
                   },

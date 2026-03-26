@@ -16,3 +16,9 @@ npm info @seastart/srtc-web-sdk version
 ### 历史版本记录
 
 > 版本更新日志持续完善中，如需了解具体版本变更，请联系技术支持。
+
+### 近期更新
+
++ Web 视频轨道新增画中画与独立窗口能力：`enterPictureInPicture`、`exitPictureInPicture`、`popOutToWindow`、`closePopOutWindow`
++ 新增频道事件：`TRACK_PIP_ENTER`、`TRACK_PIP_EXIT`、`TRACK_POPOUT_OPEN`、`TRACK_POPOUT_CLOSE`
++ `PipOptions`、`PopOutOptions` 新增 `hideOriginView` 选项，默认 `true`

@@ -56,6 +56,10 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
 | `TRACK_UNMUTED` | `'track_unmuted'` | 某轨道恢复发送数据 | `BaseTrack` |
 | `TRACK_ENDED` | `'track_ended'` | 轨道停止（设备拔出 / 用户点击浏览器"停止共享"） | `BaseTrack` |
 | `TRACK_AUTOPLAY_FAIL` | `'track_autoplay_fail'` | 浏览器阻止自动播放，需在用户手势后重新调用 `startPlay` | `BaseTrack` |
+| `TRACK_PIP_ENTER` | `'track_pip_enter'` | 某视频轨道进入画中画模式 | `BaseTrack` |
+| `TRACK_PIP_EXIT` | `'track_pip_exit'` | 某视频轨道退出画中画模式 | `BaseTrack` |
+| `TRACK_POPOUT_OPEN` | `'track_popout_open'` | 某视频轨道弹出到独立窗口 | `BaseTrack` |
+| `TRACK_POPOUT_CLOSE` | `'track_popout_close'` | 某视频轨道关闭独立窗口 | `BaseTrack` |
 | `DEVICE_ADD` | `'device_add'` | 外设插入 | `MediaDeviceInfo` |
 | `DEVICE_REMOVE` | `'device_remove'` | 外设拔出 | `MediaDeviceInfo` |
 

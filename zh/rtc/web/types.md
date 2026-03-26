@@ -367,6 +367,53 @@ export declare const ScreenAudioPresets: {
   /** 默认系统音频预设 */
   default: ScreenAudioPreset;
 };
+
+/** 画中画配置 */
+export interface PipOptions {
+  /** 画中画窗口宽度 */
+  width?: number;
+  /** 画中画窗口高度 */
+  height?: number;
+  /** 是否优先使用 Document PiP，默认 true */
+  preferDocumentPip?: boolean;
+  /**
+   * 是否隐藏原始播放视图，默认 true
+   * 仅在 Document PiP 生效，传统 video PiP 仍依赖原始 video 元素
+   */
+  hideOriginView?: boolean;
+}
+
+/** 画中画句柄 */
+export interface PipHandle {
+  /** 画中画类型 */
+  type: 'document-pip' | 'video-pip';
+  /** Document PiP 模式下的新窗口引用 */
+  pipWindow?: Window;
+  /** 退出画中画 */
+  exit(): Promise<void>;
+}
+
+/** 弹出窗口配置 */
+export interface PopOutOptions {
+  /** 弹出窗口宽度 */
+  width?: number;
+  /** 弹出窗口高度 */
+  height?: number;
+  /** 弹出窗口标题 */
+  title?: string;
+  /** 是否隐藏原始播放视图，默认 true */
+  hideOriginView?: boolean;
+}
+
+/** 弹出窗口句柄 */
+export interface PopOutHandle {
+  /** 弹出窗口的 window 引用 */
+  window: Window;
+  /** 将视频回收到主页面指定容器 */
+  moveBack(container: HTMLElement): void;
+  /** 关闭弹出窗口 */
+  close(): void;
+}
 ```
 
 ---
