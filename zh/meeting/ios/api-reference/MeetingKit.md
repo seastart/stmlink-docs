@@ -1225,6 +1225,89 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 | onFailed | 失败回调 |
 
 
+## 签到相关接口
+### signInCreate:desc:onSuccess:onFailed:()
+`- (void)signInCreate:(NSInteger)dur desc:(nullable NSString *)desc onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+创建签到活动，管理员可通过该接口创建签到活动（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitDelegate` 中的  [onSignInActivity:epoch:beginAt:dur:endAt:desc:()]() 回调通知给全体会中成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| dur | 签到时长，单位：分钟，0为不限时 |
+| desc | 签到描述 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInList:onFailed:()
+`- (void)signInList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取签到活动列表，管理员可通过该接口获取签到活动列表（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEASignInListModel]() |
+| onFailed | 失败回调 |
+
+
+### signInCount:onSuccess:onFailed:()
+`- (void)signInCount:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+统计人数，管理员可通过该接口获取当前签到人数（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，参考文档：[SEASignInCountModel]() |
+| onFailed | 失败回调 |
+
+
+### signInFinish:onFailed:()
+`- (void)signInFinish:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+结束签到活动，管理员可通过该接口结束签到活动（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitDelegate` 中的  [onSignInFinish:epoch:()]() 回调通知给全体会中成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInDetail:onSuccess:onFailed:()
+`- (void)signInDetail:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取签到活动详情，管理员可通过该接口获取签到记录（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，参考文档：[SEASignInDetailListModel]() |
+| onFailed | 失败回调 |
+
+
+### signInSign:onFailed:()
+`- (void)signInSign:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+用户签到，当管理员发起签到活动后，会中成员可通过该接口完成签到。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInExportDetail:onSuccess:onFailed:()
+`- (void)signInExportDetail:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+导出签到数据，管理员可通过该接口导出签到数据，同时SDK会回调列表本地地址（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，文件地址 |
+| onFailed | 失败回调 |
+
+
 ## 屏幕共享接口
 ### stopScreenRecord()
 `- (void)stopScreenRecord`

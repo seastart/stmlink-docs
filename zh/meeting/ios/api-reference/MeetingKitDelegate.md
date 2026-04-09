@@ -704,3 +704,33 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | cpuUsage | CUP使用率 |
 
 
+## **签到事件回调**
+### onSignInActivity:epoch:beginAt:dur:endAt:desc:()
+`- (void)onSignInActivity:(NSString *)hostName epoch:(NSInteger)epoch beginAt:(NSInteger)beginAt dur:(NSInteger)dur endAt:(NSInteger)endAt desc:(nullable NSString *)desc`
+
+签到活动回调
+
+当主持人调用 MeetingKit 中的 `signInCreate:desc:onSuccess:onFailed:()` 接口执行创建签到活动后，SDK 会抛出该事件通知您。
+
+| 参数 | 描述 |
+| --- | --- |
+| hostName | 发起人昵称 |
+| epoch | 签到轮次 |
+| beginAt | 开始时间 |
+| dur | 签到时长，单位：分钟，0为不限时 |
+| endAt | 结束时间 |
+| desc | 签到描述 |
+
+
+### onSignInFinish:epoch:()
+`- (void)onSignInFinish:(NSString *)hostName epoch:(NSInteger)epoch`
+
+签到结束回调
+
+当主持人调用 MeetingKit 中的 `signInFinish:onFailed:()` 接口执行结束签到活动后，SDK 会抛出该事件通知您。
+
+| 参数 | 描述 |
+| --- | --- |
+| hostName | 发起人昵称 |
+| epoch | 签到轮次 |
+
