@@ -706,7 +706,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 
 ## **签到事件回调**
 ### onSignInActivity:epoch:beginAt:dur:endAt:desc:()
-`- (void)onSignInActivity:(NSString *)hostName epoch:(NSInteger)epoch beginAt:(NSInteger)beginAt dur:(NSInteger)dur endAt:(NSInteger)endAt desc:(nullable NSString *)desc`
+`- (void)onSignInActivity:(NSString *)userId epoch:(NSInteger)epoch beginAt:(NSInteger)beginAt dur:(NSInteger)dur endAt:(NSInteger)endAt desc:(nullable NSString *)desc`
 
 签到活动回调
 
@@ -714,7 +714,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 
 | 参数 | 描述 |
 | --- | --- |
-| hostName | 发起人昵称 |
+| userId | 发起人标识 |
 | epoch | 签到轮次 |
 | beginAt | 开始时间 |
 | dur | 签到时长，单位：分钟，0为不限时 |
@@ -723,7 +723,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 
 
 ### onSignInFinish:epoch:()
-`- (void)onSignInFinish:(NSString *)hostName epoch:(NSInteger)epoch`
+`- (void)onSignInFinish:(NSString *)userId epoch:(NSInteger)epoch`
 
 签到结束回调
 
@@ -731,6 +731,6 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 
 | 参数 | 描述 |
 | --- | --- |
-| hostName | 发起人昵称 |
+| userId | 发起人标识 |
 | epoch | 签到轮次 |
 
