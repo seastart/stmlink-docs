@@ -12,15 +12,22 @@
 ## 本地预览
 
 ```bash
-npm install -g mintlify
-mintlify dev
+npm install -g mint
+mint dev
+```
+
+常用校验命令：
+
+```bash
+mint broken-links
+mint validate
 ```
 
 ## 目录结构
 
 ```
 stmlink-docs/
-├── mint.json          # Mintlify 配置（导航、主题）
+├── docs.json          # Mintlify 配置（导航、主题）
 ├── zh/                # 中文文档
 │   ├── rtc/           # SRTC SDK
 │   └── meeting/       # SMeeting SDK
