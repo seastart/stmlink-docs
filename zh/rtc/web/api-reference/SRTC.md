@@ -125,13 +125,37 @@ getUsersInfo(map: false): UserInfo[]
 
 ### getStreamMetric
 
-获取当前流媒体网络质量指标快照，例如上下行码率、丢包率等。
+获取当前流媒体全量 metric 快照，包含网络总体统计以及每条本地/远端轨道的 `TrackMetric`。
 
 ```typescript
-getStreamMetric(): Record<string, any> | undefined
+getStreamMetric(): StreamMetric | undefined
+```
+
+> 未加入频道时调用会抛出异常。详细字段含义见 [网络质量](../network-quality)。
+
+---
+
+### getNetworkStats
+
+获取当前网络总体统计，只关心网络全景（码率、丢包、RTT、可用带宽）时用，比 `getStreamMetric` 更轻量。
+
+```typescript
+getNetworkStats(): NetworkStats | undefined
 ```
 
 > 未加入频道时调用会抛出异常。
+
+---
+
+### getConnectionQuality
+
+获取当前连接质量评估结果，返回上下行等级、总体等级、MOS 和触发原因。SDK 内部以 2 秒为周期滑动窗口评估。
+
+```typescript
+getConnectionQuality(): QualityEvaluation | undefined
+```
+
+> 未加入频道时调用会抛出异常。业务层更推荐订阅 `ChannelEventType.CONNECTION_QUALITY_CHANGED` 事件被动感知变化。
 
 ---
 

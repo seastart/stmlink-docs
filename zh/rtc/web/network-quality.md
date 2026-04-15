@@ -18,11 +18,11 @@ SDK 提供三种获取网络质量的方式，按粒度从粗到细：
 连接质量相关事件复用现有的 `ChannelEvent` 体系，直接在 `onNotifyChannelEvent` 里处理：
 
 ```typescript
-import { CommonChannelEventType, ConnectionQualityEventData } from '@stmlink/rtc-js';
+import { ChannelEventType, ConnectionQualityEventData } from '@seastart/srtc-web-sdk';
 
 srtc.onNotifyChannelEvent = (evt) => {
   switch (evt.type) {
-    case CommonChannelEventType.CONNECTION_QUALITY_CHANGED: {
+    case ChannelEventType.CONNECTION_QUALITY_CHANGED: {
       // 网络等级变化时触发（excellent/good/poor/lost/unknown）
       const { evaluation, previous } = evt.data as ConnectionQualityEventData;
       console.log(`网络质量: ${previous} -> ${evaluation.overall}`);
@@ -30,11 +30,11 @@ srtc.onNotifyChannelEvent = (evt) => {
       console.log(`MOS:`, evaluation.mos);
       break;
     }
-    case CommonChannelEventType.CPU_CONSTRAINED:
+    case ChannelEventType.CPU_CONSTRAINED:
       // 发送端被 CPU 持续限制，建议降低画质/分辨率
       toast('CPU 过载，建议降低画质');
       break;
-    case CommonChannelEventType.BANDWIDTH_CONSTRAINED:
+    case ChannelEventType.BANDWIDTH_CONSTRAINED:
       // 发送端被带宽持续限制
       toast('上行带宽不足');
       break;
@@ -307,7 +307,7 @@ export interface VideoReceiverStats extends ReceiverStats {
 ```typescript
 // 1. 主动订阅等级变化，用于 UI 提示
 srtc.onNotifyChannelEvent = (evt) => {
-  if (evt.type === CommonChannelEventType.CONNECTION_QUALITY_CHANGED) {
+  if (evt.type === ChannelEventType.CONNECTION_QUALITY_CHANGED) {
     const { evaluation } = evt.data as ConnectionQualityEventData;
     updateNetworkIndicator(evaluation.overall); // 你的 UI 更新函数
   }

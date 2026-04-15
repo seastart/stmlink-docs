@@ -115,13 +115,14 @@ await srtc.publishLocalTrack(localScreenTrack, { desc: 'screen' });
 | `height` | `number` | 期望采集高度 |
 | `frameRate` | `number` | 期望帧率 |
 | `contentHint` | `'motion' \| 'detail' \| 'text'` | 内容类型提示，影响编码策略：`motion` 适合视频/游戏，`detail` 适合图片/图形，`text` 适合文档/代码 |
-| `showCursor` | `'always' \| 'motion' \| 'never'` | 是否显示鼠标指针 |
+| `showCursor` | `boolean` | 是否显示鼠标指针 |
+| `rect` | `{ x, y, w, h }` | Windows 侧的区域裁剪参数，其它平台传 `{ x: 0, y: 0, w: 0, h: 0 }` 即可 |
 
 ```typescript
 await localScreenTrack.startCapture({
   frameRate: 15,
   contentHint: 'detail',  // 共享文档/代码时使用，提升清晰度
-  showCursor: 'always',
+  showCursor: true,
 });
 ```
 
