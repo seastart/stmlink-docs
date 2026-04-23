@@ -32,6 +32,39 @@ export interface JoinOptions {
   preferVideoCodec?: Codec;
   /** 希望优先使用的音频编码 */
   preferAudioCodec?: Codec;
+  /**
+   * 是否启用远端视频自适应流。
+   * 启用后，SDK 会根据 video 容器的显示/隐藏、尺寸变化，以及页面前后台状态，
+   * 自动为远端视频选择更合适的 simulcast 层。
+   *
+   * 说明：
+   * - 当前仅 WebRTC SeaStart SFU 生效
+   * - `true` 表示使用默认策略
+   * - 传对象可进一步调整像素密度和后台页面策略
+   */
+  adaptiveStream?: boolean | AdaptiveStreamOptions;
+}
+```
+
+---
+
+### AdaptiveStreamOptions
+
+远端视频自适应流配置。设计目标是只把“当前有没有人看、正在看多大”这两个关键事实传给订阅层，由 SDK 自动选择更合适的 simulcast 层。
+
+```typescript
+export interface AdaptiveStreamOptions {
+  /**
+   * 像素密度倍率。
+   * - `screen`：使用真实 `window.devicePixelRatio`
+   * - 不传：高密屏默认取 2，其余取 1
+   */
+  pixelDensity?: number | "screen";
+  /**
+   * 页面切到后台时，是否按“不可见”处理远端视频，默认 true。
+   * 当前实现没有“暂停下行”协议，因此后台时会切到最低候选层，而不是直接停流。
+   */
+  pauseVideoInBackground?: boolean;
 }
 ```
 
@@ -155,6 +188,16 @@ export interface TrackInfo {
   channel_count: number;
   /** 自定义扩展属性 */
   props?: Record<string, any>;
+  /**
+   * simulcast 降级候选层 id 列表，按画质从高到低排列，仅包含比当前层低的副层（不含自己）。
+   * 订阅侧用于拼 SFU 的 `prefer_track_ids = [当前层 id, ...fallback_ids]`。
+   */
+  fallback_ids?: string[];
+  /**
+   * 是否为 simulcast 副层。仅副层为 `true`，主层不写。
+   * 用于 `autoSubscribe` 跳过副层，真正的层切换通过订阅主层时的 `fallback_ids` 候选池交给 SFU。
+   */
+  variant?: boolean;
 }
 
 /** 流轨道类型 */
@@ -294,7 +337,13 @@ export interface VideoPublishOptions {
   degradationPreference?: RTCDegradationPreference;
   /** 自定义扩展属性 */
   props?: Record<string, any>;
-  /** 联播（Simulcast）配置，会额外发布多路不同清晰度的视频 */
+  /**
+   * 联播（Simulcast）配置，会额外发布多路不同清晰度的视频。
+   *
+   * **顺序约定：按画质从高到低排列**，即 `simulcasts[0]` 是仅次于主层的次高画质，
+   * `simulcasts[length-1]` 是最低画质。该顺序决定了 `TrackInfo.fallback_ids` 候选池的排序，
+   * 也是订阅侧降级时的搜索顺序。
+   */
   simulcasts?: VideoPublishOptions[];
 }
 

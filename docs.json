@@ -188,6 +188,7 @@
                     "group": "进阶实践",
                     "pages": [
                       "zh/rtc/web/advanced/mute-vs-unpublish",
+                      "zh/rtc/web/advanced/video-stream-layers",
                       "zh/rtc/web/advanced/screen-sharing",
                       "zh/rtc/web/advanced/multi-window-video-layout",
                       "zh/rtc/web/advanced/custom-track"

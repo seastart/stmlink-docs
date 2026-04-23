@@ -18,7 +18,8 @@ SDK 提供三种获取网络质量的方式，按粒度从粗到细：
 连接质量相关事件复用现有的 `ChannelEvent` 体系，直接在 `onNotifyChannelEvent` 里处理：
 
 ```typescript
-import { ChannelEventType, ConnectionQualityEventData } from '@seastart/srtc-web-sdk';
+import { ChannelEventType } from '@seastart/srtc-web-sdk';
+import type { ConnectionQualityEventData } from '@seastart/srtc-web-sdk';
 
 srtc.onNotifyChannelEvent = (evt) => {
   switch (evt.type) {
@@ -73,7 +74,7 @@ export interface QualityEvaluation {
   downlink: ConnectionQuality;
   /** 总体质量，取上下行中较差的一档 */
   overall: ConnectionQuality;
-  /** 音频 MOS 估算，1.0 ~ 4.5 */
+  /** 音视频 MOS 估算，1.0 ~ 4.5 */
   mos: number;
   /** 触发当前等级的主要原因，便于排查 */
   reasons: string[];
@@ -112,15 +113,17 @@ export interface NetworkStats {
   pkt_loss_down: number;
   /** BWE 估算的可用上行带宽 kb/s（来自 candidate-pair） */
   available_outgoing_bitrate?: number;
-  /** BWE 估算的可用下行带宽 kb/s（来自 candidate-pair） */
+  /** SFU/BWE 估算的可用下行带宽 kb/s（来自 candidate-pair） */
   available_incoming_bitrate?: number;
-  /** candidate-pair 实时链路 RTT ms，比 remote-inbound-rtp 更准确 */
-  current_rtt?: number;
+  /** 发布连接观测到的 RTT，单位 ms */
+  rtt_up?: number;
+  /** 订阅连接观测到的 RTT，单位 ms */
+  rtt_down?: number;
 }
 ```
 
 :::note
-旧版本的 `delay` 和 `up_level` 字段已被移除：`delay` 由更精确的 `current_rtt` 替代，`up_level` 由 `getConnectionQuality()` 返回的 `QualityEvaluation.uplink` 替代。
+旧版本的 `delay` 和 `up_level` 字段已被移除：`delay` 现在拆分为更精确的 `rtt_up` 与 `rtt_down`，`up_level` 由 `getConnectionQuality()` 返回的 `QualityEvaluation.uplink` 替代。
 :::
 
 ### 2.3 全量 metric 快照 `getStreamMetric`
@@ -177,11 +180,11 @@ interface SenderStats {
   packetsSent?: number;
   /** 已发送的字节数 */
   bytesSent?: number;
-  /** 远端感知到的抖动 */
+  /** 远端感知到的网络抖动，单位 ms */
   jitter?: number;
   /** 远端报告的丢包数 */
   packetsLost?: number;
-  /** 远端报告的往返时延(s) */
+  /** 远端报告的往返时延，单位 ms */
   roundTripTime?: number;
   /** 出站流ID */
   streamId?: string;
@@ -227,19 +230,19 @@ export interface VideoSenderStats extends SenderStats {
 
 /** 接收数据统计 */
 interface ReceiverStats {
-  /** 抖动缓冲延迟 */
+  /** 接收端抗抖动缓冲区延迟，单位 ms */
   jitterBufferDelay?: number;
-  /** 丢包数 */
+  /** 累计丢包数（基于 RTP 序列号间隙统计） */
   packetsLost?: number;
-  /** 已接收的包数 */
+  /** 累计接收 RTP 包数 */
   packetsReceived?: number;
-  /** 已接收的字节数 */
+  /** 累计接收字节数（含 RTP 头） */
   bytesReceived?: number;
-  /** 流ID */
+  /** 媒体流标识（通常对应远端 SSRC） */
   streamId?: string;
-  /** 抖动 */
+  /** 网络层 RTP 抖动（RFC 3550 定义），单位 ms */
   jitter?: number;
-  /** 时间戳 */
+  /** 本组 stats 的采集时间戳，单位 ms */
   timestamp: number;
 }
 

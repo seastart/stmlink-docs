@@ -19,6 +19,17 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### v0.5.0 - 2026-04-23
+
++ feat: seastart引擎接入服务端下发质量报告
++ feat: 频道事件系统类型安全改造，支持判别联合及自动类型收窄
++ feat: seastart引擎Active speaker（说话中的用户）接入
++ feat: 新增自适应流功能，支持根据播放窗口状态自动切换 simulcast 层，支持 SFU 下行切层通知及主动切层请求
+
+### v0.4.4 - 2026-04-18
+
++ feat: simulcast 联播支持及 SFU 订阅层切换优化 (781f520)
+
 + Web 视频轨道新增画中画与独立窗口能力：`enterPictureInPicture`、`exitPictureInPicture`、`popOutToWindow`、`closePopOutWindow`
 + 新增频道事件：`TRACK_PIP_ENTER`、`TRACK_PIP_EXIT`、`TRACK_POPOUT_OPEN`、`TRACK_POPOUT_CLOSE`
 + `PipOptions`、`PopOutOptions` 新增 `hideOriginView` 选项，默认 `true`

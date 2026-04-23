@@ -11,14 +11,16 @@ description: "Web SRTC 音视频 SDK 事件列表与触发时机说明"
 srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
   switch (evt.type) {
     case ChannelEventType.USER_JOIN:
-      // evt.data as UserInfo
+      // evt.data
       break;
     case ChannelEventType.TRACK_PIP_ENTER:
-      // evt.data as BaseTrack
+      // evt.data
       break;
   }
 };
 ```
+
+`ChannelEvent` 与 `ImEvent` 在类型层面均为判别联合：当你按 `switch (evt.type)` 分支处理时，`evt.data` 会跟随事件类型自动收窄到对应的数据结构。若只在 TypeScript 中用它们做类型标注，建议使用 `import type` 导入。
 
 ---
 
@@ -30,7 +32,7 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
 | `CHANNEL_UPDATE` | `'channel_update'` | 频道自定义属性 `props` 被更新 | `ChannelInfo` |
 | `ME_UPDATE` | `'me_update'` | 自己的用户信息被服务端更新 | `UserInfo` |
 | `RECONNECTING` | `'reconnecting'` | 网络波动，开始自动重连 | 无 |
-| `RECONNECTED` | `'reconnected'` | 自动重连成功 | `ChannelInfo` |
+| `RECONNECTED` | `'reconnected'` | 自动重连成功 | 无 |
 | `DISCONNECTED` | `'disconnected'` | 被强制踢出或发生不可恢复错误 | `DisconnectEventData` |
 | `CUSTOM_MSG` | `'custom_msg'` | 收到频道内自定义消息 | `CustomMsgData` |
 
@@ -68,6 +70,19 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
 
 ---
 
+#### 网络质量与活跃说话人
+
+| 事件常量 | 字符串值 | 触发时机 | data 类型 |
+| --- | --- | --- | --- |
+| `CONNECTION_QUALITY_CHANGED` | `'connection_quality_changed'` | 连接质量等级发生变化 | `ConnectionQualityEventData` |
+| `CPU_CONSTRAINED` | `'cpu_constrained'` | 发送端持续受到 CPU 限制 | `QualityEvaluation` |
+| `BANDWIDTH_CONSTRAINED` | `'bandwidth_constrained'` | 发送端持续受到带宽限制 | `QualityEvaluation` |
+| `ACTIVE_SPEAKERS_CHANGED` | `'active_speakers_changed'` | 当前活跃说话人列表发生变化，仅 SeaStart SFU 支持 | `ActiveSpeakersEventData` |
+
+`ACTIVE_SPEAKERS_CHANGED` 的 `data.speakers` 为当前正在说话用户的全量快照，按 `level` 从高到低排序；无人说话时返回空数组，业务层可直接覆盖 UI 状态，无需自行合并增量。
+
+---
+
 ### 频道外消息事件（onNotifyImEvent）
 
 通过 `srtc.onNotifyImEvent` 注册回调，需先调用 `srtc.enableIm(token)`：
@@ -76,7 +91,7 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
 srtc.onNotifyImEvent = (evt: ImEvent) => {
   switch (evt.type) {
     case ImEventType.IM_MSG:
-      // evt.data as ImMsgData
+      // evt.data
       break;
   }
 };
