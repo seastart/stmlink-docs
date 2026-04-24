@@ -726,6 +726,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEAHandupTypeChat | `3` | 聊天 |
 | SEAHandupTypeShare | `4` | 共享 |
 | SEAHandupTypeDraw | `5` | 涂鸦 |
+| SEAHandupTypeOther | `6` | 其它 |
 
 
 ### SEALeaveReason
