@@ -3,6 +3,10 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.2.5] - 2026.04.28
+#### 新增
++ 新增扩展事件回调`onExtendedEvents:content:`。
+
 ### [1.2.4] - 2026.04.24
 #### 新增
 + 举手新增`SEAHandupTypeOther`类型。

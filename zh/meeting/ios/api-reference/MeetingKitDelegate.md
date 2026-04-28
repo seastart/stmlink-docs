@@ -703,6 +703,18 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | memory | 内存使用情况 |
 | cpuUsage | CUP使用率 |
 
+### onExtendedEvents:content:()
+`- (void)onExtendedEvents:(NSString *)event content:(NSString *)content`
+
+扩展事件回调
+
+房间内业务层自定义的扩展事件回调。
+
+| 参数 | 描述 |
+| --- | --- |
+| event | 事件类型 |
+| content | 数据内容 |
+
 
 ## **签到事件回调**
 ### onSignInActivity:epoch:beginAt:dur:endAt:desc:()
