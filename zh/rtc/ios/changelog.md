@@ -3,6 +3,15 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [2.4.6] - 2026.04.30
+#### 新增
++ 升级重构支持`Seastart SFU 26.4`协议；
++ 新增流媒体质量等级`RTCStreamQualityLevel`；
++ 新增流媒体质量采样数据`RTCStreamQualitySampleModel`；
++ 原`RTCEngineStreamTrackModel`数据结构新增`fallbackIds`和`variant`字段；
++ 新增服务端上行质量检测回调`onSendQualitySample:`；
++ 新增服务端下行质量检测回调`onReceiveQualitySample:`。
+
 ### [2.4.5] - 2026.04.13
 #### 修复
 + 修复音频防抖计时器误操作释放，导致同时发送视频和音频时音频推流异常问题。

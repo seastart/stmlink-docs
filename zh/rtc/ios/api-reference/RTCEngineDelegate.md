@@ -279,6 +279,32 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | --- | --- |
 
 
+### onSendQualitySample:()
+`- (void)onSendQualitySample:(RTCStreamQualitySampleModel *)sample`
+
+服务端上行质量检测回调
+
+会在固定时间间隔，会收到来自`RTCEngineDelegate`的`onSendQualitySample:()`回调，描述当前数据发送状态延迟、丢包率等信息。
+
+**参数**
+
+| sample | 发送状态数据，内容包含：延迟、丢包率等基本信息详情请参考 [RTCStreamQualitySampleModel]() |
+| --- | --- |
+
+
+### onReceiveQualitySample:()
+`- (void)onReceiveQualitySample:(RTCStreamQualitySampleModel *)sample`
+
+服务端下行质量检测回调
+
+会在固定时间间隔，会收到来自`RTCEngineDelegate`的`onReceiveQualitySample:()`回调，描述当前数据接收状态延迟、丢包率等信息。
+
+**参数**
+
+| sample | 接收状态数据，内容包含：延迟、丢包率等基本信息详情请参考 [RTCStreamQualitySampleModel]() |
+| --- | --- |
+
+
 ### onReceiveStreamStatusChange:trackId:status:()
 `- (void)onReceiveStreamStatusChange:(NSString *)userId trackId:(RTCTrackIdentifierFlags)trackId status:(BOOL)status`
 

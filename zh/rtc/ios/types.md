@@ -54,6 +54,8 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | int angle | 是 | 视频角度 |
 | int sampleRate | 否 | 音频采样率 |
 | [RTCTrackIdentifierFlags](#QmrJ5) track | 是 | 轨道号码 |
+| NSArray<NSString *> *fallbackIds | 否 | 当前层可降级到的更低层轨道列表，仅用于支持 seastart 的引擎 |
+| BOOL variant | 否 | 是否为 simulcast 副层，仅用于支持 seastart 的引擎 |
 | id props | 否 | 自定义属性 |
 
 
@@ -193,6 +195,22 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | float lrd | 否 | 服务器到端丢包率 |
 | int audio | 否 | 音频包数 |
 | int video | 否 | 视频包数 |
+
+
+### RTCStreamQualitySampleModel
+流媒体质量采样数据，仅用于支持 seastart 的引擎 
+
+| **属性** | **必填** | **属性说明** |
+| --- | :---: | --- |
+| NSInteger score | 是 | 综合评分（0~100） |
+| RTCStreamQualityLevel level | 是 | 质量等级 |
+| double mos | 是 | 语音 MOS 值 |
+| double loss | 是 | 丢包率（0~1） |
+| double rtt | 是 | 往返时延（毫秒） |
+| double jitter | 是 | 抖动（毫秒） |
+| NSInteger packets | 是 | 包数量 |
+| NSInteger bitrate | 是 | 比特率（bps） |
+| NSInteger bytes | 是 | 字节数 |
 
 
 ### RTCEngineLogLevel
@@ -405,6 +423,17 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCLeaveChannelReasonTimeout | `4` | 心跳超时离开 |
 | RTCLeaveChannelReasonDestroy | `5` | 频道销毁离开 |
 
+
+### RTCStreamQualityLevel
+流媒体质量等级
+
+| **枚举名** | **枚举值** | **说明** |
+| --- | :---: | --- |
+| RTCStreamQualityLevelUnknown | `0` | 未知 |
+| RTCStreamQualityLevelExcellent | `1` | 优秀（excellent） |
+| RTCStreamQualityLevelGood | `2` | 良好（good） |
+| RTCStreamQualityLevelPoor | `3` | 较差（poor） |
+| RTCStreamQualityLevelLost | `4` | 已断流（lost） |
 
 
 
