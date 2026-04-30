@@ -3,6 +3,11 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.2.6] - 2026.04.30
+#### 新增
++ 新增流媒体上行质量数据回调`onSendQualityModel:`；
++  新增流媒体下行质量数据回调`onReceiveQualityModel:`；
+
 ### [1.2.5] - 2026.04.28
 #### 新增
 + 新增扩展事件回调`onExtendedEvents:content:`。

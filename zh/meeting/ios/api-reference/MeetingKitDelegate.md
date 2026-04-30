@@ -664,6 +664,30 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | receiveModel | 流媒体接收状态数据，参考文档：[SEAStreamReceiveModel](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#leOhF) |
 
 
+### onSendQualityModel:()
+`- (void)onSendQualityModel:(SEAStreamQualityModel *)qualityModel`
+
+流媒体上行质量数据回调
+
+会在固定时间间隔，会收到来自 `MeetingKitDelegate` 的 `onSendQualityModel:()` 事件回调，描述当前数据发送状态延迟、丢包率等信息。
+
+| 参数 | 描述 |
+| --- | --- |
+| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel]() |
+
+
+### onReceiveQualityModel:()
+`- (void)onReceiveQualityModel:(SEAStreamQualityModel *)qualityModel`
+
+流媒体下行质量数据回调
+
+会在固定时间间隔，会收到来自 `MeetingKitDelegate` 的 `onReceiveQualityModel:()` 事件回调，描述当前数据接收状态延迟、丢包率等信息。
+
+| 参数 | 描述 |
+| --- | --- |
+| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel]() |
+
+
 ### onReceiveStreamStatusChange:streamType:status:()
 `- (void)onReceiveStreamStatusChange:(NSString *)targetUserId streamType:(SEAVideoStreamType)streamType status:(BOOL)status`
 
