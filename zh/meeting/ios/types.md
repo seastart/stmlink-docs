@@ -247,6 +247,22 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | video | 【字段含义】视频包数 |
 
 
+### SEAStreamQualityModel
+流媒体质量监测数据
+
+| **属性名称** | **描述** |
+| --- | --- |
+| score | 【字段含义】综合评分（0~100） |
+| level | 【字段含义】质量等级 |
+| mos | 【字段含义】语音 MOS 值 |
+| loss | 【字段含义】丢包率（0~1） |
+| rtt | 【字段含义】往返时延（毫秒） |
+| jitter | 【字段含义】抖动（毫秒） |
+| packets | 【字段含义】包数量 |
+| bitrate | 【字段含义】比特率（bps） |
+| bytes | 【字段含义】字节数 |
+
+
 ### SEAAgentModel
 邀请设备对象
 
