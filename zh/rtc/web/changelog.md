@@ -19,6 +19,21 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### 未发布
+
++ feat: 新增音视频处理器（插件）机制，本地轨道支持 `setProcessor` / `removeProcessor`，可串联多个处理器
++ feat: 配套 RNN 降噪插件 `@seastart/srtc-plugin-rnnoise`
+
+### v0.5.3 - 2026-05-08
+
++ feat: add local composite recorder (47a20b0)
++ chore: 共享屏幕默认配置优化 (f079eeb)
+
+### v0.5.1 - 2026-04-27
+
++ fix: 视频卡顿 (b7a36c2)
++ feat: RemoteVideoTrack支持设置jitterBufferTarget(抗抖动目标延迟) (6aed177)
+
 ### v0.5.0 - 2026-04-23
 
 + feat: seastart引擎接入服务端下发质量报告
