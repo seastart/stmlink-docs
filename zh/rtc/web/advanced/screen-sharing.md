@@ -132,5 +132,5 @@ await localScreenTrack.startCapture({
 
 | 预设名 | 分辨率 | 帧率 | 码率 | 说明 |
 | --- | :---: | :---: | :---: | --- |
-| `ScreenPresets['1080p']` | 1920×1080 | 10 fps | 2 Mbps | 默认预设 |
-| `ScreenPresets['720p']` | 1280×720 | 10 fps | 1.5 Mbps | |
+| `ScreenPresets['1080p']` | 1920×1080 | 10 fps | 2 Mbps | 默认预设，默认 medium 优先级和 maintain-resolution 降级策略 |
+| `ScreenPresets['720p']` | 1280×720 | 10 fps | 1.5 Mbps | 默认 medium 优先级和 maintain-resolution 降级策略 |

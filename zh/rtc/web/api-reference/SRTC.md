@@ -247,6 +247,20 @@ createLocalCustomVideoTrack(msTrack: MediaStreamTrack): LocalVideoTrack
 
 ---
 
+### createLocalCompositeRecorder
+
+创建本地合成录制器，用于在浏览器端把当前页面需要录制的视频宫格和音频轨道合成为本地录制文件。
+
+```typescript
+createLocalCompositeRecorder(): LocalCompositeRecorder
+```
+
+返回的 `LocalCompositeRecorder` 只负责媒体合成与 `MediaRecorder` 生命周期；会议宫格、分页、主讲人布局、共享屏幕优先级等业务视角由应用层计算后，通过 `videoItems` 和 `updateVideoItems(...)` 传入。
+
+> 详细用法见 [本地合成录制](/zh/rtc/web/advanced/local-recording)。
+
+---
+
 ### publishLocalTrack
 
 将本地轨道发布到频道，发布后远端用户可以订阅。

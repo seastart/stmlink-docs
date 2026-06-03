@@ -230,8 +230,12 @@ export interface VideoSenderStats extends SenderStats {
 
 /** 接收数据统计 */
 interface ReceiverStats {
-  /** 接收端抗抖动缓冲区延迟，单位 ms */
+  /** 接收端抗抖动缓冲区累计延迟（开播至今所有出 buffer 帧的延迟总和），单位 ms */
   jitterBufferDelay?: number;
+  /** 已从抖动缓冲区出列的帧/样本累计数；用于把累计 jitterBufferDelay 折算为均值 */
+  jitterBufferEmittedCount?: number;
+  /** 周期内（与上一次 stats 采样之间）平均每帧抖动缓冲延迟，单位 ms；体感延迟以此为准 */
+  jitterBufferAvgDelay?: number;
   /** 累计丢包数（基于 RTP 序列号间隙统计） */
   packetsLost?: number;
   /** 累计接收 RTP 包数 */

@@ -19,10 +19,10 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
-### 未发布
+### v0.5.4 - 2026-06-03
 
-+ feat: 新增音视频处理器（插件）机制，本地轨道支持 `setProcessor` / `removeProcessor`，可串联多个处理器
-+ feat: 配套 RNN 降噪插件 `@seastart/srtc-plugin-rnnoise`
++ feat: 新增音视频处理器插件机制
++ feat: 新增wasm降噪插件
 
 ### v0.5.3 - 2026-05-08
 

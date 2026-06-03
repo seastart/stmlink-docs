@@ -354,9 +354,9 @@ export interface CameraPreset {
 
 /** 摄像头内置预设参数 */
 export declare const CameraPresets: {
-  /** 1920×1080，15fps，2.5 Mbps */
+  /** 1920×1080，15fps，2.5 Mbps，默认 maintain-resolution 降级策略 */
   '1080p': CameraPreset;
-  /** 1280×720，15fps，1.2 Mbps，默认预设 */
+  /** 1280×720，15fps，1.2 Mbps，默认预设，默认 maintain-resolution 降级策略 */
   '720p': CameraPreset;
   /** 640×360，15fps，550 Kbps */
   '360p': CameraPreset;
@@ -402,9 +402,9 @@ export interface ScreenPreset {
 
 /** 屏幕共享内置预设参数 */
 export declare const ScreenPresets: {
-  /** 1920×1080，10fps，2 Mbps，默认预设 */
+  /** 1920×1080，10fps，2 Mbps，默认预设，默认 medium 优先级和 maintain-resolution 降级策略 */
   '1080p': ScreenPreset;
-  /** 1280×720，10fps，1.5 Mbps */
+  /** 1280×720，10fps，1.5 Mbps，默认 medium 优先级和 maintain-resolution 降级策略 */
   '720p': ScreenPreset;
 };
 
@@ -475,6 +475,96 @@ export interface PopOutHandle {
   moveBack(container: HTMLElement): void;
   /** 关闭弹出窗口 */
   close(): void;
+}
+```
+
+---
+
+### 本地合成录制相关
+
+本地合成录制（`srtc.createLocalCompositeRecorder()`）相关的类型定义如下。完整用法、参数表与场景说明见进阶实践的 [本地合成录制](/zh/rtc/web/advanced/local-recording)。
+
+```typescript
+/** 本地合成录制器可接受的输入轨道 */
+export type LocalCompositeRecorderTrack =
+  | MediaStreamTrack
+  | LocalVideoTrack
+  | RemoteVideoTrack
+  | LocalAudioTrack
+  | RemoteAudioTrack;
+
+/** 本地合成录制器状态 */
+export type LocalCompositeRecorderState = 'inactive' | 'recording' | 'paused';
+
+/** 视频项在录制画布上的绘制区域，单位为 canvas 像素 */
+export interface LocalCompositeRecorderRect {
+  /** 距离画布左侧的坐标 */
+  x: number;
+  /** 距离画布顶部的坐标 */
+  y: number;
+  /** 绘制区域宽度 */
+  width: number;
+  /** 绘制区域高度 */
+  height: number;
+}
+
+/** 单个视频轨道在本地合成录制中的绘制配置 */
+export interface LocalCompositeRecorderVideoItem {
+  /** 调用方维护的稳定唯一标识；同一个 id 的 track 变更时会复用槽位并替换解码源 */
+  id: string;
+  /** 要绘制的视频轨道；支持原生 MediaStreamTrack 或 SDK 音视频 Track */
+  track?: LocalCompositeRecorderTrack | null;
+  /** 该视频在录制画布上的绘制区域 */
+  rect: LocalCompositeRecorderRect;
+  /** 绘制在视频左下角的标签文本，例如用户名；不传则不绘制标签 */
+  label?: string;
+  /** 视频填充方式：contain 保留完整画面，cover 填满区域并裁剪溢出部分；默认 contain */
+  fit?: 'contain' | 'cover';
+  /** 单个视频槽位背景色；默认 #1a1c22 */
+  background?: string;
+}
+
+/** 本地合成录制启动参数 */
+export interface LocalCompositeRecorderStartOptions {
+  /** 初始视频绘制列表；后续可通过 updateVideoItems 跟随业务视角更新 */
+  videoItems: LocalCompositeRecorderVideoItem[];
+  /** 需要混入录制文件的音频轨道；支持原生 MediaStreamTrack 或 SDK 音视频 Track */
+  audioTracks?: LocalCompositeRecorderTrack[];
+  /** 输出视频宽度，单位为像素；默认 1280 */
+  width?: number;
+  /** 输出视频高度，单位为像素；默认 720 */
+  height?: number;
+  /** canvas.captureStream 的帧率；默认 15 */
+  fps?: number;
+  /** MediaRecorder mimeType，未传或不支持时自动选择浏览器支持的 webm 格式 */
+  mimeType?: string;
+  /** MediaRecorder.start(timeslice) 的分片间隔，单位毫秒；不传则浏览器在 stop 时一次性返回 */
+  timeslice?: number;
+  /** 录制画布整体背景色；默认 #101216 */
+  background?: string;
+  /** 标签背景色；默认 rgba(0, 0, 0, 0.58) */
+  labelBackground?: string;
+  /** 每次 MediaRecorder 输出有效分片时触发，可用于边录边上传或保存分片 */
+  onDataAvailable?: (blob: Blob) => void;
+}
+
+export declare class LocalCompositeRecorder {
+  /** 获取当前录制状态 */
+  getState(): LocalCompositeRecorderState;
+  /** 开始本地合成录制 */
+  start(options: LocalCompositeRecorderStartOptions): Promise<void>;
+  /** 更新视频绘制列表 */
+  updateVideoItems(items: LocalCompositeRecorderVideoItem[]): void;
+  /** 更新参与混音的音频轨道 */
+  updateAudioTracks(tracks: LocalCompositeRecorderTrack[]): Promise<void>;
+  /** 暂停录制写入 */
+  pause(): void;
+  /** 恢复录制写入 */
+  resume(): void;
+  /** 停止录制并返回最终 Blob */
+  stop(): Promise<Blob>;
+  /** 强制销毁录制器内部资源 */
+  destroy(): void;
 }
 ```
 
