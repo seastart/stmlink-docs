@@ -108,5 +108,5 @@ export class MyProcessor implements TrackProcessor {
 
 - 必须先 `startCapture` 采集到轨道，再 `setProcessor`，否则抛错。
 - `setProcessor` 幂等：重复调用会先卸载已有处理器再挂载新的。
-- **v1 限制**：切换设备（`changeDeviceId`）或重新 `startCapture` 后，需重新调用 `setProcessor`。
+- **自动重挂**：切换设备（`changeDeviceId`）或重新 `startCapture` 后，SDK 会自动用新源轨道重建处理器，无需重新调用 `setProcessor`。
 - 处理器多依赖 `AudioContext`/WASM，需在 HTTPS（或 localhost）环境，且可能需用户手势后才能运行。

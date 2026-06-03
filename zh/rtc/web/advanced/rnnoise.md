@@ -91,5 +91,5 @@ await mic.removeProcessor();
 - 仅支持音频轨道。
 - 需在 HTTPS（或 localhost）环境运行；`AudioContext` 可能需用户手势后才能 `resume`。
 - 采样率固定 48kHz。
-- 切换麦克风设备（`changeDeviceId`）或重新 `startCapture` 后，需重新调用 `setProcessor`。
+- 切换麦克风设备（`changeDeviceId`）或重新 `startCapture` 后，降噪会自动恢复，无需重新调用 `setProcessor`。
 - 可与其他处理器串联，详见[音视频处理器](/zh/rtc/web/advanced/audio-processor#多处理器串联)。
