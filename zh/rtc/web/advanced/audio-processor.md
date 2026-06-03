@@ -1,11 +1,11 @@
 ---
 title: "音视频处理器（插件）"
-description: "通过 TrackProcessor 接口为本地音视频轨道挂载降噪、变身等处理插件"
+description: "通过 TrackProcessor 接口为本地音视频轨道挂载降噪、变声等处理插件"
 ---
 
 ### 概述
 
-当需要在采集到发布之间对音视频做额外处理（如 AI 降噪、美颜、变身）时，SDK 提供统一的**处理器（Processor）机制**。
+当需要在采集到发布之间对音视频做额外处理（如 AI 降噪、美颜、变声）时，SDK 提供统一的**处理器（Processor）机制**。
 
 第一性原理：一个处理器的本质就是「输入一条 `MediaStreamTrack`，输出一条处理后的 `MediaStreamTrack`」。SDK 只需在本地轨道上提供挂载点，处理逻辑由插件实现，二者通过 `TrackProcessor` 接口解耦。
 
@@ -44,14 +44,14 @@ await srtc.publishLocalTrack(mic);
 
 ### 多处理器串联
 
-`setProcessor` 接受数组，按顺序串联多个处理器（源 → P1 → P2 → … → 发布）。常见组合：先降噪再变身。
+`setProcessor` 接受数组，按顺序串联多个处理器（源 → P1 → P2 → … → 发布）。常见组合：先降噪再变声。
 
 ```typescript
 import { RnnoiseProcessor } from "@seastart/srtc-plugin-rnnoise";
 
 await mic.setProcessor([
   new RnnoiseProcessor({ basePath: "/rnnoise/" }), // 先降噪
-  new VoiceChanger({ preset: "cartoon" }),         // 再变身（示例）
+  new VoiceChanger({ preset: "cartoon" }),         // 再变声（示例）
 ]);
 
 await mic.removeProcessor(); // 整条链一起卸载、释放
