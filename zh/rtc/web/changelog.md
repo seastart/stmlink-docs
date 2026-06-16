@@ -19,6 +19,11 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### v0.5.6 - 2026-06-16
+
++ feat: 视频支持前置摄像头镜像，前置默认开启且可由用户调整
++ feat: DeepFilterNet 降噪插件
+
 ### v0.5.4 - 2026-06-03
 
 + feat: 新增音视频处理器插件机制

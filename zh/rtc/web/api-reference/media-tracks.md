@@ -376,6 +376,36 @@ changeDeviceId(deviceId: string): Promise<void>
 switchFacingMode(): Promise<void>
 ```
 
+#### setMirror
+
+设置本地预览镜像开关。前置摄像头默认开启镜像（如同照镜子），可在此调整；后置摄像头不支持镜像，调用无任何反应。
+
+镜像只影响本地预览的渲染（含画中画、弹出窗口），**不会改变推流数据与远端看到的画面**。切换前后置摄像头会自动重新计算镜像状态，并保留用户对前置摄像头的开关偏好。
+
+```typescript
+setMirror(enabled: boolean): void
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `enabled` | `boolean` | 是 | 是否开启镜像 |
+
+#### isMirrored
+
+返回当前是否处于镜像状态（前置摄像头且镜像开关开启）。后置摄像头恒为 `false`，可用于 UI 回显当前镜像状态。
+
+```typescript
+isMirrored(): boolean
+```
+
+#### isFrontFacing
+
+判断当前是否为前置摄像头。采集时显式指定的 `facingMode` 最可靠；未指定时按前置处理。
+
+```typescript
+isFrontFacing(): boolean
+```
+
 ---
 
 ## LocalScreenTrack
