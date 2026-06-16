@@ -122,3 +122,7 @@ await mic.removeProcessor();
 - 切换麦克风设备（`changeDeviceId`）或重新 `startCapture` 后，降噪会自动恢复，无需重新调用 `setProcessor`。
 - 可与其他处理器串联，详见[音视频处理器](/zh/rtc/web/advanced/audio-processor#多处理器串联)。
 - 许可：DeepFilterNet 本体为 Apache-2.0/MIT；模型权重的授权请在分发前自行核实。
+
+<Note>
+模型文件本身是 gzip。部分服务器/代理会对 `.gz` 再加 `Content-Encoding: gzip`，浏览器自动解压一次后，底层拿到的是未压缩的 `.tar`，初始化会崩溃（`RuntimeError: unreachable`）。插件已**自动兜底**：检测到被解压会在浏览器内重新 gzip 还原，无需改服务器配置。该能力依赖 `CompressionStream`（Chrome 80+ / Edge 80+ / Safari 16.4+ / Firefox 113+）。
+</Note>
