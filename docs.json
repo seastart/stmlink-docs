@@ -194,7 +194,8 @@
                       "zh/rtc/web/advanced/custom-track",
                       "zh/rtc/web/advanced/local-recording",
                       "zh/rtc/web/advanced/audio-processor",
-                      "zh/rtc/web/advanced/rnnoise"
+                      "zh/rtc/web/advanced/rnnoise",
+                      "zh/rtc/web/advanced/deepfilternet"
                     ]
                   },
                   {
