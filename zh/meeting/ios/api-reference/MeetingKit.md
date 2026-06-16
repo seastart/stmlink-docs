@@ -609,6 +609,31 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 停止订阅远端合成画面视频流，并释放渲染控件。
 
+
+### startRemoteRetweet:view:()
+`- (void)startRemoteRetweet:(NSString *)streamName view:(VIEW_CLASS *)view`
+
+订阅远端转推音视频流（webrtc 取流）
+
+订阅由外部传入流名的远端转推音视频流，单条连接同时接收音视频，并绑定视频渲染控件。转推流不作为远端用户视频数据上报，其接收状态通过 onReceiveRetweetStreamStatusChange:status: 单独通知。目前仅支持 `wangsu` 流媒体供应商。
+
+| 参数 | 描述 |
+| :--- | --- |
+| streamName | 需要订阅的远端流名（由外部传入） |
+| view | 视频渲染视图 |
+
+
+### stopRemoteRetweet:()
+`- (void)stopRemoteRetweet:(NSString *)streamName`
+
+停止订阅远端转推音视频流
+
+停止订阅指定流名的远端转推音视频流，并释放渲染控件。
+
+| 参数 | 描述 |
+| :--- | --- |
+| streamName | 需要停止订阅的远端流名（由外部传入） |
+
 ## 管理员操作接口
 ### adminDestroyRoom:onFailed:()
 `- (void)adminDestroyRoom:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`

@@ -3,6 +3,12 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [2.4.7] - 2026.06.16
+#### 新增
++ 新增订阅远端转推音视频流接口`startRemoteRetweet:view:`（webrtc 取流，目前仅支持`wangsu`供应商）；
++ 新增停止订阅远端转推音视频流接口`stopRemoteRetweet:`；
++ 新增流媒体接收转推流状态变更回调`onReceiveRetweetStreamStatusChange:status:`。
+
 ### [2.4.6] - 2026.04.30
 #### 新增
 + 升级重构支持`Seastart SFU 26.4`协议；

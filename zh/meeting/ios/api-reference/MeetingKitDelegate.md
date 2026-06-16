@@ -714,6 +714,19 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
+### onReceiveRetweetStreamStatusChange:status:()
+`- (void)onReceiveRetweetStreamStatusChange:(NSString *)streamName status:(BOOL)status`
+
+流媒体接收转推流画面状态变更回调
+
+订阅远端转推流后，如果持续一段时间没有收到转推画面的视频流，会收到来自 `MeetingKitDelegate` 的 `onReceiveRetweetStreamStatusChange:status:()` 事件回调。同时，接收视频流恢复后也会收到该回调。可在该回调中按 `streamName` 区分对应转推流，显示/隐藏加载指示（如 `UIActivityIndicatorView`）。
+
+| 参数 | 描述 |
+| --- | --- |
+| streamName | 转推流名 |
+| status | 接收状态，YES-超时 NO-恢复 |
+
+
 ## **其它事件回调**
 ### onApplicationPerformance:cpuUsage:()
 `- (void)onApplicationPerformance:(CGFloat)memory cpuUsage:(CGFloat)cpuUsage`

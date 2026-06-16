@@ -320,6 +320,20 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
+### onReceiveRetweetStreamStatusChange:status:()
+`- (void)onReceiveRetweetStreamStatusChange:(NSString *)streamName status:(BOOL)status`
+
+流媒体接收转推流状态变更回调
+
+订阅远端转推流后，如果持续一段时间没有收到该转推流的画面，会收到来自`RTCEngineDelegate`的`onReceiveRetweetStreamStatusChange:status:()`回调。同时，接收画面恢复后也会收到该回调。转推流不作为远端用户视频数据上报，其接收状态通过本回调单独通知。
+
+**参数**
+
+| streamName | 转推流名 |
+| --- | --- |
+| status | 接收状态，YES-超时 NO-恢复 |
+
+
 ## **屏幕共享相关回调**
 ### onScreenRecordStatus:()
 `- (void)onScreenRecordStatus:(RTCScreenRecordStatus)status`

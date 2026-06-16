@@ -3,6 +3,12 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.2.7] - 2026.06.16
+#### 新增
++ 新增订阅远端转推音视频流接口`startRemoteRetweet:view:`；
++ 新增停止订阅远端转推音视频流接口`stopRemoteRetweet:`；
++ 新增流媒体接收转推流画面状态变更回调`onReceiveRetweetStreamStatusChange:status:`。
+
 ### [1.2.6] - 2026.04.30
 #### 新增
 + 新增流媒体上行质量数据回调`onSendQualityModel:`；
