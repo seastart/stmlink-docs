@@ -710,6 +710,15 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEADeviceStateClosed | `2` | 关闭状态 |
 
 
+### SEACameraDirection
+摄像头方向
+
+| **枚举类型** | **枚举值** | **描述** |
+| --- | :---: | --- |
+| SEACameraDirectionFront | `1` | 前置摄像头 |
+| SEACameraDirectionBack | `2` | 后置摄像头 |
+
+
 ### SEAShareType
 共享类型
 

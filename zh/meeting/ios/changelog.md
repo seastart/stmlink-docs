@@ -3,6 +3,14 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.0] - 2026.06.18
+#### 新增
++ 新增设置本地预览镜像接口`setLocalPreviewMirror:`；
++ 新增获取当前摄像头方向接口`currentCameraDirection`；
++ 新增摄像头方向枚举`SEACameraDirection`。
+#### 变更
++ 依赖`RTCEngineKit`升级至`2.5.0`。
+
 ### [1.2.7] - 2026.06.16
 #### 新增
 + 新增订阅远端转推音视频流接口`startRemoteRetweet:view:`；

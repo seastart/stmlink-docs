@@ -355,6 +355,14 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCAudioRouteBluetooth | `3` | 蓝牙耳机 |
 | RTCAudioRouteHeadset | `4` | 有线耳机 |
 
+### RTCEngineCameraDirection
+摄像头方向
+
+| **枚举名** | **枚举值** | **说明** |
+| --- | :---: | --- |
+| RTCEngineCameraDirectionFront | `1` | 前置摄像头 |
+| RTCEngineCameraDirectionBack | `2` | 后置摄像头 |
+
 
 ### RTCNetworkQosShakeLevel
 网络延时抗抖动等级

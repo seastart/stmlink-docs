@@ -506,6 +506,25 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 切换摄像头前后置
 
+### setLocalPreviewMirror:()
+`- (void)setLocalPreviewMirror:(BOOL)mirror`
+
+设置本地预览镜像
+
+仅作用于本地预览画面，按 `mirror` 取值设置镜像；是否区分前后置（如后置不镜像）等策略由业务层自行决定。
+
+| 参数 | 描述 |
+| :--- | --- |
+| mirror | YES-开启镜像 NO-关闭镜像 |
+
+
+### currentCameraDirection()
+`- (SEACameraDirection)currentCameraDirection`
+
+获取当前摄像头方向
+
+调用该接口，SDK 会返回当前采集使用的摄像头方向，参考 [SEACameraDirection](/zh/meeting/ios/types#seacameradirection)。
+
 ### switchSpeaker:()
 `- (void)switchSpeaker:(BOOL)enabled`
 

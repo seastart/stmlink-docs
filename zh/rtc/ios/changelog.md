@@ -3,6 +3,12 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [2.5.0] - 2026.06.18
+#### 新增
++ 新增设置本地预览镜像接口`setLocalPreviewMirror:`；
++ 新增获取当前摄像头方向接口`currentCameraDirection`；
++ 新增摄像头方向枚举`RTCEngineCameraDirection`。
+
 ### [2.4.7] - 2026.06.16
 #### 新增
 + 新增订阅远端转推音视频流接口`startRemoteRetweet:view:`（webrtc 取流，目前仅支持`wangsu`供应商）；
