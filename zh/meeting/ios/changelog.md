@@ -3,6 +3,12 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.1] - 2026.07.13
+#### 新增
++ 加入会议参数`SEAMeetingEnterParam`新增`isAudience`属性，用于指定是否以观众身份入会，默认值为`NO`。
+#### 变更
++ 依赖`RTCEngineKit`升级至`2.5.3`。
+
 ### [1.3.0] - 2026.06.18
 #### 新增
 + 新增设置本地预览镜像接口`setLocalPreviewMirror:`；

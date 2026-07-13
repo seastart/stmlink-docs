@@ -202,6 +202,7 @@ SEAMeetingEnterParam *meetingEnterParam = [[SEAMeetingEnterParam alloc] init];
 meetingEnterParam.roomNo = @"Target Room No";
 meetingEnterParam.nickname = @"Your Name";
 meetingEnterParam.avatar = @"Your Portrait";
+meetingEnterParam.isAudience = NO; // 默认以普通参会者身份入会，设置为 YES 时以观众身份入会
 ```
 
 #### 加入房间
