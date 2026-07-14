@@ -31,10 +31,26 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 登录接口，您需要先初始化用户信息后才能进入房间，并进行一系列的操作。
 
+该接口默认启用全进程本地日志采集。
+
 | 参数 | 描述 |
 | :--- | --- |
 | token | 用户令牌 |
 | appGroup | 应用分组标识符 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### loginWithToken:appGroup:logConfig:onSuccess:onFailed:()
+`- (void)loginWithToken:(NSString *)token appGroup:(NSString *)appGroup logConfig:(SEALogConfig *)logConfig onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+使用自定义日志配置登录。您需要先初始化用户信息后才能进入房间，并进行一系列的操作。
+
+| 参数 | 描述 |
+| :--- | --- |
+| token | 用户令牌 |
+| appGroup | 应用分组标识符 |
+| logConfig | 日志配置，参考[SEALogConfig](/zh/meeting/ios/types#sealogconfig) |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
@@ -1496,5 +1512,4 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 | param | 调试参数，用于设置调试地址、保存音视频流等基本信息详情请参考 [SEADebugParam](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#tdyrN) |
 | --- | --- |
-
 

@@ -4,6 +4,14 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 ---
 
 ## 结构体类型
+### SEALogConfig
+日志配置
+
+| **属性名称** | **描述** |
+| --- | --- |
+| enableLocalLog | 【字段含义】是否启用全进程本地日志采集<br/>【推荐取值】默认值：YES；启用后日志同时写入本地文件并保留宿主 App 控制台输出。 |
+
+
 ### SEAMeetingParam
 会议参数
 

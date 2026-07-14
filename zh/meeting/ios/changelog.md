@@ -3,6 +3,13 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.2] - 2026.07.14
+#### 新增
++ 新增日志配置对象`SEALogConfig`，支持通过`enableLocalLog`控制全进程本地日志采集；
++ 新增带`logConfig`参数的登录接口，原登录接口保持兼容并默认启用本地日志。
+#### 变更
++ 依赖`RTCEngineKit`升级至`2.5.4`，启用本地日志时同时保留日志文件和宿主 App 控制台输出。
+
 ### [1.3.1] - 2026.07.13
 #### 新增
 + 加入会议参数`SEAMeetingEnterParam`新增`isAudience`属性，用于指定是否以观众身份入会，默认值为`NO`。
@@ -200,4 +207,3 @@ description: "iOS SMeeting 会议 SDK 版本更新记录"
 ### [0.0.1-alpha.1+20240725] - 2024.07.25
 #### 新增
 + 完善业务功能，内测版本发布。
-
