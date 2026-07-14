@@ -48,7 +48,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | nickname | 【字段含义】参会昵称<br/>【推荐取值】该字段将作为会议中展示信息，使用 UTF-8 编码。 |
 | avatar | 【字段含义】参会头像<br/>【推荐取值】该字段将作为会议中展示信息，使用 UTF-8 编码。 |
 | extendInfo | 【字段含义】扩展信息 |
-| isAudience | 【字段含义】是否以观众身份入会<br/>【推荐取值】默认值：NO；设置为 YES 时以观众身份入会。 |
+| isAudience | 【字段类型】BOOL<br/>【字段含义】是否以观众身份入会<br/>【推荐取值】默认值：NO；设置为 YES 时以观众身份入会。 |
 
 
 ### SEAUserModel

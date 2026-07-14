@@ -3,6 +3,10 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.3] - 2026.07.14
+#### 修复
++ 修正加入会议参数`SEAMeetingEnterParam`中`isAudience`的类型声明为`BOOL`。
+
 ### [1.3.2] - 2026.07.14
 #### 新增
 + 新增日志配置对象`SEALogConfig`，支持通过`enableLocalLog`控制全进程本地日志采集；
