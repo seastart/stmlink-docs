@@ -3,6 +3,11 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.4] - 2026.07.15
+#### 变更
++ 依赖`RTCEngineKit`升级至`2.5.5`；
++ 成员进入和退出会议回调不再过滤当前用户。
+
 ### [1.3.3] - 2026.07.14
 #### 修复
 + 修正加入会议参数`SEAMeetingEnterParam`中`isAudience`的类型声明为`BOOL`。

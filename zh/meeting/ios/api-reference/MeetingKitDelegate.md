@@ -347,7 +347,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 ### onUserEnter:()
 `- (void)onUserEnter:(NSString *)userId`
 
-远端用户加入房间回调
+成员进入房间回调，包括当前用户。
 
 当远端用户调用 MeetingKit 中的 `enterRoom:onSuccess:onFailed:()` 接口执行加入房间操作后，SDK 会抛出该事件通知您。
 
@@ -359,7 +359,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 ### onUserExit:()
 `- (void)onUserExit:(NSString *)userId`
 
-远端用户离开房间回调
+成员退出房间回调，包括当前用户。
 
 当远端用户调用 MeetingKit 中的 `exitRoom:()` 接口执行离开房间操作后，SDK 会抛出该事件通知您。
 
@@ -782,4 +782,3 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | --- | --- |
 | userId | 发起人标识 |
 | epoch | 签到轮次 |
-

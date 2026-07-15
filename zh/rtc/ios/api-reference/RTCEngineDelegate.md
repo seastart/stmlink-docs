@@ -101,7 +101,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 ### onRemoteUserJoinChannel:userId:()
 `- (void)onRemoteUserJoinChannel:(NSString *)channel userId:(NSString *)userId`
 
-有用户加入频道回调
+用户加入频道回调，包括当前用户。
 
 事件回调`onRemoteUserJoinChannel:`和`onRemoteUserLeaveChannel:`只适用于维护当前频道里的“用户列表”，有此事件回调不代表一定有视频画面，需要使用成员信息中的`streamTracks`来判断用户是否推流以及获取轨道号码等信息。
 
@@ -129,7 +129,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 ### onRemoteUserLeaveChannel:userId:reason:()
 `- (void)onRemoteUserLeaveChannel:(NSString *)channel userId:(NSString *)userId reason:(RTCLeaveChannelReason)reason`
 
-有用户离开频道回调
+用户离开频道回调，包括当前用户。
 
 该回调与`onRemoteUserJoinChannel`相对应。
 
@@ -384,5 +384,4 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | memory | 内存使用情况 |
 | --- | --- |
 | cpuUsage | CUP使用率 |
-
 
