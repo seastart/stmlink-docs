@@ -84,15 +84,6 @@ description: "Android SRTC 音视频 SDK 信息数据类型定义"
 | uid | String | 用户 UID。 |
 | db | Int | 音频能量（分贝）。 |
 
-## JoinOptions
-
-作用说明：加入频道选项，用于控制入会后是否自动订阅远端音视频流。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| autoSubscribeAudio | Boolean? | 是否自动订阅音频流；`null` 表示沿用默认策略。 |
-| autoSubscribeVideo | Boolean? | 是否自动订阅视频流；`null` 表示沿用默认策略。 |
-
 ## CustomVideoOptions
 
 作用说明：自定义编码视频流参数，用于描述外部输入视频流的编码信息与媒体属性。
@@ -108,4 +99,51 @@ description: "Android SRTC 音视频 SDK 信息数据类型定义"
 | maxBitrate | Int? | 最大码率。 |
 | track | Int? | 流媒体轨道号（`0~6`）。 |
 | props | JsonElement? | 自定义属性。 |
+
+## ActiveSpeakerInfo
+
+作用说明：活跃说话人信息，由 [`RTCMediaEvent.onActiveSpeakersChanged`](/zh/rtc/android/api-reference/RTCMediaEvent) 回调。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| uid | String | 说话用户 uid。 |
+| trackId | String | 音频轨道 trackId。 |
+| level | Double | 服务端量化后的音量强度。 |
+
+## CameraDeviceCapability
+
+作用说明：摄像头设备能力信息，由 [`RTCEngine.getCameraDevices`](/zh/rtc/android/api-reference/RTCEngine) 与 [`RTCMediaEvent.onCameraDeviceListChanged`](/zh/rtc/android/api-reference/RTCMediaEvent) 返回。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| cameraId | String | Camera2 原生摄像头 id，可用于 `LocalCameraTrack.switchCameraDevice`。 |
+| position | CamraPosition | SDK 统一摄像头方向（`FRONT` / `BACK` / `External`）。 |
+| displayName | String? | SDK 生成的默认展示名。 |
+| sensorOrientation | Int | Camera2 传感器安装方向。 |
+| hardwareLevel | Int | Camera2 硬件能力等级。 |
+| formats | List\<CameraFormatCapability\> | 当前设备支持的 YUV 采集格式列表。 |
+| controls | CameraControlCapability | 当前设备支持的控制能力。 |
+
+## CameraFormatCapability
+
+作用说明：摄像头采集格式能力。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| width | Int | 采集宽度。 |
+| height | Int | 采集高度。 |
+| minFps | Int | AE fps range 最小帧率。 |
+| maxFps | Int | AE fps range 最大帧率。 |
+
+## CameraControlCapability
+
+作用说明：摄像头控制能力。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| supportsTorch | Boolean | 是否支持闪光灯或补光灯。 |
+| supportsZoom | Boolean | 是否支持变焦能力。 |
+| supportsFocus | Boolean | 是否支持对焦控制能力。 |
+| supportsExposure | Boolean | 是否支持曝光补偿能力。 |
+| supportsWhiteBalance | Boolean | 是否支持白平衡模式控制能力。 |
 

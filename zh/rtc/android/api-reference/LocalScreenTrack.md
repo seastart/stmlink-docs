@@ -93,3 +93,17 @@ fun removeAllPlayView()
 方法说明：移除全部渲染控件。  
 参数说明：无。  
 返回值说明：无（`Unit`）。
+
+## RTCScreenStateEvent 回调接口
+
+`RTCScreenStateEvent` 为录屏状态回调接口，通过 `setEvent(e)` 注册。
+
+### onScreenRecordStateChanged(state, args)
+```kotlin
+fun onScreenRecordStateChanged(state: ScreenRecordState, args: String?)
+```
+方法说明：录屏状态变化回调。  
+参数说明：
+- `state`：`ScreenRecordState`，录屏状态，枚举值参见 [枚举定义](/zh/rtc/android/enums)。
+- `args`：`String?`，扩展信息，可为 `null`。
+返回值说明：无（`Unit`）。

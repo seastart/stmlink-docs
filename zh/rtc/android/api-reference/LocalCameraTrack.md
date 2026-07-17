@@ -38,6 +38,41 @@ fun switchCameraPosition(position: CameraCaptureOptions.CamraPosition)
   - `External`：外接摄像头
 返回值说明：无（`Unit`）。
 
+### switchCameraDevice(cameraId)
+```kotlin
+fun switchCameraDevice(cameraId: String)
+```
+方法说明：按真实 Camera2 `cameraId` 精确切换摄像头。适用于设备存在多颗摄像头、需要指定具体某一颗（而非仅前/后置）的场景。`cameraId` 取自 [`RTCEngine.getCameraDevices`](/zh/rtc/android/api-reference/RTCEngine) 返回的 `CameraDeviceCapability.cameraId`。  
+参数说明：
+- `cameraId`：`String`，目标摄像头的 Camera2 原生 ID。
+返回值说明：无（`Unit`）。
+
+### openFrontCameraMirror()
+```kotlin
+fun openFrontCameraMirror()
+```
+方法说明：打开前置摄像头镜像（默认状态）。仅对前置摄像头生效，其他摄像头保持原逻辑。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
+
+### closeFrontCameraMirror()
+```kotlin
+fun closeFrontCameraMirror()
+```
+方法说明：关闭前置摄像头镜像（即本地预览与前置画面保持“所见非镜像”的实际朝向）。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
+
+### isFrontCameraMirrorOpen()
+```kotlin
+fun isFrontCameraMirrorOpen(): Boolean
+```
+方法说明：查询前置摄像头镜像当前是否开启。  
+参数说明：无。  
+返回值说明：`Boolean`，`true` 表示镜像开启，`false` 表示关闭。
+
+> 前置镜像仅影响**本地预览渲染**，不改变编码发布到远端的画面。
+
 ### setCameraAngleOffset(offset)
 ```kotlin
 fun setCameraAngleOffset(offset: Int)

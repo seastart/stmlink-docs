@@ -1,6 +1,6 @@
 ---
 title: "RemoteVideoTrack"
-description: "Android SMeeting 会议 SDK RemoteVideoTrack 接口参考"
+description: "Android SRTC 音视频 SDK RemoteVideoTrack 接口参考"
 ---
 
 ## 说明
@@ -65,4 +65,19 @@ fun removeAllPlayView()
 ```
 方法说明：移除全部渲染控件。  
 参数说明：无。  
+返回值说明：无（`Unit`）。
+
+## RTCRemoteVideoEvent 回调接口
+
+`RTCRemoteVideoEvent` 为远端视频流状态回调接口，通过 `setRemoteVideoEvent(event)` 注册。
+
+### onReceiveStreamStatusChange(uid, trackDesc, isChoke)
+```kotlin
+fun onReceiveStreamStatusChange(uid: String, trackDesc: String, isChoke: Boolean)
+```
+方法说明：远端视频流状态变化回调。  
+参数说明：
+- `uid`：`String`，远端用户 ID。
+- `trackDesc`：`String`，轨道描述。
+- `isChoke`：`Boolean`，是否卡顿；`true` 为卡顿，`false` 为恢复正常。
 返回值说明：无（`Unit`）。

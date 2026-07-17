@@ -30,6 +30,16 @@ fun onUserUpdate(channel: String, uid: String)
 - `uid`：`String`，当前用户 ID。
 返回值说明：无（`Unit`）。
 
+### onMeMembershipChanged(channel, isMember)
+```kotlin
+fun onMeMembershipChanged(channel: String, isMember: Boolean)
+```
+方法说明：自己的观众/成员身份发生变化回调。观众升为正式成员（加入成员列表）时 `isMember = true`；正式成员被降为观众（移出成员列表）时 `isMember = false`。仅在身份**变化**时触发；入会时的初始身份请用 [`RTCEngine.isAudience`](/zh/rtc/android/api-reference/RTCEngine) 读取。  
+参数说明：
+- `channel`：`String`，频道标识。
+- `isMember`：`Boolean`，`true` 表示当前为正式成员，`false` 表示当前为观众。
+返回值说明：无（`Unit`）。
+
 ### onRemoteUserJoin(channel, uid)
 ```kotlin
 fun onRemoteUserJoin(channel: String, uid: String)

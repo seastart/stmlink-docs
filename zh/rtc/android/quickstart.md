@@ -9,10 +9,10 @@ description: "Android SRTC 音视频 SDK 快速接入与基础流程"
 
 开始前请先完成以下准备：
 
-- 按照 [集成](./integration.md) 完成 Maven 仓库、SDK 依赖和基础环境配置。
+- 按照 [集成](/zh/rtc/android/integration) 完成 Maven 仓库、SDK 依赖和基础环境配置。
 - 准备好服务端签发的 `token`，它是调用 `join(...)` 的必填参数。
 - 如果要打开摄像头、麦克风或屏幕共享，请在应用侧先处理好 Android 运行时权限。
-- 如果业务中需要管理扬声器、听筒、蓝牙耳机等输出设备，可继续参考 [音频路由使用](./音频路由使用.md)。
+- 如果业务中需要管理扬声器、听筒、蓝牙耳机等输出设备，可继续参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
 
 ## Step 1：创建并初始化 `RTCEngine`
 
@@ -38,7 +38,7 @@ fun initRtcSdk(application: Application) {
 }
 ```
 
-如果需要查看完整参数说明，可参考 [RTCEngine](./api-reference/RTCEngine.md)。
+如果需要查看完整参数说明，可参考 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)。
 
 ## Step 2：绑定常见回调与媒体参数
 
@@ -84,9 +84,16 @@ rtcEngine.setRtcMediaEvent(object : RTCMediaEvent {
 
 rtcEngine.setRtcImEvent(imEvent)
 
-// 可选：测试回调
-rtcEngine.setRtcTestEvent(testEvent)
+// 可选：本地视频帧外部回调（如需自行处理本地画面时设置）
+rtcEngine.setRtcLocalVideoFrameEvent(object : RTCLocalVideoFrameEvent {
+    override fun onLocalVideoFrame(yuv: ByteArray?, width: Int, height: Int, stamp: Long, format: Int, facing: Int) {
+        // 拿到本地一帧视频（yuv 为 SDK 单独拷贝的数据）
+    }
 
+    override fun onLocalVideoFrameSizeChanged(width: Int, height: Int, facing: Int) {
+        // 本地帧尺寸或摄像头方向变化
+    }
+})
 ```
 
 常见回调建议重点关注：
@@ -99,24 +106,21 @@ rtcEngine.setRtcTestEvent(testEvent)
 
 更多回调定义可参考：
 
-- [RTCClientEvent](./api-reference/impl/RTCClientEvent.md)
-- [RTCMediaEvent](./api-reference/impl/RTCMediaEvent.md)
-- [RTCImEvent](./api-reference/impl/RTCImEvent.md)
+- [RTCClientEvent](/zh/rtc/android/api-reference/RTCClientEvent)
+- [RTCMediaEvent](/zh/rtc/android/api-reference/RTCMediaEvent)
+- [RTCImEvent](/zh/rtc/android/api-reference/RTCImEvent)
 
 ## Step 3：加入频道
 
 调用 `join(...)` 后，`RTCResultListener.onSuccess()` 只表示请求发送成功；是否真正加入频道，以 `RTCClientEvent.onJoinSucceed(...)` 回调为准。
 
-```kotlin
-val joinOptions = JoinOptions(
-    autoSubscribeAudio = true,
-    autoSubscribeVideo = true
-)
+`options` 为预留参数，当前版本未生效，传 `null` 即可。
 
+```kotlin
 rtcEngine.join(
     activity = this,
     token = token,
-    options = joinOptions,
+    options = null,
     resultListener = object : RTCResultListener {
         override fun onSuccess() {
             // join 请求已成功发出
@@ -129,12 +133,7 @@ rtcEngine.join(
 )
 ```
 
-`JoinOptions` 常见理解如下：
-
-- `autoSubscribeAudio = true`：加入频道后自动订阅远端音频。
-- `autoSubscribeVideo = true`：加入频道后自动订阅远端视频。
-
-如果你希望把远端视频订阅时机完全交给业务层控制，也可以关闭自动订阅，再在 `onStreamTrackAdd(...)` 中按需订阅。
+远端媒体的订阅时机由业务层控制：在 `onStreamTrackAdd(...)` 中按需调用 `subscribeRemoteTrack(...)`（见 Step 5）。
 
 ## Step 4：发布本地媒体
 
@@ -179,7 +178,7 @@ cameraTrack.startCapture(object : RTCResultListener {
 - 切换前后摄像头：`cameraTrack.switchCameraPosition(...)`
 - 特殊设备方向校正：`cameraTrack.setCameraAngleOffset(...)`
 
-详细说明可参考 [LocalCameraTrack](./api-reference/track/LocalCameraTrack.md)。
+详细说明可参考 [LocalCameraTrack](/zh/rtc/android/api-reference/LocalCameraTrack)。
 
 ### 4.2 麦克风采集与发布
 
@@ -206,7 +205,7 @@ val micVolume = micTrack.getVolume()
 - `TrackDesc.TRACK_AUDIO.value`：表示按音频轨道发布。
 - `micTrack.getVolume()`：可用于显示当前本地麦克风音量。
 
-详细说明可参考 [LocalMicTrack](./api-reference/track/LocalMicTrack.md)。
+详细说明可参考 [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack)。
 
 ### 4.3 屏幕共享（可选）
 
@@ -244,10 +243,9 @@ screenTrack.request { granted, intent ->
 }
 ```
 
-开始接入屏幕共享前，建议先确认 [集成](./integration.md) 中提到的前台服务、Manifest 合并等注意事项。接口细节可参考：
+开始接入屏幕共享前，建议先确认 [集成](/zh/rtc/android/integration) 中提到的前台服务、Manifest 合并等注意事项。接口细节可参考：
 
-- [LocalScreenTrack](./api-reference/track/LocalScreenTrack.md)
-- [RTCScreenStateEvent](./api-reference/impl/RTCScreenStateEvent.md)
+- [LocalScreenTrack](/zh/rtc/android/api-reference/LocalScreenTrack)（含 `RTCScreenStateEvent` 回调说明）
 
 ## Step 5：订阅并播放远端媒体
 
@@ -264,7 +262,8 @@ override fun onStreamTrackAdd(uid: String, channel: String, trackId: String, tra
     val remoteVideoTrack = rtcEngine.getRemoteVideoTrack(uid, trackDesc)
     remoteVideoTrack?.addPlayView(remoteView)
 
-    rtcEngine.subscribeRemoteTrack(uid, trackId, object : RTCResultListener {
+    // preferTrackIds 为大小流/联播候选层，最简用法传 null 即可
+    rtcEngine.subscribeRemoteTrack(uid, trackId, null, object : RTCResultListener {
         override fun onSuccess() {
             // 订阅成功
         }
@@ -291,8 +290,8 @@ rtcEngine.getRemoteAudioMixTrack()?.startPlay()
 
 详细说明可参考：
 
-- [RemoteVideoTrack](./api-reference/track/RemoteVideoTrack.md)
-- [RemoteAudioMixTrack](./api-reference/track/RemoteAudioMixTrack.md)
+- [RemoteVideoTrack](/zh/rtc/android/api-reference/RemoteVideoTrack)
+- [RemoteAudioMixTrack](/zh/rtc/android/api-reference/RemoteAudioMixTrack)
 
 ## Step 6：查询信息、离开频道并释放资源
 
@@ -313,14 +312,14 @@ rtcEngine.releaseSDK()
 建议：
 
 - 页面退出时先 `leave()`，再根据生命周期决定是否 `releaseSDK()`。
-- 如果你还初始化了音频路由管理器，离会或销毁时也要同步释放，具体可参考 [音频路由使用](./音频路由使用.md)。
+- 如果你还初始化了音频路由管理器，离会或销毁时也要同步释放，具体可参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
 
 ## 更多能力
 
 本文只覆盖最小可跑通的主线能力。如果你还需要以下高级场景，可继续阅读对应文档：
 
-- 自定义编码视频流： [CustomVideoTrack](./api-reference/track/CustomVideoTrack.md)
-- 自定义原始视频帧输入： [LocalCustomVideoTrack](./api-reference/track/LocalCustomVideoTrack.md)
-- 引擎完整接口： [RTCEngine](./api-reference/RTCEngine.md)
-- 音频输出设备管理： [音频路由使用](./音频路由使用.md)
+- 自定义编码视频流： [CustomVideoTrack](/zh/rtc/android/api-reference/CustomVideoTrack)
+- 观众身份与摄像头设备管理： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)（`isAudience` / `getCameraDevices`）
+- 引擎完整接口： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)
+- 音频输出设备管理： [音频路由使用](/zh/rtc/android/advanced/audio-routing)
 
