@@ -3,6 +3,56 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [2.5.5] - 2026.07.15
+#### 变更
++ 升级`librtc`依赖；
++ 成员加入和离开频道回调不再过滤当前用户。
+
+### [2.5.4] - 2026.07.14
+#### 修复
++ 修复启用本地日志后宿主 App 的标准输出和标准错误被独占重定向，导致 Xcode 控制台日志不可见的问题。
+#### 优化
++ 本地日志采集改为全进程 Pipe Tee 模式，同时保留日志文件和原控制台输出；
++ 优化日志采集的启停、失败回滚和资源释放流程，避免日志输出背压影响宿主 App。
+
+### [2.5.3] - 2026.07.13
+#### 修复
++ 升级`librtc`依赖，修复观众身份入会问题。
+
+### [2.5.2] - 2026.07.02
+#### 修复
++ 修复`WebRTC`采集本地预览镜像`setLocalPreviewMirror:`不生效的问题（镜像仅作用于本地预览，推流不镜像）。
+
+### [2.5.1] - 2026.07.02
+#### 修复
++ 修复`WebRTC`采集竖屏下画面横向的方向问题；
++ 采集方向统一跟随界面方向，支持固定竖屏、固定横屏与自动旋转。
+
+### [2.5.0] - 2026.06.18
+#### 新增
++ 新增设置本地预览镜像接口`setLocalPreviewMirror:`；
++ 新增获取当前摄像头方向接口`currentCameraDirection`；
++ 新增摄像头方向枚举`RTCEngineCameraDirection`。
+
+### [2.4.7] - 2026.06.16
+#### 新增
++ 新增订阅远端转推音视频流接口`startRemoteRetweet:view:`（webrtc 取流，目前仅支持`wangsu`供应商）；
++ 新增停止订阅远端转推音视频流接口`stopRemoteRetweet:`；
++ 新增流媒体接收转推流状态变更回调`onReceiveRetweetStreamStatusChange:status:`。
+
+### [2.4.6] - 2026.04.30
+#### 新增
++ 升级重构支持`Seastart SFU 26.4`协议；
++ 新增流媒体质量等级`RTCStreamQualityLevel`；
++ 新增流媒体质量采样数据`RTCStreamQualitySampleModel`；
++ 原`RTCEngineStreamTrackModel`数据结构新增`fallbackIds`和`variant`字段；
++ 新增服务端上行质量检测回调`onSendQualitySample:`；
++ 新增服务端下行质量检测回调`onReceiveQualitySample:`。
+
+### [2.4.5] - 2026.04.13
+#### 修复
++ 修复音频防抖计时器误操作释放，导致同时发送视频和音频时音频推流异常问题。
+
 ### [2.4.4] - 2026.03.12
 #### 新增
 + 共享流连接新增`Audio Track`，共用麦克风采集的轨道；
@@ -357,4 +407,3 @@ description: "iOS SRTC 音视频 SDK 版本更新记录"
 
 #### 优化
 + 内部逻辑优化。
-

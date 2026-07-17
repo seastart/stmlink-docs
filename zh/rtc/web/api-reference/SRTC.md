@@ -3,7 +3,7 @@ title: "SRTC"
 description: "Web SRTC 音视频 SDK SRTC 接口参考"
 ---
 
-SRTC 是绝大多数操作的入口，通过 `new SRTC(initParams)` 创建实例。
+SRTC 是 Web SDK 的核心入口，通过 `new SRTC(initParams)` 创建实例。
 
 ---
 
@@ -11,33 +11,31 @@ SRTC 是绝大多数操作的入口，通过 `new SRTC(initParams)` 创建实例
 
 ```typescript
 constructor(initParams: SdkInitParams)
-```typescript
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `initParams` | `SdkInitParams` | 否 | 初始化参数，详见 [SdkInitParams](/zh/rtc/web/types#sdkinitparams) |
+| `initParams` | `SdkInitParams` | 是 | 初始化参数，详见 [SdkInitParams](/zh/rtc/web/types#sdkinitparams) |
 
 ---
 
 ### buildInfo
 
-获取 SDK 编译信息（版本号等）。
+获取 SDK 编译信息。
 
 ```typescript
 buildInfo(): BuildInfo
 ```
 
-**返回值：** `BuildInfo`
-
 ---
 
 ### getEnvInfo
 
-获取当前浏览器的 WebRTC 能力检测结果，建议在初始化后立即调用。
+获取当前浏览器的 WebRTC 能力检测结果，建议在初始化后尽早调用。
 
 ```typescript
 getEnvInfo(): EnvWebInfo
-```typescript
+```
 
 **返回值：** `EnvWebInfo`，详见 [EnvWebInfo](/zh/rtc/web/types#envwebinfo)
 
@@ -45,7 +43,7 @@ getEnvInfo(): EnvWebInfo
 
 ### onNotifyChannelEvent
 
-频道内事件回调，在 `join` 前注册。
+频道内事件回调，建议在 `join` 前注册。
 
 ```typescript
 onNotifyChannelEvent?: ((event: ChannelEvent) => void) | null
@@ -61,7 +59,7 @@ onNotifyChannelEvent?: ((event: ChannelEvent) => void) | null
 
 ```typescript
 onNotifyImEvent?: ((event: ImEvent) => void) | null
-```typescript
+```
 
 ---
 
@@ -78,17 +76,15 @@ join(token: string, options?: JoinOptions): Promise<ChannelInfo>
 | `token` | `string` | 是 | 服务端签发的加入频道 Token |
 | `options` | `JoinOptions` | 否 | 加入选项，详见 [JoinOptions](/zh/rtc/web/types#joinoptions) |
 
-**返回值：** `Promise<ChannelInfo>`
-
 ---
 
 ### leave
 
-主动离开频道，会释放所有已发布轨道。
+主动离开频道。对于本地轨道，SDK 会在离会后自动停止采集、停止播放或移除播放视图。
 
 ```typescript
 leave(): Promise<void>
-```typescript
+```
 
 ---
 
@@ -108,7 +104,7 @@ getChannelInfo(): ChannelInfo | null
 
 ```typescript
 getUserInfo(uid: string): UserInfo
-```html
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -118,7 +114,7 @@ getUserInfo(uid: string): UserInfo
 
 ### getUsersInfo
 
-获取频道内所有用户信息，支持两种返回格式。
+获取频道内所有用户信息，支持数组和映射两种返回格式。
 
 ```typescript
 getUsersInfo(map: true): Record<string, UserInfo>
@@ -129,11 +125,37 @@ getUsersInfo(map: false): UserInfo[]
 
 ### getStreamMetric
 
-获取当前流媒体网络质量指标（上下行码率、丢包率等）。
+获取当前流媒体全量 metric 快照，包含网络总体统计以及每条本地/远端轨道的 `TrackMetric`。
 
 ```typescript
-getStreamMetric(): Record<string, any> | undefined
+getStreamMetric(): StreamMetric | undefined
+```
+
+> 未加入频道时调用会抛出异常。详细字段含义见 [网络质量](../network-quality)。
+
+---
+
+### getNetworkStats
+
+获取当前网络总体统计，只关心网络全景（码率、丢包、RTT、可用带宽）时用，比 `getStreamMetric` 更轻量。
+
 ```typescript
+getNetworkStats(): NetworkStats | undefined
+```
+
+> 未加入频道时调用会抛出异常。
+
+---
+
+### getConnectionQuality
+
+获取当前连接质量评估结果，返回上下行等级、总体等级、MOS 和触发原因。SDK 内部以 2 秒为周期滑动窗口评估。
+
+```typescript
+getConnectionQuality(): QualityEvaluation | undefined
+```
+
+> 未加入频道时调用会抛出异常。业务层更推荐订阅 `ChannelEventType.CONNECTION_QUALITY_CHANGED` 事件被动感知变化。
 
 ---
 
@@ -148,9 +170,7 @@ getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaD
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `kind` | `'audioinput' \| 'audiooutput' \| 'videoinput'` | 否 | 不传则返回所有类型设备 |
-| `requestPermissions` | `boolean` | 否 | 是否主动请求麦克风/摄像头权限，默认 `false` |
-
-**返回值：** `Promise<MediaDeviceInfo[]>`
+| `requestPermissions` | `boolean` | 否 | 是否主动请求媒体权限，默认 `true` |
 
 ---
 
@@ -160,7 +180,7 @@ getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaD
 
 ```typescript
 createLocalMicTrack(preset?: MicPreset): LocalMicTrack
-```typescript
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -178,7 +198,7 @@ createLocalCustomAudioTrack(msTrack: MediaStreamTrack): LocalAudioTrack
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `msTrack` | `MediaStreamTrack` | 是 | 音频类型的 MediaStreamTrack |
+| `msTrack` | `MediaStreamTrack` | 是 | 音频类型的 `MediaStreamTrack` |
 
 ---
 
@@ -188,7 +208,7 @@ createLocalCustomAudioTrack(msTrack: MediaStreamTrack): LocalAudioTrack
 
 ```typescript
 createLocalCameraTrack(preset?: CameraPreset): LocalCameraTrack
-```typescript
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
@@ -198,7 +218,7 @@ createLocalCameraTrack(preset?: CameraPreset): LocalCameraTrack
 
 ### createLocalScreenTrack
 
-创建屏幕共享视频轨道，可同时请求系统音频采集。
+创建屏幕共享视频轨道。
 
 ```typescript
 createLocalScreenTrack(preset?: ScreenPreset, audioPreset?: ScreenAudioPreset): LocalScreenTrack
@@ -207,7 +227,9 @@ createLocalScreenTrack(preset?: ScreenPreset, audioPreset?: ScreenAudioPreset): 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `preset` | `ScreenPreset` | 否 | 视频预设，默认 `ScreenPresets['1080p']` |
-| `audioPreset` | `ScreenAudioPreset` | 否 | 系统音频预设，传入后会请求采集系统声音。详见 [屏幕共享](/zh/rtc/web/advanced/screen-sharing) |
+| `audioPreset` | `ScreenAudioPreset` | 否 | 系统音频预设，默认 `ScreenAudioPresets.default` |
+
+> 默认会同时创建系统音频轨道。真正能否采集到系统音频，还取决于浏览器能力和用户是否在系统分享弹窗中勾选“分享音频”。
 
 ---
 
@@ -217,11 +239,25 @@ createLocalScreenTrack(preset?: ScreenPreset, audioPreset?: ScreenAudioPreset): 
 
 ```typescript
 createLocalCustomVideoTrack(msTrack: MediaStreamTrack): LocalVideoTrack
-```typescript
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `msTrack` | `MediaStreamTrack` | 是 | 视频类型的 MediaStreamTrack |
+| `msTrack` | `MediaStreamTrack` | 是 | 视频类型的 `MediaStreamTrack` |
+
+---
+
+### createLocalCompositeRecorder
+
+创建本地合成录制器，用于在浏览器端把当前页面需要录制的视频宫格和音频轨道合成为本地录制文件。
+
+```typescript
+createLocalCompositeRecorder(): LocalCompositeRecorder
+```
+
+返回的 `LocalCompositeRecorder` 只负责媒体合成与 `MediaRecorder` 生命周期；会议宫格、分页、主讲人布局、共享屏幕优先级等业务视角由应用层计算后，通过 `videoItems` 和 `updateVideoItems(...)` 传入。
+
+> 详细用法见 [本地合成录制](/zh/rtc/web/advanced/local-recording)。
 
 ---
 
@@ -232,14 +268,14 @@ createLocalCustomVideoTrack(msTrack: MediaStreamTrack): LocalVideoTrack
 ```typescript
 publishLocalTrack(
   track: LocalAudioTrack | LocalVideoTrack,
-  opt?: AudioPublishOptions | VideoPublishOptions
+  opt?: Partial<AudioPublishOptions> | Partial<VideoPublishOptions>
 ): Promise<void>
 ```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `track` | `LocalAudioTrack \| LocalVideoTrack` | 是 | 要发布的本地轨道 |
-| `opt` | `AudioPublishOptions \| VideoPublishOptions` | 否 | 发布参数（描述、码率、自定义属性等） |
+| `opt` | `Partial<AudioPublishOptions> \| Partial<VideoPublishOptions>` | 否 | 发布参数，会与创建轨道时的预设参数合并 |
 
 ---
 
@@ -249,13 +285,13 @@ publishLocalTrack(
 
 ```typescript
 unpublishLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
-```typescript
+```
 
 ---
 
 ### enableLocalTrack
 
-恢复已暂停的本地轨道的数据发送（轻量操作，推流连接保持）。
+恢复已暂停的本地轨道数据发送。
 
 ```typescript
 enableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
@@ -267,11 +303,11 @@ enableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
 
 ### disableLocalTrack
 
-暂停本地轨道的数据发送（轻量操作，推流连接保持）。
+暂停本地轨道数据发送，但不取消发布。
 
 ```typescript
-disableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
-```typescript
+disableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): void
+```
 
 > 远端会收到 `TRACK_MUTED` 事件。与 `unpublishLocalTrack` 的区别详见 [静音 vs 停止发布](/zh/rtc/web/advanced/mute-vs-unpublish)。
 
@@ -279,15 +315,17 @@ disableLocalTrack(track: LocalAudioTrack | LocalVideoTrack): Promise<void>
 
 ### subscribeRemoteAudioMixTrack
 
-订阅全频道混音流（一般场景推荐使用此方法接收远端声音）。
+订阅全频道混音流。
 
 ```typescript
-subscribeRemoteAudioMixTrack(filterUids?: string[]): Promise<RemoteAudioMixTrack>
+subscribeRemoteAudioMixTrack(
+  filter?: string[] | ((track: BaseTrack) => boolean)
+): Promise<RemoteAudioMixTrack>
 ```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `filterUids` | `string[]` | 否 | 需要从混音中排除的用户 ID 列表 |
+| `filter` | `string[] \| ((track: BaseTrack) => boolean)` | 否 | 传 `string[]` 时按 UID 排除；传函数时按轨道判断是否过滤 |
 
 ---
 
@@ -297,12 +335,12 @@ subscribeRemoteAudioMixTrack(filterUids?: string[]): Promise<RemoteAudioMixTrack
 
 ```typescript
 subscribeRemoteAudioTrack(uid: string, id: string): Promise<RemoteAudioTrack>
-```typescript
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `uid` | `string` | 是 | 用户 ID |
-| `id` | `string` | 是 | 轨道 ID（从 `TrackInfo.id` 获取） |
+| `id` | `string` | 是 | 轨道 ID，可从 `TrackInfo.id` 获取 |
 
 ---
 
@@ -317,17 +355,19 @@ subscribeRemoteVideoTrack(uid: string, id: string): Promise<RemoteVideoTrack>
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `uid` | `string` | 是 | 用户 ID |
-| `id` | `string` | 是 | 轨道 ID（从 `TrackInfo.id` 获取） |
+| `id` | `string` | 是 | 轨道 ID，可从 `TrackInfo.id` 获取 |
 
 ---
 
 ### subscribeRemoteVideoMcuTrack
 
-订阅远端视频合成流（服务端混流合成的单路视频）。
+订阅远端视频合成流。
 
 ```typescript
-subscribeRemoteVideoMcuTrack(): Promise<RemoteVideoTrack>
-```typescript
+subscribeRemoteVideoMcuTrack(): Promise<RemoteVideoMcuTrack>
+```
+
+> `RemoteVideoMcuTrack` 继承自 `RemoteVideoTrack`，可按普通远端视频轨道使用。
 
 ---
 
@@ -345,17 +385,19 @@ unsubscribeRemoteTrack(
 
 ### getRemoteTrack
 
-通过用户 ID + 轨道 ID 或描述获取已订阅的远端轨道实例。
+通过用户 ID 与轨道 ID 或轨道描述获取已订阅的远端轨道实例。
 
 ```typescript
 getRemoteTrack(uid: string, id?: string, desc?: string): RemoteAudioTrack | RemoteVideoTrack
-```typescript
+```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `uid` | `string` | 是 | 用户 ID |
 | `id` | `string` | 否 | 轨道 ID，与 `desc` 二选一 |
 | `desc` | `string` | 否 | 轨道描述，与 `id` 二选一 |
+
+> `id` 和 `desc` 至少要传一个，否则会抛出异常。
 
 ---
 
@@ -371,7 +413,7 @@ enableIm(token: string): Promise<string>
 | --- | --- | :---: | --- |
 | `token` | `string` | 是 | IM 启用 Token |
 
-**返回值：** `Promise<string>`，返回 IM 会话 sid。
+**返回值：** `Promise<string>`，返回 IM 会话 `sid`。
 
 ---
 
@@ -381,4 +423,4 @@ enableIm(token: string): Promise<string>
 
 ```typescript
 disableIm(): Promise<void>
-```typescript
+```

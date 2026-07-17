@@ -10,7 +10,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | roomNo | String? | 房间号 |
 | content | String? | 会议说明 |
 | attendType | AttendType? | 入会方式类型 |
-| conferees | MutableList<String>? | 参会成员 uid 列表 |
+| conferees | `MutableList<String>?` | 参会成员 uid 列表 |
 | password | String? | 密码 |
 | mode | MeetingMode? | 会议模式 |
 | planTime | Long? | 开始时间时间戳 |
@@ -31,7 +31,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | roomNo | String? | 房间号 |
 | content | String? | 会议说明 |
 | attendType | AttendType? | 入会方式类型 |
-| conferees | MutableList<String>? | 参会成员 uid 列表 |
+| conferees | `MutableList<String>?` | 参会成员 uid 列表 |
 | password | String? | 密码 |
 | mode | MeetingMode? | 会议模式 |
 | autoRecord | Boolean? | 是否开启自动录制 |
@@ -50,7 +50,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | title | String? | 会议标题 |
 | content | String? | 会议说明 |
 | attendType | AttendType? | 入会方式类型 |
-| conferees | MutableList<String>? | 参会成员 uid 列表 |
+| conferees | `MutableList<String>?` | 参会成员 uid 列表 |
 | password | String? | 密码 |
 | mode | MeetingMode? | 会议模式 |
 | planTime | Long? | 开始时间时间戳 |
@@ -103,7 +103,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | shareUid | String? | 共享者 uid |
 | creator | String | 创建者 uid |
 | hostUid | String | 主持人 uid |
-| coHosts | MutableList<String> | 联席主持人 uid 列表 |
+| coHosts | `MutableList<String>` | 联席主持人 uid 列表 |
 | extendInfo | JsonElement? | 自定义扩展（由 `_extendInfo` 映射） |
 
 ### MemberInfo
@@ -177,7 +177,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | code | Int | 业务状态码 |
 | msg | String | 响应消息 |
 
-### Data<T>
+### `Data<T>`
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
@@ -185,7 +185,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | msg | String | 继承自 `BaseBean` 的响应消息 |
 | data | T | 业务数据 |
 
-### Data2<T>
+### `Data2<T>`
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
@@ -242,7 +242,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | beginTime | Long | 实际开始时间（秒） |
 | endTime | Long | 实际结束时间（秒） |
 | creator | String | 创建者 uid |
-| conferee | ArrayList<String> | 会前邀请成员 uid 列表 |
+| conferee | `ArrayList<String>` | 会前邀请成员 uid 列表 |
 | createdAt | Long | 创建时间（秒） |
 
 ### MeetDetail
@@ -277,7 +277,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | selfUnmuteCameraDisabled | Boolean | 是否允许自我解除禁画 |
 | waitingRoomDisabled | Boolean | 等候室禁用状态 |
 | enterBeforeHostDisabled | Boolean | 是否禁止主持人前入会 |
-| conferee | List<String> | 会前邀请成员 uid 列表 |
+| conferee | `List<String>` | 会前邀请成员 uid 列表 |
 
 ### MemberBean
 
@@ -312,7 +312,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | meetingId | String | 子会议 ID |
 | status | SubMeetingStatus | 子会议状态（由 `_status` 映射） |
 | title | String | 小组名称 |
-| users | MutableList<MemberBean>? | 用户列表 |
+| users | `MutableList<MemberBean>?` | 用户列表 |
 
 ### AgentRequestBean
 
@@ -337,7 +337,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| subjects | MutableMap<String, String>? | 通道列表映射 |
+| subjects | `MutableMap<String, String>?` | 通道列表映射 |
 
 ### ChatMsgBean
 
@@ -359,7 +359,7 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | pollingDur | Int | 轮询时长（秒） |
 | watermark | LayoutData.Watermark? | 水印配置 |
 | tag | LayoutData.Tag? | 默认标签配置 |
-| divList | List<LayoutData.Div>? | 逻辑块列表 |
+| divList | `List<LayoutData.Div>?` | 逻辑块列表 |
 
 ### LayoutData.Watermark
 
@@ -386,8 +386,8 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| cell | List<LayoutData.Cell> | 宫格列表 |
-| uids | List<String> | 用户 ID 列表 |
+| cell | `List<LayoutData.Cell>` | 宫格列表 |
+| uids | `List<String>` | 用户 ID 列表 |
 
 ### LayoutData.Cell
 

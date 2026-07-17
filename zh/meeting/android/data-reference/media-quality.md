@@ -14,12 +14,12 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| localAudios | MutableMap<UserTrackDesc, AudioSenderStats> | 本地音频统计（按用户轨道）。 |
-| localVideos | MutableMap<UserTrackDesc, VideoSenderStats> | 本地视频统计（按用户轨道）。 |
-| remoteAudios | MutableMap<UserTrackDesc, AudioReceiverStats> | 远端音频统计（按用户轨道）。 |
-| remoteVideos | MutableMap<UserTrackDesc, VideoReceiverStats> | 远端视频统计（按用户轨道）。 |
+| localAudios | `MutableMap<UserTrackDesc, AudioSenderStats>` | 本地音频统计（按用户轨道）。 |
+| localVideos | `MutableMap<UserTrackDesc, VideoSenderStats>` | 本地视频统计（按用户轨道）。 |
+| remoteAudios | `MutableMap<UserTrackDesc, AudioReceiverStats>` | 远端音频统计（按用户轨道）。 |
+| remoteVideos | `MutableMap<UserTrackDesc, VideoReceiverStats>` | 远端视频统计（按用户轨道）。 |
 | localUploadStats | LocalUploadStats | 本地上传总览统计。 |
-| remoteDownloadStats | MutableMap<String, RemoteDownloadStats> | 远端下载统计（按 `uid`）。 |
+| remoteDownloadStats | `MutableMap<String, RemoteDownloadStats>` | 远端下载统计（按 `uid`）。 |
 | networkStats | NetworkStats | 网络状态统计。 |
 
 ## MediaMetric.LocalMetric
@@ -28,10 +28,10 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| localAudios | MutableMap<String, AudioSenderStats> | 本地音频统计。 |
-| localVideos | MutableMap<String, VideoSenderStats> | 本地视频统计。 |
-| remoteAudios | MutableMap<String, AudioReceiverStats> | 远端音频统计。 |
-| remoteVideos | MutableMap<String, VideoReceiverStats> | 远端视频统计。 |
+| localAudios | `MutableMap<String, AudioSenderStats>` | 本地音频统计。 |
+| localVideos | `MutableMap<String, VideoSenderStats>` | 本地视频统计。 |
+| remoteAudios | `MutableMap<String, AudioReceiverStats>` | 远端音频统计。 |
+| remoteVideos | `MutableMap<String, VideoReceiverStats>` | 远端视频统计。 |
 | networkStats | NetworkStats | 网络状态统计。 |
 
 ## MediaMetric.NetworkStats
@@ -113,7 +113,7 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 | framesPerSecond | Float | 视频帧率（fps）。 |
 | frameSent | Long | 发送帧数。 |
 | qualityLimitationReason | String | 质量受限主要原因（如 none/cpu/bandwidth/other/inactive）。 |
-| qualityLimitationDurations | Map<String, Float> | 各限制原因累计时长（秒）。 |
+| qualityLimitationDurations | `Map<String, Float>` | 各限制原因累计时长（秒）。 |
 | qualityLImitationResolutionChange | Long | 因质量限制导致分辨率变化次数。 |
 | retransmittedPacketsSent | Long | 已重传 RTP 包数。 |
 | targetBitrate | Float | 编码器目标比特率（bps）。 |

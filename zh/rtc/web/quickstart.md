@@ -17,7 +17,6 @@ description: "Web SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
 
 ```typescript
 import SRTC, {
-  ChannelEvent,
   ChannelEventType,
   LocalCameraTrack,
   LocalMicTrack,
@@ -27,6 +26,7 @@ import SRTC, {
   LogLevel,
   LogTarget,
 } from '@seastart/srtc-web-sdk';
+import type { ChannelEvent } from '@seastart/srtc-web-sdk';
 
 // ─── 1. 初始化 SDK ───────────────────────────────────────────────────────────
 
@@ -127,6 +127,7 @@ async function leaveChannel() {
 
 + [核心概念](/zh/rtc/web/key-concepts) — 了解 SRTC 实例、频道、Track 体系
 + [静音 vs 停止发布](/zh/rtc/web/advanced/mute-vs-unpublish) — 两种控制推流的方式对比
++ [大小流与分辨率](/zh/rtc/web/advanced/video-stream-layers) — 讲清采集分辨率、`camera_big`、`camera_small` 与 simulcast
 + [屏幕共享](/zh/rtc/web/advanced/screen-sharing) — 含系统音频采集
 + [自定义推流](/zh/rtc/web/advanced/custom-track) — 使用 Canvas / 自定义 MediaStreamTrack
 + [接口文档 - SRTC](/zh/rtc/web/api-reference/SRTC) — 完整 API 参考

@@ -31,10 +31,26 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 登录接口，您需要先初始化用户信息后才能进入房间，并进行一系列的操作。
 
+该接口默认启用全进程本地日志采集。
+
 | 参数 | 描述 |
 | :--- | --- |
 | token | 用户令牌 |
 | appGroup | 应用分组标识符 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### loginWithToken:appGroup:logConfig:onSuccess:onFailed:()
+`- (void)loginWithToken:(NSString *)token appGroup:(NSString *)appGroup logConfig:(SEALogConfig *)logConfig onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+使用自定义日志配置登录。您需要先初始化用户信息后才能进入房间，并进行一系列的操作。
+
+| 参数 | 描述 |
+| :--- | --- |
+| token | 用户令牌 |
+| appGroup | 应用分组标识符 |
+| logConfig | 日志配置，参考[SEALogConfig](/zh/meeting/ios/types#sealogconfig) |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
@@ -506,6 +522,25 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 切换摄像头前后置
 
+### setLocalPreviewMirror:()
+`- (void)setLocalPreviewMirror:(BOOL)mirror`
+
+设置本地预览镜像
+
+仅作用于本地预览画面，按 `mirror` 取值设置镜像；是否区分前后置（如后置不镜像）等策略由业务层自行决定。
+
+| 参数 | 描述 |
+| :--- | --- |
+| mirror | YES-开启镜像 NO-关闭镜像 |
+
+
+### currentCameraDirection()
+`- (SEACameraDirection)currentCameraDirection`
+
+获取当前摄像头方向
+
+调用该接口，SDK 会返回当前采集使用的摄像头方向，参考 [SEACameraDirection](/zh/meeting/ios/types#seacameradirection)。
+
 ### switchSpeaker:()
 `- (void)switchSpeaker:(BOOL)enabled`
 
@@ -608,6 +643,31 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 停止订阅远端合成画面视频流
 
 停止订阅远端合成画面视频流，并释放渲染控件。
+
+
+### startRemoteRetweet:view:()
+`- (void)startRemoteRetweet:(NSString *)streamName view:(VIEW_CLASS *)view`
+
+订阅远端转推音视频流（webrtc 取流）
+
+订阅由外部传入流名的远端转推音视频流，单条连接同时接收音视频，并绑定视频渲染控件。转推流不作为远端用户视频数据上报，其接收状态通过 onReceiveRetweetStreamStatusChange:status: 单独通知。目前仅支持 `wangsu` 流媒体供应商。
+
+| 参数 | 描述 |
+| :--- | --- |
+| streamName | 需要订阅的远端流名（由外部传入） |
+| view | 视频渲染视图 |
+
+
+### stopRemoteRetweet:()
+`- (void)stopRemoteRetweet:(NSString *)streamName`
+
+停止订阅远端转推音视频流
+
+停止订阅指定流名的远端转推音视频流，并释放渲染控件。
+
+| 参数 | 描述 |
+| :--- | --- |
+| streamName | 需要停止订阅的远端流名（由外部传入） |
 
 ## 管理员操作接口
 ### adminDestroyRoom:onFailed:()
@@ -1225,6 +1285,89 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 | onFailed | 失败回调 |
 
 
+## 签到相关接口
+### signInCreate:desc:onSuccess:onFailed:()
+`- (void)signInCreate:(NSInteger)dur desc:(nullable NSString *)desc onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+创建签到活动，管理员可通过该接口创建签到活动（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitDelegate` 中的  [onSignInActivity:epoch:beginAt:dur:endAt:desc:()]() 回调通知给全体会中成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| dur | 签到时长，单位：分钟，0为不限时 |
+| desc | 签到描述 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInList:onFailed:()
+`- (void)signInList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取签到活动列表，管理员可通过该接口获取签到活动列表（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEASignInListModel]() |
+| onFailed | 失败回调 |
+
+
+### signInCount:onSuccess:onFailed:()
+`- (void)signInCount:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+统计人数，管理员可通过该接口获取当前签到人数（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，参考文档：[SEASignInCountModel]() |
+| onFailed | 失败回调 |
+
+
+### signInFinish:onFailed:()
+`- (void)signInFinish:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+结束签到活动，管理员可通过该接口结束签到活动（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitDelegate` 中的  [onSignInFinish:epoch:()]() 回调通知给全体会中成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInDetail:onSuccess:onFailed:()
+`- (void)signInDetail:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取签到活动详情，管理员可通过该接口获取签到记录（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，参考文档：[SEASignInDetailListModel]() |
+| onFailed | 失败回调 |
+
+
+### signInSign:onFailed:()
+`- (void)signInSign:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+用户签到，当管理员发起签到活动后，会中成员可通过该接口完成签到。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInExportDetail:onSuccess:onFailed:()
+`- (void)signInExportDetail:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+导出签到数据，管理员可通过该接口导出签到数据，同时SDK会回调列表本地地址（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，文件地址 |
+| onFailed | 失败回调 |
+
+
 ## 屏幕共享接口
 ### stopScreenRecord()
 `- (void)stopScreenRecord`
@@ -1369,5 +1512,4 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 | param | 调试参数，用于设置调试地址、保存音视频流等基本信息详情请参考 [SEADebugParam](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#tdyrN) |
 | --- | --- |
-
 

@@ -42,7 +42,7 @@ description: "Android SRTC 音视频 SDK 信息数据类型定义"
 | join_at | Long | 加入时间。 |
 | updated_at | Long | 更新时间。 |
 | leave_at | Long | 离开时间。 |
-| stream_tracks | ArrayList<TrackInfo>? | 正在推流的轨道信息集合。 |
+| stream_tracks | `ArrayList<TrackInfo>?` | 正在推流的轨道信息集合。 |
 | link_id | Int | 流媒体连接 ID。 |
 | session_key | String? | 流媒体连接 key。 |
 | upload_id | String? | 当前所属流媒体服务 ID。 |

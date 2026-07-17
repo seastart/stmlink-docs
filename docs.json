@@ -62,9 +62,8 @@
                     ]
                   },
                   {
-                    "group": "接口列表",
+                    "group": "接口文档",
                     "pages": [
-                      "zh/rtc/ios/api-reference",
                       "zh/rtc/ios/api-reference/RTCEngineKit",
                       "zh/rtc/ios/api-reference/RTCEngineDelegate",
                       "zh/rtc/ios/api-reference/RTCEngineIMDelegate"
@@ -74,6 +73,33 @@
                   "zh/rtc/ios/error-codes",
                   "zh/rtc/ios/changelog",
                   "zh/rtc/ios/faq"
+                ]
+              },
+              {
+                "group": "Swift SDK（iOS/macOS）",
+                "pages": [
+                  "zh/rtc/swift/integration",
+                  "zh/rtc/swift/quickstart",
+                  "zh/rtc/swift/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/swift/advanced/mute-vs-unpublish",
+                      "zh/rtc/swift/advanced/device-management",
+                      "zh/rtc/swift/advanced/screen-sharing",
+                      "zh/rtc/swift/advanced/custom-track"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/swift/api-reference/SRTC",
+                      "zh/rtc/swift/api-reference/media-tracks"
+                    ]
+                  },
+                  "zh/rtc/swift/events",
+                  "zh/rtc/swift/types",
+                  "zh/rtc/swift/error-codes"
                 ]
               },
               {
@@ -162,8 +188,14 @@
                     "group": "进阶实践",
                     "pages": [
                       "zh/rtc/web/advanced/mute-vs-unpublish",
+                      "zh/rtc/web/advanced/video-stream-layers",
                       "zh/rtc/web/advanced/screen-sharing",
-                      "zh/rtc/web/advanced/custom-track"
+                      "zh/rtc/web/advanced/multi-window-video-layout",
+                      "zh/rtc/web/advanced/custom-track",
+                      "zh/rtc/web/advanced/local-recording",
+                      "zh/rtc/web/advanced/audio-processor",
+                      "zh/rtc/web/advanced/rnnoise",
+                      "zh/rtc/web/advanced/deepfilternet"
                     ]
                   },
                   {

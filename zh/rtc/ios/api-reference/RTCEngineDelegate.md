@@ -101,7 +101,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 ### onRemoteUserJoinChannel:userId:()
 `- (void)onRemoteUserJoinChannel:(NSString *)channel userId:(NSString *)userId`
 
-有用户加入频道回调
+用户加入频道回调，包括当前用户。
 
 事件回调`onRemoteUserJoinChannel:`和`onRemoteUserLeaveChannel:`只适用于维护当前频道里的“用户列表”，有此事件回调不代表一定有视频画面，需要使用成员信息中的`streamTracks`来判断用户是否推流以及获取轨道号码等信息。
 
@@ -129,7 +129,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 ### onRemoteUserLeaveChannel:userId:reason:()
 `- (void)onRemoteUserLeaveChannel:(NSString *)channel userId:(NSString *)userId reason:(RTCLeaveChannelReason)reason`
 
-有用户离开频道回调
+用户离开频道回调，包括当前用户。
 
 该回调与`onRemoteUserJoinChannel`相对应。
 
@@ -279,6 +279,32 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | --- | --- |
 
 
+### onSendQualitySample:()
+`- (void)onSendQualitySample:(RTCStreamQualitySampleModel *)sample`
+
+服务端上行质量检测回调
+
+会在固定时间间隔，会收到来自`RTCEngineDelegate`的`onSendQualitySample:()`回调，描述当前数据发送状态延迟、丢包率等信息。
+
+**参数**
+
+| sample | 发送状态数据，内容包含：延迟、丢包率等基本信息详情请参考 [RTCStreamQualitySampleModel]() |
+| --- | --- |
+
+
+### onReceiveQualitySample:()
+`- (void)onReceiveQualitySample:(RTCStreamQualitySampleModel *)sample`
+
+服务端下行质量检测回调
+
+会在固定时间间隔，会收到来自`RTCEngineDelegate`的`onReceiveQualitySample:()`回调，描述当前数据接收状态延迟、丢包率等信息。
+
+**参数**
+
+| sample | 接收状态数据，内容包含：延迟、丢包率等基本信息详情请参考 [RTCStreamQualitySampleModel]() |
+| --- | --- |
+
+
 ### onReceiveStreamStatusChange:trackId:status:()
 `- (void)onReceiveStreamStatusChange:(NSString *)userId trackId:(RTCTrackIdentifierFlags)trackId status:(BOOL)status`
 
@@ -291,6 +317,20 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | userId | 用户标识 |
 | --- | --- |
 | trackId | 轨道标识，，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
+| status | 接收状态，YES-超时 NO-恢复 |
+
+
+### onReceiveRetweetStreamStatusChange:status:()
+`- (void)onReceiveRetweetStreamStatusChange:(NSString *)streamName status:(BOOL)status`
+
+流媒体接收转推流状态变更回调
+
+订阅远端转推流后，如果持续一段时间没有收到该转推流的画面，会收到来自`RTCEngineDelegate`的`onReceiveRetweetStreamStatusChange:status:()`回调。同时，接收画面恢复后也会收到该回调。转推流不作为远端用户视频数据上报，其接收状态通过本回调单独通知。
+
+**参数**
+
+| streamName | 转推流名 |
+| --- | --- |
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
@@ -344,5 +384,4 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | memory | 内存使用情况 |
 | --- | --- |
 | cpuUsage | CUP使用率 |
-
 

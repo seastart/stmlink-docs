@@ -4,6 +4,14 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 ---
 
 ## 结构体类型
+### SEALogConfig
+日志配置
+
+| **属性名称** | **描述** |
+| --- | --- |
+| enableLocalLog | 【字段含义】是否启用全进程本地日志采集<br/>【推荐取值】默认值：YES；启用后日志同时写入本地文件并保留宿主 App 控制台输出。 |
+
+
 ### SEAMeetingParam
 会议参数
 
@@ -40,6 +48,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | nickname | 【字段含义】参会昵称<br/>【推荐取值】该字段将作为会议中展示信息，使用 UTF-8 编码。 |
 | avatar | 【字段含义】参会头像<br/>【推荐取值】该字段将作为会议中展示信息，使用 UTF-8 编码。 |
 | extendInfo | 【字段含义】扩展信息 |
+| isAudience | 【字段类型】BOOL<br/>【字段含义】是否以观众身份入会<br/>【推荐取值】默认值：NO；设置为 YES 时以观众身份入会。 |
 
 
 ### SEAUserModel
@@ -106,6 +115,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | creator | 【字段含义】创建者的用户标识 |
 | hostUid | 【字段含义】主持人的用户标识 |
 | unionHosts | 【字段含义】会议联席主持人用户标识列表 |
+| signInActivityLists | 【字段含义】房间签到活动列表，详情参考：[SEASignInActivityModel]() |
+| hasSignInActivity | 【字段含义】房间是否存在进行中的签到活动 |
 | extend | 【字段含义】扩展信息 |
 
 
@@ -243,6 +254,22 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | lrd | 【字段含义】服务器到端丢包率 |
 | audio | 【字段含义】音频包数 |
 | video | 【字段含义】视频包数 |
+
+
+### SEAStreamQualityModel
+流媒体质量监测数据
+
+| **属性名称** | **描述** |
+| --- | --- |
+| score | 【字段含义】综合评分（0~100） |
+| level | 【字段含义】质量等级 |
+| mos | 【字段含义】语音 MOS 值 |
+| loss | 【字段含义】丢包率（0~1） |
+| rtt | 【字段含义】往返时延（毫秒） |
+| jitter | 【字段含义】抖动（毫秒） |
+| packets | 【字段含义】包数量 |
+| bitrate | 【字段含义】比特率（bps） |
+| bytes | 【字段含义】字节数 |
 
 
 ### SEAAgentModel
@@ -498,6 +525,58 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | listData | 【字段含义】在线成员对象列表，详情参考：[SEAOnlineMemberModel](#DpBFV) |
 
 
+### SEASignInActivityModel
+签到活动项对象
+
+| **属性名称** | **描述** |
+| --- | --- |
+| userId | 【字段含义】用户标识(创建者) |
+| beginAt | 【字段含义】开始时间 |
+| dur | 【字段含义】签到时长，单位：分钟，0为不限时 |
+| endAt | 【字段含义】结束时间 |
+| status | 【字段含义】活动状态，，详情参考：[SEASignInActivityState]() |
+| desc | 【字段含义】签到描述 |
+| nums | 【字段含义】签到人数 |
+
+
+### SEASignInListModel
+签到活动列表对象
+
+| **属性名称** | **描述** |
+| --- | --- |
+| listData | 【字段含义】签到活动列表，详情参考：[SEASignInActivityModel](#DpBFV) |
+| now | 【字段含义】当前服务器时间 |
+
+
+### SEASignInCountModel
+签到统计人数对象
+
+| **属性名称** | **描述** |
+| --- | --- |
+| nums | 【字段含义】签到人数 |
+
+
+### SEASignInDetailModel
+签到详情项对象
+
+| **属性名称** | **描述** |
+| --- | --- |
+| detailId | 【字段含义】记录标识 |
+| userId | 【字段含义】用户标识 |
+| nickname | 【字段含义】用户昵称 |
+| role | 【字段含义】用户角色，请参见 [SEAUserRole](#QsCHa) 中的相关说明。 |
+| epoch | 【字段含义】签到轮次 |
+| createdAt | 【字段含义】签到时间 |
+
+
+### SEASignInDetailListModel
+签到活动详情列表对象
+
+| **属性名称** | **描述** |
+| --- | --- |
+| listData | 【字段含义】签到详情列表，详情参考：[SEASignInDetailModel](#DpBFV) |
+
+
 ## 枚举类型
 ### SEADeviceType
 设备类型
@@ -640,6 +719,15 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEADeviceStateClosed | `2` | 关闭状态 |
 
 
+### SEACameraDirection
+摄像头方向
+
+| **枚举类型** | **枚举值** | **描述** |
+| --- | :---: | --- |
+| SEACameraDirectionFront | `1` | 前置摄像头 |
+| SEACameraDirectionBack | `2` | 后置摄像头 |
+
+
 ### SEAShareType
 共享类型
 
@@ -672,6 +760,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEAHandupTypeChat | `3` | 聊天 |
 | SEAHandupTypeShare | `4` | 共享 |
 | SEAHandupTypeDraw | `5` | 涂鸦 |
+| SEAHandupTypeOther | `6` | 其它 |
 
 
 ### SEALeaveReason
@@ -811,3 +900,10 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEACallStatusBusy | `3` | 忙线 |
 
 
+### SEASignInActivityState
+签到活动状态
+
+| **枚举类型** | **枚举值** | **描述** |
+| --- | :---: | --- |
+| SEASignInActivityStateStarted | `1` | 进行中 |
+| SEASignInActivityStateFinished | `2` | 已结束 |

@@ -347,7 +347,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 ### onUserEnter:()
 `- (void)onUserEnter:(NSString *)userId`
 
-远端用户加入房间回调
+成员进入房间回调，包括当前用户。
 
 当远端用户调用 MeetingKit 中的 `enterRoom:onSuccess:onFailed:()` 接口执行加入房间操作后，SDK 会抛出该事件通知您。
 
@@ -359,7 +359,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 ### onUserExit:()
 `- (void)onUserExit:(NSString *)userId`
 
-远端用户离开房间回调
+成员退出房间回调，包括当前用户。
 
 当远端用户调用 MeetingKit 中的 `exitRoom:()` 接口执行离开房间操作后，SDK 会抛出该事件通知您。
 
@@ -664,6 +664,30 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | receiveModel | 流媒体接收状态数据，参考文档：[SEAStreamReceiveModel](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#leOhF) |
 
 
+### onSendQualityModel:()
+`- (void)onSendQualityModel:(SEAStreamQualityModel *)qualityModel`
+
+流媒体上行质量数据回调
+
+会在固定时间间隔，会收到来自 `MeetingKitDelegate` 的 `onSendQualityModel:()` 事件回调，描述当前数据发送状态延迟、丢包率等信息。
+
+| 参数 | 描述 |
+| --- | --- |
+| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel]() |
+
+
+### onReceiveQualityModel:()
+`- (void)onReceiveQualityModel:(SEAStreamQualityModel *)qualityModel`
+
+流媒体下行质量数据回调
+
+会在固定时间间隔，会收到来自 `MeetingKitDelegate` 的 `onReceiveQualityModel:()` 事件回调，描述当前数据接收状态延迟、丢包率等信息。
+
+| 参数 | 描述 |
+| --- | --- |
+| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel]() |
+
+
 ### onReceiveStreamStatusChange:streamType:status:()
 `- (void)onReceiveStreamStatusChange:(NSString *)targetUserId streamType:(SEAVideoStreamType)streamType status:(BOOL)status`
 
@@ -690,6 +714,19 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
+### onReceiveRetweetStreamStatusChange:status:()
+`- (void)onReceiveRetweetStreamStatusChange:(NSString *)streamName status:(BOOL)status`
+
+流媒体接收转推流画面状态变更回调
+
+订阅远端转推流后，如果持续一段时间没有收到转推画面的视频流，会收到来自 `MeetingKitDelegate` 的 `onReceiveRetweetStreamStatusChange:status:()` 事件回调。同时，接收视频流恢复后也会收到该回调。可在该回调中按 `streamName` 区分对应转推流，显示/隐藏加载指示（如 `UIActivityIndicatorView`）。
+
+| 参数 | 描述 |
+| --- | --- |
+| streamName | 转推流名 |
+| status | 接收状态，YES-超时 NO-恢复 |
+
+
 ## **其它事件回调**
 ### onApplicationPerformance:cpuUsage:()
 `- (void)onApplicationPerformance:(CGFloat)memory cpuUsage:(CGFloat)cpuUsage`
@@ -703,4 +740,45 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | memory | 内存使用情况 |
 | cpuUsage | CUP使用率 |
 
+### onExtendedEvents:content:()
+`- (void)onExtendedEvents:(NSString *)event content:(NSString *)content`
 
+扩展事件回调
+
+房间内业务层自定义的扩展事件回调。
+
+| 参数 | 描述 |
+| --- | --- |
+| event | 事件类型 |
+| content | 数据内容 |
+
+
+## **签到事件回调**
+### onSignInActivity:epoch:beginAt:dur:endAt:desc:()
+`- (void)onSignInActivity:(NSString *)userId epoch:(NSInteger)epoch beginAt:(NSInteger)beginAt dur:(NSInteger)dur endAt:(NSInteger)endAt desc:(nullable NSString *)desc`
+
+签到活动回调
+
+当主持人调用 MeetingKit 中的 `signInCreate:desc:onSuccess:onFailed:()` 接口执行创建签到活动后，SDK 会抛出该事件通知您。
+
+| 参数 | 描述 |
+| --- | --- |
+| userId | 发起人标识 |
+| epoch | 签到轮次 |
+| beginAt | 开始时间 |
+| dur | 签到时长，单位：分钟，0为不限时 |
+| endAt | 结束时间 |
+| desc | 签到描述 |
+
+
+### onSignInFinish:epoch:()
+`- (void)onSignInFinish:(NSString *)userId epoch:(NSInteger)epoch`
+
+签到结束回调
+
+当主持人调用 MeetingKit 中的 `signInFinish:onFailed:()` 接口执行结束签到活动后，SDK 会抛出该事件通知您。
+
+| 参数 | 描述 |
+| --- | --- |
+| userId | 发起人标识 |
+| epoch | 签到轮次 |

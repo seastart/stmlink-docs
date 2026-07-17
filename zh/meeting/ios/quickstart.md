@@ -60,12 +60,17 @@ pod 'MeetingKit', :git => "https://github.com/seastart/meeting-ios-cocoapods.git
 在调用 SDK 的任何其他函数之前，需要进行 SDK 登录操作，在您的项目中添加如下代码，它的作用是通过调用 MeetingKit 中的相关接口完成会议组件的初始化。这个步骤非常关键，因为只有在登录成功后才能正常使用 MeetingKit 的各项功能：
 
 ```objectivec
-[[MeetingKit sharedInstance] loginWithToken:@"Meeting User Auth Token" appGroup:@"Application Group Identifier" onSuccess:^(id _Nullable data) {
+SEALogConfig *logConfig = [[SEALogConfig alloc] init];
+logConfig.enableLocalLog = YES;
+
+[[MeetingKit sharedInstance] loginWithToken:@"Meeting User Auth Token" appGroup:@"Application Group Identifier" logConfig:logConfig onSuccess:^(id _Nullable data) {
     NSLog(@"会议组件登录成功");
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"会议组件登录失败(%ld，%@)", code, message);
 }];
 ```
+
+`enableLocalLog`默认值为`YES`。启用后会采集全进程日志到本地文件，同时保留宿主 App 的控制台输出。继续使用不带`logConfig`参数的登录接口时，也会采用该默认值。
 
 #### 登出
 ```objectivec
@@ -202,6 +207,7 @@ SEAMeetingEnterParam *meetingEnterParam = [[SEAMeetingEnterParam alloc] init];
 meetingEnterParam.roomNo = @"Target Room No";
 meetingEnterParam.nickname = @"Your Name";
 meetingEnterParam.avatar = @"Your Portrait";
+meetingEnterParam.isAudience = NO; // 默认以普通参会者身份入会，设置为 YES 时以观众身份入会
 ```
 
 #### 加入房间
@@ -309,4 +315,3 @@ meetingEnterParam.avatar = @"Your Portrait";
 
 > 注：取消订阅成员视频画面后，组件会自行释放渲染控件。
 >
-
