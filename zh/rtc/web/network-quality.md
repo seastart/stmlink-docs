@@ -327,125 +327,99 @@ setInterval(() => {
 }, 2000);
 ```
 
-## 五、弱网处理最佳实践
+## 五、弱网处理
 
-前面几节讲的是"怎么读信号"，这一节讲"读到信号后该做什么"——弱网下如何展示、如何提示、上行/下行分别怎么降级。
+处理弱网先分清两件事：**方向**和**原因**。
 
-### 5.1 三条原则
++ 上行差是你发不出去，你能主动降级（降码率、切小流、关摄像头）；下行差是你收不进来，只能少收（切小流、退订视频）。所以要看 `uplink` / `downlink` 两个方向，而不是只看 `overall`。
++ `BANDWIDTH_CONSTRAINED` 是带宽不足，`CPU_CONSTRAINED` 是设备编码跟不上，两者处置不同。
 
-从第一性原理出发，弱网处置有三条原则贯穿始终：
+### 5.1 展示网络状态
 
-+ **分方向**：上行是**你可控**的（你是发送方，能降码率、关摄像头）；下行你**控制不了源头**（对方在发），只能**选择少收**。这是上行、下行处置本质不同的根源——所以永远优先看 `uplink` / `downlink` 两个方向，而不是只看 `overall`。
-+ **分归因**：同样是"卡"，是**带宽不足**、**CPU 过载**还是**对方网络差**，处置完全不同。SDK 已用 `BANDWIDTH_CONSTRAINED` / `CPU_CONSTRAINED` 事件和 `reasons` 帮你区分。
-+ **分级不打扰**：网络状态灯常驻，弹窗要克制。弱网本就让人烦躁，频繁弹窗是二次伤害。
+用 `overall` 映射一个状态灯即可，不要把丢包率、RTT 这类原始数据直接展示给终端用户：
 
-### 5.2 展示什么
+| overall | 状态 |
+| --- | --- |
+| excellent / good | 正常 |
+| poor | 较差，画质可能下降 |
+| lost | 断开，重连中 |
+| unknown | 采样中 |
 
-大多数场景只需要**一盏网络状态灯**，用 `getConnectionQuality()` 的 `overall` 四档映射颜色即可，不要把丢包率 / RTT 这类原始数字直接摆给终端用户（那是诊断面板才需要的）：
-
-| `overall` | 灯 | 含义 |
-| --- | --- | --- |
-| `excellent` | 🟢 | 优秀 |
-| `good` | 🟢 | 良好 |
-| `poor` | 🟡 | 较差，画质可能下降 |
-| `lost` | 🔴 | 连接断开，重连中 |
-| `unknown` | ⚪️ | 采样中 |
-
-**务必区分"你的问题"还是"对方的问题"**（避免用户困惑于"为什么网络好画面还糊"）：
+上行差和下行差的提示文案不同，需要区分：
 
 ```typescript
 const q = srtc.getConnectionQuality();
 if (q.uplink === ConnectionQuality.Poor) {
-  // 上行差：是"你"发不出去
-  showTip('您的网络不佳，对方可能看不清您的画面');
+  showTip('您的网络不佳，对方可能看不清您');
 } else if (q.downlink === ConnectionQuality.Poor) {
-  // 下行差：是"你"收不进来（也可能是对方发不出，见 5.5）
-  showTip('网络不佳，正在优化接收画质');
+  showTip('网络不佳，正在优化画质');
 }
 ```
 
-### 5.3 提示什么（分级 + 去抖）
+提示要去抖：`poor` 持续几秒再 toast，不要一波动就弹。`BANDWIDTH_CONSTRAINED` / `CPU_CONSTRAINED` 事件 SDK 已做去抖，业务层弹窗建议再限一次频率。
 
-分级提示，别一有波动就弹窗：
+### 5.2 上行变差
 
-| 触发 | 建议动作 | 文案示意 |
-| --- | --- | --- |
-| `good` → `poor` | 只变灯，不弹窗 | —— |
-| `poor` 持续（如 5s 以上） | toast 一次 | "当前网络不佳" |
-| `BANDWIDTH_CONSTRAINED` | toast + 触发上行降级（见 5.4） | "上行带宽不足，建议降低画质" |
-| `CPU_CONSTRAINED` | toast | "设备繁忙，建议关闭其他应用" |
-| `lost` | 明显提示 + 重连 UI | "连接已断开，正在重连…" |
+按从轻到重逐级降级：
 
-SDK 的 `BANDWIDTH_CONSTRAINED` / `CPU_CONSTRAINED` 事件本身已做连续多次去抖再触发，但**业务层弹窗还要再做一层去抖**（进入弱网期不要反复弹）。
-
-### 5.4 上行不行怎么处理
-
-上行降级是一个"损失从小到大"的阶梯，逐级往下走：
-
-1. **编码器自适应**（浏览器自动，SDK 默认已开）——第一层，无需干预，自动在带宽内调整。若你**不希望画面清晰度被自动压低**，见 5.6 用 `degradationPreference` 改变自适应方式。
-2. **主动切小流 / 降分辨率**——切到小流（默认 `camera_small`：320×180、约 250 Kbps）或直接发一条低清单流，还有画面但更糊。见[大小流（simulcast）与分辨率](/zh/rtc/web/advanced/video-stream-layers)。
-3. **关摄像头、只保留音频**——`disableLocalTrack(videoTrack)`，弱网上行的**终极兜底**。音频码率极低（约 32 Kbps）几乎总能保住，先保住"能听见"：
+1. **编码器自适应**：浏览器自动完成，默认已开，无需干预。不想让分辨率被自动压低时，用 `degradationPreference` 改变降级方式（见 5.4）。
+2. **切小流 / 降分辨率**：发布了大小流时可切到小流（320×180、约 250 Kbps）。见[大小流与分辨率](/zh/rtc/web/advanced/video-stream-layers)。
+3. **关摄像头、只保留音频**：音频码率低（约 32 Kbps），弱网下几乎总能保住。
 
 ```typescript
-// 关摄像头（轻量，保留发布通道，随时可 enableLocalTrack 恢复）
-srtc.disableLocalTrack(localVideoTrack);
-// 网络恢复后
-srtc.enableLocalTrack(localVideoTrack);
+srtc.disableLocalTrack(localVideoTrack);  // 关闭（轻量，保留发布通道，可随时恢复）
+srtc.enableLocalTrack(localVideoTrack);   // 网络恢复后重新开启
 ```
 
-4. **彻底停止发布视频**——`unpublishLocalTrack(videoTrack)`，比 `disableLocalTrack` 更重，彻底释放上行编码与发送资源。
+4. **彻底停止发布**：`unpublishLocalTrack(localVideoTrack)`，比关摄像头更彻底，释放上行编码与发送资源。
 
-> **CPU 受限与带宽受限的处置不同**：`CPU_CONSTRAINED` 时优先降**分辨率 / 帧率**（直接减轻编码负载）比降码率更有效；`BANDWIDTH_CONSTRAINED` 时降**码率 / 分辨率**都行。
+`CPU_CONSTRAINED` 时优先降分辨率 / 帧率（减轻编码负载）；`BANDWIDTH_CONSTRAINED` 时降码率或分辨率都可以。
 
-**推荐交互（重要）**：关摄像头这类"改变通话形态"的操作，推荐**提示用户 + 一键降级**，而非静默自动执行——尤其应急指挥、执法记录等场景，**绝不能悄悄关掉画面**。普通会议等对画面连续性不敏感的场景，可以做得更自动。
+关摄像头会改变通话形态，建议提示用户后再执行，不要静默操作——应急指挥、执法记录等场景尤其如此。
 
-### 5.5 下行不行怎么处理
+### 5.3 下行变差
 
-下行你控制不了对方发多少，但能控制"收多少"：
-
-1. **先判断是不是你自己的问题**：`downlink` 差**且**本端有下行丢包 → 是你的接收链路差；若本端几乎无丢包、只是对端画面卡顿 → 大概率是**对方上行差**（SDK 内部评分已做此区分，不会因对方的问题误降你的下行档）。这种情况本端退订也没用，只能提示"对方网络不佳"。
-2. **保证发布方发了大小流（simulcast）**：这是下行降级的**主力**。"大小流"指同一路画面同时编码出一条大流（高清）和一条小流（默认 320×180、15fps、约 250 Kbps）。当发布方发了大小流，SFU 会**依据每个订阅者自身的下行带宽与丢包，自动**把该订阅者切到合适的那一条（下行变差自动切到 180p 小流，恢复后自动切回大流），订阅端**无需手动切**。反之，发布方只发单流时无小流可切，SFU 也无能为力。详见[大小流与分辨率](/zh/rtc/web/advanced/video-stream-layers)。
-3. **退订视频、只收音频**——`unsubscribeRemoteTrack(remoteVideoTrack)`，下行的**终极兜底**，与上行"关摄像头保音频"对称：
+1. **先确认是不是对端的问题**：本端有下行丢包，才是你的接收链路差；若本端几乎无丢包、只是某人画面卡顿，通常是对方上行差，此时你退订也无济于事，提示"对方网络不佳"即可。SDK 评分已区分这两种情况，不会因对方问题误降你的下行档。
+2. **发布方发大小流时，SFU 自动切层**：SFU 会依据每个订阅者自身的下行带宽和丢包，自动把它切到合适的大 / 小流，订阅端无需手动切；只发单流则无法自动降。见[大小流与分辨率](/zh/rtc/web/advanced/video-stream-layers)。
+3. **退订视频、只收音频**：
 
 ```typescript
-// 只退视频，保留音频，先保住"能听见"
 await srtc.unsubscribeRemoteTrack(remoteVideoTrack);
 ```
 
-4. **多路会议**：只订阅**当前说话人**的视频，其余成员只收音频；画廊视图里滚出可视区域的成员先退订视频。
+4. **多路会议**：只订阅当前说话人的视频，其余成员只收音频。
 
-### 5.6 控制自适应方式：`degradationPreference`
+### 5.4 控制降级方式：`degradationPreference`
 
-弱网下编码器必须有所取舍，`degradationPreference`（`publishLocalTrack` 的 `VideoPublishOptions` 字段）决定**牺牲什么**：
+`publishLocalTrack` 的 `VideoPublishOptions.degradationPreference` 决定弱网下牺牲什么：
 
-| 取值 | 弱网下的行为 | 适用 |
+| 取值 | 行为 | 适用 |
 | --- | --- | --- |
-| `maintain-framerate` | 宁**降分辨率**保帧率（画面变糊但流畅） | 一般实时互动、运动画面 |
-| `maintain-resolution` | 宁**降帧率**保分辨率（画面清晰但变卡） | 屏幕共享、文档 / PPT、不希望分辨率跳变的场景 |
-| `balanced` | 分辨率与帧率一起降 | 折中 |
+| `maintain-framerate` | 降分辨率、保帧率 | 一般实时互动、运动画面 |
+| `maintain-resolution` | 降帧率、保分辨率 | 屏幕共享、文档 / PPT，不希望分辨率变化 |
+| `balanced` | 两者都降 | 折中 |
 
-**如果你不希望上行不好时分辨率被自动调低**（例如共享的是文字、图表，糊了就没法看），把它设成 `maintain-resolution`——这样带宽不足时编码器会先降帧率，保住分辨率：
+不希望分辨率被自动压低时，设为 `maintain-resolution`：
 
 ```typescript
 await srtc.publishLocalTrack(localVideoTrack, {
-  // 宁可掉帧也不降分辨率，保清晰
   degradationPreference: 'maintain-resolution',
 });
 ```
 
-> SDK 的内置预设里，**摄像头 720p / 1080p 预设**与**全部屏幕共享预设**已默认 `maintain-resolution`（屏共尤其需要保清晰度）；480p / 360p 等低档预设未设置，走浏览器默认（弱网下通常优先降分辨率保帧率）。你在 `publishLocalTrack` 时显式传入该字段即可覆盖默认。
+内置预设中，摄像头 720p / 1080p 与全部屏幕共享预设默认已是 `maintain-resolution`；480p / 360p 未设置，走浏览器默认。
 
-### 5.7 连接丢失（`lost`）与重连
+### 5.5 连接断开（`lost`）
 
-`overall === 'lost'` 表示媒体已无法传输，应进入重连流程：给出明确的"正在重连"提示，避免界面停在一盏红灯；重连成功后刷新状态灯、按需恢复此前主动关闭的摄像头 / 订阅。
+`overall === 'lost'` 表示媒体已中断，应进入重连并提示用户"正在重连"；恢复后刷新状态灯，并恢复此前主动关闭的摄像头或订阅。
 
-### 5.8 信号 → 处置 速查表
+### 5.6 速查表
 
-| 信号 | 方向 | 处置 |
-| --- | --- | --- |
-| `BANDWIDTH_CONSTRAINED` | 上行 | 切小流 → 关摄像头保音频；不想降分辨率则改用 `maintain-resolution` |
-| `CPU_CONSTRAINED` | 上行 | 降分辨率 / 帧率，减轻编码负载 |
-| `uplink = poor / lost` | 上行 | 按 5.4 阶梯降级 + 提示"您的网络" |
-| `downlink = poor`（本端有丢包） | 下行 | 退订视频保音频 / 多路只留主讲；确保发布方发小流 |
-| `downlink = poor`（本端无丢包） | 对方 | 提示"对方网络不佳"，本端不动 |
-| `overall = lost` | —— | 重连 UI，恢复后刷新状态 |
+| 信号 | 处置 |
+| --- | --- |
+| `BANDWIDTH_CONSTRAINED`（上行） | 切小流 → 关摄像头保音频；不想降分辨率则设 `maintain-resolution` |
+| `CPU_CONSTRAINED`（上行） | 降分辨率 / 帧率 |
+| `uplink = poor / lost` | 按 5.2 降级，提示"您的网络" |
+| `downlink = poor`（本端有丢包） | 退订视频保音频 / 多路只留主讲 |
+| `downlink = poor`（本端无丢包） | 提示"对方网络不佳" |
+| `overall = lost` | 重连，恢复后刷新状态 |
