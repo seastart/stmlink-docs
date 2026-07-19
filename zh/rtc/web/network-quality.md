@@ -423,3 +423,79 @@ await srtc.publishLocalTrack(localVideoTrack, {
 | `downlink = poor`（本端有丢包） | 退订视频保音频 / 多路只留主讲 |
 | `downlink = poor`（本端无丢包） | 提示"对方网络不佳" |
 | `overall = lost` | 重连，恢复后刷新状态 |
+
+### 5.7 完整示例
+
+把上面的做法串起来：发布时配置降级策略，运行时订阅事件更新状态灯、分方向提示、按需降级与恢复。
+
+```typescript
+import { ChannelEventType, ConnectionQuality } from '@seastart/srtc-web-sdk';
+import type { ConnectionQualityEventData, LocalVideoTrack } from '@seastart/srtc-web-sdk';
+
+// 假设已创建并持有本地摄像头轨道
+let cameraTrack: LocalVideoTrack;
+// 标记是否因弱网主动关了摄像头，用于网络恢复后自动开回
+let cameraOffByNetwork = false;
+
+// 发布：开大小流（弱网时对端可自动降到小流）；若共享的是文档/PPT，用 maintain-resolution 保清晰
+await srtc.publishLocalTrack(cameraTrack, {
+  degradationPreference: 'maintain-framerate', // 一般互动用这个；文档共享改 'maintain-resolution'
+});
+
+// 简单去抖：同一类提示 N 秒内只弹一次
+const lastToast: Record<string, number> = {};
+function toastOnce(key: string, msg: string, intervalMs = 8000) {
+  const now = Date.now();
+  if (now - (lastToast[key] ?? 0) < intervalMs) return;
+  lastToast[key] = now;
+  toast(msg); // 替换为你的 toast 实现
+}
+
+srtc.onNotifyChannelEvent = (evt) => {
+  switch (evt.type) {
+    // 1) 网络等级变化：更新状态灯 + 按方向提示 + 断线重连 + 恢复
+    case ChannelEventType.CONNECTION_QUALITY_CHANGED: {
+      const { evaluation } = evt.data as ConnectionQualityEventData;
+      updateNetworkIndicator(evaluation.overall); // 你的状态灯
+
+      if (evaluation.overall === ConnectionQuality.Lost) {
+        showReconnecting(); // 显示"正在重连"
+      } else if (evaluation.uplink === ConnectionQuality.Poor) {
+        toastOnce('uplink', '您的网络不佳，对方可能看不清您');
+      } else if (evaluation.downlink === ConnectionQuality.Poor) {
+        toastOnce('downlink', '网络不佳，正在优化画质');
+        // 下行较差时 SFU 会自动把你降到小流，多数能自行缓解，一般无需处理。
+        // 若要做"仅语音"兜底：建议下行持续较久仍不佳时，再让用户确认，
+        // 然后对当前订阅的远端视频轨调用 srtc.unsubscribeRemoteTrack(videoTrack) 退订、只留音频。
+      }
+
+      // 网络恢复且此前因弱网关过摄像头 → 自动开回
+      if (
+        cameraOffByNetwork &&
+        (evaluation.overall === ConnectionQuality.Good ||
+          evaluation.overall === ConnectionQuality.Excellent)
+      ) {
+        srtc.enableLocalTrack(cameraTrack);
+        cameraOffByNetwork = false;
+      }
+      break;
+    }
+
+    // 2) 上行带宽不足：提示用户，并给一个"关摄像头保语音"的一键操作（不静默执行）
+    case ChannelEventType.BANDWIDTH_CONSTRAINED:
+      toastOnce('bw', '上行带宽不足，可关闭摄像头以保证语音通话');
+      showDowngradeButton(() => {
+        srtc.disableLocalTrack(cameraTrack); // 关摄像头，保留音频
+        cameraOffByNetwork = true;
+      });
+      break;
+
+    // 3) 设备编码跟不上：提示降低画质 / 关闭其他应用
+    case ChannelEventType.CPU_CONSTRAINED:
+      toastOnce('cpu', '设备繁忙，建议关闭其他应用或降低画质');
+      break;
+  }
+};
+```
+
+> 示例里 `publishLocalTrack` / `disableLocalTrack` / `enableLocalTrack` 均为 SDK 现有方法。关摄像头这类改变通话形态的操作通过按钮交给用户确认，未静默执行；普通会议等场景可自行改为自动。下行"仅语音"兜底按注释里的思路自行实现（用 `unsubscribeRemoteTrack` 退订视频、保留音频）。
