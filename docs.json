@@ -107,6 +107,7 @@
                 "pages": [
                   "zh/rtc/android/integration",
                   "zh/rtc/android/quickstart",
+                  "zh/rtc/android/network-quality",
                   {
                     "group": "进阶实践",
                     "pages": [
