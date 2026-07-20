@@ -80,6 +80,25 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | Bad | 2 | 丢包情况很差 |
 | VeryBad | 3 | 丢包情况极差 |
 
+### QualityDirection
+
+网络质量变化方向，用于 [`NetworkQualityChange`](/zh/rtc/android/types)。
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| UPLINK | 无显式值 | 本端到服务端的上行。 |
+| DOWNLINK | 无显式值 | 服务端到本端的下行。 |
+
+### QualityTrend
+
+网络质量变化趋势，用于 [`NetworkQualityChange`](/zh/rtc/android/types)。
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| INITIAL | 无显式值 | 首次建立档位（非跨档，用于初始化 UI）。 |
+| DEGRADED | 无显式值 | 档位变差（立即回调）。 |
+| RECOVERED | 无显式值 | 档位变好（已通过连续确认）。 |
+
 ### RemoteStreamStatus
 
 | 枚举名 | 值 | 说明 |

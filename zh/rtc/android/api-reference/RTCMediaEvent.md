@@ -50,10 +50,23 @@ fun onRemoteVideoFrame(
 ```kotlin
 fun onMediaMetric(metric: MediaMetric.Metric)
 ```
-方法说明：媒体性能指标回调。  
+方法说明：媒体性能指标回调，入会后每约 5 秒下发一份完整快照。  
 参数说明：
-- `metric`：`MediaMetric.Metric`，媒体性能指标对象。字段参见 [媒体质量与参数](/zh/rtc/android/media-quality)。
+- `metric`：`MediaMetric.Metric`，媒体性能指标对象。字段参见 [媒体质量](/zh/rtc/android/media-quality)。
 返回值说明：无（`Unit`）。
+
+### onNetworkQualityChanged(change)
+```kotlin
+fun onNetworkQualityChanged(change: NetworkQualityChange)
+```
+方法说明：网络质量档位变化回调。仅在质量等级发生跨档变化时触发（而非每个采样周期），内置非对称迟滞——等级下降（变差）立即回调，等级回升（变好）需连续多次采样确认后才回调；上行、下行各自独立触发，一次回调只表示一个方向的变化。适合驱动网络状态灯与弱网提示。  
+参数说明：
+- `change`：`NetworkQualityChange`，本次档位变化详情（方向、前后等级、趋势及触发时的完整质量报告）。字段参见 [类型定义](/zh/rtc/android/types)。
+返回值说明：无（`Unit`）。
+
+:::note
+本回调在信令通道的后台线程触发，更新 UI 前请切换到主线程。用法与弱网处理示例见 [网络质量](/zh/rtc/android/network-quality)。
+:::
 
 ### onVolumesReport(volumes)
 ```kotlin

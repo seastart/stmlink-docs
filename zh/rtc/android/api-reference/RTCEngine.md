@@ -206,6 +206,16 @@ interface RTCLocalVideoFrameEvent {
 - `onLocalVideoFrame`：回调一帧本地视频。`yuv` 为 SDK 为外部应用单独拷贝的数据，应用层可自行缓存或处理；`stamp` 为帧时间戳；`format` 为帧格式；`facing` 为摄像头朝向。
 - `onLocalVideoFrameSizeChanged`：本地视频帧尺寸或摄像头方向发生变化时回调。
 
+## 媒体质量
+
+### getMetric()
+```kotlin
+fun getMetric(): MediaMetric.Metric?
+```
+方法说明：主动获取最近一次采集到的媒体质量快照（含 `qualityReport`）。返回线程安全副本，不触发底层 `getStats`；采样周期约 5 秒，起播初期可能为 `null`。适合"点开详情才计算"的按需诊断场景；弱网档位变化请优先监听 [`RTCMediaEvent.onNetworkQualityChanged`](/zh/rtc/android/api-reference/RTCMediaEvent)。  
+参数说明：无。  
+返回值说明：`MediaMetric.Metric?`，最近一次质量快照；尚无数据时为 `null`。字段参见 [媒体质量](/zh/rtc/android/media-quality)，获取方式与弱网处理见 [网络质量](/zh/rtc/android/network-quality)。
+
 ## 音频路由
 
 ### getAudioRouterManager()
