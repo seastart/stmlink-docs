@@ -92,6 +92,7 @@ URL.revokeObjectURL(url);
 | `track` | `LocalCompositeRecorderTrack \| null` | — | 要绘制的视频轨道；传 `null` 表示空槽位 |
 | `rect` | `{ x, y, width, height }` | — | 在画布上的绘制区域（canvas 像素坐标） |
 | `label` | `string` | — | 绘制在左下角的标签（如用户名）；不传则不绘制 |
+| `avatar` | `string` | — | 摄像头关闭（无视频轨）时在格子中央绘制的圆形头像 URL；匿名跨域加载，加载失败或跨域被拒时回退为昵称首字母灰底圆 |
 | `fit` | `'contain' \| 'cover'` | `contain` | `contain` 保留完整画面，`cover` 填满并裁剪溢出 |
 | `background` | `string` | `#1a1c22` | 单个槽位背景色 |
 

@@ -518,6 +518,9 @@ export interface LocalCompositeRecorderVideoItem {
   rect: LocalCompositeRecorderRect;
   /** 绘制在视频左下角的标签文本，例如用户名；不传则不绘制标签 */
   label?: string;
+  /** 头像 URL；当该槽位没有可绘制视频帧（如摄像头关闭）时，在格子中央绘制圆形头像。
+   *  匿名跨域加载，加载失败或跨域被拒时回退为昵称首字母灰底圆 */
+  avatar?: string;
   /** 视频填充方式：contain 保留完整画面，cover 填满区域并裁剪溢出部分；默认 contain */
   fit?: 'contain' | 'cover';
   /** 单个视频槽位背景色；默认 #1a1c22 */
