@@ -54,6 +54,15 @@ fun onUserRoleChanged(targetUid: String, roleType: MemberRoleType)
 - `roleType`：`MemberRoleType`，成员角色类型。
 返回值说明：无（`Unit`）。
 
+### onMeMembershipChanged(isMember)
+```kotlin
+fun onMeMembershipChanged(isMember: Boolean)
+```
+方法说明：自己的观众/成员身份发生变化事件。观众升为正式成员时 `isMember=true`；正式成员被降为观众时 `isMember=false`。仅在身份“变化”时触发，入会初始身份由 `InfosManager.isAudience()` 读取。降为观众时 SDK 已主动关闭本地摄像头/麦克风/共享并收敛对应状态。  
+参数说明：
+- `isMember`：`Boolean`，`true` 表示当前为正式成员，`false` 表示当前为观众。
+返回值说明：无（`Unit`）。
+
 ### onUserCameraStateChanged(targetUid, cameraState, reason)
 ```kotlin
 fun onUserCameraStateChanged(targetUid: String, cameraState: DeviceState, reason: ChangeReason)

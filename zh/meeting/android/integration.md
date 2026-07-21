@@ -5,7 +5,7 @@ description: "Android SMeeting 会议 SDK 环境配置与 SDK 安装指南"
 
 # 集成
 
-本文说明 Android SMeeting SDK 的最小接入方式。完成本页后，可继续参考 [快速开始](./quickstart.md) 完成 SDK 初始化、创建会议与入会流程。
+本文说明 Android SMeeting SDK 的最小接入方式。完成本页后，可继续参考 [快速开始](/zh/meeting/android/quickstart) 完成 SDK 初始化、创建会议与入会流程。
 
 ## 配置 Maven 仓库
 
@@ -77,5 +77,5 @@ dependencies {
 - **AndroidX**：当前示例工程已启用 `android.useAndroidX=true`。
 - **最低系统版本**：当前示例工程的 `minSdk` 为 `24`。
 - **运行时权限**：如果业务中需要打开摄像头和麦克风，请在应用侧处理相机、录音等运行时权限。
-- **初始化流程**：添加依赖后，请继续参考 [快速开始](./quickstart.md) 完成 `MeetingEngine.create(...)`、`initSdk(...)` 和入会流程。
+- **初始化流程**：添加依赖后，请继续参考 [快速开始](/zh/meeting/android/quickstart) 完成 `MeetingEngine.create(...)`、`initSdk(...)` 和入会流程。
 

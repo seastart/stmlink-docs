@@ -173,6 +173,30 @@ fun onAdminRoomStopSubMeeting(mainMeetingId: String, subMeetingId: String, subTi
 - `subTitle`：`String`，子会议标题。
 返回值说明：无（`Unit`）。
 
+### onSignInActivity(hostName, epoch, beginAt, dur, endAt, desc)
+```kotlin
+fun onSignInActivity(hostName: String, epoch: Int, beginAt: Long, dur: Int, endAt: Long, desc: String)
+```
+方法说明：会中签到活动消息（群发）。  
+参数说明：
+- `hostName`：`String`，主持人昵称。
+- `epoch`：`Int`，轮次。
+- `beginAt`：`Long`，开始时间（时间戳）。
+- `dur`：`Int`，预计时长（秒）。
+- `endAt`：`Long`，结束时间（时间戳）。
+- `desc`：`String`，签到说明。
+返回值说明：无（`Unit`）。
+
+### onSignInFinish(hostName, epoch)
+```kotlin
+fun onSignInFinish(hostName: String, epoch: Int)
+```
+方法说明：会中签到活动结束（群发）。  
+参数说明：
+- `hostName`：`String`，主持人昵称。
+- `epoch`：`Int`，轮次。
+返回值说明：无（`Unit`）。
+
 ### onError(errorCode, errMsg)
 ```kotlin
 fun onError(errorCode: Int, errMsg: String)

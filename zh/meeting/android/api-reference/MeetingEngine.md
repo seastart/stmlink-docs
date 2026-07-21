@@ -42,6 +42,14 @@ val infosManager: InfosManager
 参数说明：无。  
 返回值说明：`InfosManager`，属性值。
 
+### signInManager（属性）
+```kotlin
+val signInManager: SignInManager
+```
+方法说明：签到功能管理类  
+参数说明：无。  
+返回值说明：`SignInManager`，属性值。
+
 ### imEvent（属性）
 ```kotlin
 var imEvent: ImEvent?
@@ -81,6 +89,22 @@ var mediaEvent: MediaEvent?
 方法说明：媒体事件回调  
 参数说明：无。  
 返回值说明：`MediaEvent?`，属性值。
+
+### localVideoPreviewEvent（属性）
+```kotlin
+var localVideoPreviewEvent: LocalVideoPreviewEvent?
+```
+方法说明：本地视频帧回调  
+参数说明：无。  
+返回值说明：`LocalVideoPreviewEvent?`，属性值。
+
+### extensionMsgEvent（属性）
+```kotlin
+var extensionMsgEvent: ExtensionMessageEvent?
+```
+方法说明：扩展消息回调  
+参数说明：无。  
+返回值说明：`ExtensionMessageEvent?`，属性值。
 
 ### enableClientCloudRecordCapture（属性）
 ```kotlin
@@ -164,7 +188,6 @@ fun enableIm(callback: EnableImCallback)
 返回值说明：无（`Unit`）。
 
 ### disableIm()
-0
 ```kotlin
 fun disableIm()
 ```
@@ -305,7 +328,7 @@ callback: Callback<Data<String?>>
 ```kotlin
 fun enterMeeting(
 activity: Activity, roomNo: String, password: String?, nick: String,
-avatar: String, streamVendor: String, extendInfo: String?,
+avatar: String, streamVendor: String, isAudience: Boolean, extendInfo: String?,
 callback: EnterMeetingCallback
 )
 ```
@@ -317,6 +340,7 @@ callback: EnterMeetingCallback
 - `nick`：`String`，入会名称
 - `avatar`：`String`，用户头像 URL 或头像标识。
 - `streamVendor`：`String`，流媒体厂商
+- `isAudience`：`Boolean`，是否以观众身份入会；`true` 时不可开麦克风/摄像头、不可共享。
 - `extendInfo`：`String?`，扩展属性
 - `callback`：`EnterMeetingCallback`，回调参数：`JoinRoomInfo`、`Room room`、`User me`、`List<User> members`。
 返回值说明：无（`Unit`）。
@@ -325,7 +349,7 @@ callback: EnterMeetingCallback
 ```kotlin
 fun enterMeetingByMeetingId(
 activity: Activity, meetingId: String, password: String?, nick: String,
-avatar: String, streamVendor: String, extendInfo: String?,
+avatar: String, streamVendor: String, isAudience: Boolean, extendInfo: String?,
 callback: EnterMeetingCallback
 )
 ```
@@ -337,6 +361,7 @@ callback: EnterMeetingCallback
 - `nick`：`String`，入会名称
 - `avatar`：`String`，用户头像 URL 或头像标识。
 - `streamVendor`：`String`，流媒体厂商
+- `isAudience`：`Boolean`，是否以观众身份入会；`true` 时不可开麦克风/摄像头、不可共享。
 - `extendInfo`：`String?`，扩展属性
 - `callback`：`EnterMeetingCallback`，回调参数：`JoinRoomInfo`、`Room room`、`User me`、`List<User> members`。
 返回值说明：无（`Unit`）。
@@ -700,7 +725,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人确认举手请求，同意或拒绝  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `code`：`HandUpType`，举手类型，1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦
+- `code`：`HandUpType`，举手类型，1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦 6:申请其他
 - `approve`：`Boolean`，处理用户举手 true-同意 false-拒绝
 - `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
@@ -955,6 +980,23 @@ fun switchLight(open: Boolean)
 - `open`：`Boolean`，true：打开；false：关闭
 返回值说明：无（`Unit`）。
 
+### switchFrontCameraMirror()
+```kotlin
+fun switchFrontCameraMirror(open: Boolean)
+```
+方法说明：切换前置摄像头镜像。仅对前置摄像头生效，后置不受影响，默认关闭；镜像状态会缓存，重新开启采集后自动恢复。  
+参数说明：
+- `open`：`Boolean`，true：开启镜像；false：关闭镜像
+返回值说明：无（`Unit`）。
+
+### isFrontCameraMirrorOpen()
+```kotlin
+fun isFrontCameraMirrorOpen(): Boolean
+```
+方法说明：获取前置摄像头镜像状态  
+参数说明：无。  
+返回值说明：`Boolean`，true：镜像开启；false：镜像关闭。
+
 ### addPreview()
 ```kotlin
 fun addPreview(view: View)
@@ -1111,7 +1153,7 @@ fun requestHandUp(code: HandUpType, callback: Callback<Data<String?>>?)
 ```
 方法说明：用户请求举手  
 参数说明：
-- `code`：`HandUpType`，举手申请类型 1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦
+- `code`：`HandUpType`，举手申请类型 1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦 6:申请其他
 - `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 
@@ -1121,7 +1163,7 @@ fun cancelHandUp(code: HandUpType)
 ```
 方法说明：用户取消举手  
 参数说明：
-- `code`：`HandUpType`，举手申请类型 1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦
+- `code`：`HandUpType`，举手申请类型 1:申请开音频 2:申请开视频 3:申请聊天 4:申请共享 5:申请涂鸦 6:申请其他
 返回值说明：无（`Unit`）。
 
 ## 请求确认
@@ -1239,7 +1281,7 @@ fun stopCloudRecord(callback: Callback<Data<String?>>?)
 
 ### enableCourseRecordTrack()
 ```kotlin
-fun enableCourseRecordTrack(track: LocalCustomVideoTrack, callback: CommonCallback?
+fun enableCourseRecordTrack(track: LocalCustomVideoTrack, callback: CommonCallback?)
 ```
 方法说明：开启课程录制轨道  
 参数说明：
@@ -1347,3 +1389,57 @@ fun getRemoteMixtureTrack(): RemoteVideoTrack?
 方法说明：获取远端合成流的 VideoTrack  
 参数说明：无。  
 返回值说明：`RemoteVideoTrack?`，远端视频轨道实例；未找到或未订阅时返回 `null`。
+
+## 网宿通用流订阅
+
+> 以下接口仅在网宿（wangsucdn / WS 流媒体引擎）频道可用，且需先入会成功。用于按完整流名直接拉流，不依赖房间成员。
+
+### subscribeWsStream()
+```kotlin
+fun subscribeWsStream(
+    streamName: String,
+    uid: String = streamName,
+    trackDesc: String,
+    kind: String? = null,
+    view: View? = null,
+    event: RTCRemoteVideoEvent? = null,
+    callback: MeetingResultCallback? = null
+): RemoteVideoTrack?
+```
+方法说明：订阅网宿通用流。内部完成「getOrCreate 控制类 + 绑定渲染控件 + 订阅」。视频帧亦会经 `MediaEvent.onRemoteVideoFrame` 回调（自渲染场景可用）；音频流订阅成功后由 SDK 自动外放，无需处理。  
+参数说明：
+- `streamName`：`String`，完整流名，如 `rtc_v_lesson_fknqb`。
+- `uid`：`String`，渲染路由标识，回调原样带回；无特殊含义时可传 `streamName`。默认值：`streamName`。
+- `trackDesc`：`String`，特殊流标识，区分多路通用流，如 `courseware`。
+- `kind`：`String?`，`video` / `audio`；传 `null` 时由 SDK 按流名前缀推断（`rtc_v`→video / `rtc_a`→audio）。默认值：`null`。
+- `view`：`View?`，渲染控件，必须是 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`，可空。默认值：`null`。
+- `event`：`RTCRemoteVideoEvent?`，视频事件回调，可空。默认值：`null`。
+- `callback`：`MeetingResultCallback?`，订阅结果回调。默认值：`null`。
+返回值说明：`RemoteVideoTrack?`，该通用流的视频控制类；音频流或非网宿频道时为 `null`。
+
+### unsubscribeWsStream()
+```kotlin
+fun unsubscribeWsStream(
+    streamName: String,
+    uid: String = streamName,
+    trackDesc: String,
+    kind: String? = null
+)
+```
+方法说明：取消订阅网宿通用流（4 个参数需与订阅时一致）。仅停止拉流，不回收控制类/渲染控件（离会时统一回收）。  
+参数说明：
+- `streamName`：`String`，完整流名，需与订阅时一致。
+- `uid`：`String`，渲染路由标识，需与订阅时一致。默认值：`streamName`。
+- `trackDesc`：`String`，特殊流标识，需与订阅时一致。
+- `kind`：`String?`，`video` / `audio`，需与订阅时一致。默认值：`null`。
+返回值说明：无（`Unit`）。
+
+### getWsStreamTrack()
+```kotlin
+fun getWsStreamTrack(uid: String, trackDesc: String): RemoteVideoTrack?
+```
+方法说明：获取网宿通用流的视频控制类（getOrCreate，可在订阅前调用，用于自行 `addPlayView` 等）。  
+参数说明：
+- `uid`：`String`，渲染路由标识。
+- `trackDesc`：`String`，特殊流标识。
+返回值说明：`RemoteVideoTrack?`，视频控制类；音频流或非网宿频道时返回 `null`。

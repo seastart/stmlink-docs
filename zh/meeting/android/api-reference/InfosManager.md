@@ -51,6 +51,14 @@ fun getMeetingInfo(): MeetingInfo?
 
 ## 成员信息
 
+### isAudience()
+```kotlin
+fun isAudience(): Boolean
+```
+方法说明：判断当前用户是否为观众身份。观众可观看但不在成员列表中，且不能开设备、共享或推流。  
+参数说明：无。  
+返回值说明：`Boolean`，`true` 表示当前为观众，`false` 表示为正式成员。
+
 ### getMeInfo()
 ```kotlin
 fun getMeInfo(): MemberInfo?

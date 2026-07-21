@@ -1,4 +1,9 @@
-# 音频路由使用说明（meetingSDK）
+---
+title: "音频路由使用"
+description: "Android SMeeting 会议 SDK 音频路由管理（扬声器/听筒/有线耳机/蓝牙耳机）"
+---
+
+# 音频路由使用说明
 
 本文档基于 rtcSDK 中 `AudioRouterManager` 的相关实现整理；在 `meetingSDK` 中使用时，仅需将获取和释放入口适配为 `MeetingEngine`：
 

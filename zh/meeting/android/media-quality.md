@@ -1,6 +1,6 @@
 ---
 title: "媒体质量"
-description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
+description: "Android SMeeting 会议 SDK 媒体质量统计数据结构说明"
 ---
 
 ## 说明
@@ -21,6 +21,33 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 | localUploadStats | LocalUploadStats | 本地上传总览统计。 |
 | remoteDownloadStats | `MutableMap<String, RemoteDownloadStats>` | 远端下载统计（按 `uid`）。 |
 | networkStats | NetworkStats | 网络状态统计。 |
+| qualityReport | QualityReport? | 服务端补充下发的上下行质量报告；首个报告到达前为 `null`。 |
+
+## MediaMetric.QualityReport
+
+服务端计算并下发的上下行连接质量报告，区分上行（本端到服务端）与下行（服务端到本端）。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| timestamp | Long | 服务端生成该质量报告的时间戳（ms）。 |
+| uplink | QualityStats | 本端到服务端的上行质量。 |
+| downlink | QualityStats | 服务端到本端的下行质量。 |
+
+## MediaMetric.QualityStats
+
+单侧链路（上行或下行）的质量样本。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| score | Double | 综合质量分数，0 ~ 100，越高越好。 |
+| level | String | 质量等级：`excellent` / `good` / `poor` / `lost`。 |
+| mos | Double | 语音主观质量分估算，1.0 ~ 4.5，越高越好。 |
+| loss | Double | 丢包率，0 ~ 1。 |
+| rtt | Double | 往返时延（ms）。 |
+| jitter | Double | 抖动（ms）。 |
+| packets | Long | 本轮统计参与计算的包数。 |
+| bitrate | Double | 平均码率（kbps）。 |
+| bytes | Long | 本窗口字节数。 |
 
 ## MediaMetric.LocalMetric
 

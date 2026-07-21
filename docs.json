@@ -309,19 +309,33 @@
                   "zh/meeting/android/integration",
                   "zh/meeting/android/quickstart",
                   {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/meeting/android/advanced/audio-routing"
+                    ]
+                  },
+                  {
                     "group": "接口文档",
                     "pages": [
                       "zh/meeting/android/api-reference/MeetingEngine",
                       "zh/meeting/android/api-reference/InfosManager",
-                      "zh/meeting/android/api-reference/AudioRouterManager",
+                      "zh/meeting/android/api-reference/SignInManager",
                       "zh/meeting/android/api-reference/RemoteVideoTrack",
-                      "zh/meeting/android/api-reference/ImEvent",
+                      "zh/meeting/android/api-reference/MeetingResultCallback",
+                      "zh/meeting/android/api-reference/Callback",
+                      "zh/meeting/android/api-reference/CommonCallback",
+                      "zh/meeting/android/api-reference/EnterMeetingCallback",
+                      "zh/meeting/android/api-reference/EnableImCallback",
+                      "zh/meeting/android/api-reference/BoardShareCallback",
                       "zh/meeting/android/api-reference/RoomEvent",
                       "zh/meeting/android/api-reference/UserEvent",
-                      "zh/meeting/android/api-reference/RoomMsgEvent",
                       "zh/meeting/android/api-reference/MediaEvent",
-                      "zh/meeting/android/api-reference/MeetingResultCallback",
-                      "zh/meeting/android/api-reference/Callback"
+                      "zh/meeting/android/api-reference/ImEvent",
+                      "zh/meeting/android/api-reference/RoomMsgEvent",
+                      "zh/meeting/android/api-reference/ScreenShareEvent",
+                      "zh/meeting/android/api-reference/ErrorEvent",
+                      "zh/meeting/android/api-reference/ExtensionMessageEvent",
+                      "zh/meeting/android/api-reference/LocalVideoPreviewEvent"
                     ]
                   },
                   {
@@ -329,7 +343,8 @@
                     "pages": [
                       "zh/meeting/android/presets/camera",
                       "zh/meeting/android/presets/microphone",
-                      "zh/meeting/android/presets/screen-sharing"
+                      "zh/meeting/android/presets/screen-sharing",
+                      "zh/meeting/android/presets/custom-video"
                     ]
                   },
                   "zh/meeting/android/types",
