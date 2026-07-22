@@ -21,7 +21,7 @@ SRTC Web SDK 支持主流的桌面端及移动端浏览器，包括 Chrome、Edg
 ### npm
 ```bash
 npm install @seastart/smeeting-web-sdk@latest --save
-```typescript
+```
 
 ### **本地引用**
 手动下载 sdk 包：

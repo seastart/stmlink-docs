@@ -123,3 +123,4 @@ navigation.languages（中文/英文）
   "{platform}/changelog",
   "{platform}/faq"
 ]}
+```

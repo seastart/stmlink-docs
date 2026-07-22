@@ -9,7 +9,7 @@ description: "Web SRTC 音视频 SDK 版本更新记录"
 
 ```bash
 npm info @seastart/srtc-web-sdk version
-```typescript
+```
 
 ---
 

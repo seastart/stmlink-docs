@@ -34,7 +34,7 @@ const msAudioTrack = destination.stream.getAudioTracks()[0];
 // 包装为 SDK 轨道并发布
 const customAudioTrack = srtc.createLocalCustomAudioTrack(msAudioTrack);
 await srtc.publishLocalTrack(customAudioTrack, { desc: '合成音频' });
-```typescript
+```
 
 ---
 
@@ -95,7 +95,7 @@ const mixedMsTrack = createMixedAudioMediaStreamTrack([micMsTrack, systemAudioMs
 // 包装为 SDK 轨道并发布
 const mixedAudioTrack = srtc.createLocalCustomAudioTrack(mixedMsTrack);
 await srtc.publishLocalTrack(mixedAudioTrack, { desc: '混音' });
-```typescript
+```
 
 > **使用场景：** 边讲话边分享视频，需要将麦克风声音和系统声音合并成一路推送时使用。
 

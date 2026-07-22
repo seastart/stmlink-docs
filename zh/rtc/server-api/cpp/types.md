@@ -18,7 +18,7 @@ struct RTCClientOptions
     const char* logPath = nullptr;  //日志文件存放目录
     LogLevel logLevel = LogLevel::Trace;  //日志打印级别
 };
-```cpp
+```
 
 ### Stream
 ```json
@@ -65,7 +65,7 @@ enum class MediaType
   avatar:"",    //用户头像地址
   props:{}    //自定义属性
 }
-```cpp
+```
 
 ### RoomUser
 ```typescript
@@ -96,7 +96,7 @@ enum class UserRole
   linkId:"",  //流媒体连接id
   props:{}   //自定义属性
 }
-```cpp
+```
 
 
 

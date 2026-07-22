@@ -13,7 +13,7 @@ description: "Web SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
 
 ### 完整示例
 
-以下代码展示了一个最小可运行的音视频通话流程：初始化 → 环境检测 → 加入频道 → 订阅混音 → 开麦克风 → 开摄像头 → 监听事件 → 离开频道。
+以下代码展示了一个最小可运行的音视频通话流程：初始化 → 环境检测 → 监听事件 → 加入频道 → 订阅混音 → 订阅远端视频 → 开麦克风 → 开摄像头 → 离开频道。
 
 ```typescript
 import SRTC, {
@@ -23,10 +23,12 @@ import SRTC, {
   MicPresets,
   CameraPresets,
   RemoteAudioMixTrack,
+  RemoteVideoTrack,
+  TrackKind,
   LogLevel,
   LogTarget,
 } from '@seastart/srtc-web-sdk';
-import type { ChannelEvent } from '@seastart/srtc-web-sdk';
+import type { ChannelEvent, TrackInfo } from '@seastart/srtc-web-sdk';
 
 // ─── 1. 初始化 SDK ───────────────────────────────────────────────────────────
 
@@ -48,9 +50,35 @@ if (!env.supported) {
 let remoteAudioMixTrack: RemoteAudioMixTrack | undefined;
 let localMicTrack: LocalMicTrack | undefined;
 let localCameraTrack: LocalCameraTrack | undefined;
+// 已订阅的远端视频轨道，key 为 `${uid}-${trackId}`
+const remoteVideoTracks: Record<string, RemoteVideoTrack> = {};
+
+// 订阅远端视频轨道并渲染到页面（远端音频统一走第 5 步的全频道混音，无需单独订阅）
+async function subscribeRemoteVideo(uid: string, trackInfo: TrackInfo) {
+  const remoteVideoTrack = await srtc.subscribeRemoteVideoTrack(uid, trackInfo.id);
+  remoteVideoTracks[`${uid}-${trackInfo.id}`] = remoteVideoTrack;
+  // 将画面渲染到该用户对应的容器（容器元素需自行创建）
+  remoteVideoTrack.addPlayView(document.querySelector<HTMLElement>(`#remote-video-${uid}`)!);
+}
 
 srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
   switch (evt.type) {
+    case ChannelEventType.USER_TRACK_ADD: {
+      // 远端用户发布了新轨道，订阅其中的视频轨道
+      const { user, track } = evt.data;
+      if (track.kind === TrackKind.Video) {
+        await subscribeRemoteVideo(user.uid, track);
+      }
+      break;
+    }
+
+    case ChannelEventType.USER_TRACK_REMOVE: {
+      // 远端用户停止发布，SDK 已自动取消订阅，这里只需清理本地引用和界面
+      const { user, track } = evt.data;
+      delete remoteVideoTracks[`${user.uid}-${track.id}`];
+      break;
+    }
+
     case ChannelEventType.RECONNECTING:
       console.warn('网络断开，正在重连...');
       break;
@@ -88,13 +116,25 @@ console.log('已加入频道', channelInfo.channel);
 remoteAudioMixTrack = await srtc.subscribeRemoteAudioMixTrack();
 await remoteAudioMixTrack.startPlay();
 
-// ─── 6. 打开麦克风 ───────────────────────────────────────────────────────────
+// ─── 6. 订阅频道内已有用户的视频 ─────────────────────────────────────────────
+
+// USER_TRACK_ADD 只通知加入后新发布的轨道；对加入前就在推流的用户，需主动遍历订阅
+// （getUsersInfo 返回的列表包含自己，此时自己尚未发布任何轨道，无需特殊处理）
+for (const user of srtc.getUsersInfo(false)) {
+  for (const track of user.stream_tracks ?? []) {
+    if (track.kind === TrackKind.Video) {
+      await subscribeRemoteVideo(user.uid, track);
+    }
+  }
+}
+
+// ─── 7. 打开麦克风 ───────────────────────────────────────────────────────────
 
 localMicTrack = srtc.createLocalMicTrack(MicPresets.music);
 await localMicTrack.startCapture();
 await srtc.publishLocalTrack(localMicTrack);
 
-// ─── 7. 打开摄像头 ───────────────────────────────────────────────────────────
+// ─── 8. 打开摄像头 ───────────────────────────────────────────────────────────
 
 localCameraTrack = srtc.createLocalCameraTrack(CameraPresets['720p']);
 await localCameraTrack.startCapture();
@@ -102,7 +142,7 @@ await localCameraTrack.startCapture();
 localCameraTrack.addPlayView(document.querySelector<HTMLElement>('#local-video')!);
 await srtc.publishLocalTrack(localCameraTrack);
 
-// ─── 8. 离开频道（在页面卸载或用户主动离开时调用）────────────────────────────
+// ─── 9. 离开频道（在页面卸载或用户主动离开时调用）────────────────────────────
 
 async function leaveChannel() {
   if (localMicTrack) {
@@ -116,10 +156,15 @@ async function leaveChannel() {
     localCameraTrack.stopCapture();
     localCameraTrack = undefined;
   }
+  // 远端轨道随 leave 自动取消订阅，这里只需清理渲染容器和本地引用
+  for (const [key, track] of Object.entries(remoteVideoTracks)) {
+    track.removeAllPlayViews();
+    delete remoteVideoTracks[key];
+  }
   await srtc.leave();
   console.log('已离开频道');
 }
-```typescript
+```
 
 ---
 

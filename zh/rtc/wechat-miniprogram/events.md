@@ -14,7 +14,7 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
       // ...
   }
 })
-```typescript
+```
 
 
 
@@ -99,7 +99,7 @@ static readonly DOWN_WEAKNET_RECOVER = 'down_weaknet_recover';
 /** 拉流播放失败，对应data为{track: BaseTrack, detail: string} */
 static readonly DOWN_PLAY_FAIL = 'down_play_fail';
 
-```typescript
+```
 
 ### 
 ### 频道外消息事件
@@ -142,7 +142,7 @@ export declare class ImEvent {
 	/** 事件携带的数据 */
 	data?: any;
 }
-```typescript
+```
 
 
 

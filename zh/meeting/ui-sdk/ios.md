@@ -38,7 +38,7 @@ description: "SMeeting iOS UI 套件快速集成指南"
 
 ```objectivec
  git clone https://github.com/seastart/meeting-iOS-demo.git
-```typescript
+```
 
 #### 2、添加依赖库
 ```objectivec
@@ -48,7 +48,7 @@ pod 'MeetingKit', :git => "https://github.com/seastart/meeting-ios-cocoapods.git
 #### 3、安装依赖库
 ```objectivec
 pod install
-```typescript
+```
 
 ### 跑通示例
 #### 1、生成您自己的证书
@@ -94,7 +94,7 @@ meetingParam.title = @"Meeting Title";
 } onFailed:^(SEAError code, NSString * _Nonnull message) {
     NSLog(@"创建房间失败，code = %ld, message = %@", code, message);
 }];
-```typescript
+```
 
 #### 加入房间
 ##### 构建入会参数
@@ -112,7 +112,7 @@ enterModel.avatar = @"Your Avatar";
 ```objectivec
 /// 加入会议主界面
 [self push:@"FWRoomViewController" info:enterModel block:nil];
-```typescript
+```
 
 | **会中界面** | **会控界面** |
 | --- | --- |
@@ -227,7 +227,7 @@ meetingParam.entryMutePolicy = SEAMeetingMuteState3;
 meetingParam.conferee = @[@"target id"];
 /// 创建房间
 [[MeetingKit sharedInstance] createRoom:meetingParam onSuccess:nil onFailed:nil];
-```typescript
+```
 
 + 您可以通过以下方式加入房间，并设置进房参数，完成会前控制：
 
@@ -386,7 +386,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
     /// 完成屏幕录制
     [self finishBroadcastWithError:error];
 }
-```html
+```
 
 ### 接入流程
 1、在需要使用录制服务的位置引入 `#import <MeetingKit/MeetingKit.h>` 并创建`RPSystemBroadcastPickerView`对象，如下图：
@@ -427,7 +427,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
 ```objectivec
 @interface SampleHandler : NSObject <MeetingKitScreenDelegate>
 /// 根据需要，在此处添加以下任何回调函数。
-```typescript
+```
 
 ```objectivec
 /// 录屏完成回调
@@ -452,7 +452,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
     /// User has requested to start the broadcast. Setup info from the UI extension can be supplied but optional.
     [[MeetingKit sharedInstance] broadcastStartedWithAppGroup:@"Application Group Identifier" delegate:self];
 }
-```typescript
+```
 
 6、屏幕扩展`SampleHandler`中实现发送共享屏幕帧数据：
 
@@ -488,7 +488,7 @@ Message
   └── FWRoomMessageMineFileTableViewCell.h      // 自己的文本聊天信息单元格
   └── FWRoomMessageTableViewCell.h      // 成员的文本聊天信息单元格
   └── FWRoomMessageFileTableViewCell.h      // 成员的文件聊天信息单元格
-```typescript
+```
 
 
 

@@ -391,7 +391,7 @@ SMeeting是绝大多数操作的入口。
      * @returns
      */
     getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaDeviceInfo[]>;
-```typescript
+```
 
 
 
