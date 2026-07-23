@@ -46,7 +46,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | integer | - |
 | data | 4rjamnKdjon...... | string | 会议Token |
 
----
+***
 
 ## 踢出授权用户
 
@@ -82,7 +82,7 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- |
 | code | 0 | integer | - |
 
----
+***
 
 # 会议外
 
@@ -180,7 +180,7 @@ description: "服务端 API 完整接口列表"
 | data.meeting_id | snj20o | string | 会议 |
 | data.room_no | 776868796 | string | 房间号 |
 
----
+***
 
 ## 会前修改会议
 
@@ -271,7 +271,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | integer | - |
 | data | ok | string | - |
 
----
+***
 
 ## 取消会议
 
@@ -309,7 +309,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | ok | string | - |
 
----
+***
 
 ## 会议详情
 
@@ -417,7 +417,7 @@ description: "服务端 API 完整接口列表"
 | conferee_details.avatar | - | string | 用户头像 |
 | conferee_details.role | 1 | number | 用户角色 |
 
----
+***
 
 ## 查询会议列表
 
@@ -557,7 +557,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | number | - |
 | _meta.perPage | 20 | number | - |
 
----
+***
 
 ## 会议相关人员
 
@@ -631,7 +631,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | integer | - |
 | _meta.perPage | 20 | integer | - |
 
----
+***
 
 ## 查询参会记录
 
@@ -709,7 +709,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | number | - |
 | _meta.perPage | 20 | number | - |
 
----
+***
 
 ## 修改参会人员
 
@@ -777,7 +777,7 @@ description: "服务端 API 完整接口列表"
 | code | 2103 | number | 错误码 |
 | msg | 会议已结束 | string | 返回文字描述 |
 
----
+***
 
 ## 移除参会人员
 
@@ -828,7 +828,7 @@ description: "服务端 API 完整接口列表"
 | code | 2103 | number | 错误码 |
 | msg | 会议已结束 | string | 返回文字描述 |
 
----
+***
 
 ## 用户聊天记录
 
@@ -910,7 +910,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | number | - |
 | _meta.perPage | 20 | number | - |
 
----
+***
 
 ## 聊天记录文件
 
@@ -959,7 +959,7 @@ description: "服务端 API 完整接口列表"
 | data.key | snxjl9/chat.pdf | string | 文件的Key |
 | data.url | http://xxxxx | string | 文件下载地址 |
 
----
+***
 
 ## 设置事件通知
 
@@ -1115,7 +1115,7 @@ description: "服务端 API 完整接口列表"
 | alarm_at | number | 1721731326 | 报警时间戳 |
 | alarm_brief | string | 网络不稳定 | 报警摘要 |
 
----
+***
 
 # 会中操作
 
@@ -1155,7 +1155,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 更新会议全体禁音频
 
@@ -1197,7 +1197,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 更新会议全体禁视频
 
@@ -1239,7 +1239,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 更新会议全体禁共享
 
@@ -1279,7 +1279,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 更新会议锁定状态
 
@@ -1319,7 +1319,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 更改会议水印开关状态
 
@@ -1359,7 +1359,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 更新会议聊天禁用状态
 
@@ -1399,7 +1399,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 修改会议截屏限制
 
@@ -1439,7 +1439,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 修改会议中用户名称
 
@@ -1481,7 +1481,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 修改会议中用户角色
 
@@ -1523,7 +1523,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 会中踢人
 
@@ -1567,7 +1567,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 请求用户共享
 
@@ -1607,7 +1607,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 结束进行中的共享
 
@@ -1645,7 +1645,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 请求用户打开摄像头
 
@@ -1685,7 +1685,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 关闭用户摄像头
 
@@ -1725,7 +1725,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 请求用户打开麦克风
 
@@ -1765,7 +1765,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 关闭用户麦克风
 
@@ -1805,7 +1805,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 处理举手申请
 
@@ -1849,7 +1849,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 会中发送自定义消息
 
@@ -1891,7 +1891,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | string | ok | 返回数据 |
 
----
+***
 
 ## 查询会中人员列表
 
@@ -1965,7 +1965,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | integer | - |
 | _meta.perPage | 20 | integer | - |
 
----
+***
 
 ## 会议时呼叫人员
 
@@ -2036,7 +2036,7 @@ description: "服务端 API 完整接口列表"
 | code | 2103 | number | 错误码 |
 | msg | 会议已结束 | string | 返回文字描述 |
 
----
+***
 
 # MCU任务
 
@@ -2154,7 +2154,7 @@ description: "服务端 API 完整接口列表"
 | data | - | object | 返回数据 |
 | data.task_id | sxjgwy | string | 任务ID |
 
----
+***
 
 ## 结束MCU任务
 
@@ -2197,7 +2197,7 @@ description: "服务端 API 完整接口列表"
 | data | - | object | 返回数据 |
 | data.task_id | szyeqy | string | 任务id |
 
----
+***
 
 ## 获取录像配置
 
@@ -2240,7 +2240,7 @@ description: "服务端 API 完整接口列表"
 | data.created_at | 1730099431 | number | - |
 | data.updated_at | 1730099431 | number | - |
 
----
+***
 
 ## 保存录像配置
 
@@ -2277,7 +2277,7 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- |
 | code | 0 | number | - |
 
----
+***
 
 ## 录像详情
 
@@ -2357,7 +2357,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 32 | number | 当前页码 |
 | _meta.perPage | 20 | number | 每页记录数 |
 
----
+***
 
 ## 删除录像
 
@@ -2392,7 +2392,7 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- |
 | code | 0 | number | - |
 
----
+***
 
 ## 修改录像
 
@@ -2430,7 +2430,7 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- |
 | code | 0 | number | - |
 
----
+***
 
 ## 录像列表
 
@@ -2522,7 +2522,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | number | - |
 | _meta.perPage | 20 | number | - |
 
----
+***
 
 ## 录像播放地址
 
@@ -2575,7 +2575,7 @@ description: "服务端 API 完整接口列表"
 | data.mcu_dur | 95 | number | 录制时长(秒) |
 
 
----
+***
 
 ## 会议的多录像播放地址
 
@@ -2629,7 +2629,7 @@ description: "服务端 API 完整接口列表"
 | data.mcu_at | 1762826916 | number | 开始时间(时间戳) |
 | data.mcu_dur | 95 | number | 录制时长(秒) |
 
----
+***
 
 ## 获取直播流地址
 
@@ -2674,7 +2674,7 @@ description: "服务端 API 完整接口列表"
 | data.hls | http://...... | string | m3u8/ts地址 |
 | data.http-flv | http://...... | string | http-flv流地址 |
 
----
+***
 
 # 设备管理
 
@@ -2728,7 +2728,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | sw8kjx | string | 返回数据 |
 
----
+***
 
 ## 修改设备
 
@@ -2782,7 +2782,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | sw8kjx | string | 返回数据 |
 
----
+***
 
 ## 设备列表
 
@@ -2852,7 +2852,7 @@ description: "服务端 API 完整接口列表"
 | _meta.currentPage | 1 | number | - |
 | _meta.perPage | 20 | number | - |
 
----
+***
 
 ## 设备网关列表
 
@@ -2906,7 +2906,7 @@ description: "服务端 API 完整接口列表"
 | data.heartbeat_at | 1729170026 | number | - |
 | data.host | - | string | api接口，用于rtc调设备网关 |
 
----
+***
 
 ## 设备详情
 
@@ -2961,7 +2961,7 @@ description: "服务端 API 完整接口列表"
 | data.gw | devgw-1 | string | 设备网关唯一id |
 | data.remark | 备注 | string | 备注 |
 
----
+***
 
 ## 删除设备
 
@@ -2997,7 +2997,7 @@ description: "服务端 API 完整接口列表"
 | code | 0 | number | - |
 | data | s18v0x | string | 返回数据 |
 
----
+***
 
 ## 邀请设备入会
 
@@ -3042,7 +3042,7 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- |
 | code | 0 | number | - |
 
----
+***
 
 ## 邀请设备列表
 
@@ -3134,7 +3134,7 @@ description: "服务端 API 完整接口列表"
 }
 ```
 
----
+***
 
 ## 开关设备视频
 
@@ -3190,7 +3190,7 @@ description: "服务端 API 完整接口列表"
 | code | 10000 | number | - |
 | msg | 没有找到RTSP拉流网关 | string | 返回文字描述 |
 
----
+***
 
 ## 开关设备音频
 
@@ -3246,7 +3246,7 @@ description: "服务端 API 完整接口列表"
 | code | 10000 | number | - |
 | msg | 没有找到RTSP拉流网关 | string | 返回文字描述 |
 
----
+***
 
 # 用户相关
 
@@ -3299,7 +3299,7 @@ description: "服务端 API 完整接口列表"
 }
 ```
 
----
+***
 
 ## 移除用户
 
@@ -3329,7 +3329,7 @@ description: "服务端 API 完整接口列表"
 {"code":0}
 ```
 
----
+***
 
 ## 根据uids取用户信息
 
@@ -3384,7 +3384,7 @@ description: "服务端 API 完整接口列表"
 | data.avatar | - | string | 头像 |
 | data.created_at | 1737339891 | number | 创建 |
 
----
+***
 
 ## 获取用户授权
 
@@ -3415,7 +3415,7 @@ description: "服务端 API 完整接口列表"
 }
 ```
 
----
+***
 
 ## 浏览器直接入会说明
 
