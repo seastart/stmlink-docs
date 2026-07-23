@@ -39,6 +39,7 @@ mint validate
 ### 文档文件
 
 - 格式：Markdown (`.md`)，每个文件需包含正文（目前使用 `.md`，非 `.mdx`）
+- **例外**：文件名为 `changelog`、`readme` 等仓库元文件名的页面必须用 `.mdx` 扩展名——Mintlify 构建时会把任意目录下的 `changelog.md`/`readme.md`（不分大小写）当作仓库元文件排除，导致页面 404；`.mdx` 不受此规则影响，URL 不变
 - 路径即 URL：`zh/rtc/ios/quickstart.md` → `/zh/rtc/ios/quickstart`
 - 命名规范：小写英文 + 连字符（kebab-case）
 - 图片存放在同目录的 `images/` 子目录下
