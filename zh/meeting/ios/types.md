@@ -433,7 +433,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | int agc | 否 | 自动增益控制AGC，默认 16000 |
 | int audioSampe | 否 | 音频采样率，默认 48000 |
 | [SEACodecType](#bolP1) audioEncode | 否 | 音频编码格式，默认 AAC |
-| [SEAAudioRoute](#HhTLs) audioRoute | 否 | 音频路由，默认 SEAAudioRouteReceiver |
+| [SEAAudioRoute](#HhTLs) audioRoute | 否 | 无外设时的默认内置音频路由，支持扬声器或听筒，默认 SEAAudioRouteReceiver |
 | int videoWidth | 否 | 分辨率宽，默认 480 |
 | int videoHeight | 否 | 分辨率高，默认 640 |
 | BOOL videoMirror | 否 | 视频镜像，默认 YES |

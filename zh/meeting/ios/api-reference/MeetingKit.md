@@ -525,13 +525,13 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 ### setLocalPreviewMirror:()
 `- (void)setLocalPreviewMirror:(BOOL)mirror`
 
-设置本地预览镜像
+设置前置摄像头本地预览镜像偏好
 
-仅作用于本地预览画面，按 `mirror` 取值设置镜像；是否区分前后置（如后置不镜像）等策略由业务层自行决定。
+仅作用于本地预览画面，不影响推流数据。前置摄像头按 `mirror` 取值设置镜像，后置摄像头始终不镜像；切换摄像头后 SDK 会自动应用对应策略。
 
 | 参数 | 描述 |
 | :--- | --- |
-| mirror | YES-开启镜像 NO-关闭镜像 |
+| mirror | YES-前置摄像头镜像 NO-前置摄像头不镜像 |
 
 
 ### currentCameraDirection()
@@ -544,13 +544,13 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 ### switchSpeaker:()
 `- (void)switchSpeaker:(BOOL)enabled`
 
-切换扬声器状态
+设置远端音频播放状态
 
-用户可通过该接口设置本地音频是否播放。
+用户可通过该接口开启或关闭远端音频播放，不会切换扬声器、听筒或外设路由。
 
 | 参数 | 描述 |
 | :--- | --- |
-| enabled | 扬声器状态，YES-开启 NO-关闭 |
+| enabled | 远端音频播放状态，YES-开启 NO-关闭 |
 
 
 ### switchAudioRoute:()
@@ -558,7 +558,7 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 切换音频路由
 
-切换音频路由后，SDK会通过 `MeetingKitDelegate` 中的 [onAudioRouteChange:previousRoute:()](https://www.yuque.com/anyconf/eanoso/rfflpfbuav0xc28g#AvcCn) 回调通知您。
+该接口用于请求切换内置音频播放设备，如扬声器、听筒。存在蓝牙或有线耳机时，外设选择由 iOS 决定。最终实际路由以 `currentAudioRoute` 和 `MeetingKitDelegate` 中的 [onAudioRouteChange:previousRoute:()](/zh/meeting/ios/api-reference/MeetingKitDelegate#onaudioroutechangepreviousroute) 回调为准。
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -568,9 +568,9 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 ### currentAudioRoute()
 `- (SEAAudioRoute)currentAudioRoute`
 
-获取当前音频路由
+获取系统当前实际音频路由
 
-调用该接口，SDK 会通过该接口返回当前的音频路由，参考文档：[SEAAudioRoute](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#HhTLs)。
+调用该接口，SDK 会返回系统当前实际使用的音频路由，如扬声器、听筒、蓝牙或有线耳机。参考 [SEAAudioRoute](/zh/meeting/ios/types#seaaudioroute)。
 
 ### headphoneDeviceAvailable()
 `- (BOOL)headphoneDeviceAvailable`
@@ -1512,4 +1512,3 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 
 | param | 调试参数，用于设置调试地址、保存音视频流等基本信息详情请参考 [SEADebugParam](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#tdyrN) |
 | --- | --- |
-

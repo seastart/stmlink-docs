@@ -3,6 +3,15 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.5] - 2026.07.23
+#### 修复
++ 修复后置摄像头本地预览镜像及目标摄像头不可用回退后的方向状态异常。
+#### 变更
++ 依赖`RTCEngineKit`升级至`2.5.6`；
++ 明确`SEAMediaConfig.audioRoute`为无外设时的默认内置路由；
++ `switchSpeaker:`仅控制远端音频播放，音频输出设备使用`switchAudioRoute:`切换；
++ `currentAudioRoute`和`onAudioRouteChange:previousRoute:`反映系统实际路由。
+
 ### [1.3.4] - 2026.07.15
 #### 变更
 + 依赖`RTCEngineKit`升级至`2.5.5`；
