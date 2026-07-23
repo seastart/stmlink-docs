@@ -34,7 +34,7 @@ Body请求参数（raw-json）
 | channel | fire | String | 是 | 频道名，长度64以内，支持包括大小写英文字母(a-zA-Z)、数字(0-9)及下划线_和连词符- |
 | uid | 1 | String | 是 | 第三方用户ID，长度150以内，支持包括大小写英文字母(a-zA-Z)、数字(0-9)及下划线_和连词符- |
 | name | shu | String | 是 | 频道中昵称 |
-| props | {"avatar": "https://xx.com/a.png&quot;} | Object | 否 | 用户扩展属性 |
+| props | `{"avatar": "https://xx.com/a.png"}` | Object | 否 | 用户扩展属性 |
 | is_audience | false | Boolean | 否 | 是否观众，类似研讨会观众，只收流，不参与互动，不广播 |
 | net | 内网 | String | 否 | 网络(内网、外网) |
 | sg |  | String | 否 | 服务分组 |
