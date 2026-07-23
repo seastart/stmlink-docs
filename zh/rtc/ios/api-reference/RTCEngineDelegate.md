@@ -165,6 +165,8 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 
 音频路由发生变化时，SDK 会通过`onAudioRouteChange:previousRoute:`调用通知业务层。
 
+自`2.5.8`起，未显式选择扬声器或听筒且存在可用外设时，SDK 会先恢复外设；恢复成功后，不会上报音频会话重配期间短暂出现的扬声器或听筒路由，业务层收到的是最终实际路由。
+
 **参数**
 
 | route | 音频路由，详情请参照 [RTCAudioRoute](https://www.yuque.com/anyconf/rtcengine/yi50z7#fcHdd) |
@@ -384,4 +386,3 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | memory | 内存使用情况 |
 | --- | --- |
 | cpuUsage | CUP使用率 |
-
