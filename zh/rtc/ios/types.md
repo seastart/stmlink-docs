@@ -54,7 +54,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | int angle | 是 | 视频角度 |
 | int sampleRate | 否 | 音频采样率 |
 | [RTCTrackIdentifierFlags](#QmrJ5) track | 是 | 轨道号码 |
-| NSArray<NSString *> *fallbackIds | 否 | 当前层可降级到的更低层轨道列表，仅用于支持 seastart 的引擎 |
+| `NSArray<NSString *> *fallbackIds` | 否 | 当前层可降级到的更低层轨道列表，仅用于支持 seastart 的引擎 |
 | BOOL variant | 否 | 是否为 simulcast 副层，仅用于支持 seastart 的引擎 |
 | id props | 否 | 自定义属性 |
 
@@ -442,5 +442,4 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCStreamQualityLevelGood | `2` | 良好（good） |
 | RTCStreamQualityLevelPoor | `3` | 较差（poor） |
 | RTCStreamQualityLevelLost | `4` | 已断流（lost） |
-
 
