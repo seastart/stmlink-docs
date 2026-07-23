@@ -401,6 +401,14 @@
                   "zh/meeting/wechat-miniprogram/events",
                   "zh/meeting/wechat-miniprogram/types"
                 ]
+              },
+              {
+                "group": "服务端 API",
+                "pages": [
+                  "zh/meeting/server-api/overview",
+                  "zh/meeting/server-api/api-list",
+                  "zh/meeting/server-api/error-codes"
+                ]
               }
             ]
           }
