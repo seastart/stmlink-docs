@@ -167,8 +167,7 @@
                       "zh/rtc/windows/api-reference/IRTCCustomAudioTrack",
                       "zh/rtc/windows/api-reference/IRTCView",
                       "zh/rtc/windows/api-reference/IRTCTrack",
-                      "zh/rtc/windows/api-reference/IRTCSetting",
-                      "zh/rtc/windows/api-reference/callbacks"
+                      "zh/rtc/windows/api-reference/IRTCSetting"
                     ]
                   },
                   "zh/rtc/windows/types",
@@ -359,13 +358,14 @@
                 "pages": [
                   "zh/meeting/windows/integration",
                   "zh/meeting/windows/quickstart",
+                  "zh/meeting/windows/quickstart（通用）",
                   {
                     "group": "接口列表",
                     "pages": [
-                      "zh/meeting/windows/api-reference/ISMeetingEngine"
+                      "zh/meeting/windows/api-reference/smeeting",
+                      "zh/meeting/windows/api-reference/smeeting（通用）"
                     ]
                   },
-                  "zh/meeting/windows/types",
                   "zh/meeting/windows/error-codes"
                 ]
               },
