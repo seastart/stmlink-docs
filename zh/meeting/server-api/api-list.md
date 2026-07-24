@@ -445,8 +445,8 @@ description: "服务端 API 完整接口列表"
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
-| page | 1 | number | 否 | 分页页码，从1开始，page <= 0 默认为1 |
-| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20，per-page <= 0 默认为20 |
+| page | 1 | number | 否 | 分页页码，从1开始，默认为1 |
+| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20 |
 | room_no | - | string | 否 | 房间号 |
 | meeting_ids | [] | array | 否 | 会议id列表 |
 | meeting_status | [1] | array | 否 | 会议状态 1 未开始 2 进行中 3 已结束 |
@@ -580,8 +580,8 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- | --- |
 | meeting_id | skgvpk | string | 在room_no空时必填 | 会议ID |
 | room_no | 776868796 | string | 否 | 房间号 |
-| page | 1 | number | 否 | 分页页码，从1开始，page <= 0 默认为1 |
-| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20，per-page <= 0 默认为20 |
+| page | 1 | number | 否 | 分页页码，从1开始，默认为1 |
+| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20 |
 
 **响应示例**
 
@@ -655,8 +655,8 @@ description: "服务端 API 完整接口列表"
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
-| page | 1 | number | 否 | 分页页码，从1开始，page <= 0 默认为1 |
-| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20，per-page <= 0 默认为20 |
+| page | 1 | number | 否 | 分页页码，从1开始，默认为1 |
+| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20 |
 | room_no | - | string | 否 | 房间号 |
 | meeting_id | sny038 | string | 是 | 会议id |
 | user_id | - | string | 否 | 参会用户ID |
@@ -853,8 +853,8 @@ description: "服务端 API 完整接口列表"
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
-| page | 1 | number | 否 | 分页页码，从1开始，page <= 0 默认为1 |
-| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20，per-page <= 0 默认为20 |
+| page | 1 | number | 否 | 分页页码，从1开始，默认为1 |
+| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20 |
 | room_no | - | string | 否 | 房间号 |
 | meeting_id | sny038 | string | 在room_no空时必填 | 会议id |
 | sender_id | - | string | 否 | 发言者用户ID |
@@ -1002,16 +1002,16 @@ description: "服务端 API 完整接口列表"
 
 **事件通知的配置方式**
 
-> 通过当前接口(`设置事件通知`)来配置回调。<br>
-> 上层业务方应当在业务服务启动时调用此接口来配置回调地址与监听的事件列表，<br>
+> 通过当前接口(`设置事件通知`)来配置回调。<br/>
+> 上层业务方应当在业务服务启动时调用此接口来配置回调地址与监听的事件列表，<br/>
 > 也建议在业务服务停止/卸载时同样来调用此接口设置回调地址与事件列表为空。
 
 **事件通知方式**
 
 1.**POST application/json 请求**
 
-> Header头额外项及签名验证方法与`接口调用说明`完全相同<br>
-> 请求的URL尾部会自动附加事件类型参数`?event=xxxxx`<br>
+> Header头额外项及签名验证方法与`接口调用说明`完全相同<br/>
+> 请求的URL尾部会自动附加事件类型参数`?event=xxxxx`<br/>
 > 请求体为json串, 结构定义示例如下
 
 ```json
@@ -1914,8 +1914,8 @@ description: "服务端 API 完整接口列表"
 | --- | --- | --- | --- | --- |
 | meeting_id | skgvpk | string | 在room_no空时必填 | 会议ID |
 | room_no | 776868796 | string | 否 | 房间号 |
-| page | 1 | number | 否 | 分页页码，从1开始，page <= 0 默认为1 |
-| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20，per-page <= 0 默认为20 |
+| page | 1 | number | 否 | 分页页码，从1开始，默认为1 |
+| per-page | 20 | number | 否 | 每页数据量，最大1000，默认20 |
 
 **响应示例**
 
@@ -2688,7 +2688,7 @@ description: "服务端 API 完整接口列表"
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
-| type | regsip | string | 是 | ipsip ip直连sip<br>regsip 注册模式sip<br>iph323 ip直连h323<br>regh323 注册模式h323<br>rtsp RTSP拉流 |
+| type | regsip | string | 是 | ipsip ip直连sip<br/>regsip 注册模式sip<br/>iph323 ip直连h323<br/>regh323 注册模式h323<br/>rtsp RTSP拉流 |
 
 **请求Body参数**
 
@@ -2740,7 +2740,7 @@ description: "服务端 API 完整接口列表"
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
-| type | regsip | string | 是 | ipsip ip直连sip<br>regsip 注册模式sip<br>iph323 ip直连h323<br>regh323 注册模式h323<br>rtsp RTSP拉流 |
+| type | regsip | string | 是 | ipsip ip直连sip<br/>regsip 注册模式sip<br/>iph323 ip直连h323<br/>regh323 注册模式h323<br/>rtsp RTSP拉流 |
 
 **请求Body参数**
 
@@ -2843,7 +2843,7 @@ description: "服务端 API 完整接口列表"
 | data.id | sz8nk8 | string | 设备ID |
 | data.name | 华为sip终端 | string | - |
 | data.type | 2 | number | 设备类型 2SIP,3H323,4GB28181,5RTSP拉流,6RTMP拉流,7文件播放,8腾讯会议,9AI |
-| data.status | 1 | number | 设备状态，0 未知<br>1 在线<br>2 离线 |
+| data.status | 1 | number | 设备状态，0 未知<br/>1 在线<br/>2 离线 |
 | data.contact | huaweisip | string | 设备标识，注册模式是用户名，直连模式是uri |
 | data.remark | - | string | 备注 |
 | _meta | - | object | - |
@@ -2868,7 +2868,7 @@ description: "服务端 API 完整接口列表"
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | --- | --- | --- | --- | --- |
-| type | regsip | string | 是 | ipsip ip直连sip<br>regsip 注册模式sip<br>iph323 ip直连h323<br>regh323 注册模式h323<br>rtsp RTSP拉流 |
+| type | regsip | string | 是 | ipsip ip直连sip<br/>regsip 注册模式sip<br/>iph323 ip直连h323<br/>regh323 注册模式h323<br/>rtsp RTSP拉流 |
 
 **响应示例**
 
@@ -2954,7 +2954,7 @@ description: "服务端 API 完整接口列表"
 | data.id | sw8kjx | string | 设备ID |
 | data.name | 华为sipip直连测试 | string | - |
 | data.type | 2 | number | 代理类型 1MCU,2SIP,3H323,4GB28181,5RTSP拉流,6RTMP拉流,7文件播放,8腾讯会议,9AI |
-| data.status | 0 | number | 设备状态，0 未知<br>1 在线<br>2 离线 |
+| data.status | 0 | number | 设备状态，0 未知<br/>1 在线<br/>2 离线 |
 | data.heartbeat_at | 0 | number | - |
 | data.contact | 192.168.0.109:5060 | string | 设备标识，注册模式是用户名，直连模式是uri |
 | data.conn_params | - | null | - |
@@ -3112,7 +3112,7 @@ description: "服务端 API 完整接口列表"
 | data.id | s18v0x | string | 设备ID |
 | data.name | 华为sip注册测试2 | string | - |
 | data.type | 2 | number | 代理类型 1MCU,2SIP,3H323,4GB28181,5RTSP拉流,6RTMP拉流,7文件播放,8腾讯会议,9AI |
-| data.status | 0 | number | 设备状态，0 未知<br>1 在线<br>2 离线 |
+| data.status | 0 | number | 设备状态，0 未知<br/>1 在线<br/>2 离线 |
 | data.heartbeat_at | 0 | number | - |
 | data.contact | huaweisip2 | string | 设备标识，注册模式是用户名，直连模式是uri |
 | data.conn_params | - | object | - |
