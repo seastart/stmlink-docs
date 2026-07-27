@@ -142,7 +142,8 @@
                   "zh/rtc/android/types",
                   "zh/rtc/android/enums",
                   "zh/rtc/android/media-quality",
-                  "zh/rtc/android/error-codes"
+                  "zh/rtc/android/error-codes",
+                  "zh/rtc/android/changelog"
                 ]
               },
               {
