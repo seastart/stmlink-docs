@@ -22,7 +22,7 @@ application/json 格式传递
   "share_uid": "uid", // 共享的用户
   "share_track": 3, // 共享的流轨道
 }
-```typescript
+```
 
 用户props扩展
 
@@ -41,7 +41,7 @@ application/json 格式传递
   "action": "chat",
   "content": "聊天消息",
 }
-```typescript
+```
 
 自定义消息：开视频
 
@@ -63,7 +63,7 @@ application/json 格式传递
     "uid": "用户id"
   },
 }
-```typescript
+```
 
 自定义消息：开麦
 
@@ -85,7 +85,7 @@ application/json 格式传递
     "uid": "用户id"
   },
 }
-```typescript
+```
 
 自定义消息：共享开始
 
@@ -108,7 +108,7 @@ application/json 格式传递
     "uid": "用户id",
   },
 }
-```typescript
+```
 
 
 
@@ -152,7 +152,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -195,7 +195,7 @@ Body请求参数（raw-json）
     "code": 0,
     "data": "wvYKytpMTsR2OK82ghVj1ZFAVCEtfMugr5PwFRjKzIm3b32plqC9Fyuwc2Bj+3qvTYxLFNd/FhN7ydvhQyvu/T6gC6ZyEPuJmWJEv2buiVGAP7a1AwyyXxL7ezSb9TCwVjrV9OR3cpE+Dnvf0LcQnkcFyd57Cco5+cYglDZo05YE2O6aAnhQNSyAru3o1+Ko5Qcu/x4CDQ4NzOUmU2p6uVTOXuuD9oTXV2FIPQDK26q9nlprFpRWYS30CKZVbeoqYurJ+x5boiBtYMlLyfGppBLLapOUNQb6CqNccfJMdsFTy52GHrxOIRMi24g7Y4yy"
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -234,7 +234,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -272,7 +272,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -310,7 +310,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -348,7 +348,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -388,7 +388,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -428,7 +428,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -468,7 +468,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |
@@ -510,7 +510,7 @@ Body请求参数（raw-json）
 {
     "code": 0
 }
-```typescript
+```
 
 | 参数名 | 示例值 | 参数类型 | 参数描述 |
 | --- | --- | --- | --- |

@@ -52,7 +52,7 @@ smeeting.onNotifyRoomEvent = (evt: RoomEvent) => {
       // ...
   }
 })
-```typescript
+```
 
 ### 创建会议
 ```typescript
@@ -75,7 +75,7 @@ const enterRoom = async () => {
         nickname: nickname, // 昵称
     });
 }
-```typescript
+```
 
 ### 退出会议
 ```typescript
@@ -85,7 +85,7 @@ await smeeting.exitRoom()
 ### 结束会议（解散）
 ```typescript
 await smeeting.adminDestroyRoom()
-```typescript
+```
 
 ### 取消会议
 ```typescript
@@ -100,7 +100,7 @@ let roomInfo: RoomInfo = smeeting.getRoomInfo();
 let userInfo: UserInfo = smeeting.getUserInfo(uid);
 // 获取房间内用户信息列表
 let users: Record<string, UserInfo> = smeeting.getUsersInfo(true);
-```typescript
+```
 
 ### 更新会中昵称
 ```typescript
@@ -131,7 +131,7 @@ let freshDeviceList = async (kind?: MediaDeviceKind) => {
     console.error("获取设备列表失败", err);
   };
 };
-```typescript
+```
 
 ### 打开、关闭、切换摄像头
 ```typescript
@@ -172,7 +172,7 @@ const track:RemoteVideoTrack = await smeeting.startPlayRemoteVideo(container: HT
    * @param trackDesc 视频轨道描述
    */
 await smeeting.stopPlayRemoteVideo(container: HTMLElement, uid: string, trackDesc: TrackDesc)
-```typescript
+```
 
 ### 打开、关闭、切换麦克风
 ```typescript
@@ -203,7 +203,7 @@ await smeeting.switchMic(deviceId: string)
  */
 await smeeting.toggleRemoteAudioMute(false,{deviceId?: string})  // 打开和切换
 await smeeting.toggleRemoteAudioMute(true)  // 关闭
-```typescript
+```
 
 ### 请求打开、关闭共享
 ```typescript
@@ -225,7 +225,7 @@ await smeeting.stopShare()
      * @param target_id 消息接收者 为空时表示全房间接收
      */
 await smeeting.sendRoomChatMessage(msg: string, target_id: string, msg_type: ChatMsgType = ChatMsgType.Text)
-```typescript
+```
 
 ### 发送自定义消息
 ```typescript
@@ -255,7 +255,7 @@ enum HandupType {
 }
 await smeeting.requestHandup(code:HandupType)
 await smeeting.cancelHandup(code:HandupType)
-```typescript
+```
 
 ### 主持人请求远端用户打开摄像头、 关闭远端用户摄像头
 ```typescript
@@ -284,7 +284,7 @@ await smeeting.adminRequestUserOpenMic(target_id: string)
  * @param target_id 用户id
  */
 await smeeting.adminCloseUserMic(target_id: string)
-```typescript
+```
 
 ### 主持人将远端用户踢出房间
 ```typescript
@@ -304,7 +304,7 @@ await smeeting.adminCloseUserMic(target_id: string)
  * @param mic_disabled 是否禁用麦克风
  */
 await smeeting.adminUpdateRoomMicState(self_unmute_mic_disabled: boolean, mic_disabled: boolean)
-```typescript
+```
 
 ### 主持人更新房间麦克风允许自我解除
 ```typescript
@@ -322,7 +322,7 @@ await smeeting.adminUpdateRoomSelfUnmuteMicDisabled(self_unmute_mic_disabled: bo
  * @param self_unmute_camera_disabled 是否禁用自我解除
  */
 await smeeting.adminUpdateRoomSelfUnmuteCameraDisabled(self_unmute_camera_disabled: boolean)
-```typescript
+```
 
 ### 主持人更新房间摄像头使用权限禁用状态
 ```typescript
@@ -342,7 +342,7 @@ await smeeting.adminUpdateRoomCameraState(self_unmute_camera_disabled: boolean, 
    * @param no 房间号
   */
 await smeeting.adminInviteAgent(agents:{ type: AgentType, contact: string }[], no: string)
-```typescript
+```
 
 ### 主持人修改参会人员
 ```typescript
@@ -360,7 +360,7 @@ await smeeting.adminUpdateConferee(conferee: string[])
  * @param layoutData 布局数据
  */
 await smeeting.adminUpdateLayout(layoutData: LayoutData)
-```typescript
+```
 
 ### 获取设备列表
 ```typescript
@@ -396,7 +396,7 @@ const mcuRecordConfig:McuRecordConfig = await smeeting.mcuRecordConfig()
  * 获取录制详情
  */
 const mcuRecordDetail:McuRecordDetail = await smeeting.mcuRecordDetail()
-```typescript
+```
 
 ### 远端合成视频
 ```typescript

@@ -16,7 +16,7 @@ let enableIm = async () => {
     let token = "后台返回的启用im token";
     imSid = await srtc.enableIm(token);
 }
-```typescript
+```
 
 
 
@@ -42,7 +42,7 @@ srtc.onNotifyImEvent = (evt: ImEvent) => {
 ```typescript
 // 调后台api发送im消息
 // api.sendImMsg
-```typescript
+```
 
 
 
@@ -78,5 +78,5 @@ case ImEventType.DISCONNECTED:
   // 界面刷新清理
   imSid = "";
   break;
-```typescript
+```
 

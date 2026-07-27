@@ -40,7 +40,7 @@ github源码地址：[https://github.com/seastart/meeting-web-demo](https://gith
 ├── .env.production        # 生产环境配置
 ├── vite.config.ts         # Vite 配置文件
 └── package.json           # 项目依赖配置
-```bash
+```
 
 ## 主要文件说明
 ### 配置文件
@@ -88,7 +88,7 @@ npm run type-check
 │      ├── Register.vue 	#注册页组件
 │   ├── index.vue       #登录入口
 
-```typescript
+```
 
 ![](images/339904_1736926098475-78d5f4b6-14de-4e1c-84ab-ea41db0c02ee.png)
 
@@ -148,7 +148,7 @@ npm run type-check
 │      ├── index.vue								#顶部组件	 	 		
 │   ├── index.vue       						#会议入口
 
-```typescript
+```
 
 ![](images/205598_1736933056295-99b52537-008f-4354-a4f8-4e4b1de44c6d.png)
 

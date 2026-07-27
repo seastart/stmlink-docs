@@ -40,7 +40,7 @@ srtc.onNotifyChannelEvent = (evt: ChannelEvent) => {
 })
 
 // ...
-```typescript
+```
 
 ### 加入频道
 ```typescript
@@ -65,7 +65,7 @@ let channelInfo: ChannelInfo = srtc.getChannelInfo();
 let userInfo: UserInfo = srtc.getUserInfo(uid);
 // 获取频道内用户信息列表
 let usersInfo: UserInfo[] = srtc.getUsersInfo();
-```typescript
+```
 
 ### 推流live-pusher参数相关
 ```typescript
@@ -196,7 +196,7 @@ onPushVolumeNotify(event: WechatMiniprogram.CustomEvent) {
   bindstatechange="onPushStateChange" bindnetstatus="onPushNetStatus"
   binderror="onPushError" bindaudiovolumenotify="onPushVolumeNotify"
   ></live-pusher>
-```typescript
+```
 
 
 
@@ -339,7 +339,7 @@ async onTapCameraBtn() {
         }
     }
 },
-```typescript
+```
 
 
 
@@ -403,7 +403,7 @@ case ChannelEventType.ME_UPDATE:
       users: users,
   });
   break;
-```typescript
+```
 
 ### 订阅/取消订阅远端视频流
 ```typescript
@@ -508,7 +508,7 @@ onPlayNetStatus(event: WechatMiniprogram.CustomEvent) {
       ></live-player>
   </view>
 </block>
-```typescript
+```
 
 **关于播放画面的旋转、镜像：**
 
@@ -546,7 +546,7 @@ async freshStyle(id:string): void {
         [`remoteVideoTracks.${id}`] : rtrack
     });
 }
-```typescript
+```
 
 ### 收全频道音频混音流
 一般场景下，我们不需要单独收每一个远端用户的声音，而只用收全频道的混音流进行播放
@@ -570,7 +570,7 @@ srtc.subscribeRemoteAudioMixTrack().then((track) => {
   bindstatechange="onPlayStateChange" bindnetstatus="onPlayNetStatus"
   bindaudiovolumenotify="onPlayVolumeNotify"
   ></live-player>
-```typescript
+```
 
 ```css
 /* 隐藏混音流播放器 */
@@ -600,7 +600,7 @@ case ChannelEventType.RECONNECTED:
       reconnecting: false,
   });
   break;
-```html
+```
 
 ```html
 <!-- 网络重连提示 -->
@@ -630,5 +630,5 @@ case ChannelEventType.DISCONNECTED:
       }
   });
   break;
-```typescript
+```
 

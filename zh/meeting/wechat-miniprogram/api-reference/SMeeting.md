@@ -309,5 +309,5 @@ SMeeting是绝大多数操作的入口。
      */
     updatePlayerStateChange(uid: string, trackId: string, detail: any): void;
     
-```typescript
+```
 

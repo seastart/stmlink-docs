@@ -49,7 +49,7 @@ description: "SRTC 音视频 SDK 产品概览"
 ```typescript
 // 假定app_id=1 nonce=2 timestamp=3 请求体为{}
 app_id=1&nonce=2&timestamp=3&{}
-```typescript
+```
 
 第二步：使用HMAC-SHA256加密字符串。key是`app_key`秘钥。
 
@@ -69,7 +69,7 @@ HMACSHA256(key, 待签名字符串)
     "code": 0,
     "data": 123
 }
-```typescript
+```
 
 有错误，`code`为错误码，`msg`为错误描述
 

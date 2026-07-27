@@ -80,7 +80,7 @@ import SRTC, {
   LogTarget,
 } from '@seastart/srtc-web-sdk';
 import type { ChannelEvent } from '@seastart/srtc-web-sdk';
-```typescript
+```
 
 #### Script 标签（配合 CDN 或本地文件）
 

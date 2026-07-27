@@ -127,6 +127,8 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 
 在`joinRoomWithRoomId`之前调用此函数，SDK 只会开启摄像头，并一直等到您调用`joinRoomWithRoomId`之后才开始推流。 在`joinRoomWithRoomId`之后调用此函数，SDK 会开启摄像头并自动开始视频推流。
 
+自`2.5.7`起，如果`frontCamera`指定的摄像头无法创建输入或启动后未输出有效视频帧，SDK 会自动尝试另一可用摄像头。业务层无需通过额外调用`switchCamera`恢复预览；实际采集方向可通过`currentCameraDirection`获取。
+
 **参数**
 
 | frontCamera | YES-前置摄像头 NO-后置摄像头 |
@@ -161,16 +163,18 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 
 切换摄像头
 
+SDK 仅在目标摄像头能够创建输入时执行切换。目标摄像头不可用时保持当前实际采集设备，不会切换到无效输入。
+
 ### setLocalPreviewMirror:()
 `- (RTCEngineError)setLocalPreviewMirror:(BOOL)mirror`
 
-设置本地预览镜像
+设置前置摄像头本地预览镜像偏好
 
-仅作用于本地预览画面，按 `mirror` 取值设置镜像；是否区分前后置等策略由业务层决定。
+仅作用于本地预览画面，不影响推流数据。前置摄像头按 `mirror` 取值设置镜像，后置摄像头始终不镜像；切换摄像头后 SDK 会自动应用对应策略。
 
 **参数**
 
-| mirror | YES-开启镜像 NO-关闭镜像 |
+| mirror | YES-前置摄像头镜像 NO-前置摄像头不镜像 |
 | --- | --- |
 
 
@@ -179,7 +183,7 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 
 获取当前摄像头方向
 
-可通过该接口获取当前采集使用的摄像头方向，返回值参考 [RTCEngineCameraDirection](/zh/rtc/ios/types#rtcenginecameradirection)。
+可通过该接口获取当前实际采集使用的摄像头方向。请求的摄像头不可用并发生自动回退时，该接口返回回退后设备的方向。返回值参考 [RTCEngineCameraDirection](/zh/rtc/ios/types#rtcenginecameradirection)。
 
 ### setCameraZoomRatio:()
 `- (RTCEngineError)setCameraZoomRatio:(CGFloat)zoomRatio`
@@ -496,13 +500,26 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 ### enabledAudioSpeaker:()
 `- (RTCEngineError)enabledAudioSpeaker:(BOOL)enabled`
 
-设置扬声器状态
+设置远端音频播放状态
 
-可通过该接口设置扬声器设备是否静音。
+可通过该接口开启或关闭远端音频播放，不会切换扬声器、听筒或外设路由。
 
 **参数**
 
-| enabled | YES-开启扬声器 NO-关闭扬声器 |
+| enabled | YES-开启远端音频播放 NO-关闭远端音频播放 |
+| --- | --- |
+
+
+### enabledAudioModule:()
+`- (RTCEngineError)enabledAudioModule:(BOOL)enabled`
+
+设置本端音频单元启停
+
+自`2.5.9`起支持。录像直播等本端不采集、不接收 RTC 音频的纯本地播放场景，关闭音频单元可释放底层语音处理单元（VPIO），避免本地播放器（如 `AVPlayer`）的播放音量被压低；返回该类场景后需将其恢复为自动管理。SDK 每次进房会自动复位为自动管理，避免上一会话的手动停用状态跨会话泄漏。
+
+**参数**
+
+| enabled | YES-由流媒体自动管理音频单元 NO-停止音频单元 |
 | --- | --- |
 
 
@@ -524,7 +541,9 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 切换音频路由
 
-可通过该接口设置音频播放设备，如：扬声器、听筒等。
+可通过该接口显式请求切换扬声器、听筒、蓝牙耳机或有线耳机。显式选择扬声器或听筒后，SDK 会优先保留该选择；未显式选择内置路由时，自`2.5.8`起，音频会话重配后 SDK 会主动恢复可用外设，同时存在蓝牙和有线耳机时优先使用蓝牙耳机。
+
+接口返回成功表示系统调用已受理，最终实际路由以 `currentAudioRoute` 和 `onAudioRouteChange:previousRoute:` 回调为准。
 
 **参数**
 
@@ -535,9 +554,9 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 ### currentAudioRoute()
 `- (RTCAudioRoute)currentAudioRoute`
 
-获取当前音频路由
+获取系统当前实际音频路由
 
-可通过该接口获取当前音频播放设备，如：扬声器、听筒等。
+可通过该接口获取系统当前实际使用的音频播放设备，如扬声器、听筒、蓝牙或有线耳机。
 
 ### headphoneDeviceAvailable()
 `- (BOOL)headphoneDeviceAvailable`
@@ -710,4 +729,3 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 `- (void)stopSpeedTest`
 
 停止网络测速
-

@@ -14,7 +14,7 @@ opts.terminal_desc = "嵌入式demo";
 
 RTC_CreateEngine(&opts, &rtcEngine);
 rtcEngine->setEventHandler(this);  //设置事件接收接口
-```json
+```
 
 [Token获取方法](https://www.yuque.com/anyconf/rtcengine/xnpez8#AXrXV)
 
@@ -51,7 +51,7 @@ rtcEngine->joinRoom('自定义房间id',UserRole.Default)
 
 //需要onRoom事件之后才是登录成功
 
-```cpp
+```
 
 ### 开始推视频流
 ```typescript
@@ -87,7 +87,7 @@ localAudio->unpublish();
 
 //销毁对象
 localAudio->close();
-```cpp
+```
 
 ### 订阅远端视频
 ```typescript
@@ -126,7 +126,7 @@ remoteAudio->unsubscribe();
 //销毁对象
 remoteAudio->close();
 
-```cpp
+```
 
 ### 退出房间
 ```typescript
@@ -147,7 +147,7 @@ rtcEngine->leaveRoom()
 
 rtcEngine->logout()
 
-```cpp
+```
 
 ### 销毁对象
 可以不调用leaveRoom和logout而直接调用release释放，但必须先手动销毁自己打开的流。

@@ -39,7 +39,7 @@ static int mask_to_track(int mask) {
     }
     return std::log2(mask);
 }
-```cpp
+```
 
 ### StatusCode unsubscribe()
 取消订阅。

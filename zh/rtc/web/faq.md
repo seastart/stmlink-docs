@@ -24,7 +24,7 @@ if (!env.secure) {
 } else if (!env.mediaDevices) {
   alert('浏览器不支持媒体设备访问，请检查权限设置');
 }
-```typescript
+```
 
 ---
 
@@ -80,7 +80,7 @@ const env = srtc.getEnvInfo();
 if (!env.screenshare) {
   alert('当前浏览器不支持屏幕共享，请使用 Chrome 或桌面版 Safari 15.4+');
 }
-```typescript
+```
 
 ---
 

@@ -44,7 +44,7 @@ onLoad() {
         userNum: Object.values(users).length,
     });
 }
-```html
+```
 
 ```html
 <!-- 推流组件 -->
@@ -74,7 +74,7 @@ let opt = await srtc.changePusherOptions({
 this.setData({
     pusherOpt: opt,
 });
-```typescript
+```
 
 
 
@@ -128,7 +128,7 @@ export declare class RemoteTrack extends BaseTrack {
 	 */
 	freshPlayerStyle(containerSelector: string): Promise<void>;
 }
-```typescript
+```
 
 
 
@@ -158,5 +158,5 @@ export declare class RemoteAudioMixTrack extends RemoteTrack {
     min-cache="0.2" max-cache="0.8" object-fit="contain"
     bindstatechange="onPlayStateChange" bindnetstatus="onPlayNetStatus"
 ></live-player>
-```typescript
+```
 

@@ -13,7 +13,7 @@ smeeting.onNotifyRoomEvent = (evt: RoomEvent) => {
       // ...
   }
 })
-```typescript
+```
 
 RoomEvent 定义如下：
 
@@ -102,5 +102,5 @@ CommonRoomEventType及对应`data`定义如下：
     /** 主持人请求您开摄像头，对应data为 AdminRequestOpenCameraEventData */
     static readonly ADMIN_REQUEST_OPEN_CAMERA = "admin_request_open_camera";
 
-```typescript
+```
 

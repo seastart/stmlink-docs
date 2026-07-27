@@ -40,7 +40,7 @@ await srtc.disableLocalTrack(localMicTrack);
 // ── 取消静音 ──────────────────────────────────────────────────────────────────
 await srtc.enableLocalTrack(localMicTrack);
 // 远端会收到 ChannelEventType.TRACK_UNMUTED 事件
-```typescript
+```
 
 > **注意：** `disableLocalTrack` 后麦克风采集仍在进行（指示灯仍亮），只是不往频道推数据。
 > 如果希望完全停止采集以释放麦克风，请使用 `unpublishLocalTrack` + `stopCapture`。

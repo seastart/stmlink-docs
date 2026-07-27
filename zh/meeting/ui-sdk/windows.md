@@ -44,7 +44,7 @@ smeeting-windows-demo                   // 提供 C++（qt框架） 语言 Demo
 │  ├─ Test                				// 测试视图
 ├─ MainWidget                			// 父级主窗口
 ├─ DemoControl                			// 快捷方法调用
-```typescript
+```
 
 
 
@@ -76,7 +76,7 @@ reutrn a.exec();
 //c# 加载方式（示例）
 [DllImport(DllPath, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
 public static extern int MEETING_DEMO_Init();
-```typescript
+```
 
 ### 界面窗口展示
 #### 登录界面
@@ -101,7 +101,7 @@ public static extern int MEETING_DEMO_Init();
 │  │  │  ├─ WidInvite             		// 会议预约
 │  │  │  ├─ WidMeetingList             	// 会议列表
 │  │  │  ├─ WidPhoneList             	// 通讯录
-```typescript
+```
 
 ![](images/299698_1736990171509-d9c591c2-6a39-4c2d-a2f1-7f72d7fdf906.png)
 
@@ -161,7 +161,7 @@ public static extern int MEETING_DEMO_Init();
 #### 参数设置定义
 ```csharp
 #define MEETINGDEMO_SETTING_URL_S					0//字符串类型服务器地址
-```typescript
+```
 
 #### 窗口枚举定义
 ```csharp
@@ -195,7 +195,7 @@ public static extern int MEETING_DEMO_Init();
 #define MEETINGDEMO_VIEWTYPE_Layout_LT1_BR7		1003  //左上1 右下7
 
 #define MEETINGDEMO_VIEWTYPE_Layout_BR1_LT7		1004  //右下1 左上7
-```typescript
+```
 
 #### 方法说明
 ##### 整体初始化
@@ -210,7 +210,7 @@ MEETING_DEMO_ShowView(MEETINGDEMO_VIEWTYPE_MAIN);
 ##### 整体释放
 ```csharp
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_Free();
-```typescript
+```
 
 
 
@@ -232,7 +232,7 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_Login(const char* token);
 ##### 提供全局参数配置
 ```csharp
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_SettingData(int tp,int idata,const char* sdata);
-```typescript
+```
 
 ###### 参数
 | tp | 参数类型 |
@@ -259,7 +259,7 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_GotoView(int tp);
 ```csharp
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_ShowView(int tp);
 MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_HideView(int tp);
-```typescript
+```
 
 ###### 参数
 | tp | 窗口枚举 |
@@ -283,7 +283,7 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_RoomUpdateLayout(int tp);
 ##### 获取版本信息
 ```csharp
 MEETING_DEMO_API void MEETING_DEMO_CALL RTCEngine_Version(const char* version);
-```typescript
+```
 
 ###### 参数
 | version | 版本信息 |

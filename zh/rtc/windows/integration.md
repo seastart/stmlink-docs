@@ -24,6 +24,8 @@ D3DVideoRender.dll
 
 DenModule.dll
 
+rtp.dll
+
 rtc.dll
 
 srtc.dll

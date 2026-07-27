@@ -17,7 +17,7 @@ allprojects {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
     }
 }
-```typescript
+```
 
 + 引入 StmLink 库
 + 在app目录下的build.gradle中添加依赖
@@ -37,7 +37,7 @@ allprojects {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
     }
 }
-```typescript
+```
 
 + 在app目录下的build.gradle中添加依赖
 
@@ -63,7 +63,7 @@ override fun onCreate() {
     // 注册监听 activity 的生命周期比变化
     registerActivityLifecycleCallbacks(MyLifecycleCallback())
 }
-```typescript
+```
 
 3. 在 MainActivity 中执行跳转操作，跳转到 StmLink 库中的界面
 
@@ -114,7 +114,7 @@ class MyLifecycleCallback: Application.ActivityLifecycleCallbacks {
         lifecycleListener.onActivityDestroyed(activity)
     }
 }
-```typescript
+```
 
 ## 模块/组件集成
 ### 项目结构
@@ -160,7 +160,7 @@ stmlink/
 ├── ui/                     # 自定义 UI
 ├── utils/                  # 工具类
 └── MeetingEngineHelper     # sdk 统一调用帮助类
-```typescript
+```
 
 #### 使用说明
 ##### sdk 入口文件使用
@@ -218,7 +218,7 @@ ApiHelper.instance.release()
 /**
  * 各种网络请求接口
  */
-```typescript
+```
 
 ##### 自定义 ui 包使用
 其中包含各种在项目中使用到的自定义组件，可以通过在 xml 布局文件中引入的方式使用
@@ -252,7 +252,7 @@ stmlink/
  * 跳转到登录界面
  */
 LoginActivity.startActivity(this)
-```typescript
+```
 
 ##### SdkLoginHelper 工具说明
 + 在这个类中统一实现登录功能，主要步骤包括：授权->sdk登录->im登录，该类功能依赖于 MeetingEngineHelper（这是应用层封装的 sdk 入口类），一定要先初始化完成 MeetingEngineHelper
@@ -291,7 +291,7 @@ stmlink/
 │   └── meet/                 # 待加入会议列表页
 │   └── mine/                 # 我的页面
 ├── meetDetail/             # 会议详情
-```typescript
+```
 
 #### 使用说明
 ```kotlin
@@ -351,7 +351,7 @@ HomeActivity.startActivity(this)
 stmlink/
 ├── inviteMember/           # 邀请成员模块
 ├── preMeetingRoom/         # 加入会议模块
-```typescript
+```
 
 #### 使用说明
 ```kotlin
@@ -399,7 +399,7 @@ stmlink/
 │   └── chat/                 # 聊天页面
 │   └── member/               # 会中成员页面
 │   └── room/                 # 会中主页
-```typescript
+```
 
 #### 使用说明
 ```kotlin

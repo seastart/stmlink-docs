@@ -180,5 +180,5 @@ enableIm(token: string): Promise<string>;
  * 关闭频道外消息
  */
 disableIm(): Promise<void>;
-```typescript
+```
 

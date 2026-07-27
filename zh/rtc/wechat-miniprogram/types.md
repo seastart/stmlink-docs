@@ -20,7 +20,7 @@ export interface ChannelInfo {
 	/** 频道更新时间 */
 	updated_at: number;
 }
-```typescript
+```
 
 ### UserInfo
 ```typescript
@@ -138,7 +138,7 @@ export enum TrackKind {
     Video = 'video',
     Audio = 'audio',
 }
-```typescript
+```
 
 
 
@@ -164,7 +164,7 @@ export interface JoinParams {
 	/** 服务器分组id */
 	sgID: string;
 }
-```typescript
+```
 
 ### PusherOptions
 ```typescript
@@ -283,7 +283,7 @@ export declare enum DisconnectReason {
 	/** 频道销毁离开 */
 	Destroy = 5
 }
-```typescript
+```
 
 ### UserLeaveEventData
 ```typescript
@@ -317,7 +317,7 @@ export interface CustomMsgData {
     /** 频道名(如果非频道内自定义消息，为空) */
     channel: string;
 }
-```typescript
+```
 
 
 
@@ -367,7 +367,7 @@ export interface ImMsgData {
 	/** 发送者昵称 */
 	name: string;
 }
-```typescript
+```
 
 
 
