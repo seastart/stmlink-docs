@@ -2,6 +2,8 @@
 title: "查询在线人数"
 examples:
   channels: ["fire", "water"]
+descriptions:
+  "<键>": 频道名。未打开或不存在的频道不会出现在结果里
 ---
 
 批量查询多个频道的当前在线人数，一次请求即可，适合列表页展示。

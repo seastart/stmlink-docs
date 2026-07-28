@@ -648,13 +648,20 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
+<ResponseField name="task_id" type="string">
+  本次任务的 ID，停止任务、查询详情、取播放地址都用它
+  示例：`sxjgwy`
+</ResponseField>
+
 
 响应示例：
 
 ```json
 {
   "code": 0,
-  "data": ""
+  "data": {
+    "task_id": "sxjgwy"
+  }
 }
 ```
 

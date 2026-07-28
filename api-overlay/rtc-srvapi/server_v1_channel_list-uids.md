@@ -5,6 +5,9 @@ examples:
   with_audience: true
   page: 1
   per-page: 10
+  data: ["1001","1002"]
+descriptions:
+  data: 成员 uid 列表
 ---
 
 与「在线/离线成员列表」的筛选条件完全一致，但只返回 `uid` 字符串数组，不含成员详情。

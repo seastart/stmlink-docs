@@ -1051,6 +1051,10 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
+<ResponseField name="data" type="array<string>">
+  成员 uid 列表
+</ResponseField>
+
 
 响应示例：
 
@@ -1841,6 +1845,10 @@ description: "频道的创建、查询、成员管理与历史记录"
 ```
 
 **响应参数**
+
+<ResponseField name="<键>" type="integer">
+  频道名。未打开或不存在的频道不会出现在结果里
+</ResponseField>
 
 
 响应示例：
