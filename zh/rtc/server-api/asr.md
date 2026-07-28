@@ -5,7 +5,7 @@ description: "ASR 语音识别的启停与结果回调"
 
 <Info>本页接口结构由后端源码自动生成，请勿手工编辑。</Info>
 
-## ASR语音识别启停回调
+## 启动语音识别
 
 `POST /server/v1/asr/start`
 
@@ -44,7 +44,7 @@ description: "ASR 语音识别的启停与结果回调"
 
 ---
 
-## ASR语音识别推送结果
+## 停止语音识别
 
 `POST /server/v1/asr/stop`
 
@@ -83,7 +83,7 @@ description: "ASR 语音识别的启停与结果回调"
 
 ---
 
-## ASR语音识别句子列表
+## 语音识别句子列表
 
 `POST /server/v1/asr/list-sentence`
 

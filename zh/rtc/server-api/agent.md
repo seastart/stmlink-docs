@@ -53,7 +53,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 ---
 
-## 国标GB28181设备的通道操作
+## 设置国标设备的一个通道
 
 `POST /server/v1/agent/set-gb28181-subject`
 
@@ -99,7 +99,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 ---
 
-## Agent.DelGb28181Subject
+## 删除国标设备的一个通道
 
 `POST /server/v1/agent/del-gb28181-subject`
 
@@ -140,7 +140,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 ---
 
-## Agent.GenGb28181Subject
+## 生成国标设备的通道编号
 
 `POST /server/v1/agent/gen-gb28181-subject`
 
@@ -175,7 +175,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 ---
 
-## Agent.GenGb28181SipNo
+## 生成国标设备的 SIP 编号
 
 `POST /server/v1/agent/gen-gb28181-sip-no`
 

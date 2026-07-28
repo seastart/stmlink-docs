@@ -1,5 +1,4 @@
 ---
-title: "今日频道统计"
 examples:
   time: 1718250917
   num: 120

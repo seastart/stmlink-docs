@@ -1974,7 +1974,7 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 ---
 
-## 频道统计
+## 频道统计（按天聚合）
 
 `POST /server/v1/channel/stats`
 

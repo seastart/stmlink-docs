@@ -1,5 +1,4 @@
 ---
-title: "频道统计"
 examples:
   begin_at: 1718194666
   end_at: 1718799878

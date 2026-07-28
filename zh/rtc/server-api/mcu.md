@@ -5,7 +5,7 @@ description: "云端录制、点播地址与直播推流"
 
 <Info>本页接口结构由后端源码自动生成，请勿手工编辑。</Info>
 
-## Mcu.RecordConfig
+## 获取默认录制配置
 
 `POST /server/v1/mcu/record-config`
 
@@ -58,7 +58,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.SaveRecordConfig
+## 更新默认录制配置
 
 `POST /server/v1/mcu/save-record-config`
 
@@ -104,7 +104,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.ListRecord
+## 录像列表
 
 `POST /server/v1/mcu/list-record`
 
@@ -246,7 +246,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.VodUrl
+## 获取录像播放地址
 
 `POST /server/v1/mcu/vod-url`
 
@@ -312,7 +312,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.DelRecord
+## 删除录像
 
 `POST /server/v1/mcu/del-record`
 
@@ -353,7 +353,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.Start
+## 启动录制/合流/直播任务
 
 `POST /server/v1/mcu/start`
 
@@ -362,7 +362,7 @@ description: "云端录制、点播地址与直播推流"
 **请求参数**
 
 <ParamField body="task_type" type="integer" required>
-  1录像模式 2合流模式 3混合模式
+  任务类型，按位组合：1录像、2合流、4录音、8直播流；如 3 表示录像+合流，9 表示录像+直播
 </ParamField>
 
 <ParamField body="op_uid" type="string">
@@ -551,7 +551,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.Stop
+## 停止录制/合流/直播任务
 
 `POST /server/v1/mcu/stop`
 
@@ -597,7 +597,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.RecordDetail
+## 录像详情
 
 `POST /server/v1/mcu/record-detail`
 
@@ -711,7 +711,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.UpdateRecord
+## 修改录像标题与标签
 
 `POST /server/v1/mcu/update-record`
 
@@ -759,7 +759,7 @@ description: "云端录制、点播地址与直播推流"
 
 ---
 
-## Mcu.LiveUrl
+## 获取直播拉流地址
 
 `POST /server/v1/mcu/live-url`
 
