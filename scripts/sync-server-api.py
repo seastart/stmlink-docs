@@ -52,7 +52,13 @@ def generate(out_dir):
     env = {**os.environ, 'GOWORK': 'off'}
     r = subprocess.run(
         ['go', 'run', '.', '-root', str(BACKEND), '-app', 'srvapi',
-         '-overlay', str(OVERLAY), '-split', '-docbase', DOC_BASE, '-out', str(out_dir)],
+         '-overlay', str(OVERLAY), '-split', '-docbase', DOC_BASE,
+         # Mintlify 的 ParamField/ResponseField 组件：说明文字占整行宽度。
+         # 不用 markdown 表格是因为 Mintlify 把表格列等宽均分（5 列各 150px），
+         # 长说明会被压成竖条。生成器另有 -render table，输出不依赖 Mintlify 组件的
+         # 通用 markdown，将来做 llms.txt 这类纯文本产物时用那个。
+         '-render', 'paramfield',
+         '-out', str(out_dir)],
         cwd=TOOL_DIR, env=env, capture_output=True, text=True)
     if r.returncode != 0:
         sys.exit('生成失败:\n' + r.stderr)

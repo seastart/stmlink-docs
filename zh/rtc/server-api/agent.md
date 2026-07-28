@@ -17,8 +17,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -43,8 +41,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -65,11 +61,18 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| id | string | 是 | 设备id（最大长度 64） |
-| subject | string | 是 | 通道编号（最大长度 20） |
-| name | string | 是 | 通道名称（最大长度 100） |
+<ParamField body="id" type="string" required>
+  设备id（最大长度 64）
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  通道编号（最大长度 20）
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  通道名称（最大长度 100）
+</ParamField>
+
 
 请求示例：
 
@@ -104,10 +107,14 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| id | string | 是 | 设备id（最大长度 64） |
-| subject | string | 是 | 通道编号（最大长度 20） |
+<ParamField body="id" type="string" required>
+  设备id（最大长度 64）
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  通道编号（最大长度 20）
+</ParamField>
+
 
 请求示例：
 
@@ -141,9 +148,10 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| id | string | 是 | 设备id（最大长度 64） |
+<ParamField body="id" type="string" required>
+  设备id（最大长度 64）
+</ParamField>
+
 
 请求示例：
 
@@ -155,8 +163,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -181,8 +187,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -207,12 +211,22 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data[].id | string | gw id |
-| data[].types | array | 代理类型 |
-| data[].heartbeat_at | integer | 上次心跳时间 |
-| data[].host | string | api接口，用于rtc调设备网关 |
+<ResponseField name="id" type="string">
+  gw id
+</ResponseField>
+
+<ResponseField name="types" type="array<integer>">
+  代理类型
+</ResponseField>
+
+<ResponseField name="heartbeat_at" type="integer">
+  上次心跳时间
+</ResponseField>
+
+<ResponseField name="host" type="string">
+  api接口，用于rtc调设备网关
+</ResponseField>
+
 
 响应示例：
 
@@ -246,13 +260,26 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data[].id | string | gw id |
-| data[].types | array | 代理类型 |
-| data[].heartbeat_at | integer | 上次心跳时间 |
-| data[].host | string | api接口，用于rtc调设备网关 |
-| data[].info | any | 网关的平台信息 |
+<ResponseField name="id" type="string">
+  gw id
+</ResponseField>
+
+<ResponseField name="types" type="array<integer>">
+  代理类型
+</ResponseField>
+
+<ResponseField name="heartbeat_at" type="integer">
+  上次心跳时间
+</ResponseField>
+
+<ResponseField name="host" type="string">
+  api接口，用于rtc调设备网关
+</ResponseField>
+
+<ResponseField name="info" type="any">
+  网关的平台信息
+</ResponseField>
+
 
 响应示例：
 
@@ -283,11 +310,16 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| gw | string | 是 | 网关 |
-| api | string | 是 |  |
-| params | object | 否 |  |
+<ParamField body="gw" type="string" required>
+  网关
+</ParamField>
+
+<ParamField body="api" type="string" required>
+</ParamField>
+
+<ParamField body="params" type="object">
+</ParamField>
+
 
 请求示例：
 
@@ -301,8 +333,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -323,9 +353,10 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| id | string | 是 | 设备id（最大长度 64） |
+<ParamField body="id" type="string" required>
+  设备id（最大长度 64）
+</ParamField>
+
 
 请求示例：
 
@@ -358,9 +389,10 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| id | string | 是 | 设备id（最大长度 64） |
+<ParamField body="id" type="string" required>
+  设备id（最大长度 64）
+</ParamField>
+
 
 请求示例：
 
@@ -372,17 +404,42 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.id | string | agent id |
-| data.name | string | 代理名称 |
-| data.type | integer | 代理类型 |
-| data.status | integer | 在线状态 |
-| data.heartbeat_at | integer | 上次心跳时间 |
-| data.contact | string | 设备标识 |
-| data.conn_params | object | 连接参数，已剔除机密项，见 NewAgent |
-| data.gw | string | 设备网关 |
-| data.remark | string | 备注 |
+<ResponseField name="id" type="string">
+  agent id
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  代理名称
+</ResponseField>
+
+<ResponseField name="type" type="integer">
+  代理类型
+</ResponseField>
+
+<ResponseField name="status" type="integer">
+  在线状态
+</ResponseField>
+
+<ResponseField name="heartbeat_at" type="integer">
+  上次心跳时间
+</ResponseField>
+
+<ResponseField name="contact" type="string">
+  设备标识
+</ResponseField>
+
+<ResponseField name="conn_params" type="object">
+  连接参数，已剔除机密项，见 NewAgent
+</ResponseField>
+
+<ResponseField name="gw" type="string">
+  设备网关
+</ResponseField>
+
+<ResponseField name="remark" type="string">
+  备注
+</ResponseField>
+
 
 响应示例：
 
@@ -413,14 +470,30 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| type | array | 是 | 代理类型 |
-| keyword | string | 否 | 关键词（最大长度 100） |
-| name | string | 否 | 显示名称（最大长度 100） |
-| contact | string | 否 | 设备标识（最大长度 100） |
-| page | integer | 否 | 页数，从1开始 |
-| per-page | integer | 否 | 每页数据量 |
+<ParamField body="type" type="array<integer>" required>
+  代理类型
+</ParamField>
+
+<ParamField body="keyword" type="string">
+  关键词（最大长度 100）
+</ParamField>
+
+<ParamField body="name" type="string">
+  显示名称（最大长度 100）
+</ParamField>
+
+<ParamField body="contact" type="string">
+  设备标识（最大长度 100）
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+</ParamField>
+
 
 请求示例：
 
@@ -439,17 +512,42 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data[].id | string | agent id |
-| data[].name | string | 代理名称 |
-| data[].type | integer | 代理类型 |
-| data[].status | integer | 在线状态 |
-| data[].heartbeat_at | integer | 上次心跳时间 |
-| data[].contact | string | 设备标识 |
-| data[].conn_params | object | 连接参数，已剔除机密项，见 NewAgent |
-| data[].gw | string | 设备网关 |
-| data[].remark | string | 备注 |
+<ResponseField name="id" type="string">
+  agent id
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  代理名称
+</ResponseField>
+
+<ResponseField name="type" type="integer">
+  代理类型
+</ResponseField>
+
+<ResponseField name="status" type="integer">
+  在线状态
+</ResponseField>
+
+<ResponseField name="heartbeat_at" type="integer">
+  上次心跳时间
+</ResponseField>
+
+<ResponseField name="contact" type="string">
+  设备标识
+</ResponseField>
+
+<ResponseField name="conn_params" type="object">
+  连接参数，已剔除机密项，见 NewAgent
+</ResponseField>
+
+<ResponseField name="gw" type="string">
+  设备网关
+</ResponseField>
+
+<ResponseField name="remark" type="string">
+  备注
+</ResponseField>
+
 
 响应示例：
 
@@ -488,10 +586,14 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| agents | array | 是 | 设备列表 |
-| no | string | 是 | 目标房间号(如果是meeting层应用就是会议号，如果是rtc层应用就是频道名) |
+<ParamField body="agents" type="array<any>" required>
+  设备列表
+</ParamField>
+
+<ParamField body="no" type="string" required>
+  目标房间号(如果是meeting层应用就是会议号，如果是rtc层应用就是频道名)
+</ParamField>
+
 
 请求示例：
 
@@ -527,12 +629,22 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| uid | string | 否 | 设备会中用户ID，不传代表对全频道设备操作（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| channel | string | 是 | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| enabled | boolean | 否 | 是否启用 |
-| op_uid | string | 否 | 主持人uid |
+<ParamField body="uid" type="string">
+  设备会中用户ID，不传代表对全频道设备操作（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="enabled" type="boolean">
+  是否启用
+</ParamField>
+
+<ParamField body="op_uid" type="string">
+  主持人uid
+</ParamField>
+
 
 请求示例：
 
@@ -568,12 +680,22 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| uid | string | 否 | 设备会中用户ID，不传代表对全频道设备操作（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| channel | string | 是 | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| enabled | boolean | 否 | 是否启用 |
-| op_uid | string | 否 | 主持人uid |
+<ParamField body="uid" type="string">
+  设备会中用户ID，不传代表对全频道设备操作（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="enabled" type="boolean">
+  是否启用
+</ParamField>
+
+<ParamField body="op_uid" type="string">
+  主持人uid
+</ParamField>
+
 
 请求示例：
 

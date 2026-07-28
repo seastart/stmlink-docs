@@ -13,10 +13,12 @@ description: "ASR 语音识别的启停与结果回调"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| AppId | string | 否 |  |
-| channel | string | 是 |  |
+<ParamField body="AppId" type="string">
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+</ParamField>
+
 
 请求示例：
 
@@ -50,10 +52,12 @@ description: "ASR 语音识别的启停与结果回调"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| AppId | string | 否 |  |
-| channel | string | 是 |  |
+<ParamField body="AppId" type="string">
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+</ParamField>
+
 
 请求示例：
 
@@ -87,14 +91,26 @@ description: "ASR 语音识别的启停与结果回调"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| AppId | string | 否 |  |
-| channel | string | 是 |  |
-| sort | string | 否 |  |
-| search | array | 否 |  |
-| page | integer | 否 | 页数，从1开始 |
-| per-page | integer | 否 | 每页数据量 |
+<ParamField body="AppId" type="string">
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+</ParamField>
+
+<ParamField body="sort" type="string">
+</ParamField>
+
+<ParamField body="search" type="array<string>">
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+</ParamField>
+
 
 请求示例：
 
@@ -113,13 +129,23 @@ description: "ASR 语音识别的启停与结果回调"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data[].channel | string |  |
-| data[].uid | string |  |
-| data[].name | string |  |
-| data[].sentence | string | 句子 |
-| data[].created_at | integer | 创建时间 |
+<ResponseField name="channel" type="string">
+</ResponseField>
+
+<ResponseField name="uid" type="string">
+</ResponseField>
+
+<ResponseField name="name" type="string">
+</ResponseField>
+
+<ResponseField name="sentence" type="string">
+  句子
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+  创建时间
+</ResponseField>
+
 
 响应示例：
 

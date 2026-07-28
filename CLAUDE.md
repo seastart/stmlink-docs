@@ -68,6 +68,37 @@ navigation.languages（中文/英文）
 
 ---
 
+## 自动生成的页面（服务端 API）
+
+`zh/rtc/server-api/` 下的接口页面（`common` / `channel` / `mcu` / `agent` / `im` /
+`white-board` / `asr`）**由脚本生成，不要手工编辑**，改动会在下次同步时被覆盖。
+
+```bash
+python3 scripts/sync-server-api.py    # rtc-backend 默认在 ../rtc-backend
+mint broken-links                      # 提交前校验
+```
+
+要改内容，按性质分两处：
+
+| 改什么 | 改哪里 |
+| --- | --- |
+| 接口路径、参数、类型、必填、校验规则、响应结构 | rtc-backend 源码（一律从代码提取） |
+| 业务说明、调用时序、注意事项、示例值、接口标题 | `api-overlay/rtc-srvapi/`（详见该目录 README） |
+
+同一分组下的页面由 `router.go` 的 gin group 决定，`docs.json` 的「接口文档」子分组
+由脚本整块替换 —— 所以往那个子分组里手工加页面会在下次同步时丢失。
+脚本还会清理孤儿页：接口从代码删除后，对应页面自动消失。
+
+**参数渲染用 Mintlify 的 `<ParamField>` / `<ResponseField>` 组件，不用 markdown 表格**
+（与下面「各端通用文档规范」里 SDK 文档的表格约定不同）。原因是 Mintlify 把表格列等宽
+均分，5 列时每列仅 150px，长的参数说明会被压成竖条。生成器另有 `-render table` 输出
+不依赖 Mintlify 组件的通用 markdown，供将来做 llms.txt 这类纯文本产物使用。
+
+下面的「各端通用文档规范」针对**客户端 SDK** 文档（iOS/Android/Web 等手写页面），
+不适用于本节所述的自动生成页面。
+
+---
+
 ## 各端通用文档规范
 
 整理新平台文档时，参照以下结构和格式规范，保持各端文档风格统一。

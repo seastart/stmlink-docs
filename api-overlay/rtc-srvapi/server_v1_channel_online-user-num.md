@@ -1,4 +1,5 @@
 ---
+title: "查询在线人数"
 examples:
   channels: ["fire", "water"]
 ---

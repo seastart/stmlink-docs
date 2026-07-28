@@ -123,11 +123,20 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| scene | string | 否 |  | 应用场景(外部业务调用时不需要此参数) |
-| events | array | 否 | `["user_join","user_leave","channel_destroy"]` | 监听事件列表 |
-| cb_url | string | 否 | https://your-domain.com/server/v1/callback/rtc | 回调地址 |
+<ParamField body="scene" type="string">
+  应用场景(外部业务调用时不需要此参数)
+</ParamField>
+
+<ParamField body="events" type="array<string>">
+  监听事件列表
+  示例：`["user_join","user_leave","channel_destroy"]`
+</ParamField>
+
+<ParamField body="cb_url" type="string">
+  回调地址
+  示例：`https://your-domain.com/server/v1/callback/rtc`
+</ParamField>
+
 
 请求示例：
 
@@ -180,15 +189,40 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| uid | string | 是 | 1001 | 第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）（最大长度 100） |
-| name | string | 是 | 张三 | 会中昵称（最大长度 100） |
-| props | object | 否 | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 用户扩展属性 |
-| is_audience | boolean | 否 | false | 是否观众，类似研讨会观众，只收流，不参与互动，不广播 |
-| net | string | 否 | 内网 | 线路 |
-| sg | string | 否 |  | 服务分组 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="uid" type="string" required>
+  第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）（最大长度 100）
+  示例：`1001`
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  会中昵称（最大长度 100）
+  示例：`张三`
+</ParamField>
+
+<ParamField body="props" type="object">
+  用户扩展属性
+  示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+</ParamField>
+
+<ParamField body="is_audience" type="boolean">
+  是否观众，类似研讨会观众，只收流，不参与互动，不广播
+  示例：`false`
+</ParamField>
+
+<ParamField body="net" type="string">
+  线路
+  示例：`内网`
+</ParamField>
+
+<ParamField body="sg" type="string">
+  服务分组
+</ParamField>
+
 
 请求示例：
 
@@ -208,10 +242,16 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data.sid | string | co63jg6g54hu3b0xhtie | 本次会话 ID，由服务端生成。用于后续按会话维度查询与对账 |
-| data.token | string | wvYKytpMTsR2OK82ghVj1ZFAVCEtfMug...（实际长度约 300 字符，此处截断） | 入会凭证，下发给客户端调用 SDK 的 joinChannel |
+<ResponseField name="sid" type="string">
+  本次会话 ID，由服务端生成。用于后续按会话维度查询与对账
+  示例：`co63jg6g54hu3b0xhtie`
+</ResponseField>
+
+<ResponseField name="token" type="string">
+  入会凭证，下发给客户端调用 SDK 的 joinChannel
+  示例：`wvYKytpMTsR2OK82ghVj1ZFAVCEtfMug...（实际长度约 300 字符，此处截断）`
+</ResponseField>
+
 
 响应示例：
 
@@ -239,9 +279,11 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
 
 请求示例：
 
@@ -253,19 +295,58 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data.app_id | string | 68b3ft51smhz0x5glscw9whm78bw57uu | 应用id |
-| data.channel | string | fire | 频道名 |
-| data.stream_vendor | string |  | 流媒体供应商 |
-| data.props | object |  | 频道扩展属性 |
-| data.created_at | integer | 1718250917 | 频道创建时间 |
-| data.updated_at | integer | 1718250921 |  |
-| data.link_id | integer | 100000036 | 流媒体连接id |
-| data.max_user | integer | 1024 | 房间最大人数，含义参考：https://www.yuque.com/anyconf/czwlh6/prtk0l4s8ylf7mk3 |
-| data.max_audio | integer | 0 | 房间最大参与音频能量竞争路数（针对整个房间设置） |
-| data.max_peer | integer | 32 | 单人最大转发的人数（音频、视频路数）（针对单人设置） |
-| data.max_video | integer | 16 | 单人非主动pick模式下最大转发视频路数（针对单人设置，目前我们视频都是主动pick，所以这个设置没有意义） |
+<ResponseField name="app_id" type="string">
+  应用id
+  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道名
+  示例：`fire`
+</ResponseField>
+
+<ResponseField name="stream_vendor" type="string">
+  流媒体供应商
+</ResponseField>
+
+<ResponseField name="props" type="object">
+  频道扩展属性
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+  频道创建时间
+  示例：`1718250917`
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+  示例：`1718250921`
+</ResponseField>
+
+<ResponseField name="link_id" type="integer">
+  流媒体连接id
+  示例：`100000036`
+</ResponseField>
+
+<ResponseField name="max_user" type="integer">
+  房间最大人数，含义参考：https://www.yuque.com/anyconf/czwlh6/prtk0l4s8ylf7mk3
+  示例：`1024`
+</ResponseField>
+
+<ResponseField name="max_audio" type="integer">
+  房间最大参与音频能量竞争路数（针对整个房间设置）
+  示例：`0`
+</ResponseField>
+
+<ResponseField name="max_peer" type="integer">
+  单人最大转发的人数（音频、视频路数）（针对单人设置）
+  示例：`32`
+</ResponseField>
+
+<ResponseField name="max_video" type="integer">
+  单人非主动pick模式下最大转发视频路数（针对单人设置，目前我们视频都是主动pick，所以这个设置没有意义）
+  示例：`16`
+</ResponseField>
+
 
 响应示例：
 
@@ -302,10 +383,16 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| uid | string | 是 | 1001 | 第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="uid" type="string" required>
+  第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`1001`
+</ParamField>
+
 
 请求示例：
 
@@ -318,41 +405,155 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data.app_id | string | 68b3ft51smhz0x5glscw9whm78bw57uu | 应用id |
-| data.uid | string | 1001 | 用户id |
-| data.name | string | 张三 | 会中昵称 |
-| data.device_type | integer | 1 | 设备类型 |
-| data.device_id | string | aacc | 设备ID |
-| data.version | string | 1.0 | 客户端RTCsdk版本号 |
-| data.props | object | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 用户扩展属性 |
-| data.net | string |  | 线路号 |
-| data.sg | string |  | 服务器分组id |
-| data.updated_at | integer | 1717639307 |  |
-| data.channel | string | fire | 频道名 |
-| data.sid | string | p8ym6zzpzkzy0pedl97t | 会话id |
-| data.is_audience | boolean | false | 是否观众，类似研讨会观众，只收流 |
-| data.join_at | integer | 1717639307 | 进入时间 |
-| data.leave_at | integer | 0 | 退出时间 |
-| data.stream_tracks | array |  | 流轨道 |
-| data.stream_tracks[].id | string |  | 轨道id，在stream里唯一，在全局不一定唯一 |
-| data.stream_tracks[].desc | string |  | 自定义描述，如摄像头大流、摄像头小流、共享桌面流等 |
-| data.stream_tracks[].kind | string |  | 轨道类型 |
-| data.stream_tracks[].codec | integer |  | 编码类型 |
-| data.stream_tracks[].width | integer |  | 视频宽 |
-| data.stream_tracks[].height | integer |  | 视频高 |
-| data.stream_tracks[].fps | integer |  | 视频帧率 |
-| data.stream_tracks[].angle | integer |  | 视频角度 |
-| data.stream_tracks[].bitrate | integer |  | 码率 |
-| data.stream_tracks[].sample_rate | integer |  | 音频采样率 |
-| data.stream_tracks[].channel_count | integer |  | 音频声道数 |
-| data.stream_tracks[].fallback_ids | array |  | FallbackIDs simulcast 降级候选层 id 列表，按画质从高到低排列；仅"自己之下的更低层"，不含自己 |
-| data.stream_tracks[].variant | boolean |  | Variant 是否为 simulcast 副层。仅副层为 true，主层不写 (nil/false) |
-| data.stream_tracks[].props | object | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 流扩展属性 |
-| data.stream_tracks[].track | integer |  | 轨道号 |
-| data.link_id | integer | 100000002 | 流媒体连接id |
-| data.upload_srv | string | sm0dx5 | 流媒体服务 |
+<ResponseField name="app_id" type="string">
+  应用id
+  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
+</ResponseField>
+
+<ResponseField name="uid" type="string">
+  用户id
+  示例：`1001`
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  会中昵称
+  示例：`张三`
+</ResponseField>
+
+<ResponseField name="device_type" type="integer">
+  设备类型
+  示例：`1`
+</ResponseField>
+
+<ResponseField name="device_id" type="string">
+  设备ID
+  示例：`aacc`
+</ResponseField>
+
+<ResponseField name="version" type="string">
+  客户端RTCsdk版本号
+  示例：`1.0`
+</ResponseField>
+
+<ResponseField name="props" type="object">
+  用户扩展属性
+  示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+</ResponseField>
+
+<ResponseField name="net" type="string">
+  线路号
+</ResponseField>
+
+<ResponseField name="sg" type="string">
+  服务器分组id
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+  示例：`1717639307`
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道名
+  示例：`fire`
+</ResponseField>
+
+<ResponseField name="sid" type="string">
+  会话id
+  示例：`p8ym6zzpzkzy0pedl97t`
+</ResponseField>
+
+<ResponseField name="is_audience" type="boolean">
+  是否观众，类似研讨会观众，只收流
+  示例：`false`
+</ResponseField>
+
+<ResponseField name="join_at" type="integer">
+  进入时间
+  示例：`1717639307`
+</ResponseField>
+
+<ResponseField name="leave_at" type="integer">
+  退出时间
+  示例：`0`
+</ResponseField>
+
+<ResponseField name="stream_tracks" type="array<object>">
+  流轨道
+  <Expandable title="元素字段">
+    <ResponseField name="id" type="string">
+      轨道id，在stream里唯一，在全局不一定唯一
+    </ResponseField>
+
+    <ResponseField name="desc" type="string">
+      自定义描述，如摄像头大流、摄像头小流、共享桌面流等
+    </ResponseField>
+
+    <ResponseField name="kind" type="string">
+      轨道类型
+    </ResponseField>
+
+    <ResponseField name="codec" type="integer">
+      编码类型
+    </ResponseField>
+
+    <ResponseField name="width" type="integer">
+      视频宽
+    </ResponseField>
+
+    <ResponseField name="height" type="integer">
+      视频高
+    </ResponseField>
+
+    <ResponseField name="fps" type="integer">
+      视频帧率
+    </ResponseField>
+
+    <ResponseField name="angle" type="integer">
+      视频角度
+    </ResponseField>
+
+    <ResponseField name="bitrate" type="integer">
+      码率
+    </ResponseField>
+
+    <ResponseField name="sample_rate" type="integer">
+      音频采样率
+    </ResponseField>
+
+    <ResponseField name="channel_count" type="integer">
+      音频声道数
+    </ResponseField>
+
+    <ResponseField name="fallback_ids" type="array<string>">
+      FallbackIDs simulcast 降级候选层 id 列表，按画质从高到低排列；仅"自己之下的更低层"，不含自己
+    </ResponseField>
+
+    <ResponseField name="variant" type="boolean">
+      Variant 是否为 simulcast 副层。仅副层为 true，主层不写 (nil/false)
+    </ResponseField>
+
+    <ResponseField name="props" type="object">
+      流扩展属性
+      示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+    </ResponseField>
+
+    <ResponseField name="track" type="integer">
+      轨道号
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="link_id" type="integer">
+  流媒体连接id
+  示例：`100000002`
+</ResponseField>
+
+<ResponseField name="upload_srv" type="string">
+  流媒体服务
+  示例：`sm0dx5`
+</ResponseField>
+
 
 响应示例：
 
@@ -420,11 +621,21 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| with_detail | boolean | 否 | true | 是否包括详情 |
-| page | integer | 否 | 1 | 页数，从1开始 |
-| per-page | integer | 否 | 10 | 每页数据量 |
+<ParamField body="with_detail" type="boolean">
+  是否包括详情
+  示例：`true`
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+  示例：`1`
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+  示例：`10`
+</ParamField>
+
 
 请求示例：
 
@@ -438,19 +649,58 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data[].app_id | string | 68b3ft51smhz0x5glscw9whm78bw57uu | 应用id |
-| data[].channel | string | fire | 频道名 |
-| data[].stream_vendor | string |  | 流媒体供应商 |
-| data[].props | object |  | 频道扩展属性 |
-| data[].created_at | integer | 1718250917 | 频道创建时间 |
-| data[].updated_at | integer | 1718250921 |  |
-| data[].link_id | integer | 100000036 | 流媒体连接id |
-| data[].max_user | integer | 1024 | 房间最大人数，含义参考：https://www.yuque.com/anyconf/czwlh6/prtk0l4s8ylf7mk3 |
-| data[].max_audio | integer | 0 | 房间最大参与音频能量竞争路数（针对整个房间设置） |
-| data[].max_peer | integer | 32 | 单人最大转发的人数（音频、视频路数）（针对单人设置） |
-| data[].max_video | integer | 16 | 单人非主动pick模式下最大转发视频路数（针对单人设置，目前我们视频都是主动pick，所以这个设置没有意义） |
+<ResponseField name="app_id" type="string">
+  应用id
+  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道名
+  示例：`fire`
+</ResponseField>
+
+<ResponseField name="stream_vendor" type="string">
+  流媒体供应商
+</ResponseField>
+
+<ResponseField name="props" type="object">
+  频道扩展属性
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+  频道创建时间
+  示例：`1718250917`
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+  示例：`1718250921`
+</ResponseField>
+
+<ResponseField name="link_id" type="integer">
+  流媒体连接id
+  示例：`100000036`
+</ResponseField>
+
+<ResponseField name="max_user" type="integer">
+  房间最大人数，含义参考：https://www.yuque.com/anyconf/czwlh6/prtk0l4s8ylf7mk3
+  示例：`1024`
+</ResponseField>
+
+<ResponseField name="max_audio" type="integer">
+  房间最大参与音频能量竞争路数（针对整个房间设置）
+  示例：`0`
+</ResponseField>
+
+<ResponseField name="max_peer" type="integer">
+  单人最大转发的人数（音频、视频路数）（针对单人设置）
+  示例：`32`
+</ResponseField>
+
+<ResponseField name="max_video" type="integer">
+  单人非主动pick模式下最大转发视频路数（针对单人设置，目前我们视频都是主动pick，所以这个设置没有意义）
+  示例：`16`
+</ResponseField>
+
 
 响应示例：
 
@@ -497,13 +747,31 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| offline | boolean | 否 | false | 获取在线还是离线成员列表 |
-| with_audience | boolean | 否 | true | 是否包括隐身观众 |
-| page | integer | 否 | 1 | 页数，从1开始 |
-| per-page | integer | 否 | 10 | 每页数据量 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="offline" type="boolean">
+  获取在线还是离线成员列表
+  示例：`false`
+</ParamField>
+
+<ParamField body="with_audience" type="boolean">
+  是否包括隐身观众
+  示例：`true`
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+  示例：`1`
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+  示例：`10`
+</ParamField>
+
 
 请求示例：
 
@@ -519,41 +787,155 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data[].app_id | string | 68b3ft51smhz0x5glscw9whm78bw57uu | 应用id |
-| data[].uid | string | 1001 | 用户id |
-| data[].name | string | 张三 | 会中昵称 |
-| data[].device_type | integer | 1 | 设备类型 |
-| data[].device_id | string | aacc | 设备ID |
-| data[].version | string | 1.0 | 客户端RTCsdk版本号 |
-| data[].props | object | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 用户扩展属性 |
-| data[].net | string |  | 线路号 |
-| data[].sg | string |  | 服务器分组id |
-| data[].updated_at | integer | 1718250918 |  |
-| data[].channel | string | fire | 频道名 |
-| data[].sid | string | bjcjlbz18tfhbscaz225 | 会话id |
-| data[].is_audience | boolean | false | 是否观众，类似研讨会观众，只收流 |
-| data[].join_at | integer | 1718250918 | 进入时间 |
-| data[].leave_at | integer | 0 | 退出时间 |
-| data[].stream_tracks | array |  | 流轨道 |
-| data[].stream_tracks[].id | string |  | 轨道id，在stream里唯一，在全局不一定唯一 |
-| data[].stream_tracks[].desc | string |  | 自定义描述，如摄像头大流、摄像头小流、共享桌面流等 |
-| data[].stream_tracks[].kind | string |  | 轨道类型 |
-| data[].stream_tracks[].codec | integer |  | 编码类型 |
-| data[].stream_tracks[].width | integer |  | 视频宽 |
-| data[].stream_tracks[].height | integer |  | 视频高 |
-| data[].stream_tracks[].fps | integer |  | 视频帧率 |
-| data[].stream_tracks[].angle | integer |  | 视频角度 |
-| data[].stream_tracks[].bitrate | integer |  | 码率 |
-| data[].stream_tracks[].sample_rate | integer |  | 音频采样率 |
-| data[].stream_tracks[].channel_count | integer |  | 音频声道数 |
-| data[].stream_tracks[].fallback_ids | array |  | FallbackIDs simulcast 降级候选层 id 列表，按画质从高到低排列；仅"自己之下的更低层"，不含自己 |
-| data[].stream_tracks[].variant | boolean |  | Variant 是否为 simulcast 副层。仅副层为 true，主层不写 (nil/false) |
-| data[].stream_tracks[].props | object | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 流扩展属性 |
-| data[].stream_tracks[].track | integer |  | 轨道号 |
-| data[].link_id | integer | 100000037 | 流媒体连接id |
-| data[].upload_srv | string | sm0dx5 | 流媒体服务 |
+<ResponseField name="app_id" type="string">
+  应用id
+  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
+</ResponseField>
+
+<ResponseField name="uid" type="string">
+  用户id
+  示例：`1001`
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  会中昵称
+  示例：`张三`
+</ResponseField>
+
+<ResponseField name="device_type" type="integer">
+  设备类型
+  示例：`1`
+</ResponseField>
+
+<ResponseField name="device_id" type="string">
+  设备ID
+  示例：`aacc`
+</ResponseField>
+
+<ResponseField name="version" type="string">
+  客户端RTCsdk版本号
+  示例：`1.0`
+</ResponseField>
+
+<ResponseField name="props" type="object">
+  用户扩展属性
+  示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+</ResponseField>
+
+<ResponseField name="net" type="string">
+  线路号
+</ResponseField>
+
+<ResponseField name="sg" type="string">
+  服务器分组id
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+  示例：`1718250918`
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道名
+  示例：`fire`
+</ResponseField>
+
+<ResponseField name="sid" type="string">
+  会话id
+  示例：`bjcjlbz18tfhbscaz225`
+</ResponseField>
+
+<ResponseField name="is_audience" type="boolean">
+  是否观众，类似研讨会观众，只收流
+  示例：`false`
+</ResponseField>
+
+<ResponseField name="join_at" type="integer">
+  进入时间
+  示例：`1718250918`
+</ResponseField>
+
+<ResponseField name="leave_at" type="integer">
+  退出时间
+  示例：`0`
+</ResponseField>
+
+<ResponseField name="stream_tracks" type="array<object>">
+  流轨道
+  <Expandable title="元素字段">
+    <ResponseField name="id" type="string">
+      轨道id，在stream里唯一，在全局不一定唯一
+    </ResponseField>
+
+    <ResponseField name="desc" type="string">
+      自定义描述，如摄像头大流、摄像头小流、共享桌面流等
+    </ResponseField>
+
+    <ResponseField name="kind" type="string">
+      轨道类型
+    </ResponseField>
+
+    <ResponseField name="codec" type="integer">
+      编码类型
+    </ResponseField>
+
+    <ResponseField name="width" type="integer">
+      视频宽
+    </ResponseField>
+
+    <ResponseField name="height" type="integer">
+      视频高
+    </ResponseField>
+
+    <ResponseField name="fps" type="integer">
+      视频帧率
+    </ResponseField>
+
+    <ResponseField name="angle" type="integer">
+      视频角度
+    </ResponseField>
+
+    <ResponseField name="bitrate" type="integer">
+      码率
+    </ResponseField>
+
+    <ResponseField name="sample_rate" type="integer">
+      音频采样率
+    </ResponseField>
+
+    <ResponseField name="channel_count" type="integer">
+      音频声道数
+    </ResponseField>
+
+    <ResponseField name="fallback_ids" type="array<string>">
+      FallbackIDs simulcast 降级候选层 id 列表，按画质从高到低排列；仅"自己之下的更低层"，不含自己
+    </ResponseField>
+
+    <ResponseField name="variant" type="boolean">
+      Variant 是否为 simulcast 副层。仅副层为 true，主层不写 (nil/false)
+    </ResponseField>
+
+    <ResponseField name="props" type="object">
+      流扩展属性
+      示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+    </ResponseField>
+
+    <ResponseField name="track" type="integer">
+      轨道号
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="link_id" type="integer">
+  流媒体连接id
+  示例：`100000037`
+</ResponseField>
+
+<ResponseField name="upload_srv" type="string">
+  流媒体服务
+  示例：`sm0dx5`
+</ResponseField>
+
 
 响应示例：
 
@@ -629,13 +1011,31 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| offline | boolean | 否 | false | 获取在线还是离线成员列表 |
-| with_audience | boolean | 否 | true | 是否包括隐身观众 |
-| page | integer | 否 | 1 | 页数，从1开始 |
-| per-page | integer | 否 | 10 | 每页数据量 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="offline" type="boolean">
+  获取在线还是离线成员列表
+  示例：`false`
+</ParamField>
+
+<ParamField body="with_audience" type="boolean">
+  是否包括隐身观众
+  示例：`true`
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+  示例：`1`
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+  示例：`10`
+</ParamField>
+
 
 请求示例：
 
@@ -651,8 +1051,6 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
 
 响应示例：
 
@@ -685,10 +1083,16 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| props | object | 否 | `{"watermark_disabled":true}` | 频道扩展属性 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="props" type="object">
+  频道扩展属性
+  示例：`{"watermark_disabled":true}`
+</ParamField>
+
 
 请求示例：
 
@@ -730,29 +1134,98 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| uid | string | 是 | 1001 | 用户id（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| name | string | 否 | 张三 | 会中昵称 |
-| props | object | 否 | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 用户扩展属性 |
-| is_audience | boolean | 否 | false | 是否观众，类似研讨会观众，只收流 |
-| stream_tracks | array | 否 |  | 流轨道 |
-| stream_tracks[].id | string | 否 |  | 轨道id，在stream里唯一，在全局不一定唯一 |
-| stream_tracks[].desc | string | 否 |  | 自定义描述，如摄像头大流、摄像头小流、共享桌面流等 |
-| stream_tracks[].kind | string | 否 |  | 轨道类型 |
-| stream_tracks[].codec | integer | 否 |  | 编码类型 |
-| stream_tracks[].width | integer | 否 |  | 视频宽 |
-| stream_tracks[].height | integer | 否 |  | 视频高 |
-| stream_tracks[].fps | integer | 否 |  | 视频帧率 |
-| stream_tracks[].angle | integer | 否 |  | 视频角度 |
-| stream_tracks[].bitrate | integer | 否 |  | 码率 |
-| stream_tracks[].sample_rate | integer | 否 |  | 音频采样率 |
-| stream_tracks[].channel_count | integer | 否 |  | 音频声道数 |
-| stream_tracks[].fallback_ids | array | 否 |  | FallbackIDs simulcast 降级候选层 id 列表，按画质从高到低排列；仅"自己之下的更低层"，不含自己 |
-| stream_tracks[].variant | boolean | 否 |  | Variant 是否为 simulcast 副层。仅副层为 true，主层不写 (nil/false) |
-| stream_tracks[].props | object | 否 | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 流扩展属性 |
-| stream_tracks[].track | integer | 否 |  | 轨道号 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="uid" type="string" required>
+  用户id（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`1001`
+</ParamField>
+
+<ParamField body="name" type="string">
+  会中昵称
+  示例：`张三`
+</ParamField>
+
+<ParamField body="props" type="object">
+  用户扩展属性
+  示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+</ParamField>
+
+<ParamField body="is_audience" type="boolean">
+  是否观众，类似研讨会观众，只收流
+  示例：`false`
+</ParamField>
+
+<ParamField body="stream_tracks" type="array<object>">
+  流轨道
+  <Expandable title="元素字段">
+    <ParamField body="id" type="string">
+      轨道id，在stream里唯一，在全局不一定唯一
+    </ParamField>
+
+    <ParamField body="desc" type="string">
+      自定义描述，如摄像头大流、摄像头小流、共享桌面流等
+    </ParamField>
+
+    <ParamField body="kind" type="string">
+      轨道类型
+    </ParamField>
+
+    <ParamField body="codec" type="integer">
+      编码类型
+    </ParamField>
+
+    <ParamField body="width" type="integer">
+      视频宽
+    </ParamField>
+
+    <ParamField body="height" type="integer">
+      视频高
+    </ParamField>
+
+    <ParamField body="fps" type="integer">
+      视频帧率
+    </ParamField>
+
+    <ParamField body="angle" type="integer">
+      视频角度
+    </ParamField>
+
+    <ParamField body="bitrate" type="integer">
+      码率
+    </ParamField>
+
+    <ParamField body="sample_rate" type="integer">
+      音频采样率
+    </ParamField>
+
+    <ParamField body="channel_count" type="integer">
+      音频声道数
+    </ParamField>
+
+    <ParamField body="fallback_ids" type="array<string>">
+      FallbackIDs simulcast 降级候选层 id 列表，按画质从高到低排列；仅"自己之下的更低层"，不含自己
+    </ParamField>
+
+    <ParamField body="variant" type="boolean">
+      Variant 是否为 simulcast 副层。仅副层为 true，主层不写 (nil/false)
+    </ParamField>
+
+    <ParamField body="props" type="object">
+      流扩展属性
+      示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+    </ParamField>
+
+    <ParamField body="track" type="integer">
+      轨道号
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
 
 请求示例：
 
@@ -820,15 +1293,39 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| action | string | 是 | chat | 消息命令 |
-| content | any | 否 | i love srtc | 消息体 |
-| uid | string | 否 | 1001 | 发送者ID（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| name | string | 否 |  | 发送者昵称 |
-| ruids | array | 否 |  | 接收者ID列表(空时给全频道发) |
-| important | boolean | 否 | false | 是否重要，重要消息在断线重连后会重发确保收到 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  消息命令
+  示例：`chat`
+</ParamField>
+
+<ParamField body="content" type="any">
+  消息体
+  示例：`i love srtc`
+</ParamField>
+
+<ParamField body="uid" type="string">
+  发送者ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`1001`
+</ParamField>
+
+<ParamField body="name" type="string">
+  发送者昵称
+</ParamField>
+
+<ParamField body="ruids" type="array<string>">
+  接收者ID列表(空时给全频道发)
+</ParamField>
+
+<ParamField body="important" type="boolean">
+  是否重要，重要消息在断线重连后会重发确保收到
+  示例：`false`
+</ParamField>
+
 
 请求示例：
 
@@ -873,10 +1370,16 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| uid | string | 是 | 1001 | 第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="uid" type="string" required>
+  第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`1001`
+</ParamField>
+
 
 请求示例：
 
@@ -916,11 +1419,20 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| props | object | 否 | `{"watermark_disabled":true}` | 频道扩展属性 |
-| stream_vendor | string | 否 |  | 流媒体供应商 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="props" type="object">
+  频道扩展属性
+  示例：`{"watermark_disabled":true}`
+</ParamField>
+
+<ParamField body="stream_vendor" type="string">
+  流媒体供应商
+</ParamField>
+
 
 请求示例：
 
@@ -963,9 +1475,11 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
 
 请求示例：
 
@@ -1004,14 +1518,34 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 否 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| begin_at | integer | 否 | 0 |  |
-| end_at | integer | 否 | 0 |  |
-| sort | string | 否 | -open_at | 可排序字段：open_at、destroy_at |
-| page | integer | 否 | 1 | 页数，从1开始 |
-| per-page | integer | 否 | 10 | 每页数据量 |
+<ParamField body="channel" type="string">
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="begin_at" type="integer">
+  示例：`0`
+</ParamField>
+
+<ParamField body="end_at" type="integer">
+  示例：`0`
+</ParamField>
+
+<ParamField body="sort" type="string">
+  可排序字段：open_at、destroy_at
+  示例：`-open_at`
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+  示例：`1`
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+  示例：`10`
+</ParamField>
+
 
 请求示例：
 
@@ -1028,15 +1562,39 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data[].id | string | snp3rp |  |
-| data[].app_id | string | 68b3ft51smhz0x5glscw9whm78bw57uu |  |
-| data[].channel | string | fire | 频道 |
-| data[].props | object | `{"watermark_disabled":true}` | 扩展属性 |
-| data[].open_at | integer | 1718194666 | 开启时间 |
-| data[].destroy_at | integer | 1718194705 | 销毁时间 |
-| data[].destroy_reason | integer | 1 | 销毁原因 |
+<ResponseField name="id" type="string">
+  示例：`snp3rp`
+</ResponseField>
+
+<ResponseField name="app_id" type="string">
+  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道
+  示例：`fire`
+</ResponseField>
+
+<ResponseField name="props" type="object">
+  扩展属性
+  示例：`{"watermark_disabled":true}`
+</ResponseField>
+
+<ResponseField name="open_at" type="integer">
+  开启时间
+  示例：`1718194666`
+</ResponseField>
+
+<ResponseField name="destroy_at" type="integer">
+  销毁时间
+  示例：`1718194705`
+</ResponseField>
+
+<ResponseField name="destroy_reason" type="integer">
+  销毁原因
+  示例：`1`
+</ResponseField>
+
 
 响应示例：
 
@@ -1067,7 +1625,7 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 ---
 
-## 出入频道记录，单人多次进入有多条记录
+## 出入频道记录
 
 `POST /server/v1/channel/list-user-record`
 
@@ -1081,17 +1639,47 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| uid | string | 否 | 1001 | 用户id（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| name | string | 否 | 张三 |  |
-| begin_at | integer | 否 | 0 |  |
-| end_at | integer | 否 | 0 |  |
-| with_audience | boolean | 否 |  | 是否包括隐身观众 |
-| sort | string | 否 | -join_at | 可排序字段：join_at、leave_at |
-| page | integer | 否 | 1 | 页数，从1开始 |
-| per-page | integer | 否 | 10 | 每页数据量 |
+<ParamField body="channel" type="string" required>
+  频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="uid" type="string">
+  用户id（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`1001`
+</ParamField>
+
+<ParamField body="name" type="string">
+  示例：`张三`
+</ParamField>
+
+<ParamField body="begin_at" type="integer">
+  示例：`0`
+</ParamField>
+
+<ParamField body="end_at" type="integer">
+  示例：`0`
+</ParamField>
+
+<ParamField body="with_audience" type="boolean">
+  是否包括隐身观众
+</ParamField>
+
+<ParamField body="sort" type="string">
+  可排序字段：join_at、leave_at
+  示例：`-join_at`
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+  示例：`1`
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+  示例：`10`
+</ParamField>
+
 
 请求示例：
 
@@ -1111,22 +1699,72 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data[].id | string | syd30d |  |
-| data[].app_id | string | 68b3ft51smhz0x5glscw9whm78bw57uu |  |
-| data[].channel | string | fire | 频道 |
-| data[].sid | string | ff6u9joh5c1a0toa7dj1 |  |
-| data[].uid | string | 1001 |  |
-| data[].name | string | 张三 | 会中昵称 |
-| data[].is_audience | boolean | false | 是否观众，类似研讨会观众，只收流 |
-| data[].device_type | integer | 1 | 设备类型 |
-| data[].device_id | string | aacc | 设备ID |
-| data[].version | string | 1.0 | 客户端RTCsdk版本号 |
-| data[].props | object | `{"avatar":"https://cdn.example.com/avatar/1001.png"}` | 扩展属性 |
-| data[].join_at | integer | 1718194697 | 进入时间 |
-| data[].leave_at | integer | 1718194700 | 退出时间 |
-| data[].leave_reason | integer | 1 | 退出原因 |
+<ResponseField name="id" type="string">
+  示例：`syd30d`
+</ResponseField>
+
+<ResponseField name="app_id" type="string">
+  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道
+  示例：`fire`
+</ResponseField>
+
+<ResponseField name="sid" type="string">
+  示例：`ff6u9joh5c1a0toa7dj1`
+</ResponseField>
+
+<ResponseField name="uid" type="string">
+  示例：`1001`
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  会中昵称
+  示例：`张三`
+</ResponseField>
+
+<ResponseField name="is_audience" type="boolean">
+  是否观众，类似研讨会观众，只收流
+  示例：`false`
+</ResponseField>
+
+<ResponseField name="device_type" type="integer">
+  设备类型
+  示例：`1`
+</ResponseField>
+
+<ResponseField name="device_id" type="string">
+  设备ID
+  示例：`aacc`
+</ResponseField>
+
+<ResponseField name="version" type="string">
+  客户端RTCsdk版本号
+  示例：`1.0`
+</ResponseField>
+
+<ResponseField name="props" type="object">
+  扩展属性
+  示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
+</ResponseField>
+
+<ResponseField name="join_at" type="integer">
+  进入时间
+  示例：`1718194697`
+</ResponseField>
+
+<ResponseField name="leave_at" type="integer">
+  退出时间
+  示例：`1718194700`
+</ResponseField>
+
+<ResponseField name="leave_reason" type="integer">
+  退出原因
+  示例：`1`
+</ResponseField>
+
 
 响应示例：
 
@@ -1164,7 +1802,7 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 ---
 
-## 查询频道的在线人数(支持多频道同时查询)
+## 查询在线人数
 
 `POST /server/v1/channel/online-user-num`
 
@@ -1180,10 +1818,15 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channels | array | 是 | `["fire","water"]` | 频道名列表 |
-| with_audience | boolean | 否 |  | 是否包括隐身观众 |
+<ParamField body="channels" type="array<string>" required>
+  频道名列表
+  示例：`["fire","water"]`
+</ParamField>
+
+<ParamField body="with_audience" type="boolean">
+  是否包括隐身观众
+</ParamField>
+
 
 请求示例：
 
@@ -1199,8 +1842,6 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
 
 响应示例：
 
@@ -1227,12 +1868,26 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| channel | string | 是 | fire | 频道名 |
-| begin_at | integer | 是 | 1718799878 | 起始时间 |
-| end_at | integer | 否 | 0 | 终止时间 |
-| with_audience | boolean | 否 | false | 是否包括隐身观众 |
+<ParamField body="channel" type="string" required>
+  频道名
+  示例：`fire`
+</ParamField>
+
+<ParamField body="begin_at" type="integer" required>
+  起始时间
+  示例：`1718799878`
+</ParamField>
+
+<ParamField body="end_at" type="integer">
+  终止时间
+  示例：`0`
+</ParamField>
+
+<ParamField body="with_audience" type="boolean">
+  是否包括隐身观众
+  示例：`false`
+</ParamField>
+
 
 请求示例：
 
@@ -1247,10 +1902,16 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data.user_num | integer | 60 | 参与人数 |
-| data.user_times | integer | 1935 | 参与次数 |
+<ResponseField name="user_num" type="integer">
+  参与人数
+  示例：`60`
+</ResponseField>
+
+<ResponseField name="user_times" type="integer">
+  参与次数
+  示例：`1935`
+</ResponseField>
+
 
 响应示例：
 
@@ -1282,11 +1943,21 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data.time | integer | 1718250917 | 日期 |
-| data.num | integer | 120 | 次数 |
-| data.dur | integer | 43200 | 时长(秒) |
+<ResponseField name="time" type="integer">
+  日期
+  示例：`1718250917`
+</ResponseField>
+
+<ResponseField name="num" type="integer">
+  次数
+  示例：`120`
+</ResponseField>
+
+<ResponseField name="dur" type="integer">
+  时长(秒)
+  示例：`43200`
+</ResponseField>
+
 
 响应示例：
 
@@ -1318,10 +1989,14 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 示例值 | 说明 |
-| --- | --- | --- | --- | --- |
-| begin_at | integer | 否 | 1718194666 |  |
-| end_at | integer | 否 | 1718799878 |  |
+<ParamField body="begin_at" type="integer">
+  示例：`1718194666`
+</ParamField>
+
+<ParamField body="end_at" type="integer">
+  示例：`1718799878`
+</ParamField>
+
 
 请求示例：
 
@@ -1334,11 +2009,21 @@ description: "频道的创建、查询、成员管理与历史记录"
 
 **响应参数**
 
-| 参数名 | 类型 | 示例值 | 说明 |
-| --- | --- | --- | --- |
-| data[].day | string | 2024-06-12 | 日期 |
-| data[].num | integer | 120 | 次数 |
-| data[].dur | integer | 43200 | 时长(秒) |
+<ResponseField name="day" type="string">
+  日期
+  示例：`2024-06-12`
+</ResponseField>
+
+<ResponseField name="num" type="integer">
+  次数
+  示例：`120`
+</ResponseField>
+
+<ResponseField name="dur" type="integer">
+  时长(秒)
+  示例：`43200`
+</ResponseField>
+
 
 响应示例：
 

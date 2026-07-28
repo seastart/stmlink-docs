@@ -17,14 +17,28 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.app_id | string | 应用ID |
-| data.layout | string | 布局类型 auto,full,grids_2,grids_4,... |
-| data.watermark_type | integer | 水印类型 1无,2单排,3多排 |
-| data.window_tag_type | string | 窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签 |
-| data.created_at | integer |  |
-| data.updated_at | integer |  |
+<ResponseField name="app_id" type="string">
+  应用ID
+</ResponseField>
+
+<ResponseField name="layout" type="string">
+  布局类型 auto,full,grids_2,grids_4,...
+</ResponseField>
+
+<ResponseField name="watermark_type" type="integer">
+  水印类型 1无,2单排,3多排
+</ResponseField>
+
+<ResponseField name="window_tag_type" type="string">
+  窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+</ResponseField>
+
 
 响应示例：
 
@@ -52,11 +66,18 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| layout | string | 否 | 布局类型 auto,full,grids_2,grids_4,... |
-| watermark_type | integer | 否 | 水印类型 1无,2单排,3多排 |
-| window_tag_type | string | 否 | 窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签（最大长度 2） |
+<ParamField body="layout" type="string">
+  布局类型 auto,full,grids_2,grids_4,...
+</ParamField>
+
+<ParamField body="watermark_type" type="integer">
+  水印类型 1无,2单排,3多排
+</ParamField>
+
+<ParamField body="window_tag_type" type="string">
+  窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签（最大长度 2）
+</ParamField>
+
 
 请求示例：
 
@@ -91,14 +112,28 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| begin_at | integer | 否 |  |
-| end_at | integer | 否 |  |
-| search | array | 否 | 通用搜索 |
-| sort | string | 否 | 排序（可排序字段：created_at） |
-| page | integer | 否 | 页数，从1开始 |
-| per-page | integer | 否 | 每页数据量 |
+<ParamField body="begin_at" type="integer">
+</ParamField>
+
+<ParamField body="end_at" type="integer">
+</ParamField>
+
+<ParamField body="search" type="array<string>">
+  通用搜索
+</ParamField>
+
+<ParamField body="sort" type="string">
+  排序（可排序字段：created_at）
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+</ParamField>
+
 
 请求示例：
 
@@ -117,23 +152,64 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data[].task_id | string | 任务ID |
-| data[].op_uid | string | 任务发起人ID |
-| data[].op_name | string | 任务发起人名 |
-| data[].channel | string | 频道 |
-| data[].title | string | 频道标题 |
-| data[].room_no | string | 外部会议号 |
-| data[].task_status | integer | 0待开始 1进行中 2待结束 3异常结束 4正常结束 |
-| data[].err_desc | string | 错误描述 |
-| data[].vod_key | string | 录像文件key |
-| data[].vod_size | integer | 录像大小(字节) |
-| data[].mcu_at | integer | MCU开始时间 |
-| data[].mcu_dur | integer | Mcu时长(秒) |
-| data[].tags | string | 录像标签 逗号隔开 |
-| data[].created_at | integer |  |
-| data[].updated_at | integer |  |
+<ResponseField name="task_id" type="string">
+  任务ID
+</ResponseField>
+
+<ResponseField name="op_uid" type="string">
+  任务发起人ID
+</ResponseField>
+
+<ResponseField name="op_name" type="string">
+  任务发起人名
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  频道标题
+</ResponseField>
+
+<ResponseField name="room_no" type="string">
+  外部会议号
+</ResponseField>
+
+<ResponseField name="task_status" type="integer">
+  0待开始 1进行中 2待结束 3异常结束 4正常结束
+</ResponseField>
+
+<ResponseField name="err_desc" type="string">
+  错误描述
+</ResponseField>
+
+<ResponseField name="vod_key" type="string">
+  录像文件key
+</ResponseField>
+
+<ResponseField name="vod_size" type="integer">
+  录像大小(字节)
+</ResponseField>
+
+<ResponseField name="mcu_at" type="integer">
+  MCU开始时间
+</ResponseField>
+
+<ResponseField name="mcu_dur" type="integer">
+  Mcu时长(秒)
+</ResponseField>
+
+<ResponseField name="tags" type="string">
+  录像标签 逗号隔开
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+</ResponseField>
+
 
 响应示例：
 
@@ -178,11 +254,18 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_id | string | 否 | 任务ID |
-| channel | string | 否 | 频道(无TaskId时必填) |
-| is_lan | boolean | 否 | 是否局域网 |
+<ParamField body="task_id" type="string">
+  任务ID
+</ParamField>
+
+<ParamField body="channel" type="string">
+  频道(无TaskId时必填)
+</ParamField>
+
+<ParamField body="is_lan" type="boolean">
+  是否局域网
+</ParamField>
+
 
 请求示例：
 
@@ -196,12 +279,22 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.addr | string | 录像地址 |
-| data.size | integer | 录像大小(字节) |
-| data.mcu_at | integer | MCU开始时间 |
-| data.mcu_dur | integer | Mcu时长(秒) |
+<ResponseField name="addr" type="string">
+  录像地址
+</ResponseField>
+
+<ResponseField name="size" type="integer">
+  录像大小(字节)
+</ResponseField>
+
+<ResponseField name="mcu_at" type="integer">
+  MCU开始时间
+</ResponseField>
+
+<ResponseField name="mcu_dur" type="integer">
+  Mcu时长(秒)
+</ResponseField>
+
 
 响应示例：
 
@@ -227,10 +320,14 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_id | string | 否 | 任务ID |
-| channel | string | 否 | 频道(无TaskId时必填) |
+<ParamField body="task_id" type="string">
+  任务ID
+</ParamField>
+
+<ParamField body="channel" type="string">
+  频道(无TaskId时必填)
+</ParamField>
+
 
 请求示例：
 
@@ -264,44 +361,126 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_type | integer | 是 | 1录像模式 2合流模式 3混合模式 |
-| op_uid | string | 否 | 任务发起人ID |
-| op_name | string | 否 | 任务发起人名（最大长度 100） |
-| channel | string | 是 | 频道（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| title | string | 是 | 频道标题 |
-| room_no | string | 否 | 外部会议号（最大长度 50） |
-| tags | string | 否 | 录像标签,逗号分隔 |
-| layout_data | object | 否 | 布局数据 |
-| layout_data.layout | string | 是 | 布局类型 |
-| layout_data.watermark | object | 否 | 水印 |
-| layout_data.watermark.type | integer | 否 | 类型 0默认, 1无, 2单排, 3多排 |
-| layout_data.watermark.text | string | 否 | 指定内容, 空表示自动(会议标题) |
-| layout_data.watermark.size | integer | 否 | 字体大小, 0表示默认值 |
-| layout_data.watermark.color | string | 否 | 字体颜色, 空表示默认值 |
-| layout_data.watermark.ol_color | string | 否 | 轮廓颜色, 空表示默认值 |
-| layout_data.watermark.ol_width | integer | 否 | 轮廓线宽, 0表示默认值 |
-| layout_data.nobody_text | string | 否 | 会中无人时显示的文本, 空表示无人时停止录制 |
-| layout_data.tag | object | 否 | 默认标签 |
-| layout_data.tag.type | string | 否 | 类型, 字母或组合: L左, R右, T上, B下 |
-| layout_data.tag.text | string | 否 | 指定内容, 空表示自动(会中名称) |
-| layout_data.tag.size | integer | 否 | 字体大小, 0表示默认 |
-| layout_data.tag.color | string | 否 | 字体颜色, 空表示默认 |
-| layout_data.tag.bg_color | string | 否 | 背景颜色, 空表示默认 |
-| layout_data.polling_dur | integer | 否 | 轮询时长(秒) 0不轮询 |
-| layout_data.div_list | array | 否 | 逻辑块列表 |
-| layout_data.div_list[].cells | array | 否 | 宫格列表, 空表示剩余格子共用此处的用户 |
-| layout_data.div_list[].cells[].idx | integer | 否 | 格子序号, 排序规则按HTML中&lt;td&gt;标签的顺序 |
-| layout_data.div_list[].cells[].bind_share | boolean | 否 | 是否优化绑定频道内的共享流 |
-| layout_data.div_list[].cells[].tag | object | 否 | 标签 |
-| layout_data.div_list[].cells[].tag.type | string | 否 | 类型, 字母或组合: L左, R右, T上, B下 |
-| layout_data.div_list[].cells[].tag.text | string | 否 | 指定内容, 空表示自动(会中名称) |
-| layout_data.div_list[].cells[].tag.size | integer | 否 | 字体大小, 0表示默认 |
-| layout_data.div_list[].cells[].tag.color | string | 否 | 字体颜色, 空表示默认 |
-| layout_data.div_list[].cells[].tag.bg_color | string | 否 | 背景颜色, 空表示默认 |
-| layout_data.div_list[].uids | array | 否 | 用户ID列表, 空表示大轮询在线剩余用户, 多个表示小轮询 |
-| layout_data.names | object | 否 | 用户名称表, 与McuDiv.Uids对应(不必需) |
+<ParamField body="task_type" type="integer" required>
+  1录像模式 2合流模式 3混合模式
+</ParamField>
+
+<ParamField body="op_uid" type="string">
+  任务发起人ID
+</ParamField>
+
+<ParamField body="op_name" type="string">
+  任务发起人名（最大长度 100）
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  频道（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="title" type="string" required>
+  频道标题
+</ParamField>
+
+<ParamField body="room_no" type="string">
+  外部会议号（最大长度 50）
+</ParamField>
+
+<ParamField body="tags" type="string">
+  录像标签,逗号分隔
+</ParamField>
+
+<ParamField body="layout_data" type="object">
+  布局数据
+  <Expandable title="字段">
+    <ParamField body="layout" type="string" required>
+      布局类型
+    </ParamField>
+
+    <ParamField body="watermark" type="object">
+      水印
+      <Expandable title="字段">
+        <ParamField body="type" type="integer">
+          类型 0默认, 1无, 2单排, 3多排
+        </ParamField>
+
+        <ParamField body="text" type="string">
+          指定内容, 空表示自动(会议标题)
+        </ParamField>
+
+        <ParamField body="size" type="integer">
+          字体大小, 0表示默认值
+        </ParamField>
+
+        <ParamField body="color" type="string">
+          字体颜色, 空表示默认值
+        </ParamField>
+
+        <ParamField body="ol_color" type="string">
+          轮廓颜色, 空表示默认值
+        </ParamField>
+
+        <ParamField body="ol_width" type="integer">
+          轮廓线宽, 0表示默认值
+        </ParamField>
+
+      </Expandable>
+    </ParamField>
+
+    <ParamField body="nobody_text" type="string">
+      会中无人时显示的文本, 空表示无人时停止录制
+    </ParamField>
+
+    <ParamField body="tag" type="object">
+      默认标签
+      <Expandable title="字段">
+        <ParamField body="type" type="string">
+          类型, 字母或组合: L左, R右, T上, B下
+        </ParamField>
+
+        <ParamField body="text" type="string">
+          指定内容, 空表示自动(会中名称)
+        </ParamField>
+
+        <ParamField body="size" type="integer">
+          字体大小, 0表示默认
+        </ParamField>
+
+        <ParamField body="color" type="string">
+          字体颜色, 空表示默认
+        </ParamField>
+
+        <ParamField body="bg_color" type="string">
+          背景颜色, 空表示默认
+        </ParamField>
+
+      </Expandable>
+    </ParamField>
+
+    <ParamField body="polling_dur" type="integer">
+      轮询时长(秒) 0不轮询
+    </ParamField>
+
+    <ParamField body="div_list" type="array<object>">
+      逻辑块列表
+      <Expandable title="元素字段">
+        <ParamField body="cells" type="array<object>">
+          宫格列表, 空表示剩余格子共用此处的用户
+        </ParamField>
+
+        <ParamField body="uids" type="array<string>">
+          用户ID列表, 空表示大轮询在线剩余用户, 多个表示小轮询
+        </ParamField>
+
+      </Expandable>
+    </ParamField>
+
+    <ParamField body="names" type="object">
+      用户名称表, 与McuDiv.Uids对应(不必需)
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
 
 请求示例：
 
@@ -360,8 +539,6 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -382,11 +559,18 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_id | string | 否 | 任务ID |
-| channel | string | 否 | 频道(无TaskId时必填) |
-| task_type | integer | 否 | 任务类型(选填) |
+<ParamField body="task_id" type="string">
+  任务ID
+</ParamField>
+
+<ParamField body="channel" type="string">
+  频道(无TaskId时必填)
+</ParamField>
+
+<ParamField body="task_type" type="integer">
+  任务类型(选填)
+</ParamField>
+
 
 请求示例：
 
@@ -421,10 +605,14 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_id | string | 否 | 任务ID |
-| channel | string | 否 | 频道(无TaskId时必填) |
+<ParamField body="task_id" type="string">
+  任务ID
+</ParamField>
+
+<ParamField body="channel" type="string">
+  频道(无TaskId时必填)
+</ParamField>
+
 
 请求示例：
 
@@ -437,23 +625,64 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.task_id | string | 任务ID |
-| data.op_uid | string | 任务发起人ID |
-| data.op_name | string | 任务发起人名 |
-| data.channel | string | 频道 |
-| data.title | string | 频道标题 |
-| data.room_no | string | 外部会议号 |
-| data.task_status | integer | 0待开始 1进行中 2待结束 3异常结束 4正常结束 |
-| data.err_desc | string | 错误描述 |
-| data.vod_key | string | 录像文件key |
-| data.vod_size | integer | 录像大小(字节) |
-| data.mcu_at | integer | MCU开始时间 |
-| data.mcu_dur | integer | Mcu时长(秒) |
-| data.tags | string | 录像标签 逗号隔开 |
-| data.created_at | integer |  |
-| data.updated_at | integer |  |
+<ResponseField name="task_id" type="string">
+  任务ID
+</ResponseField>
+
+<ResponseField name="op_uid" type="string">
+  任务发起人ID
+</ResponseField>
+
+<ResponseField name="op_name" type="string">
+  任务发起人名
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  频道标题
+</ResponseField>
+
+<ResponseField name="room_no" type="string">
+  外部会议号
+</ResponseField>
+
+<ResponseField name="task_status" type="integer">
+  0待开始 1进行中 2待结束 3异常结束 4正常结束
+</ResponseField>
+
+<ResponseField name="err_desc" type="string">
+  错误描述
+</ResponseField>
+
+<ResponseField name="vod_key" type="string">
+  录像文件key
+</ResponseField>
+
+<ResponseField name="vod_size" type="integer">
+  录像大小(字节)
+</ResponseField>
+
+<ResponseField name="mcu_at" type="integer">
+  MCU开始时间
+</ResponseField>
+
+<ResponseField name="mcu_dur" type="integer">
+  Mcu时长(秒)
+</ResponseField>
+
+<ResponseField name="tags" type="string">
+  录像标签 逗号隔开
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+</ResponseField>
+
 
 响应示例：
 
@@ -490,11 +719,18 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_id | string | 是 | 任务ID |
-| title | string | 否 | 最大长度 100 |
-| tags | array | 否 | 最大长度 10 |
+<ParamField body="task_id" type="string" required>
+  任务ID
+</ParamField>
+
+<ParamField body="title" type="string">
+  最大长度 100
+</ParamField>
+
+<ParamField body="tags" type="array<string>">
+  最大长度 10
+</ParamField>
+
 
 请求示例：
 
@@ -531,10 +767,14 @@ description: "云端录制、点播地址与直播推流"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| task_id | string | 否 | 任务ID |
-| channel | string | 否 | 频道(无TaskId时必填) |
+<ParamField body="task_id" type="string">
+  任务ID
+</ParamField>
+
+<ParamField body="channel" type="string">
+  频道(无TaskId时必填)
+</ParamField>
+
 
 请求示例：
 
@@ -547,11 +787,15 @@ description: "云端录制、点播地址与直播推流"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.rtmp | string |  |
-| data.flv | string |  |
-| data.hls | string |  |
+<ResponseField name="rtmp" type="string">
+</ResponseField>
+
+<ResponseField name="flv" type="string">
+</ResponseField>
+
+<ResponseField name="hls" type="string">
+</ResponseField>
+
 
 响应示例：
 

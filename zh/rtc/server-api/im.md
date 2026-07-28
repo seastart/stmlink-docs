@@ -13,11 +13,18 @@ description: "会议外的即时消息与设备在线管理"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| uid | string | 是 | 第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）（最大长度 100） |
-| net | string | 否 | 线路 |
-| sg | string | 否 | 服务分组 |
+<ParamField body="uid" type="string" required>
+  第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）（最大长度 100）
+</ParamField>
+
+<ParamField body="net" type="string">
+  线路
+</ParamField>
+
+<ParamField body="sg" type="string">
+  服务分组
+</ParamField>
+
 
 请求示例：
 
@@ -31,10 +38,12 @@ description: "会议外的即时消息与设备在线管理"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.sid | string |  |
-| data.token | string |  |
+<ResponseField name="sid" type="string">
+</ResponseField>
+
+<ResponseField name="token" type="string">
+</ResponseField>
+
 
 响应示例：
 
@@ -58,16 +67,38 @@ description: "会议外的即时消息与设备在线管理"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| action | string | 是 | 消息命令 |
-| content | any | 否 | 消息体 |
-| uid | string | 否 | 发送者用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| sid | string | 否 | 发送者会话ID |
-| name | string | 否 | 发送者名称 |
-| ruids | array | 否 | 接收者用户ID列表(当Rsids有数据时,忽略此字段) |
-| rsids | array | 否 | 接收者SessionID列表 |
-| important | boolean | 否 | 是否重要，重要消息在断线重连后会重发确保收到 |
+<ParamField body="action" type="string" required>
+  消息命令
+</ParamField>
+
+<ParamField body="content" type="any">
+  消息体
+</ParamField>
+
+<ParamField body="uid" type="string">
+  发送者用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="sid" type="string">
+  发送者会话ID
+</ParamField>
+
+<ParamField body="name" type="string">
+  发送者名称
+</ParamField>
+
+<ParamField body="ruids" type="array<string>">
+  接收者用户ID列表(当Rsids有数据时,忽略此字段)
+</ParamField>
+
+<ParamField body="rsids" type="array<string>">
+  接收者SessionID列表
+</ParamField>
+
+<ParamField body="important" type="boolean">
+  是否重要，重要消息在断线重连后会重发确保收到
+</ParamField>
+
 
 请求示例：
 
@@ -111,11 +142,18 @@ description: "会议外的即时消息与设备在线管理"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| uid | string | 否 | 操作者用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| ruids | array | 否 | 被踢者用户ID列表(当Rsids有数据时,忽略此字段) |
-| rsids | array | 否 | 被踢者SessionID列表 |
+<ParamField body="uid" type="string">
+  操作者用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="ruids" type="array<string>">
+  被踢者用户ID列表(当Rsids有数据时,忽略此字段)
+</ParamField>
+
+<ParamField body="rsids" type="array<string>">
+  被踢者SessionID列表
+</ParamField>
+
 
 请求示例：
 
@@ -154,9 +192,10 @@ description: "会议外的即时消息与设备在线管理"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| uids | array | 是 | 用户ID列表 |
+<ParamField body="uids" type="array<string>" required>
+  用户ID列表
+</ParamField>
+
 
 请求示例：
 
@@ -170,8 +209,6 @@ description: "会议外的即时消息与设备在线管理"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 

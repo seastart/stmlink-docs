@@ -1,4 +1,5 @@
 ---
+title: "出入频道记录"
 examples:
   channel: fire
   uid: "1001"

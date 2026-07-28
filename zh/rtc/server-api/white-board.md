@@ -13,13 +13,26 @@ description: "白板的授权、检测与销毁"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| board | string | 是 | 板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| uid | string | 是 | 第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）（最大长度 100） |
-| name | string | 否 | 第三方用户名称 |
-| net | string | 否 | 网络线路 |
-| sg | string | 否 | 服务分组 |
+<ParamField body="board" type="string" required>
+  板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="uid" type="string" required>
+  第三方用户ID（仅支持大小写字母、数字、下划线 _ 与连字符 -）（最大长度 100）
+</ParamField>
+
+<ParamField body="name" type="string">
+  第三方用户名称
+</ParamField>
+
+<ParamField body="net" type="string">
+  网络线路
+</ParamField>
+
+<ParamField body="sg" type="string">
+  服务分组
+</ParamField>
+
 
 请求示例：
 
@@ -35,10 +48,12 @@ description: "白板的授权、检测与销毁"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
-| data.auth_code | string |  |
-| data.addr | string |  |
+<ResponseField name="auth_code" type="string">
+</ResponseField>
+
+<ResponseField name="addr" type="string">
+</ResponseField>
+
 
 响应示例：
 
@@ -62,9 +77,10 @@ description: "白板的授权、检测与销毁"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| board | string | 是 | 板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
+<ParamField body="board" type="string" required>
+  板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
 
 请求示例：
 
@@ -76,8 +92,6 @@ description: "白板的授权、检测与销毁"
 
 **响应参数**
 
-| 参数名 | 类型 | 说明 |
-| --- | --- | --- |
 
 响应示例：
 
@@ -98,11 +112,18 @@ description: "白板的授权、检测与销毁"
 
 **请求参数**
 
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| board | string | 是 | 板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -） |
-| op_uid | string | 否 | 操作者ID |
-| op_name | string | 否 | 操作者名称 |
+<ParamField body="board" type="string" required>
+  板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+</ParamField>
+
+<ParamField body="op_uid" type="string">
+  操作者ID
+</ParamField>
+
+<ParamField body="op_name" type="string">
+  操作者名称
+</ParamField>
+
 
 请求示例：
 
