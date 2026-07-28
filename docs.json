@@ -20,15 +20,27 @@
       {
         "header": "产品",
         "items": [
-          { "label": "官网", "href": "https://www.stmlink.com" },
-          { "label": "SRTC 音视频 SDK", "href": "https://docs.stmlink.com/zh/rtc/overview" },
-          { "label": "SMeeting 会议 SDK", "href": "https://docs.stmlink.com/zh/meeting/quickstart" }
+          {
+            "label": "官网",
+            "href": "https://www.stmlink.com"
+          },
+          {
+            "label": "SRTC 音视频 SDK",
+            "href": "https://docs.stmlink.com/zh/rtc/overview"
+          },
+          {
+            "label": "SMeeting 会议 SDK",
+            "href": "https://docs.stmlink.com/zh/meeting/quickstart"
+          }
         ]
       },
       {
         "header": "支持",
         "items": [
-          { "label": "联系我们", "href": "https://www.stmlink.com" }
+          {
+            "label": "联系我们",
+            "href": "https://www.stmlink.com"
+          }
         ]
       }
     ]
@@ -235,7 +247,18 @@
                 "group": "服务端 API",
                 "pages": [
                   "zh/rtc/server-api/overview",
-                  "zh/rtc/server-api/api-list",
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/server-api/common",
+                      "zh/rtc/server-api/channel",
+                      "zh/rtc/server-api/mcu",
+                      "zh/rtc/server-api/agent",
+                      "zh/rtc/server-api/im",
+                      "zh/rtc/server-api/white-board",
+                      "zh/rtc/server-api/asr"
+                    ]
+                  },
                   "zh/rtc/server-api/error-codes",
                   "zh/rtc/server-api/server-demo"
                 ]
@@ -407,5 +430,11 @@
         ]
       }
     ]
-  }
+  },
+  "redirects": [
+    {
+      "source": "/zh/rtc/server-api/api-list",
+      "destination": "/zh/rtc/server-api/channel"
+    }
+  ]
 }
