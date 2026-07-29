@@ -11,10 +11,6 @@ description: "云端录制、点播地址与直播推流"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-查询你这个应用的**默认录制配置**。无请求参数。
-
-「启动录制/合流/直播任务」不传 `layout_data` 时就用这份配置，所以适合把统一的水印、标签、布局策略配在这里，避免每次启动任务都重复传。
-
 **请求参数**
 
 无
@@ -23,30 +19,24 @@ description: "云端录制、点播地址与直播推流"
 
 <ResponseField name="app_id" type="string">
   应用ID
-  示例：`68b3ft51smhz0x5glscw9whm78bw57uu`
 </ResponseField>
 
 <ResponseField name="layout" type="string">
   布局类型 auto,full,grids_2,grids_4,...
-  示例：`auto`
 </ResponseField>
 
 <ResponseField name="watermark_type" type="integer">
   水印类型 1无,2单排,3多排
-  示例：`1`
 </ResponseField>
 
 <ResponseField name="window_tag_type" type="string">
   窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签
-  示例：`L`
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
-  示例：`1718250917`
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
-  示例：`1718250921`
 </ResponseField>
 
 
@@ -56,12 +46,12 @@ description: "云端录制、点播地址与直播推流"
 {
   "code": 0,
   "data": {
-    "app_id": "68b3ft51smhz0x5glscw9whm78bw57uu",
-    "created_at": 1718250917,
-    "layout": "auto",
-    "updated_at": 1718250921,
-    "watermark_type": 1,
-    "window_tag_type": "L"
+    "app_id": "",
+    "created_at": 0,
+    "layout": "",
+    "updated_at": 0,
+    "watermark_type": 0,
+    "window_tag_type": ""
   }
 }
 ```
@@ -74,15 +64,7 @@ description: "云端录制、点播地址与直播推流"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-全局默认录像配置更新
-
-更新应用的默认录制配置。三个字段都是可选的，只传要改的即可。
-
-+ `layout` 取值同「启动录制/合流/直播任务」
-+ `watermark_type`：`1` 无水印、`2` 单排、`3` 多排（`0` 表示沿用系统默认）
-+ `window_tag_type` 是每个画面上的成员名标签位置，用字母组合表示：`L` 左、`R` 右、`T` 上、`B` 下，可组合如 `LB` 表示左下；**留空表示不显示标签**
-
-改动只影响之后启动的新任务，进行中的任务不受影响。
+更新应用的默认录制配置。三个字段都可选，只传要改的。 改动只影响之后启动的新任务，进行中的任务不受影响。
 
 **请求参数**
 
@@ -92,12 +74,12 @@ description: "云端录制、点播地址与直播推流"
 </ParamField>
 
 <ParamField body="watermark_type" type="integer">
-  水印类型 1无,2单排,3多排
+  水印类型 0默认,1无,2单排,3多排
   示例：`1`
 </ParamField>
 
 <ParamField body="window_tag_type" type="string">
-  窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签（最大长度 2）
+  每个画面上成员名标签的位置，字母或组合:L左,R右,T上,B下（如 LB 左下）；空表示不显示标签（最大长度 2）
   示例：`L`
 </ParamField>
 
@@ -133,21 +115,17 @@ description: "云端录制、点播地址与直播推流"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-分页查询录像列表。
-
-+ `begin_at` / `end_at` 为秒级时间戳，按任务创建时间过滤，传 `0` 表示不限
-+ `search` 支持按 `channel`、`task_status`、`room_no`、`op_name`、`title`、`tags` 检索
-+ `sort` 支持 `created_at`，前缀 `-` 表示倒序（最新在前）
-
-只有**已完成**的任务才有可播放的录像文件；`task_status` 用于区分进行中与已结束（见响应字段说明）。
+分页查询录像列表。只有已完成的任务才有可播放的录像文件， 用响应里的 task_status 区分进行中与已结束。
 
 **请求参数**
 
 <ParamField body="begin_at" type="integer">
+  起始时间，秒级时间戳，按任务创建时间过滤；0 表示不限
   示例：`1718194666`
 </ParamField>
 
 <ParamField body="end_at" type="integer">
+  终止时间，秒级时间戳；0 表示不限
   示例：`1718799878`
 </ParamField>
 
@@ -189,32 +167,26 @@ description: "云端录制、点播地址与直播推流"
 
 <ResponseField name="task_id" type="string">
   任务ID
-  示例：`sxjgwy`
 </ResponseField>
 
 <ResponseField name="op_uid" type="string">
   任务发起人ID
-  示例：`1001`
 </ResponseField>
 
 <ResponseField name="op_name" type="string">
   任务发起人名
-  示例：`张三`
 </ResponseField>
 
 <ResponseField name="channel" type="string">
   频道
-  示例：`fire`
 </ResponseField>
 
 <ResponseField name="title" type="string">
   频道标题
-  示例：`项目周会 2024-06-12`
 </ResponseField>
 
 <ResponseField name="room_no" type="string">
   外部会议号
-  示例：`818595664`
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -265,18 +237,18 @@ description: "云端录制、点播地址与直播推流"
   "code": 0,
   "data": [
     {
-      "channel": "fire",
+      "channel": "",
       "created_at": 0,
       "err_desc": "",
       "mcu_at": 0,
       "mcu_dur": 0,
-      "op_name": "张三",
-      "op_uid": "1001",
-      "room_no": "818595664",
+      "op_name": "",
+      "op_uid": "",
+      "room_no": "",
       "tags": "",
-      "task_id": "sxjgwy",
+      "task_id": "",
       "task_status": 0,
-      "title": "项目周会 2024-06-12",
+      "title": "",
       "updated_at": 0,
       "vod_key": "",
       "vod_size": 0
@@ -293,14 +265,7 @@ description: "云端录制、点播地址与直播推流"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-获取录像地址
-
-获取录像的回放地址。任务必须**已停止且转码完成**，进行中的任务取不到地址。
-
-+ 有 `task_id` 时按任务取；只传 `channel` 则取该频道最近一次的录像
-+ `is_lan` 为 true 时返回内网地址，适合纯内网部署或专线接入的场景；默认返回外网地址
-
-地址有有效期，**不要长期缓存或直接存进你的业务库**，每次播放前重新获取。
+获取录像回放地址。任务必须已停止且转码完成，进行中的任务取不到地址。 地址有有效期，不要长期缓存或存进业务库，每次播放前重新获取。
 
 **请求参数**
 
@@ -310,13 +275,12 @@ description: "云端录制、点播地址与直播推流"
 </ParamField>
 
 <ParamField body="channel" type="string">
-  频道(无TaskId时必填)
+  频道(无TaskId时必填)；只传频道则取该频道最近一次的录像
   示例：`fire`
 </ParamField>
 
 <ParamField body="is_lan" type="boolean">
-  是否局域网
-  示例：`false`
+  是否返回内网地址，适合纯内网部署或专线接入；默认返回外网地址
 </ParamField>
 
 
@@ -371,11 +335,7 @@ description: "云端录制、点播地址与直播推流"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-MCU录像任务
-
-删除录像。**文件会被真正删除，不可恢复**，请在你的业务侧做好确认。
-
-有 `task_id` 时按任务删；只传 `channel` 则删该频道最近一次的录像。进行中的任务不能删，需先停止。
+按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道 进行中的任务（或最近一次录像，取决于具体接口）。
 
 **请求参数**
 
@@ -420,52 +380,7 @@ MCU录像任务
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-MCU任务开始或更新
-
-启动服务端的录制、合流或直播任务。**同一频道对同一类型只会有一个进行中的任务**——重复调用不会新建，而是按传入参数更新已有任务（所以本接口既是"开始"也是"更新"）。
-
-### task_type 是按位组合的
-
-这是最容易搞错的地方。四个独立能力各占一位，想同时要哪几个就相加：
-
-| 值 | 能力 | 产物 |
-| --- | --- | --- |
-| 1 | 录像 | 录像文件，用「获取录像播放地址」取回放 |
-| 2 | 合流 | 把多路流混成一路（旁路推流、给不支持多流的下游用） |
-| 4 | 录音 | 纯音频文件 |
-| 8 | 直播流 | 直播拉流地址，用「获取直播拉流地址」取 |
-
-所以 `3` = 录像+合流，`9` = 录像+直播（示例里用的就是 9），`15` = 四种全开。**不要把 3 理解成"混合模式"这一种独立类型**。
-
-### 布局
-
-`layout_data.layout` 决定画面怎么排。`auto` 会按人数自动选宫格，绝大多数场景够用；需要固定画面时才指定具体布局：
-
-| 取值 | 说明 |
-| --- | --- |
-| `auto` | 自动，按在线人数选宫格 |
-| `full` | 全屏单画面 |
-| `grids_N` | 等分宫格，N 取 2、3、4、5、6、8、9、12、16、20、25（`grids_3` 是品字形）|
-| `right_4` / `top_4` | 主画面 + 右侧/顶部小窗 |
-| `br_7` / `tl_7` | 下 L 型 / 上 L 型 |
-| `tb_8` | 左右布局 |
-
-不传 `layout_data` 时用应用的默认录制配置（见「获取默认录制配置」）。
-
-### 指定谁出现在哪个格子
-
-`layout_data.div_list` 用来把特定用户钉到特定格子，不指定就按加入顺序自动填充：
-
-+ `cells[].idx` 是格子序号，顺序等同 HTML 表格里 `<td>` 的排列（从左到右、从上到下）
-+ `uids` 留空表示"剩余在线用户轮流出现在这些格子里"（大轮询）；填多个则是这几个人在这些格子里轮询（小轮询）
-+ `polling_dur` 是轮询间隔秒数，`0` 表示不轮询
-+ `cells[].bind_share` 为 true 时该格子优先绑定频道内的共享屏幕流
-
-### 注意
-
-+ 频道里没人时的行为由 `layout_data.nobody_text` 决定：留空表示**暂停录制**，填了文本则继续录制并显示该文本
-+ `title` 会成为录像的标题，也是水印的默认内容（`watermark.text` 留空时）
-+ `room_no` 是你自己业务的会议号，仅用于回查，RTC 侧不做校验
+启动服务端的录制、合流或直播任务。同一频道对同一类型只有一个进行中的任务： 重复调用不新建，而是按传入参数更新已有任务。
 
 **请求参数**
 
@@ -490,22 +405,22 @@ MCU任务开始或更新
 </ParamField>
 
 <ParamField body="title" type="string" required>
-  频道标题
+  频道标题。会成为录像标题，也是水印的默认内容（watermark.text 留空时）
   示例：`项目周会 2024-06-12`
 </ParamField>
 
 <ParamField body="room_no" type="string">
-  外部会议号（最大长度 50）
+  外部会议号。你自己业务的会议号，仅用于回查，RTC 侧不校验（最大长度 50）
   示例：`818595664`
 </ParamField>
 
 <ParamField body="tags" type="string">
-  录像标签,逗号分隔
+  录像标签，逗号分隔（注意：修改录像接口的 tags 是数组）
   示例：`周会,研发`
 </ParamField>
 
 <ParamField body="layout_data" type="object">
-  布局数据
+  布局数据。不传时使用应用的默认录制配置（见获取默认录制配置）
   <Expandable title="字段">
     <ParamField body="layout" type="string" required>
       布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
@@ -517,6 +432,7 @@ MCU任务开始或更新
       <Expandable title="字段">
         <ParamField body="type" type="integer">
           类型 0默认, 1无, 2单排, 3多排
+          示例：`1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -551,6 +467,7 @@ MCU任务开始或更新
       <Expandable title="字段">
         <ParamField body="type" type="string">
           类型, 字母或组合: L左, R右, T上, B下
+          示例：`L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -574,7 +491,6 @@ MCU任务开始或更新
 
     <ParamField body="polling_dur" type="integer">
       轮询时长(秒) 0不轮询
-      示例：`0`
     </ParamField>
 
     <ParamField body="div_list" type="array<object>">
@@ -616,7 +532,7 @@ MCU任务开始或更新
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -634,7 +550,7 @@ MCU任务开始或更新
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -642,7 +558,7 @@ MCU任务开始或更新
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "op_name": "张三",
@@ -658,7 +574,6 @@ MCU任务开始或更新
 
 <ResponseField name="task_id" type="string">
   本次任务的 ID，停止任务、查询详情、取播放地址都用它
-  示例：`sxjgwy`
 </ResponseField>
 
 
@@ -668,7 +583,7 @@ MCU任务开始或更新
 {
   "code": 0,
   "data": {
-    "task_id": "sxjgwy"
+    "task_id": ""
   }
 }
 ```
@@ -681,14 +596,7 @@ MCU任务开始或更新
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-MCU任务停止
-
-停止进行中的录制/合流/直播任务。
-
-+ 有 `task_id` 时按任务停；只传 `channel` 则停该频道进行中的任务
-+ `task_type` 选填：不传表示停掉该频道所有类型的任务，传了则只停指定类型（按位组合，同「启动」接口）
-
-录像文件在任务停止后才完成转码，随后才能取到播放地址。频道销毁时进行中的任务会自动停止，不必先手动调用本接口。
+停止进行中的录制/合流/直播任务。录像文件在任务停止后才完成转码，随后才能取到播放地址。 频道销毁时进行中的任务会自动停止，不必先手动调用。
 
 **请求参数**
 
@@ -703,7 +611,7 @@ MCU任务停止
 </ParamField>
 
 <ParamField body="task_type" type="integer">
-  任务类型(选填)
+  任务类型(选填)。不传表示停掉该频道所有类型的任务；传了则只停指定类型，取值同启动接口
   示例：`1`
 </ParamField>
 
@@ -739,11 +647,7 @@ MCU任务停止
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-MCU录像任务
-
-查询单个录制任务的详情，包含任务状态、时长、文件信息。
-
-有 `task_id` 时按任务查；只传 `channel` 则查该频道**进行中**的任务——这是判断"某个频道现在是否正在录制"的常用方式。
+按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道 进行中的任务（或最近一次录像，取决于具体接口）。
 
 **请求参数**
 
@@ -771,7 +675,6 @@ MCU录像任务
 
 <ResponseField name="task_id" type="string">
   任务ID
-  示例：`sxjgwy`
 </ResponseField>
 
 <ResponseField name="op_uid" type="string">
@@ -784,7 +687,6 @@ MCU录像任务
 
 <ResponseField name="channel" type="string">
   频道
-  示例：`fire`
 </ResponseField>
 
 <ResponseField name="title" type="string">
@@ -836,7 +738,7 @@ MCU录像任务
 {
   "code": 0,
   "data": {
-    "channel": "fire",
+    "channel": "",
     "created_at": 0,
     "err_desc": "",
     "mcu_at": 0,
@@ -845,7 +747,7 @@ MCU录像任务
     "op_uid": "",
     "room_no": "",
     "tags": "",
-    "task_id": "sxjgwy",
+    "task_id": "",
     "task_status": 0,
     "title": "",
     "updated_at": 0,
@@ -863,14 +765,7 @@ MCU录像任务
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-修改录像 注意: 不接受调用方传入 app_id，应用维度一律取鉴权得到的 app_id，避免改到其他租户的录像
-
-修改录像的标题与标签，用于归档整理。不影响录像文件本身。
-
-+ `title` 和 `tags` 都是可选的，只传要改的
-+ `tags` 最多 10 个，整体替换而非追加——需要保留的标签要一并传入
-
-标题与标签都可以用「录像列表」的 `search` 检索到。
+修改录像的标题与标签，用于归档整理，不影响录像文件本身。 标题与标签都可以用录像列表的 search 检索到。 注意: 不接受调用方传入 app_id，应用维度一律取鉴权得到的 app_id，避免改到其他租户的录像
 
 **请求参数**
 
@@ -880,13 +775,13 @@ MCU录像任务
 </ParamField>
 
 <ParamField body="title" type="string">
-  最大长度 100
-  示例：`项目周会 2024-06-12（已归档）`
+  录像标题，不传表示不改（最大长度 100）
+  示例：`项目周会（已归档）`
 </ParamField>
 
 <ParamField body="tags" type="array<string>">
-  最大长度 10
-  示例：`["周会","研发","已归档"]`
+  标签，最多 10 个，整体替换而非追加 —— 要保留的标签需一并传入（最大长度 10）
+  示例：`["周会","研发"]`
 </ParamField>
 
 
@@ -896,11 +791,10 @@ MCU录像任务
 {
   "tags": [
     "周会",
-    "研发",
-    "已归档"
+    "研发"
   ],
   "task_id": "sxjgwy",
-  "title": "项目周会 2024-06-12（已归档）"
+  "title": "项目周会（已归档）"
 }
 ```
 
@@ -925,11 +819,7 @@ MCU录像任务
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
-MCU录像任务
-
-获取直播拉流地址。需要启动任务时 `task_type` 带上 `8`（直播流）这一位，否则没有直播流可拉。
-
-与录像地址不同，直播地址在**任务进行中**就能取到——这正是它的用途：把会议画面分发给不参与互动的观众。
+按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道 进行中的任务（或最近一次录像，取决于具体接口）。
 
 **请求参数**
 

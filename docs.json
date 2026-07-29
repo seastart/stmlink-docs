@@ -259,6 +259,12 @@
                       "zh/rtc/server-api/asr"
                     ]
                   },
+                  {
+                    "group": "接入指南",
+                    "pages": [
+                      "zh/rtc/server-api/guides/recording"
+                    ]
+                  },
                   "zh/rtc/server-api/error-codes",
                   "zh/rtc/server-api/server-demo"
                 ]

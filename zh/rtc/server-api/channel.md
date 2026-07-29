@@ -247,7 +247,7 @@ description: "频道的创建、查询、成员管理与历史记录"
 **响应参数**
 
 <ResponseField name="sid" type="string">
-  本次会话 ID，由服务端生成。用于后续按会话维度查询与对账
+  本次会话 ID，由服务端生成，用于按会话维度查询与对账
   示例：`co63jg6g54hu3b0xhtie`
 </ResponseField>
 

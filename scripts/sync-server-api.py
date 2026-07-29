@@ -34,8 +34,16 @@ DOC_BASE = '/zh/rtc/server-api'
 # 自动生成页面的自描述标记，与 apidoc 的 writeFrontmatter 保持一致。
 # 靠它识别哪些页面是生成的，而不是硬编码文件名清单 —— 这样新增或删除接口分组时本脚本无需改动。
 GENERATED_MARK = '本页接口结构由后端源码自动生成'
-# 人工维护的页面，不参与自动增删
+# 人工维护的页面，不参与自动增删。
+# 「接入指南」放长篇叙述性内容（怎么组合、什么时候用哪个），接口的参数与返回结构
+# 一律在生成的参考页里；新增指南页时在这里加一行。
 MANUAL_HEAD = ['zh/rtc/server-api/overview']
+MANUAL_GUIDES = {
+    'group': '接入指南',
+    'pages': [
+        'zh/rtc/server-api/guides/recording',
+    ],
+}
 MANUAL_TAIL = ['zh/rtc/server-api/error-codes', 'zh/rtc/server-api/server-demo']
 
 
@@ -121,7 +129,7 @@ def update_nav(out_dir):
         for tab in lang['tabs']:
             for g in tab.get('groups', []):
                 if g.get('group') == '服务端 API':
-                    g['pages'] = MANUAL_HEAD + [frag] + MANUAL_TAIL
+                    g['pages'] = MANUAL_HEAD + [frag, MANUAL_GUIDES] + MANUAL_TAIL
                     hit = True
     if not hit:
         sys.exit('docs.json 里找不到「服务端 API」分组，导航未更新')
