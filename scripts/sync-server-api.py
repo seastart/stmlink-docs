@@ -88,6 +88,29 @@ def sync_pages(out_dir):
     return generated, removed
 
 
+def check_stale_overlays(out_dir):
+    """反向检查：overlay 文件对应的接口是否还存在。
+
+    接口从代码里删掉后，它的 overlay 不会自动消失（生成器只报「缺散文」，
+    不报「多散文」），久了就是一堆无人引用的文件。这里按生成产物里出现的
+    接口路径反推，列出已失效的 overlay 供人工确认删除。
+    """
+    live = set()
+    for md in out_dir.glob('*.md'):
+        for line in md.read_text(encoding='utf-8').splitlines():
+            # 页面里每个接口都有一行 `POST /server/v1/xxx`
+            if line.startswith('`') and '/server/v1/' in line:
+                path = line.strip('`').split(' ', 1)[-1].strip('`').strip()
+                live.add(path.lstrip('/').replace('/', '_'))
+    stale = []
+    for f in sorted(OVERLAY.glob('*.md')):
+        if f.name in ('_global.md', 'README.md'):
+            continue
+        if f.stem not in live:
+            stale.append(f.name)
+    return stale
+
+
 def update_nav(out_dir):
     frag = json.loads((out_dir / 'nav-fragment.json').read_text(encoding='utf-8'),
                       object_pairs_hook=collections.OrderedDict)
@@ -114,6 +137,7 @@ if __name__ == '__main__':
     try:
         generate(out_dir)
         pages, removed = sync_pages(out_dir)
+        stale = check_stale_overlays(out_dir)
         nav = update_nav(out_dir)
     finally:
         shutil.rmtree(out_dir, ignore_errors=True)
@@ -121,5 +145,9 @@ if __name__ == '__main__':
     print(f'\n同步 {len(pages)} 个页面到 {TARGET.relative_to(DOCS)}')
     if removed:
         print('清理孤儿页(接口已从代码中删除):', ', '.join(removed))
+    if stale:
+        print('\n以下 overlay 已无对应接口，请确认后删除:')
+        for name in stale:
+            print(f'  api-overlay/rtc-srvapi/{name}')
     print(f'docs.json 导航 {len(nav)} 项已更新')
     print('\n下一步: mint broken-links')
