@@ -118,6 +118,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
+设置GB28181国标设备的一个通道
+
 给国标设备添加或更新一个通道（一台国标设备下可以有多个摄像头通道）。
 
 + `subject` 是通道编号，18–20 位数字，需与设备端的实际配置一致；可以用「生成国标设备的通道编号」按规范自动生成
@@ -174,6 +176,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 `POST /server/v1/agent/del-gb28181-subject`
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+
+删除GB28181国标设备的一个通道
 
 删除国标设备的一个通道。设备本身不受影响，只是该通道不再可被邀请入会。
 
@@ -423,6 +427,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
+调用gw的api接口
+
 透传调用设备网关自身的 API，用于常规接口覆盖不到的排查与运维场景（如查询网关内部状态、触发设备重连）。
 
 <Warning>这是面向运维的低层接口，`api` 与 `params` 的取值取决于网关版本，没有稳定性承诺。业务代码请不要依赖它，优先使用上面那些具名接口。</Warning>
@@ -478,6 +484,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 `POST /server/v1/agent/delete`
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+
+删除
 
 删除已登记的设备。响应的 `data` 是被删除的设备 ID。
 
@@ -609,6 +617,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 `POST /server/v1/agent/list-invite`
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+
+设备列表
 
 分页查询可邀请的设备列表，通常用于在你的界面上给用户挑设备。
 
@@ -743,6 +753,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
 
+邀请设备入会
+
 把设备拉进频道。可以一次邀请多台。
 
 + `agents[].type` 与 `contact` 从「设备列表」取；`nickname` 是会中显示名，留空则用设备的显示名
@@ -801,6 +813,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 `POST /server/v1/agent/set-camera-enabled`
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+
+开关设备视频
 
 开关设备的摄像头。设备不像普通客户端那样能自己操作，只能由服务端下发。
 
@@ -861,6 +875,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 `POST /server/v1/agent/set-mic-enabled`
 
 鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+
+开关设备音频
 
 开关设备的麦克风，语义与「开关设备视频」一致：`uid` 用设备在频道里的用户 ID（带 `_agent_` 前缀），订阅了 `agent_operate` 回调时会先征询你的业务后端。
 
