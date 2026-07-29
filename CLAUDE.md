@@ -70,20 +70,22 @@ navigation.languages（中文/英文）
 
 ## 自动生成的页面（服务端 API）
 
-`zh/rtc/server-api/` 下的接口页面（`common` / `channel` / `mcu` / `agent` / `im` /
-`white-board` / `asr`）**由脚本生成，不要手工编辑**，改动会在下次同步时被覆盖。
+`zh/rtc/server-api/` 下的接口页面（`channel` / `mcu` / `agent` / `im` / `white-board` /
+`asr`）**由脚本生成，不要手工编辑**，改动会在下次同步时被覆盖。
 
 ```bash
 python3 scripts/sync-server-api.py    # rtc-backend 默认在 ../rtc-backend
 mint broken-links                      # 提交前校验
 ```
 
-要改内容，按性质分两处：
+**本仓不存任何接口内容。** 页面上的每一个字——接口名、简介、字段说明、示例值——
+全部来自 rtc-backend 的代码注释，要改就去改代码（写法见 `rtc-backend/README.md`
+的「对外接口文档（srvapi）」一节）。本仓只维护两类东西：
 
-| 改什么 | 改哪里 |
+| 内容 | 位置 |
 | --- | --- |
-| 接口路径、参数、类型、必填、校验规则、响应结构 | rtc-backend 源码（一律从代码提取） |
-| 业务说明、调用时序、注意事项、示例值、接口标题 | `api-overlay/rtc-srvapi/`（详见该目录 README） |
+| 概览（鉴权、签名、响应格式、uid/sid） | `zh/rtc/server-api/overview.md`（手写） |
+| 篇幅长的玩法说明（调用时序、多接口配合、值域表格） | `zh/rtc/server-api/guides/`（手写，新增时在 sync 脚本的 `MANUAL_GUIDES` 里加一行） |
 
 同一分组下的页面由 `router.go` 的 gin group 决定，`docs.json` 的「接口文档」子分组
 由脚本整块替换 —— 所以往那个子分组里手工加页面会在下次同步时丢失。
@@ -93,6 +95,10 @@ mint broken-links                      # 提交前校验
 （与下面「各端通用文档规范」里 SDK 文档的表格约定不同）。原因是 Mintlify 把表格列等宽
 均分，5 列时每列仅 150px，长的参数说明会被压成竖条。生成器另有 `-render table` 输出
 不依赖 Mintlify 组件的通用 markdown，供将来做 llms.txt 这类纯文本产物使用。
+
+接口页与指南页互相引用时：**指南页可以用链接**（`/zh/rtc/server-api/agent#新增设备`），
+**代码注释里只用书名号写页名**（如「设备接入指南」）—— 注释同时会进 `openapi/srvapi.json`，
+那里的站内相对链接对 apipost 用户是无效的。
 
 下面的「各端通用文档规范」针对**客户端 SDK** 文档（iOS/Android/Web 等手写页面），
 不适用于本节所述的自动生成页面。

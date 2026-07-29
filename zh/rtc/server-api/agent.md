@@ -9,48 +9,24 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/create`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-把 SIP / H323 话机、国标监控、RTSP 流等外部设备登记到你的应用下，之后就能用「邀请设备入会」把它拉进频道。返回的是**设备 ID**，请保存下来——后续修改、删除、查详情都用它。
+把 SIP / H323 话机、国标监控、RTSP 流等外部设备登记到你的应用下，之后就能用
+「邀请设备入会」把它拉进频道。返回的是设备 ID，请保存下来 —— 后续修改、删除、
+查详情都用它。
 
-### 接入方式与对应参数
-
-`type` 是 **URL 查询参数**（`?type=regsip`），不在请求体里。请求体字段随 `type` 变化：
-
-| `type` | 说明 | 特有必填字段 |
-| --- | --- | --- |
-| `ipsip` | SIP 话机，IP 直连 | `uri`（`ip:port`）|
-| `regsip` | SIP 话机，注册模式 | `username`（不能含 `:`）、`auth_pwd` |
-| `iph323` | H323 终端，IP 直连 | `uri`（`ip:port`）|
-| `regh323` | H323 终端，注册模式 | `username`（**只能是数字短号**）、`auth_pwd` |
-| `gb28181` | 国标监控设备 | `sip_no`（18–20 位数字）、`auth_pwd`，可选 `subjects` |
-| `rtsp` | RTSP 拉流 | `uri`（必须以 `rtsp` 开头），可选 `transport_type`（`UDP` 默认 / `TCP`）|
-
-所有方式都必填 `display_name`（显示名称）和 `gw`（设备网关，取值见「设备网关列表」），`remark` 可选。
-
-### 关于 gw
-
-设备不是直连 RTC，而是挂在某个**设备网关**上，由网关负责信令与媒体转换。所以登记设备前要先调「设备网关列表」拿到可用的 `gw`，填错会导致设备无法上线。
-
-### 国标设备的通道
-
-`gb28181` 的 `subjects` 是「通道编号 → 通道名称」的键值对，一台国标设备下可能有多个摄像头通道：
-
-```json
-{"50010700001320000001": "嘉宾席", "50010700001320000002": "观众席"}
-```
-
-也可以先不传，之后用「设置国标设备的一个通道」逐个添加。通道编号可以用「生成国标设备的通道编号」自动生成。
+请求体字段随 URL 查询参数 type 变化（每种接入方式的必填项不同），
+六种接入方式各自要传什么，见「设备接入指南」。
 
 **URL 查询参数**
 
 <ParamField query="type" type="string" required>
-  设备接入方式，决定请求体需要哪些字段（见下表）
+  接入方式，取值见「设备接入指南」
 </ParamField>
 
 **请求参数**
 
-无（参数全部通过 URL 查询串传递）
+请求体字段随上面的查询参数变化，见接口说明中指引的指南页。
 
 **响应参数**
 
@@ -74,25 +50,23 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/update`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-修改已登记设备的连接信息或显示名称。
+修改已登记设备的连接信息或显示名称。请求体字段与「新增设备」相同（按 type 变化），
+另需带上设备 id，见「设备接入指南」。
 
-+ `type` 同样是 URL 查询参数，**必须与设备原本的接入方式一致**，不能借此把 SIP 设备改成 RTSP
-+ 请求体字段与「新增设备」相同（按 `type` 变化），另需带上设备 `id`
-+ 改动会在设备下次连接时生效；正在会中的设备不受影响
-
-要换接入方式，请删除后重新登记。
++ type 必须与设备原本的接入方式一致，不能借此把 SIP 设备改成 RTSP；要换接入方式请删除后重新登记
++ 改动会在设备下次连接时生效，正在会中的设备不受影响
 
 **URL 查询参数**
 
 <ParamField query="type" type="string" required>
-  设备接入方式，必须与该设备登记时的一致
+  接入方式，必须与该设备登记时的一致
 </ParamField>
 
 **请求参数**
 
-无（参数全部通过 URL 查询串传递）
+请求体字段随上面的查询参数变化，见接口说明中指引的指南页。
 
 **响应参数**
 
@@ -116,32 +90,27 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/set-gb28181-subject`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
-
-设置GB28181国标设备的一个通道
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 给国标设备添加或更新一个通道（一台国标设备下可以有多个摄像头通道）。
+通道编号已存在时是更新名称，不存在则新增。
 
-+ `subject` 是通道编号，18–20 位数字，需与设备端的实际配置一致；可以用「生成国标设备的通道编号」按规范自动生成
-+ `name` 是通道显示名，会中会用它区分同一台设备的不同画面
-+ 通道编号已存在时是更新名称，不存在则新增
-
-也可以在「新增设备」时用 `subjects` 一次性批量传入。
+也可以在「新增设备」时用 subjects 一次性批量传入。
 
 **请求参数**
 
 <ParamField body="id" type="string" required>
-  设备id（最大长度 64）
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
   示例：`sw8kjx`
 </ParamField>
 
 <ParamField body="subject" type="string" required>
-  通道编号（最大长度 20）
+  通道编号，需与设备端的实际配置一致；可用「生成国标设备的通道编号」按规范自动生成（最大长度 20）
   示例：`50010700001320000001`
 </ParamField>
 
 <ParamField body="name" type="string" required>
-  通道名称（最大长度 100）
+  通道名称，会中用它区分同一台设备的不同画面（最大长度 100）
   示例：`嘉宾席`
 </ParamField>
 
@@ -175,12 +144,9 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/del-gb28181-subject`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
-
-删除GB28181国标设备的一个通道
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 删除国标设备的一个通道。设备本身不受影响，只是该通道不再可被邀请入会。
-
 正在会中的通道会先被移出频道。
 
 **请求参数**
@@ -224,11 +190,13 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/gen-gb28181-subject`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-按国标规范为指定设备生成一个**尚未使用的通道编号**，避免自己拼编号时格式出错或与已有通道冲突。
+按国标规范为指定设备生成一个尚未使用的通道编号，避免自己拼编号时格式出错
+或与已有通道冲突。
 
-生成的编号只是返回给你，不会自动登记——拿到后仍需调「设置国标设备的一个通道」并填上通道名称。
+生成的编号只是返回给你，不会自动登记 —— 拿到后仍需调「设置国标设备的一个通道」
+并填上通道名称。
 
 **请求参数**
 
@@ -249,7 +217,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 **响应参数**
 
 <ResponseField name="data" type="string">
-  生成的通道编号（尚未登记，需再调「设置国标设备的一个通道」）
+  生成的通道编号，尚未登记，需再调「设置国标设备的一个通道」
 </ResponseField>
 
 
@@ -268,9 +236,10 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/gen-gb28181-sip-no`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-生成一个尚未使用的国标设备 SIP 编号，用于登记新的国标设备（`type=gb28181` 时的 `sip_no`）。无请求参数。
+生成一个尚未使用的国标设备 SIP 编号，用于登记新的国标设备（type=gb28181 时的
+sip_no）。无请求参数。
 
 同样只是返回编号，不会自动创建设备。
 
@@ -281,7 +250,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 **响应参数**
 
 <ResponseField name="data" type="string">
-  生成的设备 SIP 编号（尚未创建设备）
+  生成的设备 SIP 编号，尚未创建设备
 </ResponseField>
 
 
@@ -300,16 +269,18 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/list-gw`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-列出可用的**设备网关**。登记设备前先调它拿 `gw` 的取值。
+列出可用的设备网关。登记设备前先调它拿 gw 的取值。
 
-设备网关是介于外部设备与 RTC 之间的转换层：SIP/H323/国标各有自己的信令协议，由网关负责对接，并把媒体转成 RTC 能用的格式。不同网关支持的接入方式不同，所以用 `type`（URL 查询参数）筛选。
+设备网关是介于外部设备与 RTC 之间的转换层：SIP/H323/国标各有自己的信令协议，
+由网关负责对接，并把媒体转成 RTC 能用的格式。不同网关支持的接入方式不同，
+所以用 type 筛选，取值见「设备接入指南」。
 
 **URL 查询参数**
 
 <ParamField query="type" type="string" required>
-  按接入方式筛选，只返回支持该方式的网关
+  按接入方式筛选，只返回支持该方式的网关；取值见「设备接入指南」
 </ParamField>
 
 **请求参数**
@@ -359,18 +330,20 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/list-gw-info`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-获取网关的**平台侧信息**，用于配置设备端。
+获取网关的平台侧信息，用于配置设备端。
 
-典型用法是国标接入：国标摄像头需要在设备端填写"上级平台"的 SIP 编号、域、IP、端口，这些值就从这里取，填进摄像头的国标配置页面，设备才能注册上来。
+典型用法是国标接入：国标摄像头需要在设备端填写"上级平台"的 SIP 编号、域、IP、
+端口，这些值就从这里取，填进摄像头的国标配置页面，设备才能注册上来。
 
-与「设备网关列表」的区别：那个是"我们有哪些网关"，这个是"要让设备连上某个网关，设备端该怎么填"。
+与「设备网关列表」的区别：那个是"我们有哪些网关"，这个是"要让设备连上某个网关，
+设备端该怎么填"。
 
 **URL 查询参数**
 
 <ParamField query="type" type="string" required>
-  接入方式，不同方式返回的平台信息字段不同
+  接入方式，不同方式返回的平台信息字段不同；取值见「设备接入指南」
 </ParamField>
 
 **请求参数**
@@ -425,26 +398,28 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/call-gw-api`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-调用gw的api接口
+透传调用设备网关自身的 API，用于常规接口覆盖不到的排查与运维场景
+（如查询网关内部状态、触发设备重连）。响应的 data 是网关原样返回的数据。
 
-透传调用设备网关自身的 API，用于常规接口覆盖不到的排查与运维场景（如查询网关内部状态、触发设备重连）。
-
-<Warning>这是面向运维的低层接口，`api` 与 `params` 的取值取决于网关版本，没有稳定性承诺。业务代码请不要依赖它，优先使用上面那些具名接口。</Warning>
+这是面向运维的低层接口：api 与 params 的取值取决于网关版本，没有稳定性承诺。
+业务代码请不要依赖它，优先使用本组其它具名接口。
 
 **请求参数**
 
 <ParamField body="gw" type="string" required>
-  网关
+  网关，取值见「设备网关列表」
   示例：`devgw-1`
 </ParamField>
 
 <ParamField body="api" type="string" required>
+  网关自身的接口路径
   示例：`/api/v1/status`
 </ParamField>
 
 <ParamField body="params" type="object">
+  传给网关接口的参数
   示例：`{"device_id":"sw8kjx"}`
 </ParamField>
 
@@ -483,13 +458,12 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/delete`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-删除
+删除已登记的设备。响应的 data 是被删除的设备 ID。
 
-删除已登记的设备。响应的 `data` 是被删除的设备 ID。
-
-设备若正在会中，会先被移出频道。删除后同一台物理设备可以重新登记，但会得到新的设备 ID。
+设备若正在会中，会先被移出频道。删除后同一台物理设备可以重新登记，
+但会得到新的设备 ID。
 
 **请求参数**
 
@@ -529,11 +503,10 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/detail`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 查询单个设备的详情，包含连接参数、所属网关、在线状态。
-
-设备 `id` 来自「新增设备」的返回值，或「设备列表」。
+设备 id 来自「新增设备」的返回值，或「设备列表」。
 
 **请求参数**
 
@@ -555,7 +528,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 <ResponseField name="id" type="string">
   agent id
-  示例：`sw8kjx`
 </ResponseField>
 
 <ResponseField name="name" type="string">
@@ -601,7 +573,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
     "contact": "",
     "gw": "",
     "heartbeat_at": 0,
-    "id": "sw8kjx",
+    "id": "",
     "name": "",
     "remark": "",
     "status": 0,
@@ -616,36 +588,33 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/list-invite`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
-
-设备列表
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 分页查询可邀请的设备列表，通常用于在你的界面上给用户挑设备。
 
-+ `type` 必填且为数组，按类型筛选：`2` SIP、`3` H323、`4` GB28181、`5` RTSP
-+ `keyword` 模糊匹配显示名与设备标识；也可用 `name` / `contact` 精确筛选
-+ 国标设备的每个**通道**会各占一条，`contact` 是通道编号
-
-响应里的 `contact`（设备标识）就是「邀请设备入会」要传的值。
+国标设备的每个通道会各占一条。响应里的 contact（设备标识）就是「邀请设备入会」
+要传的值。
 
 **请求参数**
 
 <ParamField body="type" type="array<integer>" required>
-  代理类型
-  示例：`[2,4]`
+  代理类型，2 SIP、3 H323、4 GB28181监控、5 RTSP拉流
+  示例：`2,4`
 </ParamField>
 
 <ParamField body="keyword" type="string">
-  关键词（最大长度 100）
+  关键词，模糊匹配显示名与设备标识（最大长度 100）
   示例：`会议室`
 </ParamField>
 
 <ParamField body="name" type="string">
-  显示名称（最大长度 100）
+  显示名称，精确筛选（最大长度 100）
+  示例：`嘉宾席摄像头`
 </ParamField>
 
 <ParamField body="contact" type="string">
-  设备标识（最大长度 100）
+  设备标识，精确筛选（最大长度 100）
+  示例：`50010700001320000001`
 </ParamField>
 
 <ParamField body="page" type="integer">
@@ -663,15 +632,12 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 ```json
 {
-  "contact": "",
+  "contact": "50010700001320000001",
   "keyword": "会议室",
-  "name": "",
+  "name": "嘉宾席摄像头",
   "page": 1,
   "per-page": 10,
-  "type": [
-    2,
-    4
-  ]
+  "type": "2,4"
 }
 ```
 
@@ -687,7 +653,6 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 <ResponseField name="type" type="integer">
   代理类型
-  示例：`[2,4]`
 </ResponseField>
 
 <ResponseField name="status" type="integer">
@@ -736,10 +701,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
       "name": "",
       "remark": "",
       "status": 0,
-      "type": [
-        2,
-        4
-      ]
+      "type": 0
     }
   ]
 }
@@ -751,25 +713,20 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/invite`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-邀请设备入会
+把设备拉进频道，可以一次邀请多台。设备的 type 与 contact 从「设备列表」取。
 
-把设备拉进频道。可以一次邀请多台。
+设备入会是异步的：本接口返回成功只表示邀请已下发，设备实际上线要等 user_join
+回调（设备的 uid 带 _agent_ 前缀）。邀请一个已在该频道的设备不会重复拉入。
 
-+ `agents[].type` 与 `contact` 从「设备列表」取；`nickname` 是会中显示名，留空则用设备的显示名
-+ `no` 对 RTC 层应用就是频道名；如果你用的是 SMeeting 会议层，填会议号
-+ 设备入会是**异步**的：本接口返回成功只表示邀请已下发，设备实际上线要等 `user_join` 回调（设备的 `uid` 带 `_agent_` 前缀）
-
-设备侧接受邀请前会触发 `agent_join` 回调。若你订阅了该事件，需要按要求返回 `sid`，否则设备无法入会——详见「设置回调」。
-
-邀请一个已在该频道的设备不会重复拉入。
+设备接受邀请前会触发 agent_join 回调。若你订阅了该事件，需要按要求返回 sid，
+否则设备无法入会 —— 详见「回调事件接入指南」。
 
 **请求参数**
 
 <ParamField body="agents" type="array<any>" required>
   设备列表
-  示例：`[{"contact":"50010700001320000001","nickname":"嘉宾席摄像头","type":4}]`
 </ParamField>
 
 <ParamField body="no" type="string" required>
@@ -783,11 +740,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 ```json
 {
   "agents": [
-    {
-      "contact": "50010700001320000001",
-      "nickname": "嘉宾席摄像头",
-      "type": 4
-    }
+    null
   ],
   "no": "fire"
 }
@@ -812,20 +765,17 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/set-camera-enabled`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
-
-开关设备视频
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 开关设备的摄像头。设备不像普通客户端那样能自己操作，只能由服务端下发。
 
-`uid` 是设备在频道里的用户 ID（带 `_agent_` 前缀，从「在线/离线成员列表」或 `user_join` 回调拿）。
-
-若你订阅了 `agent_operate` 回调，本次操作会先征询你的业务后端，返回非 0 表示拒绝。不订阅则默认允许。
+若你订阅了 agent_operate 回调，本次操作会先征询你的业务后端，返回非 0 表示拒绝；
+不订阅则默认允许。
 
 **请求参数**
 
 <ParamField body="uid" type="string">
-  设备会中用户ID，不传代表对全频道设备操作（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  设备会中用户ID，不传代表对全频道设备操作。带 _agent_ 前缀，从「在线/离线成员列表」或 user_join 回调拿（仅支持大小写字母、数字、下划线 _ 与连字符 -）
   示例：`_agent_co63jg6g54hu3b0xhtie`
 </ParamField>
 
@@ -836,11 +786,11 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 <ParamField body="enabled" type="boolean">
   是否启用
-  示例：`true`
 </ParamField>
 
 <ParamField body="op_uid" type="string">
-  主持人uid
+  主持人uid，用于审计
+  示例：`1001`
 </ParamField>
 
 
@@ -849,8 +799,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 ```json
 {
   "channel": "fire",
-  "enabled": true,
-  "op_uid": "",
+  "enabled": false,
+  "op_uid": "1001",
   "uid": "_agent_co63jg6g54hu3b0xhtie"
 }
 ```
@@ -874,16 +824,14 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 `POST /server/v1/agent/set-mic-enabled`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-开关设备音频
-
-开关设备的麦克风，语义与「开关设备视频」一致：`uid` 用设备在频道里的用户 ID（带 `_agent_` 前缀），订阅了 `agent_operate` 回调时会先征询你的业务后端。
+开关设备的麦克风，语义与「开关设备视频」一致。
 
 **请求参数**
 
 <ParamField body="uid" type="string">
-  设备会中用户ID，不传代表对全频道设备操作（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  设备会中用户ID，不传代表对全频道设备操作。带 _agent_ 前缀（仅支持大小写字母、数字、下划线 _ 与连字符 -）
   示例：`_agent_co63jg6g54hu3b0xhtie`
 </ParamField>
 
@@ -894,11 +842,11 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 <ParamField body="enabled" type="boolean">
   是否启用
-  示例：`true`
 </ParamField>
 
 <ParamField body="op_uid" type="string">
-  主持人uid
+  主持人uid，用于审计
+  示例：`1001`
 </ParamField>
 
 
@@ -907,8 +855,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 ```json
 {
   "channel": "fire",
-  "enabled": true,
-  "op_uid": "",
+  "enabled": false,
+  "op_uid": "1001",
   "uid": "_agent_co63jg6g54hu3b0xhtie"
 }
 ```

@@ -9,21 +9,20 @@ description: "ASR 语音识别的启停与结果回调"
 
 `POST /server/v1/asr/start`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
-
-启停语音识别
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 对频道启动实时语音识别，把会中的说话内容转写成文字，用于会议纪要、字幕、检索。
 
 + 同一频道重复调用不会重复启动
-+ 转写结果通过「语音识别句子列表」按频道查询；也可以配合回调实时接收
-+ 识别的是**频道内所有开麦成员**的音频，结果里带 `uid` 与 `name` 标明说话人
++ 识别的是频道内所有开麦成员的音频，结果里带 uid 与 name 标明说话人
++ 转写结果通过「语音识别句子列表」按频道查询
 
 启动后会持续产生费用，频道销毁时自动停止；也可以用「停止语音识别」提前结束。
 
 **请求参数**
 
 <ParamField body="channel" type="string" required>
+  频道名
   示例：`fire`
 </ParamField>
 
@@ -55,9 +54,7 @@ description: "ASR 语音识别的启停与结果回调"
 
 `POST /server/v1/asr/stop`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
-
-启停语音识别
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 停止频道的语音识别。已产生的转写结果不会被删除，仍可用「语音识别句子列表」查询。
 
@@ -66,6 +63,7 @@ description: "ASR 语音识别的启停与结果回调"
 **请求参数**
 
 <ParamField body="channel" type="string" required>
+  频道名
   示例：`fire`
 </ParamField>
 
@@ -97,26 +95,29 @@ description: "ASR 语音识别的启停与结果回调"
 
 `POST /server/v1/asr/list-sentence`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 分页查询频道的语音转写结果，每条是一句话，带说话人与时间。
 
-+ 按 `created_at` 顺序取即可还原完整对话，是生成会议纪要的数据源
-+ 支持 `search` 按内容检索、`sort` 排序
++ 按 created_at 顺序取即可还原完整对话，是生成会议纪要的数据源
 + 频道销毁后结果仍然保留，可事后查询
 
-一句话的切分由识别引擎按语音停顿决定，不保证与"一个完整语义单元"对应——做纪要摘要时建议把连续多句合并后再交给模型处理。
+一句话的切分由识别引擎按语音停顿决定，不保证与"一个完整语义单元"对应 ——
+做纪要摘要时建议把连续多句合并后再交给模型处理。
 
 **请求参数**
 
 <ParamField body="channel" type="string" required>
+  频道名
   示例：`fire`
 </ParamField>
 
 <ParamField body="sort" type="string">
+  排序
 </ParamField>
 
 <ParamField body="search" type="array<string>">
+  通用搜索，可按转写内容检索
 </ParamField>
 
 <ParamField body="page" type="integer">
@@ -126,7 +127,7 @@ description: "ASR 语音识别的启停与结果回调"
 
 <ParamField body="per-page" type="integer">
   每页数据量
-  示例：`50`
+  示例：`10`
 </ParamField>
 
 
@@ -136,7 +137,7 @@ description: "ASR 语音识别的启停与结果回调"
 {
   "channel": "fire",
   "page": 1,
-  "per-page": 50,
+  "per-page": 10,
   "search": [
     ""
   ],
@@ -147,24 +148,27 @@ description: "ASR 语音识别的启停与结果回调"
 **响应参数**
 
 <ResponseField name="channel" type="string">
+  频道名
   示例：`fire`
 </ResponseField>
 
 <ResponseField name="uid" type="string">
+  说话人的用户ID
   示例：`1001`
 </ResponseField>
 
 <ResponseField name="name" type="string">
+  说话人的会中昵称
   示例：`张三`
 </ResponseField>
 
 <ResponseField name="sentence" type="string">
-  句子
+  转写出的一句话文本
   示例：`我们下周把这个方案定下来`
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
-  创建时间
+  该句话的产生时间，秒级时间戳
   示例：`1718250918`
 </ResponseField>
 

@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 """把 rtc-backend 的对外接口（srvapi）同步成文档站页面。幂等，可反复执行。
 
-数据流：
-    rtc-backend 源码 ──apidoc(AST+类型检查)──> 结构层
-    api-overlay/rtc-srvapi/*.md ─────────────> 散文层（业务说明/示例值/标题）
-                     合并 ──> zh/rtc/server-api/*.md + docs.json 导航
+    rtc-backend 源码 ──apidoc(AST+类型检查)──> zh/rtc/server-api/*.md + docs.json 导航
 
-分工：接口结构一律来自代码，不手写；业务说明、示例值、注意事项写在 api-overlay 下，
-一个接口一个文件，文件名由接口路径转写（/server/v1/channel/grant →
-server_v1_channel_grant.md）。`_global.md` 是通用说明（鉴权与签名），单独成页。
+页面内容**全部**来自 rtc-backend 的代码注释（接口名在 router.go，简介在请求 DTO 的
+类型注释，字段说明与示例值在字段行尾注释），本仓不存任何接口内容 —— 要改就去改代码。
+篇幅长的玩法说明写成 guides/ 下的手写指南页，见下面的 MANUAL_GUIDES。
 
 用法：
     python3 scripts/sync-server-api.py            # rtc-backend 在 ../rtc-backend
@@ -27,7 +24,6 @@ from pathlib import Path
 DOCS = Path(__file__).resolve().parent.parent
 BACKEND = Path(os.environ.get('RTC_BACKEND') or DOCS.parent / 'rtc-backend')
 TOOL_DIR = BACKEND / 'tools' / 'apidoc'
-OVERLAY = DOCS / 'api-overlay' / 'rtc-srvapi'
 TARGET = DOCS / 'zh' / 'rtc' / 'server-api'
 DOC_BASE = '/zh/rtc/server-api'
 
@@ -42,6 +38,8 @@ MANUAL_GUIDES = {
     'group': '接入指南',
     'pages': [
         'zh/rtc/server-api/guides/recording',
+        'zh/rtc/server-api/guides/callbacks',
+        'zh/rtc/server-api/guides/agents',
     ],
 }
 MANUAL_TAIL = ['zh/rtc/server-api/error-codes', 'zh/rtc/server-api/server-demo']
@@ -50,8 +48,6 @@ MANUAL_TAIL = ['zh/rtc/server-api/error-codes', 'zh/rtc/server-api/server-demo']
 def check_env():
     if not TOOL_DIR.is_dir():
         sys.exit(f'找不到生成器 {TOOL_DIR}\n请设置 RTC_BACKEND 指向 rtc-backend 仓库')
-    if not OVERLAY.is_dir():
-        sys.exit(f'找不到散文层 {OVERLAY}')
 
 
 def generate(out_dir):
@@ -60,7 +56,7 @@ def generate(out_dir):
     env = {**os.environ, 'GOWORK': 'off'}
     r = subprocess.run(
         ['go', 'run', '.', '-root', str(BACKEND), '-app', 'srvapi',
-         '-overlay', str(OVERLAY), '-split', '-docbase', DOC_BASE,
+         '-split', '-docbase', DOC_BASE,
          # Mintlify 的 ParamField/ResponseField 组件：说明文字占整行宽度。
          # 不用 markdown 表格是因为 Mintlify 把表格列等宽均分（5 列各 150px），
          # 长说明会被压成竖条。生成器另有 -render table，输出不依赖 Mintlify 组件的
@@ -70,10 +66,7 @@ def generate(out_dir):
         cwd=TOOL_DIR, env=env, capture_output=True, text=True)
     if r.returncode != 0:
         sys.exit('生成失败:\n' + r.stderr)
-    for line in r.stdout.splitlines():
-        if line.startswith('  /'):   # 待补散文的长清单，此处省略
-            continue
-        print(line)
+    print(r.stdout.rstrip())
 
 
 def sync_pages(out_dir):
@@ -94,29 +87,6 @@ def sync_pages(out_dir):
             p.unlink()
             removed.append(p.name)
     return generated, removed
-
-
-def check_stale_overlays(out_dir):
-    """反向检查：overlay 文件对应的接口是否还存在。
-
-    接口从代码里删掉后，它的 overlay 不会自动消失（生成器只报「缺散文」，
-    不报「多散文」），久了就是一堆无人引用的文件。这里按生成产物里出现的
-    接口路径反推，列出已失效的 overlay 供人工确认删除。
-    """
-    live = set()
-    for md in out_dir.glob('*.md'):
-        for line in md.read_text(encoding='utf-8').splitlines():
-            # 页面里每个接口都有一行 `POST /server/v1/xxx`
-            if line.startswith('`') and '/server/v1/' in line:
-                path = line.strip('`').split(' ', 1)[-1].strip('`').strip()
-                live.add(path.lstrip('/').replace('/', '_'))
-    stale = []
-    for f in sorted(OVERLAY.glob('*.md')):
-        if f.name in ('_global.md', 'README.md'):
-            continue
-        if f.stem not in live:
-            stale.append(f.name)
-    return stale
 
 
 def update_nav(out_dir):
@@ -145,7 +115,6 @@ if __name__ == '__main__':
     try:
         generate(out_dir)
         pages, removed = sync_pages(out_dir)
-        stale = check_stale_overlays(out_dir)
         nav = update_nav(out_dir)
     finally:
         shutil.rmtree(out_dir, ignore_errors=True)
@@ -153,9 +122,5 @@ if __name__ == '__main__':
     print(f'\n同步 {len(pages)} 个页面到 {TARGET.relative_to(DOCS)}')
     if removed:
         print('清理孤儿页(接口已从代码中删除):', ', '.join(removed))
-    if stale:
-        print('\n以下 overlay 已无对应接口，请确认后删除:')
-        for name in stale:
-            print(f'  api-overlay/rtc-srvapi/{name}')
     print(f'docs.json 导航 {len(nav)} 项已更新')
     print('\n下一步: mint broken-links')

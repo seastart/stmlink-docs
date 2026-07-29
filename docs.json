@@ -250,7 +250,6 @@
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/rtc/server-api/common",
                       "zh/rtc/server-api/channel",
                       "zh/rtc/server-api/mcu",
                       "zh/rtc/server-api/agent",
@@ -262,7 +261,9 @@
                   {
                     "group": "接入指南",
                     "pages": [
-                      "zh/rtc/server-api/guides/recording"
+                      "zh/rtc/server-api/guides/recording",
+                      "zh/rtc/server-api/guides/callbacks",
+                      "zh/rtc/server-api/guides/agents"
                     ]
                   },
                   "zh/rtc/server-api/error-codes",

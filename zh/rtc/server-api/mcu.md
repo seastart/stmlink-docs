@@ -9,7 +9,9 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/record-config`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+全局默认录像配置信息
 
 **请求参数**
 
@@ -62,14 +64,13 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/save-record-config`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-更新应用的默认录制配置。三个字段都可选，只传要改的。 改动只影响之后启动的新任务，进行中的任务不受影响。
+全局默认录像配置更新
 
 **请求参数**
 
 <ParamField body="layout" type="string">
-  布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
   示例：`auto`
 </ParamField>
 
@@ -113,9 +114,10 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/list-record`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-分页查询录像列表。只有已完成的任务才有可播放的录像文件， 用响应里的 task_status 区分进行中与已结束。
+分页查询录像列表。只有已完成的任务才有可播放的录像文件，
+用响应里的 task_status 区分进行中与已结束。
 
 **请求参数**
 
@@ -263,9 +265,9 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/vod-url`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-获取录像回放地址。任务必须已停止且转码完成，进行中的任务取不到地址。 地址有有效期，不要长期缓存或存进业务库，每次播放前重新获取。
+获取录像地址
 
 **请求参数**
 
@@ -333,9 +335,10 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/del-record`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道 进行中的任务（或最近一次录像，取决于具体接口）。
+按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道
+进行中的任务（或最近一次录像，取决于具体接口）。
 
 **请求参数**
 
@@ -378,9 +381,9 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/start`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-启动服务端的录制、合流或直播任务。同一频道对同一类型只有一个进行中的任务： 重复调用不新建，而是按传入参数更新已有任务。
+MCU任务开始
 
 **请求参数**
 
@@ -423,7 +426,6 @@ description: "云端录制、点播地址与直播推流"
   布局数据。不传时使用应用的默认录制配置（见获取默认录制配置）
   <Expandable title="字段">
     <ParamField body="layout" type="string" required>
-      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
       示例：`auto`
     </ParamField>
 
@@ -594,9 +596,9 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/stop`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-停止进行中的录制/合流/直播任务。录像文件在任务停止后才完成转码，随后才能取到播放地址。 频道销毁时进行中的任务会自动停止，不必先手动调用。
+MCU任务停止
 
 **请求参数**
 
@@ -645,9 +647,10 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/record-detail`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道 进行中的任务（或最近一次录像，取决于具体接口）。
+按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道
+进行中的任务（或最近一次录像，取决于具体接口）。
 
 **请求参数**
 
@@ -763,9 +766,9 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/update-record`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-修改录像的标题与标签，用于归档整理，不影响录像文件本身。 标题与标签都可以用录像列表的 search 检索到。 注意: 不接受调用方传入 app_id，应用维度一律取鉴权得到的 app_id，避免改到其他租户的录像
+修改录像
 
 **请求参数**
 
@@ -817,9 +820,9 @@ description: "云端录制、点播地址与直播推流"
 
 `POST /server/v1/mcu/live-url`
 
-鉴权：需要（见[通用说明](/zh/rtc/server-api/common)）
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-按任务或频道定位一次录制任务：有 task_id 时按任务，只传 channel 则取该频道 进行中的任务（或最近一次录像，取决于具体接口）。
+获取MCU直播流地址
 
 **请求参数**
 
