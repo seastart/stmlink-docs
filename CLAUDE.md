@@ -71,7 +71,7 @@ navigation.languages（中文/英文）
 ## 自动生成的页面（服务端 API）
 
 `zh/rtc/server-api/` 下的接口页面（`channel` / `mcu` / `agent` / `im` / `white-board` /
-`asr`）**由脚本生成，不要手工编辑**，改动会在下次同步时被覆盖。
+`asr`）与 `error-codes`**由脚本生成，不要手工编辑**，改动会在下次同步时被覆盖。
 
 ```bash
 python3 scripts/sync-server-api.py    # rtc-backend 默认在 ../rtc-backend
@@ -79,9 +79,10 @@ mint broken-links                      # 提交前校验
 ```
 
 **本仓不存任何接口内容。** 页面上的每一个字——接口名（router.go 路由行上方那一行）、
-简介（controller 方法的文档注释）、字段说明与示例值（DTO 字段行尾注释）——全部来自
-rtc-backend 的代码注释，要改就去改代码（写法见 `rtc-backend/README.md` 的
-「对外接口文档（srvapi）」一节）。本仓只维护两类东西：
+简介（controller 方法的文档注释）、字段说明与示例值（DTO 字段行尾注释）、错误码
+（`app/internal/enum/errcode` 的常量 + sgo/serror 的内置码）——全部来自 rtc-backend 的
+源码，要改就去改代码（写法见 `rtc-backend/README.md` 的「对外接口文档（srvapi）」一节）。
+本仓只维护两类东西：
 
 | 内容 | 位置 |
 | --- | --- |

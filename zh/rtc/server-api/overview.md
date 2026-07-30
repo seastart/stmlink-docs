@@ -76,9 +76,11 @@ HMACSHA256(key, 待签名字符串)
 
 
 ### 响应格式
+成功与失败都返回 HTTP 200，业务结果由 `code` 判定。
+
 正常返回，`code`为0，`data`为数据
 
-```css
+```json
 {
     "code": 0,
     "data": 123
@@ -87,12 +89,14 @@ HMACSHA256(key, 待签名字符串)
 
 有错误，`code`为错误码，`msg`为错误描述
 
-```css
+```json
 {
-    "code": 10041,
-    "msg": "认证失败"
+    "code": 1003,
+    "msg": "请求头中的signature无效"
 }
 ```
+
+请**按 `code` 判断**，不要匹配 `msg` 文案。全部取值见[错误码](/zh/rtc/server-api/error-codes)。
 
 
 
