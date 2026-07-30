@@ -32,7 +32,7 @@ description: "云端录制、点播地址与直播推流"
 </ResponseField>
 
 <ResponseField name="watermark_type" type="integer">
-  水印类型 1无,2单排,3多排
+  水印类型 0默认,1无,2单排,3多排
 </ResponseField>
 
 <ResponseField name="window_tag_type" type="string">
@@ -40,9 +40,13 @@ description: "云端录制、点播地址与直播推流"
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
+  配置创建时间，秒级时间戳
+  示例：`1718194666`
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
+  配置最后变更时间，秒级时间戳
+  示例：`1718194705`
 </ResponseField>
 
 
@@ -53,9 +57,9 @@ description: "云端录制、点播地址与直播推流"
   "code": 0,
   "data": {
     "app_id": "",
-    "created_at": 0,
+    "created_at": 1718194666,
     "layout": "",
-    "updated_at": 0,
+    "updated_at": 1718194705,
     "watermark_type": 0,
     "window_tag_type": ""
   }
@@ -76,6 +80,7 @@ description: "云端录制、点播地址与直播推流"
 **请求参数**
 
 <ParamField body="layout" type="string">
+  布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
   示例：`auto`
 </ParamField>
 
@@ -225,9 +230,13 @@ description: "云端录制、点播地址与直播推流"
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
+  任务创建时间，秒级时间戳
+  示例：`1718194666`
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
+  任务最后变更时间，秒级时间戳
+  示例：`1718194705`
 </ResponseField>
 
 
@@ -245,7 +254,7 @@ description: "云端录制、点播地址与直播推流"
   "data": [
     {
       "channel": "",
-      "created_at": 0,
+      "created_at": 1718194666,
       "err_desc": "",
       "mcu_at": 0,
       "mcu_dur": 0,
@@ -256,7 +265,7 @@ description: "云端录制、点播地址与直播推流"
       "task_id": "",
       "task_status": 0,
       "title": "",
-      "updated_at": 0,
+      "updated_at": 1718194705,
       "vod_key": "",
       "vod_size": 0
     }
@@ -435,6 +444,7 @@ description: "云端录制、点播地址与直播推流"
   布局数据。不传时使用应用的默认录制配置（见获取默认录制配置）
   <Expandable title="字段">
     <ParamField body="layout" type="string" required>
+      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
       示例：`auto`
     </ParamField>
 
@@ -742,9 +752,13 @@ description: "云端录制、点播地址与直播推流"
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
+  任务创建时间，秒级时间戳
+  示例：`1718194666`
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
+  任务最后变更时间，秒级时间戳
+  示例：`1718194705`
 </ResponseField>
 
 
@@ -755,7 +769,7 @@ description: "云端录制、点播地址与直播推流"
   "code": 0,
   "data": {
     "channel": "",
-    "created_at": 0,
+    "created_at": 1718194666,
     "err_desc": "",
     "mcu_at": 0,
     "mcu_dur": 0,
@@ -766,7 +780,7 @@ description: "云端录制、点播地址与直播推流"
     "task_id": "",
     "task_status": 0,
     "title": "",
-    "updated_at": 0,
+    "updated_at": 1718194705,
     "vod_key": "",
     "vod_size": 0
   }
@@ -866,12 +880,15 @@ task_type 带了直播位（8）。地址有有效期，不要长期缓存。
 **响应参数**
 
 <ResponseField name="rtmp" type="string">
+  RTMP 拉流地址，延迟最低，适合需要低延迟的播放端
 </ResponseField>
 
 <ResponseField name="flv" type="string">
+  HTTP-FLV 拉流地址，Web 端常用
 </ResponseField>
 
 <ResponseField name="hls" type="string">
+  HLS(m3u8) 拉流地址，兼容性最好，延迟相对高
 </ResponseField>
 
 

@@ -1,6 +1,6 @@
 ---
 title: "错误码"
-description: "SRTC 音视频 SDK 错误码枚举与处理说明"
+description: "服务端 API 响应体中 code 的常见取值"
 ---
 
 | **枚举名** | **枚举值** | **说明** |

@@ -163,9 +163,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 查询单个频道的当前状态与扩展属性。只能查到已打开的频道 —— 频道未打开或已销毁时
 返回空，需要历史信息请用「频道记录」。
 
-响应里的 max_user / max_audio / max_peer / max_video 是流媒体侧的容量参数，
-由应用配置决定，一般不需要业务侧关心。
-
 **请求参数**
 
 <ParamField body="channel" type="string" required>
@@ -192,39 +189,18 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   频道名
 </ResponseField>
 
-<ResponseField name="stream_vendor" type="string">
-  流媒体供应商
-</ResponseField>
-
 <ResponseField name="props" type="object">
   频道扩展属性
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
   频道创建时间
+  示例：`1718250917`
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
-</ResponseField>
-
-<ResponseField name="link_id" type="integer">
-  流媒体连接id
-</ResponseField>
-
-<ResponseField name="max_user" type="integer">
-  房间最大人数，含义参考：https://www.yuque.com/anyconf/czwlh6/prtk0l4s8ylf7mk3
-</ResponseField>
-
-<ResponseField name="max_audio" type="integer">
-  房间最大参与音频能量竞争路数（针对整个房间设置）
-</ResponseField>
-
-<ResponseField name="max_peer" type="integer">
-  单人最大转发的人数（音频、视频路数）（针对单人设置）
-</ResponseField>
-
-<ResponseField name="max_video" type="integer">
-  单人非主动pick模式下最大转发视频路数（针对单人设置，目前我们视频都是主动pick，所以这个设置没有意义）
+  频道信息最后变更时间
+  示例：`1718250921`
 </ResponseField>
 
 
@@ -236,15 +212,9 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   "data": {
     "app_id": "",
     "channel": "",
-    "created_at": 0,
-    "link_id": 0,
-    "max_audio": 0,
-    "max_peer": 0,
-    "max_user": 0,
-    "max_video": 0,
+    "created_at": 1718250917,
     "props": {},
-    "stream_vendor": "",
-    "updated_at": 0
+    "updated_at": 1718250921
   }
 }
 ```
@@ -323,6 +293,8 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
+  用户信息最后变更时间，秒级时间戳
+  示例：`1718250918`
 </ResponseField>
 
 <ResponseField name="channel" type="string">
@@ -411,14 +383,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   </Expandable>
 </ResponseField>
 
-<ResponseField name="link_id" type="integer">
-  流媒体连接id
-</ResponseField>
-
-<ResponseField name="upload_srv" type="string">
-  流媒体服务
-</ResponseField>
-
 
 响应示例：
 
@@ -433,7 +397,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
     "is_audience": false,
     "join_at": 0,
     "leave_at": 0,
-    "link_id": 0,
     "name": "",
     "net": "",
     "props": {},
@@ -461,8 +424,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
       }
     ],
     "uid": "",
-    "updated_at": 0,
-    "upload_srv": "",
+    "updated_at": 1718250918,
     "version": ""
   }
 }
@@ -516,39 +478,18 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   频道名
 </ResponseField>
 
-<ResponseField name="stream_vendor" type="string">
-  流媒体供应商
-</ResponseField>
-
 <ResponseField name="props" type="object">
   频道扩展属性
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
   频道创建时间
+  示例：`1718250917`
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
-</ResponseField>
-
-<ResponseField name="link_id" type="integer">
-  流媒体连接id
-</ResponseField>
-
-<ResponseField name="max_user" type="integer">
-  房间最大人数，含义参考：https://www.yuque.com/anyconf/czwlh6/prtk0l4s8ylf7mk3
-</ResponseField>
-
-<ResponseField name="max_audio" type="integer">
-  房间最大参与音频能量竞争路数（针对整个房间设置）
-</ResponseField>
-
-<ResponseField name="max_peer" type="integer">
-  单人最大转发的人数（音频、视频路数）（针对单人设置）
-</ResponseField>
-
-<ResponseField name="max_video" type="integer">
-  单人非主动pick模式下最大转发视频路数（针对单人设置，目前我们视频都是主动pick，所以这个设置没有意义）
+  频道信息最后变更时间
+  示例：`1718250921`
 </ResponseField>
 
 
@@ -567,15 +508,9 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
     {
       "app_id": "",
       "channel": "",
-      "created_at": 0,
-      "link_id": 0,
-      "max_audio": 0,
-      "max_peer": 0,
-      "max_user": 0,
-      "max_video": 0,
+      "created_at": 1718250917,
       "props": {},
-      "stream_vendor": "",
-      "updated_at": 0
+      "updated_at": 1718250921
     }
   ]
 }
@@ -668,6 +603,8 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 </ResponseField>
 
 <ResponseField name="updated_at" type="integer">
+  用户信息最后变更时间，秒级时间戳
+  示例：`1718250918`
 </ResponseField>
 
 <ResponseField name="channel" type="string">
@@ -756,14 +693,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   </Expandable>
 </ResponseField>
 
-<ResponseField name="link_id" type="integer">
-  流媒体连接id
-</ResponseField>
-
-<ResponseField name="upload_srv" type="string">
-  流媒体服务
-</ResponseField>
-
 
 响应示例：
 
@@ -785,7 +714,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
       "is_audience": false,
       "join_at": 0,
       "leave_at": 0,
-      "link_id": 0,
       "name": "",
       "net": "",
       "props": {},
@@ -813,8 +741,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
         }
       ],
       "uid": "",
-      "updated_at": 0,
-      "upload_srv": "",
+      "updated_at": 1718250918,
       "version": ""
     }
   ]
@@ -1250,10 +1177,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   示例：`{"watermark_disabled":true}`
 </ParamField>
 
-<ParamField body="stream_vendor" type="string">
-  流媒体供应商
-</ParamField>
-
 
 请求示例：
 
@@ -1262,8 +1185,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
   "channel": "fire",
   "props": {
     "watermark_disabled": true
-  },
-  "stream_vendor": ""
+  }
 }
 ```
 
@@ -1383,9 +1305,12 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 **响应参数**
 
 <ResponseField name="id" type="string">
+  频道记录ID
+  示例：`snp3rp`
 </ResponseField>
 
 <ResponseField name="app_id" type="string">
+  应用id
 </ResponseField>
 
 <ResponseField name="channel" type="string">
@@ -1426,7 +1351,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
       "channel": "",
       "destroy_at": 0,
       "destroy_reason": 0,
-      "id": "",
+      "id": "snp3rp",
       "open_at": 0,
       "props": {}
     }
@@ -1513,9 +1438,12 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 **响应参数**
 
 <ResponseField name="id" type="string">
+  出入记录ID
+  示例：`syd30d`
 </ResponseField>
 
 <ResponseField name="app_id" type="string">
+  应用id
 </ResponseField>
 
 <ResponseField name="channel" type="string">
@@ -1523,9 +1451,13 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 </ResponseField>
 
 <ResponseField name="sid" type="string">
+  会话id，同一 uid 多次进入靠它区分
+  示例：`ff6u9joh5c1a0toa7dj1`
 </ResponseField>
 
 <ResponseField name="uid" type="string">
+  用户id
+  示例：`1001`
 </ResponseField>
 
 <ResponseField name="name" type="string">
@@ -1582,15 +1514,15 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
       "channel": "",
       "device_id": "",
       "device_type": 0,
-      "id": "",
+      "id": "syd30d",
       "is_audience": false,
       "join_at": 0,
       "leave_at": 0,
       "leave_reason": 0,
       "name": "",
       "props": {},
-      "sid": "",
-      "uid": "",
+      "sid": "ff6u9joh5c1a0toa7dj1",
+      "uid": "1001",
       "version": ""
     }
   ]
