@@ -1784,8 +1784,6 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 + 只统计已销毁的频道（destroy_at 大于 0），进行中的不计入
 + 没有数据的日期不会出现在结果里（不补零），画图时需自行填充
 
-注意: 不接受调用方传入 app_id，应用维度一律取鉴权得到的 app_id，避免跨租户查询
-
 **请求参数**
 
 <ParamField body="begin_at" type="integer">

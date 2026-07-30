@@ -78,9 +78,10 @@ python3 scripts/sync-server-api.py    # rtc-backend 默认在 ../rtc-backend
 mint broken-links                      # 提交前校验
 ```
 
-**本仓不存任何接口内容。** 页面上的每一个字——接口名、简介、字段说明、示例值——
-全部来自 rtc-backend 的代码注释，要改就去改代码（写法见 `rtc-backend/README.md`
-的「对外接口文档（srvapi）」一节）。本仓只维护两类东西：
+**本仓不存任何接口内容。** 页面上的每一个字——接口名（router.go 路由行上方那一行）、
+简介（controller 方法的文档注释）、字段说明与示例值（DTO 字段行尾注释）——全部来自
+rtc-backend 的代码注释，要改就去改代码（写法见 `rtc-backend/README.md` 的
+「对外接口文档（srvapi）」一节）。本仓只维护两类东西：
 
 | 内容 | 位置 |
 | --- | --- |
