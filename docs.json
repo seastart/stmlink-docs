@@ -255,7 +255,8 @@
                       "zh/rtc/server-api/agent",
                       "zh/rtc/server-api/im",
                       "zh/rtc/server-api/white-board",
-                      "zh/rtc/server-api/asr"
+                      "zh/rtc/server-api/asr",
+                      "zh/rtc/server-api/talkrec"
                     ]
                   },
                   {

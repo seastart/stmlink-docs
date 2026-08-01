@@ -42,6 +42,10 @@ description: "服务端 API 响应体中 code 的取值"
 | `1042` | McuRecordNoVod | 录像任务还未生成录像文件 |
 | `1043` | McuLayoutDataErr | MCU的布局数据出错 |
 | `1044` | McuTaskIsEnd | MCU任务已经停止 |
+| `1050` | TalkrecTaskNotFound | 未找到语音录制任务 |
+| `1051` | TalkrecRecordNotFound | 未找到语音录制段 |
+| `1052` | TalkrecRecordNoVod | 语音录制段还未生成录音文件 |
+| `1053` | TalkrecGatewayNotFound | 没有可用的语音录制网关 |
 
 ## 框架通用错误码
 
