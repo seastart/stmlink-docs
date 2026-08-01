@@ -28,6 +28,8 @@ BACKEND = Path(os.environ.get('RTC_BACKEND') or DOCS.parent / 'rtc-backend')
 TOOL_DIR = BACKEND / 'tools' / 'apidoc'
 TARGET = DOCS / 'zh' / 'rtc' / 'server-api'
 DOC_BASE = '/zh/rtc/server-api'
+# 本脚本只管 SRTC tab。SMeeting tab 下的「服务端 API」是另一套（会议层，手写），不要碰
+SRTC_TAB = 'SRTC 音视频 SDK'
 
 # 自动生成页面的自描述标记，与 apidoc 的 writeFrontmatter 保持一致。
 # 靠它识别哪些页面是生成的，而不是硬编码文件名清单 —— 这样新增或删除接口分组时本脚本无需改动。
@@ -151,15 +153,19 @@ def update_nav(out_dir):
                       object_pairs_hook=collections.OrderedDict)
     p = DOCS / 'docs.json'
     d = json.loads(p.read_text(encoding='utf-8'), object_pairs_hook=collections.OrderedDict)
-    hit = False
+    # 必须同时限定 tab：SMeeting tab 下也有一个同名的「服务端 API」分组（会议层的接口文档，
+    # 手写维护），只按分组名匹配会把它一起覆盖掉 —— 这事真发生过一次
+    hits = 0
     for lang in d['navigation']['languages']:
         for tab in lang['tabs']:
+            if tab.get('tab') != SRTC_TAB:
+                continue
             for g in tab.get('groups', []):
                 if g.get('group') == '服务端 API':
                     g['pages'] = MANUAL_HEAD + [MANUAL_GUIDES, frag] + TAIL
-                    hit = True
-    if not hit:
-        sys.exit('docs.json 里找不到「服务端 API」分组，导航未更新')
+                    hits += 1
+    if hits != 1:
+        sys.exit(f'docs.json 里「{SRTC_TAB}」下的「服务端 API」分组命中 {hits} 次（应为 1 次），导航未更新')
     p.write_text(json.dumps(d, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     return frag['pages']
 

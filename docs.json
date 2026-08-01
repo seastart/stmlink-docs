@@ -437,29 +437,9 @@
               {
                 "group": "服务端 API",
                 "pages": [
-                  "zh/rtc/server-api/overview",
-                  {
-                    "group": "接入指南",
-                    "pages": [
-                      "zh/rtc/server-api/guides/recording",
-                      "zh/rtc/server-api/guides/callbacks",
-                      "zh/rtc/server-api/guides/agents"
-                    ]
-                  },
-                  {
-                    "group": "接口文档",
-                    "pages": [
-                      "zh/rtc/server-api/channel",
-                      "zh/rtc/server-api/mcu",
-                      "zh/rtc/server-api/talkrec",
-                      "zh/rtc/server-api/agent",
-                      "zh/rtc/server-api/im",
-                      "zh/rtc/server-api/white-board",
-                      "zh/rtc/server-api/asr"
-                    ]
-                  },
-                  "zh/rtc/server-api/error-codes",
-                  "zh/rtc/server-api/server-demo"
+                  "zh/meeting/server-api/overview",
+                  "zh/meeting/server-api/api-list",
+                  "zh/meeting/server-api/error-codes"
                 ]
               }
             ]

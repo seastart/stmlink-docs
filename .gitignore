@@ -6,3 +6,7 @@ node_modules/
 /zh/meeting/windows/.vs
 /zh/meeting/windows/include
 /zh/meeting/windows/readme.txt
+
+# python
+__pycache__/
+*.pyc
