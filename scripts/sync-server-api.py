@@ -16,6 +16,7 @@ controller 方法注释，字段说明与示例值在 DTO 字段的行尾注释�
 import collections
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -92,6 +93,59 @@ def sync_pages(out_dir):
     return generated, removed
 
 
+def check_callback_guide():
+    """校验回调指南与代码里的事件常量一一对应。
+
+    接口页会跟着代码自动重生成，手写的指南页不会 —— talkrec 上线时代码里多了两个回调
+    事件，指南却毫不知情，是人工比对才发现的。这里把 callback/types.go 的 TypeXxx 常量
+    和指南里 `event_name` 形式的小节标题对一遍，两个方向都查：漏写会让客户收到文档里
+    没有的事件，多写则是接口已下线而文档还在承诺。
+    """
+    types_go = BACKEND / 'app' / 'internal' / 'logic' / 'callback' / 'types.go'
+    guide = DOCS / 'zh' / 'rtc' / 'server-api' / 'guides' / 'callbacks.md'
+    if not types_go.is_file() or not guide.is_file():
+        return []
+    in_code = set(re.findall(r'^\s*Type\w+\s*=\s*"([a-z_]+)"',
+                             types_go.read_text(encoding='utf-8'), re.M))
+    # 一个小节可以同时讲多个事件（im_connect / im_disconnect 就合在一起），取标题里所有反引号词
+    documented = set()
+    for line in guide.read_text(encoding='utf-8').splitlines():
+        if line.startswith('### '):
+            documented.update(re.findall(r'`([a-z_]+)`', line))
+    problems = []
+    for e in sorted(in_code - documented):
+        problems.append(f'代码里有回调事件 {e}，指南 guides/callbacks.md 里没写')
+    for e in sorted(documented - in_code):
+        problems.append(f'指南里写了回调事件 {e}，代码里已经没有了')
+    return problems
+
+
+def check_changelog_ext():
+    """docs.json 引用的 changelog/readme 页必须是 .mdx。
+
+    Mintlify 把任意目录下的 changelog.md / readme.md（不分大小写）当仓库元文件排除，
+    用 .md 会导致线上 404。这个坑已经踩过两次（iOS 一次、Android 一次），加个断言。
+    """
+    d = json.loads((DOCS / 'docs.json').read_text(encoding='utf-8'))
+    problems = []
+
+    def walk(node):
+        if isinstance(node, str):
+            if Path(node).stem.lower() in ('changelog', 'readme') and not (DOCS / (node + '.mdx')).is_file():
+                problems.append(f'导航引用 {node}，但缺 {node}.mdx（用 .md 会被 Mintlify 当元文件排除，线上 404）')
+        elif isinstance(node, dict):
+            walk(node.get('pages', []))
+            walk(node.get('groups', []))
+            walk(node.get('tabs', []))
+            walk(node.get('languages', []))
+        elif isinstance(node, list):
+            for x in node:
+                walk(x)
+
+    walk(d['navigation'])
+    return problems
+
+
 def update_nav(out_dir):
     frag = json.loads((out_dir / 'nav-fragment.json').read_text(encoding='utf-8'),
                       object_pairs_hook=collections.OrderedDict)
@@ -126,4 +180,14 @@ if __name__ == '__main__':
     if removed:
         print('清理孤儿页(接口已从代码中删除):', ', '.join(removed))
     print(f'docs.json 导航 {len(nav)} 项已更新')
+
+    # 生成的页面到这里已经写好了，下面查的是「手写页有没有跟上代码」——
+    # 所以先落盘再校验，失败也不必回滚，改完手写页重跑即可
+    problems = check_callback_guide() + check_changelog_ext()
+    if problems:
+        print('\n手写页与代码不一致（页面已同步，请修完再提交）:')
+        for p in problems:
+            print('  ✗ ' + p)
+        sys.exit(1)
+
     print('\n下一步: mint broken-links')
