@@ -12,7 +12,12 @@
     ]
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude"]
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
@@ -450,7 +455,21 @@
                 "group": "服务端 API",
                 "pages": [
                   "zh/meeting/server-api/overview",
-                  "zh/meeting/server-api/api-list",
+                  {
+                    "group": "接入指南",
+                    "pages": [
+                      "zh/meeting/server-api/guides/agent-and-im"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/meeting/server-api/user-auth",
+                      "zh/meeting/server-api/meet",
+                      "zh/meeting/server-api/meet-admin",
+                      "zh/meeting/server-api/mcu"
+                    ]
+                  },
                   "zh/meeting/server-api/error-codes"
                 ]
               }

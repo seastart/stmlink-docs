@@ -83,30 +83,47 @@ navigation.languages（中文/英文）
 
 ## 自动生成的页面（服务端 API）
 
-`zh/rtc/server-api/` 下的接口页面（`channel` / `mcu` / `talkrec` / `agent` / `im` /
-`white-board` / `asr`）与 `error-codes`**由脚本生成，不要手工编辑**，改动会在下次同步时
-被覆盖。页面清单不是写死的 —— 分组来自 `router.go` 的 gin group，新增分组会自动多出一页。
+**两个产品的服务端 API 页面都是生成的**，不要手工编辑，改动会在下次同步时被覆盖：
+
+| 产品 | 目录 | 源码仓 | 生成的页 |
+| --- | --- | --- | --- |
+| SRTC | `zh/rtc/server-api/` | `rtc-backend` | `channel` / `mcu` / `talkrec` / `agent` / `im` / `white-board` / `asr` + `error-codes` |
+| SMeeting | `zh/meeting/server-api/` | `meeting-backend` | `user-auth` / `meet` / `meet-admin` / `mcu` + `error-codes` |
+
+页面清单不是写死的 —— 分组来自 `router.go` 的 gin group，新增分组会自动多出一页。
 
 ```bash
-python3 scripts/sync-server-api.py    # rtc-backend 默认在 ../rtc-backend
-mint broken-links                      # 提交前校验
+python3 scripts/sync-server-api.py            # 两个都同步
+python3 scripts/sync-server-api.py meeting    # 只同步 SMeeting
+mint broken-links                              # 提交前校验
 ```
+
+后端默认在同级目录（`../rtc-backend`、`../meeting-backend`），可用 `RTC_BACKEND` /
+`MEETING_BACKEND` 覆盖。生成器只有一份，在 `rtc-backend/tools/apidoc`，SMeeting 也是跑它，
+只是换一套参数（见脚本里的 `PROJECTS`）。
 
 **本仓不存任何接口内容。** 页面上的每一个字——接口名（router.go 路由行上方那一行）、
 简介（controller 方法的文档注释）、字段说明与示例值（DTO 字段行尾注释）、错误码
-（`app/internal/enum/errcode` 的常量 + sgo/serror 的内置码）——全部来自 rtc-backend 的
-源码，要改就去改代码（写法见 `rtc-backend/README.md` 的「对外接口文档（srvapi）」一节）。
-本仓只维护两类东西：
+（`app/internal/enum/errcode` 的常量 + sgo/serror 的内置码）——全部来自后端源码，要改
+就去改代码（写法见对应后端 README 的「对外接口文档（srvapi）」一节）。本仓只维护两类东西：
 
 | 内容 | 位置 |
 | --- | --- |
-| 概览（鉴权、签名、响应格式、uid/sid） | `zh/rtc/server-api/overview.md`（手写） |
-| 篇幅长的玩法说明（调用时序、多接口配合、值域表格） | `zh/rtc/server-api/guides/`（手写，新增时在 sync 脚本的 `MANUAL_GUIDES` 里加一行） |
+| 概览（鉴权、签名、响应格式、uid/sid） | `zh/{rtc,meeting}/server-api/overview.md`（手写） |
+| 篇幅长的玩法说明（调用时序、多接口配合、值域表格） | `zh/{rtc,meeting}/server-api/guides/`（手写，新增时在脚本对应 `Project` 的 `manual_guides` 里加一行） |
+
+分组的中文标题是唯一的例外：gin group 名是英文，标题表 SRTC 内置在生成器里，
+SMeeting 在 `meeting-backend/openapi/groups.json`。**两个产品不能共用一张表** ——
+都有 `mcu` / `im` / `agent` 分组但含义不同。
 
 `docs.json` 里「服务端 API」整个分组的 `pages` 由脚本整块重写，顺序固定为
-概览 → 接入指南 → 接口文档 → 错误码 → 服务端 Demo —— 所以手工往里加页面、调顺序
-都会在下次同步时丢失，要改去改脚本顶部的 `MANUAL_HEAD` / `MANUAL_GUIDES` / `TAIL`。
-脚本还会清理孤儿页：接口从代码删除后，对应页面自动消失。
+概览 → 接入指南 → 接口文档 → 错误码 → 其它 —— 所以手工往里加页面、调顺序
+都会在下次同步时丢失，要改去改脚本里对应 `Project` 的 `manual_head` / `manual_guides` /
+`tail`。脚本还会清理孤儿页：接口从代码删除后，对应页面自动消失。
+
+**不进对外文档的路由**用 `Project.skip` 排除。SMeeting 排掉了两类：`callback/rtc` 是
+RTC 调进来的入站回调（客户不会调），`im/*api` 与 `agent/*api` 是原样转发到 RTC 的通配
+代理（真正的接口文档在 SRTC 那两页，由手写的 `guides/agent-and-im.md` 交代指向）。
 
 **参数渲染用 Mintlify 的 `<ParamField>` / `<ResponseField>` 组件，不用 markdown 表格**
 （与下面「各端通用文档规范」里 SDK 文档的表格约定不同）。原因是 Mintlify 把表格列等宽
