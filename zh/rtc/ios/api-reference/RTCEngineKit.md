@@ -510,6 +510,19 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 | --- | --- |
 
 
+### enabledAudioModule:()
+`- (RTCEngineError)enabledAudioModule:(BOOL)enabled`
+
+设置本端音频单元启停
+
+自`2.5.9`起支持。录像直播等本端不采集、不接收 RTC 音频的纯本地播放场景，关闭音频单元可释放底层语音处理单元（VPIO），避免本地播放器（如 `AVPlayer`）的播放音量被压低；返回该类场景后需将其恢复为自动管理。SDK 每次进房会自动复位为自动管理，避免上一会话的手动停用状态跨会话泄漏。
+
+**参数**
+
+| enabled | YES-由流媒体自动管理音频单元 NO-停止音频单元 |
+| --- | --- |
+
+
 ### enabledSpeechTrans:()
 `- (RTCEngineError)enabledSpeechTrans:(BOOL)enabled`
 
@@ -528,7 +541,9 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 切换音频路由
 
-可通过该接口请求切换内置音频播放设备，如扬声器、听筒。存在蓝牙或有线耳机时，外设选择由 iOS 决定；接口返回成功表示系统调用已受理，最终实际路由以 `currentAudioRoute` 和 `onAudioRouteChange:previousRoute:` 回调为准。
+可通过该接口显式请求切换扬声器、听筒、蓝牙耳机或有线耳机。显式选择扬声器或听筒后，SDK 会优先保留该选择；未显式选择内置路由时，自`2.5.8`起，音频会话重配后 SDK 会主动恢复可用外设，同时存在蓝牙和有线耳机时优先使用蓝牙耳机。
+
+接口返回成功表示系统调用已受理，最终实际路由以 `currentAudioRoute` 和 `onAudioRouteChange:previousRoute:` 回调为准。
 
 **参数**
 

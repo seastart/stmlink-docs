@@ -154,7 +154,8 @@
                   "zh/rtc/android/types",
                   "zh/rtc/android/enums",
                   "zh/rtc/android/media-quality",
-                  "zh/rtc/android/error-codes"
+                  "zh/rtc/android/error-codes",
+                  "zh/rtc/android/changelog"
                 ]
               },
               {
@@ -179,8 +180,7 @@
                       "zh/rtc/windows/api-reference/IRTCCustomAudioTrack",
                       "zh/rtc/windows/api-reference/IRTCView",
                       "zh/rtc/windows/api-reference/IRTCTrack",
-                      "zh/rtc/windows/api-reference/IRTCSetting",
-                      "zh/rtc/windows/api-reference/callbacks"
+                      "zh/rtc/windows/api-reference/IRTCSetting"
                     ]
                   },
                   "zh/rtc/windows/types",
@@ -390,13 +390,14 @@
                 "pages": [
                   "zh/meeting/windows/integration",
                   "zh/meeting/windows/quickstart",
+                  "zh/meeting/windows/quickstart（通用）",
                   {
                     "group": "接口列表",
                     "pages": [
-                      "zh/meeting/windows/api-reference/ISMeetingEngine"
+                      "zh/meeting/windows/api-reference/smeeting",
+                      "zh/meeting/windows/api-reference/smeeting（通用）"
                     ]
                   },
-                  "zh/meeting/windows/types",
                   "zh/meeting/windows/error-codes"
                 ]
               },
@@ -431,6 +432,14 @@
                   },
                   "zh/meeting/wechat-miniprogram/events",
                   "zh/meeting/wechat-miniprogram/types"
+                ]
+              },
+              {
+                "group": "服务端 API",
+                "pages": [
+                  "zh/meeting/server-api/overview",
+                  "zh/meeting/server-api/api-list",
+                  "zh/meeting/server-api/error-codes"
                 ]
               }
             ]

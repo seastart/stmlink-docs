@@ -553,6 +553,18 @@ description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
 | enabled | 远端音频播放状态，YES-开启 NO-关闭 |
 
 
+### enabledAudioModule:()
+`- (void)enabledAudioModule:(BOOL)enabled`
+
+设置本端音频单元启停
+
+自`1.3.6`起支持。录像直播等本端不采集、不接收 RTC 音频的纯本地播放场景，关闭音频单元可释放底层语音处理单元，避免本地播放器的播放音量被压低；返回该类场景后需将其恢复为自动管理。SDK 每次进房会自动复位为自动管理。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enabled | YES-由底层自动管理音频单元 NO-停止音频单元 |
+
+
 ### switchAudioRoute:()
 `- (void)switchAudioRoute:(SEAAudioRoute)route`
 
