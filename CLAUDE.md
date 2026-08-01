@@ -70,8 +70,9 @@ navigation.languages（中文/英文）
 
 ## 自动生成的页面（服务端 API）
 
-`zh/rtc/server-api/` 下的接口页面（`channel` / `mcu` / `agent` / `im` / `white-board` /
-`asr`）与 `error-codes`**由脚本生成，不要手工编辑**，改动会在下次同步时被覆盖。
+`zh/rtc/server-api/` 下的接口页面（`channel` / `mcu` / `talkrec` / `agent` / `im` /
+`white-board` / `asr`）与 `error-codes`**由脚本生成，不要手工编辑**，改动会在下次同步时
+被覆盖。页面清单不是写死的 —— 分组来自 `router.go` 的 gin group，新增分组会自动多出一页。
 
 ```bash
 python3 scripts/sync-server-api.py    # rtc-backend 默认在 ../rtc-backend
@@ -89,8 +90,9 @@ mint broken-links                      # 提交前校验
 | 概览（鉴权、签名、响应格式、uid/sid） | `zh/rtc/server-api/overview.md`（手写） |
 | 篇幅长的玩法说明（调用时序、多接口配合、值域表格） | `zh/rtc/server-api/guides/`（手写，新增时在 sync 脚本的 `MANUAL_GUIDES` 里加一行） |
 
-同一分组下的页面由 `router.go` 的 gin group 决定，`docs.json` 的「接口文档」子分组
-由脚本整块替换 —— 所以往那个子分组里手工加页面会在下次同步时丢失。
+`docs.json` 里「服务端 API」整个分组的 `pages` 由脚本整块重写，顺序固定为
+概览 → 接入指南 → 接口文档 → 错误码 → 服务端 Demo —— 所以手工往里加页面、调顺序
+都会在下次同步时丢失，要改去改脚本顶部的 `MANUAL_HEAD` / `MANUAL_GUIDES` / `TAIL`。
 脚本还会清理孤儿页：接口从代码删除后，对应页面自动消失。
 
 **参数渲染用 Mintlify 的 `<ParamField>` / `<ResponseField>` 组件，不用 markdown 表格**
