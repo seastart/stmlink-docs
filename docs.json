@@ -458,6 +458,8 @@
                   {
                     "group": "接入指南",
                     "pages": [
+                      "zh/meeting/server-api/guides/recording",
+                      "zh/meeting/server-api/guides/callbacks",
                       "zh/meeting/server-api/guides/agent-and-im"
                     ]
                   },

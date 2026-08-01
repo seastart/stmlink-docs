@@ -523,7 +523,8 @@ description: "整场会议的云端录制、点播地址与直播推流"
 </ParamField>
 
 <ParamField body="task_type" type="integer" required>
-  1录像模式 2合流模式 3混合模式
+  任务类型，按位组合：1录像、2合流、4录音、8直播流；如 3 表示录像+合流，9 表示录像+直播
+  示例：`9`
 </ParamField>
 
 <ParamField body="title" type="string">
@@ -680,7 +681,7 @@ description: "整场会议的云端录制、点播地址与直播推流"
   "op_uid": "",
   "room_no": "",
   "tags": "",
-  "task_type": 0,
+  "task_type": 9,
   "title": ""
 }
 ```
@@ -720,7 +721,8 @@ description: "整场会议的云端录制、点播地址与直播推流"
 </ParamField>
 
 <ParamField body="task_type" type="integer">
-  1录像模式 2合流模式 3混合模式
+  任务类型(选填)。不传表示停掉该会议所有类型的任务；传了则只停指定类型，取值同启动接口
+  示例：`1`
 </ParamField>
 
 
@@ -730,7 +732,7 @@ description: "整场会议的云端录制、点播地址与直播推流"
 {
   "meeting_id": "",
   "room_no": "",
-  "task_type": 0
+  "task_type": 1
 }
 ```
 

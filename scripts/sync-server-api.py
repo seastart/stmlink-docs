@@ -99,7 +99,11 @@ PROJECTS = [
         manual_head=['zh/meeting/server-api/overview'],
         manual_guides={
             'group': '接入指南',
-            'pages': ['zh/meeting/server-api/guides/agent-and-im'],
+            'pages': [
+                'zh/meeting/server-api/guides/recording',
+                'zh/meeting/server-api/guides/callbacks',
+                'zh/meeting/server-api/guides/agent-and-im',
+            ],
         },
         tail=['zh/meeting/server-api/error-codes'],
     ),
