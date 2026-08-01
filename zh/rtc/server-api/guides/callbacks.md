@@ -102,7 +102,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-+ `task_type` 按位组合，含义见[录制与直播接入指南](/zh/rtc/server-api/guides/recording)
++ `task_type` 按位组合，含义见[云录制与直播接入指南](/zh/rtc/server-api/guides/recording)
 + `task_status`：`0` 待开始、`1` 进行中、`2` 待结束、`3` 异常结束、`4` 正常结束
 + `err_desc` 仅在异常结束时有内容
 
