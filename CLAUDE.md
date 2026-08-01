@@ -36,6 +36,19 @@ mint validate
 
 **添加新页面后，必须同步更新 `docs.json` 的导航配置，否则页面不会出现在侧边栏。**
 
+### 给 AI 看的产物（llms.txt）
+
+Mintlify 自动生成 `/llms.txt` 和 `/llms-full.txt`，**无需配置**，内容取自各页 frontmatter
+的 `title` / `description` —— 所以新页面务必写 `description`，它直接决定 AI 拿到的页面摘要
+质量。`docs.json` 里另有两处影响 AI 侧的配置：
+
+| 字段 | 作用 |
+| --- | --- |
+| `description` | 站点总览，出现在 llms.txt 开头的引言里 |
+| `markdown.instructions` | 逐页追加到喂给 AI 的 markdown 末尾。放的是客户的 AI 最容易搞错的硬约束（对外接口前缀、app_key 不进客户端、SRTC/SMeeting 术语不通用、各端 API 不通用），改动前想清楚是不是所有页面都该带这句 |
+
+`contextual.options` 给每页加「复制 / 查看 markdown / 在 ChatGPT 或 Claude 中打开」按钮。
+
 ### 文档文件
 
 - 格式：Markdown (`.md`)，每个文件需包含正文（目前使用 `.md`，非 `.mdx`）

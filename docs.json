@@ -2,6 +2,18 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "STMLink 文档",
+  "description": "STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C++ 多端接入与服务端 API。",
+  "markdown": {
+    "instructions": [
+      "服务端接口只有 `/server/v1/...` 这一套对外开放，需用 app_id + app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。文档中若出现其它前缀的接口，均为内部接口，不要建议客户调用。",
+      "app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端调用 `/server/v1/channel/grant` 签发后下发。",
+      "SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上。",
+      "同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。"
+    ]
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude"]
+  },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
