@@ -62,13 +62,21 @@ description: "把业务系统的用户换成会议 Token，以及把已授权的
 
 ---
 
-## 踢出授权用户
+## 下线登录用户
 
 `POST /server/v1/user-auth/kickout`
 
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
 
-踢出登录用户
+让用户的登录态（meet_token 换来的会话）立即失效，下次调接口就要重新授权。
+
+注意这个接口**不会把人从正在进行的会议里踢出去**，被下线的人还在会中，
+直到心跳超时才掉线（`user_exit` 回调的 `reason` 为 4）。
+要立刻把人踢出会议，用[会中控制](/zh/meeting/server-api/meet-admin)里的「主持人踢人」。
+
++ 不传 device_type：该用户所有端一起下线
++ 传了 device_type：只下线这一端，其它端不受影响
++ 该用户当前没有有效登录态时会报错
 
 **请求参数**
 
@@ -77,7 +85,8 @@ description: "把业务系统的用户换成会议 Token，以及把已授权的
 </ParamField>
 
 <ParamField body="device_type" type="integer">
-  设备类型
+  只下线该端的登录态 0未知设备 1Windows 2Android 3iOS 4Linux 5MacOS 6WebRTC 7微信小程序；不传则该用户所有端一起下线
+  示例：`3`
 </ParamField>
 
 
@@ -85,7 +94,7 @@ description: "把业务系统的用户换成会议 Token，以及把已授权的
 
 ```json
 {
-  "device_type": 0,
+  "device_type": 3,
   "user_id": ""
 }
 ```
