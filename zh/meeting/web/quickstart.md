@@ -4,10 +4,10 @@ description: "Web SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
 ---
 
 ### 基本概念
-+ SMeeting实例：通过`new SMeeting`得到操作实例，绝大部分接口都通过该实例对外提供，所有事件都可通过`SMeeting.onNotifyRoomEvent`来监听。（如果你想同时加入多个频道，目前只能new多个实例来操作）
++ SMeeting实例：通过`new SMeeting`得到操作实例，绝大部分接口都通过该实例对外提供，所有事件都可通过`SMeeting.onNotifyRoomEvent`来监听。（如果你想同时进入多个会议，目前只能new多个实例来操作）
 + 首页需要获取meeting的token（从后端接口中获取），调用smeeting.login登录成功后才能进行后续的操作如创建会议、加入会议等操作
 + RoomInfo：`smeeting.enterRoom`加入会议后的会议信息，可通过 `smeeting.getRoomInfo`获得
-+ `UserInfo`：会议内用户信息(包括自己与其他远端用户)，可通过`smeeting.getUserInfo(uid: string)`获取会议单用户信息，也可通过`smeeting.getUsersInfo(true/false)`获取频道所有在线用户信息 true获取map数据   false获取array数据
++ `UserInfo`：会议内用户信息(包括自己与其他远端用户)，可通过`smeeting.getUserInfo(uid: string)`获取会议单用户信息，也可通过`smeeting.getUsersInfo(true/false)`获取会议内所有在线用户信息 true获取map数据   false获取array数据
 
 
 

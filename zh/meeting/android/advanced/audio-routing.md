@@ -5,7 +5,7 @@ description: "Android SMeeting 会议 SDK 音频路由管理（扬声器/听筒/
 
 # 音频路由使用说明
 
-本文档基于 rtcSDK 中 `AudioRouterManager` 的相关实现整理；在 `meetingSDK` 中使用时，仅需将获取和释放入口适配为 `MeetingEngine`：
+音频路由由 `AudioRouterManager` 管理，其行为与 SRTC 一致；在 SMeeting 中使用时，只需把获取和释放入口换成 `MeetingEngine`：
 
 ```kotlin
 var audioRouterManager = meetingEngine.getAudioRouterManager()
