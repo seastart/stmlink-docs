@@ -43,6 +43,7 @@ description: "SRTC 错误码的编号规则：如何从一个错误码看出它�
 | 7 | 小程序 | `107` |
 | 8 | Android 盒子 | `108` |
 | 9 | Android 嵌入式 | `109` |
+| 80 | 服务端 / 嵌入式接入（C SDK） | `180` |
 
 所以看到 `103002`，读作：SRTC 层 + iOS 端 + 第 002 号错误。
 
@@ -55,12 +56,13 @@ description: "SRTC 错误码的编号规则：如何从一个错误码看出它�
 | `1xxx` | 服务端拒绝了请求 | 检查签名、Token、频道状态。见 [服务端 API 错误码](/zh/rtc/server-api/error-codes) |
 | `100xxx` | SDK 通用错误，各端一致 | 通常是参数、初始化顺序、网络问题 |
 | `10Nxxx` | 该平台特有的错误 | 见对应平台的错误码页 |
+| `180xxx` | C SDK（服务端 / 嵌入式接入）自身的错误 | 见 [C SDK 错误码](/zh/rtc/capi/error-codes) |
 
 各平台完整错误码表：
 [Web](/zh/rtc/web/error-codes) · [Android](/zh/rtc/android/error-codes) · [Windows](/zh/rtc/windows/error-codes) · [Swift](/zh/rtc/swift/error-codes) · [iOS](/zh/rtc/ios/error-codes) · [C](/zh/rtc/capi/error-codes)
 
 <Note>
-**C SDK 是个例外。** 它的接口返回的是 `0 / -1 / -2 / -3 / -4` 这样的简单状态值，用于表达调用层面的结果；真正的业务失败原因来自服务端，会打在日志里。见 [C SDK 错误码](/zh/rtc/capi/error-codes)。
+**C SDK 分两层看。** 它的**接口返回值**是 `0 / -1 / -2 / -3 / -4` 这样的简单状态值，只表达调用层面的结果、不含原因；具体原因打在日志里，那里既有 SDK 自身的 `180xxx`，也有服务端透传的 `1xxx`。见 [C SDK 错误码](/zh/rtc/capi/error-codes)。
 </Note>
 
 <Warning>
