@@ -1,6 +1,6 @@
 ---
 title: "MeetingKitIMDelegate"
-description: "iOS SMeeting 会议 SDK MeetingKitIMDelegate 接口参考"
+description: "会议外消息通道的回调协议：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助"
 ---
 
 ## 连接相关回调

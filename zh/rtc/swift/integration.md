@@ -10,7 +10,11 @@ SRTC Swift SDK 是一套 `Swift Package` 形态的原生音视频 SDK，对外�
 + Xcode 15 及以上
 + Swift 5.9 及以上
 
-注意：本节文档对应的是新的 `rtc-swift` 仓库和 `import SRTC` 接入方式；站点里原有的 [iOS SDK](/zh/rtc/ios/integration) 文档对应旧版 `RTCEngineKit`，两套 API 不能混用。
+<Note>
+**苹果平台有两套 SRTC SDK，先确认你要用哪一套。** 本章是 Swift 原生 SDK（`import SRTC`，Swift Package 形态，同时支持 iOS 与 macOS）；另有一套 Objective-C 的 `RTCEngineKit`（CocoaPods 分发，仅 iOS），见 [iOS SDK](/zh/rtc/ios/integration)。
+
+**新项目建议用本章的 Swift SDK。** 两套 API 不能混用，也不要在同一工程里同时引入。
+</Note>
 
 如果你要直接运行仓库里的 Demo，请额外注意：
 

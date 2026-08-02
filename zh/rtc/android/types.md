@@ -1,6 +1,6 @@
 ---
 title: "类型定义"
-description: "Android SRTC 音视频 SDK 信息数据类型定义"
+description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能力等数据结构字段说明"
 ---
 
 ## ChannelInfo

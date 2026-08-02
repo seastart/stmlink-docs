@@ -1,6 +1,6 @@
 ---
 title: "RTCEngine"
-description: "Android SRTC 音视频 SDK RTCEngine 接口参考"
+description: "Android 音视频 SDK 的核心入口：生命周期、频道进出、媒体采集发布订阅、信息查询"
 ---
 
 `RTCEngine` 是 Android SRTC SDK 的核心入口，负责 SDK 生命周期、频道进出、事件监听、媒体采集/发布/订阅以及信息查询。完整最小接入流程见 [快速开始](/zh/rtc/android/quickstart)。

@@ -1,6 +1,6 @@
 ---
 title: "SMeeting"
-description: "Web SMeeting 会议 SDK SMeeting 接口参考"
+description: "Web 会议 SDK 的主入口类，绝大多数会议操作都从这里发起"
 ---
 
 SMeeting是绝大多数操作的入口。

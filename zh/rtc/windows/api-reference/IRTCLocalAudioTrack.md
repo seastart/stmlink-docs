@@ -1,6 +1,6 @@
 ---
 title: "IRTCLocalAudioTrack"
-description: "Windows SRTC 音视频 SDK IRTCLocalAudioTrack 接口参考"
+description: "本地音频轨道基类，提供推流与停止推流"
 ---
 
 ## 函数说明

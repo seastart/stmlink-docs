@@ -1,6 +1,6 @@
 ---
 title: "IRTCEngineEvent"
-description: "Windows SRTC 音视频 SDK IRTCEngineEvent 事件回调接口参考"
+description: "事件回调接口，继承并重写方法以接收加入频道、用户进出、流变化与自定义消息"
 ---
 
 ## 函数说明

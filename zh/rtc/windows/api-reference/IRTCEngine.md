@@ -1,6 +1,6 @@
 ---
 title: "IRTCEngine"
-description: "Windows SRTC 音视频 SDK IRTCEngine 接口参考"
+description: "Windows 音视频 SDK 的核心接口：创建与释放实例、频道进出、成员信息查询、媒体控制"
 ---
 
 

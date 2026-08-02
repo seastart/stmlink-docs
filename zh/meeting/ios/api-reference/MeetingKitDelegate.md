@@ -1,6 +1,6 @@
 ---
 title: "MeetingKitDelegate"
-description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
+description: "会中事件回调协议：错误与重连、自己的进退会、会控请求、房间与成员状态变化"
 ---
 
 ## 错误事件回调

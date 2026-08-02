@@ -1,6 +1,6 @@
 ---
 title: "MeetingEngine"
-description: "Android SMeeting 会议 SDK MeetingEngine 接口参考"
+description: "Android 会议 SDK 的总入口，覆盖会前管理、进出会议、会控、媒体与消息能力"
 ---
 
 说明：`MeetingEngine` 是 Meeting SDK 对外总入口，覆盖会前管理、入会会控、媒体能力与消息能力。

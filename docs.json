@@ -334,13 +334,11 @@
               {
                 "group": "Web SDK",
                 "pages": [
-                  "zh/meeting/web/overview",
                   "zh/meeting/web/integration",
                   "zh/meeting/web/quickstart",
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/meeting/web/api-reference",
                       "zh/meeting/web/api-reference/SMeeting"
                     ]
                   },
@@ -520,6 +518,14 @@
     {
       "source": "/zh/meeting/windows/api-reference/smeeting（通用）",
       "destination": "/zh/meeting/windows/api-reference/smeeting-c"
+    },
+    {
+      "source": "/zh/meeting/web/overview",
+      "destination": "/zh/meeting/web/integration"
+    },
+    {
+      "source": "/zh/meeting/web/api-reference",
+      "destination": "/zh/meeting/web/api-reference/SMeeting"
     }
   ]
 }

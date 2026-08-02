@@ -1,6 +1,6 @@
 ---
 title: "RTCEngineIMDelegate"
-description: "iOS SRTC 音视频 SDK RTCEngineIMDelegate 接口参考"
+description: "频道外消息通道（IM）的回调协议：连接状态变化与消息接收"
 ---
 
 ## 连接相关回调

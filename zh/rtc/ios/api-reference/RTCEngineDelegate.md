@@ -1,6 +1,6 @@
 ---
 title: "RTCEngineDelegate"
-description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
+description: "频道事件回调协议：连接与重连、自定义消息、频道属性变化、远端用户与流轨道变化"
 ---
 
 ## 连接相关回调

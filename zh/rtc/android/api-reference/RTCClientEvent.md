@@ -1,6 +1,6 @@
 ---
 title: "RTCClientEvent"
-description: "Android SRTC 音视频 SDK RTCClientEvent 接口参考"
+description: "频道会控事件回调：加入成功、远端用户进出、流轨道增删改、自定义消息、断开连接"
 ---
 
 ## 说明

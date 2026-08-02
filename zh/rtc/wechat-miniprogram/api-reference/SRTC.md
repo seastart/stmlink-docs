@@ -1,6 +1,6 @@
 ---
 title: "SRTC"
-description: "微信小程序 SRTC 音视频 SDK SRTC 接口参考"
+description: "微信小程序音视频 SDK 的主入口类，绝大多数操作都从这里发起"
 ---
 
 srtc是绝大多数操作的入口。

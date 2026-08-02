@@ -1,6 +1,6 @@
 ---
 title: "Channel 与 Track"
-description: "SRTC Swift SDK 中 Channel、Track 与渲染相关接口参考"
+description: "Channel 会话对象与本地/远端轨道类：发布、订阅、渲染与采集控制"
 ---
 
 ### Channel

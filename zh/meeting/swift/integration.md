@@ -12,6 +12,12 @@ SMeeting Swift SDK 是一套 `Swift Package` 形态的会议 SDK，对外模块�
 
 SMeeting 构建在 SRTC 音视频能力之上：会议层负责房间、会议、参会成员、主持人管控等业务语义，底层的音视频采集、编解码、渲染仍由 SRTC 提供。引入 `SMeeting` 时，SRTC 会作为依赖被一并解析，你不需要单独再加一次。
 
+<Note>
+**苹果平台有两套 SMeeting SDK，先确认你要用哪一套。** 本章是 Swift 原生 SDK（`import SMeeting`，Swift Package 形态，同时支持 iOS 与 macOS）；另有一套 Objective-C 的 `MeetingKit`（CocoaPods 分发，仅 iOS），见 [iOS SDK](/zh/meeting/ios/quickstart)。
+
+**新项目建议用本章的 Swift SDK。** 两套 API 不能混用，也不要在同一工程里同时引入。
+</Note>
+
 ---
 
 ### 通过 Swift Package Manager 集成

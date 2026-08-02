@@ -1,6 +1,6 @@
 ---
 title: "SRTC"
-description: "Web SRTC 音视频 SDK SRTC 接口参考"
+description: "Web 音视频 SDK 的核心入口类：加入与离开频道、设备管理、网络质量查询、事件注册"
 ---
 
 SRTC 是 Web SDK 的核心入口，通过 `new SRTC(initParams)` 创建实例。

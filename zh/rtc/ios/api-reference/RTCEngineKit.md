@@ -1,6 +1,6 @@
 ---
 title: "RTCEngineKit"
-description: "iOS SRTC 音视频 SDK RTCEngineKit 接口参考"
+description: "iOS（Objective-C）音视频 SDK 的核心入口类：初始化、频道进出、媒体采集发布与订阅"
 ---
 
 ## 创建实例和事件回调

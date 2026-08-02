@@ -1,6 +1,6 @@
 ---
 title: "IRTCLocalCameraTrack"
-description: "Windows SRTC 音视频 SDK IRTCLocalCameraTrack 接口参考"
+description: "本地摄像头推流对象：更新采集参数、开始与停止采集"
 ---
 
 

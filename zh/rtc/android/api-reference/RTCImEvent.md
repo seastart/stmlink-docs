@@ -1,6 +1,6 @@
 ---
 title: "RTCImEvent"
-description: "Android SRTC 音视频 SDK RTCImEvent 接口参考"
+description: "频道外消息通道（IM）的事件回调：连接状态变化与消息接收"
 ---
 
 ## 说明

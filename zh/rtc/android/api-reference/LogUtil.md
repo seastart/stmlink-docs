@@ -1,6 +1,6 @@
 ---
 title: "LogUtil"
-description: "Android SRTC 音视频 SDK 日志工具 LogUtil 接口参考"
+description: "SDK 日志工具，上层可复用它输出分级日志并统一写入本地日志文件"
 ---
 
 `LogUtil` 是 SDK 提供的日志工具（Kotlin `object` 单例）。上层接入方可复用它输出分级日志，日志会与 SDK 内部日志统一写入本地文件（当 `RTCEngine.create` 时 `enableLocalLog = true`），便于联调与排障。日志文件路径由 `create(...)` 的 `localLogPath` 决定。

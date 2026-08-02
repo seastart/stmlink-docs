@@ -1,6 +1,6 @@
 ---
 title: "SMeetingRemoteVideoView"
-description: "SMeeting Swift SDK 的 SwiftUI 远端视频组件接口参考"
+description: "渲染远端成员画面的 SwiftUI 组件，视图出现与消失时自动完成订阅和退订"
 ---
 
 `SMeetingRemoteVideoView` 是渲染远端成员画面的 SwiftUI 组件。它把「订阅 / 退订」和「视图生命周期」绑定在一起，你只要让视图出现和消失，订阅关系就跟着走。

@@ -1,6 +1,6 @@
 ---
 title: "MeetingKit"
-description: "iOS SMeeting 会议 SDK MeetingKit 接口参考"
+description: "iOS（Objective-C）会议 SDK 的总入口单例：登录、会前管理、进出会议、会控、媒体与消息接口"
 ---
 
 ## 核心基础接口

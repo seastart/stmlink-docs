@@ -3,6 +3,12 @@ title: "快速开始"
 description: "iOS SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能"
 ---
 
+<Note>
+**苹果平台有两套 SMeeting SDK，先确认你要用哪一套。** 本章是 Objective-C 的 `MeetingKit`（CocoaPods 分发，仅 iOS）；另有一套 Swift 原生 SDK（`import SMeeting`，Swift Package 形态，同时支持 iOS 与 macOS），见 [Swift SDK](/zh/meeting/swift/integration)。
+
+**新项目建议用 Swift SDK。** 两套 API 不能混用，也不要在同一工程里同时引入。
+</Note>
+
 ### 环境准备
 + iOS 10.0 及以上版本
 + Xcode 10.0 及以上版本

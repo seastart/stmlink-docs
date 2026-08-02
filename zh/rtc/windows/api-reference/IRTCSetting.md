@@ -1,6 +1,6 @@
 ---
 title: "IRTCSetting"
-description: "Windows SRTC 音视频 SDK IRTCSetting 配置接口参考"
+description: "SDK 各项运行参数的读取与设置，含默认值说明"
 ---
 
 ## 函数说明

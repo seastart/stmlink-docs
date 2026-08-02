@@ -1,6 +1,6 @@
 ---
 title: "LocalVideoPreviewEvent"
-description: "Android SMeeting 会议 SDK LocalVideoPreviewEvent 接口参考"
+description: "拿到本地采集的原始视频帧，用于自渲染或美颜等二次处理"
 ---
 
 说明：`LocalVideoPreviewEvent` 是本地视频帧回调接口，用于接收本地采集的视频帧数据与尺寸/方向变化。通过 `MeetingEngine.localVideoPreviewEvent` 设置，适用于自渲染或对本地画面做二次处理的场景。

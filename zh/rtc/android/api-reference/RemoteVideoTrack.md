@@ -1,6 +1,6 @@
 ---
 title: "RemoteVideoTrack"
-description: "Android SRTC 音视频 SDK RemoteVideoTrack 接口参考"
+description: "远端视频轨道：画面渲染与接收卡顿状态监听"
 ---
 
 ## 说明

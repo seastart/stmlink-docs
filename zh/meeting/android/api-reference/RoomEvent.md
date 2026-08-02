@@ -1,6 +1,6 @@
 ---
 title: "RoomEvent"
-description: "Android SMeeting 会议 SDK RoomEvent 接口参考"
+description: "房间级事件：全场静音与禁聊等会控开关变化、共享开始与结束、主持人转移、云录制状态"
 ---
 
 说明：`RoomEvent` 是房间级事件回调接口，用于接收会控能力变化、共享状态、子会议与重连等事件。

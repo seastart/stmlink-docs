@@ -1,6 +1,6 @@
 ---
 title: "IRTCRecord"
-description: "Windows SRTC 音视频 SDK IRTCRecord 本地录制接口参考"
+description: "本地录制：文件名、水印、输出尺寸、成员视图布局与录制过程控制"
 ---
 
 ## 函数说明

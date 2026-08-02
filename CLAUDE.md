@@ -38,14 +38,29 @@ mint validate
 
 ### 给 AI 看的产物（llms.txt）
 
-Mintlify 自动生成 `/llms.txt` 和 `/llms-full.txt`，**无需配置**，内容取自各页 frontmatter
-的 `title` / `description` —— 所以新页面务必写 `description`，它直接决定 AI 拿到的页面摘要
-质量。`docs.json` 里另有两处影响 AI 侧的配置：
+**本仓根目录的 `llms.txt` 是自己生成的，会覆盖 Mintlify 的自动版本**（官方支持，见
+mintlify.com/docs/ai/llmstxt「Custom files」）。原因：自动版按**仓库路径字母序平铺**
+所有页面，AI 读到时分不清入口页和深层参考页，顺序也和侧边栏无关。
+
+```bash
+python3 scripts/gen-llms-txt.py          # 改了导航或 frontmatter 后重跑
+python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
+```
+
+脚本按 `docs.json` 的导航顺序输出，用 `## {产品} · {分组} · {子分组}` 分节。所以：
+
+- **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页
+- 页面的 `description` 直接就是 AI 拿到的摘要（Mintlify 侧限 300 字符、截到第一个换行）。
+  **别写「{平台} {产品} SDK {类名} 接口参考」这种模板句** —— 对 AI 选页零信息量，
+  要写「这个类干什么、什么时候该读它」
+- `llms-full.txt` 仍是自动生成（1.6MB 量级，AI 无法整份读入，只能当按需取单页的索引用）
+
+`docs.json` 里另有两处影响 AI 侧的配置：
 
 | 字段 | 作用 |
 | --- | --- |
 | `description` | 站点总览，出现在 llms.txt 开头的引言里 |
-| `markdown.instructions` | 逐页追加到喂给 AI 的 markdown 末尾。放的是客户的 AI 最容易搞错的硬约束（对外接口前缀、app_key 不进客户端、SRTC/SMeeting 术语不通用、各端 API 不通用），改动前想清楚是不是所有页面都该带这句 |
+| `markdown.instructions` | 逐页追加到喂给 AI 的 markdown 末尾，同时进 llms.txt 的 `Agent Instructions` 块。放的是客户的 AI 最容易搞错的硬约束（对外接口前缀、app_key 不进客户端、SRTC/SMeeting 术语不通用、各端 API 不通用），改动前想清楚是不是所有页面都该带这句 |
 
 `contextual.options` 给每页加「复制 / 查看 markdown / 在 ChatGPT 或 Claude 中打开」按钮。
 
@@ -95,6 +110,7 @@ navigation.languages（中文/英文）
 ```bash
 python3 scripts/sync-server-api.py            # 两个都同步
 python3 scripts/sync-server-api.py meeting    # 只同步 SMeeting
+python3 scripts/gen-llms-txt.py                # 页面有增删时同步重跑
 mint broken-links                              # 提交前校验
 ```
 

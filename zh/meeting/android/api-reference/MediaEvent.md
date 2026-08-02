@@ -1,6 +1,6 @@
 ---
 title: "MediaEvent"
-description: "Android SMeeting 会议 SDK MediaEvent 接口参考"
+description: "媒体层事件：连接建立、远端视频帧、音量与活跃说话人、摄像头设备变化、传输统计"
 ---
 
 说明：`MediaEvent` 是流媒体事件回调接口，用于接收媒体连接、音视频帧与统计信息事件。

@@ -1,6 +1,6 @@
 ---
 title: "CommonCallback"
-description: "Android SMeeting 会议 SDK CommonCallback 接口参考"
+description: "只关心成功或失败、不返回数据的通用操作回调"
 ---
 
 说明：`CommonCallback` 是通用结果回调接口，用于反馈操作成功或失败。

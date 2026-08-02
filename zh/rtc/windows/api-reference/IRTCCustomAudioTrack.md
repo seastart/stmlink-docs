@@ -1,6 +1,6 @@
 ---
 title: "IRTCCustomAudioTrack"
-description: "Windows SRTC 音视频 SDK IRTCCustomAudioTrack 自定义音频轨道接口参考"
+description: "推送自定义音频数据流的轨道接口"
 ---
 
 ## 函数说明

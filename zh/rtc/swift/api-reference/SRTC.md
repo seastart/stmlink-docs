@@ -1,6 +1,6 @@
 ---
 title: "SRTC"
-description: "SRTC Swift SDK 主入口类接口参考"
+description: "Swift 音视频 SDK 的主入口：加入频道、创建本地轨道、配置日志与音频处理器"
 ---
 
 `SRTC` 是 Swift SDK 的主入口，负责加入频道、离开频道、创建本地轨道以及配置日志和音频处理器。
