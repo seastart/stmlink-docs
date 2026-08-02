@@ -47,7 +47,7 @@
           },
           {
             "label": "SMeeting 会议 SDK",
-            "href": "https://docs.stmlink.com/zh/meeting/quickstart"
+            "href": "https://docs.stmlink.com/zh/meeting/overview"
           }
         ]
       },
@@ -74,6 +74,9 @@
                 "group": "概览",
                 "pages": [
                   "zh/rtc/overview",
+                  "zh/choose",
+                  "zh/rtc/key-concepts",
+                  "zh/rtc/token",
                   "zh/rtc/quickstart"
                 ]
               },
@@ -304,6 +307,10 @@
               {
                 "group": "概览",
                 "pages": [
+                  "zh/meeting/overview",
+                  "zh/choose",
+                  "zh/meeting/key-concepts",
+                  "zh/meeting/token",
                   "zh/meeting/quickstart"
                 ]
               },
