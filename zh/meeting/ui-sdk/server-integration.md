@@ -31,9 +31,9 @@ https://<你的域名>/server/v1/...        会议服务（建会、会控、录
 https://<你的域名>/stm/srvapi/v1/...    用户体系（同步、授权）
 ```
 
-两者的**鉴权方式完全一致**——`app_id` / `nonce` / `timestamp` / `signature` 四个请求头，
-HMAC-SHA256 签名，算法见[服务端 API 概览](/zh/meeting/server-api/overview)。
-两者用的 `app_key` 是否为同一把，以我们交付给你的配置为准。
+两者用**同一组 `app_id` / `app_key`**，鉴权方式也完全一致——`app_id` / `nonce` /
+`timestamp` / `signature` 四个请求头，HMAC-SHA256 签名，算法见
+[服务端 API 概览](/zh/meeting/server-api/overview)。签名代码写一份，两个前缀都能用。
 
 <Warning>
 `app_key` 只能待在你的后端。上面四步里，只有第 4 步的 URL 会到达浏览器，
