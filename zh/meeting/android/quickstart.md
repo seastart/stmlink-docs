@@ -3,7 +3,7 @@ title: "快速开始"
 description: "Android SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能"
 ---
 
-# 前置准备
+## 前置准备
 
 开始前请先完成以下准备：
 

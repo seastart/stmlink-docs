@@ -1,4 +1,4 @@
-﻿---
+---
 title: "IRTCEngine"
 description: "Windows SRTC 音视频 SDK IRTCEngine 接口参考"
 ---

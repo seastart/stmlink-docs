@@ -45,7 +45,7 @@ SMeeting Web SDK 支持主流桌面端及移动端浏览器：
 npm install @seastart/smeeting-web-sdk@latest --save
 ```
 
-### **本地引用**
+### 本地引用
 手动下载 sdk 包：
 
 1. 下载 [smeeting.js](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting.js) 和 [smeeting.d.ts](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting.d.ts)

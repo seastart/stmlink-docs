@@ -29,7 +29,7 @@ description: "不集成 SDK、不做会议界面，业务后端只对三个接�
 
 对接会用到两个前缀，域名相同：
 
-```
+```text
 https://<你的域名>/server/v1/...        会议服务（建会、会控、录制）
 https://<你的域名>/stm/srvapi/v1/...    用户体系（同步、授权）
 ```
@@ -63,7 +63,7 @@ https://<你的域名>/stm/srvapi/v1/...    用户体系（同步、授权）
 
 ## 第 1 步：创建会议
 
-```
+```text
 POST /server/v1/meet/create
 ```
 
@@ -108,7 +108,7 @@ POST /server/v1/meet/create
 
 用户在你的系统里点「进入会议」时，后端实时调一次：
 
-```
+```text
 POST /stm/srvapi/v1/member/grant
 ```
 
@@ -147,7 +147,7 @@ POST /stm/srvapi/v1/member/grant
 
 把 token 和房间号拼成地址，让用户的浏览器打开它：
 
-```
+```text
 https://<你的域名>/stm/ui/outer?token=<第2步的token>&room_no=<第1步的room_no>&nickname=<会中昵称>
 ```
 
@@ -163,7 +163,7 @@ https://<你的域名>/stm/ui/outer?token=<第2步的token>&room_no=<第1步的r
 
 ## 完整时序
 
-```
+```text
 业务活动创建时
   └─ POST /server/v1/meet/create        extend_info 挂单据号 → 存下 room_no
 
@@ -187,7 +187,7 @@ https://<你的域名>/stm/ui/outer?token=<第2步的token>&room_no=<第1步的r
 上面三步不需要它。**只有当你希望用户在会议客户端里能翻通讯录、从人员列表挑人入会时，
 才需要提前把人推过来。**
 
-```
+```text
 POST /stm/srvapi/v1/member/sync
 ```
 

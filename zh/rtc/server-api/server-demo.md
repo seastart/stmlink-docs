@@ -28,7 +28,7 @@ srtc 服务端 api 拥有**全局最高的权力**，每个请求都要用 `app_
 
 一般一条业务接口对应一个能力，要调哪个 srtc srvapi 在你的后端代码里指定：
 
-```
+```text
 POST /你的后端/room/start-record   →  内部调 mcu/start
 POST /你的后端/room/kick           →  内部调 channel/kick-user
 ```

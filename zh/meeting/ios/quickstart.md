@@ -303,12 +303,12 @@ meetingEnterParam.isAudience = NO; // 默认以普通参会者身份入会，设
 [[MeetingKit sharedInstance] stopRemoteView:@"Remote User ID" streamType:SEAVideoStreamTypeBig];
 ```
 
-#### **取消订阅指定远端用户的所有视频画面**
+#### 取消订阅指定远端用户的所有视频画面
 ```objectivec
 [[MeetingKit sharedInstance] stopAllRemoteViewWithUserId:@"Remote User ID"];
 ```
 
-#### **取消订阅所有远端用户的视频画面**
+#### 取消订阅所有远端用户的视频画面
 ```objectivec
 [[MeetingKit sharedInstance] stopAllRemoteView];
 ```

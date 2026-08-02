@@ -90,7 +90,7 @@ description: "整场云端录制、合流、录音与直播的完整玩法：任
 
 ## 完整时序
 
-```
+```text
 1. 可选：配好应用的默认录制配置        POST /server/v1/mcu/save-record-config
 2. 频道里有人后，启动任务              POST /server/v1/mcu/start        → task_id
    ├─ task_type 带 8 → 立即可取直播地址 POST /server/v1/mcu/live-url

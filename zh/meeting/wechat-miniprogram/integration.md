@@ -20,7 +20,7 @@ description: "微信小程序 SMeeting 会议 SDK 环境配置与 SDK 安装指�
 npm install @seastart/smeeting-wx-sdk@latest --save
 ```
 
-### **本地引用**
+### 本地引用
 手动下载 sdk 包：
 
 1. 下载 [smeeting-wx.js](https://www.unpkg.com/@seastart/smeeting-wx-sdk@latest/smeeting-wx.js) [smeeting-wx.d.ts](https://www.unpkg.com/@seastart/smeeting-wx-sdk@latest/smeeting-wx.d.ts) 

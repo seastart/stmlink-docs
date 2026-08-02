@@ -3,8 +3,6 @@ title: "C 快速开始"
 description: "Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能"
 ---
 
-# C 快速开始
-
 本文档介绍如何在 Windows 平台使用 C 语言集成 SMeeting SDK。
 
 ## 基本概念

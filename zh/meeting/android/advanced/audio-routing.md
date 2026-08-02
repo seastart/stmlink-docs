@@ -3,8 +3,6 @@ title: "音频路由使用"
 description: "Android SMeeting 会议 SDK 音频路由管理（扬声器/听筒/有线耳机/蓝牙耳机）"
 ---
 
-# 音频路由使用说明
-
 音频路由由 `AudioRouterManager` 管理，其行为与 SRTC 一致；在 SMeeting 中使用时，只需把获取和释放入口换成 `MeetingEngine`：
 
 ```kotlin

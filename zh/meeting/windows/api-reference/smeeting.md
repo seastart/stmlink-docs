@@ -3,8 +3,6 @@ title: "C++ API 参考"
 description: "Windows SMeeting 会议 SDK C++ 接口完整参考"
 ---
 
-# C++ API 参考
-
 本文档提供 Windows SMeeting SDK C++ 接口的完整参考。所有接口定义在 `SMeeting.h` 头文件中。
 
 ## 初始化与基础接口

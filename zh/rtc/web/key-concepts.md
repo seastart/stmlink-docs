@@ -58,7 +58,7 @@ Track（轨道）是音视频数据的最小单元，每一路音频或视频都
 
 #### 继承关系
 
-```
+```text
 BaseTrack
 ├── LocalAudioTrack          ← 本地音频基类（自定义音频流）
 │   └── LocalMicTrack        ← 麦克风流
@@ -85,7 +85,7 @@ BaseTrack
 
 #### 本地 Track 生命周期
 
-```
+```text
 createLocalXxxTrack()
   → startCapture()        // 开始采集（请求摄像头/麦克风权限）
   → publishLocalTrack()   // 发布到频道（其他用户可以订阅）

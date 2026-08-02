@@ -3,7 +3,7 @@ title: "RTCEngineDelegate"
 description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 ---
 
-## **连接相关回调**
+## 连接相关回调
 ### onReconnecting()
 `- (void)onReconnecting`
 
@@ -35,7 +35,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | errMsg | 错误信息 |
 
 
-## **消息相关回调**
+## 消息相关回调
 ### onCustomMessage:action:userId:sessionId:nickname:()
 `- (void)onCustomMessage:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
 
@@ -53,7 +53,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | nickname | 用户昵称 |
 
 
-## **我的相关回调**
+## 我的相关回调
 ### onJoinSucceed:userId:()
 `- (void)onJoinSucceed:(NSString *)channel userId:(NSString *)userId`
 
@@ -82,7 +82,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | userId | 用户标识 |
 
 
-## **频道相关回调**
+## 频道相关回调
 ### onChannelUpdate:props:()
 `- (void)onChannelUpdate:(NSString *)channel props:(NSString *)props`
 
@@ -97,7 +97,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | props | 自定义数据 |
 
 
-## **用户相关回调**
+## 用户相关回调
 ### onRemoteUserJoinChannel:userId:()
 `- (void)onRemoteUserJoinChannel:(NSString *)channel userId:(NSString *)userId`
 
@@ -198,7 +198,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | --- | --- |
 
 
-## **流媒体相关回调**
+## 流媒体相关回调
 ### onStreamMediaDidConnectSucceed()
 `- (void)onStreamMediaDidConnectSucceed`
 
@@ -336,7 +336,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
-## **屏幕共享相关回调**
+## 屏幕共享相关回调
 ### onScreenRecordStatus:()
 `- (void)onScreenRecordStatus:(RTCScreenRecordStatus)status`
 
@@ -373,7 +373,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineDelegate 接口参考"
 | connectResult | 连接情况测试结果，详情请参考 [RTCSpeedTestConnectResult](https://www.yuque.com/anyconf/rtcengine/yi50z7#I9DK2) |
 
 
-## **其它相关回调**
+## 其它相关回调
 ### onApplicationPerformance:cpuUsage:()
 `- (void)onApplicationPerformance:(CGFloat)memory cpuUsage:(CGFloat)cpuUsage`
 

@@ -10,7 +10,7 @@ description: "会议、成员、录制状态变化时 SMeeting 通知你的业�
 
 我们向你注册的 `cb_url` 发 POST 请求，事件名同时出现在查询参数与请求体里：
 
-```
+```text
 POST {你的 cb_url}?event=user_enter
 Content-Type: application/json; charset=utf-8
 ```

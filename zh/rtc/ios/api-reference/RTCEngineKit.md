@@ -669,7 +669,7 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 | --- | --- |
 
 
-## **发布自定义流相关接口**函数
+## 发布自定义流相关接口
 ### startCustomStreamWithStreamModel:()
 `- (RTCEngineError)startCustomStreamWithStreamModel:(RTCEngineStreamModel *)streamModel`
 

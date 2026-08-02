@@ -190,28 +190,28 @@ if (errorCode != RTCEngineErrorOK) {
 ```
 
 ### step 3：发布视频流
-#### **开启预览画面**
+#### 开启预览画面
 ```objectivec
 [[RTCEngineKit sharedEngine] startLocalPreview:YES view:self.localView];
 ```
 
-#### **更新预览画面**
+#### 更新预览画面
 ```objectivec
 [[RTCEngineKit sharedEngine] updateLocalView:self.localView];
 ```
 
-#### **停止预览画面**
+#### 停止预览画面
 ```objectivec
 [[RTCEngineKit sharedEngine] stopLocalPreview];
 ```
 
-#### **恢复/暂停推流**
+#### 恢复/暂停推流
 ```objectivec
 [[RTCEngineKit sharedEngine] publishLocalVideo:YES];
 ```
 
 ### step 4：订阅和取消订阅远端视频
-#### **订阅远端用户的视频流**
+#### 订阅远端用户的视频流
 ```objectivec
 [[RTCEngineKit sharedEngine] startRemoteView:userId trackId:trackId view:self.previewView];
 ```
@@ -229,17 +229,17 @@ if (errorCode != RTCEngineErrorOK) {
 | RTCTrackIdentifierFlags6 | `6` | 轨道6 |
 
 
-#### **更新远端用户的视频流**
+#### 更新远端用户的视频流
 ```objectivec
 [[RTCEngineKit sharedEngine] updateRemoteView:userId trackId:trackId view:self.previewView];
 ```
 
-#### **停止订阅远端用户的视频流**
+#### 停止订阅远端用户的视频流
 ```objectivec
 [[RTCEngineKit sharedEngine] stopRemoteView:userId trackId:trackId];
 ```
 
-#### **停止订阅指定远端用户的所有视频流**
+#### 停止订阅指定远端用户的所有视频流
 ```objectivec
 [[RTCEngineKit sharedEngine] stopAllRemoteViewWithUserId:userId];
 ```

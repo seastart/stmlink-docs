@@ -10,7 +10,7 @@ description: "SIP / H323 话机、国标监控、RTSP 流怎么登记进来，�
 
 ## 三步接入
 
-```
+```text
 1. 拿网关            POST /server/v1/agent/list-gw?type=regsip   → gw
 2. 登记设备          POST /server/v1/agent/create?type=regsip    → 设备 ID
 3. 拉进频道          POST /server/v1/agent/invite                → 等 user_join 回调

@@ -3,8 +3,6 @@ title: "集成"
 description: "Android SRTC 音视频 SDK 环境配置与依赖安装"
 ---
 
-# 集成
-
 本文说明 Android SRTC SDK 的最小接入方式。完成本页后，可继续参考 [快速开始](/zh/rtc/android/quickstart) 完成 SDK 初始化、加入频道、采集发布与远端订阅流程。
 
 ## 接入前确认

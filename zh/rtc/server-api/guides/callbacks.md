@@ -10,7 +10,7 @@ description: "RTC 侧在频道/用户/录制状态变化时通知你的业务后
 
 我们向你注册的 `cb_url` 发 POST 请求，事件名同时出现在查询参数与请求体里：
 
-```
+```text
 POST {你的 cb_url}?event=user_join
 Content-Type: application/json; charset=utf-8
 ```

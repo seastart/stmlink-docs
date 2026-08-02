@@ -100,7 +100,7 @@ description: "会议的云端录制、合流与直播：任务类型怎么组合
 
 ## 完整时序
 
-```
+```text
 1. 可选：配好应用的默认录制配置     POST /server/v1/mcu/save-record-config
 2. 创建会议时设 auto_record         POST /server/v1/meet/create
    → 第一个人进会时任务自动启动，跳到第 5 步
