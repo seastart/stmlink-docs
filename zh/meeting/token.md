@@ -26,25 +26,18 @@ description: "SMeeting 的 AppID / AppKey 职责划分、会议授权 Token 的�
 
 ## 授权流程
 
-```text
-   你的 App                你的业务后端                SMeeting 服务
-      │                        │                          │
-      │  1. 用户登录你的系统      │                          │
-      ├───────────────────────>│                          │
-      │                        │  2. 校验用户身份           │
-      │                        │     （你自己的业务逻辑）     │
-      │                        │                          │
-      │                        │  3. POST /server/v1/user-auth/grant
-      │                        │     带 user_id、nickname
-      │                        │     用 AppKey 做 HMAC-SHA256 签名
-      │                        ├─────────────────────────>│
-      │                        │<─────────────────────────┤
-      │                        │  4. 返回会议 token         │
-      │  5. 下发 token          │                          │
-      │<───────────────────────┤                          │
-      │                                                   │
-      │  6. SDK 用 token 登录，之后创建 / 进入会议            │
-      ├──────────────────────────────────────────────────>│
+```mermaid
+sequenceDiagram
+    participant App as 你的 App
+    participant Backend as 你的业务后端
+    participant SMeeting as SMeeting 服务
+
+    App->>Backend: 1. 用户登录你的系统
+    Note over Backend: 2. 校验用户身份<br/>（你自己的业务逻辑）
+    Backend->>SMeeting: 3. POST /server/v1/user-auth/grant<br/>带 user_id、nickname<br/>用 AppKey 做 HMAC-SHA256 签名
+    SMeeting-->>Backend: 4. 返回会议 token
+    Backend-->>App: 5. 下发 token
+    App->>SMeeting: 6. SDK 用 token 登录<br/>之后创建 / 进入会议
 ```
 
 关键点在第 2 步：**SMeeting 不管你的用户体系**。谁是合法用户由你的后端判断，SMeeting 只认签发出来的 Token 以及里面的 `user_id`。

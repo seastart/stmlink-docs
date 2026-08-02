@@ -26,24 +26,18 @@ description: "SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签�
 
 ## 签发流程
 
-```text
-   你的 App                你的业务后端                 SRTC 服务
-      │                        │                          │
-      │  1. 请求进入某频道        │                          │
-      ├───────────────────────>│                          │
-      │                        │  2. 校验用户身份与权限      │
-      │                        │     （你自己的业务逻辑）     │
-      │                        │                          │
-      │                        │  3. POST /server/v1/channel/grant
-      │                        │     用 AppKey 做 HMAC-SHA256 签名
-      │                        ├─────────────────────────>│
-      │                        │<─────────────────────────┤
-      │                        │  4. 返回 token            │
-      │  5. 下发 token          │                          │
-      │<───────────────────────┤                          │
-      │                                                   │
-      │  6. SDK 用 token 加入频道                           │
-      ├──────────────────────────────────────────────────>│
+```mermaid
+sequenceDiagram
+    participant App as 你的 App
+    participant Backend as 你的业务后端
+    participant SRTC as SRTC 服务
+
+    App->>Backend: 1. 请求进入某频道
+    Note over Backend: 2. 校验用户身份与权限<br/>（你自己的业务逻辑）
+    Backend->>SRTC: 3. POST /server/v1/channel/grant<br/>用 AppKey 做 HMAC-SHA256 签名
+    SRTC-->>Backend: 4. 返回 token
+    Backend-->>App: 5. 下发 token
+    App->>SRTC: 6. SDK 用 token 加入频道
 ```
 
 关键点在第 2 步：**SRTC 不管你的用户体系**。谁有资格进这个频道、进去以后是什么身份，全部由你的后端判断。SRTC 只认签发出来的 Token。

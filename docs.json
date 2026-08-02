@@ -77,6 +77,7 @@
                   "zh/choose",
                   "zh/rtc/key-concepts",
                   "zh/rtc/token",
+                  "zh/rtc/error-codes",
                   "zh/rtc/quickstart"
                 ]
               },
@@ -311,6 +312,7 @@
                   "zh/choose",
                   "zh/meeting/key-concepts",
                   "zh/meeting/token",
+                  "zh/meeting/error-codes",
                   "zh/meeting/quickstart"
                 ]
               },
