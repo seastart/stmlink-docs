@@ -317,13 +317,18 @@
                 ]
               },
               {
-                "group": "带 UI 极简对接",
+                "group": "极简对接",
                 "pages": [
                   "zh/meeting/ui-sdk/server-integration",
-                  "zh/meeting/ui-sdk/ios",
-                  "zh/meeting/ui-sdk/android",
-                  "zh/meeting/ui-sdk/web",
-                  "zh/meeting/ui-sdk/windows"
+                  {
+                    "group": "带 UI 极简对接",
+                    "pages": [
+                      "zh/meeting/ui-sdk/web",
+                      "zh/meeting/ui-sdk/android",
+                      "zh/meeting/ui-sdk/windows",
+                      "zh/meeting/ui-sdk/ios"
+                    ]
+                  }
                 ]
               },
               {

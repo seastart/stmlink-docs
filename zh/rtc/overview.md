@@ -11,54 +11,28 @@ description: "SRTC 音视频 SDK 产品概览"
 
 实时音视频互动组件主打全平台互通的多人音视频通话和低延时互动解决方案，提供小程序、Web、Android、iOS、Windows、Linux 等平台的 SDK，便于开发者快速集成并与第三方私有云服务后台连通。通过不同产品间的相互联动，还能实现即时通信、电子白板等能力，扩展更多业务场景。
 
-```mermaid
-flowchart TB
-    subgraph 客户端["客户端 SDK"]
-        direction LR
-        S1["Web"]
-        S2["Android"]
-        S3["Windows"]
-        S4["iOS / macOS"]
-        S5["小程序"]
-        S6["C（服务端 / 嵌入式）"]
-    end
+![SRTC 产品架构](images/421454_1722664667226-c4e3c4c0-9b66-4bbc-a905-f4fed9746fe7.jpeg)
 
-    subgraph 能力["SRTC 能力"]
-        direction LR
-        C1["音视频传输"]
-        C2["实时消息"]
-        C3["状态同步"]
-    end
-
-    subgraph 扩展["扩展服务"]
-        direction LR
-        E1["云端录制 / MCU 合流"]
-        E2["旁路直播"]
-        E3["即时通信"]
-        E4["电子白板"]
-        E5["语音识别"]
-    end
-
-    Biz["你的业务后端<br/>用户体系 · 业务规则 · Token 签发"]
-
-    客户端 --> 能力
-    能力 --> 扩展
-    Biz -.服务端 API.-> 能力
-```
+SRTC 只负责音视频通道本身，**不带用户体系、不带业务规则** —— 这两块由你的后端决定，通过服务端 API 与 SRTC 协同。
 
 
 
 ### 平台支持
-全平台互通的音视频解决方案。
 
-| **平台** | **版本** | **下载地址** |
-| --- | :--- | :--- |
-| iOS | | |
-| Android | | |
-| Windows | | |
-| Mac OS | | |
-| Web | | |
-| 微信小程序 | | |
-| C（服务端/嵌入式） | | |
+全平台互通，各端行为对齐。
+
+| 平台 | 说明 | 文档 |
+| --- | --- | --- |
+| Web | 浏览器端，也覆盖微信小程序（`web-view` 嵌入） | [集成](/zh/rtc/web/integration) · [快速开始](/zh/rtc/web/quickstart) |
+| Android | 手机、盒子、嵌入式设备 | [集成](/zh/rtc/android/integration) · [快速开始](/zh/rtc/android/quickstart) |
+| Windows | 桌面客户端，C++ 接口 | [集成](/zh/rtc/windows/integration) · [快速开始](/zh/rtc/windows/quickstart) |
+| Swift | iOS 与 macOS，`import SRTC` | [集成](/zh/rtc/swift/integration) · [快速开始](/zh/rtc/swift/quickstart) |
+| iOS | Objective-C，`RTCEngineKit` | [集成](/zh/rtc/ios/integration) · [快速开始](/zh/rtc/ios/quickstart) |
+| C | 服务端与嵌入式，纯 C 接口 | [集成](/zh/rtc/capi/integration) · [快速开始](/zh/rtc/capi/quickstart) |
+| 服务端 | HTTP 接口与事件回调 | [服务端 API](/zh/rtc/server-api/overview) |
+
+<Note>
+SDK 安装包与版本号请向我们获取。Web SDK 通过 npm 分发，版本见 [Web 集成](/zh/rtc/web/integration)。
+</Note>
 
 
