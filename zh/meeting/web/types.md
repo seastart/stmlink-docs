@@ -647,7 +647,7 @@ export interface Tag {
 export interface Cell {
     /** 格子序号, 排序规则按HTML中标签的顺序 */
 	idx: number;
-    /** 是否优化绑定频道内的共享流 */
+    /** 是否优化绑定会议内的共享流 */
 	bind_share: boolean;
     /** 标签 */
 	tag: Tag;
