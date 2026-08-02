@@ -16,7 +16,7 @@ description: "不集成 SDK、不做会议界面，业务后端只对三个接�
 
 第 1 步在业务活动创建时做，第 2、3 步在用户点「进入会议」时做。
 
-**不需要预先注册用户。** 换票时把 `uid` 和昵称一起传过来，人不存在就现场建、
+**不需要预先注册用户。** 换票时把 `account` 和昵称一起传过来，人不存在就现场建、
 已存在就顺带更新资料。只有当你要在会议客户端里提供通讯录时，才需要额外做
 [批量同步用户](#批量同步用户)。
 
@@ -48,18 +48,18 @@ https://<你的域名>/stm/srvapi/v1/...    用户体系（同步、授权）
 整条链路上认人只靠一个值：**你的系统里的用户唯一标识**。用户 ID、工号、身份证号、
 手机号都行，只要在你那边唯一、且不会变。
 
-它在不同接口里的字段名不统一，是历史原因，但**填的是同一个值**：
-
-| 接口 | 字段名 |
-| --- | --- |
-| `member/grant` | `uid` |
-| `member/sync` | `account` |
-| `meet/create` 的 `conferee_details` | `account` |
+所有接口里它都叫 **`account`**——换票、同步、白名单，填的都是同一个值。
 
 <Warning>
 **这个值一旦用过就不要再改。** 它是认人的唯一依据，改了等于换了一个人，
 原来的参会记录不会跟过来。
 </Warning>
+
+<Note>
+别和 `uids` 混：那是我们侧生成的用户 ID，只在 `member/sync` 的返回和
+`member/info` / `member/remove` 的可选入参里出现。日常对接一路用 `account` 就够，
+不必把它存下来。
+</Note>
 
 ## 第 1 步：创建会议
 
@@ -114,7 +114,7 @@ POST /stm/srvapi/v1/member/grant
 
 ```json
 {
-  "uid": "310101199001011234",
+  "account": "310101199001011234",
   "nickname": "张三",
   "avatar": "https://example.com/avatar/zhangsan.png"
 }
@@ -122,7 +122,7 @@ POST /stm/srvapi/v1/member/grant
 
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
-| `uid` | 是 | 用户唯一标识，见[用什么认人](#用什么认人) |
+| `account` | 是 | 用户唯一标识，见[用什么认人](#用什么认人) |
 | `nickname` | 否 | 会中显示的名字 |
 | `real_name` | 否 | 真实姓名，留空取 `nickname` |
 | `avatar` | 否 | 头像地址，留空表示不改，不会清掉已有头像 |
@@ -131,7 +131,7 @@ POST /stm/srvapi/v1/member/grant
 的账本，每次换票都把最新的昵称、头像带上即可，改了名字下次进会就生效。
 
 <Note>
-只传 `uid` 而这个人从没出现过时会报错——因为没有昵称，建出来的用户在会中没有名字。
+只传 `account` 而这个人从没出现过时会报错——因为没有昵称，建出来的用户在会中没有名字。
 带上 `nickname` 就行。
 </Note>
 
@@ -168,7 +168,7 @@ https://<你的域名>/stm/ui/outer?token=<第2步的token>&room_no=<第1步的r
   └─ POST /server/v1/meet/create        extend_info 挂单据号 → 存下 room_no
 
 用户点「进入会议」
-  ├─ POST /stm/srvapi/v1/member/grant   uid + nickname + avatar → token（人不在就现场建）
+  ├─ POST /stm/srvapi/v1/member/grant   account + nickname + avatar → token（人不在就现场建）
   └─ 302 到 /stm/ui/outer?token=&room_no=&nickname=
 
 会议过程中（可选）
