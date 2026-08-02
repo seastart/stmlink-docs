@@ -31,6 +31,17 @@ description: "SRTC 音视频 SDK 产品概览"
 + 协议所有接口只支持`POST`
 + 字符串编码为UTF-8
 
+### 请求地址
+
+```text
+https://<你的域名>/server/v1/...
+```
+
+<Note>
+标准部署下 SRTC 挂在域名根路径。同域名的 `/meeting/` 前缀走的是 SMeeting 会议服务，
+两者接口不通用（见 [选 SRTC 还是 SMeeting](/zh/choose)）。独立域名部署时以我们提供的接入信息为准。
+</Note>
+
 ### 准备
 调用前需要得到`app_id`和`app_key`
 

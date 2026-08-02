@@ -30,9 +30,18 @@ description: "不集成 SDK、不做会议界面，业务后端只对三个接�
 对接会用到两个前缀，域名相同：
 
 ```text
-https://<你的域名>/server/v1/...        会议服务（建会、会控、录制）
-https://<你的域名>/stm/srvapi/v1/...    用户体系（同步、授权）
+https://<你的域名>/meeting/server/v1/...        会议服务（建会、会控、录制）
+https://<你的域名>/meeting/stm/srvapi/v1/...    用户体系（同步、授权）
 ```
+
+<Note>
+标准部署下会议服务挂在 `/meeting/` 网关前缀之下，**别把这段前缀漏掉** —— 同域名的根路径
+`/server/v1/...` 走的是 SRTC 音视频服务，请求发过去会找不到会议接口。
+
+下文各步骤只写接口路径（如 `POST /server/v1/meet/create`），实际请求时都要拼上
+`https://<你的域名>/meeting` 这个基地址。如果你的环境是独立域名部署，前缀可能不同，
+以我们提供的接入信息为准。
+</Note>
 
 两者用**同一组 `app_id` / `app_key`**，鉴权方式也完全一致——`app_id` / `nonce` /
 `timestamp` / `signature` 四个请求头，HMAC-SHA256 签名，算法见
@@ -148,7 +157,7 @@ POST /stm/srvapi/v1/member/grant
 把 token 和房间号拼成地址，让用户的浏览器打开它：
 
 ```text
-https://<你的域名>/stm/ui/outer?token=<第2步的token>&room_no=<第1步的room_no>&nickname=<会中昵称>
+https://<你的域名>/meeting/stm/ui/outer?token=<第2步的token>&room_no=<第1步的room_no>&nickname=<会中昵称>
 ```
 
 | 参数 | 必填 | 说明 |

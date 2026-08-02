@@ -84,13 +84,24 @@ metadata:
 
 | | SRTC | SMeeting |
 | --- | --- | --- |
+| 基地址 | `https://{域名}/` | `https://{域名}/meeting/` |
 | 接口前缀 | `/server/v1/...` | `/server/v1/...`（会议主接口）与 `/stm/srvapi/v1/...`（用户体系） |
-| 网关路径 | 按部署配置 | `https://{域名}/meeting/{接口路径}` |
 | 业务错误码段 | `1xxx` | `2xxx` |
 | 列表响应 | `code` / `data` | `code` / `data` / `_meta`（翻页信息） |
 | 概念 | 频道 channel、uid、流轨道 | 房间 room、会议 meeting、参会成员 |
 
-除上述前缀外的接口都是内部接口，不要调用。
+**基地址最容易拼错**：标准部署下 SRTC 在域名根路径，SMeeting 在 `/meeting/` 之下。
+两层都有 `/server/v1/` 前缀，所以漏掉 `/meeting` 时请求会打到 SRTC 上找不到会议接口。
+
+```text
+建会议  https://{域名}/meeting/server/v1/meet/create
+签 token https://{域名}/meeting/stm/srvapi/v1/member/grant
+会议页  https://{域名}/meeting/stm/ui/outer?token=...&room_no=...
+
+加入频道 token（SRTC） https://{域名}/server/v1/channel/grant
+```
+
+独立域名部署时前缀可能不同，以我们提供的接入信息为准。除上述前缀外的接口都是内部接口，不要调用。
 
 ## 常用接口
 

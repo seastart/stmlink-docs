@@ -24,14 +24,15 @@ SMeeting 建在 SRTC 之上，把会议才需要的规则——主持人、举�
 
 ```text
 业务活动创建时
-  └─ POST /server/v1/meet/create          挂上你的业务单据号 → 拿到 room_no
+  └─ POST /meeting/server/v1/meet/create        挂上你的业务单据号 → 拿到 room_no
 
 用户点「进入会议」
-  ├─ POST /stm/srvapi/v1/member/grant     account + 昵称 → token（人不存在就现场建）
-  └─ 302 跳转 /stm/ui/outer?token=<token>&room_no=<room_no>&nickname=<昵称>
+  ├─ POST /meeting/stm/srvapi/v1/member/grant   account + 昵称 → token（人不存在就现场建）
+  └─ 302 跳转 /meeting/stm/ui/outer?token=<token>&room_no=<room_no>&nickname=<昵称>
 ```
 
-只有第 3 步的 URL 会到达浏览器，`app_key` 始终留在后端。
+**别漏掉 `/meeting` 网关前缀**——标准部署下同域名的根路径走的是 SRTC 音视频服务，
+漏了就会找不到会议接口。只有第 3 步的 URL 会到达浏览器，`app_key` 始终留在后端。
 
 ## 核心模型
 
