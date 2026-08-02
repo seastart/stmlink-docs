@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "STMLink 文档",
-  "description": "STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C++ 多端接入与服务端 API。",
+  "description": "STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。",
   "markdown": {
     "instructions": [
       "服务端接口只有 `/server/v1/...` 这一套对外开放，需用 app_id + app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。文档中若出现其它前缀的接口，均为内部接口，不要建议客户调用。",
@@ -78,57 +78,39 @@
                 ]
               },
               {
-                "group": "iOS SDK",
+                "group": "Web SDK",
                 "pages": [
-                  "zh/rtc/ios/integration",
-                  "zh/rtc/ios/quickstart",
-                  "zh/rtc/ios/instant-messaging",
+                  "zh/rtc/web/integration",
+                  "zh/rtc/web/quickstart",
+                  "zh/rtc/web/key-concepts",
+                  "zh/rtc/web/channel-messages",
+                  "zh/rtc/web/network-quality",
                   {
                     "group": "进阶实践",
                     "pages": [
-                      "zh/rtc/ios/advanced/screen-recording",
-                      "zh/rtc/ios/advanced/beauty"
+                      "zh/rtc/web/advanced/mute-vs-unpublish",
+                      "zh/rtc/web/advanced/video-stream-layers",
+                      "zh/rtc/web/advanced/screen-sharing",
+                      "zh/rtc/web/advanced/multi-window-video-layout",
+                      "zh/rtc/web/advanced/custom-track",
+                      "zh/rtc/web/advanced/local-recording",
+                      "zh/rtc/web/advanced/audio-processor",
+                      "zh/rtc/web/advanced/rnnoise",
+                      "zh/rtc/web/advanced/deepfilternet"
                     ]
                   },
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/rtc/ios/api-reference/RTCEngineKit",
-                      "zh/rtc/ios/api-reference/RTCEngineDelegate",
-                      "zh/rtc/ios/api-reference/RTCEngineIMDelegate"
+                      "zh/rtc/web/api-reference/SRTC",
+                      "zh/rtc/web/api-reference/media-tracks"
                     ]
                   },
-                  "zh/rtc/ios/types",
-                  "zh/rtc/ios/error-codes",
-                  "zh/rtc/ios/changelog",
-                  "zh/rtc/ios/faq"
-                ]
-              },
-              {
-                "group": "Swift SDK（iOS/macOS）",
-                "pages": [
-                  "zh/rtc/swift/integration",
-                  "zh/rtc/swift/quickstart",
-                  "zh/rtc/swift/key-concepts",
-                  {
-                    "group": "进阶实践",
-                    "pages": [
-                      "zh/rtc/swift/advanced/mute-vs-unpublish",
-                      "zh/rtc/swift/advanced/device-management",
-                      "zh/rtc/swift/advanced/screen-sharing",
-                      "zh/rtc/swift/advanced/custom-track"
-                    ]
-                  },
-                  {
-                    "group": "接口文档",
-                    "pages": [
-                      "zh/rtc/swift/api-reference/SRTC",
-                      "zh/rtc/swift/api-reference/media-tracks"
-                    ]
-                  },
-                  "zh/rtc/swift/events",
-                  "zh/rtc/swift/types",
-                  "zh/rtc/swift/error-codes"
+                  "zh/rtc/web/events",
+                  "zh/rtc/web/types",
+                  "zh/rtc/web/error-codes",
+                  "zh/rtc/web/changelog",
+                  "zh/rtc/web/faq"
                 ]
               },
               {
@@ -207,57 +189,83 @@
                 ]
               },
               {
-                "group": "Web SDK",
+                "group": "Swift SDK（iOS/macOS）",
                 "pages": [
-                  "zh/rtc/web/integration",
-                  "zh/rtc/web/quickstart",
-                  "zh/rtc/web/key-concepts",
-                  "zh/rtc/web/channel-messages",
-                  "zh/rtc/web/network-quality",
+                  "zh/rtc/swift/integration",
+                  "zh/rtc/swift/quickstart",
+                  "zh/rtc/swift/key-concepts",
                   {
                     "group": "进阶实践",
                     "pages": [
-                      "zh/rtc/web/advanced/mute-vs-unpublish",
-                      "zh/rtc/web/advanced/video-stream-layers",
-                      "zh/rtc/web/advanced/screen-sharing",
-                      "zh/rtc/web/advanced/multi-window-video-layout",
-                      "zh/rtc/web/advanced/custom-track",
-                      "zh/rtc/web/advanced/local-recording",
-                      "zh/rtc/web/advanced/audio-processor",
-                      "zh/rtc/web/advanced/rnnoise",
-                      "zh/rtc/web/advanced/deepfilternet"
+                      "zh/rtc/swift/advanced/mute-vs-unpublish",
+                      "zh/rtc/swift/advanced/device-management",
+                      "zh/rtc/swift/advanced/screen-sharing",
+                      "zh/rtc/swift/advanced/custom-track"
                     ]
                   },
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/rtc/web/api-reference/SRTC",
-                      "zh/rtc/web/api-reference/media-tracks"
+                      "zh/rtc/swift/api-reference/SRTC",
+                      "zh/rtc/swift/api-reference/media-tracks"
                     ]
                   },
-                  "zh/rtc/web/events",
-                  "zh/rtc/web/types",
-                  "zh/rtc/web/error-codes",
-                  "zh/rtc/web/changelog",
-                  "zh/rtc/web/faq"
+                  "zh/rtc/swift/events",
+                  "zh/rtc/swift/types",
+                  "zh/rtc/swift/error-codes"
                 ]
               },
               {
-                "group": "微信小程序 SDK",
+                "group": "iOS SDK",
                 "pages": [
-                  "zh/rtc/wechat-miniprogram/integration",
-                  "zh/rtc/wechat-miniprogram/quickstart",
+                  "zh/rtc/ios/integration",
+                  "zh/rtc/ios/quickstart",
+                  "zh/rtc/ios/instant-messaging",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/ios/advanced/screen-recording",
+                      "zh/rtc/ios/advanced/beauty"
+                    ]
+                  },
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/rtc/wechat-miniprogram/api-reference/SRTC",
-                      "zh/rtc/wechat-miniprogram/api-reference/streaming"
+                      "zh/rtc/ios/api-reference/RTCEngineKit",
+                      "zh/rtc/ios/api-reference/RTCEngineDelegate",
+                      "zh/rtc/ios/api-reference/RTCEngineIMDelegate"
                     ]
                   },
-                  "zh/rtc/wechat-miniprogram/channel-messages",
-                  "zh/rtc/wechat-miniprogram/events",
-                  "zh/rtc/wechat-miniprogram/types",
-                  "zh/rtc/wechat-miniprogram/error-codes"
+                  "zh/rtc/ios/types",
+                  "zh/rtc/ios/error-codes",
+                  "zh/rtc/ios/changelog",
+                  "zh/rtc/ios/faq"
+                ]
+              },
+              {
+                "group": "C SDK（服务端/嵌入式）",
+                "pages": [
+                  "zh/rtc/capi/integration",
+                  "zh/rtc/capi/quickstart",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/capi/advanced/mcu",
+                      "zh/rtc/capi/advanced/seastart",
+                      "zh/rtc/capi/advanced/custom-msg"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/capi/api-reference/engine",
+                      "zh/rtc/capi/api-reference/subscribe",
+                      "zh/rtc/capi/api-reference/publish",
+                      "zh/rtc/capi/api-reference/users"
+                    ]
+                  },
+                  "zh/rtc/capi/types",
+                  "zh/rtc/capi/error-codes"
                 ]
               },
               {
@@ -287,25 +295,6 @@
                   "zh/rtc/server-api/error-codes",
                   "zh/rtc/server-api/server-demo"
                 ]
-              },
-              {
-                "group": "全平台 C++ SDK",
-                "pages": [
-                  "zh/rtc/server-api/cpp/integration",
-                  "zh/rtc/server-api/cpp/quickstart",
-                  {
-                    "group": "接口文档",
-                    "pages": [
-                      "zh/rtc/server-api/cpp/api-reference/IRTCEngine",
-                      "zh/rtc/server-api/cpp/api-reference/ILocalVideoStream",
-                      "zh/rtc/server-api/cpp/api-reference/ILocalAudioStream",
-                      "zh/rtc/server-api/cpp/api-reference/IRemoteVideoStream",
-                      "zh/rtc/server-api/cpp/api-reference/IRemoteAudioStream"
-                    ]
-                  },
-                  "zh/rtc/server-api/cpp/types",
-                  "zh/rtc/server-api/cpp/error-codes"
-                ]
               }
             ]
           },
@@ -329,27 +318,20 @@
                 ]
               },
               {
-                "group": "iOS SDK",
+                "group": "Web SDK",
                 "pages": [
-                  "zh/meeting/ios/quickstart",
+                  "zh/meeting/web/overview",
+                  "zh/meeting/web/integration",
+                  "zh/meeting/web/quickstart",
                   {
-                    "group": "进阶实践",
+                    "group": "接口文档",
                     "pages": [
-                      "zh/meeting/ios/advanced/screen-recording"
+                      "zh/meeting/web/api-reference",
+                      "zh/meeting/web/api-reference/SMeeting"
                     ]
                   },
-                  {
-                    "group": "接口列表",
-                    "pages": [
-                      "zh/meeting/ios/api-reference/MeetingKit",
-                      "zh/meeting/ios/api-reference/MeetingKitDelegate",
-                      "zh/meeting/ios/api-reference/MeetingKitIMDelegate"
-                    ]
-                  },
-                  "zh/meeting/ios/types",
-                  "zh/meeting/ios/error-codes",
-                  "zh/meeting/ios/changelog",
-                  "zh/meeting/ios/faq"
+                  "zh/meeting/web/events",
+                  "zh/meeting/web/types"
                 ]
               },
               {
@@ -420,36 +402,66 @@
                 ]
               },
               {
-                "group": "Web SDK",
+                "group": "Swift SDK（iOS/macOS）",
                 "pages": [
-                  "zh/meeting/web/overview",
-                  "zh/meeting/web/integration",
-                  "zh/meeting/web/quickstart",
+                  "zh/meeting/swift/integration",
+                  "zh/meeting/swift/quickstart",
+                  "zh/meeting/swift/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/meeting/swift/advanced/media-control",
+                      "zh/meeting/swift/advanced/video-rendering",
+                      "zh/meeting/swift/advanced/screen-sharing",
+                      "zh/meeting/swift/advanced/device-management",
+                      "zh/meeting/swift/advanced/messaging",
+                      "zh/meeting/swift/advanced/handup",
+                      "zh/meeting/swift/advanced/host-controls",
+                      "zh/meeting/swift/advanced/waiting-room",
+                      "zh/meeting/swift/advanced/sub-meetings",
+                      "zh/meeting/swift/advanced/recording",
+                      "zh/meeting/swift/advanced/resources",
+                      "zh/meeting/swift/advanced/sign-in",
+                      "zh/meeting/swift/advanced/im"
+                    ]
+                  },
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/meeting/web/api-reference",
-                      "zh/meeting/web/api-reference/SMeeting"
+                      "zh/meeting/swift/api-reference/SMeeting",
+                      "zh/meeting/swift/api-reference/media-control",
+                      "zh/meeting/swift/api-reference/devices",
+                      "zh/meeting/swift/api-reference/admin-actions",
+                      "zh/meeting/swift/api-reference/SMeetingRemoteVideoView"
                     ]
                   },
-                  "zh/meeting/web/events",
-                  "zh/meeting/web/types"
+                  "zh/meeting/swift/events",
+                  "zh/meeting/swift/types",
+                  "zh/meeting/swift/error-codes"
                 ]
               },
               {
-                "group": "微信小程序 SDK",
+                "group": "iOS SDK",
                 "pages": [
-                  "zh/meeting/wechat-miniprogram/overview",
-                  "zh/meeting/wechat-miniprogram/integration",
+                  "zh/meeting/ios/quickstart",
                   {
-                    "group": "接口文档",
+                    "group": "进阶实践",
                     "pages": [
-                      "zh/meeting/wechat-miniprogram/api-reference",
-                      "zh/meeting/wechat-miniprogram/api-reference/SMeeting"
+                      "zh/meeting/ios/advanced/screen-recording"
                     ]
                   },
-                  "zh/meeting/wechat-miniprogram/events",
-                  "zh/meeting/wechat-miniprogram/types"
+                  {
+                    "group": "接口列表",
+                    "pages": [
+                      "zh/meeting/ios/api-reference/MeetingKit",
+                      "zh/meeting/ios/api-reference/MeetingKitDelegate",
+                      "zh/meeting/ios/api-reference/MeetingKitIMDelegate"
+                    ]
+                  },
+                  "zh/meeting/ios/types",
+                  "zh/meeting/ios/error-codes",
+                  "zh/meeting/ios/changelog",
+                  "zh/meeting/ios/faq"
                 ]
               },
               {

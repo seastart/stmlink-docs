@@ -25,7 +25,7 @@ const smeeting = new SMeeting({
 const envinfo = smeeting.getEnvInfo();
 console.log("environment", envinfo);
 if(!envinfo.supported) {
-  alert("当前环境不支持SRTC，建议切换到最新chrome浏览器");
+  alert("当前环境不支持SMeeting，建议切换到最新chrome浏览器");
 } else {
   if(!envinfo.mediaDevices) {
     if(!envinfo.secure) {
