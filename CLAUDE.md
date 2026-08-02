@@ -64,6 +64,31 @@ python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
 
 `contextual.options` 给每页加「复制 / 查看 markdown / 在 ChatGPT 或 Claude 中打开」按钮。
 
+### 给 AI 看的产物（skill.md）
+
+Mintlify 会用 agent 读文档**自动生成**一份 `/skill.md`，但那是单文件、覆盖不均（实测 SMeeting
+只出现 1 次、Swift 和 C SDK 各 0 次），而且我们无法审核它每次生成的内容。所以**本仓自己维护
+三份 skill 覆盖它**（官方支持，见 mintlify.com/docs/ai/skillmd「Custom skill files」）：
+
+```
+.mintlify/skills/
+├── srtc-integration/SKILL.md      # 音视频层
+├── smeeting-integration/SKILL.md  # 会议层（含三种对接方式的选择）
+└── server-api/SKILL.md            # 签名、Token、回调，两层差异
+```
+
+客户侧用 `npx skills add https://docs.stmlink.com` 安装，或连 `https://docs.stmlink.com/mcp`
+（站点自带 MCP server）自动发现。用法写在 `zh/ai.md`。
+
+写这几份文件时注意：
+
+- **`.mintlify/*` 在 .gitignore 里，靠 `!.mintlify/skills/` 放行**。加别的自定义文件要同步改规则
+- **mint 会把 SKILL.md 当 MDX 解析**：不能用 HTML 注释 `<!-- -->`，不能用未闭合的 `<br>`，
+  改完跑 `mint broken-links` 会报 `Syntax error` 
+- 内容定位是**接入时最容易踩的坑**（调用顺序、两层术语、签名失败三大原因、做不到的设计），
+  不是文档的复制品。每份控制在 5k 字符上下
+- 有 frontmatter 的 `name` / `description`，AI 靠 description 判断何时加载，要写清适用场景
+
 ### 文档文件
 
 - 格式：Markdown (`.md`)，每个文件需包含正文（目前使用 `.md`，非 `.mdx`）

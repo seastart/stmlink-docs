@@ -3,10 +3,10 @@
 > STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。
 
 > ## Agent Instructions
-> 服务端接口只有 `/server/v1/...` 这一套对外开放，需用 app_id + app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。文档中若出现其它前缀的接口，均为内部接口，不要建议客户调用。
-> app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端调用 `/server/v1/channel/grant` 签发后下发。
+> 对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。
+> app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。
 > SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上。
-> 同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。
+> 同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。
 
 ## SRTC 音视频 SDK · 概览
 
@@ -16,6 +16,7 @@
 - [Token 与鉴权](https://docs.stmlink.com/zh/rtc/token.md): SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签发流程与常见错误
 - [错误码规则](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则：如何从一个错误码看出它来自哪一层、哪个平台
 - [快速开始](https://docs.stmlink.com/zh/rtc/quickstart.md): SRTC 音视频 SDK 接入前的准备工作与各平台入口
+- [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
 ## SRTC 音视频 SDK · Web SDK
 
@@ -202,6 +203,7 @@
 - [Token 与鉴权](https://docs.stmlink.com/zh/meeting/token.md): SMeeting 的 AppID / AppKey 职责划分、会议授权 Token 的签发流程与密钥安全
 - [错误码规则](https://docs.stmlink.com/zh/meeting/error-codes.md): SMeeting 错误码的编号规则，以及为什么你会同时看到 2xxxxx 和 1xxxxx 两类错误码
 - [快速开始](https://docs.stmlink.com/zh/meeting/quickstart.md): SMeeting 会议 SDK 快速对接概述
+- [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
 ## SMeeting 会议 SDK · 极简对接
 

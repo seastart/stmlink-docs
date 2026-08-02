@@ -5,10 +5,10 @@
   "description": "STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。",
   "markdown": {
     "instructions": [
-      "服务端接口只有 `/server/v1/...` 这一套对外开放，需用 app_id + app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。文档中若出现其它前缀的接口，均为内部接口，不要建议客户调用。",
-      "app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端调用 `/server/v1/channel/grant` 签发后下发。",
+      "对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。",
+      "app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。",
       "SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上。",
-      "同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。"
+      "同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。"
     ]
   },
   "contextual": {
@@ -78,7 +78,8 @@
                   "zh/rtc/key-concepts",
                   "zh/rtc/token",
                   "zh/rtc/error-codes",
-                  "zh/rtc/quickstart"
+                  "zh/rtc/quickstart",
+                  "zh/ai"
                 ]
               },
               {
@@ -313,7 +314,8 @@
                   "zh/meeting/key-concepts",
                   "zh/meeting/token",
                   "zh/meeting/error-codes",
-                  "zh/meeting/quickstart"
+                  "zh/meeting/quickstart",
+                  "zh/ai"
                 ]
               },
               {

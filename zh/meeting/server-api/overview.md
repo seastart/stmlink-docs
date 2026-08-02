@@ -24,19 +24,32 @@ description: "SMeeting 会议服务端 产品概览"
 
 | Key | 说明 | 备注 |
 | --- | --- | --- |
-| appid | 应用id | 必填 |
+| appid | 应用id | 必填。也接受 `app_id` 或 `app-id`，用于兼容部分语言/网关不支持下划线的情况 |
 | nonce | 请求唯一ID,防重复提交 | 必填，16位随机字符串 |
 | timestamp | unix时间戳s | 必填，精确到秒，误差±5分钟 |
 | signature | 签名值 | 必填, 采用HMAC-SHA256算法，方法如下所示 |
 
 5. **签名方法**
 
-- **第一步**：拼接待签名字符串，将appid nonce timestamp以及请求body的json字符串用`&`拼接
+- **第一步**：拼接待签名字符串，将应用id nonce timestamp以及请求body的json字符串用`&`拼接
 
 ```javascript
 // 假定appid=1 nonce=2 timestamp=3 请求体为{}
 appid=1&nonce=2&timestamp=3&{}
 ```
+
+<Warning>
+**待签名串里的字段名，必须与你实际发出的请求头名一致。** 三个头名任选其一，但选了哪个，
+签名串开头就得写哪个 —— 用 `app_id` 请求头却拼 `appid=...` 会直接认证失败。
+
+```text
+用 appid  请求头 → appid=1&nonce=2&timestamp=3&{}
+用 app_id 请求头 → app_id=1&nonce=2&timestamp=3&{}
+```
+
+另外请求体要用**原始字符串**参与签名，与实际发出的字节完全一致（含空格与字段顺序），
+不要重新序列化一遍。
+</Warning>
 
 - **第二步**：使用HMAC-SHA256加密字符串。key是`appkey`秘钥。
 
