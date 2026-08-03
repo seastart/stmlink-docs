@@ -28,8 +28,6 @@ description: "Windows SRTC 音视频 SDK 的下载地址、环境要求、工程
 https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-<版本号>.zip
 ```
 
-现有版本可以在[制品仓库](https://repo.open.seastart.cn/service/rest/repository/browse/vcs-releases/)里查看。
-
 ---
 
 ### 目录结构

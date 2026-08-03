@@ -28,8 +28,6 @@ description: "Windows SMeeting 会议 SDK 的下载地址、环境要求、工�
 https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-<版本号>.zip
 ```
 
-现有版本可以在[制品仓库](https://repo.open.seastart.cn/service/rest/repository/browse/vcs-releases/)里查看。
-
 <Note>
 会议 SDK 包里**已经包含底层音视频库**（`srtc.dll` 等），不需要再单独下载 SRTC 的 Windows SDK。
 </Note>

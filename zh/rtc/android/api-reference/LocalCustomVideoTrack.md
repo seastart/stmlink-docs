@@ -11,7 +11,6 @@ description: "向频道推送外部原始 YUV（I420）视频帧的本地轨道�
 
 输入的是**未编码**的原始 YUV（I420）帧，编码由 SDK 按预设参数完成，业务侧无需自行编码。
 
-> ⚠️ **引擎限制**：本轨道的帧输入仅在风远（`StreamVendor.FY`）与网宿（`StreamVendor.WS`）流媒体引擎下生效；网仕（`StreamVendor.OOK`）引擎下调用 `inputData` 不会产生任何效果，帧被直接丢弃，也不会有错误回调。引擎由服务端下发决定，枚举值参见 [枚举定义](/zh/rtc/android/enums)。
 
 ## 属性
 
@@ -34,7 +33,7 @@ fun inputData(
     rotation: Int, stamp: Long
 )
 ```
-方法说明：向已发布的自定义视频轨道推送一帧原始 YUV 数据。内部按 `preOpt.publish.desc` 查找已发布轨道并送入编码流水线；轨道尚未发布（或引擎不支持）时该帧被静默丢弃。  
+方法说明：向已发布的自定义视频轨道推送一帧原始 YUV 数据。内部按 `preOpt.publish.desc` 查找已发布轨道并送入编码流水线；轨道尚未发布时该帧被静默丢弃。  
 参数说明：
 
 | 参数名 | 数据类型 | 说明 |
