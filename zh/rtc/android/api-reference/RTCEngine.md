@@ -287,6 +287,18 @@ fun getCustomVideoTrack(): CustomVideoTrack?
 参数说明：无。  
 返回值说明：`CustomVideoTrack?`，可能为 `null`。参见 [CustomVideoTrack](/zh/rtc/android/api-reference/CustomVideoTrack)。
 
+### getLocalCustomVideoTrack(preOpt)
+```kotlin
+fun getLocalCustomVideoTrack(preOpt: PreOptionCustomVideo = PreOptionCustomVideo.def): LocalCustomVideoTrack
+```
+方法说明：获取本地自定义视频轨道控制器，用于向已发布轨道推送外部**原始 YUV 帧**（白板、画布、播放器画面等）。轨道实例在 SDK 内按单例缓存，重复调用返回同一实例并用传入的 `preOpt` 覆盖旧值。  
+参数说明：
+- `preOpt`：`PreOptionCustomVideo`，自定义视频采集/发布预设，默认 `PreOptionCustomVideo.def`（轨道描述 `custom`）；以屏幕共享描述发布时用 `PreOptionCustomVideo.screen`。参见 [自定义视频流预设](/zh/rtc/android/presets/custom-video)。
+
+返回值说明：`LocalCustomVideoTrack`，本地自定义视频轨道实例。参见 [LocalCustomVideoTrack](/zh/rtc/android/api-reference/LocalCustomVideoTrack)。
+
+> 与 `getCustomVideoTrack()` 的区别：本接口用于推**未编码**的 YUV 帧，走 `publishLocalVideo` / `unPublishLocalVideo` 发布；`getCustomVideoTrack()` 用于推**已编码**码流，走 `startCustomVideo` / `stopCustomVideo`。另外本轨道的帧输入仅在风远（`FY`）与网宿（`WS`）引擎下生效。
+
 ### getRemoteVideoTrack(uid, trackDesc)
 ```kotlin
 fun getRemoteVideoTrack(uid: String, trackDesc: String): RemoteVideoTrack?
@@ -322,7 +334,7 @@ fun publishLocalVideo(track: LocalVideoTrack, publishCustomOpt: PublishCustomOpt
 ```
 方法说明：发布本地视频轨道。  
 参数说明：
-- `track`：`LocalVideoTrack`，本地视频轨道（摄像头/录屏/本地自定义）。
+- `track`：`LocalVideoTrack`，本地视频轨道（摄像头 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack) / 录屏 [`LocalScreenTrack`](/zh/rtc/android/api-reference/LocalScreenTrack) / 本地自定义 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack)）。传入其他类型时通过 `listener.onFail` 返回 `ERROR_TRACK_TYPE`（`102002`，参见 [错误码](/zh/rtc/android/error-codes)）。
 - `publishCustomOpt`：`PublishCustomOptions?`，发布自定义参数，可为 `null`。参见 [摄像头预设](/zh/rtc/android/presets/camera)。
 - `listener`：`RTCResultListener?`，发布结果回调，可为 `null`。
 

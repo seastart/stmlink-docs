@@ -122,6 +122,7 @@
                       "zh/rtc/android/api-reference/LocalScreenTrack",
                       "zh/rtc/android/api-reference/LocalMicTrack",
                       "zh/rtc/android/api-reference/CustomVideoTrack",
+                      "zh/rtc/android/api-reference/LocalCustomVideoTrack",
                       "zh/rtc/android/api-reference/RemoteVideoTrack",
                       "zh/rtc/android/api-reference/RemoteAudioMixTrack",
                       "zh/rtc/android/api-reference/RTCClientEvent",
@@ -136,7 +137,8 @@
                     "pages": [
                       "zh/rtc/android/presets/camera",
                       "zh/rtc/android/presets/microphone",
-                      "zh/rtc/android/presets/screen-sharing"
+                      "zh/rtc/android/presets/screen-sharing",
+                      "zh/rtc/android/presets/custom-video"
                     ]
                   },
                   "zh/rtc/android/types",

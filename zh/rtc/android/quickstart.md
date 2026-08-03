@@ -318,7 +318,8 @@ rtcEngine.releaseSDK()
 
 本文只覆盖最小可跑通的主线能力。如果你还需要以下高级场景，可继续阅读对应文档：
 
-- 自定义编码视频流： [CustomVideoTrack](/zh/rtc/android/api-reference/CustomVideoTrack)
+- 自定义编码视频流（外部已编码码流）： [CustomVideoTrack](/zh/rtc/android/api-reference/CustomVideoTrack)
+- 自定义原始视频帧（白板/画布/播放器画面等 YUV 帧）： [LocalCustomVideoTrack](/zh/rtc/android/api-reference/LocalCustomVideoTrack)、[自定义视频流预设](/zh/rtc/android/presets/custom-video)
 - 观众身份与摄像头设备管理： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)（`isAudience` / `getCameraDevices`）
 - 引擎完整接口： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)
 - 音频输出设备管理： [音频路由使用](/zh/rtc/android/advanced/audio-routing)

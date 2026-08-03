@@ -7,6 +7,8 @@ description: "Android SRTC 音视频 SDK CustomVideoTrack 接口参考"
 
 `CustomVideoTrack` 用于推送外部**已编码**视频数据（如 H264/H265），通过 [`RTCEngine.getCustomVideoTrack`](/zh/rtc/android/api-reference/RTCEngine) 获取。
 
+> ⚠️ **不要与 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack) 混用**：后者通过 `getLocalCustomVideoTrack(preOpt)` 获取，推送的是**未编码的原始 YUV 帧**，并且走 `publishLocalVideo` / `unPublishLocalVideo` 发布。两者都有 `inputData`，但参数与语义完全不同：本类是 `inputData(stamp, data, angle)`，`LocalCustomVideoTrack` 是 `inputData(yuv, width, height, strideY, strideU, strideV, rotation, stamp)`。若外部数据尚未编码，请使用 `LocalCustomVideoTrack`。
+
 ## CustomVideoTrack 自身方法
 
 ### startCustomVideo(option, listener)
