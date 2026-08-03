@@ -15,8 +15,6 @@ description: "Android SRTC 音视频 SDK 通过 LocalCustomVideoTrack 把外部�
 - 第三方 SDK（美颜、AR、AI 生成）处理后的输出
 - 非标准采集设备（外接采集卡、USB 设备）的帧数据
 
-> ⚠️ **引擎限制**：自定义帧输入仅在风远（`StreamVendor.FY`）与网宿（`StreamVendor.WS`）流媒体引擎下生效。网仕（`StreamVendor.OOK`）引擎下 `inputData` 不产生任何效果，帧被直接丢弃且**没有错误回调**。引擎由服务端下发决定，接入前请先与服务端确认当前频道使用的引擎。
-
 ## 1. 整体流程
 
 ```text
