@@ -27,7 +27,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.0.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.1.0")
 ],
 targets: [
     .target(
