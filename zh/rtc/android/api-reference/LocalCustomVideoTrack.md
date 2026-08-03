@@ -1,6 +1,6 @@
 ---
 title: "LocalCustomVideoTrack"
-description: "Android SRTC 音视频 SDK LocalCustomVideoTrack 接口参考"
+description: "向频道推送外部原始 YUV（I420）视频帧的本地轨道，用于白板、画布、播放器等自定义画面"
 ---
 
 ## 说明

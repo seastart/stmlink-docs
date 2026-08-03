@@ -62,6 +62,7 @@
 ## SRTC 音视频 SDK · Android SDK · 进阶实践
 
 - [音频路由](https://docs.stmlink.com/zh/rtc/android/advanced/audio-routing.md): Android SRTC 音视频 SDK 通过 AudioRouterManager 管理扬声器、听筒、有线耳机与蓝牙耳机的音频路由
+- [自定义推流](https://docs.stmlink.com/zh/rtc/android/advanced/custom-track.md): Android SRTC 音视频 SDK 通过 LocalCustomVideoTrack 把外部画面（白板、画布、播放器、第三方采集源）作为视频流发布到频道
 
 ## SRTC 音视频 SDK · Android SDK · 接口文档
 
@@ -69,7 +70,7 @@
 - [LocalCameraTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalCameraTrack.md): 本地摄像头采集、预览渲染、前后置切换、镜像与闪光灯控制
 - [LocalScreenTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalScreenTrack.md): Android 录屏：申请授权、启停屏幕采集、配置前台服务通知
 - [LocalMicTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalMicTrack.md): 本地麦克风轨道，用于获取采集音量并作为音频发布的输入
-- [CustomVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/CustomVideoTrack.md): 推送外部已编码视频数据（H264 / H265）的自定义轨道
+- [LocalCustomVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalCustomVideoTrack.md): 向频道推送外部原始 YUV（I420）视频帧的本地轨道，用于白板、画布、播放器等自定义画面
 - [RemoteVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/RemoteVideoTrack.md): 远端视频轨道：画面渲染与接收卡顿状态监听
 - [RemoteAudioMixTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/RemoteAudioMixTrack.md): 远端混音轨道，控制远端声音在本地的播放开关
 - [RTCClientEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCClientEvent.md): 频道会控事件回调：加入成功、远端用户进出、流轨道增删改、自定义消息、断开连接
@@ -83,6 +84,7 @@
 - [摄像头预设](https://docs.stmlink.com/zh/rtc/android/presets/camera.md): Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera 与发布自定义参数 PublishCustomOptions
 - [麦克风预设](https://docs.stmlink.com/zh/rtc/android/presets/microphone.md): Android SRTC 音视频 SDK 麦克风轨道预设 PreOptionMic
 - [屏幕共享预设](https://docs.stmlink.com/zh/rtc/android/presets/screen-sharing.md): Android SRTC 音视频 SDK 屏幕共享预设 PreOptionScreen
+- [自定义视频流预设](https://docs.stmlink.com/zh/rtc/android/presets/custom-video.md): Android SRTC 音视频 SDK 自定义视频流预设 PreOptionCustomVideo
 
 ## SRTC 音视频 SDK · Windows SDK
 
