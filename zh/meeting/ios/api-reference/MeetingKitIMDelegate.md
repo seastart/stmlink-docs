@@ -1,9 +1,9 @@
 ---
 title: "MeetingKitIMDelegate"
-description: "iOS SMeeting 会议 SDK MeetingKitIMDelegate 接口参考"
+description: "会议外消息通道的回调协议：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助"
 ---
 
-## **连接相关回调**
+## 连接相关回调
 ### onImConnectSucceed:sessionId:()
 `- (void)onImConnectSucceed:(NSString *)userId sessionId:(NSString *)sessionId`
 
@@ -49,7 +49,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitIMDelegate 接口参考"
 | errMsg | 错误信息 |
 
 
-## **消息相关回调**
+## 消息相关回调
 ### onImMessage:action:userId:sessionId:nickname:()
 `- (void)onImMessage:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
 
@@ -80,7 +80,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitIMDelegate 接口参考"
 | --- | --- |
 
 
-## **通话相关回调**
+## 通话相关回调
 ### onCallReceived:nickname:roomNo:title:()
 `- (void)onCallReceived:(NSString *)callerId nickname:(nullable NSString *)nickname roomNo:(NSString *)roomNo title:(NSString *)title`
 
@@ -97,7 +97,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitIMDelegate 接口参考"
 | title | 会议标题 |
 
 
-## **等候室相关回调**
+## 等候室相关回调
 ### onWaitingRoomMoveInRoom:title:()
 `- (void)onWaitingRoomMoveInRoom:(NSString *)meetingId title:(nullable NSString *)title`
 
@@ -112,7 +112,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitIMDelegate 接口参考"
 | title | 会议标题 |
 
 
-## **分组讨论相关回调**
+## 分组讨论相关回调
 ### onSubMettingAskingHelp:meetingId:title:()
 `- (void)onSubMettingAskingHelp:(NSString *)parentMid meetingId:(NSString *)meetingId title:(nullable NSString *)title`
 

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 StmLink 开发者文档站，基于 [Mintlify](https://mintlify.com) 构建，覆盖两款 SDK 产品：
 
-- **SRTC 音视频 SDK** (`zh/rtc/`) - 底层音视频流媒体 SDK，支持 iOS、Android、Windows、Web、微信小程序、全平台 C++
+- **SRTC 音视频 SDK** (`zh/rtc/`) - 底层音视频流媒体 SDK，支持 iOS、Swift、Android、Windows、Web、微信小程序，以及面向服务端/嵌入式的 C SDK（`zh/rtc/capi/`，内容源自 `rtc-go/capi`）
 - **SMeeting 会议 SDK** (`zh/meeting/`) - 基于 SRTC 的会议业务 SDK，同样覆盖上述平台
 
 ## 本地开发
@@ -35,6 +35,59 @@ mint validate
 - 站点 URL 和基本元数据
 
 **添加新页面后，必须同步更新 `docs.json` 的导航配置，否则页面不会出现在侧边栏。**
+
+### 给 AI 看的产物（llms.txt）
+
+**本仓根目录的 `llms.txt` 是自己生成的，会覆盖 Mintlify 的自动版本**（官方支持，见
+mintlify.com/docs/ai/llmstxt「Custom files」）。原因：自动版按**仓库路径字母序平铺**
+所有页面，AI 读到时分不清入口页和深层参考页，顺序也和侧边栏无关。
+
+```bash
+python3 scripts/gen-llms-txt.py          # 改了导航或 frontmatter 后重跑
+python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
+```
+
+脚本按 `docs.json` 的导航顺序输出，用 `## {产品} · {分组} · {子分组}` 分节。所以：
+
+- **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页
+- 页面的 `description` 直接就是 AI 拿到的摘要（Mintlify 侧限 300 字符、截到第一个换行）。
+  **别写「{平台} {产品} SDK {类名} 接口参考」这种模板句** —— 对 AI 选页零信息量，
+  要写「这个类干什么、什么时候该读它」
+- `llms-full.txt` 仍是自动生成（1.6MB 量级，AI 无法整份读入，只能当按需取单页的索引用）
+
+`docs.json` 里另有两处影响 AI 侧的配置：
+
+| 字段 | 作用 |
+| --- | --- |
+| `description` | 站点总览，出现在 llms.txt 开头的引言里 |
+| `markdown.instructions` | 逐页追加到喂给 AI 的 markdown 末尾，同时进 llms.txt 的 `Agent Instructions` 块。放的是客户的 AI 最容易搞错的硬约束（对外接口前缀、app_key 不进客户端、SRTC/SMeeting 术语不通用、各端 API 不通用），改动前想清楚是不是所有页面都该带这句 |
+
+`contextual.options` 给每页加「复制 / 查看 markdown / 在 ChatGPT 或 Claude 中打开」按钮。
+
+### 给 AI 看的产物（skill.md）
+
+Mintlify 会用 agent 读文档**自动生成**一份 `/skill.md`，但那是单文件、覆盖不均（实测 SMeeting
+只出现 1 次、Swift 和 C SDK 各 0 次），而且我们无法审核它每次生成的内容。所以**本仓自己维护
+三份 skill 覆盖它**（官方支持，见 mintlify.com/docs/ai/skillmd「Custom skill files」）：
+
+```
+.mintlify/skills/
+├── srtc-integration/SKILL.md      # 音视频层
+├── smeeting-integration/SKILL.md  # 会议层（含三种对接方式的选择）
+└── server-api/SKILL.md            # 签名、Token、回调，两层差异
+```
+
+客户侧用 `npx skills add https://docs.stmlink.com` 安装，或连 `https://docs.stmlink.com/mcp`
+（站点自带 MCP server）自动发现。用法写在 `zh/ai.md`。
+
+写这几份文件时注意：
+
+- **`.mintlify/*` 在 .gitignore 里，靠 `!.mintlify/skills/` 放行**。加别的自定义文件要同步改规则
+- **mint 会把 SKILL.md 当 MDX 解析**：不能用 HTML 注释 `<!-- -->`，不能用未闭合的 `<br>`，
+  改完跑 `mint broken-links` 会报 `Syntax error` 
+- 内容定位是**接入时最容易踩的坑**（调用顺序、两层术语、签名失败三大原因、做不到的设计），
+  不是文档的复制品。每份控制在 5k 字符上下
+- 有 frontmatter 的 `name` / `description`，AI 靠 description 判断何时加载，要写清适用场景
 
 ### 文档文件
 
@@ -65,6 +118,65 @@ navigation.languages（中文/英文）
 - 内部链接使用根相对路径，不带文件扩展名：`/zh/rtc/ios/quickstart`
 - 代码块必须标注语言标识符
 - 推送到 Git 主分支后 Mintlify 自动部署
+
+---
+
+## 自动生成的页面（服务端 API）
+
+**两个产品的服务端 API 页面都是生成的**，不要手工编辑，改动会在下次同步时被覆盖：
+
+| 产品 | 目录 | 源码仓 | 生成的页 |
+| --- | --- | --- | --- |
+| SRTC | `zh/rtc/server-api/` | `rtc-backend` | `channel` / `mcu` / `talkrec` / `agent` / `im` / `white-board` / `asr` + `error-codes` |
+| SMeeting | `zh/meeting/server-api/` | `meeting-backend` | `user-auth` / `meet` / `meet-admin` / `mcu` + `error-codes` |
+
+页面清单不是写死的 —— 分组来自 `router.go` 的 gin group，新增分组会自动多出一页。
+
+```bash
+python3 scripts/sync-server-api.py            # 两个都同步
+python3 scripts/sync-server-api.py meeting    # 只同步 SMeeting
+python3 scripts/gen-llms-txt.py                # 页面有增删时同步重跑
+mint broken-links                              # 提交前校验
+```
+
+后端默认在同级目录（`../rtc-backend`、`../meeting-backend`），可用 `RTC_BACKEND` /
+`MEETING_BACKEND` 覆盖。生成器只有一份，在 `rtc-backend/tools/apidoc`，SMeeting 也是跑它，
+只是换一套参数（见脚本里的 `PROJECTS`）。
+
+**本仓不存任何接口内容。** 页面上的每一个字——接口名（router.go 路由行上方那一行）、
+简介（controller 方法的文档注释）、字段说明与示例值（DTO 字段行尾注释）、错误码
+（`app/internal/enum/errcode` 的常量 + sgo/serror 的内置码）——全部来自后端源码，要改
+就去改代码（写法见对应后端 README 的「对外接口文档（srvapi）」一节）。本仓只维护两类东西：
+
+| 内容 | 位置 |
+| --- | --- |
+| 概览（鉴权、签名、响应格式、uid/sid） | `zh/{rtc,meeting}/server-api/overview.md`（手写） |
+| 篇幅长的玩法说明（调用时序、多接口配合、值域表格） | `zh/{rtc,meeting}/server-api/guides/`（手写，新增时在脚本对应 `Project` 的 `manual_guides` 里加一行） |
+
+分组的中文标题是唯一的例外：gin group 名是英文，标题表 SRTC 内置在生成器里，
+SMeeting 在 `meeting-backend/openapi/groups.json`。**两个产品不能共用一张表** ——
+都有 `mcu` / `im` / `agent` 分组但含义不同。
+
+`docs.json` 里「服务端 API」整个分组的 `pages` 由脚本整块重写，顺序固定为
+概览 → 接入指南 → 接口文档 → 错误码 → 其它 —— 所以手工往里加页面、调顺序
+都会在下次同步时丢失，要改去改脚本里对应 `Project` 的 `manual_head` / `manual_guides` /
+`tail`。脚本还会清理孤儿页：接口从代码删除后，对应页面自动消失。
+
+**不进对外文档的路由**用 `Project.skip` 排除。SMeeting 排掉了两类：`callback/rtc` 是
+RTC 调进来的入站回调（客户不会调），`im/*api` 与 `agent/*api` 是原样转发到 RTC 的通配
+代理（真正的接口文档在 SRTC 那两页，由手写的 `guides/agent-and-im.md` 交代指向）。
+
+**参数渲染用 Mintlify 的 `<ParamField>` / `<ResponseField>` 组件，不用 markdown 表格**
+（与下面「各端通用文档规范」里 SDK 文档的表格约定不同）。原因是 Mintlify 把表格列等宽
+均分，5 列时每列仅 150px，长的参数说明会被压成竖条。生成器另有 `-render table` 输出
+不依赖 Mintlify 组件的通用 markdown，供将来做 llms.txt 这类纯文本产物使用。
+
+接口页与指南页互相引用时：**指南页可以用链接**（`/zh/rtc/server-api/agent#新增设备`），
+**代码注释里只用书名号写页名**（如「设备接入指南」）—— 注释同时会进 `openapi/srvapi.json`，
+那里的站内相对链接对 apipost 用户是无效的。
+
+下面的「各端通用文档规范」针对**客户端 SDK** 文档（iOS/Android/Web 等手写页面），
+不适用于本节所述的自动生成页面。
 
 ---
 

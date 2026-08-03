@@ -1,0 +1,352 @@
+# STMLink 文档
+
+> STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。
+
+> ## Agent Instructions
+> 对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。
+> app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。
+> SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上。
+> 同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。
+
+## SRTC 音视频 SDK · 概览
+
+- [概览](https://docs.stmlink.com/zh/rtc/overview.md): SRTC 音视频 SDK 产品概览
+- [选 SRTC 还是 SMeeting](https://docs.stmlink.com/zh/choose.md): SRTC 音视频 SDK 与 SMeeting 会议 SDK 的分层关系、能力差异与选型建议
+- [核心概念](https://docs.stmlink.com/zh/rtc/key-concepts.md): SRTC 的频道、用户与流轨道模型，以及频道的打开与销毁规则
+- [Token 与鉴权](https://docs.stmlink.com/zh/rtc/token.md): SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签发流程与常见错误
+- [错误码规则](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则：如何从一个错误码看出它来自哪一层、哪个平台
+- [快速开始](https://docs.stmlink.com/zh/rtc/quickstart.md): SRTC 音视频 SDK 接入前的准备工作与各平台入口
+- [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
+
+## SRTC 音视频 SDK · Web SDK
+
+- [集成](https://docs.stmlink.com/zh/rtc/web/integration.md): Web SRTC 音视频 SDK 环境配置与 SDK 安装指南
+- [快速开始](https://docs.stmlink.com/zh/rtc/web/quickstart.md): Web SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能
+- [核心概念](https://docs.stmlink.com/zh/rtc/web/key-concepts.md): Web SRTC 音视频 SDK 核心概念与架构说明
+- [频道消息](https://docs.stmlink.com/zh/rtc/web/channel-messages.md): Web SRTC 音视频 SDK 频道外消息通道使用说明
+- [网络质量](https://docs.stmlink.com/zh/rtc/web/network-quality.md): Web SRTC 音视频 SDK 流媒体网络质量监测接口说明
+- [事件参考](https://docs.stmlink.com/zh/rtc/web/events.md): Web SRTC 音视频 SDK 事件列表与触发时机说明
+- [类型定义](https://docs.stmlink.com/zh/rtc/web/types.md): Web SRTC 音视频 SDK 主要类型与结构体定义
+- [错误码](https://docs.stmlink.com/zh/rtc/web/error-codes.md): Web SRTC 音视频 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/rtc/web/changelog.md): Web SRTC 音视频 SDK 版本更新记录
+- [常见问题](https://docs.stmlink.com/zh/rtc/web/faq.md): Web SRTC 音视频 SDK 集成与使用常见问题解答
+
+## SRTC 音视频 SDK · Web SDK · 进阶实践
+
+- [静音与停止发布](https://docs.stmlink.com/zh/rtc/web/advanced/mute-vs-unpublish.md): 轻操作（静音）与重操作（停止发布）的区别与使用场景
+- [大小流与分辨率](https://docs.stmlink.com/zh/rtc/web/advanced/video-stream-layers.md): Web SRTC 音视频 SDK 中摄像头分辨率、大小流与 simulcast 的使用说明
+- [屏幕共享](https://docs.stmlink.com/zh/rtc/web/advanced/screen-sharing.md): Web SRTC 音视频 SDK 屏幕共享功能集成指南
+- [多窗口与双屏视频布局](https://docs.stmlink.com/zh/rtc/web/advanced/multi-window-video-layout.md): Web SRTC 音视频 SDK 多窗口显示、双屏布局与摄像头浮窗实践指南
+- [自定义推流](https://docs.stmlink.com/zh/rtc/web/advanced/custom-track.md): 自定义视频轨道推流使用说明
+- [本地合成录制](https://docs.stmlink.com/zh/rtc/web/advanced/local-recording.md): Web SDK 本地录制当前会议视角的视频宫格与会议音频
+- [音视频处理器（插件）](https://docs.stmlink.com/zh/rtc/web/advanced/audio-processor.md): 通过 TrackProcessor 接口为本地音视频轨道挂载降噪、变声等处理插件
+- [RNN 降噪插件](https://docs.stmlink.com/zh/rtc/web/advanced/rnnoise.md): 使用 @seastart/srtc-plugin-rnnoise 为麦克风轨道开启 AI 降噪
+- [DeepFilterNet 降噪插件](https://docs.stmlink.com/zh/rtc/web/advanced/deepfilternet.md): 使用 @seastart/srtc-plugin-deepfilternet 为麦克风轨道开启可调强度的 AI 降噪
+
+## SRTC 音视频 SDK · Web SDK · 接口文档
+
+- [SRTC](https://docs.stmlink.com/zh/rtc/web/api-reference/SRTC.md): Web 音视频 SDK 的核心入口类：加入与离开频道、设备管理、网络质量查询、事件注册
+- [media-tracks](https://docs.stmlink.com/zh/rtc/web/api-reference/media-tracks.md): Web 端本地与远端音视频轨道类的继承关系、播放控制与音频处理器接口
+
+## SRTC 音视频 SDK · Android SDK
+
+- [集成](https://docs.stmlink.com/zh/rtc/android/integration.md): Android SRTC 音视频 SDK 环境配置与依赖安装
+- [快速开始](https://docs.stmlink.com/zh/rtc/android/quickstart.md): Android SRTC 音视频 SDK 快速接入与基础流程
+- [网络质量](https://docs.stmlink.com/zh/rtc/android/network-quality.md): Android SRTC 音视频 SDK 流媒体网络质量监测与弱网处理指南
+- [类型定义](https://docs.stmlink.com/zh/rtc/android/types.md): Android 音视频 SDK 的频道、用户、轨道与摄像头能力等数据结构字段说明
+- [枚举类型](https://docs.stmlink.com/zh/rtc/android/enums.md): Android SRTC 音视频 SDK 枚举值定义
+- [媒体质量](https://docs.stmlink.com/zh/rtc/android/media-quality.md): Android SRTC 音视频 SDK 媒体质量统计数据结构说明
+- [错误码](https://docs.stmlink.com/zh/rtc/android/error-codes.md): Android SRTC 音视频 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/rtc/android/changelog.md): Android SRTC 音视频 SDK 版本更新记录
+
+## SRTC 音视频 SDK · Android SDK · 进阶实践
+
+- [音频路由](https://docs.stmlink.com/zh/rtc/android/advanced/audio-routing.md): Android SRTC 音视频 SDK 通过 AudioRouterManager 管理扬声器、听筒、有线耳机与蓝牙耳机的音频路由
+
+## SRTC 音视频 SDK · Android SDK · 接口文档
+
+- [RTCEngine](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCEngine.md): Android 音视频 SDK 的核心入口：生命周期、频道进出、媒体采集发布订阅、信息查询
+- [LocalCameraTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalCameraTrack.md): 本地摄像头采集、预览渲染、前后置切换、镜像与闪光灯控制
+- [LocalScreenTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalScreenTrack.md): Android 录屏：申请授权、启停屏幕采集、配置前台服务通知
+- [LocalMicTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalMicTrack.md): 本地麦克风轨道，用于获取采集音量并作为音频发布的输入
+- [CustomVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/CustomVideoTrack.md): 推送外部已编码视频数据（H264 / H265）的自定义轨道
+- [RemoteVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/RemoteVideoTrack.md): 远端视频轨道：画面渲染与接收卡顿状态监听
+- [RemoteAudioMixTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/RemoteAudioMixTrack.md): 远端混音轨道，控制远端声音在本地的播放开关
+- [RTCClientEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCClientEvent.md): 频道会控事件回调：加入成功、远端用户进出、流轨道增删改、自定义消息、断开连接
+- [RTCMediaEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCMediaEvent.md): 媒体层事件回调：连接建立、远端视频帧、网络质量、音量与摄像头设备变化
+- [RTCImEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCImEvent.md): 频道外消息通道（IM）的事件回调：连接状态变化与消息接收
+- [AudioRouterManager](https://docs.stmlink.com/zh/rtc/android/api-reference/AudioRouterManager.md): 管理扬声器、听筒、有线耳机与蓝牙耳机之间的音频输出路由切换
+- [LogUtil](https://docs.stmlink.com/zh/rtc/android/api-reference/LogUtil.md): SDK 日志工具，上层可复用它输出分级日志并统一写入本地日志文件
+
+## SRTC 音视频 SDK · Android SDK · 预设配置项
+
+- [摄像头预设](https://docs.stmlink.com/zh/rtc/android/presets/camera.md): Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera 与发布自定义参数 PublishCustomOptions
+- [麦克风预设](https://docs.stmlink.com/zh/rtc/android/presets/microphone.md): Android SRTC 音视频 SDK 麦克风轨道预设 PreOptionMic
+- [屏幕共享预设](https://docs.stmlink.com/zh/rtc/android/presets/screen-sharing.md): Android SRTC 音视频 SDK 屏幕共享预设 PreOptionScreen
+
+## SRTC 音视频 SDK · Windows SDK
+
+- [集成](https://docs.stmlink.com/zh/rtc/windows/integration.md): Windows SRTC 音视频 SDK 环境配置与 SDK 安装指南
+- [快速开始](https://docs.stmlink.com/zh/rtc/windows/quickstart.md): Windows SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能
+- [类型定义](https://docs.stmlink.com/zh/rtc/windows/types.md): Windows SRTC 音视频 SDK 完整类型与结构体定义
+- [枚举类型](https://docs.stmlink.com/zh/rtc/windows/enums.md): Windows SRTC 音视频 SDK 枚举值定义
+- [错误码](https://docs.stmlink.com/zh/rtc/windows/error-codes.md): Windows SRTC 音视频 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/rtc/windows/changelog.md): Windows SRTC 音视频 SDK 版本更新记录
+
+## SRTC 音视频 SDK · Windows SDK · 接口文档
+
+- [IRTCEngine](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngine.md): Windows 音视频 SDK 的核心接口：创建与释放实例、频道进出、成员信息查询、媒体控制
+- [IRTCEngineEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngineEvent.md): 事件回调接口，继承并重写方法以接收加入频道、用户进出、流变化与自定义消息
+- [IRTCRecord](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCRecord.md): 本地录制：文件名、水印、输出尺寸、成员视图布局与录制过程控制
+- [IRTCLocalScreenTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalScreenTrack.md): 本地屏幕共享推流对象：更新采集参数、开始与停止采集
+- [IRTCLocalCameraTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalCameraTrack.md): 本地摄像头推流对象：更新采集参数、开始与停止采集
+- [IRTCLocalMicTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalMicTrack.md): 本地麦克风推流对象：更新采集参数、开始与停止采集
+- [IRTCLocalVideoTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalVideoTrack.md): 本地视频轨道基类，提供推流与渲染对象绑定
+- [IRTCLocalAudioTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalAudioTrack.md): 本地音频轨道基类，提供推流与停止推流
+- [IRTCRemoteVideoTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCRemoteVideoTrack.md): 远端视频对象，管理渲染对象的添加与移除
+- [IRTCRemoteAudioTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCRemoteAudioTrack.md): 远端音频混音对象，控制音频输出的开启与停止
+- [IRTCCustomVideoTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCCustomVideoTrack.md): 推送自定义视频数据流的轨道接口
+- [IRTCCustomAudioTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCCustomAudioTrack.md): 推送自定义音频数据流的轨道接口
+- [IRTCView](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCView.md): 渲染对象虚基类，继承它可接管渲染数据回调或设置渲染窗口句柄
+- [IRTCTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCTrack.md): 轨道基类，提供轨道基本信息的获取
+- [IRTCSetting](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCSetting.md): SDK 各项运行参数的读取与设置，含默认值说明
+
+## SRTC 音视频 SDK · Swift SDK（iOS/macOS）
+
+- [集成方式](https://docs.stmlink.com/zh/rtc/swift/integration.md): SRTC Swift SDK 的环境要求、Swift Package Manager 集成方式与权限配置
+- [快速开始](https://docs.stmlink.com/zh/rtc/swift/quickstart.md): 基于 rtc-swift Demo 整理的 SRTC Swift SDK 最小可运行接入流程
+- [核心概念](https://docs.stmlink.com/zh/rtc/swift/key-concepts.md): 理解 SRTC Swift SDK 中 SRTC、Channel、Track、渲染器与设备管理的关系
+- [事件参考](https://docs.stmlink.com/zh/rtc/swift/events.md): SRTC Swift SDK 中 ChannelDelegate 与 TrackDelegate 的事件列表
+- [类型定义](https://docs.stmlink.com/zh/rtc/swift/types.md): SRTC Swift SDK 常用结构体、枚举、预设与设备类型说明
+- [错误码](https://docs.stmlink.com/zh/rtc/swift/error-codes.md): SRTC Swift SDK 错误类型 SRTCError 的分类说明与处理建议
+
+## SRTC 音视频 SDK · Swift SDK（iOS/macOS） · 进阶实践
+
+- [静音与停止发布](https://docs.stmlink.com/zh/rtc/swift/advanced/mute-vs-unpublish.md): Swift SDK 中 mute / unmute 与 unpublish / stopCapture 的区别和选择建议
+- [设备管理](https://docs.stmlink.com/zh/rtc/swift/advanced/device-management.md): 使用 DeviceManager 枚举设备、切换摄像头和音频路由，并处理热插拔和中断恢复
+- [屏幕共享](https://docs.stmlink.com/zh/rtc/swift/advanced/screen-sharing.md): SRTC Swift SDK 在 macOS 与 iOS 上的屏幕共享接入方式与平台差异
+- [自定义推流](https://docs.stmlink.com/zh/rtc/swift/advanced/custom-track.md): 使用自定义音视频轨道、视频处理器和音频处理器扩展 Swift SDK 的采集能力
+
+## SRTC 音视频 SDK · Swift SDK（iOS/macOS） · 接口文档
+
+- [SRTC](https://docs.stmlink.com/zh/rtc/swift/api-reference/SRTC.md): Swift 音视频 SDK 的主入口：加入频道、创建本地轨道、配置日志与音频处理器
+- [Channel 与 Track](https://docs.stmlink.com/zh/rtc/swift/api-reference/media-tracks.md): Channel 会话对象与本地/远端轨道类：发布、订阅、渲染与采集控制
+
+## SRTC 音视频 SDK · iOS SDK
+
+- [集成方式](https://docs.stmlink.com/zh/rtc/ios/integration.md): iOS SRTC 音视频 SDK 环境配置与 SDK 安装指南
+- [快速开始](https://docs.stmlink.com/zh/rtc/ios/quickstart.md): iOS SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能
+- [即时通讯](https://docs.stmlink.com/zh/rtc/ios/instant-messaging.md): iOS SRTC 音视频 SDK 即时消息（IM）功能集成指南
+- [类型定义](https://docs.stmlink.com/zh/rtc/ios/types.md): iOS SRTC 音视频 SDK 完整类型与结构体定义
+- [错误码](https://docs.stmlink.com/zh/rtc/ios/error-codes.md): iOS SRTC 音视频 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/rtc/ios/changelog.md): iOS SRTC 音视频 SDK 版本更新记录
+- [常见问题](https://docs.stmlink.com/zh/rtc/ios/faq.md): iOS SRTC 音视频 SDK 集成与使用常见问题解答
+
+## SRTC 音视频 SDK · iOS SDK · 进阶实践
+
+- [屏幕录制](https://docs.stmlink.com/zh/rtc/ios/advanced/screen-recording.md): iOS SRTC 音视频 SDK 屏幕录制功能配置指南
+- [视频美颜](https://docs.stmlink.com/zh/rtc/ios/advanced/beauty.md): iOS SRTC 音视频 SDK 视频渲染与美颜组件集成
+
+## SRTC 音视频 SDK · iOS SDK · 接口文档
+
+- [RTCEngineKit](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineKit.md): iOS（Objective-C）音视频 SDK 的核心入口类：初始化、频道进出、媒体采集发布与订阅
+- [RTCEngineDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineDelegate.md): 频道事件回调协议：连接与重连、自定义消息、频道属性变化、远端用户与流轨道变化
+- [RTCEngineIMDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineIMDelegate.md): 频道外消息通道（IM）的回调协议：连接状态变化与消息接收
+
+## SRTC 音视频 SDK · C SDK（服务端/嵌入式）
+
+- [集成方式](https://docs.stmlink.com/zh/rtc/capi/integration.md): SRTC C SDK 的能力边界、支持平台、库文件说明与链接方式
+- [快速开始](https://docs.stmlink.com/zh/rtc/capi/quickstart.md): SRTC C SDK 快速集成，10 分钟跑通加入频道、接收远端音视频与推流
+- [类型定义](https://docs.stmlink.com/zh/rtc/capi/types.md): SRTC C SDK 的结构体、编码常量、枚举取值与回调签名一览
+- [错误码](https://docs.stmlink.com/zh/rtc/capi/error-codes.md): SRTC C SDK 接口返回值的取值、含义与排查建议
+
+## SRTC 音视频 SDK · C SDK（服务端/嵌入式） · 进阶实践
+
+- [合成流（program）](https://docs.stmlink.com/zh/rtc/capi/advanced/mcu.md): SRTC C SDK 中频道级合成流的发布（MCU 侧）与订阅（观众侧）
+- [SeaStart 进阶能力](https://docs.stmlink.com/zh/rtc/capi/advanced/seastart.md): SRTC C SDK 在 SeaStart 引擎下的 simulcast 切层、网络质量上报与活跃说话人
+- [自定义消息](https://docs.stmlink.com/zh/rtc/capi/advanced/custom-msg.md): SRTC C SDK 接收频道内自定义消息，以及 content JSON 的解析与内存规则
+
+## SRTC 音视频 SDK · C SDK（服务端/嵌入式） · 接口文档
+
+- [实例与频道](https://docs.stmlink.com/zh/rtc/capi/api-reference/engine.md): SRTC C SDK 实例生命周期、加入/离开频道、日志级别与各类回调的注册接口
+- [订阅与收流](https://docs.stmlink.com/zh/rtc/capi/api-reference/subscribe.md): SRTC C SDK 订阅远端音视频轨道、取消订阅与主动请求关键帧
+- [发布与推流](https://docs.stmlink.com/zh/rtc/capi/api-reference/publish.md): SRTC C SDK 本地轨道的创建、发布、推送编码数据与关键帧请求响应
+- [用户信息查询](https://docs.stmlink.com/zh/rtc/capi/api-reference/users.md): SRTC C SDK 查询频道内用户列表与单个用户信息，以及对应的内存释放规则
+
+## SRTC 音视频 SDK · 服务端 API
+
+- [概览](https://docs.stmlink.com/zh/rtc/server-api/overview.md): SRTC 音视频 SDK 产品概览
+- [错误码](https://docs.stmlink.com/zh/rtc/server-api/error-codes.md): 服务端 API 响应体中 code 的取值
+- [业务后端参考实现](https://docs.stmlink.com/zh/rtc/server-api/server-demo.md): 业务后端该封装哪些能力、怎么划权限边界，以及扩展 props 与自定义消息约定
+
+## SRTC 音视频 SDK · 服务端 API · 接入指南
+
+- [云录制与直播接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/recording.md): 整场云端录制、合流、录音与直播的完整玩法：任务类型怎么组合、画面怎么排、产物怎么取
+- [回调事件接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/callbacks.md): RTC 侧在频道/用户/录制状态变化时通知你的业务后端：怎么接、怎么验签、每个事件的字段结构
+- [设备接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/agents.md): SIP / H323 话机、国标监控、RTSP 流怎么登记进来，再拉进频道
+
+## SRTC 音视频 SDK · 服务端 API · 接口文档
+
+- [频道](https://docs.stmlink.com/zh/rtc/server-api/channel.md): 频道的创建、查询、成员管理与历史记录
+- [云录制与直播](https://docs.stmlink.com/zh/rtc/server-api/mcu.md): 整场云端录制、点播地址与直播推流；按说话人分轨的录音是另一套接口，见「语音录制」
+- [语音录制](https://docs.stmlink.com/zh/rtc/server-api/talkrec.md): 按说话人分轨的旁路录音：按一次讲话切段，段级查询与播放；整场混音录制见「云录制与直播」
+- [设备接入](https://docs.stmlink.com/zh/rtc/server-api/agent.md): SIP / H323 / GB28181 监控等设备的接入与会中操作
+- [IM 消息](https://docs.stmlink.com/zh/rtc/server-api/im.md): 会议外的即时消息与设备在线管理
+- [电子白板](https://docs.stmlink.com/zh/rtc/server-api/white-board.md): 白板的授权、检测与销毁
+- [语音转写](https://docs.stmlink.com/zh/rtc/server-api/asr.md): ASR 语音识别的启停与结果回调
+
+## SMeeting 会议 SDK · 概览
+
+- [概览](https://docs.stmlink.com/zh/meeting/overview.md): SMeeting 会议 SDK 的能力范围、两种对接方式与各端支持情况
+- [选 SRTC 还是 SMeeting](https://docs.stmlink.com/zh/choose.md): SRTC 音视频 SDK 与 SMeeting 会议 SDK 的分层关系、能力差异与选型建议
+- [核心概念](https://docs.stmlink.com/zh/meeting/key-concepts.md): SMeeting 的房间、会议、成员与角色模型，以及与底层 RTC 层的术语差异
+- [Token 与鉴权](https://docs.stmlink.com/zh/meeting/token.md): SMeeting 的 AppID / AppKey 职责划分、会议授权 Token 的签发流程与密钥安全
+- [错误码规则](https://docs.stmlink.com/zh/meeting/error-codes.md): SMeeting 错误码的编号规则，以及为什么你会同时看到 2xxxxx 和 1xxxxx 两类错误码
+- [快速开始](https://docs.stmlink.com/zh/meeting/quickstart.md): SMeeting 会议 SDK 快速对接概述
+- [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
+
+## SMeeting 会议 SDK · 极简对接
+
+- [服务端极简对接](https://docs.stmlink.com/zh/meeting/ui-sdk/server-integration.md): 不集成 SDK、不做会议界面，业务后端只对三个接口：创建会议、换免登录 token、拉起会议页
+
+## SMeeting 会议 SDK · 极简对接 · 带 UI 极简对接
+
+- [Web UI SDK 极简对接](https://docs.stmlink.com/zh/meeting/ui-sdk/web.md): SMeeting Web UI 套件快速集成指南
+- [Android UI SDK 极简对接](https://docs.stmlink.com/zh/meeting/ui-sdk/android.md): SMeeting Android UI 套件快速集成指南
+- [Windows UI SDK 极简对接](https://docs.stmlink.com/zh/meeting/ui-sdk/windows.md): SMeeting Windows UI 套件快速集成指南
+- [iOS UI SDK 极简对接](https://docs.stmlink.com/zh/meeting/ui-sdk/ios.md): SMeeting iOS UI 套件快速集成指南
+
+## SMeeting 会议 SDK · Web SDK
+
+- [集成](https://docs.stmlink.com/zh/meeting/web/integration.md): Web SMeeting 会议 SDK 环境配置与 SDK 安装指南
+- [快速开始](https://docs.stmlink.com/zh/meeting/web/quickstart.md): Web SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
+- [事件参考](https://docs.stmlink.com/zh/meeting/web/events.md): Web SMeeting 会议 SDK 全量事件列表与触发时机说明
+- [类型定义](https://docs.stmlink.com/zh/meeting/web/types.md): Web SMeeting 会议 SDK 完整类型与结构体定义
+
+## SMeeting 会议 SDK · Web SDK · 接口文档
+
+- [SMeeting](https://docs.stmlink.com/zh/meeting/web/api-reference/SMeeting.md): Web 会议 SDK 的主入口类，绝大多数会议操作都从这里发起
+
+## SMeeting 会议 SDK · Android SDK
+
+- [集成](https://docs.stmlink.com/zh/meeting/android/integration.md): Android SMeeting 会议 SDK 环境配置与 SDK 安装指南
+- [快速开始](https://docs.stmlink.com/zh/meeting/android/quickstart.md): Android SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
+- [模型类型](https://docs.stmlink.com/zh/meeting/android/types.md): Android SMeeting 会议 SDK 数据模型与参数定义
+- [枚举类型](https://docs.stmlink.com/zh/meeting/android/enums.md): Android SMeeting 会议 SDK 枚举值定义
+- [媒体质量](https://docs.stmlink.com/zh/meeting/android/media-quality.md): Android SMeeting 会议 SDK 媒体质量统计数据结构说明
+- [错误码](https://docs.stmlink.com/zh/meeting/android/error-codes.md): Android SMeeting 会议 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/meeting/android/changelog.md): Android SMeeting 会议 SDK 版本更新记录
+
+## SMeeting 会议 SDK · Android SDK · 进阶实践
+
+- [音频路由使用](https://docs.stmlink.com/zh/meeting/android/advanced/audio-routing.md): Android SMeeting 会议 SDK 音频路由管理（扬声器/听筒/有线耳机/蓝牙耳机）
+
+## SMeeting 会议 SDK · Android SDK · 接口文档
+
+- [MeetingEngine](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngine.md): Android 会议 SDK 的总入口，覆盖会前管理、进出会议、会控、媒体与消息能力
+- [InfosManager](https://docs.stmlink.com/zh/meeting/android/api-reference/InfosManager.md): 读取当前会议、成员与轨道的本地状态快照，不发起网络请求
+- [SignInManager](https://docs.stmlink.com/zh/meeting/android/api-reference/SignInManager.md): 会中签到：发起与结束签到活动、用户签到、统计人数、查询与导出记录
+- [RemoteVideoTrack](https://docs.stmlink.com/zh/meeting/android/api-reference/RemoteVideoTrack.md): 远端成员画面的渲染与接收卡顿状态监听，含继承自 VideoTrack 的渲染方法
+- [MeetingResultCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingResultCallback.md): 会控类操作的成功/失败回调，不返回数据
+- [Callback](https://docs.stmlink.com/zh/meeting/android/api-reference/Callback.md): 会议请求的通用结果回调基类，覆盖开始、成功、失败、取消四个状态
+- [CommonCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/CommonCallback.md): 只关心成功或失败、不返回数据的通用操作回调
+- [EnterMeetingCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/EnterMeetingCallback.md): 进入会议的结果回调，成功时返回会议 ID 与自己的 uid
+- [EnableImCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/EnableImCallback.md): 启用会议外消息通道（IM）的结果回调，成功时返回 uid 与本次连接的 sid
+- [BoardShareCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/BoardShareCallback.md): 发起白板共享后的成功/失败回调，成功时返回白板对象
+- [RoomEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/RoomEvent.md): 房间级事件：全场静音与禁聊等会控开关变化、共享开始与结束、主持人转移、云录制状态
+- [UserEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/UserEvent.md): 成员级事件：进退会、角色变化、摄像头与麦克风状态、举手与开麦请求
+- [MediaEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MediaEvent.md): 媒体层事件：连接建立、远端视频帧、音量与活跃说话人、摄像头设备变化、传输统计
+- [ImEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ImEvent.md): 会议外消息通道的事件回调：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助
+- [RoomMsgEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/RoomMsgEvent.md): 接收会中聊天消息与系统消息
+- [ScreenShareEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ScreenShareEvent.md): Android 录屏共享的状态变化回调（授权、开始、停止）
+- [ErrorEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ErrorEvent.md): token 失效、会控或流媒体连接断开等全局错误的上报入口
+- [ExtensionMessageEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ExtensionMessageEvent.md): 接收会中自定义业务消息（给程序看的信令，不是聊天消息）
+- [LocalVideoPreviewEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/LocalVideoPreviewEvent.md): 拿到本地采集的原始视频帧，用于自渲染或美颜等二次处理
+
+## SMeeting 会议 SDK · Android SDK · 预设配置项
+
+- [摄像头预设](https://docs.stmlink.com/zh/meeting/android/presets/camera.md): Android SMeeting 会议 SDK 摄像头预设 PreOptionCamera
+- [麦克风预设](https://docs.stmlink.com/zh/meeting/android/presets/microphone.md): Android SMeeting 会议 SDK 麦克风预设 PreOptionMic
+- [屏幕共享预设](https://docs.stmlink.com/zh/meeting/android/presets/screen-sharing.md): Android SMeeting 会议 SDK 屏幕共享预设 PreOptionScreen
+- [自定义视频流预设](https://docs.stmlink.com/zh/meeting/android/presets/custom-video.md): Android SMeeting 会议 SDK 自定义视频流预设 PreOptionCustomVideo 与 PublishCustomOptions
+
+## SMeeting 会议 SDK · Windows SDK
+
+- [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 环境配置与 SDK 安装指南
+- [C++ 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart.md): Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能
+- [C 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart-c.md): Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能
+- [错误码](https://docs.stmlink.com/zh/meeting/windows/error-codes.md): Windows SMeeting 会议 SDK 错误码枚举与处理说明
+
+## SMeeting 会议 SDK · Windows SDK · 接口列表
+
+- [C++ API 参考](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting.md): Windows SMeeting 会议 SDK C++ 接口完整参考
+- [C API 参考](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-c.md): Windows SMeeting 会议 SDK C 接口完整参考
+
+## SMeeting 会议 SDK · Swift SDK（iOS/macOS）
+
+- [集成方式](https://docs.stmlink.com/zh/meeting/swift/integration.md): SMeeting Swift SDK 的环境要求、Swift Package Manager 集成方式与权限配置
+- [快速开始](https://docs.stmlink.com/zh/meeting/swift/quickstart.md): SMeeting Swift SDK 最小可运行接入流程：登录、创建会议、进入会议、开关音视频、渲染画面
+- [核心概念](https://docs.stmlink.com/zh/meeting/swift/key-concepts.md): 理解 SMeeting Swift SDK 中的会议生命周期、房间状态模型、角色、轨道描述与事件体系
+- [事件参考](https://docs.stmlink.com/zh/meeting/swift/events.md): SMeeting Swift SDK 中 SMeetingDelegate 的全部事件、触发时机与数据类型
+- [类型定义](https://docs.stmlink.com/zh/meeting/swift/types.md): SMeeting Swift SDK 的请求参数、会议与成员信息、事件数据和枚举类型定义
+- [错误处理](https://docs.stmlink.com/zh/meeting/swift/error-codes.md): SMeeting Swift SDK 错误类型 SMeetingError 的分类、错误码规则与处理建议
+
+## SMeeting 会议 SDK · Swift SDK（iOS/macOS） · 进阶实践
+
+- [媒体控制](https://docs.stmlink.com/zh/meeting/swift/advanced/media-control.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的开关与切换，以及房间媒体策略的影响
+- [视频渲染](https://docs.stmlink.com/zh/meeting/swift/advanced/video-rendering.md): 在 SwiftUI 与 UIKit / AppKit 中渲染 SMeeting 的本端画面、远端画面与合屏画面
+- [屏幕共享](https://docs.stmlink.com/zh/meeting/swift/advanced/screen-sharing.md): SMeeting Swift SDK 的屏幕共享接入：默认采集、macOS 指定共享源、白板共享与共享事件
+- [外设管理](https://docs.stmlink.com/zh/meeting/swift/advanced/device-management.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的枚举与切换，以及设备插拔事件处理
+- [会中消息](https://docs.stmlink.com/zh/meeting/swift/advanced/messaging.md): SMeeting Swift SDK 的会中聊天消息、自定义消息发送与接收，以及禁言控制
+- [举手与开启请求](https://docs.stmlink.com/zh/meeting/swift/advanced/handup.md): SMeeting Swift SDK 中成员举手申请、主持人审批，以及主持人邀请成员开麦开摄像头的完整流程
+- [主持人管控](https://docs.stmlink.com/zh/meeting/swift/advanced/host-controls.md): SMeeting Swift SDK 中主持人与联席主持人的房间管控、成员管理、参会人员维护与设备邀请
+- [等候室](https://docs.stmlink.com/zh/meeting/swift/advanced/waiting-room.md): SMeeting Swift SDK 的等候室开关、候场成员管理与相关事件
+- [分组讨论](https://docs.stmlink.com/zh/meeting/swift/advanced/sub-meetings.md): SMeeting Swift SDK 的子会议（分组讨论）创建、分配成员、开始结束与成员端响应
+- [录制与合屏布局](https://docs.stmlink.com/zh/meeting/swift/advanced/recording.md): SMeeting Swift SDK 的服务端录制、合流任务控制、布局配置与录制状态事件
+- [会议资料](https://docs.stmlink.com/zh/meeting/swift/advanced/resources.md): SMeeting Swift SDK 的资源上传下载：预签名地址获取、资源登记与资源列表查询
+- [签到与点名](https://docs.stmlink.com/zh/meeting/swift/advanced/sign-in.md): SMeeting Swift SDK 的会中签到活动创建、签到、统计查询，以及点名事件与应答
+- [会议外消息](https://docs.stmlink.com/zh/meeting/swift/advanced/im.md): SMeeting Swift SDK 的会议外消息通道：启用与停用、呼叫与会议提醒等事件
+
+## SMeeting 会议 SDK · Swift SDK（iOS/macOS） · 接口文档
+
+- [SMeeting](https://docs.stmlink.com/zh/meeting/swift/api-reference/SMeeting.md): SMeeting Swift SDK 主入口类接口参考：初始化、登录、会议管理、进出会议、状态查询与会中用户操作
+- [媒体控制](https://docs.stmlink.com/zh/meeting/swift/api-reference/media-control.md): SMeeting Swift SDK 媒体控制接口参考：摄像头、麦克风、屏幕共享、远端订阅与播放
+- [外设](https://docs.stmlink.com/zh/meeting/swift/api-reference/devices.md): SMeeting Swift SDK 外设接口参考：设备枚举、麦克风切换与音频输出控制
+- [会议管理](https://docs.stmlink.com/zh/meeting/swift/api-reference/admin-actions.md): SMeeting Swift SDK 管理类接口参考：房间管控、成员管理、等候室、分组讨论、录制、资源与签到
+- [SMeetingRemoteVideoView](https://docs.stmlink.com/zh/meeting/swift/api-reference/SMeetingRemoteVideoView.md): 渲染远端成员画面的 SwiftUI 组件，视图出现与消失时自动完成订阅和退订
+
+## SMeeting 会议 SDK · iOS SDK
+
+- [快速开始](https://docs.stmlink.com/zh/meeting/ios/quickstart.md): iOS SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
+- [类型定义](https://docs.stmlink.com/zh/meeting/ios/types.md): iOS SMeeting 会议 SDK 完整类型与结构体定义
+- [错误码](https://docs.stmlink.com/zh/meeting/ios/error-codes.md): iOS SMeeting 会议 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/meeting/ios/changelog.md): iOS SMeeting 会议 SDK 版本更新记录
+- [常见问题](https://docs.stmlink.com/zh/meeting/ios/faq.md): iOS SMeeting 会议 SDK 集成与使用常见问题解答
+
+## SMeeting 会议 SDK · iOS SDK · 进阶实践
+
+- [屏幕录制](https://docs.stmlink.com/zh/meeting/ios/advanced/screen-recording.md): iOS SMeeting 会议 SDK 屏幕录制功能配置指南
+
+## SMeeting 会议 SDK · iOS SDK · 接口列表
+
+- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): iOS（Objective-C）会议 SDK 的总入口单例：登录、会前管理、进出会议、会控、媒体与消息接口
+- [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会中事件回调协议：错误与重连、自己的进退会、会控请求、房间与成员状态变化
+- [MeetingKitIMDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitIMDelegate.md): 会议外消息通道的回调协议：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助
+
+## SMeeting 会议 SDK · 服务端 API
+
+- [概览](https://docs.stmlink.com/zh/meeting/server-api/overview.md): SMeeting 会议服务端 产品概览
+- [错误码](https://docs.stmlink.com/zh/meeting/server-api/error-codes.md): 服务端 API 响应体中 code 的取值
+
+## SMeeting 会议 SDK · 服务端 API · 接入指南
+
+- [云录制与直播接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/recording.md): 会议的云端录制、合流与直播：任务类型怎么组合、什么时候会自动开、画面怎么排、产物怎么取
+- [回调事件接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/callbacks.md): 会议、成员、录制状态变化时 SMeeting 通知你的业务后端：怎么接、怎么验签、每个事件的字段结构
+- [设备接入与 IM](https://docs.stmlink.com/zh/meeting/server-api/guides/agent-and-im.md): SMeeting 的设备接入与 IM 接口直接沿用 SRTC 的同名接口，本页说明怎么调
+
+## SMeeting 会议 SDK · 服务端 API · 接口文档
+
+- [会议授权](https://docs.stmlink.com/zh/meeting/server-api/user-auth.md): 把业务系统的用户换成会议 Token，以及把已授权的用户踢下线
+- [会议管理](https://docs.stmlink.com/zh/meeting/server-api/meet.md): 会前会后的会议编排：创建、修改、取消、查询，以及参会记录与聊天记录
+- [会中控制](https://docs.stmlink.com/zh/meeting/server-api/meet-admin.md): 会议进行中主持人可做的操作：全体音视频管控、成员角色与踢人、举手处理、呼叫入会
+- [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播推流

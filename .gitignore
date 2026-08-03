@@ -1,8 +1,15 @@
 .DS_Store
-.mintlify/
+# 排除 .mintlify 下的内容（本地缓存），但自定义 skill 要进版本库
+# —— 它会覆盖 Mintlify 自动生成的 /skill.md
+.mintlify/*
+!.mintlify/skills/
 node_modules/
 /zh/rtc/windows/.vs
 /zh/rtc/windows/include
 /zh/meeting/windows/.vs
 /zh/meeting/windows/include
 /zh/meeting/windows/readme.txt
+
+# python
+__pycache__/
+*.pyc

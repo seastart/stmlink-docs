@@ -11,6 +11,12 @@ description: "iOS SRTC 音视频 SDK 环境配置与 SDK 安装指南"
 + SDK暂不支持模拟器编译
 + Enable Bitcode 配置 NO
 
+<Note>
+**苹果平台有两套 SRTC SDK，先确认你要用哪一套。** 本章是 Objective-C 的 `RTCEngineKit`；另有一套 Swift 原生 SDK（`import SRTC`，Swift Package 形态，同时支持 iOS 与 macOS），见 [Swift SDK](/zh/rtc/swift/integration)。
+
+**新项目建议用 Swift SDK。** 两套 API 不能混用，也不要在同一工程里同时引入。
+</Note>
+
 ## 手动集成(不建议)
 
 

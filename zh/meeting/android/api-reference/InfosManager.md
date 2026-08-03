@@ -1,6 +1,6 @@
 ---
 title: "InfosManager"
-description: "Android SMeeting 会议 SDK InfosManager 接口参考"
+description: "读取当前会议、成员与轨道的本地状态快照，不发起网络请求"
 ---
 
 说明：`InfosManager` 是会中信息管理器，用于读取当前会议、成员与轨道的本地状态快照。

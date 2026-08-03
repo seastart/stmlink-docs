@@ -363,7 +363,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | **属性名称** | **描述** |
 | --- | --- |
 | index | 【字段含义】格子序号<br/>【特别说明】排序规则按HTML中标签的顺序，默认 0 |
-| bindShare | 【字段含义】是否优先绑定频道内的共享流，默认 NO |
+| bindShare | 【字段含义】是否优先绑定会议内的共享流，默认 NO |
 | label | 【字段含义】单元格标签，详情参考：[SEALayoutLabelModel](#PfK8y) |
 
 

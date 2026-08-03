@@ -1,6 +1,6 @@
 ---
 title: "IRTCRemoteVideoTrack"
-description: "Windows SRTC 音视频 SDK IRTCRemoteVideoTrack 接口参考"
+description: "远端视频对象，管理渲染对象的添加与移除"
 ---
 
 ## 函数说明

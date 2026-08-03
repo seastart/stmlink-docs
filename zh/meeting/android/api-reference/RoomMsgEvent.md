@@ -1,6 +1,6 @@
 ---
 title: "RoomMsgEvent"
-description: "Android SMeeting 会议 SDK RoomMsgEvent 接口参考"
+description: "接收会中聊天消息与系统消息"
 ---
 
 说明：`RoomMsgEvent` 是房间消息事件回调接口，用于接收聊天消息与系统消息。

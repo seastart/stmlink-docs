@@ -1,6 +1,6 @@
 ---
 title: "RemoteAudioMixTrack"
-description: "Android SRTC 音视频 SDK RemoteAudioMixTrack 接口参考"
+description: "远端混音轨道，控制远端声音在本地的播放开关"
 ---
 
 ## 说明

@@ -1,6 +1,6 @@
 ---
 title: "EnableImCallback"
-description: "Android SMeeting 会议 SDK EnableImCallback 接口参考"
+description: "启用会议外消息通道（IM）的结果回调，成功时返回 uid 与本次连接的 sid"
 ---
 
 说明：`EnableImCallback` 是启动即时通讯结果回调接口。

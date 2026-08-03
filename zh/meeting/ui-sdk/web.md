@@ -7,7 +7,7 @@ description: "SMeeting Web UI 套件快速集成指南"
 
 github源码地址：[https://github.com/seastart/meeting-web-demo](https://github.com/seastart/meeting-web-demo)
 
-# 项目介绍
+## 项目介绍
 ## 项目技术栈
 + Vue 3
 + TypeScript
@@ -18,7 +18,7 @@ github源码地址：[https://github.com/seastart/meeting-web-demo](https://gith
 + SCSS
 
 ## 项目结构
-```plain
+```text
 ├── src/                    # 源代码目录
 │   ├── api/               # API 接口定义
 │   ├── assets/            # 静态资源文件
@@ -79,9 +79,9 @@ npm run format
 npm run type-check
 ```
 
-# 页面功能介绍
+## 页面功能介绍
 ## 登录页
-```plain
+```text
 ├── login/                	
 │   ├── cpn/ 
 │      ├── Login.vue     #登录页组件
@@ -93,7 +93,7 @@ npm run type-check
 ![](images/339904_1736926098475-78d5f4b6-14de-4e1c-84ab-ea41db0c02ee.png)
 
 ## 首页
-```plain
+```text
 ├── home/                	
 │   ├── cpn/ 
 │      ├── AppointmentMeeting.vue     #预约会议弹窗组件
@@ -119,7 +119,7 @@ npm run type-check
 ![](images/226736_1732102028492-c5aa427f-0e2e-4cc0-8893-81c2bc38e940.png)
 
 ## 会议
-```plain
+```text
 ├── meeting/                	
 │   ├── cpn/                 
 │      ├── ChatDrawer.vue     			#聊天侧弹窗组件

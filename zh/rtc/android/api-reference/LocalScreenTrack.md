@@ -1,6 +1,6 @@
 ---
 title: "LocalScreenTrack"
-description: "Android SRTC 音视频 SDK LocalScreenTrack 接口参考"
+description: "Android 录屏：申请授权、启停屏幕采集、配置前台服务通知"
 ---
 
 ## 说明

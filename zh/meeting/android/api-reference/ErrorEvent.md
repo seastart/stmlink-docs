@@ -1,6 +1,6 @@
 ---
 title: "ErrorEvent"
-description: "Android SMeeting 会议 SDK ErrorEvent 接口参考"
+description: "token 失效、会控或流媒体连接断开等全局错误的上报入口"
 ---
 
 说明：`ErrorEvent` 是错误事件回调接口，用于上报 token 失效、会控或流媒体连接断开等错误。

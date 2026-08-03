@@ -1,6 +1,6 @@
 ---
 title: "LocalCameraTrack"
-description: "Android SRTC 音视频 SDK LocalCameraTrack 接口参考"
+description: "本地摄像头采集、预览渲染、前后置切换、镜像与闪光灯控制"
 ---
 
 ## 说明

@@ -1,6 +1,6 @@
 ---
 title: "ScreenShareEvent"
-description: "Android SMeeting 会议 SDK ScreenShareEvent 接口参考"
+description: "Android 录屏共享的状态变化回调（授权、开始、停止）"
 ---
 
 说明：`ScreenShareEvent` 是录屏共享状态回调接口。

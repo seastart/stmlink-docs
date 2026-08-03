@@ -1,6 +1,6 @@
 ---
 title: "CustomVideoTrack"
-description: "Android SRTC 音视频 SDK CustomVideoTrack 接口参考"
+description: "推送外部已编码视频数据（H264 / H265）的自定义轨道"
 ---
 
 ## 说明

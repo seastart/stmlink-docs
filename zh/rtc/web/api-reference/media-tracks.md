@@ -1,6 +1,6 @@
 ---
 title: "media-tracks"
-description: "Web SRTC 音视频 SDK media-tracks 接口参考"
+description: "Web 端本地与远端音视频轨道类的继承关系、播放控制与音频处理器接口"
 ---
 
 ### 继承关系

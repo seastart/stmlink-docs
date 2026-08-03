@@ -1,6 +1,6 @@
 ---
 title: "UserEvent"
-description: "Android SMeeting 会议 SDK UserEvent 接口参考"
+description: "成员级事件：进退会、角色变化、摄像头与麦克风状态、举手与开麦请求"
 ---
 
 说明：`UserEvent` 是房间内用户事件回调接口，用于接收成员进退会、角色与设备状态变化及会控请求事件。

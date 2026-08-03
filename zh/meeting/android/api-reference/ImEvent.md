@@ -1,6 +1,6 @@
 ---
 title: "ImEvent"
-description: "Android SMeeting 会议 SDK ImEvent 接口参考"
+description: "会议外消息通道的事件回调：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助"
 ---
 
 说明：`ImEvent` 是即时通讯事件回调接口，用于接收 IM 连接状态、错误与业务消息事件。

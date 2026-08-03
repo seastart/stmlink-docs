@@ -1,6 +1,9 @@
-# 音频路由使用说明
+---
+title: "音频路由"
+description: "Android SRTC 音视频 SDK 通过 AudioRouterManager 管理扬声器、听筒、有线耳机与蓝牙耳机的音频路由"
+---
 
-本文档基于 `rtc/src/main/java/cn/seastart/rtc/media/audioRouter/AudioRouterManager.java` 的实际实现整理，适用于在通话、会议、语音互动等场景中管理扬声器 / 听筒 / 有线耳机 / 蓝牙耳机路由。
+`AudioRouterManager` 用于在通话、会议、语音互动等场景中管理扬声器 / 听筒 / 有线耳机 / 蓝牙耳机的音频路由。
 
 ## 1. 获取 `AudioRouterManager`
 
@@ -20,7 +23,7 @@ audioRouterManager = null
 
 ## 2. 推荐初始化顺序
 
-推荐在进入房间 / 开始通话时按下面顺序初始化：
+推荐在加入频道 / 开始通话时按下面顺序初始化：
 
 1. 获取 `AudioRouterManager`
 2. 设置回调监听
@@ -96,7 +99,7 @@ audioRouterManager?.setMode(AudioManager.MODE_IN_COMMUNICATION)
 
 ### 说明
 
-- 当前项目 `minSdk = 24`，实际走的是 Android 6.0+ 路径。
+- SDK 要求 `minSdk = 24`，实际走的是 Android 6.0+ 路径。
 - 在 6.0+ 实现中，`init()` **不会自动设置音频模式**，需要业务层主动调用 `setMode(...)`。
 - 因此建议：**每次切换场景前都重新设置一次 mode**，例如语聊、会议、媒体播放等场景切换时都重新调用。
 
@@ -195,7 +198,7 @@ override fun exitOutputDeviceChange(
 - `BLUETOOTH_HEADSET`：蓝牙耳机
 - `UN_KNOW`：未知 / 自动选择占位值
 
-> 当前项目 `minSdk = 24`，因此这里的 `AudioDeviceInfo` 在实际项目中通常可用；源码中“低于 Android 6.0 时可能为 null”的说明主要是兼容性保留。
+> SDK 要求 `minSdk = 24`，因此这里的 `AudioDeviceInfo` 通常可用；声明为可空只是对更低版本的兼容性保留。
 
 ### 5.2 当前活跃输出设备变化
 
@@ -302,7 +305,7 @@ rtcEngine.releaseAudioRouterManager()
 audioRouterManager = null
 ```
 
-根据 `RTCEngineImpl` 的实现，`releaseAudioRouterManager()` 内部会调用：
+`releaseAudioRouterManager()` 内部等价于调用：
 
 ```kotlin
 audioRouterManager.release(true)
@@ -347,7 +350,7 @@ AudioRouterManager.AudioOutputDeviceType.BLUETOOTH_HEADSET
 
 ## 10. 推荐实践
 
-1. **进入房间时初始化，退出房间时释放**，不要在每次按钮点击时重复创建。
+1. **加入频道时初始化，离开频道时释放**，不要在每次按钮点击时重复创建。
 2. **每次切换业务场景都调用一次 `setMode(...)`**。
 3. UI 上展示“当前正在使用哪个设备”时，优先以 `activeOutputDeviceChange(...)` 为准。
 4. 需要展示“用户可选哪些设备”时，以 `exitOutputDeviceChange(...)` 或 `getExitAudioOutputDevices()` 为准。
@@ -360,9 +363,9 @@ AudioRouterManager.AudioOutputDeviceType.BLUETOOTH_HEADSET
 
 ---
 
-## 11. Demo 中的实际初始化方式
+## 11. 完整初始化示例
 
-`app/src/main/java/cn/seastart/rtcdemo/activity/RoomActivity.kt` 中实际使用方式如下：
+在进入通话页面时按下面的顺序初始化：
 
 ```kotlin
 audioRouterManager = rtcEngine.getAudioRouterManager()

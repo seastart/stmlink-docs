@@ -1,6 +1,6 @@
 ---
 title: "IRTCRemoteAudioTrack"
-description: "Windows SRTC 音视频 SDK IRTCRemoteAudioTrack 接口参考"
+description: "远端音频混音对象，控制音频输出的开启与停止"
 ---
 
 ## 函数说明

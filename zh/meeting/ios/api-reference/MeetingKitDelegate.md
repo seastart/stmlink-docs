@@ -1,9 +1,9 @@
 ---
 title: "MeetingKitDelegate"
-description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
+description: "会中事件回调协议：错误与重连、自己的进退会、会控请求、房间与成员状态变化"
 ---
 
-## **错误事件回调**
+## 错误事件回调
 ### onError:errMsg:()
 `- (void)onError:(SEAError)errCode errMsg:(nullable NSString *)errMsg`
 
@@ -19,7 +19,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | errMsg | 错误信息 |
 
 
-## **连接事件回调**
+## 连接事件回调
 ### onReconnecting()
 `- (void)onReconnecting`
 
@@ -34,7 +34,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 
 当 SDK 断线重连成功并且连接已经恢复时，会收到该事件通知。如中途遇到错误 SDK 会抛出 `onError:errMsg:()` 回调。
 
-## **我的相关回调**
+## 我的相关回调
 ### onEnterRoom:userId:()
 `- (void)onEnterRoom:(NSString *)meetingId userId:(NSString *)userId`
 
@@ -126,7 +126,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | toMeetingTitle | 目标小组会议标题 |
 
 
-## **房间事件回调**
+## 房间事件回调
 ### onRoomCameraStateChanged:selfUnmuteCameraDisabled:userId:()
 `- (void)onRoomCameraStateChanged:(BOOL)cameraDisabled selfUnmuteCameraDisabled:(BOOL)selfUnmuteCameraDisabled userId:(NSString *)userId`
 
@@ -343,7 +343,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | title | 会议标题 |
 
 
-## **用户事件回调**
+## 用户事件回调
 ### onUserEnter:()
 `- (void)onUserEnter:(NSString *)userId`
 
@@ -494,7 +494,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | nickname | 成员昵称 |
 
 
-## **消息事件回调**
+## 消息事件回调
 ### onReceiveChatMessage:message:messageType:()
 `- (void)onReceiveChatMessage:(NSString *)senderId message:(NSString *)message messageType:(SEAMessageType)messageType`
 
@@ -522,7 +522,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | messageType | 消息类型，参考文档：[SEAMessageType](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#xlxGu) |
 
 
-## **云录制事件回调**
+## 云录制事件回调
 ### onCloudRecordStatusChange:status:errMsg:()
 `- (void)onCloudRecordStatusChange:(SEARecordType)recordType status:(SEARecordStatus)status errMsg:(nullable NSString *)errMsg`
 
@@ -553,7 +553,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | alarmBrief | 告警摘要 |
 
 
-## **屏幕采集事件回调**
+## 屏幕采集事件回调
 ### onScreenRecordStatus:()
 `- (void)onScreenRecordStatus:(SEAScreenRecordStatus)status`
 
@@ -566,7 +566,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | status | 状态码，参考文档：[SEAScreenRecordStatus](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#kVZHh) |
 
 
-## **音频事件回调**
+## 音频事件回调
 ### onAudioRouteChange:previousRoute:()
 `- (void)onAudioRouteChange:(SEAAudioRoute)route previousRoute:(SEAAudioRoute)previousRoute`
 
@@ -594,7 +594,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | audioArray | 成员音频数据列表，参考文档：[SEAStreamAudioModel](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#Lw5lL) |
 
 
-## **流媒体事件回调**
+## 流媒体事件回调
 ### onDownBitrateAdaptiveUserId:state:()
 `- (void)onDownBitrateAdaptiveUserId:(NSString *)userId state:(SEADownBitrateAdaptiveState)state`
 
@@ -727,7 +727,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | status | 接收状态，YES-超时 NO-恢复 |
 
 
-## **其它事件回调**
+## 其它事件回调
 ### onApplicationPerformance:cpuUsage:()
 `- (void)onApplicationPerformance:(CGFloat)memory cpuUsage:(CGFloat)cpuUsage`
 
@@ -753,7 +753,7 @@ description: "iOS SMeeting 会议 SDK MeetingKitDelegate 接口参考"
 | content | 数据内容 |
 
 
-## **签到事件回调**
+## 签到事件回调
 ### onSignInActivity:epoch:beginAt:dur:endAt:desc:()
 `- (void)onSignInActivity:(NSString *)userId epoch:(NSInteger)epoch beginAt:(NSInteger)beginAt dur:(NSInteger)dur endAt:(NSInteger)endAt desc:(nullable NSString *)desc`
 

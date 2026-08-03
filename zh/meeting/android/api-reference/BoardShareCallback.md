@@ -1,6 +1,6 @@
 ---
 title: "BoardShareCallback"
-description: "Android SMeeting 会议 SDK BoardShareCallback 接口参考"
+description: "发起白板共享后的成功/失败回调，成功时返回白板对象"
 ---
 
 说明：`BoardShareCallback` 是白板共享结果回调接口，用于反馈发起白板共享的成功或失败。

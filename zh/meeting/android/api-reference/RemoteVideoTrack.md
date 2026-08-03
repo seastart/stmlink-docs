@@ -1,6 +1,6 @@
 ---
 title: "RemoteVideoTrack"
-description: "Android SMeeting 会议 SDK RemoteVideoTrack 接口参考"
+description: "远端成员画面的渲染与接收卡顿状态监听，含继承自 VideoTrack 的渲染方法"
 ---
 
 ## 说明

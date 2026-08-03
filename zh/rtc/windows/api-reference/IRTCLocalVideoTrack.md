@@ -1,6 +1,6 @@
 ---
 title: "IRTCLocalVideoTrack"
-description: "Windows SRTC 音视频 SDK IRTCLocalVideoTrack 接口参考"
+description: "本地视频轨道基类，提供推流与渲染对象绑定"
 ---
 
 ## 函数说明

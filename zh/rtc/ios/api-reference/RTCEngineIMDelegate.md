@@ -1,9 +1,9 @@
 ---
 title: "RTCEngineIMDelegate"
-description: "iOS SRTC 音视频 SDK RTCEngineIMDelegate 接口参考"
+description: "频道外消息通道（IM）的回调协议：连接状态变化与消息接收"
 ---
 
-## **连接相关回调**
+## 连接相关回调
 ### onImConnectSucceed:sessionId:()
 `- (void)onImConnectSucceed:(NSString *)userId sessionId:(NSString *)sessionId`
 
@@ -49,7 +49,7 @@ description: "iOS SRTC 音视频 SDK RTCEngineIMDelegate 接口参考"
 | errMsg | 错误信息 |
 
 
-## **消息相关回调**
+## 消息相关回调
 ### onImMessage:action:userId:sessionId:nickname:()
 `- (void)onImMessage:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
 

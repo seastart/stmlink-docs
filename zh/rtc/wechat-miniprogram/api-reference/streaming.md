@@ -1,6 +1,6 @@
 ---
 title: "streaming"
-description: "微信小程序 SRTC 音视频 SDK streaming 接口参考"
+description: "小程序推流与远端轨道对象，配合 live-pusher / live-player 做数据绑定"
 ---
 
 # 推流

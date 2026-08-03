@@ -1,6 +1,6 @@
 ---
 title: "IRTCLocalMicTrack"
-description: "Windows SRTC 音视频 SDK IRTCLocalMicTrack 接口参考"
+description: "本地麦克风推流对象：更新采集参数、开始与停止采集"
 ---
 
 ## 函数说明

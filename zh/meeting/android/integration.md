@@ -3,8 +3,6 @@ title: "集成"
 description: "Android SMeeting 会议 SDK 环境配置与 SDK 安装指南"
 ---
 
-# 集成
-
 本文说明 Android SMeeting SDK 的最小接入方式。完成本页后，可继续参考 [快速开始](/zh/meeting/android/quickstart) 完成 SDK 初始化、创建会议与入会流程。
 
 ## 配置 Maven 仓库

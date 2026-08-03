@@ -11,7 +11,7 @@ github源码地址：[https://github.com/seastart/meeting-andriod-demo](https://
 ### 整体集成
 + 在根目录下的 build.gradle 中，添加 maven
 
-```plain
+```text
 allprojects {
     repositories {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
@@ -22,7 +22,7 @@ allprojects {
 + 引入 StmLink 库
 + 在app目录下的build.gradle中添加依赖
 
-```plain
+```text
 dependencies {
     implementation project(path: ':StmLink')
 }
@@ -31,7 +31,7 @@ dependencies {
 ### 模块/组件集成
 + 在根目录下的 build.gradle 中，添加 maven
 
-```plain
+```text
 allprojects {
     repositories {
         maven { url 'https://maven.open.seastart.cn/repository/maven-vcs/' }
@@ -41,7 +41,7 @@ allprojects {
 
 + 在app目录下的build.gradle中添加依赖
 
-```plain
+```text
 	dependencies {
     implementation 'cn.seastart.meeting:meeting:xxx'
 	}

@@ -1,6 +1,6 @@
 ---
 title: "AudioRouterManager"
-description: "Android SRTC 音视频 SDK 音频路由管理类 AudioRouterManager 接口参考"
+description: "管理扬声器、听筒、有线耳机与蓝牙耳机之间的音频输出路由切换"
 ---
 
 `AudioRouterManager` 负责管理扬声器 / 听筒 / 有线耳机 / 蓝牙耳机之间的音频输出路由。本页为接口参考；完整的初始化顺序、自动切换策略与最佳实践请见 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。

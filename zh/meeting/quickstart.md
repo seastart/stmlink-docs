@@ -3,18 +3,36 @@ title: "快速开始"
 description: "SMeeting 会议 SDK 快速对接概述"
 ---
 
-# 1、概述
+## 1、概述
 本开发对接文档旨在指导开发者与meeting视频会议系统进行快速便捷的集成。
 
 
 
 meeting没有自己的用户(`User`)体系，所有用户信息都需要由业务方来自定义。
 
-meeting客户端提供带UI源码(极简对接)、不带UI SDK(自定义对接)两种对接方式。
+meeting 提供三种对接方式：**服务端极简对接**（不集成 SDK、不写界面，后端拼 URL 拉起我们部署好的会议页）、**带 UI 极简对接**（引入我们的前端源码自己部署）、**自定义对接**（集成 SDK 自己写界面）。三者的差异与选择见 [概览](/zh/meeting/overview#三种对接方式)。
 
 meeting服务端提供http接口供业务后端主动调用，同时支持http事件回调业务后端。
 
-# 2、对接流程
+## 2、对接流程
+
+三种方式的投入从小到大，下面按顺序说明。
+
+## 服务端极简对接
+
+业务系统**不集成 SDK、不写会议界面**。会议客户端、用户体系、登录态都由我们部署，业务后端只做三件事：建会议、给用户换一个免登录 token、把用户浏览器导到会议页。
+
+```text
+业务活动创建时
+  └─ POST /server/v1/meet/create          挂上你的业务单据号 → 拿到 room_no
+
+用户点「进入会议」
+  ├─ POST /stm/srvapi/v1/member/grant     account + 昵称 → token（人不存在就现场建）
+  └─ 302 跳转 /stm/ui/outer?token=&room_no=
+```
+
+详见 [服务端极简对接](/zh/meeting/ui-sdk/server-integration)。
+
 ## 带UI极简对接
 业务系统客户端直接源码引入meeting ui，无需关注会议业务逻辑。
 

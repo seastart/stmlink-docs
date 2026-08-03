@@ -34,12 +34,12 @@ CommonRoomEventType及对应`data`定义如下：
     static readonly RECONNECTING = 'reconnecting';
     /** 重连成功，断线重连成功后会触发，无data */
     static readonly RECONNECTED = 'reconnected';
-    /** 自己被强制离开频道，对应data为 DisconnectEventData */
+    /** 自己被强制退出会议，对应data为 DisconnectEventData */
     static readonly DISCONNECTED = 'disconnected';
 
-    /** 其他用户加入频道，对应data为 UserInfo */
+    /** 其他用户进入会议，对应data为 UserInfo */
     static readonly USER_ENTER = 'user_enter';
-    /** 其他用户离开频道，对应data为 UserExitEventData */
+    /** 其他用户退出会议，对应data为 UserExitEventData */
     static readonly USER_EXIT = 'user_exit';
     /** 用户摄像头状态变化(自己/他人主动改变或被主持人改变)，对应data为 UserCameraStateChangeEventData */
     static readonly USER_CAMREA_STATE_CHANGED = "user_camera_state_changed";

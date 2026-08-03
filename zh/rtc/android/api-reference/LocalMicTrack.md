@@ -1,6 +1,6 @@
 ---
 title: "LocalMicTrack"
-description: "Android SRTC 音视频 SDK LocalMicTrack 接口参考"
+description: "本地麦克风轨道，用于获取采集音量并作为音频发布的输入"
 ---
 
 ## 说明

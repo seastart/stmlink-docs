@@ -1,6 +1,6 @@
 ---
 title: "EnterMeetingCallback"
-description: "Android SMeeting 会议 SDK EnterMeetingCallback 接口参考"
+description: "进入会议的结果回调，成功时返回会议 ID 与自己的 uid"
 ---
 
 说明：`EnterMeetingCallback` 是进入会议结果回调接口。

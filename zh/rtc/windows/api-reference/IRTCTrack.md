@@ -1,6 +1,6 @@
 ---
 title: "IRTCTrack"
-description: "Windows SRTC 音视频 SDK IRTCTrack 接口参考"
+description: "轨道基类，提供轨道基本信息的获取"
 ---
 
 ## 函数说明

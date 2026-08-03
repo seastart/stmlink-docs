@@ -1,6 +1,6 @@
 ---
 title: "MeetingResultCallback"
-description: "Android SMeeting 会议 SDK MeetingResultCallback 接口参考"
+description: "会控类操作的成功/失败回调，不返回数据"
 ---
 
 说明：`MeetingResultCallback` 是通用操作结果回调接口，用于反馈调用成功或失败。

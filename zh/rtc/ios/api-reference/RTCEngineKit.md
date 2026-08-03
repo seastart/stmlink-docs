@@ -1,6 +1,6 @@
 ---
 title: "RTCEngineKit"
-description: "iOS SRTC 音视频 SDK RTCEngineKit 接口参考"
+description: "iOS（Objective-C）音视频 SDK 的核心入口类：初始化、频道进出、媒体采集发布与订阅"
 ---
 
 ## 创建实例和事件回调
@@ -669,7 +669,7 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 | --- | --- |
 
 
-## **发布自定义流相关接口**函数
+## 发布自定义流相关接口
 ### startCustomStreamWithStreamModel:()
 `- (RTCEngineError)startCustomStreamWithStreamModel:(RTCEngineStreamModel *)streamModel`
 

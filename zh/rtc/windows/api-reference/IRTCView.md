@@ -1,6 +1,6 @@
 ---
 title: "IRTCView"
-description: "Windows SRTC 音视频 SDK IRTCView 接口参考"
+description: "渲染对象虚基类，继承它可接管渲染数据回调或设置渲染窗口句柄"
 ---
 
 ## 函数说明

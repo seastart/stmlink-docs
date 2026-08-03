@@ -1,6 +1,6 @@
 ---
 title: "RTCMediaEvent"
-description: "Android SRTC 音视频 SDK RTCMediaEvent 接口参考"
+description: "媒体层事件回调：连接建立、远端视频帧、网络质量、音量与摄像头设备变化"
 ---
 
 ## 说明

@@ -1,6 +1,6 @@
 ---
 title: "SignInManager"
-description: "Android SMeeting 会议 SDK SignInManager 接口参考"
+description: "会中签到：发起与结束签到活动、用户签到、统计人数、查询与导出记录"
 ---
 
 说明：`SignInManager` 是会中签到功能管理器，通过 `MeetingEngine.signInManager` 获取，用于发起/结束签到活动、用户签到、查询与导出签到记录。

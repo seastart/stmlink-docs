@@ -1,6 +1,6 @@
 ---
 title: "Callback"
-description: "Android SMeeting 会议 SDK Callback 接口参考"
+description: "会议请求的通用结果回调基类，覆盖开始、成功、失败、取消四个状态"
 ---
 
 说明：`Callback<T extends BaseBean>` 是通用请求结果回调抽象类，实现 `ApiImpl<T>`，用于承接请求生命周期与结果状态。
