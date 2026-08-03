@@ -201,13 +201,13 @@ RTC 调进来的入站回调（客户不会调），`im/*api` 与 `agent/*api` �
 ├── events.md               # 事件参考（表格：事件名 + 触发时机 + data 类型）
 ├── types.md                # 完整类型定义
 ├── error-codes.md          # 错误码
-├── changelog.md            # 更新日志
+├── changelog.mdx           # 更新日志（必须 .mdx，见上文「文档文件」的例外说明）
 └── faq.md                  # 常见问题
 ```
 
 ### 格式规范
 
-- 无 YAML frontmatter（与现有 iOS/Android 文档一致）
+- 有 YAML frontmatter，含 `title` 与 `description`（与现有 iOS/Android 文档一致）
 - 标题层级：`###` 主标题，`####` 小标题
 - 列表用 `+`
 - 代码块注明语言标识符（`typescript` / `swift` / `kotlin` 等）

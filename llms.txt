@@ -121,6 +121,7 @@
 - [事件参考](https://docs.stmlink.com/zh/rtc/swift/events.md): SRTC Swift SDK 中 ChannelDelegate 与 TrackDelegate 的事件列表
 - [类型定义](https://docs.stmlink.com/zh/rtc/swift/types.md): SRTC Swift SDK 常用结构体、枚举、预设与设备类型说明
 - [错误码](https://docs.stmlink.com/zh/rtc/swift/error-codes.md): SRTC Swift SDK 错误类型 SRTCError 的分类说明与处理建议
+- [更新日志](https://docs.stmlink.com/zh/rtc/swift/changelog.md): Swift SRTC 音视频 SDK 版本更新记录
 
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS） · 进阶实践
 
@@ -292,6 +293,7 @@
 - [事件参考](https://docs.stmlink.com/zh/meeting/swift/events.md): SMeeting Swift SDK 中 SMeetingDelegate 的全部事件、触发时机与数据类型
 - [类型定义](https://docs.stmlink.com/zh/meeting/swift/types.md): SMeeting Swift SDK 的请求参数、会议与成员信息、事件数据和枚举类型定义
 - [错误处理](https://docs.stmlink.com/zh/meeting/swift/error-codes.md): SMeeting Swift SDK 错误类型 SMeetingError 的分类、错误码规则与处理建议
+- [更新日志](https://docs.stmlink.com/zh/meeting/swift/changelog.md): Swift SMeeting 会议 SDK 版本更新记录
 
 ## SMeeting 会议 SDK · Swift SDK（iOS/macOS） · 进阶实践
 

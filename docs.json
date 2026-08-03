@@ -219,7 +219,8 @@
                   },
                   "zh/rtc/swift/events",
                   "zh/rtc/swift/types",
-                  "zh/rtc/swift/error-codes"
+                  "zh/rtc/swift/error-codes",
+                  "zh/rtc/swift/changelog"
                 ]
               },
               {
@@ -453,7 +454,8 @@
                   },
                   "zh/meeting/swift/events",
                   "zh/meeting/swift/types",
-                  "zh/meeting/swift/error-codes"
+                  "zh/meeting/swift/error-codes",
+                  "zh/meeting/swift/changelog"
                 ]
               },
               {
