@@ -1,79 +1,104 @@
 ---
 title: "集成"
-description: "Windows SRTC 音视频 SDK 环境配置与 SDK 安装指南"
+description: "Windows SRTC 音视频 SDK 的下载地址、环境要求、工程配置与运行时依赖部署"
 ---
 
-### 头文件
-`#include <srtc.h>`
+### 环境要求
 
-`#include <srtc_def.h>`
+<Warning>
+**SDK 为 x86（32 位）**。你的工程必须以 **Win32 / x86** 为目标平台编译 —— 64 位程序无法链接
+32 位的 `srtc.lib`，表现为链接期报「模块计算机类型 x86 与目标计算机类型 x64 冲突」。
+</Warning>
 
++ 目标平台：Windows x86（32 位）
++ 语言：C++
++ 运行时：SDK 包内已附带所需的 VC++ 运行库 DLL，**无需**在目标机器上单独安装运行库分发包
 
+---
 
-### 链接文件
-srtc.lib
+### 下载 SDK
 
+| 版本 | 下载地址 |
+| --- | --- |
+| 2.1 | [rtc-win-sdk-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-2.1.zip) |
 
+新版本发布后按同样的命名规则取用，替换版本号即可：
 
-### 库文件
-AnyLiveMVSC.dll
+```text
+https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-<版本号>.zip
+```
 
-audioproc.dll
+现有版本可以在[制品仓库](https://repo.open.seastart.cn/service/rest/repository/browse/vcs-releases/)里查看。
 
-D3DVideoRender.dll
+---
 
-DenModule.dll
+### 目录结构
 
-rtp.dll
+解压后得到：
 
-rtc.dll
+```text
+rtc_dll/
+├── include/          # 头文件
+│   ├── srtc.h
+│   └── srtc_def.h
+├── lib/
+│   └── srtc.lib      # 导入库，链接时用
+└── bin/              # 运行时依赖，全部需要随程序分发
+    ├── srtc.dll      # SDK 主体
+    ├── ...           # 媒体、编解码、网络等依赖库
+    └── plugin/       # 插件及其 xml 配置
+```
 
-srtc.dll
+---
 
-srtclive.dll
+### 工程配置
 
-swebrtc.dll
+<Steps>
+<Step title="添加头文件目录">
+把 `rtc_dll/include` 加入工程的附加包含目录，代码中引入：
 
-plugin/anyLiveM.dll
+```cpp
+#include <srtc.h>
+#include <srtc_def.h>
+```
+</Step>
 
-plugin/cocktail_service.dll
+<Step title="链接导入库">
+把 `rtc_dll/lib` 加入附加库目录，并链接 `srtc.lib`。
+</Step>
 
-plugin/libmm.dll
+<Step title="部署运行时依赖">
+把 `rtc_dll/bin` 目录下的**全部内容**拷贝到可执行文件所在目录：
 
-plugin/linkmic_service.dll
+```text
+你的程序目录/
+├── YourApp.exe
+├── srtc.dll
+├── ...              ← bin 下其余 DLL
+└── plugin/          ← 保持子目录结构不变
+    ├── *.dll
+    └── *.xml
+```
 
-plugin/onvif_receiver.dll
+<Warning>
+两个容易遗漏的点：
 
-plugin/screen_capture.dll
++ **`plugin/` 必须保持为子目录**，不能把里面的 DLL 平铺到根目录
++ **`plugin/` 下的 `.xml` 配置文件也要一起拷贝**（`conf.xml`、`cocktail_service.xml`、
+  `linkmic_service.xml`），缺失会导致插件加载失败，表现为屏幕共享等功能不可用
+</Warning>
+</Step>
+</Steps>
 
-plugin/transcoder.dll
+<Note>
+`bin` 目录的内容会随版本调整，所以推荐**整体拷贝**而不是按文件名逐个挑选 —— 逐个挑选在升级
+SDK 时很容易漏掉新增的依赖库。
+</Note>
 
+---
 
+### 下一步
 
-### 第三方库
-zlib
-
-openssl
-
-curl
-
-jsoncpp
-
-pthreadGC2.dll
-
-pthreadVC2.dll
-
-d3dx9_42.dll
-
-libeay32.dll
-
-ssleay32.dll
-
-
-
-
-
-
-
-
-
++ [快速开始](/zh/rtc/windows/quickstart) —— 初始化、加入频道、收发音视频
++ [核心概念](/zh/rtc/key-concepts) —— 频道、用户、流轨道模型
++ [Token 与鉴权](/zh/rtc/token) —— 加入频道 token 由你的后端签发

@@ -86,7 +86,7 @@
 
 ## SRTC 音视频 SDK · Windows SDK
 
-- [集成](https://docs.stmlink.com/zh/rtc/windows/integration.md): Windows SRTC 音视频 SDK 环境配置与 SDK 安装指南
+- [集成](https://docs.stmlink.com/zh/rtc/windows/integration.md): Windows SRTC 音视频 SDK 的下载地址、环境要求、工程配置与运行时依赖部署
 - [快速开始](https://docs.stmlink.com/zh/rtc/windows/quickstart.md): Windows SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能
 - [类型定义](https://docs.stmlink.com/zh/rtc/windows/types.md): Windows SRTC 音视频 SDK 完整类型与结构体定义
 - [枚举类型](https://docs.stmlink.com/zh/rtc/windows/enums.md): Windows SRTC 音视频 SDK 枚举值定义
@@ -272,7 +272,7 @@
 
 ## SMeeting 会议 SDK · Windows SDK
 
-- [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 环境配置与 SDK 安装指南
+- [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署
 - [C++ 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart.md): Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能
 - [C 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart-c.md): Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能
 - [错误码](https://docs.stmlink.com/zh/meeting/windows/error-codes.md): Windows SMeeting 会议 SDK 错误码枚举与处理说明

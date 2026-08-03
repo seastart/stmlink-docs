@@ -32,7 +32,8 @@ SRTC 只负责音视频通道本身，**不带用户体系、不带业务规则*
 | 服务端 | HTTP 接口与事件回调 | [服务端 API](/zh/rtc/server-api/overview) |
 
 <Note>
-SDK 安装包与版本号请向我们获取。Web SDK 通过 npm 分发，版本见 [Web 集成](/zh/rtc/web/integration)。
+各端的获取方式不同：Web 走 npm、Android 走 Maven、Windows 从制品仓库下载 zip，均见对应的集成页。
+Swift、iOS、C SDK 的安装包请向我们获取。
 </Note>
 
 

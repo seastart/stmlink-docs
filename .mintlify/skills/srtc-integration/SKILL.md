@@ -51,7 +51,7 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 | --- | --- | --- |
 | Web | `npm i @seastart/srtc-web-sdk` | `new SRTC({...})` |
 | Android | `implementation 'cn.seastart.rtc:rtc:<version>'` | `RTCEngine.create(...)` |
-| Windows | 向我们获取 SDK 包 | `IRTCEngine`（C++） |
+| Windows | 下载 [rtc-win-sdk-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-2.1.zip)，**x86 32 位** | `IRTCEngine`（C++） |
 | Swift（iOS/macOS） | Swift Package | `import SRTC` → `SRTC()` |
 | Objective-C（iOS） | CocoaPods | `RTCEngineKit` |
 | C（服务端/嵌入式） | 向我们获取 SDK 包 | `rtc_create()` |
