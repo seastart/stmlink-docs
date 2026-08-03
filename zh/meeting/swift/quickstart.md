@@ -25,7 +25,7 @@ import SwiftUI
 @MainActor
 final class MeetingViewModel: ObservableObject {
     /// SDK 主入口，整个 App 生命周期内只创建一个实例
-    let meeting = SMeeting(logLevel: .info)
+    let meeting = SMeetingEngine(logLevel: .info)
 
     @Published var users: [MeetingUserInfo] = []
     @Published var isInMeeting = false
@@ -77,11 +77,11 @@ final class MeetingViewModel: ObservableObject {
 
 // 事件回调在主线程派发；@MainActor 类型需要把协议方法声明为 nonisolated
 extension MeetingViewModel: SMeetingDelegate {
-    nonisolated func meeting(_ meeting: SMeeting, userDidEnter user: MeetingUserInfo) {
+    nonisolated func meeting(_ meeting: SMeetingEngine, userDidEnter user: MeetingUserInfo) {
         DispatchQueue.main.async { self.users = meeting.getUsersInfoList() }
     }
 
-    nonisolated func meeting(_ meeting: SMeeting, userDidExit data: UserExitEventData) {
+    nonisolated func meeting(_ meeting: SMeetingEngine, userDidExit data: UserExitEventData) {
         DispatchQueue.main.async { self.users = meeting.getUsersInfoList() }
     }
 }
@@ -110,13 +110,13 @@ struct MeetingView: View {
 
 ### 接入流程说明
 
-#### 1. 创建 `SMeeting`
+#### 1. 创建 `SMeetingEngine`
 
 ```swift
-let meeting = SMeeting(logLevel: .info)
+let meeting = SMeetingEngine(logLevel: .info)
 ```
 
-`SMeeting` 是整个 SDK 的唯一入口，负责登录、会议管理、进出会议、媒体控制、主持人操作和事件分发。**同一个 App 内只应创建一个实例**并全局持有，多实例会造成会议状态与媒体设备互相抢占。
+`SMeetingEngine` 是整个 SDK 的唯一入口，负责登录、会议管理、进出会议、媒体控制、主持人操作和事件分发。**同一个 App 内只应创建一个实例**并全局持有，多实例会造成会议状态与媒体设备互相抢占。
 
 #### 2. 登录并注册事件
 
@@ -166,5 +166,5 @@ SwiftUI 场景 `requestOpenCamera` 不需要传 `view`，把 `meeting.cameraTrac
 + [媒体控制](/zh/meeting/swift/advanced/media-control)
 + [视频渲染](/zh/meeting/swift/advanced/video-rendering)
 + [主持人管控](/zh/meeting/swift/advanced/host-controls)
-+ [接口文档 - SMeeting](/zh/meeting/swift/api-reference/SMeeting)
++ [接口文档 - SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine)
 + [事件参考](/zh/meeting/swift/events)

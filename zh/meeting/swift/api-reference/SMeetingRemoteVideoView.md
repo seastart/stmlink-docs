@@ -22,7 +22,7 @@ SMeetingRemoteVideoView(
 
 | 参数名 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `meeting` | `SMeeting` | 是 | SDK 实例 |
+| `meeting` | `SMeetingEngine` | 是 | SDK 实例 |
 | `uid` | `String` | 是 | 要渲染的远端成员 ID |
 | `trackDesc` | `TrackDesc` | 是 | 轨道描述，摄像头传 `.cameraBig`，屏幕共享传 `.screen` |
 

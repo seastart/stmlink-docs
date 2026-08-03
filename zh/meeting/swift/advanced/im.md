@@ -56,7 +56,7 @@ try await meeting.enableIm()
 #### 有人呼叫你
 
 ```swift
-func meeting(_ meeting: SMeeting, imCallCalling data: ImCallCallingEventData) {
+func meeting(_ meeting: SMeetingEngine, imCallCalling data: ImCallCallingEventData) {
     // data.base.name 呼叫者
     // data.content.roomNo / data.content.meetingId / data.content.title
     // 展示来电界面，用户接听后调用 enterRoom 进入
@@ -66,7 +66,7 @@ func meeting(_ meeting: SMeeting, imCallCalling data: ImCallCallingEventData) {
 #### 会议提醒
 
 ```swift
-func meeting(_ meeting: SMeeting, imMeetingRemind data: ImMeetingRemindEventData) {
+func meeting(_ meeting: SMeetingEngine, imMeetingRemind data: ImMeetingRemindEventData) {
     // data.content.title / creatorName / planTime / planDur
 }
 ```
@@ -74,7 +74,7 @@ func meeting(_ meeting: SMeeting, imMeetingRemind data: ImMeetingRemindEventData
 #### 被放行出等候室
 
 ```swift
-func meeting(_ meeting: SMeeting, imAdminMoveOutWaitingRoom data: ImAdminMoveOutWaitingRoomEventData) {
+func meeting(_ meeting: SMeetingEngine, imAdminMoveOutWaitingRoom data: ImAdminMoveOutWaitingRoomEventData) {
     // data.content.meetingId 目标会议，可据此进入
 }
 ```
@@ -82,7 +82,7 @@ func meeting(_ meeting: SMeeting, imAdminMoveOutWaitingRoom data: ImAdminMoveOut
 #### 小组请求协助
 
 ```swift
-func meeting(_ meeting: SMeeting, imUserHelpSubMeeting data: ImUserHelpSubMeetingEventData) {
+func meeting(_ meeting: SMeetingEngine, imUserHelpSubMeeting data: ImUserHelpSubMeetingEventData) {
     // data.content.meetingId / title 求助的小组
     // data.content.parent 主会议 ID
 }

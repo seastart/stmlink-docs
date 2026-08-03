@@ -1,9 +1,9 @@
 ---
-title: "SMeeting"
+title: "SMeetingEngine"
 description: "SMeeting Swift SDK 主入口类接口参考：初始化、登录、会议管理、进出会议、状态查询与会中用户操作"
 ---
 
-`SMeeting` 是 SDK 的唯一对外入口。同一个 App 内只应创建一个实例并全局持有。
+`SMeetingEngine` 是 SDK 的唯一对外入口。同一个 App 内只应创建一个实例并全局持有。
 
 本页覆盖初始化、认证、会议管理、进出会议、状态查询、会中用户操作与会议外消息。媒体相关接口见 [媒体控制](/zh/meeting/swift/api-reference/media-control)，外设见 [外设](/zh/meeting/swift/api-reference/devices)，主持人与管理接口见 [会议管理](/zh/meeting/swift/api-reference/admin-actions)。
 
@@ -16,7 +16,7 @@ description: "SMeeting Swift SDK 主入口类接口参考：初始化、登录�
 创建 SDK 实例。
 
 ```swift
-let meeting = SMeeting(logLevel: .info)
+let meeting = SMeetingEngine(logLevel: .info)
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -30,20 +30,20 @@ let meeting = SMeeting(logLevel: .info)
 #### `version`
 
 ```swift
-let v = SMeeting.version
+let v = SMeetingEngine.version
 ```
 
 SDK 版本号，类型 `String`，静态属性。
 
 #### `srtc`
 
-底层 RTC 实例，类型 `SRTC`。当会议层接口不足以满足需求时的逃生口。
+底层 RTC 实例，类型 `SRTCEngine`。当会议层接口不足以满足需求时的逃生口。
 
 ```swift
 meeting.srtc.logLevel = .debug
 ```
 
-> 请始终使用这个实例，不要自行创建第二个 SRTC —— 会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
+> 请始终使用这个实例，不要自行创建第二个 SRTCEngine —— 会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
 
 #### `delegates`
 

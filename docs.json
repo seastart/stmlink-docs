@@ -213,7 +213,7 @@
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/rtc/swift/api-reference/SRTC",
+                      "zh/rtc/swift/api-reference/SRTCEngine",
                       "zh/rtc/swift/api-reference/media-tracks"
                     ]
                   },
@@ -444,7 +444,7 @@
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/meeting/swift/api-reference/SMeeting",
+                      "zh/meeting/swift/api-reference/SMeetingEngine",
                       "zh/meeting/swift/api-reference/media-control",
                       "zh/meeting/swift/api-reference/devices",
                       "zh/meeting/swift/api-reference/admin-actions",
@@ -511,6 +511,14 @@
     ]
   },
   "redirects": [
+    {
+      "source": "/zh/rtc/swift/api-reference/SRTC",
+      "destination": "/zh/rtc/swift/api-reference/SRTCEngine"
+    },
+    {
+      "source": "/zh/meeting/swift/api-reference/SMeeting",
+      "destination": "/zh/meeting/swift/api-reference/SMeetingEngine"
+    },
     {
       "source": "/zh/rtc/server-api/api-list",
       "destination": "/zh/rtc/server-api/channel"

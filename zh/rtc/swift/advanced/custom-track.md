@@ -123,7 +123,7 @@ try await channel.publishLocalTrack(cameraTrack)
 
 ### 音频处理器
 
-音频处理器挂在 `SRTC` 主入口上，而不是某一个单独轨道上：
+音频处理器挂在 `SRTCEngine` 主入口上，而不是某一个单独轨道上：
 
 ```swift
 final class MyAudioProcessor: NSObject, AudioProcessor {

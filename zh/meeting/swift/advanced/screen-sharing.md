@@ -35,7 +35,7 @@ import SMeeting
 import SRTC
 
 @available(macOS 12.3, *)
-func startShare(meeting: SMeeting) async throws {
+func startShare(meeting: SMeetingEngine) async throws {
     let displays = try await ScreenCaptureSources.availableDisplays()
     let windows = try await ScreenCaptureSources.availableWindows()
 
@@ -101,11 +101,11 @@ let url = meeting.getWhiteBoard()
 | `meeting(_:roomShareStateDidChange:)` | 主持人开启 / 关闭了「房间禁共享」 |
 
 ```swift
-func meeting(_ meeting: SMeeting, roomShareDidStart data: RoomShareStartEventData) {
+func meeting(_ meeting: SMeetingEngine, roomShareDidStart data: RoomShareStartEventData) {
     // data.uid 共享者，data.shareType 共享类型
 }
 
-func meeting(_ meeting: SMeeting, roomShareDidStop data: RoomShareStopEventData) {
+func meeting(_ meeting: SMeetingEngine, roomShareDidStop data: RoomShareStopEventData) {
     // data.byAdmin 为 true 表示被主持人强制结束，data.opUid 为操作者
 }
 ```

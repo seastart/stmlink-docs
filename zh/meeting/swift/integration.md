@@ -22,34 +22,22 @@ SMeeting 构建在 SRTC 音视频能力之上：会议层负责房间、会议�
 
 ### 通过 Swift Package Manager 集成
 
-我们会提供给你两个 Swift Package 目录：会议层的 `meeting-swift` 和它依赖的音视频层 `rtc-swift`。
+SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、macOS 三个平台切片。
 
-<Warning>
-**两个目录必须并列放在同一层级。** `meeting-swift` 是以相对路径 `../rtc-swift` 引用音视频层的，目录结构不对会导致 SPM 解析失败：
-
-```text
-your-workspace/
-├── meeting-swift/   ← 会议层
-├── rtc-swift/       ← 音视频层，必须与 meeting-swift 同级
-└── YourApp/         ← 你的工程
-```
-
-`rtc-swift` 自身依赖的 WebRTC、MQTT 等第三方库托管在公网，由 SPM 自动拉取，你不需要手动处理。
-</Warning>
+会议层构建在音视频层之上，但你只需要声明一个依赖 —— 底层的 SRTC 与 WebRTC 会被 SPM 自动解析。
 
 #### 在 Package.swift 中声明
 
 ```swift
 // Package.swift
 dependencies: [
-    .package(path: "../meeting-swift"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.0.0"),
 ],
 targets: [
     .target(
         name: "YourApp",
         dependencies: [
-            // package 填包的标识，取本地目录最后一段名字
-            .product(name: "SMeeting", package: "meeting-swift"),
+            .product(name: "SMeeting", package: "smeeting-swift-sdk"),
         ]
     ),
 ]
@@ -59,8 +47,8 @@ targets: [
 
 如果你使用 Xcode 工程而不是纯 SPM 工程：
 
-+ 打开 `File > Add Local Package...`
-+ 选择本地的 `meeting-swift` 目录
++ 打开 `File > Add Package Dependencies...`
++ 填入 `https://github.com/seastart/smeeting-swift-sdk.git`
 + 在目标 Target 中勾选 `SMeeting`
 
 ---
@@ -71,7 +59,7 @@ targets: [
 import SMeeting
 ```
 
-会议相关的类型（`SMeeting`、`MeetingCreateReq`、`MeetingUserInfo`、`SMeetingDelegate` 等）都在 `SMeeting` 模块里。
+会议相关的类型（`SMeetingEngine`、`MeetingCreateReq`、`MeetingUserInfo`、`SMeetingDelegate` 等）都在 `SMeeting` 模块里。
 
 以下几类类型来自底层 SRTC 模块，用到时需要额外引入：
 

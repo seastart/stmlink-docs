@@ -1,9 +1,9 @@
 ---
-title: "SRTC"
+title: "SRTCEngine"
 description: "Swift 音视频 SDK 的主入口：加入频道、创建本地轨道、配置日志与音频处理器"
 ---
 
-`SRTC` 是 Swift SDK 的主入口，负责加入频道、离开频道、创建本地轨道以及配置日志和音频处理器。
+`SRTCEngine` 是 Swift SDK 的主入口，负责加入频道、离开频道、创建本地轨道以及配置日志和音频处理器。
 
 ---
 
@@ -14,7 +14,7 @@ description: "Swift 音视频 SDK 的主入口：加入频道、创建本地轨�
 创建一个 SDK 实例，并完成底层 WebRTC 初始化。
 
 ```swift
-let srtc = SRTC()
+let srtc = SRTCEngine()
 ```
 
 ---

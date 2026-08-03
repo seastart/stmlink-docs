@@ -5,7 +5,7 @@ description: "SMeeting Swift SDK 中摄像头、麦克风、扬声器的枚举�
 
 ### 概述
 
-外设相关的接口都挂在 `SMeeting` 上，你不需要自己去处理 iOS 与 macOS 的平台差异：
+外设相关的接口都挂在 `SMeetingEngine` 上，你不需要自己去处理 iOS 与 macOS 的平台差异：
 
 | 能力 | 接口 | 平台 |
 | --- | --- | --- |
@@ -104,11 +104,11 @@ iOS 上蓝牙、AirPlay 等具体输出路由由用户通过系统控制中心�
 设备变化通过 `SMeetingDelegate` 上报：
 
 ```swift
-func meeting(_ meeting: SMeeting, didAddDevice data: DeviceChangeEventData) {
+func meeting(_ meeting: SMeetingEngine, didAddDevice data: DeviceChangeEventData) {
     refreshDeviceList()
 }
 
-func meeting(_ meeting: SMeeting, didRemoveDevice data: DeviceChangeEventData) {
+func meeting(_ meeting: SMeetingEngine, didRemoveDevice data: DeviceChangeEventData) {
     refreshDeviceList()
 }
 ```

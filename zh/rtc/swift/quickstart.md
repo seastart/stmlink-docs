@@ -1,6 +1,6 @@
 ---
 title: "快速开始"
-description: "基于 rtc-swift Demo 整理的 SRTC Swift SDK 最小可运行接入流程"
+description: "SRTC Swift SDK 最小可运行接入流程：初始化、入会、发布本地音视频、订阅远端"
 ---
 
 ### 前提条件
@@ -9,7 +9,7 @@ description: "基于 rtc-swift Demo 整理的 SRTC Swift SDK 最小可运行接�
 + 服务端可以签发加入频道的 Token
 + 应用已经申请摄像头和麦克风权限
 
-如果你使用 `rtc-swift` 仓库自带 Demo，Token 获取逻辑可参考 `Example/SRTCDemo/Sources/DemoApi.swift`，默认会调用 `/demo/token` 等演示接口。
+Token 必须由你的业务后端签发，客户端不参与签名。签发方式见 [Token 与鉴权](/zh/rtc/token)。
 
 ---
 
@@ -26,7 +26,7 @@ final class RoomViewModel: ObservableObject, ChannelDelegate {
     @Published var localTrack: LocalCameraTrack?
     @Published var remoteTrack: Track?
 
-    private let srtc = SRTC()
+    private let srtc = SRTCEngine()
     private var channel: Channel?
     private var micTrack: LocalMicTrack?
 
@@ -108,9 +108,9 @@ struct RoomView: View {
 
 ### 接入流程说明
 
-#### 1. 初始化 `SRTC`
+#### 1. 初始化 `SRTCEngine`
 
-`SRTC` 是整个 SDK 的主入口，负责：
+`SRTCEngine` 是整个 SDK 的主入口，负责：
 
 + 创建本地轨道
 + 解析 Token 并加入频道
@@ -155,5 +155,5 @@ let channel = try await srtc.joinChannel(
 + [设备管理](/zh/rtc/swift/advanced/device-management)
 + [屏幕共享](/zh/rtc/swift/advanced/screen-sharing)
 + [自定义推流](/zh/rtc/swift/advanced/custom-track)
-+ [接口文档 - SRTC](/zh/rtc/swift/api-reference/SRTC)
++ [接口文档 - SRTCEngine](/zh/rtc/swift/api-reference/SRTCEngine)
 + [接口文档 - Channel 与 Track](/zh/rtc/swift/api-reference/media-tracks)

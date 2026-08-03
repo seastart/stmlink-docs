@@ -40,7 +40,7 @@ if let screenTrack = meeting.screenTrack {
 }
 ```
 
-> `SMeeting` 不是 `ObservableObject`，`cameraTrack` / `screenTrack` 从 `nil` 变成有值不会自己触发 SwiftUI 刷新。请在自己的 `@Published` 状态里记一个「摄像头已开」标记，由它驱动视图更新。
+> `SMeetingEngine` 不是 `ObservableObject`，`cameraTrack` / `screenTrack` 从 `nil` 变成有值不会自己触发 SwiftUI 刷新。请在自己的 `@Published` 状态里记一个「摄像头已开」标记，由它驱动视图更新。
 
 #### UIKit / AppKit
 

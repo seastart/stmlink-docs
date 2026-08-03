@@ -116,7 +116,7 @@
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS）
 
 - [集成方式](https://docs.stmlink.com/zh/rtc/swift/integration.md): SRTC Swift SDK 的环境要求、Swift Package Manager 集成方式与权限配置
-- [快速开始](https://docs.stmlink.com/zh/rtc/swift/quickstart.md): 基于 rtc-swift Demo 整理的 SRTC Swift SDK 最小可运行接入流程
+- [快速开始](https://docs.stmlink.com/zh/rtc/swift/quickstart.md): SRTC Swift SDK 最小可运行接入流程：初始化、入会、发布本地音视频、订阅远端
 - [核心概念](https://docs.stmlink.com/zh/rtc/swift/key-concepts.md): 理解 SRTC Swift SDK 中 SRTC、Channel、Track、渲染器与设备管理的关系
 - [事件参考](https://docs.stmlink.com/zh/rtc/swift/events.md): SRTC Swift SDK 中 ChannelDelegate 与 TrackDelegate 的事件列表
 - [类型定义](https://docs.stmlink.com/zh/rtc/swift/types.md): SRTC Swift SDK 常用结构体、枚举、预设与设备类型说明
@@ -131,7 +131,7 @@
 
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS） · 接口文档
 
-- [SRTC](https://docs.stmlink.com/zh/rtc/swift/api-reference/SRTC.md): Swift 音视频 SDK 的主入口：加入频道、创建本地轨道、配置日志与音频处理器
+- [SRTCEngine](https://docs.stmlink.com/zh/rtc/swift/api-reference/SRTCEngine.md): Swift 音视频 SDK 的主入口：加入频道、创建本地轨道、配置日志与音频处理器
 - [Channel 与 Track](https://docs.stmlink.com/zh/rtc/swift/api-reference/media-tracks.md): Channel 会话对象与本地/远端轨道类：发布、订阅、渲染与采集控制
 
 ## SRTC 音视频 SDK · iOS SDK
@@ -311,7 +311,7 @@
 
 ## SMeeting 会议 SDK · Swift SDK（iOS/macOS） · 接口文档
 
-- [SMeeting](https://docs.stmlink.com/zh/meeting/swift/api-reference/SMeeting.md): SMeeting Swift SDK 主入口类接口参考：初始化、登录、会议管理、进出会议、状态查询与会中用户操作
+- [SMeetingEngine](https://docs.stmlink.com/zh/meeting/swift/api-reference/SMeetingEngine.md): SMeeting Swift SDK 主入口类接口参考：初始化、登录、会议管理、进出会议、状态查询与会中用户操作
 - [媒体控制](https://docs.stmlink.com/zh/meeting/swift/api-reference/media-control.md): SMeeting Swift SDK 媒体控制接口参考：摄像头、麦克风、屏幕共享、远端订阅与播放
 - [外设](https://docs.stmlink.com/zh/meeting/swift/api-reference/devices.md): SMeeting Swift SDK 外设接口参考：设备枚举、麦克风切换与音频输出控制
 - [会议管理](https://docs.stmlink.com/zh/meeting/swift/api-reference/admin-actions.md): SMeeting Swift SDK 管理类接口参考：房间管控、成员管理、等候室、分组讨论、录制、资源与签到

@@ -31,7 +31,7 @@ try await meeting.cancelHandup(.mic)
 ### 主持人收到举手
 
 ```swift
-func meeting(_ meeting: SMeeting, userDidHandup data: UserHandupEventData) {
+func meeting(_ meeting: SMeetingEngine, userDidHandup data: UserHandupEventData) {
     // data.uid  举手的成员
     // data.type 举手类型
     // data.step 动作步骤
@@ -60,7 +60,7 @@ try await meeting.adminConfirmHandup(targetId: data.uid, approve: true, code: .m
 审批结果会通过事件下发给相关成员：
 
 ```swift
-func meeting(_ meeting: SMeeting, adminDidConfirmHandup data: AdminConfirmHandupEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidConfirmHandup data: AdminConfirmHandupEventData) {
     // data.targetId 被审批的成员
     // data.approve  是否同意
     // data.type     举手类型
@@ -82,11 +82,11 @@ try await meeting.adminRequestUserOpenCamera(targetId: user.uid)
 成员端收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, adminDidRequestOpenMic data: AdminRequestOpenMicEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidRequestOpenMic data: AdminRequestOpenMicEventData) {
     // data.opUid 发起邀请的主持人
 }
 
-func meeting(_ meeting: SMeeting, adminDidRequestOpenCamera data: AdminRequestOpenCameraEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidRequestOpenCamera data: AdminRequestOpenCameraEventData) {
     // data.opUid
 }
 ```
@@ -126,7 +126,7 @@ try await meeting.adminCloseUserCamera(targetId: user.uid)
 
 ```swift
 // 成员端
-func meeting(_ meeting: SMeeting, adminDidRequestOpenMic data: AdminRequestOpenMicEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidRequestOpenMic data: AdminRequestOpenMicEventData) {
     Task { @MainActor in
         showConfirmDialog(
             title: "主持人邀请你开麦",

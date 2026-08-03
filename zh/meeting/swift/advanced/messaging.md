@@ -38,7 +38,7 @@ try await meeting.sendRoomChatMessage(imageURL, type: .pic)
 ### 接收聊天消息
 
 ```swift
-func meeting(_ meeting: SMeeting, didReceiveChatMessage data: RoomChatMsgEventData) {
+func meeting(_ meeting: SMeetingEngine, didReceiveChatMessage data: RoomChatMsgEventData) {
     // data.msgType 消息类型
     // data.msg     消息内容
     // data.uid     发送者（可能为 nil）
@@ -74,7 +74,7 @@ try await meeting.sendRoomCustomMessage(json)
 接收：
 
 ```swift
-func meeting(_ meeting: SMeeting, didReceiveCustomMessage data: RoomCustomMsgEventData) {
+func meeting(_ meeting: SMeetingEngine, didReceiveCustomMessage data: RoomCustomMsgEventData) {
     guard let json = data.msg.data(using: .utf8),
           let payload = try? JSONDecoder().decode(VotePayload.self, from: json) else { return }
     // 处理业务信令
@@ -98,7 +98,7 @@ try await meeting.adminUpdateRoomChatDisabled(true)
 当前状态读 `RoomInfo.chatDisabled`，变化时收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, roomChatDisabledDidChange data: RoomChatDisabledChangeEventData) {
+func meeting(_ meeting: SMeetingEngine, roomChatDisabledDidChange data: RoomChatDisabledChangeEventData) {
     // data.chatDisabled、data.opUid
 }
 ```
@@ -112,7 +112,7 @@ try await meeting.adminUpdateUserChatDisabled(targetId: user.uid, chatDisabled: 
 当前状态读 `MeetingUserInfo.chatDisabled`，变化时收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, userChatDisabledDidChange data: UserChatDisabledChangeEventData) {
+func meeting(_ meeting: SMeetingEngine, userChatDisabledDidChange data: UserChatDisabledChangeEventData) {
     // data.uid、data.chatDisabled、data.opUid
 }
 ```

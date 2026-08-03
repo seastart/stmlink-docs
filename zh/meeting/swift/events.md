@@ -9,11 +9,11 @@ description: "SMeeting Swift SDK 中 SMeetingDelegate 的全部事件、触发�
 
 ```swift
 final class MeetingController: SMeetingDelegate {
-    init(meeting: SMeeting) {
+    init(meeting: SMeetingEngine) {
         meeting.delegates.add(delegate: self)
     }
 
-    func meeting(_ meeting: SMeeting, userDidEnter user: MeetingUserInfo) {
+    func meeting(_ meeting: SMeetingEngine, userDidEnter user: MeetingUserInfo) {
         print("成员进入:", user.name)
     }
 }
@@ -30,7 +30,7 @@ final class MeetingController: SMeetingDelegate {
 
 ```swift
 extension MeetingController: SMeetingDelegate {
-    nonisolated func meeting(_ meeting: SMeeting, userDidExit data: UserExitEventData) {
+    nonisolated func meeting(_ meeting: SMeetingEngine, userDidExit data: UserExitEventData) {
         DispatchQueue.main.async { self.users = meeting.getUsersInfoList() }
     }
 }
