@@ -127,7 +127,8 @@
                   {
                     "group": "进阶实践",
                     "pages": [
-                      "zh/rtc/android/advanced/audio-routing"
+                      "zh/rtc/android/advanced/audio-routing",
+                      "zh/rtc/android/advanced/custom-track"
                     ]
                   },
                   {
@@ -137,7 +138,6 @@
                       "zh/rtc/android/api-reference/LocalCameraTrack",
                       "zh/rtc/android/api-reference/LocalScreenTrack",
                       "zh/rtc/android/api-reference/LocalMicTrack",
-                      "zh/rtc/android/api-reference/CustomVideoTrack",
                       "zh/rtc/android/api-reference/LocalCustomVideoTrack",
                       "zh/rtc/android/api-reference/RemoteVideoTrack",
                       "zh/rtc/android/api-reference/RemoteAudioMixTrack",

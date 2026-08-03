@@ -7,15 +7,9 @@ description: "Android SRTC 音视频 SDK LocalCustomVideoTrack 接口参考"
 
 `LocalCustomVideoTrack` 用于向已发布的轨道推送外部**原始 YUV 视频帧**（如白板、画布、播放器画面、第三方采集源），通过 [`RTCEngine.getLocalCustomVideoTrack`](/zh/rtc/android/api-reference/RTCEngine) 获取。它继承自 `LocalVideoTrack`，可直接作为 `publishLocalVideo` / `unPublishLocalVideo` 的输入轨道。
 
-与 [`CustomVideoTrack`](/zh/rtc/android/api-reference/CustomVideoTrack) 的区别（两者是不同的类，方法同名但语义不同，切勿混用）：
+本页为接口参考；完整接入流程、帧格式转换与排查建议见 [自定义推流](/zh/rtc/android/advanced/custom-track)。
 
-| 对比项 | LocalCustomVideoTrack | CustomVideoTrack |
-| --- | --- | --- |
-| 输入数据 | 原始 YUV（I420）未编码帧 | 已编码码流（H264/H265） |
-| 获取方式 | `getLocalCustomVideoTrack(preOpt)` | `getCustomVideoTrack()` |
-| 开始/停止推流 | `publishLocalVideo` / `unPublishLocalVideo` | `startCustomVideo` / `stopCustomVideo` |
-| 送帧方法 | `inputData(yuv, width, height, strideY, strideU, strideV, rotation, stamp)` | `inputData(stamp, data, angle)` |
-| 编码 | 由 SDK 完成（按预设参数） | 由业务侧自行完成 |
+输入的是**未编码**的原始 YUV（I420）帧，编码由 SDK 按预设参数完成，业务侧无需自行编码。
 
 > ⚠️ **引擎限制**：本轨道的帧输入仅在风远（`StreamVendor.FY`）与网宿（`StreamVendor.WS`）流媒体引擎下生效；网仕（`StreamVendor.OOK`）引擎下调用 `inputData` 不会产生任何效果，帧被直接丢弃，也不会有错误回调。引擎由服务端下发决定，枚举值参见 [枚举定义](/zh/rtc/android/enums)。
 

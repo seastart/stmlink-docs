@@ -58,3 +58,4 @@ publish: desc="screen"(TRACK_SHARE), codec=H264, maxBitrate=1024*1024,
 - 送帧分辨率与 `publish.width` / `publish.height` 保持一致，避免额外缩放开销；帧率不要超过 `maxFps`。
 - 需要以“共享”身份出现在远端时用 `PreOptionCustomVideo.screen`，或在 `publishLocalVideo` 时通过 `PublishCustomOptions(desc = TrackDesc.TRACK_SHARE.value)` 覆盖 `desc`。
 - 轨道实例在 SDK 内按单例缓存，重复获取会用新的 `preOpt` 覆盖旧值，切换预设后需重新发布。
+- 完整推流流程见 [自定义推流](/zh/rtc/android/advanced/custom-track)。

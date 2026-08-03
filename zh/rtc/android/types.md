@@ -84,22 +84,6 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | uid | String | 用户 UID。 |
 | db | Int | 音频能量（分贝）。 |
 
-## CustomVideoOptions
-
-作用说明：自定义编码视频流参数，用于描述外部输入视频流的编码信息与媒体属性。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| id | String | 流 ID。 |
-| codec | CodecType? | 编码格式。 |
-| width | Int? | 视频宽度。 |
-| height | Int? | 视频高度。 |
-| maxFps | Int? | 最大帧率。 |
-| angle | Int? | 视频角度。 |
-| maxBitrate | Int? | 最大码率。 |
-| track | Int? | 流媒体轨道号（`0~6`）。 |
-| props | JsonElement? | 自定义属性。 |
-
 ## ActiveSpeakerInfo
 
 作用说明：活跃说话人信息，由 [`RTCMediaEvent.onActiveSpeakersChanged`](/zh/rtc/android/api-reference/RTCMediaEvent) 回调。

@@ -279,14 +279,6 @@ fun getLocalMicTrack(preOpt: PreOptionMic = PreOptionMic.def): LocalMicTrack
 
 返回值说明：`LocalMicTrack`，本地麦克风轨道实例。
 
-### getCustomVideoTrack()
-```kotlin
-fun getCustomVideoTrack(): CustomVideoTrack?
-```
-方法说明：获取自定义编码视频轨道控制器（用于推送外部已编码码流）。频道未启动时返回 `null`。  
-参数说明：无。  
-返回值说明：`CustomVideoTrack?`，可能为 `null`。参见 [CustomVideoTrack](/zh/rtc/android/api-reference/CustomVideoTrack)。
-
 ### getLocalCustomVideoTrack(preOpt)
 ```kotlin
 fun getLocalCustomVideoTrack(preOpt: PreOptionCustomVideo = PreOptionCustomVideo.def): LocalCustomVideoTrack
@@ -297,7 +289,7 @@ fun getLocalCustomVideoTrack(preOpt: PreOptionCustomVideo = PreOptionCustomVideo
 
 返回值说明：`LocalCustomVideoTrack`，本地自定义视频轨道实例。参见 [LocalCustomVideoTrack](/zh/rtc/android/api-reference/LocalCustomVideoTrack)。
 
-> 与 `getCustomVideoTrack()` 的区别：本接口用于推**未编码**的 YUV 帧，走 `publishLocalVideo` / `unPublishLocalVideo` 发布；`getCustomVideoTrack()` 用于推**已编码**码流，走 `startCustomVideo` / `stopCustomVideo`。另外本轨道的帧输入仅在风远（`FY`）与网宿（`WS`）引擎下生效。
+> 帧输入仅在风远（`FY`）与网宿（`WS`）流媒体引擎下生效；完整接入流程见 [自定义推流](/zh/rtc/android/advanced/custom-track)。
 
 ### getRemoteVideoTrack(uid, trackDesc)
 ```kotlin

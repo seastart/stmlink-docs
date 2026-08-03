@@ -5,9 +5,9 @@ description: "推送外部已编码视频数据（H264 / H265）的自定义轨�
 
 ## 说明
 
-`CustomVideoTrack` 用于推送外部**已编码**视频数据（如 H264/H265），通过 [`RTCEngine.getCustomVideoTrack`](/zh/rtc/android/api-reference/RTCEngine) 获取。
+> ⚠️ **本页为存量能力，不在侧边栏展示，新接入请勿使用。** `CustomVideoTrack` 仅服务于网仕（`StreamVendor.OOK`）引擎下的历史接入方。自定义推流请统一使用 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack)（推送未编码的原始 YUV 帧，编码由 SDK 完成），接入流程见 [自定义推流](/zh/rtc/android/advanced/custom-track)。
 
-> ⚠️ **不要与 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack) 混用**：后者通过 `getLocalCustomVideoTrack(preOpt)` 获取，推送的是**未编码的原始 YUV 帧**，并且走 `publishLocalVideo` / `unPublishLocalVideo` 发布。两者都有 `inputData`，但参数与语义完全不同：本类是 `inputData(stamp, data, angle)`，`LocalCustomVideoTrack` 是 `inputData(yuv, width, height, strideY, strideU, strideV, rotation, stamp)`。若外部数据尚未编码，请使用 `LocalCustomVideoTrack`。
+`CustomVideoTrack` 用于推送外部**已编码**视频数据（如 H264/H265），通过 `RTCEngine.getCustomVideoTrack()` 获取（该方法不在 `RTCEngine` 接口文档中列出），频道未启动时返回 `null`。
 
 ## CustomVideoTrack 自身方法
 
