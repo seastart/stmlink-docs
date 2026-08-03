@@ -289,8 +289,6 @@ fun getLocalCustomVideoTrack(preOpt: PreOptionCustomVideo = PreOptionCustomVideo
 
 返回值说明：`LocalCustomVideoTrack`，本地自定义视频轨道实例。参见 [LocalCustomVideoTrack](/zh/rtc/android/api-reference/LocalCustomVideoTrack)。
 
-> 帧输入仅在风远（`FY`）与网宿（`WS`）流媒体引擎下生效；完整接入流程见 [自定义推流](/zh/rtc/android/advanced/custom-track)。
-
 ### getRemoteVideoTrack(uid, trackDesc)
 ```kotlin
 fun getRemoteVideoTrack(uid: String, trackDesc: String): RemoteVideoTrack?
