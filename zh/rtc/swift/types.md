@@ -102,6 +102,21 @@ let options = JoinOptions(
 
 ---
 
+### VideoRotation
+
+视频帧旋转方向，用于 `pushFrame(_:rotation:timestampNs:)` 与 `VideoFrame`。
+
+| 枚举值 | 原始值 | 说明 |
+| --- | --- | --- |
+| `_0` | `0` | 不旋转（默认） |
+| `_90` | `90` | 顺时针 90 度 |
+| `_180` | `180` | 180 度 |
+| `_270` | `270` | 顺时针 270 度 |
+
+原始值就是角度，与 Android 端 `inputData` 的 `rotation` 参数同一口径。
+
+---
+
 ### StreamVendor
 
 流媒体引擎供应商。

@@ -76,4 +76,4 @@ final class RoomController: ChannelDelegate {
 | `trackDidEnd(_:)` | 轨道结束 | `Track` |
 | `trackDidBindRtcTrack(_:)` | 底层 WebRTC 轨道已绑定 | `Track` |
 
-其中 `trackDidBindRtcTrack(_:)` 对视频渲染尤其有用，因为远端轨道对象可能先出现，底层 `rtcTrack` 稍后才真正绑定完成。
+其中 `trackDidBindRtcTrack(_:)` 对视频渲染尤其有用，因为远端轨道对象可能先出现，底层媒体轨道稍后才真正绑定完成 —— 收到这个事件才代表可以渲染。
