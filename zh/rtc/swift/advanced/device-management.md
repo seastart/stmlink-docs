@@ -149,7 +149,7 @@ Swift SDK 在内部已经处理了几类常见恢复逻辑：
 
 ### 业务层推荐写法
 
-可以参考 `rtc-swift` Demo 里的思路：
+推荐的做法是：
 
 + 页面初始化时调用 `refreshDeviceList()`
 + 保存当前选中的 `deviceId`

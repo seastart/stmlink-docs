@@ -45,14 +45,14 @@ let details = try await meeting.signInDetail(epoch: epoch, nickname: nil)
 #### 签到事件
 
 ```swift
-func meeting(_ meeting: SMeeting, signInActivity data: SignInActivityEventData) {
+func meeting(_ meeting: SMeetingEngine, signInActivity data: SignInActivityEventData) {
     // data.hostId / data.hostName 发起人
     // data.epoch  轮次
     // data.beginAt / data.dur / data.endAt 起止与时长
     // data.desc   签到说明
 }
 
-func meeting(_ meeting: SMeeting, signInDidFinish data: SignInFinishEventData) {
+func meeting(_ meeting: SMeetingEngine, signInDidFinish data: SignInFinishEventData) {
     // data.hostId / data.hostName / data.epoch
 }
 ```
@@ -66,7 +66,7 @@ func meeting(_ meeting: SMeeting, signInDidFinish data: SignInFinishEventData) {
 被点名时会收到事件：
 
 ```swift
-func meeting(_ meeting: SMeeting, rollCallNamed data: RollCallNamedEventData) {
+func meeting(_ meeting: SMeetingEngine, rollCallNamed data: RollCallNamedEventData) {
     // data.id   点名记录中对应本成员的标识，应答时原样回传
     // data.sid  发起本次点名的主持人 uid
     // data.time 服务端当前时间
@@ -76,7 +76,7 @@ func meeting(_ meeting: SMeeting, rollCallNamed data: RollCallNamedEventData) {
 应答时**直接把事件里的 `id` 传回去**：
 
 ```swift
-func meeting(_ meeting: SMeeting, rollCallNamed data: RollCallNamedEventData) {
+func meeting(_ meeting: SMeetingEngine, rollCallNamed data: RollCallNamedEventData) {
     Task {
         try await meeting.rollCallAnswer(rollCallUserId: data.id)
     }

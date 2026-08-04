@@ -3,7 +3,7 @@ title: "外设"
 description: "SMeeting Swift SDK 外设接口参考：设备枚举、麦克风切换与音频输出控制"
 ---
 
-本页接口都挂在 `SMeeting` 上，**不要求在会议中**，登录后即可调用。使用说明见 [外设管理](/zh/meeting/swift/advanced/device-management)。
+本页接口都挂在 `SMeetingEngine` 上，**不要求在会议中**，登录后即可调用。使用说明见 [外设管理](/zh/meeting/swift/advanced/device-management)。
 
 ---
 

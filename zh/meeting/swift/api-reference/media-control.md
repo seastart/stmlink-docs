@@ -3,7 +3,7 @@ title: "媒体控制"
 description: "SMeeting Swift SDK 媒体控制接口参考：摄像头、麦克风、屏幕共享、远端订阅与播放"
 ---
 
-本页接口都挂在 `SMeeting` 上。使用说明见 [媒体控制](/zh/meeting/swift/advanced/media-control) 与 [视频渲染](/zh/meeting/swift/advanced/video-rendering)。
+本页接口都挂在 `SMeetingEngine` 上。使用说明见 [媒体控制](/zh/meeting/swift/advanced/media-control) 与 [视频渲染](/zh/meeting/swift/advanced/video-rendering)。
 
 `NativeVideoView` 是 SDK 为渲染视图定义的别名，实际类型是 SRTC 的 `SRTCVideoRenderer`。
 

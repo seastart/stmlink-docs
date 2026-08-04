@@ -3,7 +3,7 @@ title: "会议管理"
 description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员管理、等候室、分组讨论、录制、资源与签到"
 ---
 
-本页接口都挂在 `SMeeting` 上。
+本页接口都挂在 `SMeetingEngine` 上。
 
 ---
 

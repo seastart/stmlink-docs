@@ -110,4 +110,4 @@ do {
 ### 相关页面
 
 + [核心概念](/zh/meeting/swift/key-concepts)
-+ [接口文档 - SMeeting](/zh/meeting/swift/api-reference/SMeeting)
++ [接口文档 - SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine)

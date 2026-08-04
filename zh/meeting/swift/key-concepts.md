@@ -7,7 +7,7 @@ description: "理解 SMeeting Swift SDK 中的会议生命周期、房间状态�
 
 SMeeting Swift SDK 的对象模型很集中：
 
-+ `SMeeting`：唯一对外类，登录、会议管理、进出会议、媒体控制、主持人操作都在它上面
++ `SMeetingEngine`：唯一对外类，登录、会议管理、进出会议、媒体控制、主持人操作都在它上面
 + `RoomInfo`：当前会议的房间级状态（标题、全体禁音禁画、锁定、共享状态等）
 + `MeetingUserInfo`：会中某个成员的状态（昵称、角色、麦克风、摄像头、共享）
 + `SMeetingDelegate`：所有会议事件的回调入口
@@ -191,7 +191,7 @@ final class MeetingController: ObservableObject {
 }
 
 extension MeetingController: SMeetingDelegate {
-    nonisolated func meeting(_ meeting: SMeeting, userDidEnter user: MeetingUserInfo) {
+    nonisolated func meeting(_ meeting: SMeetingEngine, userDidEnter user: MeetingUserInfo) {
         DispatchQueue.main.async { self.users = meeting.getUsersInfoList() }
     }
 }
@@ -217,7 +217,7 @@ extension MeetingController: SMeetingDelegate {
 meeting.srtc.logLevel = .debug
 ```
 
-> 请始终使用 `meeting.srtc`，不要自行另建一个 SRTC 实例：会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
+> 请始终使用 `meeting.srtc`，不要自行另建一个 SRTCEngine 实例：会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
 
 ---
 

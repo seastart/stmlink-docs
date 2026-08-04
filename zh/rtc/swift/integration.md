@@ -16,43 +16,36 @@ SRTC Swift SDK 是一套 `Swift Package` 形态的原生音视频 SDK，对外�
 **新项目建议用本章的 Swift SDK。** 两套 API 不能混用，也不要在同一工程里同时引入。
 </Note>
 
-如果你要直接运行仓库里的 Demo，请额外注意：
-
-+ `Example/SRTCDemo` 当前工程目标为 iOS 16.0 / macOS 13.0
-+ 这属于 Demo 工程要求，不是 SDK 最低运行要求
-
 ---
 
 ### 通过 Swift Package Manager 集成
 
-#### 本地路径引用
+SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、macOS 三个平台切片。
 
-适合和 `rtc-swift` 仓库放在同一工作区联调：
+#### 在 Package.swift 中声明
 
 ```swift
 // Package.swift
 dependencies: [
-    .package(path: "../rtc-swift")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.1.0")
 ],
 targets: [
     .target(
         name: "YourApp",
         dependencies: [
-            .product(name: "SRTC", package: "rtc-swift")
+            .product(name: "SRTC", package: "srtc-swift-sdk")
         ]
     )
 ]
 ```
 
-#### Xcode 中添加 Package
+#### 在 Xcode 中添加
 
 如果你使用 Xcode 工程而不是纯 SPM 工程：
 
 + 打开 `File > Add Package Dependencies...`
-+ 选择本地 `rtc-swift` 目录，或填写你们实际发布用的 Git 地址
++ 填入 `https://github.com/seastart/srtc-swift-sdk.git`
 + 在目标 Target 中勾选 `SRTC`
-
-> 如果后续会发布独立二进制仓库，请将这里的本地路径替换为你们正式的 Git 仓库地址。文档不预设一个尚未确认的线上仓库地址。
 
 ---
 
@@ -62,7 +55,7 @@ targets: [
 import SRTC
 ```
 
-SDK 依赖的 WebRTC 与 MQTT 组件会由 Swift Package Manager 自动解析，无需你手动再引入一层底层库。
+底层的 WebRTC 与 MQTT 组件由 Swift Package Manager 自动解析，你不需要手动再引入一层。
 
 ---
 

@@ -1,0 +1,17 @@
+---
+title: "更新日志"
+description: "Swift SRTC 音视频 SDK 版本更新记录"
+---
+
+### [1.1.0] - 2026.08.02
+#### 新增
++ 新增视频帧旋转枚举`VideoRotation`，取值`._0`/`._90`/`._180`/`._270`，原始值即角度。
+#### 变更
++ `LocalVideoTrack.pushFrame(_:rotation:timestampNs:)`与`VideoFrame.rotation`的类型由底层 WebRTC 类型改为`VideoRotation`；
++ `Track.rtcTrack`不再对外公开。需要感知轨道与底层媒体对象绑定完成时，改用`trackDidBindRtcTrack`事件；
++ 公开 API 不再出现任何底层 WebRTC 类型，接入方无需 import WebRTC 相关模块。
+
+### [1.0.0] - 2026.08.02
+#### 新增
++ 首个正式版本，以预编译 XCFramework 形式通过 Swift Package Manager 分发，包含 iOS 真机、iOS 模拟器、macOS 三个平台切片；
++ SDK 主入口类为`SRTCEngine`。

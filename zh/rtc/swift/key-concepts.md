@@ -7,7 +7,7 @@ description: "理解 SRTC Swift SDK 中 SRTC、Channel、Track、渲染器与设
 
 Swift SDK 的对象模型可以概括为：
 
-+ `SRTC`：SDK 主入口，负责入会和创建本地轨道
++ `SRTCEngine`：SDK 主入口，负责入会和创建本地轨道
 + `Channel`：一次真实的频道连接，负责发布、订阅、用户列表和事件分发
 + `Track`：音频或视频流的抽象对象
 + `ChannelDelegate` / `TrackDelegate`：事件回调入口
@@ -23,11 +23,11 @@ Swift SDK 也是围绕这三类状态来设计 API，所以理解这套模型之
 
 ---
 
-### SRTC 与 Channel
+### SRTCEngine 与 Channel
 
-#### `SRTC`
+#### `SRTCEngine`
 
-`SRTC` 更像一个“工厂 + 会话入口”，你通常用它来做两件事：
+`SRTCEngine` 更像一个“工厂 + 会话入口”，你通常用它来做两件事：
 
 + `joinChannel(token:options:)`
 + `createLocalMicTrack(...)` / `createLocalCameraTrack(...)` / `createLocalScreenTrack(...)`

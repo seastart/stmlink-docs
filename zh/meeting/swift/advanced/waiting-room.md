@@ -26,7 +26,7 @@ try await meeting.adminUpdateWaitingRoomDisabled(false)
 状态变化时所有成员收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, waitingRoomDisabledDidChange data: AdminUpdateWaitingRoomDisabledEventData) {
+func meeting(_ meeting: SMeetingEngine, waitingRoomDisabledDidChange data: AdminUpdateWaitingRoomDisabledEventData) {
     // data.waitingRoomDisabled、data.opUid
 }
 ```
@@ -44,11 +44,11 @@ let users = try await meeting.adminWaitingRoomUsers()
 有人进出等候室时会有事件通知，主持人可以据此增量刷新列表：
 
 ```swift
-func meeting(_ meeting: SMeeting, userDidEnterWaitingRoom data: UserEnterWaitingRoomEventData) {
+func meeting(_ meeting: SMeetingEngine, userDidEnterWaitingRoom data: UserEnterWaitingRoomEventData) {
     // data.uid、data.name、data.avatar
 }
 
-func meeting(_ meeting: SMeeting, userDidExitWaitingRoom data: UserExitWaitingRoomEventData) {
+func meeting(_ meeting: SMeetingEngine, userDidExitWaitingRoom data: UserExitWaitingRoomEventData) {
     // data.uid、data.name、data.avatar
 }
 ```
@@ -71,7 +71,7 @@ try await meeting.adminMoveInWaitingRoom(userId: uid, nickname: name)
 被移回等候室的成员会收到：
 
 ```swift
-func meetingDidMoveToWaitingRoom(_ meeting: SMeeting) {
+func meetingDidMoveToWaitingRoom(_ meeting: SMeetingEngine) {
     // 切换到等候界面
 }
 ```

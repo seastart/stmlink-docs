@@ -160,7 +160,7 @@ let detail = try await meeting.mcuRecordDetail(meetingId: meetingId)
 任务状态变化时，会中所有成员都会收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, roomMcuTask data: RoomMcuTaskEventData) {
+func meeting(_ meeting: SMeetingEngine, roomMcuTask data: RoomMcuTaskEventData) {
     // data.taskType   任务类型
     // data.taskStatus 任务状态
     // data.errDesc    异常描述

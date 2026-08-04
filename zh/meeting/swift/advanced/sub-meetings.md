@@ -52,7 +52,7 @@ try await meeting.adminStopSubMeeting(ids: [groupId1, groupId2])
 成员端收到对应事件后自行完成会议切换：
 
 ```swift
-func meeting(_ meeting: SMeeting, adminDidStartSubMeeting data: AdminStartSubMeetingEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidStartSubMeeting data: AdminStartSubMeetingEventData) {
     // data.meetingId 目标小组会议 ID
     // data.title     小组名称
     // data.uids      被分配到这个小组的成员
@@ -62,7 +62,7 @@ func meeting(_ meeting: SMeeting, adminDidStartSubMeeting data: AdminStartSubMee
     }
 }
 
-func meeting(_ meeting: SMeeting, adminDidStopSubMeeting data: AdminStopSubMeetingEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidStopSubMeeting data: AdminStopSubMeetingEventData) {
     // data.parent 主会议 ID，退出小组后回到主会场
     Task {
         await meeting.exitRoom()
@@ -84,7 +84,7 @@ try await meeting.adminMoveSubMeetingUser(fromId: groupA, toId: groupB, userId: 
 被移动的成员收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, adminDidMoveSubMeetingUser data: AdminMoveSubMeetingUserEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidMoveSubMeetingUser data: AdminMoveSubMeetingUserEventData) {
     // data.fromMeetingId / data.fromMeetingTitle
     // data.toMeetingId   / data.toMeetingTitle
 }
@@ -105,7 +105,7 @@ try await meeting.userHelpSubMeeting()
 主持人如果启用了会议外消息通道，会收到：
 
 ```swift
-func meeting(_ meeting: SMeeting, imUserHelpSubMeeting data: ImUserHelpSubMeetingEventData) {
+func meeting(_ meeting: SMeetingEngine, imUserHelpSubMeeting data: ImUserHelpSubMeetingEventData) {
     // data.base.uid / data.base.name 求助者
     // data.content.meetingId / data.content.title 小组
     // data.content.parent 主会议 ID

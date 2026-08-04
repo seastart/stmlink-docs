@@ -149,7 +149,6 @@ let screenTrack = channel.getRemoteTrackByDesc(uid: uid, desc: "screen")
 | `desc` | `String` | 轨道描述，如 `mic`、`screen`、`camera_big` |
 | `info` | `TrackInfo` | 当前轨道信息快照 |
 | `uid` | `String?` | 轨道所属用户 UID |
-| `rtcTrack` | `LKRTCMediaStreamTrack?` | 底层 WebRTC 轨道 |
 | `delegates` | `MulticastDelegate<TrackDelegate>` | 轨道级事件回调 |
 
 通用方法：

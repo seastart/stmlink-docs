@@ -117,7 +117,7 @@ let canUnmuteSelf = !(info?.micDisabled == true && info?.selfUnmuteMicDisabled =
 主持人可以邀请某位成员开麦或开摄像头，成员端会收到事件：
 
 ```swift
-func meeting(_ meeting: SMeeting, adminDidRequestOpenMic data: AdminRequestOpenMicEventData) {
+func meeting(_ meeting: SMeetingEngine, adminDidRequestOpenMic data: AdminRequestOpenMicEventData) {
     // data.opUid 是发起邀请的主持人
 }
 ```

@@ -213,13 +213,14 @@
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/rtc/swift/api-reference/SRTC",
+                      "zh/rtc/swift/api-reference/SRTCEngine",
                       "zh/rtc/swift/api-reference/media-tracks"
                     ]
                   },
                   "zh/rtc/swift/events",
                   "zh/rtc/swift/types",
-                  "zh/rtc/swift/error-codes"
+                  "zh/rtc/swift/error-codes",
+                  "zh/rtc/swift/changelog"
                 ]
               },
               {
@@ -444,7 +445,7 @@
                   {
                     "group": "接口文档",
                     "pages": [
-                      "zh/meeting/swift/api-reference/SMeeting",
+                      "zh/meeting/swift/api-reference/SMeetingEngine",
                       "zh/meeting/swift/api-reference/media-control",
                       "zh/meeting/swift/api-reference/devices",
                       "zh/meeting/swift/api-reference/admin-actions",
@@ -453,7 +454,8 @@
                   },
                   "zh/meeting/swift/events",
                   "zh/meeting/swift/types",
-                  "zh/meeting/swift/error-codes"
+                  "zh/meeting/swift/error-codes",
+                  "zh/meeting/swift/changelog"
                 ]
               },
               {
@@ -511,6 +513,14 @@
     ]
   },
   "redirects": [
+    {
+      "source": "/zh/rtc/swift/api-reference/SRTC",
+      "destination": "/zh/rtc/swift/api-reference/SRTCEngine"
+    },
+    {
+      "source": "/zh/meeting/swift/api-reference/SMeeting",
+      "destination": "/zh/meeting/swift/api-reference/SMeetingEngine"
+    },
     {
       "source": "/zh/rtc/server-api/api-list",
       "destination": "/zh/rtc/server-api/channel"

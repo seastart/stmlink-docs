@@ -35,7 +35,7 @@ macOS 下，业务层需要先枚举采集源，再把用户选中的源传给 S
 import SRTC
 
 @available(macOS 12.3, *)
-func startScreenShare(srtc: SRTC, channel: Channel) async throws {
+func startScreenShare(srtc: SRTCEngine, channel: Channel) async throws {
     let displays = try await ScreenCaptureSources.availableDisplays()
     let windows = try await ScreenCaptureSources.availableWindows()
 
