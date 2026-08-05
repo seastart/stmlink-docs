@@ -33,6 +33,7 @@
 
 ## SRTC 音视频 SDK · Web SDK · 进阶实践
 
+- [多频道](https://docs.stmlink.com/zh/rtc/web/advanced/multi-channel.md): 同时加入多个频道：join 返回的 Channel 对象怎么用、事件如何按频道隔离、一条采集轨发布到多个频道时如何查询各频道内的轨道信息
 - [静音与停止发布](https://docs.stmlink.com/zh/rtc/web/advanced/mute-vs-unpublish.md): 轻操作（静音）与重操作（停止发布）的区别与使用场景
 - [大小流与分辨率](https://docs.stmlink.com/zh/rtc/web/advanced/video-stream-layers.md): Web SRTC 音视频 SDK 中摄像头分辨率、大小流与 simulcast 的使用说明
 - [屏幕共享](https://docs.stmlink.com/zh/rtc/web/advanced/screen-sharing.md): Web SRTC 音视频 SDK 屏幕共享功能集成指南

@@ -7,9 +7,8 @@ description: "Web SRTC 音视频 SDK 核心概念与架构说明"
 
 通过 `new SRTC(initParams)` 创建实例，绝大多数操作都通过该实例对外提供。
 
-+ 每个实例对应一个频道连接
-+ 若需同时加入多个频道，需创建多个实例
-+ 所有频道内事件通过 `srtc.onNotifyChannelEvent` 回调通知
++ 一个实例可多次 `join` 同时加入多个频道，每次 `join` 返回该频道的 Channel 对象
++ 频道内事件通过 `srtc.onNotifyChannelEvent` 回调通知；多频道时用各频道的 `channel.onNotifyEvent` 区分，详见[多频道](/zh/rtc/web/advanced/multi-channel)
 
 ```typescript
 import SRTC, { LogLevel, LogTarget } from '@seastart/srtc-web-sdk';
@@ -29,10 +28,12 @@ const srtc = new SRTC({
 **Token** 是加入频道的凭证，由你的服务端通过 StmLink 服务端 API 签发，携带了频道名、用户 ID、权限等信息。每次加入频道都需要传入有效的 Token。
 
 ```typescript
-// 从后台获取 token 后调用 join
-const channelInfo = await srtc.join(token);
-console.log(channelInfo.channel); // 频道名
+// 从后台获取 token 后调用 join，返回 Channel 对象
+const channel = await srtc.join(token);
+console.log(channel.getInfo().channel); // 频道名
 ```
+
+`join` 返回的 **Channel 对象**上可以直接进行发布、订阅、离会等频道级操作。单频道应用无需关心它——`srtc` 实例保留了全部频道级方法（内部作用于当前频道）；需要同时加入多个频道时才需要用它区分操作目标，详见[多频道](/zh/rtc/web/advanced/multi-channel)。
 
 加入后可随时通过以下方法获取频道和用户信息：
 

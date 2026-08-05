@@ -108,8 +108,8 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 
 // token 由你的后台服务签发
 const token = '从服务端获取的加入频道 token';
-const channelInfo = await srtc.join(token);
-console.log('已加入频道', channelInfo.channel);
+const channel = await srtc.join(token);
+console.log('已加入频道', channel.getInfo().channel);
 
 // ─── 5. 订阅全频道混音（收听远端声音）────────────────────────────────────────
 

@@ -5,6 +5,8 @@ description: "Web 音视频 SDK 的核心入口类：加入与离开频道、设
 
 SRTC 是 Web SDK 的核心入口，通过 `new SRTC(initParams)` 创建实例。
 
+本页中的频道级方法（发布、订阅、成员查询、`leave` 等）与 `join` 返回的 Channel 对象上的同名方法**等价**，作用于当前（默认）频道；同时加入多个频道时改用各 Channel 对象调用以区分操作目标，详见[多频道](/zh/rtc/web/advanced/multi-channel)。
+
 ---
 
 ### constructor
@@ -65,16 +67,20 @@ onNotifyImEvent?: ((event: ImEvent) => void) | null
 
 ### join
 
-加入频道。
+加入频道，返回该频道的 **Channel 对象**。频道信息通过 `channel.getInfo()` 获取。
 
 ```typescript
-join(token: string, options?: JoinOptions): Promise<ChannelInfo>
+join(token: string, options?: JoinOptions): Promise<Channel>
 ```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `token` | `string` | 是 | 服务端签发的加入频道 Token |
 | `options` | `JoinOptions` | 否 | 加入选项，详见 [JoinOptions](/zh/rtc/web/types#joinoptions) |
+
+可多次调用同时加入多个频道；单频道应用可忽略返回值，继续使用 `srtc` 实例上的频道级方法（作用于当前频道）。Channel 对象的方法与多频道用法详见[多频道](/zh/rtc/web/advanced/multi-channel)。
+
+> 从旧版本迁移：`join` 原先返回 `ChannelInfo`，现改为返回 Channel 对象，原返回值等价于 `(await srtc.join(token)).getInfo()`。
 
 ---
 
@@ -85,6 +91,8 @@ join(token: string, options?: JoinOptions): Promise<ChannelInfo>
 ```typescript
 leave(): Promise<void>
 ```
+
+多频道时作用于最早加入的频道，等价于该频道的 `channel.leave()`；退某个特定频道请直接调用其 Channel 对象的 `leave()`。
 
 ---
 
@@ -269,13 +277,15 @@ createLocalCompositeRecorder(): LocalCompositeRecorder
 publishLocalTrack(
   track: LocalAudioTrack | LocalVideoTrack,
   opt?: Partial<AudioPublishOptions> | Partial<VideoPublishOptions>
-): Promise<void>
+): Promise<TrackInfo>
 ```
 
 | 参数 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `track` | `LocalAudioTrack \| LocalVideoTrack` | 是 | 要发布的本地轨道 |
 | `opt` | `Partial<AudioPublishOptions> \| Partial<VideoPublishOptions>` | 否 | 发布参数，会与创建轨道时的预设参数合并 |
+
+**返回值：** `TrackInfo`，本次发布在频道内的轨道描述快照；后续要拿最新值请用 `channel.getPublishInfo(track)`。
 
 ---
 
@@ -424,3 +434,17 @@ enableIm(token: string): Promise<string>
 ```typescript
 disableIm(): Promise<void>
 ```
+
+---
+
+### destroy
+
+彻底释放 SRTC 实例：依次离开所有频道、关闭 IM，并解除实例在浏览器全局对象上注册的监听（设备插拔、页面可见性）。幂等，重复调用直接返回；调用后再使用该实例的方法会抛错。
+
+```typescript
+destroy(): Promise<void>
+```
+
+不调用 `destroy()` 时，全局监听会一直持有实例引用、使其无法被回收。因此在 SPA 路由切走音视频页面、组件卸载、或重建新 SRTC 实例之前**必须调用**；实例与页面同生命周期的应用可以不调。
+
+日常进出频道用 `leave()`（或 `channel.leave()`）即可，实例可复用继续 `join`。

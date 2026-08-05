@@ -96,14 +96,16 @@ Token 由服务端签发，有效期较短（通常几分钟到几小时不等�
 
 ### 如何同时加入多个频道？
 
-每个 `SRTC` 实例对应一个频道连接。需要同时加入多个频道时，创建多个实例：
+一个 `SRTC` 实例多次 `join` 即可，每次 `join` 返回该频道的 Channel 对象，各频道独立操作：
 
 ```typescript
-const srtc1 = new SRTC();
-const srtc2 = new SRTC();
+const channel1 = await srtc.join(token1);
+const channel2 = await srtc.join(token2);
 
-await srtc1.join(token1);
-await srtc2.join(token2);
+await channel1.publishLocalTrack(track);
+await channel2.leave(); // 退出频道 2，不影响频道 1
 ```
 
-注意：多实例会占用更多带宽和系统资源，请谨慎使用。
+事件隔离、一条采集轨发布到多个频道等用法详见[多频道](/zh/rtc/web/advanced/multi-channel)。
+
+注意：多频道并行会占用更多带宽和系统资源，请按需使用。

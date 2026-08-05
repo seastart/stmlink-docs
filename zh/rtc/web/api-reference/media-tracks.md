@@ -58,6 +58,8 @@ getInfo(): TrackInfo
 
 **返回值：** `TrackInfo`，详见 [类型定义](/zh/rtc/web/types#trackinfo)
 
+> 本地轨道同时发布到多个频道时，同一条轨在每个频道内有各自独立的轨道信息，此时 `getInfo()` 会抛错，请改用 `channel.getPublishInfo(track)` 查询指定频道内的轨道信息，详见[多频道](/zh/rtc/web/advanced/multi-channel)。
+
 #### getUid
 
 获取轨道所属用户的 UID。
