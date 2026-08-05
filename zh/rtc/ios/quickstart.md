@@ -67,9 +67,10 @@ if (errorCode != RTCEngineErrorOK) {
 
 ```objectivec
 /// 开始重连回调
-- (void)onReconnecting {
+/// @param channel 频道名称
+- (void)onReconnecting:(nullable NSString *)channel {
     
-    NSLog(@"连接已经断开，组件开始尝试重连。");
+    NSLog(@"连接已经断开，组件开始尝试重连 channel = %@", channel);
 }
 ```
 
@@ -88,12 +89,13 @@ if (errorCode != RTCEngineErrorOK) {
 ```objectivec
 /// 连接断开回调
 /// 发生不可恢复的错误或者被动离开频道，这个事件触发需要重新获取令牌
+/// @param channel 频道名称
 /// @param reason 离开原因
 /// @param errCode 错误码
 /// @param errMsg 错误信息
-- (void)onDisconnected:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg {
+- (void)onDisconnected:(nullable NSString *)channel reason:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg {
     
-    NSLog(@"当前连接断开或被动离开频道，请重新登录 reason = %ld, errCode = %ld, errMsg = %@", reason, errCode, errMsg);
+    NSLog(@"当前连接断开或被动离开频道，请重新登录 channel = %@, reason = %ld, errCode = %ld, errMsg = %@", channel, reason, errCode, errMsg);
 }
 ```
 
@@ -101,12 +103,15 @@ if (errorCode != RTCEngineErrorOK) {
 
 ```objectivec
 /// 自定义消息回调
+/// @param channel 频道名称
 /// @param content 消息内容
 /// @param action 消息标识
 /// @param userId 用户标识
-- (void)onCustomMessage:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId {
+/// @param sessionId 会话标识
+/// @param nickname 用户昵称
+- (void)onCustomMessage:(nullable NSString *)channel content:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname {
     
-    NSLog(@"接收到自定义消息 action = %@ content = %@", action, content);
+    NSLog(@"接收到自定义消息 channel = %@, action = %@, content = %@", channel, action, content);
 }
 ```
 

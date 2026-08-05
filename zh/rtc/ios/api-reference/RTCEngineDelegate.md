@@ -4,22 +4,27 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 ---
 
 ## 连接相关回调
-### onReconnecting()
-`- (void)onReconnecting`
+### onReconnecting:()
+`- (void)onReconnecting:(nullable NSString *)channel`
 
 开始重连回调
 
-连接断开并开始重连时触发，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调
+连接断开并开始重连时触发，如遇到错误 SDK 会抛出`onDisconnected:reason:errCode:errMsg:()`回调
+
+**参数**
+
+| channel | 频道名称 |
+| --- | --- |
 
 ### onReconnected()
 `- (void)onReconnected`
 
 重连成功回调
 
-断线重连成功后触发，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调
+断线重连成功后触发，如遇到错误 SDK 会抛出`onDisconnected:reason:errCode:errMsg:()`回调
 
-### onDisconnected:errCode:errMsg:()
-`- (void)onDisconnected:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg`
+### onDisconnected:reason:errCode:errMsg:()
+`- (void)onDisconnected:(nullable NSString *)channel reason:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg`
 
 连连接断开事件或者被动离开频道回调
 
@@ -29,15 +34,16 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 **参数**
 
-| reason | 离开原因 |
+| channel | 频道名称 |
 | --- | --- |
+| reason | 离开原因 |
 | errCode | 错误码 |
 | errMsg | 错误信息 |
 
 
 ## 消息相关回调
-### onCustomMessage:action:userId:sessionId:nickname:()
-`- (void)onCustomMessage:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
+### onCustomMessage:content:action:userId:sessionId:nickname:()
+`- (void)onCustomMessage:(nullable NSString *)channel content:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
 
 自定义消息回调
 
@@ -45,8 +51,9 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 **参数**
 
-| content | 消息内容 |
+| channel | 频道名称 |
 | --- | --- |
+| content | 消息内容 |
 | action | 消息标识 |
 | userId | 用户标识 |
 | sessionId | 会话标识 |
@@ -59,7 +66,7 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 加入频道成功回调
 
-调用`RTCEngineKit`中的`joinChannelWithToken:()`接口执行加入频道操作后，会收到来自`RTCEngineDelegate`的`onJoinSucceed:userId:()`回调，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调。
+调用`RTCEngineKit`中的`joinChannelWithToken:()`接口执行加入频道操作后，会收到来自`RTCEngineDelegate`的`onJoinSucceed:userId:()`回调，如遇到错误 SDK 会抛出`onDisconnected:reason:errCode:errMsg:()`回调。
 
 **参数**
 
