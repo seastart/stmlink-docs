@@ -185,9 +185,10 @@ meetingParam.title = @"Meeting Title";
 /// - Parameters:
 ///   - targetUserId: 目标成员标识
 ///   - cameraState: 视频状态
-- (void)onUserCameraStateChanged:(NSString *)targetUserId cameraState:(SEADeviceState)cameraState {
+///   - reason: 变更原因
+- (void)onUserCameraStateChanged:(NSString *)targetUserId cameraState:(SEADeviceState)cameraState reason:(SEAChangeReason)reason {
 
-    NSLog(@"用户摄像头状态变化，userId = %@ cameraState = %ld", targetUserId, cameraState);
+    NSLog(@"用户摄像头状态变化，userId = %@ cameraState = %ld reason = %ld", targetUserId, cameraState, reason);
 }
 ```
 
@@ -199,9 +200,10 @@ meetingParam.title = @"Meeting Title";
 /// - Parameters:
 ///   - targetUserId: 目标成员标识
 ///   - micState: 音频状态
-- (void)onUserMicStateChanged:(NSString *)targetUserId micState:(SEADeviceState)micState {
+///   - reason: 变更原因
+- (void)onUserMicStateChanged:(NSString *)targetUserId micState:(SEADeviceState)micState reason:(SEAChangeReason)reason {
 
-    NSLog(@"用户麦克风状态变化，userId = %@ micState = %ld", targetUserId, micState);
+    NSLog(@"用户麦克风状态变化，userId = %@ micState = %ld reason = %ld", targetUserId, micState, reason);
 }
 ```
 
@@ -315,8 +317,12 @@ meetingEnterParam.isAudience = NO; // 默认以普通参会者身份入会，设
 ```
 
 #### 取消订阅所有远端用户的视频画面
+组件未提供一次性退订全部成员的接口，业务层遍历成员列表逐个调用 `stopAllRemoteViewWithUserId:` 即可。
+
 ```objectivec
-[[MeetingKit sharedInstance] stopAllRemoteView];
+for (SEAUserModel *userModel in [[MeetingKit sharedInstance] getRemoteUsers]) {
+    [[MeetingKit sharedInstance] stopAllRemoteViewWithUserId:userModel.userId];
+}
 ```
 
 > 注：取消订阅成员视频画面后，组件会自行释放渲染控件。

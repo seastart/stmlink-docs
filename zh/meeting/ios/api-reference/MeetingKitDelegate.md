@@ -104,7 +104,7 @@ description: "会中事件回调协议：错误与重连、自己的进退会、
 
 被管理员移进等候室回调
 
-当主持人调用 MeetingKit 中的 `adminMoveInWaitingRoom:ickname:onSuccess:onFailed:()` 接口执行将会议室成员移动到等候室操作后，SDK 会抛出该事件通知您。
+当主持人调用 MeetingKit 中的 `adminMoveInWaitingRoom:nickname:onSuccess:onFailed:()` 接口执行将会议室成员移动到等候室操作后，SDK 会抛出该事件通知您。
 
 | 参数 | 描述 |
 | :--- | --- |

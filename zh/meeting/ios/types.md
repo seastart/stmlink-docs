@@ -872,9 +872,9 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | **枚举类型** | **枚举值** | **描述** |
 | --- | :---: | --- |
 | SEARecordStatuUnknown | `-1` | 无任务 |
-| SEARecordStatusNotStart | `0` | 未开始 |
+| SEARecordStatusWaitStart | `0` | 待开始 |
 | SEARecordStatusIng | `1` | 进行中 |
-| SEARecordStatusNotEnded | `2` | 未结束 |
+| SEARecordStatusWaitEnded | `2` | 待结束 |
 | SEARecordStatusError | `3` | 异常结束 |
 | SEARecordStatusEnded | `4` | 正常结束 |
 
