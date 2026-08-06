@@ -12,10 +12,10 @@
 
 - [概览](https://docs.stmlink.com/zh/rtc/overview.md): SRTC 音视频 SDK 产品概览
 - [选 SRTC 还是 SMeeting](https://docs.stmlink.com/zh/choose.md): SRTC 音视频 SDK 与 SMeeting 会议 SDK 的分层关系、能力差异与选型建议
+- [快速开始](https://docs.stmlink.com/zh/rtc/quickstart.md): 接入 SRTC 的最短路径：四方分工与数据流转、接入前的三件事、各平台入口与典型调用顺序
 - [核心概念](https://docs.stmlink.com/zh/rtc/key-concepts.md): SRTC 的频道、用户与流轨道模型，以及频道的打开与销毁规则
 - [Token 与鉴权](https://docs.stmlink.com/zh/rtc/token.md): SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签发流程与常见错误
 - [错误码规则](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则：如何从一个错误码看出它来自哪一层、哪个平台
-- [快速开始](https://docs.stmlink.com/zh/rtc/quickstart.md): SRTC 音视频 SDK 接入前的准备工作与各平台入口
 - [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
 ## SRTC 音视频 SDK · Web SDK
@@ -204,10 +204,10 @@
 
 - [概览](https://docs.stmlink.com/zh/meeting/overview.md): SMeeting 会议 SDK 的能力范围、两种对接方式与各端支持情况
 - [选 SRTC 还是 SMeeting](https://docs.stmlink.com/zh/choose.md): SRTC 音视频 SDK 与 SMeeting 会议 SDK 的分层关系、能力差异与选型建议
+- [快速开始](https://docs.stmlink.com/zh/meeting/quickstart.md): 接入 SMeeting 的最短路径：四方分工与数据流转、三种对接方式怎么选、各平台入口
 - [核心概念](https://docs.stmlink.com/zh/meeting/key-concepts.md): SMeeting 的房间、会议、成员与角色模型，以及与底层 RTC 层的术语差异
 - [Token 与鉴权](https://docs.stmlink.com/zh/meeting/token.md): SMeeting 的 AppID / AppKey 职责划分、会议授权 Token 的签发流程与密钥安全
 - [错误码规则](https://docs.stmlink.com/zh/meeting/error-codes.md): SMeeting 错误码的编号规则，以及为什么你会同时看到 2xxxxx 和 1xxxxx 两类错误码
-- [快速开始](https://docs.stmlink.com/zh/meeting/quickstart.md): SMeeting 会议 SDK 快速对接概述
 - [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
 ## SMeeting 会议 SDK · 极简对接

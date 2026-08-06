@@ -75,10 +75,10 @@
                 "pages": [
                   "zh/rtc/overview",
                   "zh/choose",
+                  "zh/rtc/quickstart",
                   "zh/rtc/key-concepts",
                   "zh/rtc/token",
                   "zh/rtc/error-codes",
-                  "zh/rtc/quickstart",
                   "zh/ai"
                 ]
               },
@@ -316,10 +316,10 @@
                 "pages": [
                   "zh/meeting/overview",
                   "zh/choose",
+                  "zh/meeting/quickstart",
                   "zh/meeting/key-concepts",
                   "zh/meeting/token",
                   "zh/meeting/error-codes",
-                  "zh/meeting/quickstart",
                   "zh/ai"
                 ]
               },
