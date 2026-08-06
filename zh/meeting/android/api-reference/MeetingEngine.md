@@ -548,7 +548,7 @@ callback: Callback<Data<String?>>?
 方法说明：主持人更新用户角色身份  
 参数说明：
 - `targetId`：`String`，String  目标用户ID
-- `role`：`MemberRoleType`，Int  角色 0普通成员 1主持人
+- `role`：`MemberRoleType`，目标角色 `Normal`(0) 普通成员 / `UnionHost`(2) 联席主持人；`Host`(1) 由会议的主持人决定，不能在这里设，换主持人用 `adminMoveHost()`
 - `callback`：`Callback<Data<String?>>?`，结果回调
 返回值说明：无（`Unit`）。
 

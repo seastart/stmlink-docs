@@ -174,7 +174,7 @@ SMeeting是绝大多数操作的入口。
     /**
      * 更新用户角色
      * @param target_id 用户id
-     * @param role 用户角色
+     * @param role 目标角色 Role.Member(0) / Role.CoHost(2)；Role.Host(1) 由会议的主持人决定，不能在这里设
      */
     adminUpdateUserRole(target_id: string, role: Role): Promise<void>;
     /**

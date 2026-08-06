@@ -535,7 +535,7 @@ virtual StatusCode adminUpdateUserRole(std::string uid, int role, Callback back 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
 | uid | std::string | 用户 ID |
-| role | int | 角色类型 |
+| role | int | 目标角色，取值见 [Role](#role)：`0` 普通成员 / `2` 联席主持人。`1` 主持人由会议的主持人决定，不能在这里设 |
 | back | Callback | 异步回调函数 |
 
 **返回值**

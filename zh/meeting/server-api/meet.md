@@ -298,7 +298,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ResponseField>
 
     <ResponseField name="role" type="integer">
-      用户角色
+      用户角色 0普通成员 1主持人 2联席主持人
     </ResponseField>
 
   </Expandable>
@@ -451,7 +451,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ResponseField>
 
 <ResponseField name="role" type="integer">
-  用户角色
+  用户角色 0普通成员 1主持人 2联席主持人
 </ResponseField>
 
 <ResponseField name="mic_state" type="integer">
@@ -581,7 +581,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ResponseField>
 
 <ResponseField name="role" type="integer">
-  用户角色
+  用户角色 0普通成员 1主持人 2联席主持人
 </ResponseField>
 
 <ResponseField name="is_invite" type="boolean">
@@ -709,7 +709,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ResponseField>
 
 <ResponseField name="role" type="integer">
-  用户角色
+  用户角色 0普通成员 1主持人 2联席主持人
 </ResponseField>
 
 <ResponseField name="enter_time" type="integer">
@@ -992,7 +992,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ResponseField>
 
     <ResponseField name="role" type="integer">
-      用户角色
+      用户角色 0普通成员 1主持人 2联席主持人
     </ResponseField>
 
   </Expandable>
@@ -1206,7 +1206,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ParamField>
 
     <ParamField body="role" type="integer">
-      用户角色
+      用户角色 0普通成员 1主持人 2联席主持人。用内置角色时这里不生效，要指定主持人用 creator、指定联席主持人用 co_hosts；只有改用业务自定义角色(外部角色模式)时，会中角色才取这里的值，见《核心概念》的「自定义角色」一节。不传或传 0 时会取用户库里这个人登记的角色，建议显式传，别依赖这层兜底
     </ParamField>
 
   </Expandable>
@@ -1544,7 +1544,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ParamField>
 
     <ParamField body="role" type="integer">
-      用户角色
+      用户角色 0普通成员 1主持人 2联席主持人。用内置角色时这里不生效，要指定主持人用 creator、指定联席主持人用 co_hosts；只有改用业务自定义角色(外部角色模式)时，会中角色才取这里的值，见《核心概念》的「自定义角色」一节。不传或传 0 时会取用户库里这个人登记的角色，建议显式传，别依赖这层兜底
     </ParamField>
 
   </Expandable>
@@ -1836,7 +1836,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ParamField>
 
     <ParamField body="role" type="integer">
-      用户角色
+      用户角色 0普通成员 1主持人 2联席主持人。用内置角色时这里不生效，要指定主持人用 creator、指定联席主持人用 co_hosts；只有改用业务自定义角色(外部角色模式)时，会中角色才取这里的值，见《核心概念》的「自定义角色」一节。不传或传 0 时会取用户库里这个人登记的角色，建议显式传，别依赖这层兜底
     </ParamField>
 
   </Expandable>
@@ -2039,7 +2039,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ResponseField>
 
 <ResponseField name="role" type="integer">
-  消息发送者角色
+  消息发送者角色 0普通成员 1主持人 2联席主持人
 </ResponseField>
 
 <ResponseField name="msg_type" type="integer">
