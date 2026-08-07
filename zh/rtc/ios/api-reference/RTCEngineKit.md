@@ -16,6 +16,21 @@ description: "iOS（Objective-C）音视频 SDK 的核心入口类：初始化�
 
 创建 RTCEngineKit 实例（单例模式）。
 
+### sharedEngineWithConfig:appGroup:delegate:()
+`+ (instancetype)sharedEngineWithConfig:(RTCEngineConfig *)engineConfig appGroup:(NSString *)appGroup delegate:(nullable id <RTCEngineDelegate>)delegate`
+
+创建 RTCEngineKit 实例并同时完成初始化（单例模式）。
+
+该接口等价于先调用 `sharedEngine()` 再调用 `initializeWithConfig:appGroup:delegate:()`，适合在业务层希望一步完成创建与初始化的场景。
+
+**参数**
+
+| engineConfig | 配置参数，用于日志等的相关配置，例如：日志等级等等信息，详情请参考 [RTCEngineConfig](https://www.yuque.com/anyconf/rtcengine/yi50z7#aP2yB) |
+| --- | --- |
+| appGroup | Application Group Identifier |
+| delegate | 用于指定回调代理，详情请参考 [RTCEngineDelegate](/zh/rtc/ios/api-reference/RTCEngineDelegate) |
+
+
 ### destroy()
 `- (void)destroy`
 
@@ -572,6 +587,13 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 可通过该接口判断是否存在蓝牙耳机设备。
 
+### resetAudioSession()
+`- (void)resetAudioSession`
+
+重启音频会话
+
+当 App 与其它音频应用抢占音频会话，或系统音频会话被外部打断后未能自动恢复时，业务层可调用该接口重建 SDK 的音频会话配置。调用后音频路由可能发生变化，SDK 会通过 [RTCEngineDelegate](/zh/rtc/ios/api-reference/RTCEngineDelegate) 的 `onAudioRouteChange:previousRoute:` 回调通知业务层。
+
 ## 流媒体相关接口函数
 ### setStreamMediaConfig:()
 `- (void)setStreamMediaConfig:(RTCEngineMediaConfig *)config`
@@ -670,14 +692,14 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 
 ## 发布自定义流相关接口
-### startCustomStreamWithStreamModel:()
-`- (RTCEngineError)startCustomStreamWithStreamModel:(RTCEngineStreamModel *)streamModel`
+### startCustomStreamWithStreamTrackModel:()
+`- (RTCEngineError)startCustomStreamWithStreamTrackModel:(RTCEngineStreamTrackModel *)streamTrackModel`
 
 启动自定义流，该接口需要指明发布的轨道、分辨率、码流等基础码流信息，需要注意的是：只有调用该接口申明的轨道才可以通过[发布自定义码流接口](#Jki7P)进行自定义推流，当程序结束自定义推流后需要调用[关闭自定义流接口](#P0Xlj)关闭对应轨道。
 
 **参数**
 
-| streamModel | 码流信息，用于指定轨道、分辨率、码流等码流基本信息详情请参考  [RTCEngineStreamModel](https://www.yuque.com/anyconf/rtcengine/yi50z7#o95yb) |
+| streamTrackModel | 码流信息，用于指定轨道、分辨率、码流等码流基本信息详情请参考 [RTCEngineStreamTrackModel](/zh/rtc/ios/types#rtcenginestreamtrackmodel) |
 | --- | --- |
 
 
@@ -693,7 +715,7 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 
 ### publishCustomStreamWithStreamData:()
-`- (RTCEngineError)publishCustomStreamWithStreamData:(constunsignedchar *)streamData bitslen:(int)bitslen pts:(uint32_t)pts dts:(uint32_t)dts trackId:(RTCTrackIdentifierFlags)trackId mediaType:(RTCMediaType)mediaType`
+`- (RTCEngineError)publishCustomStreamWithStreamData:(const unsigned char *)streamData bitslen:(int)bitslen pts:(uint32_t)pts dts:(uint32_t)dts trackId:(RTCTrackIdentifierFlags)trackId streamType:(RTCStreamType)streamType`
 
 发布自定义码流，可以通过该接口向[启动自定义流接口](#hly8D)中声明的轨道ID推送自定义码流数据。
 
@@ -705,7 +727,7 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 | pts | 显示时间戳 |
 | dts | 解码时间戳 |
 | trackId | 轨道标识，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
-| mediaType | 媒体类型，详情请参考 [RTCMediaType](https://www.yuque.com/anyconf/rtcengine/yi50z7#bFOsG) |
+| streamType | 媒体流类型，详情请参考 [RTCStreamType](/zh/rtc/ios/types#rtcstreamtype) |
 
 
 ## 网络测速相关接口函数

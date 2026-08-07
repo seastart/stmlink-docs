@@ -93,6 +93,7 @@
                   {
                     "group": "进阶实践",
                     "pages": [
+                      "zh/rtc/web/advanced/multi-channel",
                       "zh/rtc/web/advanced/mute-vs-unpublish",
                       "zh/rtc/web/advanced/video-stream-layers",
                       "zh/rtc/web/advanced/screen-sharing",

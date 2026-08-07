@@ -49,7 +49,8 @@ let join = async () => {
     // api.getJoinToken
   
     let token = "后台返回的加入频道token";
-    let channelInfo = await srtc.join(token);
+    // join 返回 Channel 对象，频道信息用 channel.getInfo() 获取
+    let channel = await srtc.join(token);
     wx.showToast({
         icon: "success",
         title: "加入频道成功",

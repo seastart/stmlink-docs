@@ -21,7 +21,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | NSString *userId | 是 | 用户标识 |
 | NSString *sessionId | 是 | 会话标识 |
 | NSString *name | 是 | 用户名称 |
-| [RTCDeviceType](#YJ8zG) deviceType | 是 | 设备类型，默认 `RTCDeviceTypeIOS` |
+| [SRTCDeviceType](/zh/rtc/ios/types#srtcdevicetype) deviceType | 是 | 设备类型，默认 `SRTCDeviceTypeIOS` |
 | NSString *deviceId | 是 | 设备标识 |
 | NSString *version | 是 | 组件版本号 |
 | NSString *netid | 是 | 网络标识 |
@@ -227,19 +227,19 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCEngineLogLevelOff | `6` | 不记录任何日志 |
 
 
-### RTCDeviceType
+### SRTCDeviceType
 设备类型
 
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
-| RTCTerminalTypeUnknown | `0` | 未知终端 |
-| RTCDeviceTypeWindows | `1` | Windows |
-| RTCDeviceTypeAndroid | `2` | Android |
-| RTCDeviceTypeIOS | `3` | iOS |
-| RTCDeviceTypeLinux | `4` | Linux |
-| RTCDeviceTypeMacOS | `5` | MacOS |
-| RTCDeviceTypeWebRTC | `6` | WebRTC |
-| RTCDeviceTypeRtmp | `7` | RTMP |
+| SRTCDeviceTypeUnknown | `0` | 未知终端 |
+| SRTCDeviceTypeWindows | `1` | Windows |
+| SRTCDeviceTypeAndroid | `2` | Android |
+| SRTCDeviceTypeIOS | `3` | iOS |
+| SRTCDeviceTypeLinux | `4` | Linux |
+| SRTCDeviceTypeMacOS | `5` | MacOS |
+| SRTCDeviceTypeWebRTC | `6` | WebRTC |
+| SRTCDeviceTypeRtmp | `7` | RTMP |
 
 
 ### RTCUserRole
@@ -261,12 +261,21 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCMediaTypeAudio | `2` | 音频类型 |
 
 
+### RTCStreamType
+媒体流类型
+
+| **枚举名** | **枚举值** | **说明** |
+| --- | :---: | --- |
+| RTCStreamTypeAudio | `0` | 音频流类型 |
+| RTCStreamTypeVideo | `1` | 视频流类型 |
+
+
 ### RTCCodecType
 编码类型
 
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
-| RTCCodecTypeH264 | `0` | 未知类型 |
+| RTCCodecTypeUnknown | `0` | 未知类型 |
 | RTCCodecTypeH264 | `0x1b` | H264 |
 | RTCCodecTypeH265 | `0x24` | H265 |
 | RTCCodecTypeAAC | `0x0f` | AAC |
@@ -420,16 +429,18 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCStreamTrackKindAudio | `audio` | 音频类型 |
 
 
-### RTCLeaveChannelReason
+### RTCLeaveReason
 离开频道原因
 
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
-| RTCLeaveChannelReasonNormal | `1` | 主动离开 |
-| RTCLeaveChannelReasonKickout | `2` | 被踢离开 |
-| RTCLeaveChannelReasonReplaced | `3` | 被顶号 |
-| RTCLeaveChannelReasonTimeout | `4` | 心跳超时离开 |
-| RTCLeaveChannelReasonDestroy | `5` | 频道销毁离开 |
+| RTCLeaveReasonError | `-1` | 发生错误 |
+| RTCLeaveReasonNormal | `1` | 主动离开 |
+| RTCLeaveReasonKickout | `2` | 被踢离开 |
+| RTCLeaveReasonReplaced | `3` | 被顶号 |
+| RTCLeaveReasonTimeout | `4` | 心跳超时离开 |
+| RTCLeaveReasonDestroy | `5` | 频道销毁离开 |
+| RTCLeaveReasonAudience | `6` | 身份变成观众 |
 
 
 ### RTCStreamQualityLevel

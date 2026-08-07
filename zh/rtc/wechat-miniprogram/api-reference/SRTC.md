@@ -30,8 +30,10 @@ onNotifyChannelEvent?: ((event: ChannelEvent) => void) | null;
 /**
  * 加入频道
  * @param token 加入频道token
+ * @returns 频道对象（v0.2.0 起返回值由频道信息改为 Channel 对象，
+ *   频道信息改用 channel.getInfo() 或 srtc.getChannelInfo() 获取）
  */
-join(token: string): Promise<ChannelInfo>;
+join(token: string): Promise<Channel>;
 
 
 /**

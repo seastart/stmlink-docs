@@ -4,40 +4,46 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 ---
 
 ## 连接相关回调
-### onReconnecting()
-`- (void)onReconnecting`
+### onReconnecting:()
+`- (void)onReconnecting:(nullable NSString *)channel`
 
 开始重连回调
 
-连接断开并开始重连时触发，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调
+连接断开并开始重连时触发，如遇到错误 SDK 会抛出`onDisconnected:reason:errCode:errMsg:()`回调
+
+**参数**
+
+| channel | 频道名称 |
+| --- | --- |
 
 ### onReconnected()
 `- (void)onReconnected`
 
 重连成功回调
 
-断线重连成功后触发，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调
+断线重连成功后触发，如遇到错误 SDK 会抛出`onDisconnected:reason:errCode:errMsg:()`回调
 
-### onDisconnected:errCode:errMsg:()
-`- (void)onDisconnected:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg`
+### onDisconnected:reason:errCode:errMsg:()
+`- (void)onDisconnected:(nullable NSString *)channel reason:(RTCLeaveReason)reason errCode:(RTCEngineError)errCode errMsg:(nullable NSString *)errMsg`
 
 连连接断开事件或者被动离开频道回调
 
 当离开原因为`RTCLeaveReasonError`时，表示 SDK 抛出的不可恢复的错误，比如加入频道失败等，此时需要重新获取鉴权令牌才可重新加入频道。具体错误码参考文档：[错误码表](https://www.yuque.com/anyconf/rtcengine/hf08uk#aP2yB)
 
-当离开原因非`RTCLeaveReasonError`时，表示被动离开频道。具体离开原因参考文档：[离开原因](https://www.yuque.com/anyconf/rtcengine/yi50z7#WgkRO)
+当离开原因非`RTCLeaveReasonError`时，表示被动离开频道。具体离开原因参考文档：[RTCLeaveReason](/zh/rtc/ios/types#rtcleavereason)
 
 **参数**
 
-| reason | 离开原因 |
+| channel | 频道名称 |
 | --- | --- |
+| reason | 离开原因 |
 | errCode | 错误码 |
 | errMsg | 错误信息 |
 
 
 ## 消息相关回调
-### onCustomMessage:action:userId:sessionId:nickname:()
-`- (void)onCustomMessage:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
+### onCustomMessage:content:action:userId:sessionId:nickname:()
+`- (void)onCustomMessage:(nullable NSString *)channel content:(NSString *)content action:(NSString *)action userId:(nullable NSString *)userId sessionId:(nullable NSString *)sessionId nickname:(nullable NSString *)nickname`
 
 自定义消息回调
 
@@ -45,8 +51,9 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 **参数**
 
-| content | 消息内容 |
+| channel | 频道名称 |
 | --- | --- |
+| content | 消息内容 |
 | action | 消息标识 |
 | userId | 用户标识 |
 | sessionId | 会话标识 |
@@ -59,7 +66,7 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 加入频道成功回调
 
-调用`RTCEngineKit`中的`joinChannelWithToken:()`接口执行加入频道操作后，会收到来自`RTCEngineDelegate`的`onJoinSucceed:userId:()`回调，如遇到错误 SDK 会抛出`onDisconnected:errCode:errMsg:()`回调。
+调用`RTCEngineKit`中的`joinChannelWithToken:()`接口执行加入频道操作后，会收到来自`RTCEngineDelegate`的`onJoinSucceed:userId:()`回调，如遇到错误 SDK 会抛出`onDisconnected:reason:errCode:errMsg:()`回调。
 
 **参数**
 
@@ -127,7 +134,7 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 
 ### onRemoteUserLeaveChannel:userId:reason:()
-`- (void)onRemoteUserLeaveChannel:(NSString *)channel userId:(NSString *)userId reason:(RTCLeaveChannelReason)reason`
+`- (void)onRemoteUserLeaveChannel:(NSString *)channel userId:(NSString *)userId reason:(RTCLeaveReason)reason`
 
 用户离开频道回调，包括当前用户。
 
@@ -138,7 +145,7 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 | channel | 频道名称 |
 | --- | --- |
 | userId | 用户标识 |
-| reason | 离开原因，详情请参照 [RTCLeaveChannelReason](https://www.yuque.com/anyconf/rtcengine/yi50z7#zGDtN) |
+| reason | 离开原因，详情请参照 [RTCLeaveReason](/zh/rtc/ios/types#rtcleavereason) |
 
 
 ### onRemoteStreamTrackChange:userId:streamTrackModel:changeType:()
@@ -196,6 +203,43 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 
 | enabled | 是否允许发言，YES-允许发言 NO-不允许发言 |
 | --- | --- |
+
+
+### onAudioCapture:channel:stamp:dataSize:pcmData:()
+`- (void)onAudioCapture:(int)samplerate channel:(int)channel stamp:(unsigned int)stamp dataSize:(int)dataSize pcmData:(void *)pcmData`
+
+音频采集数据回调
+
+SDK 采集到麦克风原始 PCM 数据后通过该回调抛出，业务层可用于本地录制、音频分析等场景。
+
+注：该回调在音频采集线程中触发，请勿在回调中执行耗时操作，也不要持有 `pcmData` 指针，需要留用时请自行拷贝数据。
+
+**参数**
+
+| samplerate | 采样率 |
+| --- | --- |
+| channel | 声道数 |
+| stamp | 时间戳 |
+| dataSize | 数据大小 |
+| pcmData | 音频元数据 |
+
+
+### onAudioCaptureResampled:channel:stamp:resampledData:()
+`- (void)onAudioCaptureResampled:(int)samplerate channel:(int)channel stamp:(unsigned int)stamp resampledData:(NSData *)resampledData`
+
+音频采集重采样数据回调
+
+SDK 对采集到的音频完成重采样后通过该回调抛出，与 `onAudioCapture:channel:stamp:dataSize:pcmData:()` 的区别在于数据已按 SDK 内部采样率转换，并以 `NSData` 形式给出，业务层无需自行管理内存。
+
+注：该回调同样在音频采集线程中触发，请勿在回调中执行耗时操作。
+
+**参数**
+
+| samplerate | 采样率 |
+| --- | --- |
+| channel | 声道数 |
+| stamp | 时间戳 |
+| resampledData | 音频重采样数据 |
 
 
 ## 流媒体相关回调
@@ -386,3 +430,16 @@ description: "频道事件回调协议：连接与重连、自定义消息、频
 | memory | 内存使用情况 |
 | --- | --- |
 | cpuUsage | CUP使用率 |
+
+
+### onStreamChangedVendorName:()
+`- (void)onStreamChangedVendorName:(NSString *)vendorName`
+
+流媒体平台变化回调
+
+当前频道使用的流媒体平台发生切换时，SDK 会通过该回调告知业务层当前生效的平台名称。
+
+**参数**
+
+| vendorName | 平台名称 |
+| --- | --- |

@@ -131,10 +131,10 @@ description: "iOS（Objective-C）会议 SDK 的总入口单例：登录、会�
 | onFailed | 失败回调 |
 
 
-### getHistoryMeetingList:onFailed:()
-`- (void)getHistoryMeetingList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+### getMoreHistoryMeetingList:onFailed:()
+`- (void)getMoreHistoryMeetingList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
 
-获取历史会议列表
+获取更多历史会议列表（翻页操作）
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -967,8 +967,8 @@ description: "iOS（Objective-C）会议 SDK 的总入口单例：登录、会�
 | onFailed | 失败回调 |
 
 
-### adminKickUserOut:onSuccess:onFailed:()
-`- (void)adminKickUserOut:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+### adminKickUserOut:joinDisabled:onSuccess:onFailed:()
+`- (void)adminKickUserOut:(NSString *)userId joinDisabled:(BOOL)joinDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
 
 踢出成员（只有主持人或联席主持人能够调用）
 
@@ -977,6 +977,7 @@ description: "iOS（Objective-C）会议 SDK 的总入口单例：登录、会�
 | 参数 | 描述 |
 | :--- | --- |
 | userId | 用户标识 |
+| joinDisabled | 是否禁止再次加入房间，`YES`-禁止 `NO`-不禁止 |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
@@ -1112,7 +1113,7 @@ description: "iOS（Objective-C）会议 SDK 的总入口单例：登录、会�
 | onFailed | 失败回调 |
 
 
-### adminMoveInWaitingRoom:ickname:onSuccess:onFailed:()
+### adminMoveInWaitingRoom:nickname:onSuccess:onFailed:()
 `- (void)adminMoveInWaitingRoom:(NSString *)userId nickname:(NSString *)nickname onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
 
 将会议室成员移动到等候室，管理员用户可通过该接口将会中成员移至等候室中（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitDelegate` 中的 [onRoomMoveInWaitingRoom:()](https://www.yuque.com/anyconf/smeeting/rfflpfbuav0xc28g#qBV3v) 回调通知给目标用户。
@@ -1125,15 +1126,14 @@ description: "iOS（Objective-C）会议 SDK 的总入口单例：登录、会�
 | onFailed | 失败回调 |
 
 
-### adminMoveOutWaitingRoom:nickname:onSuccess:onFailed:()
-`- (void)adminMoveOutWaitingRoom:(NSString *)userId nickname:(NSString *)nickname onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+### adminMoveOutWaitingRoom:onSuccess:onFailed:()
+`- (void)adminMoveOutWaitingRoom:(nullable NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
 
 将等候室人员移动到会议室，管理员用户可通过该接口将当前等候室中成员移至会议室中（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitIMDelegate` 中的 [onWaitingRoomMoveInRoom:title:()](https://www.yuque.com/anyconf/smeeting/wh4gigxazm9esngc#Td4ag) 回调通知给目标用户。
 
 | 参数 | 描述 |
 | :--- | --- |
-| userId | 用户标识，空表示全部成员 |
-| nickname | 用户昵称 |
+| userId | 用户标识，传空表示全部成员 |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
