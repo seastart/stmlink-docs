@@ -42,6 +42,7 @@ let options = JoinOptions(
 | `channel` | `String` | 频道名 |
 | `streamVendor` | `String?` | 当前流媒体引擎 |
 | `props` | `[String: AnyCodable]?` | 频道自定义属性 |
+| `whiteBoard` | `String?` | 白板页面地址，已拼好授权码，用 `WKWebView` 加载即可，见[电子白板](/zh/rtc/whiteboard) |
 | `createdAt` | `TimeInterval?` | 创建时间 |
 | `updatedAt` | `TimeInterval?` | 更新时间 |
 

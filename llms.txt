@@ -15,6 +15,7 @@
 - [快速开始](https://docs.stmlink.com/zh/rtc/quickstart.md): 接入 SRTC 的最短路径：四方分工与数据流转、接入前的三件事、各平台入口与典型调用顺序
 - [核心概念](https://docs.stmlink.com/zh/rtc/key-concepts.md): SRTC 的频道、用户与流轨道模型，以及频道的打开与销毁规则
 - [Token 与鉴权](https://docs.stmlink.com/zh/rtc/token.md): SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签发流程与常见错误
+- [电子白板](https://docs.stmlink.com/zh/rtc/whiteboard.md): 白板是一个内嵌的 H5 页面：会中用户直接用加入频道返回的地址打开，会外用户由业务后端签发授权码；含 URL 参数、共享状态同步、WebView 宿主接口与销毁时机
 - [错误码规则](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则：如何从一个错误码看出它来自哪一层、哪个平台
 - [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
@@ -225,6 +226,7 @@
 
 - [集成](https://docs.stmlink.com/zh/meeting/web/integration.md): Web SMeeting 会议 SDK 环境配置与 SDK 安装指南
 - [快速开始](https://docs.stmlink.com/zh/meeting/web/quickstart.md): Web SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
+- [白板共享](https://docs.stmlink.com/zh/meeting/web/whiteboard.md): 会议里怎么开白板：用 getWhiteBoard() 取页面地址内嵌 iframe，用 requestShare(ShareType.WhiteBoard) 广播共享状态，以及中途入会时如何恢复现场
 - [事件参考](https://docs.stmlink.com/zh/meeting/web/events.md): Web SMeeting 会议 SDK 全量事件列表与触发时机说明
 - [类型定义](https://docs.stmlink.com/zh/meeting/web/types.md): Web SMeeting 会议 SDK 完整类型与结构体定义
 
@@ -245,6 +247,7 @@
 ## SMeeting 会议 SDK · Android SDK · 进阶实践
 
 - [音频路由使用](https://docs.stmlink.com/zh/meeting/android/advanced/audio-routing.md): Android SMeeting 会议 SDK 音频路由管理（扬声器/听筒/有线耳机/蓝牙耳机）
+- [白板共享](https://docs.stmlink.com/zh/meeting/android/advanced/whiteboard.md): 会议里怎么开白板：用 requestShareBoard() 拿到白板地址并用 WebView 承载，处理他人共享与中途入会，以及 WebView 需要的 JS 接口
 
 ## SMeeting 会议 SDK · Android SDK · 接口文档
 

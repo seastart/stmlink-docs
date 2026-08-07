@@ -32,8 +32,8 @@ Swift SDK 当前公开的错误模型是 `SRTCError`。它不是传统的整数�
 | --- | --- | --- |
 | `apiRequestFailed(statusCode:message:)` | HTTP API 请求失败 | 检查 demo 后端 / 业务后端响应 |
 | `signatureError` | 签名生成失败 | 检查服务端鉴权逻辑 |
-| `mqttConnectionFailed(String)` | MQTT 连接失败 | 检查 MQTT 地址和网络可达性 |
-| `mqttSubscribeFailed(String)` | MQTT 订阅失败 | 检查 topic 权限和连接状态 |
+| `signalingConnectFailed(String)` | 信令通道连接失败 | 检查网络可达性、代理与防火墙设置 |
+| `signalingSubscribeFailed(String)` | 信令通道订阅失败 | 检查 Token 是否有效、连接是否已建立 |
 | `messageDecodeFailed(String)` | 信令消息解码失败 | 检查服务端消息格式与 SDK 版本兼容性 |
 
 ---

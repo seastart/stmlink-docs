@@ -88,7 +88,7 @@ export interface ChannelInfo {
   created_at: number;
   /** 频道最近更新时间（Unix 时间戳，秒） */
   updated_at: number;
-  /** 白板地址 */
+  /** 白板地址，已拼好授权码，直接内嵌 iframe 即可，见《电子白板》 */
   white_board: string;
 }
 ```

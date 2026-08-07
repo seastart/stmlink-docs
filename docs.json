@@ -78,6 +78,7 @@
                   "zh/rtc/quickstart",
                   "zh/rtc/key-concepts",
                   "zh/rtc/token",
+                  "zh/rtc/whiteboard",
                   "zh/rtc/error-codes",
                   "zh/ai"
                 ]
@@ -343,6 +344,7 @@
                 "pages": [
                   "zh/meeting/web/integration",
                   "zh/meeting/web/quickstart",
+                  "zh/meeting/web/whiteboard",
                   {
                     "group": "接口文档",
                     "pages": [
@@ -361,7 +363,8 @@
                   {
                     "group": "进阶实践",
                     "pages": [
-                      "zh/meeting/android/advanced/audio-routing"
+                      "zh/meeting/android/advanced/audio-routing",
+                      "zh/meeting/android/advanced/whiteboard"
                     ]
                   },
                   {

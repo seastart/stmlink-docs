@@ -317,6 +317,7 @@ rtcEngine.releaseSDK()
 本文只覆盖最小可跑通的主线能力。如果你还需要以下高级场景，可继续阅读对应文档：
 
 - 自定义推流（白板/画布/播放器画面等外部视频帧）： [自定义推流](/zh/rtc/android/advanced/custom-track)、[LocalCustomVideoTrack](/zh/rtc/android/api-reference/LocalCustomVideoTrack)、[自定义视频流预设](/zh/rtc/android/presets/custom-video)
+- 电子白板（用 WebView 承载协作白板，地址就是 `onJoinSucceed` 回调里的 `whiteBoard`）： [电子白板](/zh/rtc/whiteboard)
 - 观众身份与摄像头设备管理： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)（`isAudience` / `getCameraDevices`）
 - 引擎完整接口： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)
 - 音频输出设备管理： [音频路由使用](/zh/rtc/android/advanced/audio-routing)

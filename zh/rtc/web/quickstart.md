@@ -175,4 +175,5 @@ async function leaveChannel() {
 + [大小流与分辨率](/zh/rtc/web/advanced/video-stream-layers) — 讲清采集分辨率、`camera_big`、`camera_small` 与 simulcast
 + [屏幕共享](/zh/rtc/web/advanced/screen-sharing) — 含系统音频采集
 + [自定义推流](/zh/rtc/web/advanced/custom-track) — 使用 Canvas / 自定义 MediaStreamTrack
++ [电子白板](/zh/rtc/whiteboard) — 把协作白板嵌进会中界面
 + [接口文档 - SRTC](/zh/rtc/web/api-reference/SRTC) — 完整 API 参考

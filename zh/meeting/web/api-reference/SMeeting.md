@@ -87,6 +87,11 @@ SMeeting是绝大多数操作的入口。
      */
     getRoomInfo(): RoomInfo | null;
     /**
+     * 获取白板地址（进入会议后可读，见「白板共享」）
+     * @returns
+     */
+    getWhiteBoard(): string | undefined;
+    /**
      * 获取某用户信息
      * @returns
      */

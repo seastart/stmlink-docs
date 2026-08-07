@@ -152,6 +152,7 @@ await srtc.leave();
 - **浏览器拦自动播放** → 收到 `TRACK_AUTOPLAY_FAIL`，要在用户点击等手势之后重新 `startPlay()`。
 - **频道名非法** → 限 64 字节以内，仅大小写字母、数字、下划线 `_`、连字符 `-`。带 `+` `*` 等字符会导致连接异常。
 - **移动端没申请运行时权限** → `startCapture()` 前必须拿到摄像头/麦克风权限。
+- **以为白板要自己集成一套画板** → 白板是服务端托管的 H5 页面，join 响应的 `white_board` 就是拼好授权码的地址，iframe / WebView 嵌上即可；但"谁开了白板"这个状态 SRTC 不广播，要业务自己发频道自定义消息 + 写频道 `props`（SMeeting 层才由 SDK 代管）。
 
 ## 交付前自检
 
@@ -168,5 +169,5 @@ await srtc.leave();
 
 先取 https://docs.stmlink.com/llms.txt 看全站目录，再按需读具体页面（URL 末尾加 `.md` 可直接拿 Markdown）。
 
-- 核心概念 `/zh/rtc/key-concepts` · Token 与鉴权 `/zh/rtc/token` · 错误码规则 `/zh/rtc/error-codes`
+- 核心概念 `/zh/rtc/key-concepts` · Token 与鉴权 `/zh/rtc/token` · 电子白板 `/zh/rtc/whiteboard` · 错误码规则 `/zh/rtc/error-codes`
 - 各端：`/zh/rtc/{web,android,windows,swift,ios,capi}/quickstart`

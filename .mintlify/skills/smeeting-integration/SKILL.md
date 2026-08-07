@@ -165,4 +165,5 @@ await smeeting.exitRoom();
 
 - 概览与三种方式 `/zh/meeting/overview` · 核心概念 `/zh/meeting/key-concepts` · Token `/zh/meeting/token`
 - 服务端极简对接 `/zh/meeting/ui-sdk/server-integration`
+- 白板共享 `/zh/meeting/web/whiteboard`（Android 见 `/zh/meeting/android/advanced/whiteboard`）—— 白板是内嵌的 H5 页面，地址读 `getWhiteBoard()`，共享状态由 SDK 代管，不用自己广播
 - 各端：`/zh/meeting/{web,android,windows,swift,ios}/quickstart`

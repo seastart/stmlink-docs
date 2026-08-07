@@ -88,7 +88,11 @@ try await meeting.requestShare(shareType: .whiteBoard)
 let url = meeting.getWhiteBoard()
 ```
 
-白板的具体交互由你在自己的容器里承载，SDK 只负责同步「现在谁在共享白板」这一状态。
+拿到的是一个拼好授权码的完整 URL，用 `WKWebView` 加载即可。白板的具体交互由你在自己的容器里承载，SDK 只负责同步「现在谁在共享白板」这一状态。
+
+中途入会的人收不到 `roomShareDidStart`，需要自己补一次判断：`RoomInfo.shareState == 2` 就说明会议里已经有人在共享白板。
+
+白板页面的 URL 参数、宿主 JS 接口、生命周期与销毁时机见 [SRTC · 电子白板](/zh/rtc/whiteboard)。
 
 ---
 

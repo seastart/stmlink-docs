@@ -55,7 +55,7 @@ targets: [
 import SRTC
 ```
 
-底层的 WebRTC 与 MQTT 组件由 Swift Package Manager 自动解析，你不需要手动再引入一层。
+底层的 WebRTC 与信令组件由 Swift Package Manager 自动解析，你不需要手动再引入一层。
 
 ---
 
