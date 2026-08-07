@@ -181,7 +181,7 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 | 接口 | 触发时机 |
 | --- | --- |
 | `window.AndroidInterface.onWbDestroy(reason)` | 白板被销毁（被人调了 destroy、或到期清理），宿主应关掉白板视图 |
-| `window.AndroidInterface.onExportImage(base64)` | 用户点了导出按钮（需 `export_btn=1`），回传图片数据 |
+| `window.AndroidInterface.onExportImage(dataUrl)` | 用户点了导出按钮（需 `export_btn=1`），回传 `data:image/png;base64,...` 形式的 Data URL |
 
 **宿主调 H5**：
 
@@ -194,6 +194,8 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 </Note>
 
 小程序端没有 `iframe`，需要用 `<web-view>` 组件承载，它会占满整个页面，且白板域名要先在小程序后台配置为业务域名。
+
+Android 端的完整示例（WebView 配置、JS Bridge 实现、插入图片时的 `onShowFileChooser` 处理）见 [Android · 白板接入](/zh/rtc/android/advanced/whiteboard)。
 
 ---
 

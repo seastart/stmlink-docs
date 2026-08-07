@@ -65,7 +65,7 @@
 
 - [音频路由](https://docs.stmlink.com/zh/rtc/android/advanced/audio-routing.md): Android SRTC 音视频 SDK 通过 AudioRouterManager 管理扬声器、听筒、有线耳机与蓝牙耳机的音频路由
 - [自定义推流](https://docs.stmlink.com/zh/rtc/android/advanced/custom-track.md): Android SRTC 音视频 SDK 通过 LocalCustomVideoTrack 把外部画面（白板、画布、播放器、第三方采集源）作为视频流发布到频道
-- [白板接入](https://docs.stmlink.com/zh/rtc/android/advanced/whiteboard.md): 白板是一个 H5 页面,由 SRTC 在加入频道成功时通过 onJoinSucceed 下发链接;接入方用 WebView 加载并处理约定的交互事件。读它了解链接来源、WebView 配置、JS Bridge 与导出/插图等系统回调的处理
+- [白板接入](https://docs.stmlink.com/zh/rtc/android/advanced/whiteboard.md): 白板是一个 H5 页面，由 SRTC 在加入频道成功时通过 onJoinSucceed 下发链接；接入方用 WebView 加载并处理约定的交互事件。读它了解链接来源、WebView 配置、JS Bridge 与导出/插图等系统回调的处理
 
 ## SRTC 音视频 SDK · Android SDK · 接口文档
 
