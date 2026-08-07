@@ -1034,11 +1034,7 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
   参会人员详情列表（新接口）
   <Expandable title="元素字段">
     <ParamField body="user_id" type="string">
-      用户ID
-    </ParamField>
-
-    <ParamField body="account" type="string">
-      用户帐号
+      用户ID，即你系统里的用户唯一标识
     </ParamField>
 
     <ParamField body="real_name" type="string">
@@ -1078,7 +1074,6 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
   ],
   "conferee_details": [
     {
-      "account": "",
       "avatar": "",
       "nickname": "",
       "real_name": "",

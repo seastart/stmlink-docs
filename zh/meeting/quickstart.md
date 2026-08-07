@@ -63,7 +63,7 @@ sequenceDiagram
   └─ POST /server/v1/meet/create          挂上你的业务单据号 → 拿到 room_no
 
 用户点「进入会议」
-  ├─ POST /stm/srvapi/v1/member/grant     account + 昵称 → token（人不存在就现场建）
+  ├─ POST /stm/srvapi/v1/member/grant     user_id + 昵称 → token（人不存在就现场建）
   └─ 302 跳转 /stm/ui/outer?token=&room_no=
 ```
 

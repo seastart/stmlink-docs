@@ -281,10 +281,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       用户ID
     </ResponseField>
 
-    <ResponseField name="account" type="string">
-      用户帐号
-    </ResponseField>
-
     <ResponseField name="real_name" type="string">
       真实名称
     </ResponseField>
@@ -355,7 +351,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       ],
       "conferee_details": [
         {
-          "account": "",
           "avatar": "",
           "nickname": "",
           "real_name": "",
@@ -564,10 +559,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   用户ID
 </ResponseField>
 
-<ResponseField name="account" type="string">
-  用户帐号
-</ResponseField>
-
 <ResponseField name="real_name" type="string">
   真实名称
 </ResponseField>
@@ -610,7 +601,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   "code": 0,
   "data": [
     {
-      "account": "",
       "avatar": "",
       "enter_at": 0,
       "exit_at": 0,
@@ -975,10 +965,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       用户ID
     </ResponseField>
 
-    <ResponseField name="account" type="string">
-      用户帐号
-    </ResponseField>
-
     <ResponseField name="real_name" type="string">
       真实名称
     </ResponseField>
@@ -1042,7 +1028,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     ],
     "conferee_details": [
       {
-        "account": "",
         "avatar": "",
         "nickname": "",
         "real_name": "",
@@ -1143,7 +1128,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 **请求参数**
 
 <ParamField body="creator" type="string">
-  创建人
+  创建人，即会议主持人。填你系统里的用户唯一标识，与 conferee_details 的 user_id 同一个值
 </ParamField>
 
 <ParamField body="creator_name" type="string">
@@ -1175,7 +1160,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="co_hosts" type="array<string>">
-  联席主持ID列表
+  联席主持ID列表。填你系统里的用户唯一标识，与 conferee_details 的 user_id 同一个值
 </ParamField>
 
 <ParamField body="conferee" type="array<string>">
@@ -1186,11 +1171,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   邀请人员详情列表（新接口）
   <Expandable title="元素字段">
     <ParamField body="user_id" type="string">
-      用户ID
-    </ParamField>
-
-    <ParamField body="account" type="string">
-      用户帐号
+      用户ID，即你系统里的用户唯一标识
     </ParamField>
 
     <ParamField body="real_name" type="string">
@@ -1385,7 +1366,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   ],
   "conferee_details": [
     {
-      "account": "",
       "avatar": "",
       "nickname": "",
       "real_name": "",
@@ -1497,7 +1477,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="creator" type="string">
-  创建人
+  创建人，即会议主持人。填你系统里的用户唯一标识，与 conferee_details 的 user_id 同一个值
 </ParamField>
 
 <ParamField body="title" type="string">
@@ -1524,11 +1504,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   邀请人员详情列表（新接口）
   <Expandable title="元素字段">
     <ParamField body="user_id" type="string">
-      用户ID
-    </ParamField>
-
-    <ParamField body="account" type="string">
-      用户帐号
+      用户ID，即你系统里的用户唯一标识
     </ParamField>
 
     <ParamField body="real_name" type="string">
@@ -1587,7 +1563,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="co_hosts" type="array<string>">
-  联席主持ID列表
+  联席主持ID列表。填你系统里的用户唯一标识，与 conferee_details 的 user_id 同一个值
 </ParamField>
 
 <ParamField body="extend_info" type="object">
@@ -1706,7 +1682,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   ],
   "conferee_details": [
     {
-      "account": "",
       "avatar": "",
       "nickname": "",
       "real_name": "",
@@ -1816,11 +1791,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   参会人员详情列表（新接口）
   <Expandable title="元素字段">
     <ParamField body="user_id" type="string">
-      用户ID
-    </ParamField>
-
-    <ParamField body="account" type="string">
-      用户帐号
+      用户ID，即你系统里的用户唯一标识
     </ParamField>
 
     <ParamField body="real_name" type="string">
@@ -1860,7 +1831,6 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   ],
   "conferee_details": [
     {
-      "account": "",
       "avatar": "",
       "nickname": "",
       "real_name": "",

@@ -16,7 +16,7 @@ description: "不集成 SDK、不做会议界面，业务后端只对三个接�
 
 第 1 步在业务活动创建时做，第 2、3 步在用户点「进入会议」时做。
 
-**不需要预先注册用户。** 换 token 时把 `account` 和昵称一起传过来，人不存在就现场建、
+**不需要预先注册用户。** 换 token 时把 `user_id` 和昵称一起传过来，人不存在就现场建、
 已存在就顺带更新资料。只有当你要在会议客户端里提供通讯录时，才需要额外做
 [批量同步用户](#批量同步用户)。
 
@@ -57,7 +57,7 @@ https://<你的域名>/meeting/stm/srvapi/v1/...    用户体系（同步、授�
 整条链路上认人只靠一个值：**你的系统里的用户唯一标识**。用户 ID、工号、身份证号、
 手机号都行，只要在你那边唯一、且不会变。
 
-所有接口里它都叫 **`account`**——换 token、同步、白名单，填的都是同一个值。
+所有接口里它都叫 **`user_id`**——换 token、同步、白名单，填的都是同一个值。
 
 <Warning>
 **这个值一旦用过就不要再改。** 它是认人的唯一依据，改了等于换了一个人，
@@ -65,9 +65,7 @@ https://<你的域名>/meeting/stm/srvapi/v1/...    用户体系（同步、授�
 </Warning>
 
 <Note>
-别和 `uids` 混：那是我们侧生成的用户 ID，只在 `member/sync` 的返回和
-`member/info` / `member/remove` 的可选入参里出现。日常对接一路用 `account` 就够，
-不必把它存下来。
+我们不再另外生成一套用户 ID，所以没有需要你保存的映射关系。
 </Note>
 
 ## 第 1 步：创建会议
@@ -88,7 +86,7 @@ POST /server/v1/meet/create
   "creator": "01hq8x7k2m",
   "co_hosts": ["01hq8x7k3n"],
   "conferee_details": [
-    { "account": "310101199001011234", "real_name": "张三" }
+    { "user_id": "310101199001011234", "real_name": "张三" }
   ],
   "extend_info": { "bid_no": "ZB-2026-0731", "biz_type": "kaibiao" }
 }
@@ -97,10 +95,12 @@ POST /server/v1/meet/create
 + **`extend_info`** 是挂业务单据的地方。它是一个自由结构的对象，我们只存储和回传，
   把招投标编号放进去，后面收到回调时就能反查到自己的业务
 + **`conferee_details`** 指定参会白名单，配合 `attend_type: 3`（邀请人员参会）
-  就能挡住无关的人。这里的人不需要预先存在，但**每条都要带上 `real_name` 或 `nickname`** ——
-  只给 `account` 而系统里查不到这个人时，该条会被忽略，他就进不了会。
-+ **谁是主持人**由 `creator` 决定，**联席主持人**放 `co_hosts`（数组）。两者填的都是我们侧的
-  用户 ID，从[批量同步用户](#批量同步用户)的返回里拿 —— 这也是极简对接里唯一需要 uid 的地方。
+  就能挡住无关的人。这里的人不需要预先存在：`user_id` 就是身份，只给 `user_id`、
+  系统里查不到这个人，他照样能进会。但那样白名单里这条是没有名字的，参会人列表要等他
+  自己入会才显示得出来，**所以每条尽量带上 `real_name` 或 `nickname`** —— 带了就顺手
+  把人建出来。
++ **谁是主持人**由 `creator` 决定，**联席主持人**放 `co_hosts`（数组）。两者填的也是
+  `user_id`，与白名单里是同一个值，不需要先同步用户再换一个 ID 回来。
   `creator` 不填，服务端不会把任何人标成主持人，这场会谁都拿不到会控权限，建会时记得带上
 + **`conferee_details` 里的 `role` 一般不用传**：用内置角色时它不生效，指定主持人 / 联席主持人
   走上面两个字段。只有开了[自定义角色](/zh/meeting/key-concepts#自定义角色)的项目（比如招投标
@@ -131,7 +131,7 @@ POST /stm/srvapi/v1/member/grant
 
 ```json
 {
-  "account": "310101199001011234",
+  "user_id": "310101199001011234",
   "nickname": "张三",
   "avatar": "https://example.com/avatar/zhangsan.png"
 }
@@ -139,16 +139,17 @@ POST /stm/srvapi/v1/member/grant
 
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
-| `account` | 是 | 用户唯一标识，见[用什么认人](#用什么认人) |
+| `user_id` | 是 | 用户唯一标识，见[用什么认人](#用什么认人) |
 | `nickname` | 否 | 会中显示的名字 |
 | `real_name` | 否 | 真实姓名，留空取 `nickname` |
 | `avatar` | 否 | 头像地址，留空表示不改，不会清掉已有头像 |
+| `mobile` | 否 | 手机号，纯展示用，不参与认人，留空表示不改 |
 
 **人不存在就用这几个字段现场建，已存在就顺带更新。** 所以你不必维护一份「哪些人同步过」
 的账本，每次换 token 都把最新的昵称、头像带上即可，改了名字下次进会就生效。
 
 <Note>
-只传 `account` 而这个人从没出现过时会报错——因为没有昵称，建出来的用户在会中没有名字。
+只传 `user_id` 而这个人从没出现过时会报错——因为没有昵称，建出来的用户在会中没有名字。
 带上 `nickname` 就行。
 </Note>
 
@@ -185,7 +186,7 @@ https://<你的域名>/meeting/stm/ui/outer?token=<第2步的token>&room_no=<第
   └─ POST /server/v1/meet/create        extend_info 挂单据号 → 存下 room_no
 
 用户点「进入会议」
-  ├─ POST /stm/srvapi/v1/member/grant   account + nickname + avatar → token（人不在就现场建）
+  ├─ POST /stm/srvapi/v1/member/grant   user_id + nickname + avatar → token（人不在就现场建）
   └─ 302 到 /stm/ui/outer?token=&room_no=&nickname=
 
 会议过程中（可选）
@@ -213,7 +214,7 @@ POST /stm/srvapi/v1/member/sync
 ```json
 [
   {
-    "account": "310101199001011234",
+    "user_id": "310101199001011234",
     "nickname": "张三",
     "real_name": "张三",
     "avatar": "https://example.com/avatar/zhangsan.png",
@@ -224,26 +225,27 @@ POST /stm/srvapi/v1/member/sync
 
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
-| `account` | 是 | 用户唯一标识，见[用什么认人](#用什么认人) |
+| `user_id` | 是 | 用户唯一标识，见[用什么认人](#用什么认人) |
 | `nickname` | 是 | 会中显示的名字 |
 | `real_name` | 否 | 真实姓名，留空则取 `nickname` |
 | `avatar` | 否 | 头像地址，留空表示不改，不会清掉已有头像 |
 | `department` | 否 | 组织名称 |
+| `mobile` | 否 | 手机号，纯展示用，不参与认人，留空表示不改 |
 | `password_hash` / `salt` | 否 | 只有当用户还需要用账号密码登录会议页时才传 |
 
-返回按 `account` 分成成功与失败两张表：
+返回按 `user_id` 分成成功与失败两张表：
 
 ```json
 {
-  "success": { "310101199001011234": "01hq8x7k2m" },
-  "fail": { "310101199001011299": "..." }
+  "success": { "310101199001011234": "310101199001011234" },
+  "fail": { "310101199001011299": "昵称不能为空" }
 }
 ```
 
-`success` 的值是我们侧的用户 ID。日常接口用 `account` 就够，但建会时的 `creator` 和
-`co_hosts` 只认这个 ID —— 要指定主持人、联席主持人，就把它存下来。
+`success` 的键与值都是你传的 `user_id`，**没有需要存下来的东西**——建会时的 `creator`
+和 `co_hosts` 直接填 `user_id` 即可。`fail` 的值是这条失败的原因。
 
-重复同步同一个 `account` 是更新而不是新建，所以全量推和增量推都行。同一时刻只允许一个
+重复同步同一个 `user_id` 是更新而不是新建，所以全量推和增量推都行。同一时刻只允许一个
 同步任务在跑，并发调用会收到「频率过快 请稍候」。
 
 ### 组织结构的能力边界
@@ -259,11 +261,10 @@ POST /stm/srvapi/v1/member/sync
 **查用户与在线状态** —— `POST /stm/srvapi/v1/member/info`
 
 ```json
-{ "accounts": ["310101199001011234"] }
+{ "user_ids": ["310101199001011234"] }
 ```
 
-返回里带 `is_online`，可以在你的界面上显示「张三 在线」。也可以用 `uids` 按我们侧的
-用户 ID 查。
+返回里带 `is_online`，可以在你的界面上显示「张三 在线」。
 
 **清理离职用户** —— `POST /stm/srvapi/v1/member/remove`
 

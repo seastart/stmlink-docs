@@ -59,7 +59,6 @@ Content-Type: application/json; charset=utf-8
   "meeting_id": "sny038",
   "room_no": "803707296",
   "user_id": "1001",
-  "account": "13345678903",
   "real_name": "张三",
   "nickname": "张三",
   "role": 1
