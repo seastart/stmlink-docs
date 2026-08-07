@@ -128,7 +128,8 @@
                     "group": "进阶实践",
                     "pages": [
                       "zh/rtc/android/advanced/audio-routing",
-                      "zh/rtc/android/advanced/custom-track"
+                      "zh/rtc/android/advanced/custom-track",
+                      "zh/rtc/android/advanced/whiteboard"
                     ]
                   },
                   {
