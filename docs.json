@@ -129,6 +129,7 @@
                   {
                     "group": "进阶实践",
                     "pages": [
+                      "zh/rtc/android/advanced/multi-channel",
                       "zh/rtc/android/advanced/audio-routing",
                       "zh/rtc/android/advanced/custom-track",
                       "zh/rtc/android/advanced/whiteboard"
@@ -138,6 +139,8 @@
                     "group": "接口文档",
                     "pages": [
                       "zh/rtc/android/api-reference/RTCEngine",
+                      "zh/rtc/android/api-reference/RTCChannel",
+                      "zh/rtc/android/api-reference/RTCEngineEvent",
                       "zh/rtc/android/api-reference/LocalCameraTrack",
                       "zh/rtc/android/api-reference/LocalScreenTrack",
                       "zh/rtc/android/api-reference/LocalMicTrack",
@@ -146,6 +149,9 @@
                       "zh/rtc/android/api-reference/RemoteAudioMixTrack",
                       "zh/rtc/android/api-reference/RTCClientEvent",
                       "zh/rtc/android/api-reference/RTCMediaEvent",
+                      "zh/rtc/android/api-reference/RTCCameraDeviceEvent",
+                      "zh/rtc/android/api-reference/RTCMicDeviceEvent",
+                      "zh/rtc/android/api-reference/RTCLocalAudioFrameEvent",
                       "zh/rtc/android/api-reference/RTCImEvent",
                       "zh/rtc/android/api-reference/AudioRouterManager",
                       "zh/rtc/android/api-reference/LogUtil"

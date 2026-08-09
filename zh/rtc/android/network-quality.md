@@ -31,7 +31,7 @@ import cn.seastart.rtc.info.QualityDirection
 import cn.seastart.rtc.info.QualityTrend
 
 rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-    override fun onNetworkQualityChanged(change: NetworkQualityChange) {
+    override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
         // change.direction     : UPLINK / DOWNLINK，本次变化的方向
         // change.previousLevel : 变化前等级
         // change.currentLevel  : 变化后等级（excellent / good / poor / lost）
@@ -97,7 +97,7 @@ import cn.seastart.rtc.impl.RTCMediaSimpleEvent
 import cn.seastart.rtc.statistics.MediaMetric
 
 rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-    override fun onMediaMetric(metric: MediaMetric.Metric) {
+    override fun onMediaMetric(channel: String, metric: MediaMetric.Metric) {
         // 连接质量评估（同 onNetworkQualityChanged 的数据源）
         metric.qualityReport?.let { report ->
             val up = report.uplink.level     // excellent / good / poor / lost
@@ -201,7 +201,7 @@ data class QualityStats(
 上行差和下行差的提示文案不同，需要区分。用 `onNetworkQualityChanged` 时，直接响应变化即可，无需自己去抖：
 
 ```kotlin
-override fun onNetworkQualityChanged(change: NetworkQualityChange) {
+override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
     if (change.trend != QualityTrend.DEGRADED) return
     when (change.direction) {
         QualityDirection.UPLINK ->
@@ -288,7 +288,7 @@ rtcEngine.unSubscribeRemoteTrack(uid, trackId)
 **4. 多路会议**：只订阅当前说话人的视频，其余成员只收音频。当前说话人可通过 `onActiveSpeakersChanged` 获取：
 
 ```kotlin
-override fun onActiveSpeakersChanged(speakers: List<ActiveSpeakerInfo>) {
+override fun onActiveSpeakersChanged(channel: String, speakers: List<ActiveSpeakerInfo>) {
     // speakers 为当前正在说话的用户列表，可据此决定订阅哪些人的视频
     speakers.forEach { it.uid; it.level }
 }
@@ -296,22 +296,29 @@ override fun onActiveSpeakersChanged(speakers: List<ActiveSpeakerInfo>) {
 
 ### 5.4 连接断开与重连
 
-连接状态相关的通知在 `RTCClientEvent` 中，通过 `setRtcClientEvent` 注册。SDK 会在网络中断时自动重连，业务层据此更新 UI 即可：
+连接状态相关的通知在 `RTCClientEvent` 中。首次监听器通过 `join(..., clientEvent, ...)` 传入；SDK 会在网络中断时自动重连，业务层据此更新 UI 即可：
 
 ```kotlin
 import cn.seastart.rtc.impl.RTCClientSimpleEvent
 
-rtcEngine.setRtcClientEvent(object : RTCClientSimpleEvent() {
-    override fun onReconnecting() {
+val clientEvent = object : RTCClientSimpleEvent() {
+    override fun onReconnecting(channel: String) {
         showReconnecting()   // 显示"正在重连"
     }
-    override fun onReconnected() {
+    override fun onReconnected(channel: String) {
         hideReconnecting()   // 重连成功，恢复状态灯与此前主动关闭的摄像头 / 订阅
     }
-    override fun onDisconnected(leaveReason: LeaveReason, statusCode: Int, message: String) {
+    override fun onDisconnected(
+        channel: String,
+        leaveReason: LeaveReason,
+        statusCode: Int,
+        message: String
+    ) {
         // 连接已断开
     }
-})
+}
+
+val rtcChannel = rtcEngine.join(this, token, clientEvent, null)
 ```
 
 ### 5.5 速查表
@@ -345,9 +352,24 @@ class NetworkQualityHandler(
     // 标记是否因弱网主动关了摄像头，用于网络恢复后自动开回
     private var cameraOffByNetwork = false
 
+    // 创建者必须把此监听器传给 RTCEngine.join(...)
+    val clientEvent = object : RTCClientSimpleEvent() {
+        override fun onReconnecting(channel: String) {
+            showReconnecting()
+        }
+
+        override fun onReconnected(channel: String) {
+            hideReconnecting()
+            if (cameraOffByNetwork) {
+                cameraTrack.startCapture(null)
+                cameraOffByNetwork = false
+            }
+        }
+    }
+
     fun attach() {
         rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-            override fun onNetworkQualityChanged(change: NetworkQualityChange) {
+            override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
                 runOnUiThread {
                     // 状态灯：按方向更新（一次回调只表示一个方向）
                     when (change.direction) {
@@ -368,17 +390,6 @@ class NetworkQualityHandler(
             }
         })
 
-        rtcEngine.setRtcClientEvent(object : RTCClientSimpleEvent() {
-            override fun onReconnecting() { showReconnecting() }
-            override fun onReconnected() {
-                hideReconnecting()
-                // 重连成功且此前因弱网关过摄像头 → 自动开回
-                if (cameraOffByNetwork) {
-                    cameraTrack.startCapture(null)
-                    cameraOffByNetwork = false
-                }
-            }
-        })
     }
 
     // 用户确认后：关摄像头保音频
@@ -391,4 +402,4 @@ class NetworkQualityHandler(
 }
 ```
 
-> 示例中 `stopCapture` / `startCapture` / `unPublishLocalVideo` / `unSubscribeRemoteTrack` 均为 SDK 现有方法。关摄像头这类改变通话形态的操作建议通过按钮交给用户确认，未静默执行；普通会议等场景可自行改为自动。
+> 创建 `NetworkQualityHandler` 后先调用 `attach()`，再把 `handler.clientEvent` 传给 `RTCEngine.join(...)`。示例中的 `stopCapture` 等降级操作建议通过按钮交给用户确认，不要静默改变通话形态。

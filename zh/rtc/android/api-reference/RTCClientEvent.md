@@ -1,167 +1,170 @@
 ---
 title: "RTCClientEvent"
-description: "频道会控事件回调：加入成功、远端用户进出、流轨道增删改、自定义消息、断开连接"
+description: "单频道会控事件：入会结果、成员与轨道变化、自定义消息、断开和重连；所有已归属事件均携带频道 ID"
 ---
 
-## 说明
+`RTCClientEvent` 承载一条频道的会控事件。首次监听器必须通过 `RTCEngine.join(..., clientEvent, ...)` 传入；入会成功后可用 `RTCChannel.setRtcClientEvent(...)` 替换或解绑。
 
-`RTCClientEvent` 为会控相关事件回调接口。
+只关心少量事件时，建议继承提供空实现的 `RTCClientSimpleEvent`。
 
-## 接口方法
+## 入会结果
 
 ### onJoinSucceed(channel, uid, whiteBoard)
+
 ```kotlin
 fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?)
 ```
-方法说明：自己加入频道成功回调。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `uid`：`String`，当前用户 ID。
-- `whiteBoard`：`String?`，白板相关信息，可为 `null`。
-返回值说明：无（`Unit`）。
+
+自己加入频道成功。`channel` 为频道 ID，`uid` 为当前用户 ID，`whiteBoard` 为可空的白板地址或信息。应以本回调作为真正入会成功的依据。
+
+### onJoinFailed(channel, statusCode)
+
+```kotlin
+fun onJoinFailed(channel: String?, statusCode: Int)
+```
+
+自己加入频道失败。能够从 token 解出频道 ID 时 `channel` 有值，否则为 `null`；`statusCode` 见 [错误码](/zh/rtc/android/error-codes)。
+
+## 成员事件
 
 ### onUserUpdate(channel, uid)
+
 ```kotlin
 fun onUserUpdate(channel: String, uid: String)
 ```
-方法说明：自己的用户信息更新回调。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `uid`：`String`，当前用户 ID。
-返回值说明：无（`Unit`）。
+
+自己的用户信息更新。
 
 ### onMeMembershipChanged(channel, isMember)
+
 ```kotlin
 fun onMeMembershipChanged(channel: String, isMember: Boolean)
 ```
-方法说明：自己的观众/成员身份发生变化回调。观众升为正式成员（加入成员列表）时 `isMember = true`；正式成员被降为观众（移出成员列表）时 `isMember = false`。仅在身份**变化**时触发；入会时的初始身份请用 [`RTCEngine.isAudience`](/zh/rtc/android/api-reference/RTCEngine) 读取。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `isMember`：`Boolean`，`true` 表示当前为正式成员，`false` 表示当前为观众。
-返回值说明：无（`Unit`）。
+
+自己的观众 / 正式成员身份发生变化。`isMember = true` 表示升级为正式成员，`false` 表示降为观众；入会初始身份通过对应频道的 `isAudience()` 读取。
 
 ### onRemoteUserJoin(channel, uid)
+
 ```kotlin
 fun onRemoteUserJoin(channel: String, uid: String)
 ```
-方法说明：其他用户加入频道回调。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `uid`：`String`，远端用户 ID。
-返回值说明：无（`Unit`）。
+
+远端用户加入频道。
 
 ### onRemoteUserLeave(channel, userInfo, leaveReason)
+
 ```kotlin
-fun onRemoteUserLeave(channel: String, userInfo: UserInfo, leaveReason: LeaveReason)
+fun onRemoteUserLeave(
+    channel: String,
+    userInfo: UserInfo,
+    leaveReason: LeaveReason
+)
 ```
-方法说明：其他用户离开频道回调。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `userInfo`：`UserInfo`，离会用户信息（对象字段请参考 `UserInfo` 文档）。
-- `leaveReason`：`LeaveReason`，离会原因（枚举定义请参考 `LeaveReason` 文档）。
-返回值说明：无（`Unit`）。
+
+远端用户离开频道。`userInfo` 是离会用户的最后一份信息快照。
 
 ### onRemoteUserUpdate(channel, uid)
+
 ```kotlin
 fun onRemoteUserUpdate(channel: String, uid: String)
 ```
-方法说明：其他用户信息更新回调。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `uid`：`String`，远端用户 ID。
-返回值说明：无（`Unit`）。
+
+远端用户信息更新。
+
+## Track 与频道事件
 
 ### onStreamTrackAdd(uid, channel, trackId, trackDesc)
+
 ```kotlin
-fun onStreamTrackAdd(uid: String, channel: String, trackId: String, trackDesc: String)
+fun onStreamTrackAdd(
+    uid: String,
+    channel: String,
+    trackId: String,
+    trackDesc: String
+)
 ```
-方法说明：新增码流回调。  
-参数说明：
-- `uid`：`String`，所属用户 ID。
-- `channel`：`String`，频道标识。
-- `trackId`：`String`，轨道 ID。
-- `trackDesc`：`String`，轨道描述。
-返回值说明：无（`Unit`）。
+
+远端 Track 新增。应使用同一频道对应的 `RTCChannel` 获取和订阅远端 Track。
 
 ### onStreamTrackUpdate(uid, channel, trackId, trackDesc)
+
 ```kotlin
-fun onStreamTrackUpdate(uid: String, channel: String, trackId: String, trackDesc: String)
+fun onStreamTrackUpdate(
+    uid: String,
+    channel: String,
+    trackId: String,
+    trackDesc: String
+)
 ```
-方法说明：码流更新回调。  
-参数说明：
-- `uid`：`String`，所属用户 ID。
-- `channel`：`String`，频道标识。
-- `trackId`：`String`，轨道 ID。
-- `trackDesc`：`String`，轨道描述。
-返回值说明：无（`Unit`）。
+
+远端 Track 信息更新。
 
 ### onStreamTrackRemove(uid, channel, trackInfo)
+
 ```kotlin
-fun onStreamTrackRemove(uid: String, channel: String, trackInfo: TrackInfo)
+fun onStreamTrackRemove(
+    uid: String,
+    channel: String,
+    trackInfo: TrackInfo
+)
 ```
-方法说明：码流移除回调。  
-参数说明：
-- `uid`：`String`，所属用户 ID。
-- `channel`：`String`，频道标识。
-- `trackInfo`：`TrackInfo`，被移除的轨道信息（对象字段请参考 `TrackInfo` 文档）。
-返回值说明：无（`Unit`）。
+
+远端 Track 移除。`TrackInfo` 字段见 [类型定义](/zh/rtc/android/types)。
 
 ### onChannelUpdate(channel, props)
+
 ```kotlin
 fun onChannelUpdate(channel: String, props: String?)
 ```
-方法说明：频道属性更新回调。  
-参数说明：
-- `channel`：`String`，频道标识。
-- `props`：`String?`，频道属性 JSON 字符串，可为 `null`。
-返回值说明：无（`Unit`）。
 
-### onCustomMessage(uid, sid, name, action, content)
-```kotlin
-fun onCustomMessage(uid: String, sid: String, name: String, action: String, content: String)
-```
-方法说明：自定义消息回调。  
-参数说明：
-- `uid`：`String`，消息发送者用户 ID。
-- `sid`：`String`，消息发送者会话 ID。
-- `name`：`String`，发送者名称。
-- `action`：`String`，消息动作标识。
-- `content`：`String`，消息内容。
-返回值说明：无（`Unit`）。
+频道扩展属性更新，`props` 可能为 `null`。
 
-### onDisconnected(leaveReason, statusCode, message)
-```kotlin
-fun onDisconnected(leaveReason: LeaveReason, statusCode: Int, message: String)
-```
-方法说明：服务断开连接且不可恢复时回调（需要重新登录）。  
-参数说明：
-- `leaveReason`：`LeaveReason`，断开原因（枚举定义请参考 `LeaveReason` 文档）。
-- `statusCode`：`Int`，状态码。
-- `message`：`String`，状态描述。
-返回值说明：无（`Unit`）。
+### onCustomMessage(channel, uid, sid, name, action, content)
 
-### onReconnected()
 ```kotlin
-fun onReconnected()
+fun onCustomMessage(
+    channel: String,
+    uid: String,
+    sid: String,
+    name: String,
+    action: String,
+    content: String
+)
 ```
-方法说明：服务重连成功回调。  
-参数说明：无。  
-返回值说明：无（`Unit`）。
 
-### onReconnecting()
-```kotlin
-fun onReconnecting()
-```
-方法说明：服务断开后开始重连回调。  
-参数说明：无。  
-返回值说明：无（`Unit`）。
+收到频道内自定义消息。`channel` 为消息所属频道，其他参数依次为发送者用户 ID、会话 ID、名称、动作标识和消息内容。
 
-### onError(errorCode, message)
+## 连接事件
+
+### onDisconnected(channel, leaveReason, statusCode, message)
+
 ```kotlin
-fun onError(errorCode: Int, message: String)
+fun onDisconnected(
+    channel: String,
+    leaveReason: LeaveReason,
+    statusCode: Int,
+    message: String
+)
 ```
-方法说明：频道级错误回调（例如频道未启动）。  
-参数说明：
-- `errorCode`：`Int`，错误码。
-- `message`：`String`，错误描述。
-返回值说明：无（`Unit`）。
+
+频道发生不可恢复断连。该频道需要重新 `join(...)`；其他频道不受影响。
+
+### onReconnected(channel)
+
+```kotlin
+fun onReconnected(channel: String)
+```
+
+频道断线重连成功。
+
+### onReconnecting(channel)
+
+```kotlin
+fun onReconnecting(channel: String)
+```
+
+频道连接断开并开始自动重连。
+
+:::note
+原 `RTCClientEvent.onError(...)` 已移除。Engine 阻断操作或全局错误统一由 [`RTCEngineEvent.onError(...)`](/zh/rtc/android/api-reference/RTCEngineEvent) 返回。
+:::

@@ -15,7 +15,7 @@ fun startCapture(listener: RTCResultListener?)
 ```
 方法说明：启动摄像头采集。调用前需具备相机权限。  
 参数说明：
-- `listener`：`RTCResultListener?`，启动结果回调；无权限时会回调 `onFail(StatusCode.LACK_PERMISSION.value)`。
+- `listener`：`RTCResultListener?`，启动结果回调；无权限时会回调 `onFail(RtcCameraErrorCode.CAMERA_PERMISSION_DENIED)`（`102231`）。
 返回值说明：无（`Unit`）。
 
 ### stopCapture()

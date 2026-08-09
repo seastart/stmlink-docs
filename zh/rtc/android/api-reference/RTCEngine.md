@@ -23,11 +23,12 @@ fun buildTime(): String
 参数说明：无。  
 返回值说明：`String`，构建时间字符串。
 
-### create(app, enableLocalLog, localLogPath, version)
+### create(app, enableLocalLog, engineEvent, localLogPath, version)
 ```kotlin
 fun create(
     app: Application,
     enableLocalLog: Boolean,
+    engineEvent: RTCEngineEvent,
     localLogPath: String? = null,
     version: String = ""
 ): RTCEngine
@@ -36,6 +37,7 @@ fun create(
 参数说明：
 - `app`：`Application`，应用上下文。
 - `enableLocalLog`：`Boolean`，是否启用本地日志存储。
+- `engineEvent`：`RTCEngineEvent`，与 Engine 同生命周期的错误监听器，参见 [RTCEngineEvent](/zh/rtc/android/api-reference/RTCEngineEvent)。
 - `localLogPath`：`String?`，日志目录；`null` 时使用默认路径。
 - `version`：`String`，上层应用版本标识（可用于日志/排障）。
 
@@ -108,29 +110,31 @@ fun isStartAsr(): Boolean
 
 ## 频道相关
 
-### join(activity, token, options, resultListener)
+### join(activity, token, clientEvent, options)
 ```kotlin
 fun join(
     activity: Activity,
     token: String,
-    options: JoinOptions? = null,
-    resultListener: RTCResultListener?
-)
+    clientEvent: RTCClientEvent,
+    options: JoinOptions? = null
+): RTCChannel?
 ```
-方法说明：加入频道。  
+方法说明：加入一条频道并返回该频道的操作句柄。第一条频道同时成为默认频道，`RTCEngine` 上的扁平频道接口会委托给它；后续频道使用各自返回的 [`RTCChannel`](/zh/rtc/android/api-reference/RTCChannel)。
 参数说明：
 - `activity`：`Activity`，当前页面上下文。
 - `token`：`String`，包含入会必要信息的令牌。
-- `options`：`JoinOptions?`，预留参数，当前版本未生效，传 `null` 即可。
-- `resultListener`：`RTCResultListener?`，调用结果回调。
+- `clientEvent`：`RTCClientEvent`，本频道的首次会控监听器；入会结果通过 `onJoinSucceed` / `onJoinFailed` 返回。
+- `options`：`JoinOptions?`，自动订阅配置，可设置 `autoSubscribeAudio` 与 `autoSubscribeVideo`。
 
-返回值说明：无（`Unit`）。
+返回值说明：`RTCChannel?`。非空仅表示 SDK 已接受请求并创建 Session，不代表入会成功；请求在创建前被拒绝时返回 `null`，失败原因仍通过本次 `clientEvent.onJoinFailed(...)` 返回。SDK 未初始化或已释放时同步抛出 `SdkNotInitializedException`。
+
+> 重复加入相同频道会返回 `null`，并以 `RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS`（`102208`）回调失败；已有频道与监听器保持不变。完整多频道流程见 [多频道](/zh/rtc/android/advanced/multi-channel)。
 
 ### leave()
 ```kotlin
 fun leave()
 ```
-方法说明：离开当前频道。  
+方法说明：离开默认频道。额外频道应调用对应 `RTCChannel.leave()`。
 参数说明：无。  
 返回值说明：无（`Unit`）。
 
@@ -164,25 +168,23 @@ fun setRtcImEvent(e: RTCImEvent)
 
 返回值说明：无（`Unit`）。
 
-### setRtcClientEvent(e)
-```kotlin
-fun setRtcClientEvent(e: RTCClientEvent)
-```
-方法说明：设置会控事件监听器。  
-参数说明：
-- `e`：`RTCClientEvent`，会控回调实现。参见 [RTCClientEvent](/zh/rtc/android/api-reference/RTCClientEvent)。
-
-返回值说明：无（`Unit`）。
-
 ### setRtcMediaEvent(e)
 ```kotlin
 fun setRtcMediaEvent(e: RTCMediaEvent)
 ```
-方法说明：设置媒体事件监听器。  
+方法说明：设置默认频道媒体事件监听器。额外频道使用 `RTCChannel.setRtcMediaEvent(...)`。
 参数说明：
 - `e`：`RTCMediaEvent`，媒体回调实现。参见 [RTCMediaEvent](/zh/rtc/android/api-reference/RTCMediaEvent)。
 
 返回值说明：无（`Unit`）。
+
+### setRtcCameraDeviceEvent(e)
+
+```kotlin
+fun setRtcCameraDeviceEvent(e: RTCCameraDeviceEvent?)
+```
+
+方法说明：设置 Engine 全局摄像头设备监听器，传 `null` 解绑。摄像头采集由所有频道共享，因此事件不携带频道 ID，也不会因多频道而重复回调。详见 [RTCCameraDeviceEvent](/zh/rtc/android/api-reference/RTCCameraDeviceEvent)。
 
 ### setRtcLocalVideoFrameEvent(e)
 ```kotlin
@@ -206,13 +208,29 @@ interface RTCLocalVideoFrameEvent {
 - `onLocalVideoFrame`：回调一帧本地视频。`yuv` 为 SDK 为外部应用单独拷贝的数据，应用层可自行缓存或处理；`stamp` 为帧时间戳；`format` 为帧格式；`facing` 为摄像头朝向。
 - `onLocalVideoFrameSizeChanged`：本地视频帧尺寸或摄像头方向发生变化时回调。
 
+### setRtcLocalAudioFrameEvent(e)
+
+```kotlin
+fun setRtcLocalAudioFrameEvent(e: RTCLocalAudioFrameEvent?)
+```
+
+方法说明：设置共享麦克风采集的本地 PCM 回调，传 `null` 解绑。注册监听器不会自动打开麦克风；必须调用 `LocalMicTrack.startCapture(...)`。详见 [RTCLocalAudioFrameEvent](/zh/rtc/android/api-reference/RTCLocalAudioFrameEvent)。
+
+### setRtcMicDeviceEvent(e)
+
+```kotlin
+fun setRtcMicDeviceEvent(e: RTCMicDeviceEvent?)
+```
+
+方法说明：设置 Engine 全局麦克风输入设备监听器，传 `null` 解绑。详见 [RTCMicDeviceEvent](/zh/rtc/android/api-reference/RTCMicDeviceEvent)。
+
 ## 媒体质量
 
 ### getMetric()
 ```kotlin
 fun getMetric(): MediaMetric.Metric?
 ```
-方法说明：主动获取最近一次采集到的媒体质量快照（含 `qualityReport`）。返回线程安全副本，不触发底层 `getStats`；采样周期约 5 秒，起播初期可能为 `null`。适合"点开详情才计算"的按需诊断场景；弱网档位变化请优先监听 [`RTCMediaEvent.onNetworkQualityChanged`](/zh/rtc/android/api-reference/RTCMediaEvent)。  
+方法说明：主动获取默认频道最近一次采集到的媒体质量快照（含 `qualityReport`）。返回线程安全副本，不触发底层 `getStats`；采样周期约 5 秒，起播初期可能为 `null`。额外频道使用 `RTCChannel.getMetric()`；弱网档位变化请优先监听 [`RTCMediaEvent.onNetworkQualityChanged`](/zh/rtc/android/api-reference/RTCMediaEvent)。
 参数说明：无。  
 返回值说明：`MediaMetric.Metric?`，最近一次质量快照；尚无数据时为 `null`。字段参见 [媒体质量](/zh/rtc/android/media-quality)，获取方式与弱网处理见 [网络质量](/zh/rtc/android/network-quality)。
 
@@ -244,7 +262,23 @@ fun getCameraDevices(): List<CameraDeviceCapability>
 参数说明：无。  
 返回值说明：`List<CameraDeviceCapability>`，无可用设备时返回空列表。类型定义见 [类型定义](/zh/rtc/android/types)。
 
-> 摄像头设备的动态变化（插拔、断开、运行时错误）通过 [`RTCMediaEvent`](/zh/rtc/android/api-reference/RTCMediaEvent) 的 `onCameraDeviceListChanged` / `onCameraDeviceDisconnected` / `onCameraDeviceError` 通知。
+> 摄像头设备的动态变化通过 [`RTCCameraDeviceEvent`](/zh/rtc/android/api-reference/RTCCameraDeviceEvent) 通知。
+
+### getMicDevices()
+
+```kotlin
+fun getMicDevices(): List<MicDeviceCapability>
+```
+
+方法说明：获取当前系统可用的麦克风输入设备能力列表。返回值字段见 [类型定义](/zh/rtc/android/types)。
+
+### switchMicDevice(deviceId)
+
+```kotlin
+fun switchMicDevice(deviceId: String)
+```
+
+方法说明：切换共享麦克风采集使用的输入设备。`deviceId` 来自 `getMicDevices()`，只在本次设备连接期间有效；采集中切换会重建录音链路。也可以通过 `LocalMicTrack` 上的同名方法操作。
 
 ## Track 获取
 
@@ -277,7 +311,7 @@ fun getLocalMicTrack(preOpt: PreOptionMic = PreOptionMic.def): LocalMicTrack
 参数说明：
 - `preOpt`：`PreOptionMic`，麦克风采集/发布预设。参见 [麦克风预设](/zh/rtc/android/presets/microphone)。
 
-返回值说明：`LocalMicTrack`，本地麦克风轨道实例。
+返回值说明：`LocalMicTrack`，本地麦克风轨道实例。获取轨道不会自动打开麦克风；必须调用 [`LocalMicTrack.startCapture(...)`](/zh/rtc/android/api-reference/LocalMicTrack) 后再发布。
 
 ### getLocalCustomVideoTrack(preOpt)
 ```kotlin
@@ -326,7 +360,7 @@ fun publishLocalVideo(track: LocalVideoTrack, publishCustomOpt: PublishCustomOpt
 ```
 方法说明：发布本地视频轨道。  
 参数说明：
-- `track`：`LocalVideoTrack`，本地视频轨道（摄像头 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack) / 录屏 [`LocalScreenTrack`](/zh/rtc/android/api-reference/LocalScreenTrack) / 本地自定义 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack)）。传入其他类型时通过 `listener.onFail` 返回 `ERROR_TRACK_TYPE`（`102002`，参见 [错误码](/zh/rtc/android/error-codes)）。
+- `track`：`LocalVideoTrack`，本地视频轨道（摄像头 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack) / 录屏 [`LocalScreenTrack`](/zh/rtc/android/api-reference/LocalScreenTrack) / 本地自定义 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack)）。传入其他类型时通过 `listener.onFail` 返回 `RtcChannelErrorCode.TRACK_TYPE_INVALID`（`102002`，参见 [错误码](/zh/rtc/android/error-codes)）。
 - `publishCustomOpt`：`PublishCustomOptions?`，发布自定义参数，可为 `null`。参见 [摄像头预设](/zh/rtc/android/presets/camera)。
 - `listener`：`RTCResultListener?`，发布结果回调，可为 `null`。
 
@@ -338,7 +372,7 @@ fun publishLocalVideo(track: LocalVideoTrack, publishCustomOpt: PublishCustomOpt
 ```kotlin
 fun publishLocalAudio(track: LocalAudioTrack, publishCustomOpt: PublishCustomOptions?, listener: RTCResultListener?)
 ```
-方法说明：发布本地音频轨道。  
+方法说明：把已经采集的本地音频轨道发布到默认频道。该接口不会自动启动麦克风采集；应先调用 `LocalMicTrack.startCapture(...)`。
 参数说明：
 - `track`：`LocalAudioTrack`，本地音频轨道。
 - `publishCustomOpt`：`PublishCustomOptions?`，发布自定义参数，可为 `null`。
@@ -363,7 +397,7 @@ fun unPublishLocalVideo(track: LocalVideoTrack, listener: RTCResultListener?)
 ```kotlin
 fun unPublishLocalAudio(track: LocalAudioTrack, listener: RTCResultListener?)
 ```
-方法说明：取消发布本地音频轨道。  
+方法说明：取消默认频道中的本地音频发布，不会停止共享麦克风采集；不再需要采集时还应调用 `LocalMicTrack.stopCapture()`。
 参数说明：
 - `track`：`LocalAudioTrack`，目标音频轨道。
 - `listener`：`RTCResultListener?`，取消发布结果回调，可为 `null`。
@@ -545,12 +579,14 @@ public interface RTCResultListener {
 - `onSuccess()`：调用成功。
 - `onFail(int code)`：调用失败，`code` 为错误码，参见 [错误码](/zh/rtc/android/error-codes)。
 
-### RTCResultListener2\<T\>
+### RTCValueResultListener\<T\>
 ```kotlin
-interface RTCResultListener2<T> {
+interface RTCValueResultListener<T> {
     fun onSuccess(t: T)
     fun onFail(code: Int)
 }
 ```
 - `onSuccess(t)`：调用成功并返回结果对象 `t`。
 - `onFail(code)`：调用失败，`code` 为错误码。
+
+`RTCResultListener2<T>` 已更名为 `RTCValueResultListener<T>`，除类型名外方法签名不变。

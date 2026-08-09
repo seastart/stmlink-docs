@@ -1,25 +1,20 @@
 ---
 title: "快速开始"
-description: "Android SRTC 音视频 SDK 快速接入与基础流程"
+description: "Android SRTC 的最小接入流程，涵盖 Engine 初始化、显式音视频采集、单频道发布订阅与资源释放"
 ---
 
-本文按“初始化 → 绑定回调 → 加入频道 → 发布本地媒体 → 订阅远端媒体 → 离会释放”的顺序，给出 Android SRTC SDK 的最小可用流程。
+本文按“创建 Engine → 绑定回调 → 加入频道 → 启动采集并发布 → 订阅远端媒体 → 离会释放”的顺序，给出 Android SRTC SDK 的最小可用流程。
 
 开始前请先完成以下准备：
 
-- 按照 [集成](/zh/rtc/android/integration) 完成 Maven 仓库、SDK 依赖和基础环境配置。
-- 准备好服务端签发的 `token`，它是调用 `join(...)` 的必填参数。
-- 如果要打开摄像头、麦克风或屏幕共享，请在应用侧先处理好 Android 运行时权限。
-- 如果业务中需要管理扬声器、听筒、蓝牙耳机等输出设备，可继续参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
++ 按照 [集成](/zh/rtc/android/integration) 完成 Maven 仓库、SDK 依赖和基础环境配置。
++ 准备服务端签发的频道 `token`。
++ 在应用侧申请摄像头和麦克风运行时权限。
++ 如需管理扬声器、听筒或蓝牙耳机等输出设备，请参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
 
 ## Step 1：创建并初始化 `RTCEngine`
 
-在调用任何频道、采集、发布、订阅相关接口前，先创建 `RTCEngine` 实例并调用 `initSDK()`。
-
-- `app`：建议传 `Application` 实例。
-- `enableLocalLog`：是否启用本地日志，联调阶段建议开启。
-- `localLogPath`：日志目录；不传时使用 SDK 默认目录。
-- `version`：上层应用版本标识，建议写入 App 版本号，便于排查问题。
+`RTCEngine.create(...)` 必须传入 Engine 级错误监听器。它用于接收无法归入频道业务回调的错误，以及调用未开始频道等阻断错误；`channelId` 无法确定时为 `null`。
 
 ```kotlin
 private lateinit var rtcEngine: RTCEngine
@@ -28,212 +23,182 @@ fun initRtcSdk(application: Application) {
     rtcEngine = RTCEngine.create(
         app = application,
         enableLocalLog = true,
+        engineEvent = object : RTCEngineSimpleEvent() {
+            override fun onError(channelId: String?, errorCode: Int, message: String?) {
+                // 统一记录或展示 Engine 错误
+            }
+        },
         localLogPath = null,
         version = "app: ${BuildConfig.VERSION_NAME}"
     )
-
     rtcEngine.initSDK()
 }
 ```
 
-如果需要查看完整参数说明，可参考 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)。
+完整参数说明见 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine) 和 [RTCEngineEvent](/zh/rtc/android/api-reference/RTCEngineEvent)。
 
-## Step 2：绑定常见回调与媒体参数
+## Step 2：准备频道回调与媒体回调
 
-建议在加入频道前就把回调绑定好，这样从 `join(...)` 开始产生的状态变化都能及时接收到。
+每次 `join(...)` 都要传入该频道自己的 `RTCClientEvent`。只覆写少数事件时，建议继承 `RTCClientSimpleEvent`，避免直接实现完整接口。
 
 ```kotlin
-rtcEngine.setRtcClientEvent(object : RTCClientEvent {
+private val clientEvent = object : RTCClientSimpleEvent() {
     override fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?) {
-        // 自己加入频道成功
-        // 后续可以在这里更新 UI、记录当前 uid、开始展示会中状态
+        // 真正入会成功；可在这里更新 UI 或开始发布
+    }
+
+    override fun onJoinFailed(channel: String?, statusCode: Int) {
+        // 入会失败；statusCode 见错误码文档
     }
 
     override fun onRemoteUserJoin(channel: String, uid: String) {
-        // 远端用户加入频道
+        // 维护本频道成员列表
     }
 
-    override fun onStreamTrackAdd(uid: String, channel: String, trackId: String, trackDesc: String) {
-        // 收到新增码流通知
-        // 通常在这里决定是否订阅远端视频轨道
+    override fun onStreamTrackAdd(
+        uid: String,
+        channel: String,
+        trackId: String,
+        trackDesc: String
+    ) {
+        subscribeRemoteVideo(uid, trackId, trackDesc)
     }
 
-    override fun onStreamTrackRemove(uid: String, channel: String, trackInfo: TrackInfo) {
-        // 远端码流移除
-        // 通常在这里移除对应渲染视图并清理状态
+    override fun onDisconnected(
+        channel: String,
+        leaveReason: LeaveReason,
+        statusCode: Int,
+        message: String
+    ) {
+        // 本频道发生不可恢复断连
+    }
+}
+
+rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
+    override fun onMediaConnected(channel: String) {
+        // 默认频道的流媒体服务器连接成功
     }
 
-    override fun onDisconnected(leaveReason: LeaveReason, statusCode: Int, message: String) {
-        // 服务断开且不可恢复
-        // 一般需要提示用户并重新加入频道或重新鉴权
-    }
-})
-
-rtcEngine.setRtcMediaEvent(object : RTCMediaEvent {
-    override fun onMediaConnected() {
-        // 流媒体服务器连接成功
-    }
-
-    override fun onVolumesReport(volumes: MutableMap<UserTrackDesc, VolumeInfo>) {
-        // 音量信息上报
-        // 可用于说话人高亮、音量柱动画等
-    }
-})
-
-rtcEngine.setRtcImEvent(imEvent)
-
-// 可选：本地视频帧外部回调（如需自行处理本地画面时设置）
-rtcEngine.setRtcLocalVideoFrameEvent(object : RTCLocalVideoFrameEvent {
-    override fun onLocalVideoFrame(yuv: ByteArray?, width: Int, height: Int, stamp: Long, format: Int, facing: Int) {
-        // 拿到本地一帧视频（yuv 为 SDK 单独拷贝的数据）
-    }
-
-    override fun onLocalVideoFrameSizeChanged(width: Int, height: Int, facing: Int) {
-        // 本地帧尺寸或摄像头方向变化
+    override fun onVolumesReport(
+        channel: String,
+        volumes: MutableMap<UserTrackDesc, VolumeInfo>
+    ) {
+        // 频道音量信息，可用于说话人高亮
     }
 })
 ```
 
-常见回调建议重点关注：
-
-- `RTCClientEvent.onJoinSucceed(...)`：以这个回调作为“真正入会成功”的依据。
-- `RTCClientEvent.onRemoteUserJoin(...)` / `onRemoteUserLeave(...)`：维护成员列表。
-- `RTCClientEvent.onStreamTrackAdd(...)` / `onStreamTrackRemove(...)`：维护远端轨道订阅与渲染。
-- `RTCClientEvent.onDisconnected(...)`：处理不可恢复断连。
-- `RTCMediaEvent.onVolumesReport(...)`：做说话人检测或音量展示。
-
-更多回调定义可参考：
-
-- [RTCClientEvent](/zh/rtc/android/api-reference/RTCClientEvent)
-- [RTCMediaEvent](/zh/rtc/android/api-reference/RTCMediaEvent)
-- [RTCImEvent](/zh/rtc/android/api-reference/RTCImEvent)
+所有频道级回调都会显式携带 `channel`，即使监听器只绑定在一个 `RTCChannel` 上，也应使用该参数进行日志和状态隔离。更多定义见 [RTCClientEvent](/zh/rtc/android/api-reference/RTCClientEvent) 与 [RTCMediaEvent](/zh/rtc/android/api-reference/RTCMediaEvent)。
 
 ## Step 3：加入频道
 
-调用 `join(...)` 后，`RTCResultListener.onSuccess()` 只表示请求发送成功；是否真正加入频道，以 `RTCClientEvent.onJoinSucceed(...)` 回调为准。
+`join(...)` 会同步返回 `RTCChannel?`：
 
-`options` 为预留参数，当前版本未生效，传 `null` 即可。
++ 返回非空仅表示 SDK 已接受请求并创建频道句柄，不代表已经入会成功。
++ 真正结果以 `onJoinSucceed(...)` 或 `onJoinFailed(...)` 为准。
++ SDK 未初始化或已经释放时会同步抛出 `SdkNotInitializedException`。
 
 ```kotlin
-rtcEngine.join(
-    activity = this,
-    token = token,
-    options = null,
-    resultListener = object : RTCResultListener {
-        override fun onSuccess() {
-            // join 请求已成功发出
-        }
+private var defaultChannel: RTCChannel? = null
 
-        override fun onFail(code: Int) {
-            // join 请求失败，例如 token 无效或参数错误
-        }
+fun joinChannel(activity: Activity, token: String) {
+    defaultChannel = rtcEngine.join(
+        activity = activity,
+        token = token,
+        clientEvent = clientEvent,
+        options = JoinOptions(
+            autoSubscribeAudio = true,
+            autoSubscribeVideo = false
+        )
+    )
+
+    if (defaultChannel == null) {
+        // 请求在创建频道会话前被拒绝；具体原因仍通过 onJoinFailed 返回
     }
-)
+}
 ```
 
-远端媒体的订阅时机由业务层控制：在 `onStreamTrackAdd(...)` 中按需调用 `subscribeRemoteTrack(...)`（见 Step 5）。
+第一条 `join` 创建默认频道，`RTCEngine` 上的发布、订阅、查询和 `leave()` 等扁平接口都作用于它。SDK 也支持同时加入多个频道；快速开始只讲单频道流程，具体接入见 [多频道](/zh/rtc/android/advanced/multi-channel)。
 
-## Step 4：发布本地媒体
+## Step 4：启动本地采集并发布
+
+以下发布流程应在 `onJoinSucceed(...)` 之后执行。采集与发布是两个独立动作：先显式启动本地采集，再把同一个本地轨道发布到频道。取消发布不会自动停止共享采集；不再需要设备时还要调用轨道的 `stopCapture()`。
 
 ### 4.1 摄像头采集与发布
 
-操作顺序建议固定为：
-
-1. 获取 `LocalCameraTrack`
-2. 绑定本地预览视图
-3. 调用 `startCapture(...)` 启动采集
-4. 在启动成功后调用 `publishLocalVideo(...)`
-
 ```kotlin
-val cameraTrack = rtcEngine.getLocalCameraTrack(PreOptionCamera._720P)
+private lateinit var cameraTrack: LocalCameraTrack
 
-// previewView 需为 SDK 支持的渲染控件类型
-cameraTrack.addPlayView(previewView)
+fun startCamera(previewView: VcsPlayerGlTextureView) {
+    cameraTrack = rtcEngine.getLocalCameraTrack(PreOptionCamera._720P)
+    cameraTrack.addPlayView(previewView)
+    cameraTrack.startCapture(object : RTCResultListener {
+        override fun onSuccess() {
+            rtcEngine.publishLocalVideo(
+                track = cameraTrack,
+                publishCustomOpt = PublishCustomOptions(
+                    desc = TrackDesc.TRACK_MAIN.value,
+                    props = null,
+                    simulcasts = null
+                ),
+                listener = null
+            )
+        }
 
-cameraTrack.startCapture(object : RTCResultListener {
-    override fun onSuccess() {
-        rtcEngine.publishLocalVideo(
-            track = cameraTrack,
-            publishCustomOpt = PublishCustomOptions(
-                desc = TrackDesc.TRACK_MAIN.value,
-                props = null,
-                simulcasts = mutableListOf(
-                    PublishCustomOptions(TrackDesc.TRACK_SUB.value, null, null)
-                )
-            ),
-            listener = null
-        )
-    }
-
-    override fun onFail(code: Int) {
-        // 常见原因：未授予 CAMERA 权限
-    }
-})
+        override fun onFail(code: Int) {
+            // 例如未授予 CAMERA 权限
+        }
+    })
+}
 ```
 
-常见补充操作：
-
-- 切换前后摄像头：`cameraTrack.switchCameraPosition(...)`
-- 特殊设备方向校正：`cameraTrack.setCameraAngleOffset(...)`
-
-详细说明可参考 [LocalCameraTrack](/zh/rtc/android/api-reference/LocalCameraTrack)。
+详细说明见 [LocalCameraTrack](/zh/rtc/android/api-reference/LocalCameraTrack)。
 
 ### 4.2 麦克风采集与发布
 
-麦克风轨道获取后，可以直接调用 `publishLocalAudio(...)` 发布本地音频。
+麦克风采集模块已与入会、发布解耦。`publishLocalAudio(...)` 不再负责打开麦克风，必须先调用 `LocalMicTrack.startCapture(...)`。
 
 ```kotlin
-val micTrack = rtcEngine.getLocalMicTrack(PreOptionMic.def)
+private lateinit var micTrack: LocalMicTrack
 
-rtcEngine.publishLocalAudio(
-    track = micTrack,
-    publishCustomOpt = PublishCustomOptions(
-        TrackDesc.TRACK_AUDIO.value,
-        null,
-        null
-    ),
-    listener = null
-)
+fun startMicrophone() {
+    micTrack = rtcEngine.getLocalMicTrack(PreOptionMic.def)
+    micTrack.startCapture(object : RTCResultListener {
+        override fun onSuccess() {
+            rtcEngine.publishLocalAudio(
+                track = micTrack,
+                publishCustomOpt = PublishCustomOptions(
+                    desc = TrackDesc.TRACK_AUDIO.value,
+                    props = null,
+                    simulcasts = null
+                ),
+                listener = null
+            )
+        }
 
-val micVolume = micTrack.getVolume()
+        override fun onFail(code: Int) {
+            // 例如未授予 RECORD_AUDIO 权限或麦克风打开失败
+        }
+    })
+}
 ```
 
-其中：
-
-- `TrackDesc.TRACK_AUDIO.value`：表示按音频轨道发布。
-- `micTrack.getVolume()`：可用于显示当前本地麦克风音量。
-
-详细说明可参考 [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack)。
+显式采集也可以脱离频道使用。先设置 `setRtcLocalAudioFrameEvent(...)`，再调用 `micTrack.startCapture(...)`，即可接收本地 PCM 数据用于录制或处理；仅注册回调不会自动打开麦克风。详见 [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack) 与 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine#setrtclocalaudioframeevente)。
 
 ### 4.3 屏幕共享（可选）
-
-如果业务中需要共享屏幕，建议按下面顺序操作：
-
-1. 获取 `LocalScreenTrack`
-2. 设置 `RTCScreenStateEvent`
-3. 调用 `request(...)` 拉起系统录屏授权
-4. 在授权成功回调中调用 `startCapture(...)`
-5. 再调用 `publishLocalVideo(...)` 发布屏幕轨道
 
 ```kotlin
 val screenTrack = rtcEngine.getLocalScreenTrack(this, PreOptionScreen.def)
 
-screenTrack.setEvent(object : RTCScreenStateEvent {
-    override fun onScreenRecordStateChanged(state: ScreenRecordState, args: String?) {
-        // 录屏状态变化，例如开始、停止、异常中断等
-    }
-})
-
 screenTrack.request { granted, intent ->
     if (granted && intent != null) {
         screenTrack.startCapture(intent, hasBar = true)
-
         rtcEngine.publishLocalVideo(
             track = screenTrack,
             publishCustomOpt = PublishCustomOptions(
-                TrackDesc.TRACK_SHARE.value,
-                null,
-                null
+                desc = TrackDesc.TRACK_SHARE.value,
+                props = null,
+                simulcasts = null
             ),
             listener = null
         )
@@ -241,84 +206,64 @@ screenTrack.request { granted, intent ->
 }
 ```
 
-开始接入屏幕共享前，建议先确认 [集成](/zh/rtc/android/integration) 中提到的前台服务、Manifest 合并等注意事项。接口细节可参考：
-
-- [LocalScreenTrack](/zh/rtc/android/api-reference/LocalScreenTrack)（含 `RTCScreenStateEvent` 回调说明）
+接口细节见 [LocalScreenTrack](/zh/rtc/android/api-reference/LocalScreenTrack)。
 
 ## Step 5：订阅并播放远端媒体
 
-推荐把远端视频处理拆成下面几个动作：
-
-1. 在 `onStreamTrackAdd(...)` 中拿到 `uid`、`trackId`、`trackDesc`
-2. 用 `getRemoteVideoTrack(uid, trackDesc)` 获取轨道对象
-3. 先绑定远端渲染视图
-4. 再调用 `subscribeRemoteTrack(uid, trackId, ...)` 发起订阅
-5. 在 `onStreamTrackRemove(...)` 中取消订阅并移除渲染视图
+收到 `onStreamTrackAdd(...)` 后，从默认频道获取远端轨道、绑定渲染 View，再发起订阅：
 
 ```kotlin
-override fun onStreamTrackAdd(uid: String, channel: String, trackId: String, trackDesc: String) {
-    val remoteVideoTrack = rtcEngine.getRemoteVideoTrack(uid, trackDesc)
-    remoteVideoTrack?.addPlayView(remoteView)
+private fun subscribeRemoteVideo(uid: String, trackId: String, trackDesc: String) {
+    val remoteTrack = rtcEngine.getRemoteVideoTrack(uid, trackDesc)
+    remoteTrack?.addPlayView(remoteView)
 
-    // preferTrackIds 为大小流/联播候选层，最简用法传 null 即可
-    rtcEngine.subscribeRemoteTrack(uid, trackId, null, object : RTCResultListener {
-        override fun onSuccess() {
-            // 订阅成功
+    rtcEngine.subscribeRemoteTrack(
+        uid = uid,
+        trackId = trackId,
+        preferTrackIds = null,
+        result = object : RTCResultListener {
+            override fun onSuccess() = Unit
+            override fun onFail(code: Int) {
+                // 订阅失败
+            }
         }
-
-        override fun onFail(code: Int) {
-            // 订阅失败
-        }
-    })
+    )
 }
 
+// 放在前面的 clientEvent 实现中
 override fun onStreamTrackRemove(uid: String, channel: String, trackInfo: TrackInfo) {
-    rtcEngine.unSubscribeRemoteTrack(uid, trackInfo.trackId)
-
-    rtcEngine.getRemoteVideoTrack(uid, trackInfo.trackDesc)
-        ?.removePlayView(remoteView)
+    rtcEngine.unSubscribeRemoteTrack(uid, trackInfo.id)
+    rtcEngine.getRemoteVideoTrack(uid, trackInfo.desc)?.removePlayView(remoteView)
 }
 ```
 
-如果你使用的是远端合成音频，也可以直接播放混音轨道：
+详细说明见 [RemoteVideoTrack](/zh/rtc/android/api-reference/RemoteVideoTrack)。
+
+## Step 6：离开频道并释放资源
 
 ```kotlin
-rtcEngine.getRemoteAudioMixTrack()?.startPlay()
-```
+// 先从默认频道停止发布
+rtcEngine.unPublishLocalAudio(micTrack, null)
+rtcEngine.unPublishLocalVideo(cameraTrack, null)
 
-详细说明可参考：
+// 再关闭共享采集设备
+micTrack.stopCapture()
+cameraTrack.stopCapture()
 
-- [RemoteVideoTrack](/zh/rtc/android/api-reference/RemoteVideoTrack)
-- [RemoteAudioMixTrack](/zh/rtc/android/api-reference/RemoteAudioMixTrack)
-
-## Step 6：查询信息、离开频道并释放资源
-
-离会前后，业务层通常会读取当前频道信息、当前用户信息和成员列表；当页面销毁或应用不再使用 RTC 能力时，记得调用 `releaseSDK()`。
-
-```kotlin
-val channelInfo = rtcEngine.getChannelInfo()
-val meInfo = rtcEngine.getMeInfo()
-val users = rtcEngine.getUserInfos()
-
-// 离开当前频道
+// 离开默认频道；也可调用 defaultChannel?.leave()
 rtcEngine.leave()
 
-// 不再使用 RTC 能力时释放资源
+// 应用不再使用 RTC 时释放 Engine
 rtcEngine.releaseSDK()
 ```
 
-建议：
-
-- 页面退出时先 `leave()`，再根据生命周期决定是否 `releaseSDK()`。
-- 如果你还初始化了音频路由管理器，离会或销毁时也要同步释放，具体可参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
+`releaseSDK()` 会释放本轮初始化周期中的全部频道与共享资源；后续仍可重新调用 `initSDK()`。
 
 ## 更多能力
 
-本文只覆盖最小可跑通的主线能力。如果你还需要以下高级场景，可继续阅读对应文档：
-
-- 自定义推流（白板/画布/播放器画面等外部视频帧）： [自定义推流](/zh/rtc/android/advanced/custom-track)、[LocalCustomVideoTrack](/zh/rtc/android/api-reference/LocalCustomVideoTrack)、[自定义视频流预设](/zh/rtc/android/presets/custom-video)
-- 电子白板（用 WebView 承载协作白板，地址就是 `onJoinSucceed` 回调里的 `whiteBoard`）： [电子白板](/zh/rtc/whiteboard)
-- 观众身份与摄像头设备管理： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)（`isAudience` / `getCameraDevices`）
-- 引擎完整接口： [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)
-- 音频输出设备管理： [音频路由使用](/zh/rtc/android/advanced/audio-routing)
-
++ 多频道并发加入、按频道发布订阅与资源隔离：[多频道](/zh/rtc/android/advanced/multi-channel)
++ 麦克风输入设备枚举、切换与 PCM 回调：[LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack)
++ 自定义视频推流：[自定义推流](/zh/rtc/android/advanced/custom-track)
++ 电子白板：[电子白板](/zh/rtc/whiteboard)
++ 音频输出设备管理：[音频路由使用](/zh/rtc/android/advanced/audio-routing)
++ SDK 完整接口：[RTCEngine](/zh/rtc/android/api-reference/RTCEngine)

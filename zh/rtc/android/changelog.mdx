@@ -3,7 +3,25 @@ title: "更新日志"
 description: "Android SRTC 音视频 SDK 版本更新记录"
 ---
 
-> 本页根据 `rtc-android` 仓库 `master` 主干的版本配置和提交记录整理，不包含独立分支的更新。可通过 `RTCEngine.version()` 获取当前 SDK 版本。
+> 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
+
+### [2.0.24_multiChannel.2] - 2026.08.10
+
+#### 新增
+
++ 支持一个 `RTCEngine` 同时加入多个频道；`join(...)` 返回独立的 `RTCChannel` 句柄，默认频道继续兼容 Engine 扁平接口；
++ 麦克风采集与入会、发布解耦，`LocalMicTrack` 新增显式 `startCapture` / `stopCapture`、输入设备枚举与切换能力；
++ 新增 Engine 全局错误、摄像头设备、麦克风设备和本地 PCM 帧监听器；
++ 新增按公共、频道、摄像头、麦克风、流媒体和 HTTP 分域的 `102xxx` SDK 错误码及 `RtcErrorCatalog` 查询能力。
+
+#### 变更
+
++ `RTCEngine.create(...)` 新增必填 `RTCEngineEvent`；
++ `RTCEngine.join(...)` 改为接收本频道 `RTCClientEvent` 并返回 `RTCChannel?`，入会结果由 `onJoinSucceed` / `onJoinFailed` 通知；
++ `RTCClientEvent` 的自定义消息、断开和重连回调新增 `channel` 参数，原 `onError(...)` 移至 `RTCEngineEvent`；
++ `RTCMediaEvent` 的所有回调新增 `channel` 参数，摄像头设备事件迁移到 `RTCCameraDeviceEvent`；
++ `RTCRemoteVideoEvent.onReceiveStreamStatusChange(...)` 新增 `channel` 参数；
++ `RTCResultListener2<T>` 更名为 `RTCValueResultListener<T>`，`StatusCode` 与 Android SDK 自产错误码职责分离。
 
 ### [2.0.23] - 2026.07.27
 #### 优化

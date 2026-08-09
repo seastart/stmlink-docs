@@ -10,7 +10,7 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
 | appId | String? | 应用 ID。 |
-| channel | String? | 频道号。 |
+| channel | String | 频道号。 |
 | created_at | Long | 频道创建时间。 |
 | updated_at | Long | 频道更新时间。 |
 | link_id | Int | 流媒体连接 ID。 |
@@ -63,6 +63,8 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | angle | Int | 视频角度。 |
 | bitrate | Int | 码率。 |
 | sample_rate | Int | 音频采样率。 |
+| fallback_ids | `MutableList<String>?` | 当前层可降级到的更低层 Track ID 列表，不含自己，按画质从高到低排列。 |
+| variant | Boolean? | 是否为 simulcast 副层；主层通常为 `false`。 |
 | track | Int | 流媒体轨道（0~6）。 |
 | props | JsonElement? | 自定义属性。 |
 
@@ -142,4 +144,31 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | supportsFocus | Boolean | 是否支持对焦控制能力。 |
 | supportsExposure | Boolean | 是否支持曝光补偿能力。 |
 | supportsWhiteBalance | Boolean | 是否支持白平衡模式控制能力。 |
+
+## MicDeviceCapability
+
+作用说明：麦克风输入设备能力信息，由 `RTCEngine.getMicDevices()`、`LocalMicTrack.getMicDevices()` 和 [`RTCMicDeviceEvent.onMicDeviceListChanged`](/zh/rtc/android/api-reference/RTCMicDeviceEvent) 返回。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| deviceId | String | 当前系统分配的 `AudioDeviceInfo.id` 字符串，只在本次设备连接期间有效，可用于 `switchMicDevice(...)`。 |
+| key | MicDeviceKey | 跨设备重新插拔时用于匹配的持久键。 |
+| type | Int | `AudioDeviceInfo.TYPE_*` 输入设备类型。 |
+| displayName | String? | SDK 生成的展示名称。 |
+| productName | String? | 系统报告的设备产品名。 |
+| address | String? | 蓝牙地址、USB 路径等设备地址，可能为空。 |
+| sampleRates | List\<Int\> | 设备报告支持的采样率列表。 |
+| channelCounts | List\<Int\> | 设备报告支持的声道数列表。 |
+| isDefault | Boolean | 是否为系统当前默认输入设备。 |
+| isCurrent | Boolean | 是否为 SDK 麦克风采集模块当前使用的设备。 |
+
+## MicDeviceKey
+
+作用说明：麦克风设备的持久匹配键。系统 `deviceId` 在重新插拔后可能变化，SDK 使用 `type + address + productName` 重新匹配设备。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| type | Int | `AudioDeviceInfo.TYPE_*` 输入设备类型。 |
+| address | String? | 设备地址，可能为空。 |
+| productName | String? | 设备产品名，可能为空。 |
 

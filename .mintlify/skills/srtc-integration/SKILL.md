@@ -60,6 +60,13 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 
 **微信小程序**建议用 `<web-view>` 嵌入基于 Web SDK 的页面，一套代码同时覆盖浏览器和小程序。
 
+**Android 多频道版注意**：`RTCEngine.create(...)` 必须传 `RTCEngineEvent`；每次
+`join(activity, token, clientEvent, options)` 返回独立的 `RTCChannel?`，入会结果看
+`clientEvent.onJoinSucceed/onJoinFailed`，不要把非空返回值当成成功。麦克风也必须先
+`LocalMicTrack.startCapture()` 再发布，`publishLocalAudio()` 不会代替应用打开采集。
+同一个 Android `RTCEngine` 重复加入同一频道会在本地以 `102208` 拒绝；上文“后加入
+顶掉先加入”指不同客户端实例已经到达服务端的同 uid 冲突。
+
 ## 标准接入顺序（以 Web 为例，其它端同构）
 
 顺序错了是最常见的失败原因，尤其是第 2 步和第 5 步。

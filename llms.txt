@@ -53,16 +53,17 @@
 ## SRTC 音视频 SDK · Android SDK
 
 - [集成](https://docs.stmlink.com/zh/rtc/android/integration.md): Android SRTC 音视频 SDK 环境配置与依赖安装
-- [快速开始](https://docs.stmlink.com/zh/rtc/android/quickstart.md): Android SRTC 音视频 SDK 快速接入与基础流程
+- [快速开始](https://docs.stmlink.com/zh/rtc/android/quickstart.md): Android SRTC 的最小接入流程，涵盖 Engine 初始化、显式音视频采集、单频道发布订阅与资源释放
 - [网络质量](https://docs.stmlink.com/zh/rtc/android/network-quality.md): Android SRTC 音视频 SDK 流媒体网络质量监测与弱网处理指南
 - [类型定义](https://docs.stmlink.com/zh/rtc/android/types.md): Android 音视频 SDK 的频道、用户、轨道与摄像头能力等数据结构字段说明
 - [枚举类型](https://docs.stmlink.com/zh/rtc/android/enums.md): Android SRTC 音视频 SDK 枚举值定义
 - [媒体质量](https://docs.stmlink.com/zh/rtc/android/media-quality.md): Android SRTC 音视频 SDK 媒体质量统计数据结构说明
-- [错误码](https://docs.stmlink.com/zh/rtc/android/error-codes.md): Android SRTC 音视频 SDK 错误码枚举与处理说明
+- [错误码](https://docs.stmlink.com/zh/rtc/android/error-codes.md): Android SRTC 的 librtc 状态码、SDK 自产 102xxx 分域错误码、查询 API 与透传规则
 - [更新日志](https://docs.stmlink.com/zh/rtc/android/changelog.md): Android SRTC 音视频 SDK 版本更新记录
 
 ## SRTC 音视频 SDK · Android SDK · 进阶实践
 
+- [多频道](https://docs.stmlink.com/zh/rtc/android/advanced/multi-channel.md): 使用一个 RTCEngine 同时加入多个频道，并按频道隔离事件、发布订阅、成员状态和媒体统计
 - [音频路由](https://docs.stmlink.com/zh/rtc/android/advanced/audio-routing.md): Android SRTC 音视频 SDK 通过 AudioRouterManager 管理扬声器、听筒、有线耳机与蓝牙耳机的音频路由
 - [自定义推流](https://docs.stmlink.com/zh/rtc/android/advanced/custom-track.md): Android SRTC 音视频 SDK 通过 LocalCustomVideoTrack 把外部画面（白板、画布、播放器、第三方采集源）作为视频流发布到频道
 - [白板接入](https://docs.stmlink.com/zh/rtc/android/advanced/whiteboard.md): 白板是一个 H5 页面，由 SRTC 在加入频道成功时通过 onJoinSucceed 下发链接；接入方用 WebView 加载并处理约定的交互事件。读它了解链接来源、WebView 配置、JS Bridge 与导出/插图等系统回调的处理
@@ -70,14 +71,19 @@
 ## SRTC 音视频 SDK · Android SDK · 接口文档
 
 - [RTCEngine](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCEngine.md): Android 音视频 SDK 的核心入口：生命周期、频道进出、媒体采集发布订阅、信息查询
+- [RTCChannel](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCChannel.md): 单个频道的操作句柄，隔离该频道的生命周期、事件、成员和 Track、发布订阅、ASR 与媒体统计
+- [RTCEngineEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCEngineEvent.md): 与 RTCEngine 同生命周期的全局错误入口，用于接收阻断操作和无法归入单个频道业务事件的错误
 - [LocalCameraTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalCameraTrack.md): 本地摄像头采集、预览渲染、前后置切换、镜像与闪光灯控制
 - [LocalScreenTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalScreenTrack.md): Android 录屏：申请授权、启停屏幕采集、配置前台服务通知
-- [LocalMicTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalMicTrack.md): 本地麦克风轨道，用于获取采集音量并作为音频发布的输入
+- [LocalMicTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalMicTrack.md): 共享麦克风采集轨道，支持脱离频道显式启停采集、读取音量、枚举和切换输入设备，并发布到一个或多个频道
 - [LocalCustomVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/LocalCustomVideoTrack.md): 向频道推送外部原始 YUV（I420）视频帧的本地轨道，用于白板、画布、播放器等自定义画面
 - [RemoteVideoTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/RemoteVideoTrack.md): 远端视频轨道：画面渲染与接收卡顿状态监听
 - [RemoteAudioMixTrack](https://docs.stmlink.com/zh/rtc/android/api-reference/RemoteAudioMixTrack.md): 远端混音轨道，控制远端声音在本地的播放开关
-- [RTCClientEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCClientEvent.md): 频道会控事件回调：加入成功、远端用户进出、流轨道增删改、自定义消息、断开连接
-- [RTCMediaEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCMediaEvent.md): 媒体层事件回调：连接建立、远端视频帧、网络质量、音量与摄像头设备变化
+- [RTCClientEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCClientEvent.md): 单频道会控事件：入会结果、成员与轨道变化、自定义消息、断开和重连；所有已归属事件均携带频道 ID
+- [RTCMediaEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCMediaEvent.md): 单频道媒体事件：媒体连接、远端视频帧、质量统计、音量和活跃说话人；每个回调均携带频道 ID
+- [RTCCameraDeviceEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCCameraDeviceEvent.md): Engine 全局摄像头设备事件，通知设备列表变化、物理断开和采集运行时错误
+- [RTCMicDeviceEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCMicDeviceEvent.md): Engine 全局麦克风输入设备事件，通知输入设备列表变化及当前采集设备失效
+- [RTCLocalAudioFrameEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCLocalAudioFrameEvent.md): 获取共享麦克风采集产生的本地 PCM 帧，用于本地录制、落盘或应用层音频处理
 - [RTCImEvent](https://docs.stmlink.com/zh/rtc/android/api-reference/RTCImEvent.md): 频道外消息通道（IM）的事件回调：连接状态变化与消息接收
 - [AudioRouterManager](https://docs.stmlink.com/zh/rtc/android/api-reference/AudioRouterManager.md): 管理扬声器、听筒、有线耳机与蓝牙耳机之间的音频输出路由切换
 - [LogUtil](https://docs.stmlink.com/zh/rtc/android/api-reference/LogUtil.md): SDK 日志工具，上层可复用它输出分级日志并统一写入本地日志文件
