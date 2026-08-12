@@ -15,6 +15,7 @@
 - [快速开始](https://docs.stmlink.com/zh/rtc/quickstart.md): 接入 SRTC 的最短路径：四方分工与数据流转、接入前的三件事、各平台入口与典型调用顺序
 - [核心概念](https://docs.stmlink.com/zh/rtc/key-concepts.md): SRTC 的频道、用户与流轨道模型，以及频道的打开与销毁规则
 - [Token 与鉴权](https://docs.stmlink.com/zh/rtc/token.md): SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签发流程与常见错误
+- [多网络线路](https://docs.stmlink.com/zh/rtc/network-line.md): 接入 RTC 服务时的多网络线路（内网/外网）说明：channel/grant 的 net 参数如何决定客户端拿到的服务地址，以及接入方服务端如何判断该填哪个线路
 - [电子白板](https://docs.stmlink.com/zh/rtc/whiteboard.md): 白板是一个内嵌的 H5 页面：会中用户直接用加入频道返回的地址打开，会外用户由业务后端签发授权码；含 URL 参数、共享状态同步、WebView 宿主接口与销毁时机
 - [错误码规则](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则：如何从一个错误码看出它来自哪一层、哪个平台
 - [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
