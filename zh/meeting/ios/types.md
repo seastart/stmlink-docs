@@ -58,6 +58,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | --- |
 | userId | 【字段含义】用户标识<br/>【特别说明】此字段为用户的全局唯一标识。 |
 | name | 【字段含义】用户名称<br/>【特别说明】作为用户昵称使用，使用 UTF-8 编码。 |
+| meetingRoom | 【字段含义】成员所属会议房间，请参见 [MeetingKitRoom](/zh/meeting/ios/api-reference/MeetingKitRoom)<br/>【特别说明】自 `2.0.0` 起新增，用于解析该成员在所属房间内的共享状态；同一 userId 出现在多个房间时据此区分。 |
 | micState | 【字段含义】麦克风状态，请参见 [SEADeviceState](#kiwuX) 中的相关说明。 |
 | cameraState | 【字段含义】摄像头状态，请参见 [SEADeviceState](#kiwuX) 中的相关说明。 |
 | shareType | 【字段含义】共享状态，请参见 [SEAShareType](#Ww9uW) 中的相关说明。 |
@@ -531,6 +532,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | **属性名称** | **描述** |
 | --- | --- |
 | userId | 【字段含义】用户标识(创建者) |
+| meetingRoom | 【字段含义】活动所属会议房间，请参见 [MeetingKitRoom](/zh/meeting/ios/api-reference/MeetingKitRoom)<br/>【特别说明】自 `2.0.0` 起新增，用于解析该房间内的成员扩展数据。 |
 | beginAt | 【字段含义】开始时间 |
 | dur | 【字段含义】签到时长，单位：分钟，0为不限时 |
 | endAt | 【字段含义】结束时间 |

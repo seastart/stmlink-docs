@@ -162,8 +162,10 @@
 
 ## SRTC 音视频 SDK · iOS SDK · 接口文档
 
-- [RTCEngineKit](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineKit.md): iOS（Objective-C）音视频 SDK 的核心入口类：初始化、频道进出、媒体采集发布与订阅
-- [RTCEngineDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineDelegate.md): 频道事件回调协议：连接与重连、自定义消息、频道属性变化、远端用户与流轨道变化
+- [RTCEngineKit](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineKit.md): 进程级引擎单例：初始化与销毁、频道实例的创建与查询、即时通讯、摄像头采集预览、音频路由、屏幕采集进程接入、网络测速与美颜渲染
+- [RTCEngineChannel](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineChannel.md): 单频道实例：加入与离开频道、成员与频道数据查询、码流发布与订阅、音频发送、屏幕共享推送与自定义流
+- [RTCEngineDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineDelegate.md): 进程级引擎事件回调协议：音频路由变更、网络测速结果与应用性能，与具体频道无关
+- [RTCEngineChannelDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineChannelDelegate.md): 频道级会话事件回调协议：连接与重连、成员进出、自定义消息、音频状态、码流质量与屏幕共享，每个回调都带事件来源频道实例
 - [RTCEngineIMDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineIMDelegate.md): 频道外消息通道（IM）的回调协议：连接状态变化与消息接收
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式）
@@ -345,8 +347,10 @@
 
 ## SMeeting 会议 SDK · iOS SDK · 接口列表
 
-- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): iOS（Objective-C）会议 SDK 的总入口单例：登录、会前管理、进出会议、会控、媒体与消息接口
-- [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会中事件回调协议：错误与重连、自己的进退会、会控请求、房间与成员状态变化
+- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): 会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由与屏幕采集进程接入
+- [MeetingKitRoom](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoom.md): 会议房间实例：进出房间、本端音视频与共享、聊天与举手、主持人管理、云录制、等候室、分组讨论、签到与房间数据查询
+- [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会议组件全局事件回调协议：音频路由变更与应用性能，与加入了几个房间无关
+- [MeetingKitRoomDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoomDelegate.md): 会议房间事件回调协议：进出房间、房间设置与主持人操作、成员状态、聊天消息、云录制、屏幕共享、码流质量与签到，每个回调都带事件来源房间实例
 - [MeetingKitIMDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitIMDelegate.md): 会议外消息通道的回调协议：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助
 
 ## SMeeting 会议 SDK · 服务端 API

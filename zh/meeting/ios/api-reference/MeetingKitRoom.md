@@ -1,0 +1,1257 @@
+---
+title: "MeetingKitRoom"
+description: "会议房间实例：进出房间、本端音视频与共享、聊天与举手、主持人管理、云录制、等候室、分组讨论、签到与房间数据查询"
+---
+
+`MeetingKitRoom` 表示一个独立的会议房间，由 `-[MeetingKit createRoomWithDelegate:]` 创建。每个实例独立持有自己的房间上下文（房间号、会议标识、成员缓存、媒体连接），同一账号可以同时创建并加入多个房间，各房间的媒体与业务状态相互独立。
+
+登录、即时通讯、会议查询与预约、本地摄像头采集与预览、音频路由、屏幕采集进程接入等账号级与设备级能力由 [MeetingKit](/zh/meeting/ios/api-reference/MeetingKit) 单例统一提供，房间实例不重复暴露。
+
+<Warning>
+房间实例调用 `exitRoom:` 之后即失效，需要重新入会时请通过 `createRoomWithDelegate:` 创建新实例。
+</Warning>
+
+```objectivec
+MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self];
+[room enterRoom:params onSuccess:^(id _Nullable data) {
+    /// TO DO...
+} onFailed:^(SEAError errCode, NSString * _Nullable errMsg) {
+    /// TO DO...
+}];
+```
+
+## 房间基础属性
+### delegate
+`id<MeetingKitRoomDelegate> delegate`
+
+房间事件代理，详情请参考 [MeetingKitRoomDelegate](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate)。
+
+### rtcChannel
+`RTCEngineChannel *rtcChannel`（只读）
+
+该房间对应的 RTC 频道实例，详情请参考 [RTCEngineChannel](/zh/rtc/ios/api-reference/RTCEngineChannel)。
+
+### roomNo
+`NSString *roomNo`（只读）
+
+当前房间号码，未入会时为空。
+
+### meetingId
+`NSString *meetingId`（只读）
+
+当前会议标识，未入会时为空。
+
+### joined
+`BOOL joined`（只读，getter=isJoined）
+
+是否已经加入房间。
+
+## 房间进出接口
+### enterRoom:onSuccess:onFailed:()
+`- (void)enterRoom:(SEAMeetingEnterParam *)params onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+加入房间
+
+加入房间后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserEnter:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| params | 加入房间参数，参考文档：[SEAMeetingEnterParam](/zh/meeting/ios/types#seameetingenterparam) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### exitRoom:()
+`- (void)exitRoom:(nullable SEASuccessBlock)onSuccess`
+
+离开房间
+
+离开房间后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserExit:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 完成回调 |
+
+## 通话操作接口
+### callUser:onSuccess:onFailed:()
+`- (void)callUser:(NSArray <NSString *> *)userIdLists onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+发起通话
+
+会中主持人可以通过该接口呼叫成员，呼叫成员后，SDK会通过 `MeetingKitIMDelegate` 中的 [onCallReceived:nickname:roomNo:title:()](/zh/meeting/ios/api-reference/MeetingKitIMDelegate) 回调通知对应用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userIdLists | 用户标识列表 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+## 用户操作接口
+### updateName:onSuccess:onFailed:()
+`- (void)updateName:(NSString *)username onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+用户更新昵称
+
+用户更新昵称后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserNameChanged:nickname:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| username | 新昵称 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### requestOpenCamera:view:onSuccess:onFailed:()
+`- (void)requestOpenCamera:(BOOL)frontCamera view:(VIEW_CLASS *)view onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求打开摄像头
+
+在房间内打开本地摄像头后，默认推送本地视频流，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserCameraStateChanged:cameraState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| frontCamera | 摄像头方向，YES-前置摄像头 NO-后置摄像头 |
+| view | 视频渲染视图 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### requestOpenMic:onFailed:()
+`- (void)requestOpenMic:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求打开麦克风
+
+在房间内打开本地麦克风后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserMicStateChanged:micState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### closeCamera:onFailed:()
+`- (void)closeCamera:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+关闭摄像头
+
+在房间内关闭本地摄像头后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserCameraStateChanged:cameraState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### closeMic:onFailed:()
+`- (void)closeMic:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+关闭麦克风
+
+在房间内关闭本地麦克风后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserMicStateChanged:micState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### requestShare:onSuccess:onFailed:()
+`- (void)requestShare:(SEAShareType)shareType onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求开启共享
+
+开启共享后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomShareStart:shareType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| shareType | 共享类型，参考文档：[SEAShareType](/zh/meeting/ios/types#seasharetype) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### stopShare:onFailed:()
+`- (void)stopShare:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+关闭共享
+
+关闭共享后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomShareStop:shareType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| shareType | 共享类型，参考文档：[SEAShareType](/zh/meeting/ios/types#seasharetype) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### sendRoomChatMessage:messageType:targetId:onSuccess:onFailed:()
+`- (void)sendRoomChatMessage:(NSString *)message messageType:(SEAMessageType)messageType targetId:(nullable NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+发送聊天消息
+
+发送聊天消息后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onReceiveChatMessage:message:messageType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| message | 聊天消息 |
+| messageType | 消息类型，参考文档：[SEAMessageType](/zh/meeting/ios/types#seamessagetype) |
+| targetId | 目标标识，为空时表示全房间接收 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### sendRoomCustomMessage:targetId:onSuccess:onFailed:()
+`- (void)sendRoomCustomMessage:(NSString *)message targetId:(nullable NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+发送自定义消息
+
+发送自定义消息后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onReceiveChatMessage:message:messageType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| message | 聊天消息 |
+| targetId | 目标标识，为空时表示全房间接收 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### getChatList:onFailed:()
+`- (void)getChatList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取聊天列表
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEAChatListModel](/zh/meeting/ios/types#seachatlistmodel) |
+| onFailed | 失败回调 |
+
+
+### getMoreChatList:onFailed:()
+`- (void)getMoreChatList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取更多聊天列表（翻页操作）
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEAChatListModel](/zh/meeting/ios/types#seachatlistmodel) |
+| onFailed | 失败回调 |
+
+
+### requestHandup:onSuccess:onFailed:()
+`- (void)requestHandup:(SEAHandupType)handupType onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求举手
+
+请求举手后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomHandUpChanged:enable:handupType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| handupType | 聊天消息，参考文档：[SEAHandupType](/zh/meeting/ios/types#seahanduptype) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### cancelHandup:onSuccess:onFailed:()
+`- (void)cancelHandup:(SEAHandupType)handupType onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+取消举手
+
+取消举手后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomHandUpChanged:enable:handupType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| handupType | 举手类型，参考文档：[SEAHandupType](/zh/meeting/ios/types#seahanduptype) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### confirmAdminOpenCamera:frontCamera:view:onSuccess:onFailed:()
+`- (void)confirmAdminOpenCamera:(NSString *)targetId frontCamera:(BOOL)frontCamera view:(VIEW_CLASS *)view onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+回复同意打开摄像头请求
+
+当收到主持人或联席主持人邀请您开启摄像头，如果您同意开启摄像头，需要调用该接口回复给对应管理人员；举手后，收到主持人或联席主持人的处理结果通知，如果您需要开启摄像头，同样需要调用该接口回复给对应管理人员。
+
+回复同意打开摄像头请求后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserCameraStateChanged:cameraState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetId | 目标标识，请求或同意您开启摄像头请求的管理者标识 |
+| frontCamera | 摄像头方向，YES-前置摄像头 NO-后置摄像头 |
+| view | 视频渲染视图 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### confirmAdminOpenMic:onSuccess:onFailed:()
+`- (void)confirmAdminOpenMic:(NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+回复同意打开麦克风请求
+
+当收到主持人或联席主持人邀请您开启麦克风，如果您同意开启麦克风，需要调用该接口回复给对应管理人员；举手后，收到主持人或联席主持人的处理结果通知，如果您需要开启麦克风，同样需要调用该接口回复给对应管理人员。
+
+回复同意打开麦克风请求后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserMicStateChanged:micState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetId | 目标标识，请求或同意您开启麦克风请求的管理者标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### confirmAdminRoomShare:shareType:onSuccess:onFailed:()
+`- (void)confirmAdminRoomShare:(NSString *)targetId shareType:(SEAShareType)shareType onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+回复同意打开房间共享请求
+
+当收到主持人或联席主持人邀请您开启共享，如果您同意开启共享，需要调用该接口回复给对应管理人员；举手后，收到主持人或联席主持人的处理结果通知，如果您需要开启共享，同样需要调用该接口回复给对应管理人员。
+
+回复同意打开共享请求后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomShareStart:shareType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetId | 目标标识，请求或同意您开启房间共享请求的管理者标识 |
+| shareType | 共享类型，参考文档：[SEAShareType](/zh/meeting/ios/types#seasharetype) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+## 音频控制相关接口
+### switchSpeaker:()
+`- (void)switchSpeaker:(BOOL)enabled`
+
+设置远端音频播放状态
+
+用户可通过该接口开启或关闭远端音频播放，不会切换扬声器、听筒或外设路由。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enabled | 远端音频播放状态，YES-开启 NO-关闭 |
+
+
+### enabledAudioModule:()
+`- (void)enabledAudioModule:(BOOL)enabled`
+
+设置本端音频单元启停
+
+自`1.3.6`起支持。录像直播等本端不采集、不接收 RTC 音频的纯本地播放场景，关闭音频单元可释放底层语音处理单元，避免本地播放器的播放音量被压低；返回该类场景后需将其恢复为自动管理。SDK 每次进房会自动复位为自动管理。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enabled | YES-由底层自动管理音频单元 NO-停止音频单元 |
+
+
+### enabledSendAudio:()
+`- (RTCEngineError)enabledSendAudio:(BOOL)enabled`
+
+暂停/恢复向该房间发布本端音频流
+
+自`2.0.0`起支持。多房间场景下，某个房间暂停发送音频不会影响其它房间。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enabled | YES-开启音频 NO-关闭音频 |
+
+## 视频渲染相关接口
+### publishLocalVideo:()
+`- (RTCEngineError)publishLocalVideo:(BOOL)publish`
+
+暂停/恢复向该房间发布本端视频流
+
+自`2.0.0`起支持。摄像头在 iOS 上是单路共享硬件，采集与预览由 [MeetingKit](/zh/meeting/ios/api-reference/MeetingKit) 单例控制，是否把该路画面推送到本房间由当前实例独立控制。多房间场景下，某个房间暂停推流不会影响其它房间。
+
+| 参数 | 描述 |
+| :--- | --- |
+| publish | YES-恢复 NO-暂停 |
+
+
+### startRemoteView:streamType:view:()
+`- (void)startRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType view:(VIEW_CLASS *)view`
+
+开始播放远端用户视频
+
+开始播放远端用户视频，并绑定视频渲染资源。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 远端用户标识 |
+| streamType | 视频流类型，参考文档：[SEAVideoStreamType](/zh/meeting/ios/types#seavideostreamtype) |
+| view | 视频渲染视图 |
+
+
+### stopRemoteView:streamType:()
+`- (void)stopRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType`
+
+停止播放远端用户视频
+
+停止播放远端用户视频，并释放视频渲染资源。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 远端用户标识 |
+| streamType | 视频流类型，参考文档：[SEAVideoStreamType](/zh/meeting/ios/types#seavideostreamtype) |
+
+
+### stopAllRemoteViewWithUserId:()
+`- (void)stopAllRemoteViewWithUserId:(NSString *)userId`
+
+停止播放远端用户的所有视频
+
+停止播放远端用户的所有视频，并释放全部渲染资源。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 远端用户标识 |
+
+
+### startRemoteMixture:()
+`- (void)startRemoteMixture:(VIEW_CLASS *)view`
+
+订阅远端合成画面视频流
+
+订阅远端合成画面视频流，并绑定视频渲染控件。
+
+| 参数 | 描述 |
+| :--- | --- |
+| view | 视频渲染视图 |
+
+
+### stopRemoteMixture()
+`- (void)stopRemoteMixture`
+
+停止订阅远端合成画面视频流
+
+停止订阅远端合成画面视频流，并释放渲染控件。
+
+
+### startRemoteRetweet:view:()
+`- (void)startRemoteRetweet:(NSString *)streamName view:(VIEW_CLASS *)view`
+
+订阅远端转推音视频流（webrtc 取流）
+
+订阅由外部传入流名的远端转推音视频流，单条连接同时接收音视频，并绑定视频渲染控件。转推流不作为远端用户视频数据上报，其接收状态通过 onReceiveRetweetStreamStatusChange:status: 单独通知。目前仅支持 `wangsu` 流媒体供应商。
+
+| 参数 | 描述 |
+| :--- | --- |
+| streamName | 需要订阅的远端流名（由外部传入） |
+| view | 视频渲染视图 |
+
+
+### stopRemoteRetweet:()
+`- (void)stopRemoteRetweet:(NSString *)streamName`
+
+停止订阅远端转推音视频流
+
+停止订阅指定流名的远端转推音视频流，并释放渲染控件。
+
+| 参数 | 描述 |
+| :--- | --- |
+| streamName | 需要停止订阅的远端流名（由外部传入） |
+
+## 屏幕共享相关接口
+### stopScreenRecord()
+`- (void)stopScreenRecord`
+
+宿主程序主动关闭屏幕采集
+
+此方法在宿主程序中使用，用于用户主动关闭屏幕共享使用。
+
+关闭屏幕采集后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onScreenRecordStatus:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知您当前设备采集状态。此时，需要根据回调状态选择调用 请求开启共享 还是 关闭共享。
+
+### publishScreenViewCaptureWithPixelBuffer:displayAngle:()
+`- (void)publishScreenViewCaptureWithPixelBuffer:(CVPixelBufferRef)pixelBuffer displayAngle:(int)displayAngle`
+
+发布视图录制的共享流，即：用户可以通过该接口送入与屏幕共享共用轨道的视频流数据。
+
+**参数**
+
+| pixelBuffer |  UIView采集的像素数据(CVPixelBufferRef) |
+| --- | --- |
+| displayAngle | 显示角度(0/90/180/270) |
+
+### enabledViewCaptureShare:()
+`- (RTCEngineError)enabledViewCaptureShare:(BOOL)enabled`
+
+设置视图采集共享，该接口用来通知SDK，当前共享屏幕轨道推送的是屏幕采集流还是视图录制流；在调用`publishScreenViewCaptureWithPixelBuffer:displayAngle:()`之前需先调该接口进行SDK标记。
+
+**参数**
+
+| enabled |  启用状态 YES-开启 NO-关闭 |
+| --- | --- |
+
+## 主持人操作接口
+### adminDestroyRoom:onFailed:()
+`- (void)adminDestroyRoom:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+解散房间（只有主持人或联席主持人能够调用）
+
+房间解散后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onExitRoom:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomCameraState:selfUnmuteCameraDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomCameraState:(BOOL)cameraDisabled selfUnmuteCameraDisabled:(BOOL)selfUnmuteCameraDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间全体禁视频，控制当前房间内所有用户是否可打开摄像头采集设备的权限状态（只有主持人或联席主持人能够调用）
+
+更新房间全体禁视频后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomCameraStateChanged:selfUnmuteCameraDisabled:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| cameraDisabled | 房间摄像头禁用状态，YES-禁用 NO-不禁用 |
+| selfUnmuteCameraDisabled | 是否禁止自我解除摄像头状态，YES-禁止 NO-不禁止 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomMicState:selfUnmuteMicDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomMicState:(BOOL)micDisabled selfUnmuteMicDisabled:(BOOL)selfUnmuteMicDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间全体禁音频，控制当前房间内所有用户是否可打开麦克风采集设备的权限状态（只有主持人或联席主持人能够调用）
+
+更新房间全体禁音频后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomMicStateChanged:selfUnmuteMicDisabled:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| micDisabled | 房间麦克风禁用状态，YES-禁用 NO-不禁用 |
+| selfUnmuteMicDisabled | 是否禁止自我解除麦克风状态，YES-禁止 NO-不禁止 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomSelfUnmuteCameraDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomSelfUnmuteCameraDisabled:(BOOL)selfUnmuteCameraDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间是否禁止自我解除视频状态，控制当前房间内所有用户是否可以自主打开摄像头采集设备的权限状态
+
+更新房间是否禁止自我解除视频状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomCameraStateChanged:selfUnmuteCameraDisabled:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| selfUnmuteCameraDisabled | 是否禁止自我解除摄像头状态，YES-禁止 NO-不禁止 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomSelfUnmuteMicDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomSelfUnmuteMicDisabled:(BOOL)selfUnmuteMicDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间是否禁止自我解除音频状态，控制当前房间内所有用户是否可以自主打开麦克风采集设备的权限状态
+
+更新房间是否禁止自我解除音频状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomMicStateChanged:selfUnmuteMicDisabled:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| selfUnmuteMicDisabled | 是否禁止自我解除麦克风状态，YES-禁止 NO-不禁止 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomChatDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomChatDisabled:(BOOL)chatDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间聊天禁用状态，控制当前房间内所有用户是否可进行聊天的权限状态（只有主持人或联席主持人能够调用）
+
+更新房间聊天禁用状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomChatDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| chatDisabled | 聊天禁用状态，YES-禁用 NO-不禁用 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomShareDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomShareDisabled:(BOOL)shareDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间共享禁用状态，控制当前房间内所有用户是否可进行共享的权限状态（只有主持人或联席主持人能够调用）
+
+更新房间共享禁用状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomShareDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| shareDisabled | 共享禁用状态，YES-禁用 NO-不禁用 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomScreenshotDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomScreenshotDisabled:(BOOL)screenshotDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间截屏开关状态，控制当前房间内所有用户是否可进行截屏的权限状态（只有主持人或联席主持人能够调用）
+
+更新房间截屏开关状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomScreenshotDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| screenshotDisabled | 截屏禁用状态，YES-禁用 NO-不禁用 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomWatermarkDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateRoomWatermarkDisabled:(BOOL)watermarkDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间水印开关状态，控制当前房间内是否开启水印状态（只有主持人或联席主持人能够调用）
+
+更新房间水印开关状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomWatermarkDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| watermarkDisabled | 房间水印状态，YES-开启 NO-关闭 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateRoomLocked:onSuccess:onFailed:()
+`- (void)adminUpdateRoomLocked:(BOOL)locked onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间锁定状态，控制当前房间内是否锁定状态（只有主持人或联席主持人能够调用）
+
+更新房间锁定状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomLockedChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| locked | 锁定状态，YES-开启 NO-关闭 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateNickname:nickname:onSuccess:onFailed:()
+`- (void)adminUpdateNickname:(NSString *)userId nickname:(NSString *)nickname onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新用户昵称（只有主持人或联席主持人能够调用）
+
+更新用户昵称后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserNameChanged:nickname:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| nickname | 用户昵称 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateUserRole:userRole:onSuccess:onFailed:()
+`- (void)adminUpdateUserRole:(NSString *)userId userRole:(SEAUserRole)userRole onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新用户角色（只有主持人或联席主持人能够调用）
+
+更新用户角色后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserRoleChanged:userRole:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| userRole | 用户角色，参考文档：[SEAUserRole](/zh/meeting/ios/types#seauserrole) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminMoveHost:onSuccess:onFailed:()
+`- (void)adminMoveHost:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人转移（只有主持人或联席主持人能够调用）
+
+主持人转移后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomMoveHost:sourceUserId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateUserChatDisabled:chatDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateUserChatDisabled:(NSString *)userId chatDisabled:(BOOL)chatDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人更新用户聊天状态（只有主持人或联席主持人能够调用）
+
+主持人更新用户聊天状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserChatDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| chatDisabled | 禁用状态，YES-禁用 NO-不禁用 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateUserDrawDisabled:drawDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateUserDrawDisabled:(NSString *)userId drawDisabled:(BOOL)drawDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人更新用户涂鸦状态（只有主持人或联席主持人能够调用）
+
+主持人更新用户涂鸦状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserDrawDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| drawDisabled | 禁用状态，YES-禁用 NO-不禁用 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminRequestUserOpenShare:onSuccess:onFailed:()
+`- (void)adminRequestUserOpenShare:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求打开成员屏幕共享（只有主持人或联席主持人能够调用）
+
+请求打开成员屏幕共享后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRequestOpenShare:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内指定用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminRequestUserOpenCamera:onSuccess:onFailed:()
+`- (void)adminRequestUserOpenCamera:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求打开成员摄像头（只有主持人或联席主持人能够调用）
+
+请求打开成员摄像头后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRequestOpenCamera:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内指定用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminCloseUserCamera:onSuccess:onFailed:()
+`- (void)adminCloseUserCamera:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+关闭远端用户摄像头（只有主持人或联席主持人能够调用）
+
+关闭远端用户摄像头后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserCameraStateChanged:cameraState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminRequestUserOpenMic:onSuccess:onFailed:()
+`- (void)adminRequestUserOpenMic:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+请求打开成员麦克风（只有主持人或联席主持人能够调用）
+
+请求打开成员麦克风后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRequestOpenMic:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内指定用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminCloseUserMic:onSuccess:onFailed:()
+`- (void)adminCloseUserMic:(NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+关闭远端用户麦克风（只有主持人或联席主持人能够调用）
+
+关闭远端用户麦克风后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onUserMicStateChanged:micState:reason:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminKickUserOut:joinDisabled:onSuccess:onFailed:()
+`- (void)adminKickUserOut:(NSString *)userId joinDisabled:(BOOL)joinDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+踢出成员（只有主持人或联席主持人能够调用）
+
+踢出成员后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onExitRoom:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内指定用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| joinDisabled | 是否禁止再次加入房间，`YES`-禁止 `NO`-不禁止 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminStopRoomShare:onFailed:()
+`- (void)adminStopRoomShare:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+关闭共享（只有主持人或联席主持人能够调用）
+
+关闭共享后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onAdminRoomShareStop:shareType:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminConfirmHandup:handupType:approve:onSuccess:onFailed:()
+`- (void)adminConfirmHandup:(NSString *)userId handupType:(SEAHandupType)handupType approve:(BOOL)approve onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+处理举手申请（只有主持人或联席主持人能够调用）
+
+处理举手申请后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onHandupConfirm:approve:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间指定用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| handupType | 举手申请类型 |
+| approve | 处理举手结果，YES-同意 NO-拒绝 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateConferee:onSuccess:onFailed:()
+`- (void)adminUpdateConferee:(NSArray <NSString *> *)conferee onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人更新受邀成员（只有主持人或联席主持人能够调用）
+
+更新受邀成员后，SDK 会将目标成员添加到会议的受邀成员列表。同时，目标成员也可通过查看待参加会议列表找到该会议。
+
+| 参数 | 描述 |
+| :--- | --- |
+| conferee | 成员标识列表 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminInviteAgent:onSuccess:onFailed:()
+`- (void)adminInviteAgent:(NSArray <SEAInviteModel *> *)invitesList onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人邀请设备入会（只有主持人或联席主持人能够调用）
+
+邀请设备入会后，SDK 会将 SIP/H323 等目标设备拉进会议参会，如果当前设备已在其它会议等异常情况 SDK 会通过`onFailed`回调通知具体失败原因。
+
+| 参数 | 描述 |
+| :--- | --- |
+| invitesList | 邀请列表，参考文档：[SEAInviteModel](/zh/meeting/ios/types#seainvitemodel) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+## 云录制相关接口
+### getCloudRecordDetail:onFailed:()
+`- (void)getCloudRecordDetail:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取云录制详情（只有主持人或联席主持人能够调用）
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEACloudRecordDetailsModel](/zh/meeting/ios/types#seacloudrecorddetailsmodel) |
+| onFailed | 失败回调 |
+
+
+### getCloudRecordConfig:onFailed:()
+`- (void)getCloudRecordConfig:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取云录制配置（只有主持人或联席主持人能够调用）
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEACloudRecordConfigModel](/zh/meeting/ios/types#seacloudrecordconfigmodel) |
+| onFailed | 失败回调 |
+
+
+### startCloudRecord:onSuccess:onFailed:()
+`- (void)startCloudRecord:(SEACloudRecordParam *)params onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+开启云录制（只有主持人或联席主持人能够调用）
+
+| 参数 | 描述 |
+| :--- | --- |
+| params | 云录制参数，参考文档：[SEACloudRecordParam](/zh/meeting/ios/types#seacloudrecordparam) |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### stopCloudRecord:onSuccess:onFailed:()
+`- (void)stopCloudRecord:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+停止云录制（只有主持人或联席主持人能够调用）
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+## 等候室相关接口
+### exitWaitingRoom:onSuccess:()
+`- (void)exitWaitingRoom:(NSString *)roomNo onSuccess:(nullable SEASuccessBlock)onSuccess`
+
+请求离开等候室
+
+用户离开等候室后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [onRoomUserEnterWaitingRoom:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理员用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| roomNo | 会议号码 |
+| onSuccess | 成功回调 |
+
+
+### adminUpdateWaitingRoomDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateWaitingRoomDisabled:(BOOL)waitingRoomDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新房间等候室禁用状态，控制当前房间内是否开启等候室状态（只有主持人或联席主持人能够调用）
+
+更新房间等候室禁用状态后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomWaitingRoomDisabledChanged:userId:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| waitingRoomDisabled | 房间等候室禁用状态，YES-禁用 NO-不禁用 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminMoveInWaitingRoom:nickname:onSuccess:onFailed:()
+`- (void)adminMoveInWaitingRoom:(NSString *)userId nickname:(NSString *)nickname onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+将会议室成员移动到等候室，管理员用户可通过该接口将会中成员移至等候室中（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomMoveInWaitingRoom:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知给目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识 |
+| nickname | 用户昵称 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminMoveOutWaitingRoom:onSuccess:onFailed:()
+`- (void)adminMoveOutWaitingRoom:(nullable NSString *)userId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+将等候室人员移动到会议室，管理员用户可通过该接口将当前等候室中成员移至会议室中（只有主持人或联席主持人能够调用），SDK会通过 `MeetingKitIMDelegate` 中的 [onWaitingRoomMoveInRoom:title:()](/zh/meeting/ios/api-reference/MeetingKitIMDelegate) 回调通知给目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| userId | 用户标识，传空表示全部成员 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminGetWaitingRoomUserList:onFailed:()
+`- (void)adminGetWaitingRoomUserList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人获取等候室用户列表
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEAWaitingRoomMemberListModel](/zh/meeting/ios/types#seawaitingroommemberlistmodel) |
+| onFailed | 失败回调 |
+
+## 分组讨论相关接口
+### subMeetingHelp:onFailed:()
+`- (void)subMeetingHelp:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+小组成员请求管理员帮助，SDK会通过 `MeetingKitIMDelegate` 中的 [onSubMettingAskingHelp:meetingId:title:()](/zh/meeting/ios/api-reference/MeetingKitIMDelegate) 回调通知给管理员用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateEnterBeforeHostDisabled:onSuccess:onFailed:()
+`- (void)adminUpdateEnterBeforeHostDisabled:(BOOL)enterBeforeHostDisabled onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+更新禁止在主持人前入会状态，控制当前房间内是否允许在主持人前入会状态（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enterBeforeHostDisabled | 禁止状态，YES-禁止 NO-不禁止 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminCreateSubMeeting:onSuccess:onFailed:()
+`- (void)adminCreateSubMeeting:(NSArray <NSString *> *)titleList onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed;`
+
+主持人创建小组会议
+
+| 参数 | 描述 |
+| :--- | --- |
+| titleList | 标题列表 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateSubMeetingTitle:targetId:onSuccess:onFailed:()
+`- (void)adminUpdateSubMeetingTitle:(NSString *)title targetId:(NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人修改小组会议标题
+
+| 参数 | 描述 |
+| :--- | --- |
+| title | 小组标题 |
+| targetId | 小组标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminUpdateSubMeetingConferee:targetId:onSuccess:onFailed:()
+`- (void)adminUpdateSubMeetingConferee:(NSArray <SEAConfereeModel *> *)confereeList targetId:(NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人修改小组会议成员
+
+| 参数 | 描述 |
+| :--- | --- |
+| confereeList | 小组参会列表，参考文档：[SEAConfereeModel](/zh/meeting/ios/types#seaconfereemodel) |
+| targetId | 小组标识 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminDeleteSubMeeting:onSuccess:onFailed:()
+`- (void)adminDeleteSubMeeting:(NSArray <NSString *> *)targetList onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人删除小组会议
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetList | 小组标识列表 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminGetSubMeetingList:onSuccess:onFailed:()
+`- (void)adminGetSubMeetingList:(NSString *)meetingId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+主持人请求小组会议列表
+
+| 参数 | 描述 |
+| :--- | --- |
+| meetingId | 会议标识 |
+| onSuccess | 成功回调，参考文档：[SEARoomSubMeetingListModel](/zh/meeting/ios/types#searoomsubmeetinglistmodel) |
+| onFailed | 失败回调 |
+
+
+### adminStartSubMeeting:onSuccess:onFailed:()
+`- (void)adminStartSubMeeting:(NSArray <NSString *> *)targetList onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+开始小组会议，管理员用户可通过该接口将创建之后的小组会议设置为开始（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomSubMeetingStart:title:conferee:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知给目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetList | 小组标识列表 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminStopSubMeeting:onSuccess:onFailed:()
+`- (void)adminStopSubMeeting:(NSArray <NSString *> *)targetList onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+结束小组会议，管理员用户可通过该接口将创建之后的小组会议设置为结束（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomSubMeetingStop:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知给目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetList | 小组标识列表 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### adminMoveSubMeetingUser:fromGroupId:toGroupId:onSuccess:onFailed:()
+`- (void)adminMoveSubMeetingUser:(NSString *)targetId fromGroupId:(NSString *)fromGroupId toGroupId:(nullable NSString *)toGroupId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+小组会议之间移动用户，管理员用户可通过该接口在小组会议以及主会场之间移动指定成员（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomMoveSubMeeting:fromMeetingTitle:toMeetingId:toMeetingTitle:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知给目标用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| targetId | 目标成员标识 |
+| fromGroupId | 原小组标识 |
+| toGroupId | 目标小组标识，为空时表示主会议 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### getOnlineMemberList:onSuccess:onFailed:()
+`- (void)getOnlineMemberList:(NSString *)meetingId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取在线成员列表
+
+| 参数 | 描述 |
+| :--- | --- |
+| meetingId | 会议标识 |
+| onSuccess | 成功回调，参考文档：[SEAOnlineMemberListModel](/zh/meeting/ios/types#seaonlinememberlistmodel) |
+| onFailed | 失败回调 |
+
+
+### getMoreOnlineMemberList:onSuccess:onFailed:()
+`- (void)getMoreOnlineMemberList:(NSString *)meetingId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取更多在线成员列表（翻页操作）
+
+| 参数 | 描述 |
+| :--- | --- |
+| meetingId | 会议标识 |
+| onSuccess | 成功回调，参考文档：[SEAOnlineMemberListModel](/zh/meeting/ios/types#seaonlinememberlistmodel) |
+| onFailed | 失败回调 |
+
+## 签到相关接口
+### signInCreate:desc:onSuccess:onFailed:()
+`- (void)signInCreate:(NSInteger)dur desc:(nullable NSString *)desc onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+创建签到活动，管理员可通过该接口创建签到活动（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的  [meetingRoom:onSignInActivity:epoch:beginAt:dur:endAt:desc:()]() 回调通知给全体会中成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| dur | 签到时长，单位：分钟，0为不限时 |
+| desc | 签到描述 |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInList:onFailed:()
+`- (void)signInList:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取签到活动列表，管理员可通过该接口获取签到活动列表（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调，参考文档：[SEASignInListModel]() |
+| onFailed | 失败回调 |
+
+
+### signInCount:onSuccess:onFailed:()
+`- (void)signInCount:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+统计人数，管理员可通过该接口获取当前签到人数（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，参考文档：[SEASignInCountModel]() |
+| onFailed | 失败回调 |
+
+
+### signInFinish:onFailed:()
+`- (void)signInFinish:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+结束签到活动，管理员可通过该接口结束签到活动（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的  [meetingRoom:onSignInFinish:epoch:()]() 回调通知给全体会中成员。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInDetail:onSuccess:onFailed:()
+`- (void)signInDetail:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+获取签到活动详情，管理员可通过该接口获取签到记录（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，参考文档：[SEASignInDetailListModel]() |
+| onFailed | 失败回调 |
+
+
+### signInSign:onFailed:()
+`- (void)signInSign:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+用户签到，当管理员发起签到活动后，会中成员可通过该接口完成签到。
+
+| 参数 | 描述 |
+| :--- | --- |
+| onSuccess | 成功回调 |
+| onFailed | 失败回调 |
+
+
+### signInExportDetail:onSuccess:onFailed:()
+`- (void)signInExportDetail:(NSInteger)epoch onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+导出签到数据，管理员可通过该接口导出签到数据，同时SDK会回调列表本地地址（只有主持人或联席主持人能够调用）。
+
+| 参数 | 描述 |
+| :--- | --- |
+| epoch | 签到轮次，从0开始 |
+| onSuccess | 成功回调，文件地址 |
+| onFailed | 失败回调 |
+
+## 数据管理相关接口
+### getMySelf()
+`- (SEAUserModel *)getMySelf`
+
+获取本地登录用户的基本信息
+
+返回值说明：
+
+[SEAUserModel](/zh/meeting/ios/types#seausermodel) 用户数据。
+
+### findMemberWithUserId:()
+`- (SEAUserModel *)findMemberWithUserId:(NSString *)userId`
+
+获取指定远端用户的基本信息
+
+返回值说明：
+
+[SEAUserModel](/zh/meeting/ios/types#seausermodel) 用户数据。
+
+### getRemoteUsers()
+`- (NSArray<SEAUserModel *> *)getRemoteUsers`
+
+获取当前所在房间的成员列表
+
+返回值说明：
+
+[SEAUserModel](/zh/meeting/ios/types#seausermodel) 用户数据。
+
+### getRoomDetails()
+`- (SEARoomModel *)getRoomDetails`
+
+获取当前所在房间的基本信息
+
+返回值说明：
+
+[SEARoomModel](/zh/meeting/ios/types#searoommodel) 用户数据。
+
+### getDrawingHost()
+`- (NSString *)getDrawingHost`
+
+获取电子画板访问地址
+
+返回值说明：
+
+电子画板采用网页形式实现，该接口只有在加入房间成功后调用有效并返回电子画板访问地址。 
+
+## 媒体配置相关接口
+### setStreamMediaConfig:()
+`- (void)setStreamMediaConfig:(SEAMediaConfig *)config`
+
+设置媒体配置参数
+
+可通过该接口设置视频编码、音频编码、视频帧率、视频码流等参数。
+
+**参数**
+
+| config | 流媒体配置参数，用于指定视频编码、音频编码、视频帧率、视频码流等基本信息详情请参考 [SEAMediaConfig](/zh/meeting/ios/types#seamediaconfig) |
+| --- | --- |
+
+
+### setNetworkQosParam:()
+`- (void)setNetworkQosParam:(SEANetworkQosParam *)param`
+
+设置网络质量控制参数
+
+可通过该接口设置延迟自适应档位、延时抗抖动等级、码率自适应开关、网络自适应开关等参数。
+
+**参数**
+
+| param | 质量控制参数，用于指定延迟自适应档位、延时抗抖动等级、码率自适应开关、网络自适应开关等基本信息详情请参考 [SEANetworkQosParam](/zh/meeting/ios/types#seanetworkqosparam) |
+| --- | --- |
+
+## 调试相关接口
+### setDebugParam:()
+`- (void)setDebugParam:(SEADebugParam *)param`
+
+设置调试参数
+
+可通过该接口设置调试地址、保存音视频流等参数。
+
+**参数**
+
+| param | 调试参数，用于设置调试地址、保存音视频流等基本信息详情请参考 [SEADebugParam](/zh/meeting/ios/types#seadebugparam) |
+| --- | --- |

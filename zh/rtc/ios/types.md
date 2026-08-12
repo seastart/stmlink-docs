@@ -161,7 +161,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 
 | **属性** | **必填** | **属性说明** |
 | --- | :---: | --- |
-| NSString *userId | 是 | 用户标识 |
+| NSString *userId | 否 | 用户标识，自`3.0.0`起可空 |
 | int linkId | 是 | 连接标识(流媒体) |
 | NSInteger power | 否 | 音频功率 |
 | NSInteger db | 否 | 音频分贝值 |
@@ -186,7 +186,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 
 | **属性** | **必填** | **属性说明** |
 | --- | :---: | --- |
-| NSString *userId | 是 | 用户标识 |
+| NSString *userId | 否 | 用户标识，自`3.0.0`起可空 |
 | int linkId | 是 | 连接标识(流媒体) |
 | int recv | 否 | 接收包数 |
 | int comp | 否 | 补偿包数 |

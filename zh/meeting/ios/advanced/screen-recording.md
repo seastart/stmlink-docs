@@ -36,12 +36,17 @@ Xcode 12及以上的版本，手机也必须升级至 iOS 12 以上，否则无�
 
 ![](images/574588_1721979942480-41eb9848-2602-43ef-a2e4-66080d0af1fd.png)
 
-3、宿主工程在初始化`MeetingKit`之后，实现屏幕共享状态回调：
+3、宿主工程在创建房间实例时传入 `MeetingKitRoomDelegate`，实现屏幕共享状态回调：
+
+<Note>
+自 `2.0.0` 起，屏幕采集的进程侧接入（`broadcastStartedWithAppGroup:delegate:`、`sendSampleBuffer:withType:`）仍在 `MeetingKit` 单例上，屏幕共享状态回调则随其它会中事件一并迁移到 `MeetingKitRoomDelegate`，并带上事件来源房间实例。停止共享请调用房间实例的 `stopScreenRecord`。
+</Note>
 
 ```objectivec
 /// 屏幕采集状态回调
+/// @param room 事件来源房间实例
 /// @param status 状态码
-- (void)onScreenRecordStatus:(SEAScreenRecordStatus)status {
+- (void)meetingRoom:(MeetingKitRoom *)room onScreenRecordStatus:(SEAScreenRecordStatus)status {
     
     SGLOG(@"屏幕共享状态通知，status = %ld", status);
     
