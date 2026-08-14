@@ -454,6 +454,8 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 此方法在宿主程序中使用，用于用户主动关闭屏幕共享使用。
 
+自`2.0.1`起，本接口在停止本房间共享推流的同时会结束本次系统录屏（断开扩展端连接）；采集服务在会中保持监听，用户仍可再次通过系统面板拉起屏幕录制。
+
 关闭屏幕采集后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onScreenRecordStatus:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知您当前设备采集状态。此时，需要根据回调状态选择调用 请求开启共享 还是 关闭共享。
 
 ### publishScreenViewCaptureWithPixelBuffer:displayAngle:()

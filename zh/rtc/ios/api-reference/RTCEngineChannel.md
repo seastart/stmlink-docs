@@ -342,9 +342,11 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 
 发布/停止该频道的屏幕共享流
 
-自`3.0.0`起支持。ReplayKit 采集为进程级共享能力，本接口只控制当前频道实例是否订阅并推送采集数据：首个频道发布时启动采集，最后一个频道停止发布时才真正结束采集。
+自`3.0.0`起支持。ReplayKit 采集为进程级共享能力，本接口只控制当前频道实例是否推送采集数据。
 
-需要一次性关闭进程内全部频道的屏幕录制时，请调用 `-[RTCEngineKit stopScreenRecord]`。
+自`3.0.1`起，采集服务在加入频道成功后即启动并保持监听，**业务层需在收到 `RTCEngineChannelDelegate` 的 `engineChannel:onScreenRecordStatus:` 上报 `RTCScreenRecordStatusStart` 之后再调用本接口发布**；最后一个发布的频道停止发布时，才会断开扩展端连接并结束本次系统录屏。
+
+需要一次性结束本次系统录屏时，请调用 `-[RTCEngineKit stopScreenRecord]`。
 
 **参数**
 
