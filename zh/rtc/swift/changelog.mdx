@@ -3,6 +3,28 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [2.0.0] - 2026.08.18
+#### 破坏性变更
++ 错误枚举中的信令相关取值由`mqtt*`改名为`signaling*`（`signalingConnectFailed` / `signalingSubscribeFailed`），对外不再暴露信令实现细节。捕获了旧取值的代码需要改名，取值语义未变。
+
+#### 新增
++ **iOS 全屏屏幕共享**：`createLocalScreenTrack(mode:)`新增采集方式参数，`.broadcast(appGroup:)`基于 ReplayKit Broadcast Upload Extension 采集整个系统屏幕；原有的应用内采集为默认值`.inApp`，行为不变。配套新增：
+    - `SRTCBroadcastKit`产品（扩展侧使用，不含 WebRTC）与基类`SRTCBroadcastSampleHandler`，业务扩展只需`class SampleHandler: SRTCBroadcastSampleHandler {}`；
+    - 系统广播选择器封装`SRTCBroadcastPicker`（SwiftUI）/ `SRTCBroadcastPickerView`（UIKit）；
+    - `TrackDelegate`新增`screenBroadcastDidStart(_:)`与`screenBroadcastDidFinish(_:reason:)`，用于感知用户从系统 UI 发起 / 停止广播；
+    - `LocalScreenTrack`新增`captureMode`与`isBroadcastActive`（`isCapturing`仅表示监听就绪，展示「共享中」状态应看`isBroadcastActive`）。
++ **多频道**：同一个`SRTCEngine`可同时加入多个频道。新增`channels`、`defaultChannel`、`leaveChannel(_:)`；轨道为引擎级对象，可发布到多个频道，采集回收遵循「最后一个释放者负责」。
+
+#### 变更
++ 多频道发布音频的校验方式：由「同一时刻只允许一个频道发布音频」的独占限制，改为「各发布音频的频道必须持有完全相同的音频源集合」，放开了最常见的「多频道各发一路麦克风」。集合不一致时`publishLocalTrack`抛`invalidState`，避免跨频道音频泄漏；订阅侧不受限制。
+
+#### 修复
++ iOS 摄像头采集改为 SDK 自建 `AVCaptureSession`，修复部分真机上采集静默失败、对端看不到画面的问题。
+
+<Note>
+`SRTCBroadcastKit`独立编号，本次为 **1.0.0**，与 SDK 同 tag 发布、始终配套，接入时无需单独指定版本。
+</Note>
+
 ### [1.1.0] - 2026.08.02
 #### 新增
 + 新增视频帧旋转枚举`VideoRotation`，取值`._0`/`._90`/`._180`/`._270`，原始值即角度。

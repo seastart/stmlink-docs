@@ -43,6 +43,11 @@ Swift SDK 也是围绕这三类状态来设计 API，所以理解这套模型之
 
 可以把它理解为“已经完成鉴权和网络连接的一次 RTC 会话”。
 
+`joinChannel` 可以调用多次，一个引擎能同时加入多个频道，各频道的发布、订阅、成员与事件
+互不干扰；`srtc.channels` 是当前存活的频道列表。**轨道属于引擎而不是频道**，同一条采集轨道
+可以发布给多个频道，采集只做一次，回收由最后一个释放者负责。多频道同时**发布音频**有一条
+硬约束（各频道的音频源集合必须相同），见[多频道](/zh/rtc/swift/advanced/multi-channel)。
+
 ---
 
 ### Track 体系
@@ -165,4 +170,5 @@ SRTCVideoView(track: track)
 + [静音与停止发布](/zh/rtc/swift/advanced/mute-vs-unpublish)
 + [设备管理](/zh/rtc/swift/advanced/device-management)
 + [屏幕共享](/zh/rtc/swift/advanced/screen-sharing)
++ [多频道](/zh/rtc/swift/advanced/multi-channel)
 + [自定义推流](/zh/rtc/swift/advanced/custom-track)

@@ -138,6 +138,7 @@
 - [静音与停止发布](https://docs.stmlink.com/zh/rtc/swift/advanced/mute-vs-unpublish.md): Swift SDK 中 mute / unmute 与 unpublish / stopCapture 的区别和选择建议
 - [设备管理](https://docs.stmlink.com/zh/rtc/swift/advanced/device-management.md): 使用 DeviceManager 枚举设备、切换摄像头和音频路由，并处理热插拔和中断恢复
 - [屏幕共享](https://docs.stmlink.com/zh/rtc/swift/advanced/screen-sharing.md): SRTC Swift SDK 在 macOS 与 iOS 上的屏幕共享接入方式与平台差异
+- [多频道](https://docs.stmlink.com/zh/rtc/swift/advanced/multi-channel.md): 同时加入多个频道：轨道如何跨频道复用、采集何时回收、以及多频道发布音频的硬约束
 - [自定义推流](https://docs.stmlink.com/zh/rtc/swift/advanced/custom-track.md): 使用自定义音视频轨道、视频处理器和音频处理器扩展 Swift SDK 的采集能力
 
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS） · 接口文档
