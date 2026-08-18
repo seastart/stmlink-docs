@@ -4,7 +4,7 @@ description: "iOS SRTC 音视频 SDK 即时消息（IM）功能集成指南"
 ---
 
 ### step 1：初始化SDK
-在调用 SDK 的任何其他函数之前，需要进行 SDK 初始化。详情请参看 [组件初始化](https://www.yuque.com/anyconf/rtcengine/am4ult#LfkAQ)。
+在调用 SDK 的任何其他函数之前，需要进行 SDK 初始化。详情请参看 [组件初始化](/zh/rtc/ios/quickstart)。
 
 ### step 2：启用即时通讯
 #### 获取令牌

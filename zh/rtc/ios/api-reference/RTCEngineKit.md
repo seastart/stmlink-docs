@@ -1,15 +1,28 @@
 ---
 title: "RTCEngineKit"
-description: "iOS（Objective-C）音视频 SDK 的核心入口类：初始化、频道进出、媒体采集发布与订阅"
+description: "进程级引擎单例：初始化与销毁、频道实例的创建与查询、即时通讯、摄像头采集预览、音频路由、屏幕采集进程接入、网络测速与美颜渲染"
 ---
+
+`RTCEngineKit` 是一个进程内只存在一个实例的单例对象，只承载**账号级与共享硬件级**能力：摄像头采集与预览、音频路由、ReplayKit 屏幕采集、美颜渲染、网络测速、即时通讯，以及频道实例的生命周期管理。
+
+频道内的加入与离开、成员数据、码流发布与订阅、音频发送等能力由 [RTCEngineChannel](/zh/rtc/ios/api-reference/RTCEngineChannel) 承载，通过 `createChannelWithDelegate:` 创建。同一进程可以同时存在多个频道实例，实例之间的成员数据、码流统计与渲染互不干扰。
+
+<Warning>
+自 `3.0.0` 起，频道相关接口已从本类移出。`joinChannelWithToken:`、`leaveChannel:`、`publishLocalVideo:`、`startRemoteView:trackId:view:` 等接口请改用 [RTCEngineChannel](/zh/rtc/ios/api-reference/RTCEngineChannel)。
+</Warning>
 
 ## 创建实例和事件回调
 ### delegate
 `id<RTCEngineDelegate> delegate`
 
-设置 RTC 事件回调
+设置进程级引擎事件回调
 
-您可以通过`RTCEngineDelegate`获得来自 SDK 的各类事件通知（比如：错误码，音视频状态参数等）。
+您可以通过 [RTCEngineDelegate](/zh/rtc/ios/api-reference/RTCEngineDelegate) 获得音频路由变更、网络测速与应用性能三类进程级事件通知。频道内的事件请实现 [RTCEngineChannelDelegate](/zh/rtc/ios/api-reference/RTCEngineChannelDelegate)。
+
+### imDelegate
+`id<RTCEngineIMDelegate> imDelegate`
+
+设置即时通讯事件回调，详情请参考 [RTCEngineIMDelegate](/zh/rtc/ios/api-reference/RTCEngineIMDelegate)。
 
 ### sharedEngine()
 `+ (RTCEngineKit *)sharedEngine`
@@ -25,7 +38,22 @@ description: "iOS（Objective-C）音视频 SDK 的核心入口类：初始化�
 
 **参数**
 
-| engineConfig | 配置参数，用于日志等的相关配置，例如：日志等级等等信息，详情请参考 [RTCEngineConfig](https://www.yuque.com/anyconf/rtcengine/yi50z7#aP2yB) |
+| engineConfig | 配置参数，用于日志等的相关配置，例如：日志等级等等信息，详情请参考 [RTCEngineConfig](/zh/rtc/ios/types#rtcengineconfig) |
+| --- | --- |
+| appGroup | Application Group Identifier |
+| delegate | 用于指定回调代理，详情请参考 [RTCEngineDelegate](/zh/rtc/ios/api-reference/RTCEngineDelegate) |
+
+
+### initializeWithConfig:appGroup:delegate:()
+`- (RTCEngineError)initializeWithConfig:(RTCEngineConfig *)engineConfig appGroup:(NSString *)appGroup delegate:(nullable id <RTCEngineDelegate>)delegate`
+
+初始化 RTCEngineKit 服务
+
+RTC 的所有用户都需要初始化 RTCEngineKit 服务之后才可以使用相关的接口，包括创建频道实例、加入频道等。
+
+**参数**
+
+| engineConfig | 配置参数，用于日志等的相关配置，例如：日志等级等等信息，详情请参考 [RTCEngineConfig](/zh/rtc/ios/types#rtcengineconfig) |
 | --- | --- |
 | appGroup | Application Group Identifier |
 | delegate | 用于指定回调代理，详情请参考 [RTCEngineDelegate](/zh/rtc/ios/api-reference/RTCEngineDelegate) |
@@ -36,25 +64,46 @@ description: "iOS（Objective-C）音视频 SDK 的核心入口类：初始化�
 
 销毁 RTCEngineKit 实例（单例模式）。
 
+内部会先销毁全部存活的频道实例，等待其离开完成后再释放进程级资源，业务层无需逐个调用频道实例的 `destroy`。
+
 ### version()
 `- (NSString *)version`
 
 获取 RTCEngineKit 版本号。
 
-### initializeWithConfig:appGroup:delegate:()
-`- (RTCEngineError)initializeWithConfig:(RTCEngineConfig *)engineConfig appGroup:(NSString *)appGroup delegate:(nullable id <RTCEngineDelegate>)delegate`
+### decrypt:()
+`+ (nullable NSString *)decrypt:(nullable NSString *)value`
 
-初始化 RTCEngineKit 服务
-
-RTC 的所有用户都需要初始化 RTCEngineKit 服务之后才可以使用相关的接口，包括加入频道等。
+解密字符串
 
 **参数**
 
-| engineConfig | 配置参数，用于日志等的相关配置，例如：日志等级等等信息，详情请参考 [RTCEngineConfig](https://www.yuque.com/anyconf/rtcengine/yi50z7#aP2yB) |
+| value | 加密字符串 |
 | --- | --- |
-| appGroup | Application Group Identifier |
-| delegate | 用于指定回调代理，详情请参考 [RTCEngineDelegate](https://www.yuque.com/anyconf/rtcengine/su58c7) |
 
+
+## 频道实例相关接口函数
+### createChannelWithDelegate:()
+`- (nullable RTCEngineChannel *)createChannelWithDelegate:(nullable id<RTCEngineChannelDelegate>)delegate`
+
+创建频道实例
+
+每次调用返回一个独立的 [RTCEngineChannel](/zh/rtc/ios/api-reference/RTCEngineChannel) 实例，可以多次调用以同时加入多个频道。频道实例由引擎持有，业务侧使用完毕后需调用其 `destroy` 归还，否则实例不会被释放。
+
+引擎正在销毁时返回 `nil`。
+
+**参数**
+
+| delegate | 频道事件代理，详情请参考 [RTCEngineChannelDelegate](/zh/rtc/ios/api-reference/RTCEngineChannelDelegate) |
+| --- | --- |
+
+
+### getChannels()
+`- (NSArray<RTCEngineChannel *> *)getChannels`
+
+获取活跃频道列表
+
+返回当前已经加入频道的实例列表。已创建但尚未加入、或者已经离开的实例不会出现在结果中。
 
 ## 即时通讯相关接口函数
 ### enableImWithToken:delegate:()
@@ -64,11 +113,13 @@ RTC 的所有用户都需要初始化 RTCEngineKit 服务之后才可以使用�
 
 RTC 的所有用户如需使用即时通讯业务，首先调后台接口获取启用即时通讯的鉴权令牌，然后调用该接口开启 SDK 即时通讯服务，方便开发者利用该服务实现，如会前呼叫、通知等业务功能。
 
+即时通讯属于账号级能力，与加入了几个频道无关。
+
 **参数**
 
 | token | 鉴权令牌 |
 | --- | --- |
-| delegate | 用于指定回调代理，详情请参考 [RTCEngineIMDelegate](https://www.yuque.com/anyconf/rtcengine/mgx1kn004ra54ygw) |
+| delegate | 用于指定回调代理，详情请参考 [RTCEngineIMDelegate](/zh/rtc/ios/api-reference/RTCEngineIMDelegate) |
 
 
 ### disableIm()
@@ -78,69 +129,18 @@ RTC 的所有用户如需使用即时通讯业务，首先调后台接口获取�
 
 当您不再需要即时通讯服务时，可通过该接口进行停用。
 
-## 频道相关接口函数
-### joinChannelWithToken:()
-`- (RTCEngineError)joinChannelWithToken:(NSString *)token`
-
-加入频道
-
-RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视频流，“发布”是指将自己的音频和视频推送到云端，“订阅”是指从云端拉取频道里其他用户的音视频流。
-
-**参数**
-
-| token | 鉴权令牌 |
-| --- | --- |
-
-
-**注意**
-
-+ 请您尽量保证`joinChannelWithToken`与`leaveChannel`前后配对使用，即保证“先退出前一个频道再进入下一个频道”，否则会导致很多异常问题。
-
-### leaveChannel:()
-`- (void)leaveChannel:(nullable RTCEngineKitFinishBlock)finishBlock`  
-离开频道
-
-调用该接口会让用户离开自己所在的频道，并释放摄像头、麦克风、扬声器等设备资源。 等资源释放完毕之后，SDK 会通过`finishBlock`回调向您通知。 如果您要再次调用`joinChannelWithToken:()`，建议等待`finishBlock`回调到来之后再执行之后的操作，以避免摄像头或麦克风被占用等异常问题。
-
-**参数**
-
-| finishBlock | 完成回调 |
-| --- | --- |
-
-
-## 数据管理相关接口函数
-### getMySelf()
-`- (RTCEngineUserModel *)getMySelf`
-
-获取当前账户信息
-
-### getChannelDetails()
-`- (RTCEngineChannelModel *)getChannelDetails`
-
-获取当前频道数据
-
-### findMemberWithUserId:()
-`- (RTCEngineUserModel *)findMemberWithUserId:(NSString *)userId`
-
-查找频道内`userId`的用户信息
-
-### getRemoteUsers()
-`- (NSArray<RTCEngineUserModel *> *)getRemoteUsers`
-
-获取当前频道成员列表
-
-### getDrawingHost()
-`- (NSString *)getDrawingHost`
-
-获取画板地址
-
 ## 视频相关接口函数
+
+<Note>
+摄像头在 iOS 上是单路共享硬件，采集与预览属进程级能力，全部频道实例共用同一路采集数据。是否把该路数据推送到某个频道，由该频道实例的 `publishLocalVideo:` 单独控制。
+</Note>
+
 ### startLocalPreview:view:()
 `- (RTCEngineError)startLocalPreview:(BOOL)frontCamera view:(VIEW_CLASS *)view`
 
 开启本地摄像头的预览画面
 
-在`joinRoomWithRoomId`之前调用此函数，SDK 只会开启摄像头，并一直等到您调用`joinRoomWithRoomId`之后才开始推流。 在`joinRoomWithRoomId`之后调用此函数，SDK 会开启摄像头并自动开始视频推流。
+在加入频道之前调用此函数，SDK 只会开启摄像头，并一直等到频道实例加入频道之后才开始推流。在加入频道之后调用此函数，SDK 会开启摄像头并自动开始视频推流。
 
 自`2.5.7`起，如果`frontCamera`指定的摄像头无法创建输入或启动后未输出有效视频帧，SDK 会自动尝试另一可用摄像头。业务层无需通过额外调用`switchCamera`恢复预览；实际采集方向可通过`currentCameraDirection`获取。
 
@@ -152,26 +152,14 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 
 
 ### updateLocalView:()
-`- (RTCEngineError)updateLocalView:(VIEW_CLASS *)view`  
+`- (RTCEngineError)updateLocalView:(VIEW_CLASS *)view`
+
 更新本地摄像头的预览画面
 
 ### stopLocalPreview()
 `- (RTCEngineError)stopLocalPreview`
 
 停止摄像头预览
-
-### publishLocalVideo:()
-`- (RTCEngineError)publishLocalVideo:(BOOL)publish`
-
-暂停/恢复发布本地的视频流
-
-该接口可以暂停（或恢复）发布本地的视频画面，暂停之后，同一频道中的其他用户将无法继续看到自己画面。 该接口等效于`start/stopLocalPreview`这两个接口，但具有更好的响应速度。 因为`start/stopLocalPreview`需要打开和关闭摄像头，而打开和关闭摄像头都是硬件设备相关的操作，非常耗时。 相比之下，`publishLocalVideo`只需要在软件层面对数据流进行暂停或者放行即可，因此效率更高，也更适合需要频繁打开关闭的场景。 当暂停/恢复发布本地的视频流后，同一频道中的其他用户将会收到`onUserUpdate`回调通知。
-
-**参数**
-
-| publish | YES-恢复 NO-暂停 |
-| --- | --- |
-
 
 ### switchCamera()
 `- (RTCEngineError)switchCamera`
@@ -244,130 +232,126 @@ SDK 仅在目标摄像头能够创建输入时执行切换。目标摄像头不�
 | --- | --- |
 
 
-### startRemoteView:trackId:view:()
-`- (RTCEngineError)startRemoteView:(NSString *)userId trackId:(RTCTrackIdentifierFlags)trackId view:(VIEW_CLASS *)view`
+## 音频路由相关接口函数
 
-订阅远端用户的视频流，并绑定视频渲染控件
+<Note>
+音频路由对应进程内唯一的 `AVAudioSession`，属共享设备能力，切换结果对全部频道实例同时生效。
+</Note>
 
-调用该接口可以让 SDK 拉取指定`userid`的视频流，并渲染到参数`view`指定的渲染控件上。
+### switchAudioRoute:()
+`- (RTCEngineError)switchAudioRoute:(RTCAudioRoute)audioRoute`
 
-**参数**
+切换音频路由
 
-| userId | 指定远端用户标识 |
-| --- | --- |
-| trackId | 指定要观看轨道标识，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
-| view | 用于承载视频画面的渲染控件 |
+可通过该接口显式请求切换扬声器、听筒、蓝牙耳机或有线耳机。显式选择扬声器或听筒后，SDK 会优先保留该选择；未显式选择内置路由时，自`2.5.8`起，音频会话重配后 SDK 会主动恢复可用外设，同时存在蓝牙和有线耳机时优先使用蓝牙耳机。
 
-
-### updateRemoteView:trackId:view:()
-`- (RTCEngineError)updateRemoteView:(NSString *)userId trackId:(RTCTrackIdentifierFlags)trackId view:(VIEW_CLASS *)view`
-
-更新远端用户的视频渲染控件
-
-该接口可用于更新远端视频画面的渲染控件，常被用于切换显示区域的交互场景中。
+接口返回成功表示系统调用已受理，最终实际路由以 `currentAudioRoute` 和 `onAudioRouteChange:previousRoute:` 回调为准。
 
 **参数**
 
-| userId | 指定远端用户标识 |
+| audioRoute | 音频路由枚举，详情请参考 [RTCAudioRoute](/zh/rtc/ios/types#rtcaudioroute) |
 | --- | --- |
-| trackId | 指定要观看轨道标识，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
-| view | 用于承载视频画面的渲染控件 |
 
 
-### stopRemoteView:trackId:()
-`- (RTCEngineError)stopRemoteView:(NSString *)userId trackId:(RTCTrackIdentifierFlags)trackId`  
-停止订阅远端用户的视频流，并释放渲染控件
+### currentAudioRoute()
+`- (RTCAudioRoute)currentAudioRoute`
 
-调用此接口会让 SDK 停止接收该用户的视频流，并释放该路视频流的解码和渲染资源。
+获取系统当前实际音频路由
+
+可通过该接口获取系统当前实际使用的音频播放设备，如扬声器、听筒、蓝牙或有线耳机。
+
+### headphoneDeviceAvailable()
+`- (BOOL)headphoneDeviceAvailable`
+
+判断是否存在有线耳机设备
+
+### bluetoothDeviceAvailable()
+`- (BOOL)bluetoothDeviceAvailable`
+
+判断是否存在蓝牙耳机设备
+
+## 共享屏幕相关接口函数
+
+<Note>
+ReplayKit 采集运行在独立的 Broadcast Upload Extension 进程，属进程级共享能力，采集数据按订阅关系分发给各个频道实例。单个频道是否推送共享流，由该频道实例的 `publishScreenRecord:` 控制。
+</Note>
+
+### broadcastStartedWithAppGroup:delegate:()
+`- (void)broadcastStartedWithAppGroup:(NSString *)appGroup delegate:(id<RTCScreenDelegate>)delegate`
+
+扩展程序开启屏幕共享，并绑定代理回调
+
+此方法在扩展程序`SampleHandler`中使用，详情请参考[屏幕录制](/zh/rtc/ios/advanced/screen-recording)。
 
 **参数**
 
-| userId | 指定远端用户标识 |
+| appGroup | Application Group Identifier |
 | --- | --- |
-| trackId | 指定要观看轨道标识，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
+| delegate | 用于指定回调代理，详情请参考[屏幕录制](/zh/rtc/ios/advanced/screen-recording) |
 
 
-### stopAllRemoteViewWithUserId:()
-`- (RTCEngineError)stopAllRemoteViewWithUserId:(NSString *)userId`  
-停止订阅指定远端用户的所有视频流，并释放渲染控件
+### sendSampleBuffer:withType:()
+`- (void)sendSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType`
 
-调用此接口会让 SDK 停止接收该用户的所有视频流，并释放该路视频流的解码和渲染资源。
+扩展程序发送共享屏幕帧数据
+
+此方法在扩展程序`SampleHandler`中使用。当前支持 `RPSampleBufferTypeVideo` 与 `RPSampleBufferTypeAudioApp` 类型的数据帧，`RPSampleBufferTypeAudioMic` 不支持，麦克风采集数据请在宿主 App 中处理。
 
 **参数**
 
-| userId | 指定远端用户标识 |
+| sampleBuffer | 屏幕帧数据 |
 | --- | --- |
+| sampleBufferType | 屏幕帧数据类型，包括：应用视频、应用音频、麦克风音频 |
 
 
-### stopAllRemoteView()
-`- (RTCEngineError)stopAllRemoteView`
+### stopScreenRecord()
+`- (void)stopScreenRecord`
 
-停止订阅所有远端用户的视频流，并释放全部渲染资源
+宿主程序关闭屏幕共享
 
-调用此接口会让 SDK 停止接收所有来自远端的视频流，并释放全部的解码和渲染资源。
+此方法在宿主程序中使用，会断开扩展端连接以结束本次系统录屏，并停止进程内全部频道实例的共享推流。采集服务在会中保持监听，用户仍可再次通过系统面板拉起屏幕录制。仅需停止单个频道推流时，请调用该频道实例的 `publishScreenRecord:` 并传入 `NO`。
 
-### startRemoteMixture:()
-`- (RTCEngineError)startRemoteMixture:(VIEW_CLASS *)view`
+## 网络测速相关接口函数
+### startSpeedTest:()
+`- (RTCEngineError)startSpeedTest:(RTCSpeedTestParams *)params`
 
-订阅远端合成画面视频流，并绑定视频渲染控件
-
-调用该接口可以让 SDK 拉取远端合成画面视频流，并渲染到参数`view`指定的渲染控件上。
+开始进行网速测试（加入频道前使用）
 
 **参数**
 
-| view | 用于承载视频画面的渲染控件 |
+| params | 测速参数，用于指定链路标识、服务器地址以及端口、监测时长等基本信息，详情请参考 [RTCSpeedTestParams](/zh/rtc/ios/types#rtcspeedtestparams) |
 | --- | --- |
 
 
-### stopRemoteMixture()
-`- (RTCEngineError)stopRemoteMixture`  
-停止订阅远端合成画面视频流，并释放渲染控件
+**注意**
 
-调用此接口会让 SDK 停止接收远端合成画面视频流，并释放该路视频流的解码和渲染资源。
++ 请在进入频道前进行网速测试，在频道中网速测试会影响正常的音视频传输效果，而且由于干扰过多，网速测试结果也不准确。
++ 同一时间只允许一项网速测试任务运行。
 
+### stopSpeedTest()
+`- (void)stopSpeedTest`
 
-### startRemoteRetweet:view:()
-`- (RTCEngineError)startRemoteRetweet:(NSString *)streamName view:(VIEW_CLASS *)view`
-
-订阅远端转推音视频流（webrtc 取流），并绑定视频渲染控件
-
-调用该接口可以让 SDK 通过 webrtc 订阅由外部传入流名的远端转推流，单条连接同时接收音视频，并将画面渲染到参数`view`指定的渲染控件上。该接口以原始流名作为流标识，转推流不作为远端用户视频数据上报，其接收状态通过 onReceiveRetweetStreamStatusChange:status: 单独通知。
-
-> 注：转推取流目前仅支持 `wangsu` 流媒体供应商。
-
-**参数**
-
-| streamName | 需要订阅的远端流名（由外部传入，原值即流媒体服务器的流名） |
-| --- | --- |
-| view | 用于承载视频画面的渲染控件 |
-
-
-### stopRemoteRetweet:()
-`- (RTCEngineError)stopRemoteRetweet:(NSString *)streamName`
-
-停止订阅远端转推音视频流，并释放渲染控件
-
-调用此接口会让 SDK 停止接收指定流名的远端转推流，并释放该路音视频流的连接、解码和渲染资源。
-
-**参数**
-
-| streamName | 需要停止订阅的远端流名（由外部传入） |
-| --- | --- |
+停止网络测速
 
 ## 视频渲染接口函数
+
+<Note>
+视频渲染与美颜作用于共享摄像头采集链路，设置对全部频道实例同时生效。
+</Note>
+
 ### installRenderModule:authDataSize:logLevel:()
 `- (RTCEngineError)installRenderModule:(char *)authData authDataSize:(int)authDataSize logLevel:(RTCEngineLogLevel)logLevel`
 
 装载视频渲染组件
 
-RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时，首先需要调用此函数加载视频渲染资源以及初始化视频渲染实例 。
+RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时，首先需要调用此函数加载视频渲染资源以及初始化视频渲染实例。
 
 **参数**
 
 | authData | 密钥 |
 | --- | --- |
 | authDataSize | 密钥长度 |
-| logLevel | 日志等级，详情请参考 [RTCEngineLogLevel](https://www.yuque.com/anyconf/rtcengine/yi50z7#KyTud) |
+| logLevel | 日志等级，详情请参考 [RTCEngineLogLevel](/zh/rtc/ios/types#rtcengineloglevel) |
 
 
 ### uninstallRenderModule()
@@ -375,14 +359,14 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 卸载视频渲染组件
 
-视频渲染组件不再使用时，需要调用此方法释放视频渲染资源 。
+视频渲染组件不再使用时，需要调用此方法释放视频渲染资源。
 
 ### enabledBeauty:()
 `- (RTCEngineError)enabledBeauty:(BOOL)enabled`
 
 美颜功能开关
 
-调用`installRenderModule:()`方法加载视频渲染组件之后，可以通过该方法设置视频美颜功能的开关 。
+调用`installRenderModule:authDataSize:logLevel:()`方法加载视频渲染组件之后，可以通过该方法设置视频美颜功能的开关。
 
 **参数**
 
@@ -482,272 +466,6 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 
 ### getFilterName()
-`- (float)getFilterName`
+`- (NSString *)getFilterName`
 
 获取当前滤镜效果
-
-## 音频相关接口函数
-### enabledSendAudio()
-`- (RTCEngineError)enabledSendAudio:(BOOL)enabled`
-
-暂停/恢复发布本地的音频流
-
-**参数**
-
-| enabled | YES-开启音频 NO-关闭音频 |
-| --- | --- |
-
-
-### setAudioPriorityWithUserId:enabled:()
-`- (RTCEngineError)setAudioPriorityWithUserId:(NSString *)userId enabled:(BOOL)enabled`
-
-设置音频优先策略
-
-可通过该接口保证成员下行状态不佳时，优先保证音频的接收效果。
-
-**参数**
-
-| userId | 远端用户的ID |
-| --- | --- |
-| enabled | YES-开启 NO-关闭 |
-
-
-### enabledAudioSpeaker:()
-`- (RTCEngineError)enabledAudioSpeaker:(BOOL)enabled`
-
-设置远端音频播放状态
-
-可通过该接口开启或关闭远端音频播放，不会切换扬声器、听筒或外设路由。
-
-**参数**
-
-| enabled | YES-开启远端音频播放 NO-关闭远端音频播放 |
-| --- | --- |
-
-
-### enabledAudioModule:()
-`- (RTCEngineError)enabledAudioModule:(BOOL)enabled`
-
-设置本端音频单元启停
-
-自`2.5.9`起支持。录像直播等本端不采集、不接收 RTC 音频的纯本地播放场景，关闭音频单元可释放底层语音处理单元（VPIO），避免本地播放器（如 `AVPlayer`）的播放音量被压低；返回该类场景后需将其恢复为自动管理。SDK 每次进房会自动复位为自动管理，避免上一会话的手动停用状态跨会话泄漏。
-
-**参数**
-
-| enabled | YES-由流媒体自动管理音频单元 NO-停止音频单元 |
-| --- | --- |
-
-
-### enabledSpeechTrans:()
-`- (RTCEngineError)enabledSpeechTrans:(BOOL)enabled`
-
-设置语音转写状态
-
-可通过该接口设置语音转写是否开启。
-
-**参数**
-
-| enabled | YES-开启语音转写 NO-关闭语音转写 |
-| --- | --- |
-
-
-### switchAudioRoute:()
-`- (RTCEngineError)switchAudioRoute:(RTCAudioRoute)audioRoute`
-
-切换音频路由
-
-可通过该接口显式请求切换扬声器、听筒、蓝牙耳机或有线耳机。显式选择扬声器或听筒后，SDK 会优先保留该选择；未显式选择内置路由时，自`2.5.8`起，音频会话重配后 SDK 会主动恢复可用外设，同时存在蓝牙和有线耳机时优先使用蓝牙耳机。
-
-接口返回成功表示系统调用已受理，最终实际路由以 `currentAudioRoute` 和 `onAudioRouteChange:previousRoute:` 回调为准。
-
-**参数**
-
-| audioRoute | 音频路由枚举，详情请参考 [RTCAudioRoute](https://www.yuque.com/anyconf/rtcengine/yi50z7#fcHdd) |
-| --- | --- |
-
-
-### currentAudioRoute()
-`- (RTCAudioRoute)currentAudioRoute`
-
-获取系统当前实际音频路由
-
-可通过该接口获取系统当前实际使用的音频播放设备，如扬声器、听筒、蓝牙或有线耳机。
-
-### headphoneDeviceAvailable()
-`- (BOOL)headphoneDeviceAvailable`
-
-判断是否存在有线耳机设备
-
-可通过该接口判断是否存在有线耳机设备。
-
-### bluetoothDeviceAvailable()
-`- (BOOL)bluetoothDeviceAvailable`
-
-判断是否存在蓝牙耳机设备
-
-可通过该接口判断是否存在蓝牙耳机设备。
-
-### resetAudioSession()
-`- (void)resetAudioSession`
-
-重启音频会话
-
-当 App 与其它音频应用抢占音频会话，或系统音频会话被外部打断后未能自动恢复时，业务层可调用该接口重建 SDK 的音频会话配置。调用后音频路由可能发生变化，SDK 会通过 [RTCEngineDelegate](/zh/rtc/ios/api-reference/RTCEngineDelegate) 的 `onAudioRouteChange:previousRoute:` 回调通知业务层。
-
-## 流媒体相关接口函数
-### setStreamMediaConfig:()
-`- (void)setStreamMediaConfig:(RTCEngineMediaConfig *)config`
-
-设置流媒体配置参数
-
-可通过该接口设置视频编码、音频编码、视频帧率、视频码流等参数。
-
-**参数**
-
-| config | 流媒体配置参数，用于指定视频编码、音频编码、视频帧率、视频码流等基本信息详情请参考 [RTCEngineMediaConfig](https://www.yuque.com/anyconf/rtcengine/yi50z7#pMzBp) |
-| --- | --- |
-
-
-### setNetworkQosParam:()
-`- (void)setNetworkQosParam:(RTCEngineNetworkQosParam *)param`
-
-设置网络质量控制参数
-
-可通过该接口设置延迟自适应档位、延时抗抖动等级、码率自适应开关、网络自适应开关等参数。
-
-**参数**
-
-| param | 质量控制参数，用于指定延迟自适应档位、延时抗抖动等级、码率自适应开关、网络自适应开关等基本信息详情请参考 [RTCEngineNetworkQosParam](https://www.yuque.com/anyconf/rtcengine/yi50z7#rUmBV) |
-| --- | --- |
-
-
-### setRemoteDebugParam:()
-`- (void)setRemoteDebugParam:(RTCEngineDebugParam *)param`
-
-设置远程调试参数
-
-可通过该接口设置远程调试地址、音视频流保存状态等调试参数。
-
-**参数**
-
-| param | 调试参数，用于指定远程调试地址、音视频流保存状态等调试基本信息详情请参考 [RTCEngineDebugParam](https://www.yuque.com/anyconf/rtcengine/yi50z7#tdyrN) |
-| --- | --- |
-
-
-## 共享屏幕相关接口函数
-### broadcastStartedWithAppGroup:delegate:()
-`- (void)broadcastStartedWithAppGroup:(NSString *)appGroup delegate:(id<RTCScreenDelegate>)delegate`
-
-扩展程序开启屏幕共享，并绑定代理回调
-
-此方法在扩展程序`SampleHandler`中使用
-
-**参数**
-
-| appGroup |  Application Group Identifier |
-| --- | --- |
-| delegate | 用于指定回调代理，详情请参考[屏幕录制](https://www.yuque.com/anyconf/rtcengine/tsm60n#.E5.AF.B9.E6.8E.A5.E6.B5.81.E7.A8.8B) |
-
-
-### stopScreenRecord()
-`- (void)stopScreenRecord`
-
-宿主程序关闭屏幕共享
-
-此方法在宿主程序中使用，用于用户主动关闭屏幕共享使用。
-
-### sendSampleBuffer:withType:()
-`- (void)sendSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType`
-
-扩展程序发送共享屏幕帧数据
-
-此方法在扩展程序`SampleHandler`中使用
-
-**参数**
-
-| sampleBuffer | 屏幕帧数据 |
-| --- | --- |
-| sampleBufferType | 屏幕帧数据类型，包括：应用视频、应用音频、麦克风音频 |
-
-### publishScreenViewCaptureWithPixelBuffer:displayAngle:()
-`- (void)publishScreenViewCaptureWithPixelBuffer:(CVPixelBufferRef)pixelBuffer displayAngle:(int)displayAngle`
-
-发布视图录制的共享流，即：用户可以通过该接口送入与屏幕共享共用轨道的视频流数据。
-
-**参数**
-
-| pixelBuffer |  UIView采集的像素数据(CVPixelBufferRef) |
-| --- | --- |
-| displayAngle | 显示角度(0/90/180/270) |
-
-### enabledViewCaptureShare:()
-`- (RTCEngineError)enabledViewCaptureShare:(BOOL)enabled`
-
-设置视图采集共享，该接口用来通知SDK，当前共享屏幕轨道推送的是屏幕采集流还是视图录制流；在调用`publishScreenViewCaptureWithPixelBuffer:displayAngle:()`之前需先调该接口进行SDK标记。
-
-**参数**
-
-| enabled |  启用状态 YES-开启 NO-关闭 |
-| --- | --- |
-
-
-## 发布自定义流相关接口
-### startCustomStreamWithStreamTrackModel:()
-`- (RTCEngineError)startCustomStreamWithStreamTrackModel:(RTCEngineStreamTrackModel *)streamTrackModel`
-
-启动自定义流，该接口需要指明发布的轨道、分辨率、码流等基础码流信息，需要注意的是：只有调用该接口申明的轨道才可以通过[发布自定义码流接口](#Jki7P)进行自定义推流，当程序结束自定义推流后需要调用[关闭自定义流接口](#P0Xlj)关闭对应轨道。
-
-**参数**
-
-| streamTrackModel | 码流信息，用于指定轨道、分辨率、码流等码流基本信息详情请参考 [RTCEngineStreamTrackModel](/zh/rtc/ios/types#rtcenginestreamtrackmodel) |
-| --- | --- |
-
-
-### stopCustomStreamWithTrackId:()
-`- (RTCEngineError)stopCustomStreamWithTrackId:(RTCTrackIdentifierFlags)trackId`
-
-关闭自定义流，该接口需要指明关闭的轨道标识，需要注意的是：当程序结束自定义推流时需要调用该方法关闭对应的轨道。
-
-**参数**
-
-| trackId | 轨道标识，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
-| --- | --- |
-
-
-### publishCustomStreamWithStreamData:()
-`- (RTCEngineError)publishCustomStreamWithStreamData:(const unsigned char *)streamData bitslen:(int)bitslen pts:(uint32_t)pts dts:(uint32_t)dts trackId:(RTCTrackIdentifierFlags)trackId streamType:(RTCStreamType)streamType`
-
-发布自定义码流，可以通过该接口向[启动自定义流接口](#hly8D)中声明的轨道ID推送自定义码流数据。
-
-**参数**
-
-| streamData | 编码数据 |
-| --- | --- |
-| bitslen | 数据长度 |
-| pts | 显示时间戳 |
-| dts | 解码时间戳 |
-| trackId | 轨道标识，详情请参考 [RTCTrackIdentifierFlags](https://www.yuque.com/anyconf/rtcengine/yi50z7#QmrJ5) |
-| streamType | 媒体流类型，详情请参考 [RTCStreamType](/zh/rtc/ios/types#rtcstreamtype) |
-
-
-## 网络测速相关接口函数
-### startSpeedTest:()
-`- (RTCEngineError)startSpeedTest:(RTCSpeedTestParams *)params`
-
-开始进行网速测试（加入频道前使用）
-
-**参数**
-
-| params | 测速参数，用于指定链路标识、服务器地址以及端口、监测时长等基本信息详情请参考 [RTCSpeedTestParams](https://www.yuque.com/anyconf/rtcengine/yi50z7#dMXCH) |
-| --- | --- |
-
-
-**注意**
-
-+ 请在进入频道前进行网速测试，在频道中网速测试会影响正常的音视频传输效果，而且由于干扰过多，网速测试结果也不准确。
-+ 同一时间只允许一项网速测试任务运行。
-
-### stopSpeedTest()
-`- (void)stopSpeedTest`
-
-停止网络测速

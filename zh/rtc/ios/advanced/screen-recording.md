@@ -31,12 +31,19 @@ Xcode 10及以上的版本，手机也必须升级至 iOS 12 以上，否则无�
 ## 对接流程
 1、在需要使用录制服务的位置引入 `#import <ReplayKit/ReplayKit.h>` 并创建`RPSystemBroadcastPickerView`对象，如下图：![](images/730239_1659061385614-7b8fbffe-03b4-439e-9358-4078457b5920.png)
 2、为实现业务细节，采用如下方式替换`RPSystemBroadcastPickerView`按钮，`broadcastButton`按钮事件后出现以下页面说明扩展集成成功：![](images/743648_1659061479129-4bb5753b-86f1-4277-90d8-ea9a8797c1ca.png)![](images/375434_1591944630207-bd25dc92-4aab-4c28-9798-3b6d28449f8a.png)
-3、宿主工程在初始化`RTCEngineKit`之后，实现屏幕共享状态回调：
+3、宿主工程在创建频道实例时传入 `RTCEngineChannelDelegate`，实现屏幕共享状态回调：
+
+<Note>
+自 `3.0.0` 起，ReplayKit 采集是进程级共享能力，单个频道是否推送共享流由该频道实例的 `publishScreenRecord:` 控制，屏幕共享状态回调也随之迁移到 `RTCEngineChannelDelegate` 并带上事件来源频道实例。需要一次性关闭进程内全部频道的屏幕录制时，仍调用 `-[RTCEngineKit stopScreenRecord]`。
+
+自 `3.0.1` 起，加入频道成功后 SDK 即启动采集服务并保持监听，用户可以随时通过系统面板拉起屏幕录制；扩展端连接建立后才会回调 `RTCScreenRecordStatusStart`。因此**业务层必须在收到 `Start` 回调之后再调用 `publishScreenRecord:YES`**，不要为了发布共享流而提前调用它。
+</Note>
 
 ```objectivec
 /// 屏幕共享状态回调
+/// @param channel 事件来源频道实例
 /// @param status 状态码
-- (void)onScreenRecordStatus:(RTCScreenRecordStatus)status {
+- (void)engineChannel:(RTCEngineChannel *)channel onScreenRecordStatus:(RTCScreenRecordStatus)status {
     
     /// 提示操作信息
     NSString *toastStr = @"屏幕共享连接错误";
@@ -99,6 +106,18 @@ Xcode 10及以上的版本，手机也必须升级至 iOS 12 以上，否则无�
     [[RTCEngineKit sharedEngine] sendSampleBuffer:sampleBuffer withType:sampleBufferType];
 }
 ```
+
+7、宿主工程在收到 `RTCScreenRecordStatusStart` 回调后，在需要推送共享流的频道实例上发布屏幕共享。最后一个发布的频道取消发布时，才会断开扩展端连接并结束本次系统录屏：
+
+```objectivec
+/// 当前频道发布屏幕共享流(应在收到 RTCScreenRecordStatusStart 回调之后调用)
+[self.channel publishScreenRecord:YES];
+
+/// 当前频道停止屏幕共享流
+[self.channel publishScreenRecord:NO];
+```
+
+完整时序为：加入频道成功（SDK 自动启动采集服务并监听）→ 用户通过 `RPSystemBroadcastPickerView` 拉起系统录屏 → 扩展端接入，收到 `RTCScreenRecordStatusStart` → 频道实例 `publishScreenRecord:YES` 开始推流。结束时调用 `publishScreenRecord:NO`（仅当前频道停止推流）或 `-[RTCEngineKit stopScreenRecord]`（结束本次系统录屏，采集服务保持监听，用户可再次拉起）。
 
 
 

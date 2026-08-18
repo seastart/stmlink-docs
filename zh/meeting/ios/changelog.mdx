@@ -3,6 +3,39 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.0.1] - 2026.08.14
+#### 变更
++ 依赖`RTCEngineKit`升级至`3.0.1`，同步屏幕共享修复。
+#### 修复
++ 修复`2.0.0`中屏幕共享无法推流的问题（拉起系统录屏后扩展端连接失败，弹出「尝试开始无效的直播会话」）；
++ 修复`-[MeetingKitRoom stopScreenRecord]`只取消推流、系统录屏不会真正结束的问题。
+
+<Note>
+`MeetingKit`与`MeetingKitRoom`的公开接口和回调签名均未变化，业务层无需调整代码。使用`2.0.0`的工程建议直接升级到本版本。
+</Note>
+
+### [2.0.0] - 2026.08.12
+#### 新增
++ 新增会议房间实例类`MeetingKitRoom`，承载进出房间、本端音视频与共享、聊天与举手、主持人管理、云录制、等候室、分组讨论、签到与房间数据查询等全部会中能力；
++ 新增房间事件协议`MeetingKitRoomDelegate`，承载房间内的一切事件；
++ `MeetingKit`新增`createRoomWithDelegate:`与`getRooms`，用于创建房间实例与查询已加入的房间；
++ `MeetingKitRoom`新增`publishLocalVideo:`与`enabledSendAudio:`，按房间粒度控制本端视频与音频的发布；
++ `MeetingKitRoomDelegate`新增`meetingRoom:onUserUpdate:`自己数据更新回调与`meetingRoom:onReceiveCustomMessage:action:userId:sessionId:nickname:`房间自定义消息回调。
+#### 变更
++ `MeetingKit`收敛为全局单例，只保留登录登出、即时通讯、会议查询与预约、设备列表、本地采集预览、音频路由与屏幕采集进程接入；
++ `enterRoom:onSuccess:onFailed:`、`exitRoom:`、`callUser:onSuccess:onFailed:`、`requestOpenCamera:view:onSuccess:onFailed:`、`requestShare:onSuccess:onFailed:`、`sendRoomChatMessage:messageType:targetId:onSuccess:onFailed:`、`switchSpeaker:`、`enabledAudioModule:`、`startRemoteView:streamType:view:`、`adminXxx`系列、云录制、等候室、分组讨论、签到、房间数据查询与媒体配置等接口由`MeetingKit`迁移到`MeetingKitRoom`；
++ `MeetingKitDelegate`只保留`onAudioRouteChange:previousRoute:`与`onApplicationPerformance:cpuUsage:`两个全局事件；
++ 其余会中回调迁入`MeetingKitRoomDelegate`，并统一在首参携带事件来源房间实例，例如`onEnterRoom:userId:`变更为`meetingRoom:onEnterRoom:userId:`、`onUserMicStateChanged:micState:reason:`变更为`meetingRoom:onUserMicStateChanged:micState:reason:`、`onReconnecting`变更为`meetingRoomOnReconnecting:`；
++ 依赖`RTCEngineKit`升级至`3.0.0`，podspec 最低依赖由`>= 2.5.0`提升为`>= 3.0.0`。
+#### 优化
++ 同一账号可同时创建多个房间实例并加入多个房间，各房间的媒体与业务状态相互独立，跨房间同 userId 的成员数据按房间隔离；
++ 摄像头采集与预览、音频路由、屏幕采集作为共享设备能力统一由`MeetingKit`管理，是否推送到某个房间由该房间实例单独控制；
++ `logout`会离开并销毁全部房间实例后再释放资源，业务层无需逐个退出房间。
+
+<Warning>
+本版本为不兼容变更。业务层需改为通过`createRoomWithDelegate:`持有房间实例，改写全部会中接口调用，并把会中回调迁移到`MeetingKitRoomDelegate`的新签名，否则相关接口无法编译、回调不再被触发。
+</Warning>
+
 ### [1.3.7] - 2026.08.05
 #### 变更
 + 依赖`RTCEngineKit`升级至`2.5.10`，同步适配连接断开、开始重连和自定义消息回调新增的频道名称参数。

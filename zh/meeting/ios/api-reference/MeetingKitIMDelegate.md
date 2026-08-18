@@ -37,9 +37,9 @@ description: "会议外消息通道的回调协议：连接状态、来电呼叫
 
 连接断开事件或者被动断开连接回调
 
-当断开原因为`SEAImDisconnectReasonError`时，表示 SDK 抛出的不可恢复的错误，比如鉴权失败等，此时需要重新获取鉴权令牌才可重新启用即时通讯服务。具体错误码参考文档：[错误码表](https://www.yuque.com/anyconf/eanoso/zbbk63kiyugwavue)
+当断开原因为`SEAImDisconnectReasonError`时，表示 SDK 抛出的不可恢复的错误，比如鉴权失败等，此时需要重新获取鉴权令牌才可重新启用即时通讯服务。具体错误码参考文档：[错误码表](/zh/meeting/ios/error-codes)
 
-当断开原因非`SEAImDisconnectReasonError`时，表示被动断开连接。具体离开原因参考文档：[断开原因](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#bTaTr)
+当断开原因非`SEAImDisconnectReasonError`时，表示被动断开连接。具体离开原因参考文档：[断开原因](/zh/meeting/ios/types#seaimdisconnectreason)
 
 **参数**
 
@@ -76,7 +76,7 @@ description: "会议外消息通道的回调协议：连接状态、来电呼叫
 
 **参数**
 
-| remindModel | 会议提醒内容，详情请参见 [SEAMeetingRemindModel](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#ScyOV) |
+| remindModel | 会议提醒内容，详情请参见 [SEAMeetingRemindModel](/zh/meeting/ios/types#seameetingremindmodel) |
 | --- | --- |
 
 

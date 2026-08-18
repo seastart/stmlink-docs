@@ -3,6 +3,39 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [3.0.1] - 2026.08.14
+#### 修复
++ 修复`3.0.0`中屏幕共享无法推流的问题：采集服务改为在加入频道成功后即启动并保持监听，用户通过系统面板拉起录屏时扩展端才能连接成功，不再因为等待`publishScreenRecord:`而错过接入；
++ 修复`-[RTCEngineKit stopScreenRecord]`只取消发布、系统录屏不会真正结束的问题，恢复为断开扩展端连接结束本次录屏。
+#### 优化
++ 屏幕共享内部拆分为订阅与发布两层：加入频道即建立订阅使采集服务保持监听，`publishScreenRecord:`只表达本频道的推流意图；最后一个发布频道取消发布时结束本次系统录屏，最后一个频道离开时才释放采集服务；
++ `RTCScreenRecordStatus`为进程级状态，会同步上报给进程内全部在房频道，业务层判断本端是否正在共享应结合自身的发布意图，不要只依据该状态。
+
+<Note>
+业务层调用时序不变：拉起`RPSystemBroadcastPickerView`→ 收到`RTCScreenRecordStatusStart`→ 调用`publishScreenRecord:YES`。使用`3.0.0`的工程建议直接升级到本版本。
+</Note>
+
+### [3.0.0] - 2026.08.12
+#### 新增
++ 新增频道实例类`RTCEngineChannel`，承载加入与离开频道、成员与频道数据、码流发布与订阅、音频发送、屏幕共享推送与自定义流等频道内能力；
++ 新增频道事件协议`RTCEngineChannelDelegate`，承载频道内的连接、成员、消息、音频、码流与屏幕共享事件；
++ `RTCEngineKit`新增`createChannelWithDelegate:`与`getChannels`，用于创建频道实例与查询活跃频道；
++ `RTCEngineChannel`新增`publishScreenRecord:`，按频道粒度控制屏幕共享流的发布与停止。
+#### 变更
++ `RTCEngineKit`收敛为进程级单例，只保留初始化与销毁、频道实例管理、即时通讯、摄像头采集与预览、音频路由、屏幕采集进程接入、网络测速与美颜渲染；
++ `joinChannelWithToken:`、`leaveChannel:`、`getMySelf`、`getRemoteUsers`、`publishLocalVideo:`、`startRemoteView:trackId:view:`、`enabledSendAudio:`、`setStreamMediaConfig:`、自定义流等频道内接口由`RTCEngineKit`迁移到`RTCEngineChannel`；
++ `RTCEngineDelegate`只保留`onAudioRouteChange:previousRoute:`、`onSpeedTestBegined`、`onSpeedTestUploadResult:downResult:connectResult:`与`onApplicationPerformance:cpuUsage:`四个进程级事件；
++ 其余频道内回调迁入`RTCEngineChannelDelegate`，并统一在首参携带事件来源频道实例，例如`onJoinSucceed:userId:`变更为`engineChannel:onJoinSucceed:`、`onRemoteUserLeaveChannel:userId:reason:`变更为`engineChannel:onRemoteUserLeaveChannel:reason:`、`onScreenRecordStatus:`变更为`engineChannel:onScreenRecordStatus:`；
++ `RTCStreamAudioModel.userId`与`RTCStreamReceiveModel.userId`由只读改为可空可写。
+#### 优化
++ 同一进程可同时创建多个频道实例并加入多个频道，实例之间的成员数据、码流统计与渲染互不干扰；
++ 摄像头、音频路由、ReplayKit 采集与美颜渲染作为进程级共享能力统一由引擎管理，屏幕采集在首个频道发布时启动、最后一个频道停止发布时结束；
++ `-[RTCEngineKit destroy]`会先销毁全部存活频道实例并等待其离开完成，再释放进程级资源。
+
+<Warning>
+本版本为不兼容变更。业务层需改为通过`createChannelWithDelegate:`持有频道实例，改写全部频道接口调用，并把频道内回调迁移到`RTCEngineChannelDelegate`的新签名，否则相关接口无法编译、回调不再被触发。
+</Warning>
+
 ### [2.5.10] - 2026.08.05
 #### 变更
 + `onReconnecting`回调新增频道名称参数，签名变更为`onReconnecting:`；
