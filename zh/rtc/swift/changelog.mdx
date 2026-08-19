@@ -3,9 +3,13 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
-### [2.0.0] - 2026.08.18
+### [1.2.0] - 2026.08.18
 #### 破坏性变更
 + 错误枚举中的信令相关取值由`mqtt*`改名为`signaling*`（`signalingConnectFailed` / `signalingSubscribeFailed`），对外不再暴露信令实现细节。捕获了旧取值的代码需要改名，取值语义未变。
+
+<Warning>
+本次是 minor 版本，`from: "1.1.0"` 会自动解析到 1.2.0。若代码中捕获了 `mqtt*` 取值，升级后需改名为 `signaling*`，否则编译不通过。
+</Warning>
 
 #### 新增
 + **iOS 全屏屏幕共享**：`createLocalScreenTrack(mode:)`新增采集方式参数，`.broadcast(appGroup:)`基于 ReplayKit Broadcast Upload Extension 采集整个系统屏幕；原有的应用内采集为默认值`.inApp`，行为不变。配套新增：
