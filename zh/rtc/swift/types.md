@@ -227,3 +227,71 @@ let track = srtc.createLocalScreenTrack(
 + `audioInput`
 + `audioOutput`
 + `videoInput`
+
+<Note>
+iOS 上 `getDevices(kind: .audioOutput)` 返回空数组——系统不暴露输出设备枚举。
+控制输出走向请用下面的音频路由类型，见[音频路由](/zh/rtc/swift/advanced/audio-routing)。
+</Note>
+
+---
+
+### AudioRoute
+
+**iOS 专有。** 当前音频输出路由，**只读上报用**，五态。
+
+| 取值 | 说明 |
+| --- | --- |
+| `speaker` | 内置扬声器（免提） |
+| `receiver` | 内置听筒 |
+| `bluetooth` | 蓝牙耳机 |
+| `headset` | 有线耳机（3.5mm / Lightning / USB） |
+| `unknown` | 其他输出（AirPlay、CarPlay、HDMI 等） |
+
+辅助属性：
+
+| 成员 | 类型 | 说明 |
+| --- | --- | --- |
+| `displayName` | `String` | 中文名称，可直接用于 UI |
+| `isBuiltIn` | `Bool` | 是否内置路由（扬声器 / 听筒） |
+| `isExternal` | `Bool` | 是否外接路由（蓝牙 / 有线） |
+
+---
+
+### AudioRouteTarget
+
+**iOS 专有。** 可**主动切换**的路由目标，只有两态。
+
+| 取值 | 说明 |
+| --- | --- |
+| `speaker` | 扬声器（免提） |
+| `earpiece` | 听筒 |
+
+与 `AudioRoute` 刻意分开：iOS 不提供切换到指定蓝牙 / 有线设备的能力，外设由系统接管，
+SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `AudioRoute`（`.earpiece` → `.receiver`）。
+
+---
+
+### AudioRouteInfo
+
+**iOS 专有。** 系统音频端口快照，**诊断 / 展示用**，不是可选择的列表。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `String` | 端口 UID；扬声器为固定值 `"speaker"` |
+| `route` | `AudioRoute` | 该端口对应的语义路由 |
+| `name` | `String` | 端口名称，如 "AirPods Pro" |
+| `isActive` | `Bool` | 是否为当前生效路由 |
+
+---
+
+### AudioCallState
+
+**iOS 专有。** 系统通话状态，来自 CallKit。SDK 用它决定音频中断后何时可以恢复。
+
+| 取值 | 说明 |
+| --- | --- |
+| `dialing` | 去电拨号中 |
+| `incoming` | 来电响铃中 |
+| `connected` | 通话已接通 |
+| `disconnected` | 无通话 / 通话已结束 |
+| `unknown` | 未知 |

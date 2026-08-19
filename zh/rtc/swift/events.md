@@ -84,3 +84,27 @@ final class RoomController: ChannelDelegate {
 全屏共享由用户从系统 UI 发起、也可能从系统胶囊直接停止，这些动作发生在 App 之外，
 只能靠事件感知。`startCapture()` 成功仅代表 SDK 已就绪，收到 `screenBroadcastDidStart`
 才是真正"共享中"。详见[屏幕共享](/zh/rtc/swift/advanced/screen-sharing)。
+
+---
+
+### AudioRouteSessionDelegate
+
+**iOS 专有。** 通过 `AudioRouteSession.shared.delegates.add(delegate: self)` 注册，
+所有回调均在主线程执行，协议提供默认空实现，只实现关心的方法即可。
+
+| 方法 | 触发时机 | 关键参数 |
+| --- | --- | --- |
+| `audioRouteSession(_:didChangeRoute:from:reason:)` | 音频输出路由变化 | `AudioRoute`、`AVAudioSession.RouteChangeReason` |
+| `audioRouteSessionWasInterrupted(_:)` | 音频会话被中断（来电 / Siri / 其他 App 抢占） | `AudioRouteSession` |
+| `audioRouteSessionDidRecoverFromInterruption(_:)` | 中断**真正恢复成功**后 | `AudioRouteSession` |
+| `audioRouteSession(_:didChangeCallState:)` | 系统通话状态变化（CallKit） | `AudioCallState` |
+
+`reason` 区分了变化来源（`.oldDeviceUnavailable` 拔出、`.newDeviceAvailable` 插入、
+`.override` App 主动覆盖），排查路由问题时它往往比结果本身更有价值。
+
+`audioRouteSessionDidRecoverFromInterruption(_:)` 与系统的
+`AVAudioSession.interruptionNotification(.ended)` **不等价**：系统电话挂断瞬间音频硬件尚未释放，
+SDK 会等通话真正结束且 App 回到前台后才重建会话，失败还会重试——只有真正恢复成功才触发此回调。
+业务层在这里刷新 UI 即可，不需要自己处理这套时序。
+
+详见[音频路由](/zh/rtc/swift/advanced/audio-routing)。
