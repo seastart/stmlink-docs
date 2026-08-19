@@ -225,6 +225,14 @@ micTrack.unmute()
 + `setAudioTrack(_:)`
 + `getAudioTrack()`
 
+#### 采集方式与状态（iOS）
+
+| 成员 | 类型 | 说明 |
+| --- | --- | --- |
+| `captureMode` | `ScreenCaptureMode` | 采集方式，创建时由 `createLocalScreenTrack(mode:)` 决定；macOS 忽略 |
+| `isCapturing` | `Bool` | 是否已开始采集。全屏采集下它表示「监听就绪」，并不代表有画面 |
+| `isBroadcastActive` | `Bool` | 全屏采集下扩展是否正在推流，即**对端能否看到画面**；展示「共享中」状态应看这个 |
+
 ---
 
 ### LocalAudioTrack

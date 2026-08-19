@@ -75,5 +75,12 @@ final class RoomController: ChannelDelegate {
 | `trackDidUnmute(_:)` | 轨道取消静音 | `Track` |
 | `trackDidEnd(_:)` | 轨道结束 | `Track` |
 | `trackDidBindRtcTrack(_:)` | 底层 WebRTC 轨道已绑定 | `Track` |
+| `screenBroadcastDidStart(_:)` | iOS 全屏共享：扩展已连上、画面开始传输 | `Track` |
+| `screenBroadcastDidFinish(_:reason:)` | iOS 全屏共享：广播结束（含用户点系统胶囊） | `Track`、`String` |
 
 其中 `trackDidBindRtcTrack(_:)` 对视频渲染尤其有用，因为远端轨道对象可能先出现，底层媒体轨道稍后才真正绑定完成 —— 收到这个事件才代表可以渲染。
+
+两个 `screenBroadcast` 事件只在 iOS 全屏采集（`ScreenCaptureMode.broadcast`）下触发：
+全屏共享由用户从系统 UI 发起、也可能从系统胶囊直接停止，这些动作发生在 App 之外，
+只能靠事件感知。`startCapture()` 成功仅代表 SDK 已就绪，收到 `screenBroadcastDidStart`
+才是真正"共享中"。详见[屏幕共享](/zh/rtc/swift/advanced/screen-sharing)。

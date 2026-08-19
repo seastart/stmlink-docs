@@ -27,7 +27,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.1.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.2.0")
 ],
 targets: [
     .target(
@@ -46,6 +46,17 @@ targets: [
 + 打开 `File > Add Package Dependencies...`
 + 填入 `https://github.com/seastart/srtc-swift-sdk.git`
 + 在目标 Target 中勾选 `SRTC`
+
+#### SRTCBroadcastKit（iOS 全屏屏幕共享才需要）
+
+同一个包里还有一个 `SRTCBroadcastKit` 产品，只给 iOS 屏幕共享的 Broadcast Upload Extension
+使用，普通接入不需要它。集成步骤见[屏幕共享](/zh/rtc/swift/advanced/screen-sharing)。
+
+<Warning>
+`SRTCBroadcastKit` 只勾选到扩展 target，**不要**勾到 App target；扩展 target 也**不要**
+依赖 `SRTC`。扩展进程内存上限 50MB，链上 WebRTC 会被系统杀掉；而 App 侧的 `SRTC` 里已经
+含有同一份代码，重复链接会让一个进程里出现两份同名类型。
+</Warning>
 
 ---
 

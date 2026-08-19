@@ -191,6 +191,26 @@ SDK 会根据 Token / Join 响应中的 `stream_vendor` 自动选择对应引擎
 
 ---
 
+### ScreenCaptureMode
+
+iOS 屏幕采集方式，传给 `createLocalScreenTrack(mode:)`。macOS 忽略此项（始终走 `ScreenCaptureKit`）。
+
+| 取值 | 说明 |
+| --- | --- |
+| `.inApp` | 默认值。应用内采集，零额外集成，但**只能采到本 App 的画面** |
+| `.broadcast(appGroup: String)` | 全屏采集，能采整个系统屏幕；需要集成 Broadcast Upload Extension 与 App Group |
+
+```swift
+let track = srtc.createLocalScreenTrack(
+    preset: .h720p,
+    mode: .broadcast(appGroup: "group.your.app.group")
+)
+```
+
+集成步骤见[屏幕共享](/zh/rtc/swift/advanced/screen-sharing)。
+
+---
+
 ### DeviceInfo
 
 设备管理器返回的统一设备结构。
