@@ -191,7 +191,11 @@ extension MeetingController: SMeetingDelegate {
 
 `activeSpeakersDidChange` 给的是**全量快照**（已按音量降序排好），直接覆盖 UI 即可，不需要自己合并增量。无人说话时 `speakers` 为空数组。
 
-这四个事件的数据结构定义在底层 SRTC 模块，使用时需要 `import SRTC`，字段说明见 [类型定义](/zh/meeting/swift/types)。
+这四个事件的数据结构定义在底层 SRTC 模块，使用时需要 `import SRTC`，字段说明见 [类型定义](/zh/meeting/swift/types)；等级判定、冷启动取值与主动切层的完整说明见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+
+<Note>
+这四个事件只在会议使用 **SeaStart（SFU）** 引擎时有 —— 走 CDN（WangSu）的会议没有这条信令通道，不会收到任何一个。
+</Note>
 
 ---
 

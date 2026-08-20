@@ -620,6 +620,8 @@ result.meta      // MetaRes
 | `ActiveSpeakersSnapshot` | `ts`、`speakers: [ActiveSpeakerInfo]`（已按音量降序，无人说话时为空） |
 | `LayerSwitchedInfo` | `subKey`、`fromTrackId`、`toTrackId`、`reason`（如 `bwe_down` / `bwe_up`）、`latencyMs` |
 
+字段的取值范围与用法见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+
 ---
 
 ### 相关页面

@@ -140,6 +140,7 @@
 - [音频路由（iOS）](https://docs.stmlink.com/zh/rtc/swift/advanced/audio-routing.md): iOS 上用 AudioRouteSession 控制声音从扬声器还是听筒出，理解持久/临时两层设置、外设为何不可主动切换，以及入会即申请麦克风权限的原因
 - [屏幕共享](https://docs.stmlink.com/zh/rtc/swift/advanced/screen-sharing.md): SRTC Swift SDK 在 macOS 与 iOS 上的屏幕共享接入方式与平台差异
 - [多频道](https://docs.stmlink.com/zh/rtc/swift/advanced/multi-channel.md): 同时加入多个频道：轨道如何跨频道复用、采集何时回收、以及多频道发布音频的硬约束
+- [通话质量与活跃说话人](https://docs.stmlink.com/zh/rtc/swift/advanced/call-quality.md): 读取网络质量数值与等级、做「网络不佳」提示与主动降级、渲染说话人高亮，以及大小流主动切层
 - [自定义推流](https://docs.stmlink.com/zh/rtc/swift/advanced/custom-track.md): 使用自定义音视频轨道、视频处理器和音频处理器扩展 Swift SDK 的采集能力
 
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS） · 接口文档

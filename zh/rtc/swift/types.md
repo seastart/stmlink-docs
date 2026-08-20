@@ -295,3 +295,97 @@ SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `Audi
 | `connected` | 通话已接通 |
 | `disconnected` | 无通话 / 通话已结束 |
 | `unknown` | 未知 |
+
+---
+
+### ConnectionQuality
+
+连接质量等级，从服务端下发的报告里解出。
+
+| 取值 | 说明 |
+| --- | --- |
+| `unknown` | 初始占位，尚无报告 |
+| `excellent` | 优秀 |
+| `good` | 良好 |
+| `poor` | 较差 |
+| `lost` | 已丢失 |
+
+「较差」比较的顺序是 `unknown` < `excellent` < `good` < `poor` < `lost`。
+
+---
+
+### QualitySample
+
+单方向的质量数值快照，信号塔 / 网络面板可以直接读这些字段渲染。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `level` | `ConnectionQuality` | 服务端给出的等级 |
+| `score` | `Int` | 0~100，越大越好 |
+| `mos` | `Double` | 1.0~4.5，越大越好 |
+| `loss` | `Double` | 丢包率，0~1 的**比例**（不是百分数） |
+| `rtt` | `Double` | 往返时延，毫秒 |
+| `jitter` | `Double` | 抖动，毫秒 |
+| `packets` | `Int` | 本轮统计参与计算的包数 |
+| `bitrate` | `Int` | 平均码率，kbps |
+| `bytes` | `Int` | 本窗口字节数 |
+
+---
+
+### QualityReport
+
+一次完整的质量报告，服务端每次下发都会抛一份。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `ts` | `Int64` | 服务端生成报告时的 Unix 毫秒时间戳 |
+| `pub` | `QualitySample` | 上行（客户端到 SFU） |
+| `sub` | `QualitySample` | 下行（SFU 到客户端） |
+
+---
+
+### QualityEvaluation
+
+简化的等级评估快照，`getConnectionQuality()` 与跳档事件用它。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `uplink` | `ConnectionQuality` | 上行等级 |
+| `downlink` | `ConnectionQuality` | 下行等级 |
+| `overall` | `ConnectionQuality` | 取上下行**较差**的一档 |
+| `mos` | `Double` | 取上下行较小值，反映用户感知最弱的一侧 |
+| `timestamp` | `Int64` | 对应报告的 `ts` |
+
+---
+
+### ConnectionQualityChange
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `evaluation` | `QualityEvaluation` | 跳档后的评估 |
+| `previous` | `ConnectionQuality` | 跳档前的等级，首次跳档时为 `unknown` |
+
+---
+
+### ActiveSpeakerInfo / ActiveSpeakersSnapshot
+
+| 类型 | 字段 |
+| --- | --- |
+| `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 归一化线性音量） |
+| `ActiveSpeakersSnapshot` | `ts`、`speakers: [ActiveSpeakerInfo]` |
+
+`speakers` 是**全量列表**，SDK 已合并服务端的增量协议并按 `level` 降序排好，无人说话时为空数组。
+
+---
+
+### LayerSwitchedInfo
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `subKey` | `String` | 订阅键，形如 `发布者uid:trackId` |
+| `fromTrackId` | `String?` | 切换前的层 |
+| `toTrackId` | `String` | 切换后的层 |
+| `reason` | `String` | 服务端给出的原因，如 `bwe_down`、`bwe_up`、`track_ended`；客户端主动切层为 `client` |
+| `latencyMs` | `Int` | 从发起切层到真正切到目标层的耗时，毫秒 |
+
+以上质量相关类型的用法见 [通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。

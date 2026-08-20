@@ -60,6 +60,25 @@ final class RoomController: ChannelDelegate {
 
 ---
 
+### 通话质量事件
+
+| 方法 | 触发时机 | 关键参数 |
+| --- | --- | --- |
+| `channel(_:didReceiveQualityReport:)` | 服务端每次下发质量报告（实时数值流） | `QualityReport` |
+| `channel(_:didChangeConnectionQuality:)` | 质量等级发生跳档（断言式） | `ConnectionQualityChange` |
+| `channel(_:didChangeActiveSpeakers:)` | 活跃说话人变化 | `ActiveSpeakersSnapshot` |
+| `channel(_:didSwitchLayer:)` | 大小流切层完成 | `LayerSwitchedInfo` |
+
+质量走**双轨**，按用途选一条：`didReceiveQualityReport` 是每个上报周期都触发的原始数值，适合信号塔与诊断面板；`didChangeConnectionQuality` 只在跳档时触发，适合「网络不佳」提示与主动降级。**别用前者驱动提示或降级**，等级抖动时会反复闪烁。
+
+`didChangeActiveSpeakers` 给的是**全量快照**（已按音量降序），业务侧直接覆盖 UI，不需要自己合并增量；无人说话时为空数组。
+
+<Note>
+这四个事件仅 **SeaStart（SFU）引擎**有 —— 它们走订阅 PeerConnection 上的信令 DataChannel，WangSu（CDN）引擎没有这条通道。详见 [通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+</Note>
+
+---
+
 ### TrackDelegate
 
 通过 `track.delegates.add(delegate: self)` 注册。

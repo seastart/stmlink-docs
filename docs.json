@@ -219,6 +219,7 @@
                       "zh/rtc/swift/advanced/audio-routing",
                       "zh/rtc/swift/advanced/screen-sharing",
                       "zh/rtc/swift/advanced/multi-channel",
+                      "zh/rtc/swift/advanced/call-quality",
                       "zh/rtc/swift/advanced/custom-track"
                     ]
                   },
