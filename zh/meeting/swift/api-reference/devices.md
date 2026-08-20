@@ -89,6 +89,64 @@ try meeting.setSpeakerOutputEnabled(true)
 
 **可能抛出：** 设置失败时抛出底层错误。
 
+与下面的 `setAudioRoute(_:)` 是同一机制的两种写法，不要混着用两套状态。
+
+---
+
+### 音频路由（iOS）
+
+以下接口**仅 iOS 可用**，用于控制声音从外放还是听筒出。可切换的目标只有这两个 —— 蓝牙 / 有线耳机由系统接管，原因见 [音频路由](/zh/meeting/swift/advanced/audio-routing)。
+
+#### `defaultAudioRoute`
+
+```swift
+meeting.defaultAudioRoute = .speaker
+```
+
+**类型：** `AudioRouteTarget`（可读写）
+
+持久默认输出路由，**入会前**设定最稳妥，长期有效。优先级低于 `setAudioRoute(_:)` 的临时覆盖。
+
+---
+
+#### `setAudioRoute(_:)`
+
+```swift
+meeting.setAudioRoute(.earpiece)
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `target` | `AudioRouteTarget` | 是 | `.speaker`（外放）或 `.earpiece`（听筒） |
+
+会中临时切换输出路由，优先级高于 `defaultAudioRoute`。**不抛错**：外设（蓝牙 / 有线）在用时切 `.speaker` 会被底层跳过并记日志 —— 该操作在 iOS 上本就无效。请用 `currentAudioRoute` 判断实际结果。
+
+---
+
+#### `clearAudioRouteOverride()`
+
+```swift
+meeting.clearAudioRouteOverride()
+```
+
+撤销临时覆盖，回落到 `defaultAudioRoute`。
+
+---
+
+#### 只读状态
+
+| 成员 | 类型 | 说明 |
+| --- | --- | --- |
+| `currentAudioRoute` | `AudioRoute` | 系统实际输出路由（五态，含蓝牙 / 有线），UI 上要展示的是这个 |
+| `effectiveAudioRouteTarget` | `AudioRouteTarget` | 当前生效目标 = 临时覆盖 ?? 持久默认 |
+| `audioRouteOverride` | `AudioRouteTarget?` | 当前临时覆盖，`nil` 表示没有 |
+| `isExternalAudioRouteActive` | `Bool` | 是否走在蓝牙 / 有线耳机上，为 `true` 时应把「切外放」按钮置灰 |
+| `isAudioSessionActive` | `Bool` | 通话音频通道是否已建立（入会后应为 `true`） |
+| `audioCallState` | `AudioCallState` | 系统通话状态（CallKit 观察结果） |
+| `availableAudioRoutes()` | `[AudioRouteInfo]` | 端口快照，**诊断 / 展示用**，不是可供用户选择的列表 |
+
+路由变化与中断恢复通过 `meeting(_:audioRouteDidChange:)`、`meetingAudioRouteDidRecoverFromInterruption(_:)` 上报，见 [事件参考](/zh/meeting/swift/events#音频路由事件-ios)。
+
 ---
 
 ### 设备事件
@@ -103,4 +161,5 @@ try meeting.setSpeakerOutputEnabled(true)
 ### 相关页面
 
 + [外设管理](/zh/meeting/swift/advanced/device-management)
++ [音频路由](/zh/meeting/swift/advanced/audio-routing)
 + [媒体控制接口](/zh/meeting/swift/api-reference/media-control)

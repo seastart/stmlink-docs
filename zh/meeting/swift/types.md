@@ -336,6 +336,8 @@ result.meta      // MetaRes
 | `RoomLockedChangeEventData` | `locked`、`opUid` |
 | `RoomShareStartEventData` | `uid`、`shareType: ShareType` |
 | `RoomShareStopEventData` | `uid`、`shareType`、`byAdmin`、`opUid` |
+| `ShareBroadcastStartEventData` | `uid`（仅 iOS 全屏共享，共享方自己） |
+| `ShareBroadcastStopEventData` | `uid`、`reason`（结束原因，来自扩展侧或系统） |
 | `RoomMcuTaskEventData` | `taskType: McuTaskType`、`taskStatus: McuTaskStatus`、`errDesc` |
 | `RoomJoinFailedEventData` | `uid`、`name`、`errDesc`、`failedType` |
 
@@ -373,6 +375,7 @@ result.meta      // MetaRes
 | `SignInFinishEventData` | `hostId`、`hostName`、`epoch` |
 | `RollCallNamedEventData` | `id`（点名记录标识，应答时回传）、`sid`（发起点名的主持人 uid）、`time` |
 | `DeviceChangeEventData` | `device: DeviceInfo` |
+| `AudioRouteChangeEventData` | `route: AudioRoute`、`previousRoute: AudioRoute`、`reason: AVAudioSession.RouteChangeReason`（仅 iOS） |
 
 #### 会议外消息
 
@@ -589,9 +592,33 @@ result.meta      // MetaRes
 
 ### 来自 SRTC 的类型
 
-以下类型定义在底层 SRTC 模块，使用时需要 `import SRTC`：`LogLevel`、`CameraPreset`、`MicPreset`、`ScreenPreset`、`DeviceInfo`、`DisconnectReason`、`SRTCVideoView`、`SRTCVideoRenderer`、`ScreenCaptureSources`、`DisplaySource`、`WindowSource`、`LocalCameraTrack`、`LocalScreenTrack`、`RemoteVideoTrack`、`Track`。
+以下类型定义在底层 SRTC 模块，使用时需要 `import SRTC`：`LogLevel`、`CameraPreset`、`MicPreset`、`ScreenPreset`、`DeviceInfo`、`DisconnectReason`、`SRTCVideoView`、`SRTCVideoRenderer`、`ScreenCaptureSources`、`DisplaySource`、`WindowSource`、`LocalCameraTrack`、`LocalScreenTrack`、`RemoteVideoTrack`、`Track`、`SRTCBroadcastPicker`。
 
 `NativeVideoView` 是 SMeeting 为渲染视图定义的别名，实际类型是 `SRTCVideoRenderer`。
+
+#### 音频路由（iOS）
+
+| 类型 | 说明 |
+| --- | --- |
+| `AudioRoute` | 系统实际输出路由，**只读五态**：`unknown` / `speaker`（外放）/ `receiver`（听筒）/ `bluetooth` / `headset`。另有 `displayName`、`isBuiltIn`、`isExternal` |
+| `AudioRouteTarget` | 可主动切换的目标，**只有两态**：`speaker` / `earpiece` |
+| `AudioRouteInfo` | 端口快照（诊断用）：`id`、`route`、`name`、`isActive` |
+| `AudioCallState` | 系统通话状态：`unknown` / `dialing` / `incoming` / `connected` / `disconnected` |
+
+为什么可切换的只有两态，见 [音频路由](/zh/meeting/swift/advanced/audio-routing)。
+
+#### 通话质量
+
+| 类型 | 字段 |
+| --- | --- |
+| `ConnectionQuality` | 质量等级：`unknown` / `excellent` / `good` / `poor` / `lost` |
+| `QualitySample` | `level`、`score`（0~100）、`mos`（1.0~4.5）、`loss`（0~1）、`rtt`、`jitter`（毫秒）、`packets`、`bitrate`（kbps）、`bytes` |
+| `QualityReport` | `ts`（Unix 毫秒）、`pub: QualitySample`（上行）、`sub: QualitySample`（下行） |
+| `QualityEvaluation` | `uplink`、`downlink`、`overall`（取较差档）、`mos`（取上下行较小值）、`timestamp` |
+| `ConnectionQualityChange` | `evaluation: QualityEvaluation`、`previous: ConnectionQuality`（首次跳档为 `unknown`） |
+| `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 归一化音量） |
+| `ActiveSpeakersSnapshot` | `ts`、`speakers: [ActiveSpeakerInfo]`（已按音量降序，无人说话时为空） |
+| `LayerSwitchedInfo` | `subKey`、`fromTrackId`、`toTrackId`、`reason`（如 `bwe_down` / `bwe_up`）、`latencyMs` |
 
 ---
 

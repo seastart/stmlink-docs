@@ -315,8 +315,9 @@
 
 - [媒体控制](https://docs.stmlink.com/zh/meeting/swift/advanced/media-control.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的开关与切换，以及房间媒体策略的影响
 - [视频渲染](https://docs.stmlink.com/zh/meeting/swift/advanced/video-rendering.md): 在 SwiftUI 与 UIKit / AppKit 中渲染 SMeeting 的本端画面、远端画面与合屏画面
-- [屏幕共享](https://docs.stmlink.com/zh/meeting/swift/advanced/screen-sharing.md): SMeeting Swift SDK 的屏幕共享接入：默认采集、macOS 指定共享源、白板共享与共享事件
+- [屏幕共享](https://docs.stmlink.com/zh/meeting/swift/advanced/screen-sharing.md): SMeeting Swift SDK 的屏幕共享接入：默认采集、macOS 指定共享源、iOS 全屏共享（Broadcast Upload Extension）、白板共享与共享事件
 - [外设管理](https://docs.stmlink.com/zh/meeting/swift/advanced/device-management.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的枚举与切换，以及设备插拔事件处理
+- [音频路由（iOS）](https://docs.stmlink.com/zh/meeting/swift/advanced/audio-routing.md): 会议中控制声音从扬声器还是听筒出：持久默认与临时切换两层、外设为什么不能主动切、以及入会即申请麦克风权限的原因
 - [会中消息](https://docs.stmlink.com/zh/meeting/swift/advanced/messaging.md): SMeeting Swift SDK 的会中聊天消息、自定义消息发送与接收，以及禁言控制
 - [举手与开启请求](https://docs.stmlink.com/zh/meeting/swift/advanced/handup.md): SMeeting Swift SDK 中成员举手申请、主持人审批，以及主持人邀请成员开麦开摄像头的完整流程
 - [主持人管控](https://docs.stmlink.com/zh/meeting/swift/advanced/host-controls.md): SMeeting Swift SDK 中主持人与联席主持人的房间管控、成员管理、参会人员维护与设备邀请

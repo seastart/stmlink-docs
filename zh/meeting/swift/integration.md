@@ -31,7 +31,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.1.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.2.0"),
 ],
 targets: [
     .target(
@@ -50,6 +50,26 @@ targets: [
 + 打开 `File > Add Package Dependencies...`
 + 填入 `https://github.com/seastart/smeeting-swift-sdk.git`
 + 在目标 Target 中勾选 `SMeeting`
+
+#### 例外：iOS 全屏共享需要再加一条依赖
+
+只有要做 **iOS 全屏屏幕共享**（共享整个系统屏幕，而非仅本 App 画面）时才需要这一步。它的扩展侧要链接 `SRTCBroadcastKit` —— 那是音视频层 `srtc-swift-sdk` 的第二个产物（不含 WebRTC），而 SwiftPM 不允许使用传递依赖的产品，所以要显式再声明一次：
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.2.0"),
+    // 版本必须与 SMeeting 内部锁定的 SRTC 版本一致
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.3.0"),
+],
+```
+
+<Warning>
+`SRTCBroadcastKit` **只能加到 Broadcast Upload Extension 的 target 上**，不要同时加到 App target —— App 侧的 `SRTC` 里已经静态含有同一份代码，重复链接会让一个进程里出现两份同名类型。反过来让扩展去链 `SMeeting` / `SRTC` 同样不行：那会把 WebRTC 拉进只有 50MB 内存上限的扩展进程。
+
+完整接入步骤见 [屏幕共享](/zh/meeting/swift/advanced/screen-sharing)。
+</Warning>
+
+SMeeting 每个版本锁定的 SRTC 版本是固定的（用 `exact:` 钉住，保证是我们测过的组合），可以在 [更新日志](/zh/meeting/swift/changelog) 里查到对应关系。
 
 ---
 
@@ -74,6 +94,9 @@ import SRTC
 | 设置日志级别 | `LogLevel` |
 | 枚举外设 | `DeviceInfo` |
 | macOS 选择共享源 | `ScreenCaptureSources`、`DisplaySource`、`WindowSource` |
+| iOS 全屏共享 | `SRTCBroadcastPicker`（唤起系统广播选择器） |
+| iOS 音频路由 | `AudioRoute`、`AudioRouteTarget`、`AudioRouteInfo`、`AudioCallState` |
+| 通话质量事件 | `QualityReport`、`ConnectionQualityChange`、`ActiveSpeakersSnapshot`、`LayerSwitchedInfo` |
 | 断开原因 | `DisconnectReason` |
 
 ---
@@ -90,6 +113,19 @@ import SRTC
 <key>NSMicrophoneUsageDescription</key>
 <string>需要访问麦克风以进行语音会议</string>
 ```
+
+建议同时声明后台音频能力，避免 App 切到后台时音频被系统挂起：
+
+```xml
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>
+</array>
+```
+
+<Note>
+iOS 上**入会时就会申请麦克风权限**，即使成员只打算旁听；入会期间状态栏也会显示橙色麦克风指示点。这是音频路由可控的前提，与 Zoom、腾讯会议等 App 一致，原因见 [音频路由](/zh/meeting/swift/advanced/audio-routing)。所以 `NSMicrophoneUsageDescription` 是必填项，缺了会崩溃。
+</Note>
 
 #### macOS
 

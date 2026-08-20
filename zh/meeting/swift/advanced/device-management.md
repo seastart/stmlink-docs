@@ -88,6 +88,8 @@ try meeting.setSpeakerOutputEnabled(false)  // 回到系统默认输出（听筒
 
 iOS 上蓝牙、AirPlay 等具体输出路由由用户通过系统控制中心或 `AVRoutePickerView` 选择，应用无法直接指定。
 
+要设定「长期默认走外放」，或需要读取当前实际路由、监听路由变化，用 [音频路由](/zh/meeting/swift/advanced/audio-routing) 那一套接口 —— `setSpeakerOutputEnabled(_:)` 与其中的 `setAudioRoute(_:)` 是同一机制的两种写法。
+
 #### 与「扬声器静音」的区别
 
 这两件事是正交的，不要混用：
