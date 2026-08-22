@@ -163,6 +163,93 @@ await meeting.stopShare()
 
 ---
 
+### iOS 全屏共享
+
+以下接口仅 iOS 可用，用于共享整个系统屏幕（`requestShare()` 在 iOS 上只能采到本 App 画面）。需要先集成 Broadcast Upload Extension，完整步骤见 [屏幕共享](/zh/meeting/swift/advanced/screen-sharing)。
+
+#### `prepareBroadcastShare(appGroup:preset:)`
+
+```swift
+try await meeting.prepareBroadcastShare(appGroup: "group.your.app")
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `appGroup` | `String` | 是 | 宿主与扩展共用的 App Group ID |
+| `preset` | `ScreenPreset` | 否 | 采集预设，默认 `.h1080p` |
+
+挂起全屏采集的监听，等用户从系统 UI 发起广播。**不通知会议后端、不发布轨道** —— 此刻共享还没开始。入会后调用即可，已在监听或已在共享时幂等返回。
+
+**返回值：** 无
+
+**可能抛出：** 采集监听建立失败时的底层错误（如 App Group 配置不正确）。
+
+---
+
+#### `publishBroadcastShare(view:byAdmin:adminUid:)`
+
+```swift
+try await meeting.publishBroadcastShare()
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `view` | `NativeVideoView?` | 否 | 本地预览视图，通常不需要 |
+| `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请，默认 `false` |
+| `adminUid` | `String?` | 否 | 发起邀请的主持人 ID |
+
+把已经在出帧的全屏采集发布到会议（后端 + 频道）。**在收到 `shareBroadcastDidStart` 之后调用** —— 那才是用户真的开始共享的时刻。已发布时幂等返回。
+
+**返回值：** 无
+
+**可能抛出：**
+
++ `SMeetingError.internalError(_:)` —— 尚未调用 `prepareBroadcastShare`
++ `SMeetingError.unauthorized` —— 房间禁共享且你不是主持人 / 联席主持人
++ `SMeetingError.apiError(code:message:)`
+
+发布失败时 SDK 会自动回滚共享状态。
+
+---
+
+#### `stopBroadcastListening()`
+
+```swift
+await meeting.stopBroadcastListening()
+```
+
+停止监听全屏采集。正在共享中调用等同于 `stopShare()`，并且之后不会再自动重新挂上监听。`exitRoom()` 会自动调用它。
+
+**返回值：** 无，不抛错。
+
+---
+
+#### `requestShare(broadcastAppGroup:preset:view:byAdmin:adminUid:)`
+
+```swift
+try await meeting.requestShare(broadcastAppGroup: "group.your.app")
+```
+
+一步到位版：建立监听的同时就对会议宣布共享。
+
+<Warning>
+用户可能根本不点系统胶囊，那时会议里会挂着一个没有画面的共享标记，需要你自己超时撤回。**会议类场景请用 `prepareBroadcastShare` + `publishBroadcastShare`**，本重载只为「不关心中间态」的简单集成保留。
+</Warning>
+
+---
+
+#### `isShareBroadcastActive`
+
+```swift
+if meeting.isShareBroadcastActive { /* 屏幕正在出帧 */ }
+```
+
+**类型：** `Bool`（只读）
+
+iOS 全屏共享当前是否真的在出帧。`prepareBroadcastShare` 之后本属性仍为 `false`，直到用户在系统胶囊里点了「开始直播」。应用内采集模式恒为 `false`。
+
+---
+
 ### 远端视频
 
 #### `subscribeRemoteVideoTrack(uid:trackDesc:)`

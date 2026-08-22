@@ -3,6 +3,8 @@ title: "C 快速开始"
 description: "Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能"
 ---
 
+> 注意：`SMeeting_C.h` / `SMeetingEngineGlobal` 在 `1.0.0-alpha.5` 版本中暂未更新，仍保持单会议旧写法，不能与新版的 `ISMeetingEngine`/`ISMeetingChannel` 结构混用。如需使用 C 接口，请等待后续版本或直接使用 C++ 接口。
+
 本文档介绍如何在 Windows 平台使用 C 语言集成 SMeeting SDK。
 
 ## 基本概念
@@ -113,10 +115,10 @@ SMeetingEngine_setEnable_stream_log(1);     // 启用流日志
 
 ```c
 const char* roomno = "123456789";
-const char* name = "张三";
 const char* pass = "";  // 会议密码，无密码则为空
 
-StatusCodeC ret = SMeetingEngine_enterRoom(roomno, name, pass);
+// 昵称取自 SMeetingEngine_login 使用的 token，不再作为入会参数
+StatusCodeC ret = SMeetingEngine_enterRoom(roomno, pass);
 // 进入房间结果通过回调函数异步返回（回调 Key: 112）
 ```
 
@@ -560,8 +562,7 @@ int main() {
     SMeetingEngine_setStat_interval(10000);
 
     const char* no ="111222333";
-    const char* name = "yjl";
-    SMeetingEngine_enterRoom(no,name,"");
+    SMeetingEngine_enterRoom(no,"");
     return 0;
 }
 ```

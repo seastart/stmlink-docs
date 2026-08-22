@@ -8,15 +8,18 @@ description: "Windows 音视频 SDK 的核心接口：创建与释放实例、�
 ## IRTCEngine
 ### 创建IRTCEngine
 ```cpp
-RTCENGINE_API StatusCode RTCENGINE_CALL RTCEngine_Init(IRTCEngine** rtc);
+RTCENGINE_API StatusCode RTCENGINE_CALL RTCEngine_Init(IRTCEngine** rtc, RTCEngineOptions* opt);
 ```
 
 **参数**
 
-| rtc | IRTCEngine 对象类 |
+| rtc | IRTCEngine 对象类，失败时为 nullptr |
 | --- | --- |
+| opt | 引擎初始化参数，[RTCEngineOptions](../types.md#引擎初始化参数（RTCEngineOptions）)。**传 nullptr 表示完全不写 SDK 日志** |
 
 
+注：日志开关和日志路径原先在 `IRTCSetting` 上（`enable_stream_log` / `sdk_log_path`），现已移到这里 —— 
+它们在引擎自身初始化阶段就被消费，那时还没有任何频道对象。
 
 
 ### 释放IRTCEngine
@@ -63,19 +66,6 @@ RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetStatusMsg(StatusCode code, char* 
 
 
 ## 基础函数
-### 获取配置信息对象
-```cpp
-virtual StatusCode getSetting(IRTCSetting** set) = 0;
-```
-
-**参数**
-
-| set | sdk 配置信息类，详细内容[查看](./IRTCSetting.md) |
-| --- | --- |
-
-
-
-
 ### 设置消息回调
 ```cpp
 virtual StatusCode setEventHandler(IRTCEngineEvent* e) = 0;
@@ -87,87 +77,60 @@ virtual StatusCode setEventHandler(IRTCEngineEvent* e) = 0;
 | --- | --- |
 
 
-## 
+
 ## 频道相关函数
-### 加入频道
+
+支持同时加入多个频道。每个频道对应一个 [IRTCChannel](./IRTCChannel.md) 对象，频道级的接口和回调都在那个对象上，
+不再像旧版一样在 `IRTCEngine` 上用 `channelId` 首参来区分。
+
+**关于 channelId**
+
++ `channelId` 就是 token 中 `channel` 字段的值，由 SDK 内部解析，通过 `IRTCChannel::getChannelId()` 取得
++ `channelId` 只用于 `leaveChannel` 和 `getChannelIds`，其余接口都直接调频道对象
+
+### 创建频道对象
 ```cpp
-virtual StatusCode joinChannel(const char* token) = 0;
+virtual StatusCode createChannel(const char* token, IRTCChannel** ch) = 0;
 ```
 
 **参数**
 
 | token | 加入频道所需要的token |
 | --- | --- |
+| ch | 出参，频道对象。失败时为 nullptr |
 
 
+注：**只创建对象，不进入频道**。拿到对象后设置好配置和事件回调，再调用 [IRTCChannel::join()](./IRTCChannel.md#进入频道)。
+重复创建同一频道返回 `Conflict`；token 解析不出频道返回 `SdkTokenInvalid`。
 
 
 ### 离开频道
 ```cpp
-virtual void leaveChannel() = 0;
-```
-
-### 
-### 获取自身用户信息
-```cpp
-virtual StatusCode getMe(char** s, int* c) = 0;
+virtual void leaveChannel(const char* channelId) = 0;
 ```
 
 **参数**
 
-| s | 用户信息json  |
+| channelId | 要离开的频道id |
 | --- | --- |
-| c | 用户信息json 长度 |
 
 
-
-
-### 获取频道信息
+### 离开所有频道
 ```cpp
-virtual StatusCode getChannel(char** s, int* c) = 0;
+virtual void leaveAllChannel() = 0;
+```
+
+
+### 获取已加入的频道列表
+```cpp
+virtual StatusCode getChannelIds(char** s, int* c) = 0;
 ```
 
 **参数**
 
-| s | 频道信息json  |
+| s | 已加入的 channelId json array，例如 ["ch_a","ch_b"] |
 | --- | --- |
-| c | 频道信息json 长度 |
-
-
-### 
-### 获取频道所有成员信息
-```cpp
-virtual StatusCode getMembers(char** s, int* c) = 0;
-```
-
-**参数**
-
-| s | 所有用户信息json array |
-| --- | --- |
-| c | 所有用户信息json array长度 |
-
-
-
-
-
-
-### 获取指定成员信息
-```cpp
-virtual StatusCode getMember(const char* uid, char** s, int* c) = 0;
-virtual StatusCode getMemberByLinkId(const char* linkId, char** s, int* c) = 0;
-virtual StatusCode getMemberByLinkId(int linkId, char** s, int* c) = 0;
-		
-```
-
-**参数**
-
-| uid/linkid | 用户id,流媒体linkid |
-| --- | --- |
-| s | 用户信息json |
-| c | 用户信息json 长度 |
-
-
-
+| c | json array 长度 |
 
 
 
@@ -243,141 +206,6 @@ virtual StatusCode getEnumSpeaker(char** devices, int* iSize) = 0;
 | Devices | 扬声器信息json, [扬声器信息](../types.md#麦克风/扬声器枚举信息) |
 | --- | --- |
 | iSize | 扬声器信息json 长度 |
-
-
-
-
-### 获取视频轨道对象
-```cpp
-virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** track) = 0;
-```
-
-**参数**
-
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不通轨道对象，默认推流的desc |
-| --- | --- |
-| track | [视频轨道对象](./IRTCLocalScreenTrack.md) |
-
-
-
-
-### 获取共享屏幕流对象
-```cpp
-virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** track) = 0;
-```
-
-**参数**
-
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不通轨道对象,默认推流的desc |
-| --- | --- |
-| track | [屏幕轨道对象](./IRTCLocalScreenTrack.md) |
-
-
-
-
-### 获取音频流对象
-```cpp
-virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track) = 0;
-```
-
-**参数**
-
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不通轨道对象,默认推流的desc |
-| --- | --- |
-| track | [麦克风轨道对象](./IRTCLocalAudioTrack.md) |
-
-
-
-
-### 获取成员音频轨道对象
-```cpp
-virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackid, IRTCRemoteAudioTrack** track) = 0;
-```
-
-**参数**
-
-| uid | 用户id（空为全体用户） |
-| --- | --- |
-| trackid | 用户音频流轨道id（空为全体轨道） |
-| track | [本地音频混音轨道对象](./IRTCRemoteAudioTrack.md) |
-
-
-
-
-### 获取成员视频轨道对象
-```cpp
-virtual StatusCode getRemoteVideoTrack(const char* uid, const char* trackid, IRTCRemoteVideoTrack** track) = 0;
-```
-
-**参数**
-
-| uid | 用户id |
-| --- | --- |
-| trackid | 用户视频流轨道id |
-| track | [成员视频轨道对象](./IRTCRemoteVideoTrack.md) |
-
-
-
-
-### 获取合成流视频轨道对象
-```cpp
-virtual StatusCode getMCUVideoTrack(IRTCRemoteVideoTrack** track) = 0;
-```
-
-**参数**
-
-| track | [合成流视频轨道对象](./IRTCRemoteVideoTrack.md) |
-| --- | --- |
-
-
-
-
-
-
-### 订阅流轨道
-```cpp
-virtual StatusCode subscribe(IRTCTrack* tk ) = 0;
-```
-
-**参数**
-
-| tk | 流轨道信息[IRTCRemoteVideoTrack](#xvHeQ)，[IRTCRemoteAudioTrack](#mxOa1) |
-| --- | --- |
-
-
-### 取消订阅流轨道
-```cpp
-virtual StatusCode unsubscribe(IRTCTrack* tk ) = 0;
-```
-
-**参数**
-
-| tk | 流轨道信息[IRTCRemoteVideoTrack](#xvHeQ)，[IRTCRemoteAudioTrack](#mxOa1) |
-| --- | --- |
-
-
-### 发布视频轨道
-```cpp
-virtual StatusCode publish(IRTCTrack* tk, RTCVideoPublishOptions* opt = nullptr) = 0;
-```
-
-**参数**
-
-| tk | 流轨道信息，[IRTCLocalCameraTrack](#D2C4E)，[IRTCLocalScreenTrack](#WYT3t)， |
-| --- | --- |
-| opt | 推流轨道参数，空为，默认推流参数，[RTCVideoPublishOptions](../types.md#视频轨道推流信息（RTCVideoPublishOptions）) |
-
-
-### 发布音频轨道
-```cpp
-virtual StatusCode publish(IRTCTrack* tk, RTCAudioPublishOptions* opt = nullptr) = 0;
-```
-
-**参数**
-
-| tk | 流轨道信息，[IRTCLocalMicTrack](#zLaZA) |
-| --- | --- |
-| opt | 推流轨道参数，空为，默认推流参数，[RTCAudioPublishOptions](../types.md#音频轨道输出信息（RTCAudioOutputOptions）) |
 
 
 

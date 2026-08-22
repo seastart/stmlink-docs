@@ -7,8 +7,11 @@ description: "Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基�
 
 ## 基本概念
 
-+ **ISMeetingEngine**：SDK 核心引擎类，提供 SMeeting 的基础功能。通过 `setEventHandler` 绑定回调监听，通过 `getSetting` 设置基本参数。
++ **ISMeetingEngine**：SDK 引擎类，负责登录、会议管理 HTTP 接口、设备枚举、IM、资源盘以及频道生命周期。
++ **ISMeetingChannel**：一个会议对应一个 channel，由 `ISMeetingEngine::createChannel()` 创建，包含会中所有操作和媒体对象。
 + 部分接口只允许在进入会议后调用。
+
+由于 `ISMeetingEngine` / `ISMeetingChannel` 及回调都是纯虚接口，**接口签名变动会改变 vtable**；升级 SDK 后必须重新编译业务工程，不能只替换 dll。
 
 ---
 
@@ -18,36 +21,30 @@ description: "Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基�
 #include "SMeeting.h"
 
 // 初始化引擎
-SMeeting::ISMeetingEngine* _imeet = nullptr;
-SMeeting::StatusCode ret = SMeeting::SMeetingEngine_Init(&_imeet);
+SMeeting::ISMeetingEngine* engine = nullptr;
+SMeeting::StatusCode ret = SMeeting::SMeetingEngine_Init(&engine);
 if (ret != SMeeting::StatusCode::OK) {
     return ret;
 }
 
-// 设置事件回调（当前类需继承 ISMeetingEngineEvent）
-_imeet->setEventHandler(this);
+// 设置引擎级事件回调（当前类需继承 ISMeetingEngineEvent）
+engine->setEventHandler(this);
 ```
 
-### 实现事件回调类
+### 实现引擎事件回调类
 
 ```cpp
-class MyEventHandler : public SMeeting::ISMeetingEngineEvent {
+class MyEngineHandler : public SMeeting::ISMeetingEngineEvent {
 public:
-    void onDisconnected(SMeeting::DisconnectReason reason, 
-                        SMeeting::StatusCode code, 
-                        std::string message) override {
-        // 处理断开连接事件
+    void onDeviceChange(SMeeting::DeviceType tp, bool isadd, std::string name) override {
+        // 处理设备变化
     }
 
-    void onReconnected() override {
-        // 处理重连成功事件
+    void onImEnabled(std::string uid, std::string sid) override {
+        // IM 已启用
     }
 
-    void onUserEnter(std::string roomno, std::string userdata) override {
-        // 处理用户进入事件
-    }
-
-    // ... 实现其他需要的事件回调
+    // ... 实现其他需要的引擎级回调
 };
 ```
 
@@ -59,7 +56,7 @@ public:
 
 ```cpp
 std::string token = "your_token_here";
-_imeet->login(token, [&](SMeeting::StatusCode status, std::string msg) {
+engine->login(token, [&](SMeeting::StatusCode status, std::string msg) {
     if (status == SMeeting::StatusCode::OK) {
         // 登录成功
     } else {
@@ -71,7 +68,7 @@ _imeet->login(token, [&](SMeeting::StatusCode status, std::string msg) {
 ### 登出
 
 ```cpp
-_imeet->logout([&](SMeeting::StatusCode status, std::string msg) {
+engine->logout([&](SMeeting::StatusCode status, std::string msg) {
     if (status == SMeeting::StatusCode::OK) {
         // 登出成功
     }
@@ -89,7 +86,7 @@ model.content = "会议说明";
 model.meeting_type = 1;  // 1: 临时会议，2: 预约会议
 model.meeting_mode = 1;  // 1: 普通
 
-_imeet->createRoom(model, [&](SMeeting::StatusCode status, std::string msg) {
+engine->createRoom(model, [&](SMeeting::StatusCode status, std::string msg) {
     if (status == SMeeting::StatusCode::OK) {
         // msg 为会议号
         std::cout << "会议创建成功，会议号：" << msg << std::endl;
@@ -101,34 +98,66 @@ _imeet->createRoom(model, [&](SMeeting::StatusCode status, std::string msg) {
 
 ## 加入会议
 
-### 配置 SDK 参数
-
-```cpp
-SMeeting::ISMeetingSetting* setting = nullptr;
-_imeet->getSetting(&setting);
-if (setting) {
-    setting->set_stream_model(1);           // 设置流媒体模式
-    setting->set_speaker_interval(500);     // 音柱回调周期 (ms)
-    setting->set_stat_interval(10000);      // 网络统计回调周期 (ms)
-    setting->set_enable_audio_record(1);    // 启用音频录制
-    setting->set_enable_stream_log(1);      // 启用流日志
-}
-```
-
-### 进入房间
+### 创建频道并配置
 
 ```cpp
 std::string roomno = "123456789";
-std::string name = "张三";
-std::string pass = "";  // 会议密码，无密码则为空
+SMeeting::ISMeetingChannel* channel = nullptr;
+SMeeting::StatusCode sc = engine->createChannel(roomno, &channel);
+if (sc != SMeeting::StatusCode::OK) {
+    return;
+}
 
-_imeet->enterRoom(roomno, name, pass, [&](SMeeting::StatusCode status, std::string msg) {
+// 设置频道级配置
+SMeeting::ISMeetingChannelSetting* csetting = nullptr;
+channel->getSetting(&csetting);
+if (csetting) {
+    csetting->set_stream_model(1);           // 设置流媒体模式
+    csetting->set_speaker_interval(500);     // 音柱回调周期 (ms)
+    csetting->set_stat_interval(10000);      // 网络统计回调周期 (ms)
+    csetting->set_enable_audio_record(1);    // 启用音频录制
+    csetting->set_room_name("张三");          // 入会昵称
+}
+```
+
+### 设置频道回调并进入
+
+```cpp
+// 设置频道级事件回调（当前类需继承 ISMeetingChannelEvent）
+channel->setEventHandler(this);
+
+// 进入会议
+std::string pass = "";  // 会议密码，无密码则为空
+channel->enter(pass, [&](SMeeting::StatusCode status, std::string msg) {
     if (status == SMeeting::StatusCode::OK) {
         // 进入房间成功
     } else {
-        // 进入房间失败
+        // 进入房间失败，仍然需要 leaveChannel 回收对象
     }
 });
+```
+
+### 实现频道事件回调类
+
+```cpp
+class MyChannelHandler : public SMeeting::ISMeetingChannelEvent {
+public:
+    void onDisconnected(SMeeting::DisconnectReason reason,
+                        SMeeting::StatusCode code,
+                        std::string message) override {
+        // 处理断开连接事件
+    }
+
+    void onReconnected() override {
+        // 重连成功
+    }
+
+    void onUserEnter(std::string userdata) override {
+        // 处理用户进入事件
+    }
+
+    // ... 实现其他需要的频道级回调
+};
 ```
 
 ---
@@ -136,9 +165,11 @@ _imeet->enterRoom(roomno, name, pass, [&](SMeeting::StatusCode status, std::stri
 ## 退出会议
 
 ```cpp
-_imeet->exitRoom([&](SMeeting::StatusCode status, std::string msg) {
+// 离开后 channel 对象会被销毁，不要再使用原指针
+engine->leaveChannel(channel->getChannelId(), [&](SMeeting::StatusCode status, std::string msg) {
     // 退出房间结果
 });
+channel = nullptr;
 ```
 
 ---
@@ -147,7 +178,7 @@ _imeet->exitRoom([&](SMeeting::StatusCode status, std::string msg) {
 
 ```cpp
 // 主持人解散会议
-_imeet->adminDestroyRoom([&](SMeeting::StatusCode status, std::string msg) {
+channel->adminDestroyRoom([&](SMeeting::StatusCode status, std::string msg) {
     // 结束会议结果
 });
 ```
@@ -158,7 +189,7 @@ _imeet->adminDestroyRoom([&](SMeeting::StatusCode status, std::string msg) {
 
 ```cpp
 std::string meeting_id = "sw46gz";
-_imeet->cancelRoom(meeting_id, [&](SMeeting::StatusCode status, std::string msg) {
+engine->cancelRoom(meeting_id, [&](SMeeting::StatusCode status, std::string msg) {
     // 取消会议结果
 });
 ```
@@ -171,17 +202,17 @@ _imeet->cancelRoom(meeting_id, [&](SMeeting::StatusCode status, std::string msg)
 std::string s;
 
 // 获取自身信息
-_imeet->getMe(s);
+channel->getMe(s);
 
 // 获取房间信息
-_imeet->getRoom(s);
+channel->getRoom(s);
 
 // 获取所有成员信息
-_imeet->getMembers(s);
+channel->getMembers(s);
 
 // 获取指定成员信息
 std::string uid = "user_123";
-_imeet->getMember(uid, s);
+channel->getMember(uid, s);
 ```
 
 ---
@@ -190,7 +221,7 @@ _imeet->getMember(uid, s);
 
 ```cpp
 std::string new_name = "新昵称";
-_imeet->updateName(new_name, [&](SMeeting::StatusCode status, std::string msg) {
+channel->updateName(new_name, [&](SMeeting::StatusCode status, std::string msg) {
     // 昵称修改结果
 });
 ```
@@ -205,7 +236,7 @@ std::vector<int> types = {1, 2, 3};
 int page = 1;
 std::string find_key = "";
 
-_imeet->listAgent(types, page, find_key, [&](SMeeting::StatusCode status, std::string msg) {
+engine->listAgent(types, page, find_key, [&](SMeeting::StatusCode status, std::string msg) {
     if (status == SMeeting::StatusCode::OK) {
         // msg 为设备列表 JSON 字符串
     }
@@ -220,7 +251,7 @@ _imeet->listAgent(types, page, find_key, [&](SMeeting::StatusCode status, std::s
 
 ```cpp
 SMeeting::IMEETLocalCamera* camera = nullptr;
-SMeeting::StatusCode sc = _imeet->getLocalCamera(&camera);
+SMeeting::StatusCode sc = channel->getLocalCamera(&camera);
 if (sc != SMeeting::StatusCode::OK) {
     return;
 }
@@ -268,7 +299,7 @@ std::string uid = "user_123";
 std::string track_desc = SMeeting::TRACK_DESC_CAMERA_BIG;  // 或 TRACK_DESC_CAMERA_SMALL
 
 SMeeting::IMEETRemoteVideo* remote_video = nullptr;
-_imeet->getRemoteVideo(uid, track_desc, &remote_video);
+channel->getRemoteVideo(uid, track_desc, &remote_video);
 ```
 
 ### 开始播放
@@ -296,7 +327,7 @@ remote_video->removeAllPlayView();
 
 ```cpp
 SMeeting::IMEETLocalMic* mic = nullptr;
-_imeet->getLocalMic(&mic);
+channel->getLocalMic(&mic);
 ```
 
 ### 打开麦克风
@@ -332,7 +363,7 @@ mic->closeMic([&](SMeeting::StatusCode status, std::string msg) {
 
 ```cpp
 SMeeting::IMEETRemoteAudio* audio = nullptr;
-_imeet->getRemoteAudio("", &audio);
+channel->getRemoteAudio("", &audio);
 ```
 
 ### 打开扬声器
@@ -362,7 +393,7 @@ audio->closeSpeaker();
 
 ```cpp
 SMeeting::IMEETLocalScreen* screen = nullptr;
-_imeet->getLocalScreen(&screen);
+channel->getLocalScreen(&screen);
 ```
 
 ### 开始共享
@@ -400,7 +431,7 @@ screen->stopShare([&](SMeeting::StatusCode status, std::string msg) {
 int msg_type = 1;
 std::string msg = "大家好！";
 
-_imeet->sendRoomChatMessage(msg_type, msg, [&](SMeeting::StatusCode status, std::string m) {
+channel->sendRoomChatMessage(msg_type, msg, [&](SMeeting::StatusCode status, std::string m) {
     // 发送结果
 });
 ```
@@ -413,7 +444,7 @@ _imeet->sendRoomChatMessage(msg_type, msg, [&](SMeeting::StatusCode status, std:
 
 ```cpp
 std::string uid = "user_123";
-_imeet->adminRequestUserOpenCamera(uid, [&](SMeeting::StatusCode status, std::string msg) {
+channel->adminRequestUserOpenCamera(uid, [&](SMeeting::StatusCode status, std::string msg) {
     // 请求结果
 });
 ```
@@ -421,7 +452,7 @@ _imeet->adminRequestUserOpenCamera(uid, [&](SMeeting::StatusCode status, std::st
 ### 关闭用户摄像头
 
 ```cpp
-_imeet->adminCloseUserCamera(uid, [&](SMeeting::StatusCode status, std::string msg) {
+channel->adminCloseUserCamera(uid, [&](SMeeting::StatusCode status, std::string msg) {
     // 操作结果
 });
 ```
@@ -429,7 +460,7 @@ _imeet->adminCloseUserCamera(uid, [&](SMeeting::StatusCode status, std::string m
 ### 请求用户打开麦克风
 
 ```cpp
-_imeet->adminRequestUserOpenMic(uid, [&](SMeeting::StatusCode status, std::string msg) {
+channel->adminRequestUserOpenMic(uid, [&](SMeeting::StatusCode status, std::string msg) {
     // 请求结果
 });
 ```
@@ -437,7 +468,7 @@ _imeet->adminRequestUserOpenMic(uid, [&](SMeeting::StatusCode status, std::strin
 ### 关闭用户麦克风
 
 ```cpp
-_imeet->adminCloseUserMic(uid, [&](SMeeting::StatusCode status, std::string msg) {
+channel->adminCloseUserMic(uid, [&](SMeeting::StatusCode status, std::string msg) {
     // 操作结果
 });
 ```
@@ -445,7 +476,7 @@ _imeet->adminCloseUserMic(uid, [&](SMeeting::StatusCode status, std::string msg)
 ### 踢出用户
 
 ```cpp
-_imeet->adminKickUserOut(uid, [&](SMeeting::StatusCode status, std::string msg) {
+channel->adminKickUserOut(uid, [&](SMeeting::StatusCode status, std::string msg) {
     // 踢出结果
 });
 ```
@@ -456,7 +487,7 @@ _imeet->adminKickUserOut(uid, [&](SMeeting::StatusCode status, std::string msg) 
 bool self_unmute_mic_disabled = true;   // 是否禁止自行解除静音
 bool mic_disabled = true;               // 是否禁用房间音频
 
-_imeet->adminUpdateRoomMicState(self_unmute_mic_disabled, mic_disabled, 
+channel->adminUpdateRoomMicState(self_unmute_mic_disabled, mic_disabled, 
     [&](SMeeting::StatusCode status, std::string msg) {
         // 设置结果
     });
@@ -470,7 +501,7 @@ _imeet->adminUpdateRoomMicState(self_unmute_mic_disabled, mic_disabled,
 
 ```cpp
 SMeeting::IMEETRemoteVideo* mcu_video = nullptr;
-_imeet->getMcuVideo(&mcu_video);
+channel->getMcuVideo(&mcu_video);
 ```
 
 ### 播放合成流
@@ -491,10 +522,13 @@ mcu_video->unLoadRemoteVideo();
 ## 释放资源
 
 ```cpp
+// 先离开所有会议
+engine->leaveAllChannel();
+
 // 释放引擎
-if (_imeet) {
-    _imeet->del();
-    _imeet = nullptr;
+if (engine) {
+    engine->del();
+    engine = nullptr;
 }
 ```
 
@@ -506,7 +540,18 @@ if (_imeet) {
 #include "SMeeting.h"
 #include <iostream>
 
-class MyHandler : public SMeeting::ISMeetingEngineEvent {
+class MyEngineHandler : public SMeeting::ISMeetingEngineEvent {
+public:
+    void onDeviceChange(SMeeting::DeviceType tp, bool isadd, std::string name) override {
+        // 处理设备变化
+    }
+
+    void onImEnabled(std::string uid, std::string sid) override {
+        // IM 已启用
+    }
+};
+
+class MyChannelHandler : public SMeeting::ISMeetingChannelEvent {
 public:
     void onDisconnected(SMeeting::DisconnectReason reason,
                         SMeeting::StatusCode code,
@@ -514,43 +559,56 @@ public:
         std::cout << "Disconnected: " << (int)code << std::endl;
     }
 
-    void onUserEnter(std::string roomno, std::string userdata) override {
+    void onUserEnter(std::string userdata) override {
         std::cout << "User entered: " << userdata << std::endl;
     }
-    
+
     // 实现其他需要的回调...
 };
 
 int main() {
-    // 初始化
+    // 初始化引擎
     SMeeting::ISMeetingEngine* engine = nullptr;
     SMeeting::StatusCode ret = SMeeting::SMeetingEngine_Init(&engine);
     if (ret != SMeeting::StatusCode::OK) {
         return -1;
     }
 
-    MyHandler handler;
-    engine->setEventHandler(&handler);
+    MyEngineHandler engine_handler;
+    engine->setEventHandler(&engine_handler);
 
     // 登录
     std::string token = "your_token";
     engine->login(token, [&](SMeeting::StatusCode status, std::string msg) {
-        if (status == SMeeting::StatusCode::OK) {
-            // 创建会议
-            SMeeting::SMeetingCreateMeetingModel model;
-            model.title = "测试会议";
-            engine->createRoom(model, [&](SMeeting::StatusCode status, std::string roomno) {
+        if (status != SMeeting::StatusCode::OK) {
+            return;
+        }
+
+        // 创建会议
+        SMeeting::SMeetingCreateMeetingModel model;
+        model.title = "测试会议";
+        engine->createRoom(model, [&](SMeeting::StatusCode status, std::string roomno) {
+            if (status != SMeeting::StatusCode::OK) {
+                return;
+            }
+
+            // 创建频道
+            SMeeting::ISMeetingChannel* channel = nullptr;
+            engine->createChannel(roomno, &channel);
+            if (!channel) {
+                return;
+            }
+
+            MyChannelHandler channel_handler;
+            channel->setEventHandler(&channel_handler);
+
+            // 进入会议
+            channel->enter("", [&](SMeeting::StatusCode status, std::string msg) {
                 if (status == SMeeting::StatusCode::OK) {
-                    // 进入会议
-                    engine->enterRoom(roomno, "用户 A", "", 
-                        [&](SMeeting::StatusCode status, std::string msg) {
-                            if (status == SMeeting::StatusCode::OK) {
-                                std::cout << "进入会议成功" << std::endl;
-                            }
-                        });
+                    std::cout << "进入会议成功" << std::endl;
                 }
             });
-        }
+        });
     });
 
     // 等待异步操作完成（实际应用中应有事件循环）

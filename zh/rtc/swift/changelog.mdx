@@ -3,6 +3,30 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.3.0] - 2026.08.20
+#### 新增
++ **iOS 音频路由**：新增`AudioRouteSession.shared`，统一管理 iOS 的音频会话与输出路由。配套新增类型`AudioRoute`（当前路由，只读五态，含蓝牙 / 有线耳机）、`AudioRouteTarget`（可切换目标，扬声器 / 听筒两态）、`AudioRouteInfo`、`AudioCallState`，以及事件协议`AudioRouteSessionDelegate`（路由变化 / 会话中断 / 中断恢复 / 系统通话状态）。
+    - **持久设置**`defaultAudioRoute`：入会前设定默认走扬声器还是听筒，长期有效，外设拔出后按它回落；
+    - **临时设置**`setAudioRoute(_:)` / `clearAudioRouteOverride()`：通话中临时切换，优先级高于持久设置；
+    - 外接设备（蓝牙 / 有线）由系统接管，SDK 只上报不主动切换 —— iOS 无可靠手段指定具体外设，需要用户主动选择时请用系统的`AVRoutePickerView`。
++ `DeviceManager`新增`isSpeakerOutputPreferred`，用于查询当前是否走扬声器外放。
+
+#### 变更
++ **iOS 加入频道时即建立通话音频通道并保持到离会**，「开不开麦」只决定是否推流，不再影响底层音频采集是否运行。这是让不开麦时也能切换听筒 / 扬声器的前提。
++ `DeviceManager.setSpeakerOutputPreferred(_:)`语义对齐主流 RTC SDK：`true`切扬声器、`false`切听筒（此前`false`表示「撤销覆盖、回到系统默认」，结果不确定）。方法签名未变，调用方无需改动。
+
+<Warning>
+**iOS 加入频道时会申请麦克风权限**，即使用户只打算旁听。请确认`Info.plist`含`NSMicrophoneUsageDescription`，否则应用会崩溃。
+
+**加入频道期间 iOS 状态栏会显示橙色麦克风指示点**，这是`.playAndRecord`会话类别的固有表现（与 Zoom、腾讯会议等一致），并非 SDK 额外录音。
+
+若用户拒绝麦克风权限，SDK 会降级为仅播放：仍可听到对方，但听筒路由不可用。
+</Warning>
+
+<Note>
+`SRTCBroadcastKit`本次为 **1.0.1**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.2.0] - 2026.08.19
 #### 破坏性变更
 + 错误枚举中的信令相关取值由`mqtt*`改名为`signaling*`（`signalingConnectFailed` / `signalingSubscribeFailed`），对外不再暴露信令实现细节。捕获了旧取值的代码需要改名，取值语义未变。

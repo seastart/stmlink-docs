@@ -1,6 +1,6 @@
 ---
 title: "设备管理"
-description: "使用 DeviceManager 枚举设备、切换摄像头和音频路由，并处理热插拔和中断恢复"
+description: "使用 DeviceManager 枚举摄像头与音频设备、切换设备，并处理热插拔和中断恢复；iOS 的输出路由控制见音频路由页"
 ---
 
 ### 概述
@@ -31,13 +31,15 @@ let microphones = DeviceManager.shared.microphones()
 let speakers = DeviceManager.shared.speakers()
 ```
 
-#### iOS：枚举音频路由
+#### iOS：枚举音频输入端口
 
 ```swift
-let routes = DeviceManager.shared.audioRoutes()
+let inputs = DeviceManager.shared.audioInputs()
 ```
 
-> iOS 下这里更准确的说法是“音频路由”，因为蓝牙耳机、有线耳机、扬声器切换本质上是 `AVAudioSession` 路由切换，不是桌面系统那种独立输入 / 输出设备模型。
+返回的是 `AVAudioSession` 当前可用的**输入端口**（内置麦克风、蓝牙、有线耳机等）。
+
+> iOS 没有桌面系统那种独立的输出设备模型，因此这个列表里**不包含扬声器**。「声音从扬声器还是听筒出」是另一套机制，见 [音频路由](/zh/rtc/swift/advanced/audio-routing)。
 
 #### 通用查询
 
@@ -85,9 +87,13 @@ try micTrack.changeDeviceId(deviceId)
 虽然调用形式一样，但语义不同：
 
 + macOS：切换输入设备
-+ iOS：切换音频输入 / 输出路由，比如蓝牙耳机、听筒、扬声器
++ iOS：切换**输入端口**（`AVAudioSession.setPreferredInput`），`deviceId` 取自 `audioInputs()`
 
-如果你要显式切到 iOS 扬声器，常见的 `deviceId` 会是 `"speaker"`。
+<Warning>
+iOS 上这个方法只管输入，**不能用来切扬声器 / 听筒**，也不接受 `"speaker"` 这样的值。输出走向请用 `AudioRouteSession.shared.setAudioRoute(_:)`，见 [音频路由](/zh/rtc/swift/advanced/audio-routing)。
+
+另外这条路径不参与音频路由模块的回落策略，切换不会被记为「用户显式选择」。
+</Warning>
 
 ---
 
@@ -136,7 +142,7 @@ Swift SDK 在内部已经处理了几类常见恢复逻辑：
 
 + 正在使用的摄像头被拔出时，尝试切到可用摄像头
 + macOS 正在使用的麦克风被拔出时，尝试切回默认输入
-+ iOS 音频会话被来电等中断后，按条件恢复
++ iOS 音频会话被来电等中断后，按条件恢复（含等待系统通话结束、失败重试，见 [音频路由](/zh/rtc/swift/advanced/audio-routing)）
 + iOS 前后台切换时，摄像头采集可在回前台后恢复
 
 这意味着业务层通常不需要自己重建一整套容错逻辑，但仍然建议：

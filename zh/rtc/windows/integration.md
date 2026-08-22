@@ -43,9 +43,14 @@ rtc_dll/
 │   └── srtc.lib      # 导入库，链接时用
 └── bin/              # 运行时依赖，全部需要随程序分发
     ├── srtc.dll      # SDK 主体
+    ├── srtcLive.dll  # 采集/编解码/渲染
     ├── ...           # 媒体、编解码、网络等依赖库
     └── plugin/       # 插件及其 xml 配置
 ```
+
+<Note>
+本版本包内共 28 个文件。AnyLive/ook 运行时不在包内，见下面「部署运行时依赖」的说明。
+</Note>
 
 ---
 
@@ -84,6 +89,17 @@ rtc_dll/
 + **`plugin/` 必须保持为子目录**，不能把里面的 DLL 平铺到根目录
 + **`plugin/` 下的 `.xml` 配置文件也要一起拷贝**（`conf.xml`、`cocktail_service.xml`、
   `linkmic_service.xml`），缺失会导致插件加载失败，表现为屏幕共享等功能不可用
+</Warning>
+
+<Warning>
+**0.2.1-alpha.6 起，`rtc-win-sdk-2.1.zip` 不再包含 AnyLive/ook 运行时**：
+`AnyLiveMVSC.dll`、`libEGL.dll`、`libGLESv2.dll`、`libeay32.dll`、`ssleay32.dll`、
+`stlport.5.1.dll`，以及 `plugin/` 下的 `anyLiveM.dll`、`cocktail_service.dll`、`libmm.dll`、
+`linkmic_service.dll`、`onvif_receiver.dll`、`transcoder.dll` 和上面提到的三个 `.xml`。
+
+这些文件本身没有变化，但需要**另行获取**（例如从 meeting SDK 包，或上一版 rtc 包中取）。
+缺失时程序是**运行期加载失败**而不是编译报错 —— 表现为进入频道后收发流不可用。
+升级到本版本时请确认这批文件仍在你的分发目录里。
 </Warning>
 </Step>
 </Steps>

@@ -4,6 +4,126 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [6] - 2026.08.21
+版本号：0.2.1-alpha.7
+
+**修改**
+
++ `join()` 成功后对 `opt` 的解析改为按流媒体类型（`stream_vendor`）分别处理：
+  `link_id`、`session_key`、`upload.address`、`upload.port` 只在 `stream_vendor` 为 `ook` 时才要求，
+  频道信息里的 `link_id`（房间号）同样只在 ook 下才要求
++ 整理 `UploadLog::appendLog2Map` 的代码缩进（无功能变化）
+
+**修复**
+
++ 修复使用 webrtc 流媒体（`stream_vendor` 非 `ook`）时，因 `opt` 中没有 `link_id` / `session_key`
+  而在 `onJoinSucceed` 里直接 return、导致进入频道后不建流的问题
+
+**API 变更**
+
+无。`srtc.h` / `srtc_def.h` 本次没有任何改动，vtable 未变，只替换 dll 即可，不需要重新编译。
+
+### [5] - 2026.08.20
+版本号：0.2.1-alpha.6
+
+**添加**
+
++ 新增 `IRTCChannel`：一个频道一个对象，频道级接口全部挂在它上面
++ 新增 `IRTCChannelEvent`：频道级回调独立成接口，按频道注册
++ 新增 `IRTCEngine::createChannel(token, IRTCChannel**)`：只创建频道对象、不进入频道，
+  这样可以在 `join()` 之前设置好配置和事件回调（`onJoinChannel` 在 `join()` 返回前就会触发）
++ 新增 `IRTCChannel::join()` / `getChannelId()` / `getSetting()` / `setEventHandler()`
++ 新增 `RTCEngineOptions` 结构体，作为 `RTCEngine_Init` 的第二个参数，用于设置日志开关与日志目录
+
+**修改**
+
++ `IRTCEngine` 只保留引擎级能力：创建/退出频道、设备枚举、网络测速、日志上传、IM
++ `IRTCEngineEvent` 只保留引擎级回调：设备变化、网络探测、IM
++ `IRTCSetting` 更名为 `IRTCChannelSetting`，并从引擎移到频道（每个频道一份，
+  `den_model` / `limit_speed` 的修改会立即下发到本频道）
++ 流媒体对象（`IStreamBase` / `StreamControl` / `WebrtcControl` / `WebrtcControl2`）由进程级单例
+  改为每个频道各 `new` 一份，频道销毁时释放；ook 的 `any_meeting` 仍是进程级单例
++ 本地录制每个频道只有一个录制对象（key 为 channelId），`getLocalRecord` 的 `mid` 参数仅作接口兼容保留
++ 调整文件编码格式
+
+**修复**
+
++ 修复流媒体对象释放后，ook 回调（渲染、房间事件、音频、自定义帧）仍指向已释放对象的问题：
+  `StreamControl` 析构时会反注册这些回调
++ 修复 `OpenRoom` 中途失败时线程未回收、对象却被销毁的问题：失败路径补上 `CloseRoom()`
++ 修复 `StreamControl` 线程标志未初始化，导致 `CloseRoom()` 在流信息线程从未启动时可能死等
++ 修复 `web_meeting` 与 `web_meeting2` 各自向共享的 libwebrtc factory 注册 AEC 前后处理、
+  互相覆盖且泄漏的问题：改由 `web_base` 统一持有一份
++ 修复 `WebrtcControl2` 的 `web_meeting2` 从未释放、`WebrtcControl` 的设备流对象从未释放的泄漏
+
+**API 变更（不兼容，使用方必须重新编译）**
+
+`IRTCEngine` / `IRTCEngineEvent` / `IRTCChannel` / `IRTCChannelEvent` / `IRTCChannelSetting`
+都是纯虚接口，本次变更改动了 vtable；`RTCEngine_Init` 是导出函数，签名也变了。
+**只替换 dll 不重编会崩溃。**
+
++ `RTCEngine_Init(IRTCEngine** rtc)` → `RTCEngine_Init(IRTCEngine** rtc, RTCEngineOptions* opt)`。
+  `opt` 传 `nullptr` 表示不写 SDK 日志
++ `IRTCEngine::joinChannel(token, char**, int*)` **删除**，改用 `createChannel(token, IRTCChannel**)` + `IRTCChannel::join()`
++ `IRTCEngine::getSetting()` **删除**，改用 `IRTCChannel::getSetting()`
++ `IRTCEngine` 上 24 个带 `channelId` 首参的频道级方法**全部删除**（未保留兼容转发），
+  改到 `IRTCChannel` 上，签名即去掉 `channelId`：`getMe`、`getChannel`、`getMembers`、`getMember`、
+  `getMemberByLinkId`、`getLocalRecord`、`getCameraTrack`、`getScreenTrack`、`getAudioTrack`、
+  `getRemoteAudioTrack`、`getRemoteVideoTrack`、`getMCUVideoTrack`、`getCustomVideoTrack`、
+  `getCustomAudioTrack`、`setCustomRecvBack`、`subscribe`、`unsubscribe`、`publish`、`updatePublish`、`unpublish`
++ `getMCUVideoTrack` 变为无参
++ `IRTCEngineEvent` 的 21 个频道级回调**全部移到** `IRTCChannelEvent`，并且**去掉了 `channelId` 首参**：
+  `onJoinChannel`、`onChannelUpdate`、`onUserJoin`、`onUserUpdate`、`onUserLeave`、`onUserStreamAdd`、
+  `onUserStreamUpdate`、`onUserStreamRemove`、`onCustomMessage2`、`onUpLevel`、`onDownLevel`、`onUpStat`、
+  `onDownStat`、`onFrameTimeOut`、`onSpeakers`、`onDeviceStatusChange`、`onShareTargetNotFind`、
+  `onDisconnected`、`onReconnected`、`onReconnecting`、`onRecordStatusChange`
++ `IRTCSetting` → `IRTCChannelSetting`，并删除 `sdk_log_path` / `enable_stream_log`（移到 `RTCEngineOptions`）
+
+**已知限制**
+
++ `IRTCChannelSetting` 里 `stream_model` / `simple` / `mcu_track` / `enable_audio_record`
+  在 `join()` 阶段读取，`join()` 之后再改不生效
++ `IRTCChannel*` 在 `leaveChannel` / `leaveAllChannel` 之后即失效，调用方需自行置空；
+  没有引用计数保护，请勿在其它线程持有并跨 `leaveChannel` 使用
+
+
+### [4] - 2026.08.19
+版本号：0.2.1-alpha.5
+
+**添加**
+
++ 支持同时加入多个会议（频道），引擎内部按 channelId 管理多个频道
++ 新增 `leaveAllChannel()`，一次退出所有已加入频道
++ 新增 `getChannelIds()`，获取当前已加入的 channelId 列表
++ 添加 cmake 编译工程，调整目录结构
+
+**修改**
+
++ 分离 channel 和 client，每个频道各自持有一份独立的 session / roomno / stream_host / user_id 配置
++ 整理共享屏幕声音同步问题；整理录制屏幕画面；整理 updateSenderPublish 同步推送
++ 调整消息回调到录制任务
++ webrtc 本地录制支持音频数据写文件
++ 删除乱码的注释
+
+**修复**
+
++ 修正录制时的音柱
++ 修复 seastart 结束共享 + 声音时的崩溃
+
+**API 变更（不兼容，使用方必须重新编译）**
+
+`IRTCEngine` / `IRTCEngineEvent` 是纯虚接口，本次变更修改了 vtable，**只替换 dll 不重编会崩溃**。
+
++ `joinChannel` 改为 `joinChannel(const char* token, char** channelId, int* channelIdSize)`，通过出参返回 channelId
++ `leaveChannel` 改为 `leaveChannel(const char* channelId)`
++ 所有频道级接口新增 `channelId` 首参：`getMe`、`getChannel`、`getMembers`、`getMember`、`getMemberByLinkId`、`getLocalRecord`、`getCameraTrack`、`getScreenTrack`、`getAudioTrack`、`getRemoteAudioTrack`、`getRemoteVideoTrack`、`getMCUVideoTrack`、`getCustomVideoTrack`、`getCustomAudioTrack`、`subscribe`、`unsubscribe`、`publish`、`updatePublish`、`unpublish`
++ 所有频道级回调新增 `channelId` 首参：`onJoinChannel`、`onCustomMessage2`、`onUpLevel`、`onDownLevel`、`onUpStat`、`onDownStat`、`onFrameTimeOut`、`onSpeakers`、`onDeviceStatusChange`、`onShareTargetNotFind`、`onDisconnected`、`onReconnecting`、`onRecordStatusChange`
++ `onJoinChannel` 第一个参数改为纯频道 id，原来的频道信息 JSON 顺延到第二个参数
++ `onReconnected` 第一个参数由 `channel` 更名为 `channelId`，含义不变
++ 两个 `publish` 重载去掉默认参数（原先 `publish(tk)` 本身是二义调用、无法编译），调用时必须显式传 `opt`
++ 设备变化（`onDeviceChange`、`onDefDeviceChange`）、网络探测（`onProbeResult`）、IM 系列回调为引擎级，签名不变
++ `channelId` 传 `nullptr` 或空串时，若只加入了一个频道则自动使用该频道，便于旧代码迁移
+
 ### [3] - 2026.03.9
 **添加**
 

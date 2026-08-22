@@ -82,10 +82,14 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:roomLockedDidChange:)` | 会议锁定状态变化 | `RoomLockedChangeEventData` |
 | `meeting(_:roomShareDidStart:)` | 有人开始共享（屏幕或白板） | `RoomShareStartEventData` |
 | `meeting(_:roomShareDidStop:)` | 共享结束 | `RoomShareStopEventData` |
+| `meeting(_:shareBroadcastDidStart:)` | 仅 iOS 全屏共享：扩展真的开始出帧 | `ShareBroadcastStartEventData` |
+| `meeting(_:shareBroadcastDidFinish:)` | 仅 iOS 全屏共享：出帧结束 | `ShareBroadcastStopEventData` |
 | `meeting(_:roomMcuTask:)` | 录制 / 合流任务状态变化 | `RoomMcuTaskEventData` |
 | `meeting(_:roomJoinDidFail:)` | 有成员入会失败 | `RoomJoinFailedEventData` |
 
-屏幕共享的 `roomShareDidStart` 会在共享广播和远端画面两个条件都满足后才上报，收到时可以直接渲染共享画面。
+屏幕共享的 `roomShareDidStart` 以 RTC 媒体轨道为准，远端 screen 轨道到达即上报，收到时可以直接渲染共享画面。
+
+`shareBroadcastDidStart` / `shareBroadcastDidFinish` 只在 iOS 全屏共享、且只在共享方自己这一端触发，用于区分「监听已挂上」和「真的有画面了」，接法见 [屏幕共享](/zh/meeting/swift/advanced/screen-sharing)。
 
 当主持人开启「全体静音」或「全体禁画」时，非主持人成员的本地设备会被 SDK 自动关闭，并额外上报一次对应的成员媒体状态事件。
 
@@ -155,6 +159,43 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:didRemoveDevice:)` | 设备被移除 | `DeviceChangeEventData` |
 
 外设事件**不依赖会议状态**，SDK 实例创建后就开始上报，可用于入会前的设备检测页面。
+
+---
+
+### 音频路由事件（iOS）
+
+| 方法 | 触发时机 | 数据类型 |
+| --- | --- | --- |
+| `meeting(_:audioRouteDidChange:)` | 输出路由变化：听筒 / 外放 / 蓝牙 / 有线之间的切换 | `AudioRouteChangeEventData` |
+| `meetingAudioRouteDidRecoverFromInterruption(_:)` | 来电 / Siri 中断后**真正恢复成功** | 无 |
+
+两个回调都只在 iOS 存在（声明包在 `#if os(iOS)` 里），且与外设事件一样不依赖会议状态。
+
+`AudioRouteChangeEventData.reason` 是系统给出的变化原因，排查路由问题时比结果本身更有价值。中断恢复可能因系统通话未结束、App 仍在后台而延后，SDK 只在真正恢复后触发一次。详见 [音频路由](/zh/meeting/swift/advanced/audio-routing)。
+
+---
+
+### 通话质量事件
+
+| 方法 | 触发时机 | 数据类型 |
+| --- | --- | --- |
+| `meeting(_:didReceiveQualityReport:)` | 服务端每次下发质量报告（实时数值流） | `QualityReport` |
+| `meeting(_:connectionQualityDidChange:)` | 质量等级发生跳档（断言式） | `ConnectionQualityChange` |
+| `meeting(_:activeSpeakersDidChange:)` | 活跃说话人变化 | `ActiveSpeakersSnapshot` |
+| `meeting(_:didSwitchLayer:)` | 大小流切层完成 | `LayerSwitchedInfo` |
+
+质量走**双轨**，按用途选一条即可，不要两条都拿去驱动同一个 UI：
+
++ `didReceiveQualityReport` 是每次上报都触发的原始数值（丢包、RTT、抖动、码率、MOS），适合信号塔图标与详细诊断面板
++ `connectionQualityDidChange` 只在等级跳档时触发，适合「当前网络不佳」提示和主动降级决策
+
+`activeSpeakersDidChange` 给的是**全量快照**（已按音量降序排好），直接覆盖 UI 即可，不需要自己合并增量。无人说话时 `speakers` 为空数组。
+
+这四个事件的数据结构定义在底层 SRTC 模块，使用时需要 `import SRTC`，字段说明见 [类型定义](/zh/meeting/swift/types)；等级判定、冷启动取值与主动切层的完整说明见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+
+<Note>
+这四个事件只在会议使用 **SeaStart（SFU）** 引擎时有 —— 走 CDN（WangSu）的会议没有这条信令通道，不会收到任何一个。
+</Note>
 
 ---
 
