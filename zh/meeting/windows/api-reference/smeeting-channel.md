@@ -5,8 +5,6 @@ description: "Windows SMeeting SDK 会议级 C++ 接口参考"
 
 `ISMeetingChannel` 代表一个会议对象，由 `ISMeetingEngine::createChannel()` 或 `createChannelByMeetingId()` 创建，通过 `ISMeetingEngine::leaveChannel()` 销毁。
 
-一个引擎可以同时持有多个 channel，但**同时只有一个 channel 能收发媒体流**（srtc 底层限制）。
-
 ---
 
 ## 频道基础接口

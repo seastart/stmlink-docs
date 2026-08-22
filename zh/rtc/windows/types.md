@@ -3,6 +3,24 @@ title: "类型定义"
 description: "Windows SRTC 音视频 SDK 完整类型与结构体定义"
 ---
 
+### 引擎初始化参数（RTCEngineOptions）
+```cpp
+struct RTCEngineOptions {
+    int         enable_log = 1;
+    const char* log_path   = nullptr;
+};
+```
+
+| 参数名称 | 参数类型 | 参数说明 |
+| --- | --- | --- |
+| enable_log | int | 0 表示完全不写 SDK 日志。不给 `RTCEngine_Init` 传 `RTCEngineOptions`（传 nullptr）等同于 0 |
+| log_path | const char* | SDK 日志目录，为空则使用「文档/应用名/logs/」 |
+
+传给 [RTCEngine_Init](./api-reference/IRTCEngine.md#创建irtcengine)。
+这两项原先是 `IRTCSetting` 的 `enable_stream_log` / `sdk_log_path`。
+
+
+
 ### 视频轨道推流信息（RTCVideoPublishOptions）
 | 参数名称 | 参数类型 | 参数说明 |
 | --- | --- | --- |
