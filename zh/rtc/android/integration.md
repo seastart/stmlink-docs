@@ -66,11 +66,11 @@ dependencies {
 - `artifactId`：`rtc`
 - `version`：请替换为你要接入的 SDK 版本
 
-本文档对应的多频道版本示例为：
+本文档对应的当前稳定版本示例为：
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.rtc:rtc:2.0.24_multiChannel.2'
+    implementation 'cn.seastart.rtc:rtc:2.0.28'
 }
 ```
 
