@@ -184,6 +184,8 @@
                     "pages": [
                       "zh/rtc/windows/api-reference/IRTCEngine",
                       "zh/rtc/windows/api-reference/IRTCEngineEvent",
+                      "zh/rtc/windows/api-reference/IRTCChannel",
+                      "zh/rtc/windows/api-reference/IRTCChannelEvent",
                       "zh/rtc/windows/api-reference/IRTCRecord",
                       "zh/rtc/windows/api-reference/IRTCLocalScreenTrack",
                       "zh/rtc/windows/api-reference/IRTCLocalCameraTrack",
@@ -196,7 +198,7 @@
                       "zh/rtc/windows/api-reference/IRTCCustomAudioTrack",
                       "zh/rtc/windows/api-reference/IRTCView",
                       "zh/rtc/windows/api-reference/IRTCTrack",
-                      "zh/rtc/windows/api-reference/IRTCSetting"
+                      "zh/rtc/windows/api-reference/IRTCChannelSetting"
                     ]
                   },
                   "zh/rtc/windows/types",
@@ -424,15 +426,24 @@
                 "pages": [
                   "zh/meeting/windows/integration",
                   "zh/meeting/windows/quickstart",
-                  "zh/meeting/windows/quickstart-c",
                   {
-                    "group": "接口列表",
+                    "group": "接口文档",
                     "pages": [
                       "zh/meeting/windows/api-reference/smeeting",
-                      "zh/meeting/windows/api-reference/smeeting-c"
+                      "zh/meeting/windows/api-reference/smeeting-engine",
+                      "zh/meeting/windows/api-reference/smeeting-channel",
+                      "zh/meeting/windows/api-reference/smeeting-admin",
+                      "zh/meeting/windows/api-reference/smeeting-submeeting",
+                      "zh/meeting/windows/api-reference/smeeting-mcu",
+                      "zh/meeting/windows/api-reference/smeeting-signin",
+                      "zh/meeting/windows/api-reference/smeeting-media",
+                      "zh/meeting/windows/api-reference/smeeting-events",
+                      "zh/meeting/windows/api-reference/smeeting-settings",
+                      "zh/meeting/windows/api-reference/smeeting-types"
                     ]
                   },
-                  "zh/meeting/windows/error-codes"
+                  "zh/meeting/windows/error-codes",
+                  "zh/meeting/windows/changelog"
                 ]
               },
               {
@@ -544,14 +555,6 @@
     {
       "source": "/zh/rtc/server-api/api-list",
       "destination": "/zh/rtc/server-api/channel"
-    },
-    {
-      "source": "/zh/meeting/windows/quickstart（通用）",
-      "destination": "/zh/meeting/windows/quickstart-c"
-    },
-    {
-      "source": "/zh/meeting/windows/api-reference/smeeting（通用）",
-      "destination": "/zh/meeting/windows/api-reference/smeeting-c"
     },
     {
       "source": "/zh/meeting/web/overview",

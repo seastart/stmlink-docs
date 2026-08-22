@@ -1,0 +1,41 @@
+---
+title: "更新日志"
+description: "Windows SMeeting 会议 SDK 版本更新记录"
+---
+
+> 本页记录 Windows SMeeting SDK 各版本的主要变更。可通过 `SMeetingEngine_Version` 获取当前 SDK 版本。
+
+## 1.0.0-alpha.5 - 2026-08-21
+
+**添加**
+
++ 新增 `ISMeetingChannel` 会议对象，一个会议对应一个 channel。
++ 新增 `ISMeetingChannelEvent` 会议级事件回调。
++ 新增 `ISMeetingChannelSetting` 会议级配置对象。
++ 内部新增 `SRTCChannelControl` 封装每个 `SRTC::IRTCChannel` 及其媒体对象。
+
+**修改**
+
++ `ISMeetingEngine` 缩减为引擎级接口：登录、会议管理 HTTP 接口、设备枚举、IM、资源盘、channel 生命周期。
++ 入会改为两步：`createChannel` / `createChannelByMeetingId` 只建对象，`ISMeetingChannel::enter()` 才真正入会。
++ `ISMeetingSetting` 只保留 `sdk_log_path` / `enable_stream_log`；其余设置项移到 `ISMeetingChannelSetting`。
++ 等候室自动重新入会时保持 `channelId` 不变，`leaveChannel` 仍按原 key 回收。
+
+**修复**
+
++ `adminDestroyRoom` 现在会正确调用 `leaveChannel` 离开 rtc 频道。
++ 登录前调用设备枚举时按需惰性初始化 rtc 引擎。
+
+**API 变更（不兼容，使用方必须重新编译）**
+
++ 删除 `ISMeetingEngine::enterRoom`、`enterRoomByMeetingId`、`exitRoom`；改用 `createChannel` + `ISMeetingChannel::enter()` + `leaveChannel`。
++ 删除 `ISMeetingEngine::exitWaitRoom(roomno, meeting_id, back)`；改用 `ISMeetingChannel::exitWaitRoom(back)`。
++ 以下方法从 `ISMeetingEngine` 移到 `ISMeetingChannel`：
+  `admin*`、`updateName`、聊天/举手、`getMe` / `getRoom` / `getMembers` / `getMember` / `getOpt`、
+  `getLocalMic` / `getLocalCamera` / `getLocalScreen` / `getRemoteVideo` / `getRemoteAudio` / `getMcuVideo`、
+  `getCustomVideo` / `getCustomAudio` / `setCustomRecvBack`、分组讨论 `*SubMeeting`、
+  `mcu*`、签到 `signin*`、`getLocalRecord`。
++ `getLocalRecord(mid, &rec)` 改为 `getLocalRecord(&rec)`，mid 使用 channel 自身会议 ID。
++ 会议级回调全部移除 `roomno` 首参；`onAdminConfirmHandup` 首参改为 `uid`。
++ `onDeviceStatusChange` / `onShareTargetNotFind` 从引擎回调移到 `ISMeetingChannelEvent`。
++ 纯虚接口签名变动会改变 vtable，**只替换 dll 不重编工程会崩溃**。
