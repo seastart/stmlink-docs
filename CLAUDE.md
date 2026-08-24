@@ -49,7 +49,10 @@ python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
 
 脚本按 `docs.json` 的导航顺序输出，用 `## {产品} · {分组} · {子分组}` 分节。所以：
 
-- **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页
+- **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页。
+  忘了也不会白忘：CI（`.github/workflows/llms-txt-check.yml`）在 push / PR 上跑 `--check`，
+  不一致直接红。**改了页面 frontmatter 的 `title` / `description` 同样要重跑**——
+  llms.txt 的每行摘要就是从它们生成的，不是只有增删页面才需要
 - 页面的 `description` 直接就是 AI 拿到的摘要（Mintlify 侧限 300 字符、截到第一个换行）。
   **别写「{平台} {产品} SDK {类名} 接口参考」这种模板句** —— 对 AI 选页零信息量，
   要写「这个类干什么、什么时候该读它」
