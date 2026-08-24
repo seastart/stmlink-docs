@@ -11,7 +11,7 @@ description: "会议的云端录制、合流与直播：任务类型怎么组合
 
 | 值 | 能力 | 产物 | 怎么取 |
 | --- | --- | --- | --- |
-| 1 | 录像 | 录像文件 | [单个录像的点播地址](/zh/meeting/server-api/mcu#单个录像的点播地址) |
+| 1 | 录像 | 录像文件（可能多段） | [单个录像文件的点播地址](/zh/meeting/server-api/mcu#单个录像文件的点播地址) |
 | 2 | 合流 | 把多路流混成一路 | 旁路推流，给不支持多流的下游用 |
 | 4 | 录音 | 纯音频文件 | 同录像 |
 | 8 | 直播流 | 直播拉流地址 | [直播流地址](/zh/meeting/server-api/mcu#直播流地址) |
@@ -107,9 +107,33 @@ description: "会议的云端录制、合流与直播：任务类型怎么组合
    或：会议中途手动启动             POST /server/v1/mcu/start        → task_id
 3. task_type 带 8 → 立即可取直播地址 POST /server/v1/mcu/live-url
 4. 结束                             POST /server/v1/mcu/stop
-5. 收到 mcu_record_done 回调后取回放 POST /server/v1/mcu/vod-url
-   一场会议有多个录像时             POST /server/v1/mcu/vods-url
+5. 收到 mcu_record_done 回调后取回放 POST /server/v1/mcu/vod-url   （按 record_id 取一段）
+   要整场的全部段                    POST /server/v1/mcu/vods-url
 ```
+
+## 一次录制会产出多个文件
+
+**录像不是"一次录制一个文件"。** 两种情况会切出多个文件：
+
++ 录制时长超过分片上限（默认 1 小时）：任务结束后转码时按时长滚动切段，片间时间连续
++ 录制中途底层因 30 秒无音视频流自动停止、随后被重新拉起：另起一段，**片间存在时间空洞**
+
+因此对接时注意三点：
+
+1. **取地址用 `record_id` 而不是 `task_id`。** `mcu_record_done` 回调按文件推送，一次录制推多条，
+   每条带自己的 `record_id`；`task_id` 是整个任务的，拿它只能定位到任务。
+2. **`vods-url` 一次给你整场的全部段**，按分片序号排好，每段带 `record_id` / `seq` / `began_at` /
+   `duration` / `offset_ms`。做连播时按 `seq` 顺序播，用 `offset_ms` 拼进度轴。
+3. **`reason=2` 的那一段与上一段之间有时间空洞**（录制曾中断），连播会跳变，UI 上值得给个提示。
+
+`vods-url` 的 `url` / `size` / `mcu_at` / `mcu_dur` 四个字段语义不变（`mcu_at` 是本段开始时间、
+`mcu_dur` 是本段时长），此前已按这套字段对接的不必改动。
+
+<Note>
+  录像文件是**任务结束之后**才开始转码上传的。所以停止录制到"能播"之间有一段等待，
+  长录制会更久。判断"能播了"要靠 `mcu_record_done` 回调（最后一条的 `is_last` 为 `true`），
+  不要以任务状态变成"已结束"为准。
+</Note>
 
 ## 计费提示
 

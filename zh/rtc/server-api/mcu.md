@@ -121,16 +121,44 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 
 ---
 
-## 录像列表
+## 录像任务列表
 
-`POST /server/v1/mcu/list-record`
+`POST /server/v1/mcu/list-task`
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-分页查询录像列表。只有已完成的任务才有可播放的录像文件，
-用响应里的 task_status 区分进行中与已结束。
+分页查询录像任务列表。一次录制 = 一个任务，任务下可能有多个录像文件
+（超过分片时长会滚动切段，中途中断续录也会另起一段）。
+
+本接口只返回任务本身，要拿可播放的文件请用「录像任务详情」（内联全部文件与地址）
+或「录像文件列表」。用 task_status 区分进行中与已结束，record_count 是已产出的文件数。
 
 **请求参数**
+
+<ParamField body="channel" type="string">
+  频道，空表示不限（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="room_no" type="string">
+  外部会议号，空表示不限（最大长度 50）
+  示例：`818595664`
+</ParamField>
+
+<ParamField body="task_status" type="integer">
+  任务状态，不传表示不限：0 待开始 1 进行中 2 待结束 3 异常结束 4 正常结束
+  示例：`4`
+</ParamField>
+
+<ParamField body="title" type="string">
+  录像标题，模糊匹配；空表示不限（最大长度 100）
+  示例：`周会`
+</ParamField>
+
+<ParamField body="tag" type="string">
+  标签，模糊匹配；空表示不限（最大长度 50）
+  示例：`研发`
+</ParamField>
 
 <ParamField body="begin_at" type="integer">
   起始时间，秒级时间戳，按任务创建时间过滤；0 表示不限
@@ -140,14 +168,6 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 <ParamField body="end_at" type="integer">
   终止时间，秒级时间戳；0 表示不限
   示例：`1718799878`
-</ParamField>
-
-<ParamField body="search" type="array<string>">
-  通用搜索
-</ParamField>
-
-<ParamField body="sort" type="string">
-  排序（可排序字段：created_at）
 </ParamField>
 
 <ParamField body="page" type="integer">
@@ -166,13 +186,14 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 ```json
 {
   "begin_at": 1718194666,
+  "channel": "fire",
   "end_at": 1718799878,
   "page": 1,
   "per-page": 10,
-  "search": [
-    ""
-  ],
-  "sort": ""
+  "room_no": "818595664",
+  "tag": "研发",
+  "task_status": 4,
+  "title": "周会"
 }
 ```
 
@@ -202,6 +223,10 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
   外部会议号
 </ResponseField>
 
+<ResponseField name="task_type" type="integer">
+  任务类型 1录像 2合流 4录音 8直播流, 按位组合
+</ResponseField>
+
 <ResponseField name="task_status" type="integer">
   0待开始 1进行中 2待结束 3异常结束 4正常结束
 </ResponseField>
@@ -210,24 +235,117 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
   错误描述
 </ResponseField>
 
-<ResponseField name="vod_key" type="string">
-  录像文件key
+<ResponseField name="began_at" type="integer">
+  录制开始时间，秒级时间戳，0表示底层任务还没跑起来
+  示例：`1718194666`
 </ResponseField>
 
-<ResponseField name="vod_size" type="integer">
-  录像大小(字节)
+<ResponseField name="ended_at" type="integer">
+  录制结束时间，秒级时间戳，0表示未结束
+  示例：`1718216393`
 </ResponseField>
 
-<ResponseField name="mcu_at" type="integer">
-  MCU开始时间
+<ResponseField name="record_count" type="integer">
+  录像文件数。一次录制超过分片时长(默认1小时)或中途中断续录都会多出文件
 </ResponseField>
 
-<ResponseField name="mcu_dur" type="integer">
-  Mcu时长(秒)
+<ResponseField name="total_duration" type="integer">
+  全部录像文件的总时长(秒)
+  示例：`21727`
+</ResponseField>
+
+<ResponseField name="total_size" type="integer">
+  全部录像文件的总字节
 </ResponseField>
 
 <ResponseField name="tags" type="string">
   录像标签 逗号隔开
+</ResponseField>
+
+<ResponseField name="records" type="array<object>">
+  录像文件列表，仅任务详情返回；列表接口为null
+  <Expandable title="元素字段">
+    <ResponseField name="record_id" type="string">
+      录像文件ID，取播放地址时用
+    </ResponseField>
+
+    <ResponseField name="task_id" type="string">
+      所属录像任务ID
+    </ResponseField>
+
+    <ResponseField name="channel" type="string">
+      频道
+    </ResponseField>
+
+    <ResponseField name="seq" type="integer">
+      分片序号，从1开始，按它排序即播放顺序
+    </ResponseField>
+
+    <ResponseField name="vod_size" type="integer">
+      录像大小(字节)
+    </ResponseField>
+
+    <ResponseField name="duration" type="integer">
+      本片时长(秒)
+      示例：`3600`
+    </ResponseField>
+
+    <ResponseField name="began_at" type="integer">
+      本片开始时间，秒级时间戳，用于与业务侧的时间线对齐
+      示例：`1718194666`
+    </ResponseField>
+
+    <ResponseField name="ended_at" type="integer">
+      本片结束时间，秒级时间戳
+      示例：`1718198266`
+    </ResponseField>
+
+    <ResponseField name="offset_ms" type="integer">
+      相对任务开始的偏移(毫秒)，做多片连播的进度轴用这个
+      示例：`7200000`
+    </ResponseField>
+
+    <ResponseField name="reason" type="integer">
+      分片原因 0未知 1按时长切段 2中断后续录(与上一片间有空洞) 3任务结束收尾
+    </ResponseField>
+
+    <ResponseField name="width" type="integer">
+      视频宽
+      示例：`1280`
+    </ResponseField>
+
+    <ResponseField name="height" type="integer">
+      视频高
+      示例：`720`
+    </ResponseField>
+
+    <ResponseField name="fps" type="integer">
+      帧率
+      示例：`15`
+    </ResponseField>
+
+    <ResponseField name="codec" type="string">
+      视频编码
+      示例：`h264`
+    </ResponseField>
+
+    <ResponseField name="bitrate" type="integer">
+      码率(bps)
+    </ResponseField>
+
+    <ResponseField name="is_done" type="boolean">
+      是否已上传完成。false表示还在录制或上传中，取不到播放地址
+    </ResponseField>
+
+    <ResponseField name="addr" type="string">
+      预签名播放地址，有效期2小时；仅任务详情返回，列表接口为空
+    </ResponseField>
+
+    <ResponseField name="created_at" type="integer">
+      记录创建时间，秒级时间戳
+    </ResponseField>
+
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
@@ -254,21 +372,45 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
   "code": 0,
   "data": [
     {
+      "began_at": 1718194666,
       "channel": "",
       "created_at": 1718194666,
+      "ended_at": 1718216393,
       "err_desc": "",
-      "mcu_at": 0,
-      "mcu_dur": 0,
       "op_name": "",
       "op_uid": "",
+      "record_count": 0,
+      "records": [
+        {
+          "addr": "",
+          "began_at": 1718194666,
+          "bitrate": 0,
+          "channel": "",
+          "codec": "h264",
+          "created_at": 0,
+          "duration": 3600,
+          "ended_at": 1718198266,
+          "fps": 15,
+          "height": 720,
+          "is_done": false,
+          "offset_ms": 7200000,
+          "reason": 0,
+          "record_id": "",
+          "seq": 0,
+          "task_id": "",
+          "vod_size": 0,
+          "width": 1280
+        }
+      ],
       "room_no": "",
       "tags": "",
       "task_id": "",
       "task_status": 0,
+      "task_type": 0,
       "title": "",
-      "updated_at": 1718194705,
-      "vod_key": "",
-      "vod_size": 0
+      "total_duration": 21727,
+      "total_size": 0,
+      "updated_at": 1718194705
     }
   ]
 }
@@ -276,14 +418,20 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 
 ---
 
-## 获取录像播放地址
+## 录像任务详情
 
-`POST /server/v1/mcu/vod-url`
+`POST /server/v1/mcu/detail`
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-获取录像回放地址。任务必须已停止且转码完成，进行中的任务取不到地址。
-地址有有效期，不要长期缓存或存进业务库，每次播放前重新获取。
+查询一次录制任务的详情：任务类型、状态、起止时间、总时长，以及**本次录制的全部录像文件**
+（records 数组，含每个文件的播放地址、时长、起止时间与分片序号）。
+
+一次录制会产出多个文件：超过分片时长（默认 1 小时）会滚动切段，录制中途中断后被续上
+也会另起一段。要播完整场就按 records 里的 seq 顺序依次播放。
+
+有 task_id 时按任务查；只传 channel 则取该频道最近一次的录像。
+用 task_status 判断任务跑到哪一步了（0 待开始 1 进行中 2 待结束 3 异常结束 4 正常结束）。
 
 **请求参数**
 
@@ -293,12 +441,12 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 </ParamField>
 
 <ParamField body="channel" type="string">
-  频道(无TaskId时必填)；只传频道则取该频道最近一次的录像
+  频道(无TaskId时必填)
   示例：`fire`
 </ParamField>
 
 <ParamField body="is_lan" type="boolean">
-  是否返回内网地址，适合纯内网部署或专线接入；默认返回外网地址
+  是否返回内网播放地址，适合纯内网部署或专线接入；默认返回外网地址
 </ParamField>
 
 
@@ -314,20 +462,439 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 
 **响应参数**
 
+<ResponseField name="task_id" type="string">
+  任务ID
+</ResponseField>
+
+<ResponseField name="op_uid" type="string">
+  任务发起人ID
+</ResponseField>
+
+<ResponseField name="op_name" type="string">
+  任务发起人名
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  频道标题
+</ResponseField>
+
+<ResponseField name="room_no" type="string">
+  外部会议号
+</ResponseField>
+
+<ResponseField name="task_type" type="integer">
+  任务类型 1录像 2合流 4录音 8直播流, 按位组合
+</ResponseField>
+
+<ResponseField name="task_status" type="integer">
+  0待开始 1进行中 2待结束 3异常结束 4正常结束
+</ResponseField>
+
+<ResponseField name="err_desc" type="string">
+  错误描述
+</ResponseField>
+
+<ResponseField name="began_at" type="integer">
+  录制开始时间，秒级时间戳，0表示底层任务还没跑起来
+  示例：`1718194666`
+</ResponseField>
+
+<ResponseField name="ended_at" type="integer">
+  录制结束时间，秒级时间戳，0表示未结束
+  示例：`1718216393`
+</ResponseField>
+
+<ResponseField name="record_count" type="integer">
+  录像文件数。一次录制超过分片时长(默认1小时)或中途中断续录都会多出文件
+</ResponseField>
+
+<ResponseField name="total_duration" type="integer">
+  全部录像文件的总时长(秒)
+  示例：`21727`
+</ResponseField>
+
+<ResponseField name="total_size" type="integer">
+  全部录像文件的总字节
+</ResponseField>
+
+<ResponseField name="tags" type="string">
+  录像标签 逗号隔开
+</ResponseField>
+
+<ResponseField name="records" type="array<object>">
+  录像文件列表，仅任务详情返回；列表接口为null
+  <Expandable title="元素字段">
+    <ResponseField name="record_id" type="string">
+      录像文件ID，取播放地址时用
+    </ResponseField>
+
+    <ResponseField name="task_id" type="string">
+      所属录像任务ID
+    </ResponseField>
+
+    <ResponseField name="channel" type="string">
+      频道
+    </ResponseField>
+
+    <ResponseField name="seq" type="integer">
+      分片序号，从1开始，按它排序即播放顺序
+    </ResponseField>
+
+    <ResponseField name="vod_size" type="integer">
+      录像大小(字节)
+    </ResponseField>
+
+    <ResponseField name="duration" type="integer">
+      本片时长(秒)
+      示例：`3600`
+    </ResponseField>
+
+    <ResponseField name="began_at" type="integer">
+      本片开始时间，秒级时间戳，用于与业务侧的时间线对齐
+      示例：`1718194666`
+    </ResponseField>
+
+    <ResponseField name="ended_at" type="integer">
+      本片结束时间，秒级时间戳
+      示例：`1718198266`
+    </ResponseField>
+
+    <ResponseField name="offset_ms" type="integer">
+      相对任务开始的偏移(毫秒)，做多片连播的进度轴用这个
+      示例：`7200000`
+    </ResponseField>
+
+    <ResponseField name="reason" type="integer">
+      分片原因 0未知 1按时长切段 2中断后续录(与上一片间有空洞) 3任务结束收尾
+    </ResponseField>
+
+    <ResponseField name="width" type="integer">
+      视频宽
+      示例：`1280`
+    </ResponseField>
+
+    <ResponseField name="height" type="integer">
+      视频高
+      示例：`720`
+    </ResponseField>
+
+    <ResponseField name="fps" type="integer">
+      帧率
+      示例：`15`
+    </ResponseField>
+
+    <ResponseField name="codec" type="string">
+      视频编码
+      示例：`h264`
+    </ResponseField>
+
+    <ResponseField name="bitrate" type="integer">
+      码率(bps)
+    </ResponseField>
+
+    <ResponseField name="is_done" type="boolean">
+      是否已上传完成。false表示还在录制或上传中，取不到播放地址
+    </ResponseField>
+
+    <ResponseField name="addr" type="string">
+      预签名播放地址，有效期2小时；仅任务详情返回，列表接口为空
+    </ResponseField>
+
+    <ResponseField name="created_at" type="integer">
+      记录创建时间，秒级时间戳
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+  任务创建时间，秒级时间戳
+  示例：`1718194666`
+</ResponseField>
+
+<ResponseField name="updated_at" type="integer">
+  任务最后变更时间，秒级时间戳
+  示例：`1718194705`
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "began_at": 1718194666,
+    "channel": "",
+    "created_at": 1718194666,
+    "ended_at": 1718216393,
+    "err_desc": "",
+    "op_name": "",
+    "op_uid": "",
+    "record_count": 0,
+    "records": [
+      {
+        "addr": "",
+        "began_at": 1718194666,
+        "bitrate": 0,
+        "channel": "",
+        "codec": "h264",
+        "created_at": 0,
+        "duration": 3600,
+        "ended_at": 1718198266,
+        "fps": 15,
+        "height": 720,
+        "is_done": false,
+        "offset_ms": 7200000,
+        "reason": 0,
+        "record_id": "",
+        "seq": 0,
+        "task_id": "",
+        "vod_size": 0,
+        "width": 1280
+      }
+    ],
+    "room_no": "",
+    "tags": "",
+    "task_id": "",
+    "task_status": 0,
+    "task_type": 0,
+    "title": "",
+    "total_duration": 21727,
+    "total_size": 0,
+    "updated_at": 1718194705
+  }
+}
+```
+
+---
+
+## 录像文件列表
+
+`POST /server/v1/mcu/list-record`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+分页查询录像文件，一条就是一次录制产出的一个文件（分片）。
+
+按 seq 升序即为播放顺序；offset_ms 是相对任务开始的偏移，做多片连播的进度轴用它。
+reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断后续录），连播时要留意。
+
+拿到列表后用「批量获取录像文件播放地址」一次性取回本页地址，比逐条取快得多。
+
+**请求参数**
+
+<ParamField body="task_id" type="string">
+  录像任务ID，只看某一次录制的文件时传；空表示不限
+  示例：`sxjgwy`
+</ParamField>
+
+<ParamField body="channel" type="string">
+  频道，空表示不限（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="page" type="integer">
+  页数，从1开始
+  示例：`1`
+</ParamField>
+
+<ParamField body="per-page" type="integer">
+  每页数据量
+  示例：`10`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "channel": "fire",
+  "page": 1,
+  "per-page": 10,
+  "task_id": "sxjgwy"
+}
+```
+
+**响应参数**
+
+<ResponseField name="record_id" type="string">
+  录像文件ID，取播放地址时用
+</ResponseField>
+
+<ResponseField name="task_id" type="string">
+  所属录像任务ID
+</ResponseField>
+
+<ResponseField name="channel" type="string">
+  频道
+</ResponseField>
+
+<ResponseField name="seq" type="integer">
+  分片序号，从1开始，按它排序即播放顺序
+</ResponseField>
+
+<ResponseField name="vod_size" type="integer">
+  录像大小(字节)
+</ResponseField>
+
+<ResponseField name="duration" type="integer">
+  本片时长(秒)
+  示例：`3600`
+</ResponseField>
+
+<ResponseField name="began_at" type="integer">
+  本片开始时间，秒级时间戳，用于与业务侧的时间线对齐
+  示例：`1718194666`
+</ResponseField>
+
+<ResponseField name="ended_at" type="integer">
+  本片结束时间，秒级时间戳
+  示例：`1718198266`
+</ResponseField>
+
+<ResponseField name="offset_ms" type="integer">
+  相对任务开始的偏移(毫秒)，做多片连播的进度轴用这个
+  示例：`7200000`
+</ResponseField>
+
+<ResponseField name="reason" type="integer">
+  分片原因 0未知 1按时长切段 2中断后续录(与上一片间有空洞) 3任务结束收尾
+</ResponseField>
+
+<ResponseField name="width" type="integer">
+  视频宽
+  示例：`1280`
+</ResponseField>
+
+<ResponseField name="height" type="integer">
+  视频高
+  示例：`720`
+</ResponseField>
+
+<ResponseField name="fps" type="integer">
+  帧率
+  示例：`15`
+</ResponseField>
+
+<ResponseField name="codec" type="string">
+  视频编码
+  示例：`h264`
+</ResponseField>
+
+<ResponseField name="bitrate" type="integer">
+  码率(bps)
+</ResponseField>
+
+<ResponseField name="is_done" type="boolean">
+  是否已上传完成。false表示还在录制或上传中，取不到播放地址
+</ResponseField>
+
 <ResponseField name="addr" type="string">
-  录像地址
+  预签名播放地址，有效期2小时；仅任务详情返回，列表接口为空
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+  记录创建时间，秒级时间戳
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "_meta": {
+    "currentPage": 1,
+    "pageCount": 5,
+    "perPage": 20,
+    "totalCount": 100
+  },
+  "code": 0,
+  "data": [
+    {
+      "addr": "",
+      "began_at": 1718194666,
+      "bitrate": 0,
+      "channel": "",
+      "codec": "h264",
+      "created_at": 0,
+      "duration": 3600,
+      "ended_at": 1718198266,
+      "fps": 15,
+      "height": 720,
+      "is_done": false,
+      "offset_ms": 7200000,
+      "reason": 0,
+      "record_id": "",
+      "seq": 0,
+      "task_id": "",
+      "vod_size": 0,
+      "width": 1280
+    }
+  ]
+}
+```
+
+---
+
+## 获取单个录像文件的播放地址
+
+`POST /server/v1/mcu/vod-url`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+获取单个录像文件的回放地址。文件必须已上传完成，正在录制或上传中的取不到地址。
+地址有有效期（2 小时），不要长期缓存或存进业务库，每次播放前重新获取。
+
+**请求参数**
+
+<ParamField body="record_id" type="string" required>
+  录像文件ID，取自任务详情或录像文件列表
+  示例：`rc3p9w`
+</ParamField>
+
+<ParamField body="is_lan" type="boolean">
+  是否返回内网地址，适合纯内网部署或专线接入；默认返回外网地址
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "is_lan": false,
+  "record_id": "rc3p9w"
+}
+```
+
+**响应参数**
+
+<ResponseField name="record_id" type="string">
+  录像文件ID
+</ResponseField>
+
+<ResponseField name="addr" type="string">
+  预签名播放地址，有效期2小时
 </ResponseField>
 
 <ResponseField name="size" type="integer">
   录像大小(字节)
 </ResponseField>
 
-<ResponseField name="mcu_at" type="integer">
-  MCU开始时间
+<ResponseField name="duration" type="integer">
+  本片时长(秒)
 </ResponseField>
 
-<ResponseField name="mcu_dur" type="integer">
-  Mcu时长(秒)
+<ResponseField name="began_at" type="integer">
+  本片开始时间，秒级时间戳
+</ResponseField>
+
+<ResponseField name="offset_ms" type="integer">
+  相对任务开始的偏移(毫秒)
 </ResponseField>
 
 
@@ -338,8 +905,10 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
   "code": 0,
   "data": {
     "addr": "",
-    "mcu_at": 0,
-    "mcu_dur": 0,
+    "began_at": 0,
+    "duration": 0,
+    "offset_ms": 0,
+    "record_id": "",
     "size": 0
   }
 }
@@ -347,13 +916,94 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 
 ---
 
-## 删除录像
+## 批量获取录像文件播放地址
 
-`POST /server/v1/mcu/del-record`
+`POST /server/v1/mcu/vod-url/batch`
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-删除录像记录，删除后不再出现在录像列表与详情中。
+批量获取录像文件的回放地址，一次最多 50 个，适合整场连播时一次性取全。
+
+单个文件签发失败（如已被清理）时该条 addr 为空，不影响其余条目。
+
+**请求参数**
+
+<ParamField body="record_ids" type="array<string>" required>
+  录像文件ID列表，单次最多 50 个（最大长度 50）
+  示例：`["rc3p9w","rc3p9x"]`
+</ParamField>
+
+<ParamField body="is_lan" type="boolean">
+  是否返回内网地址，适合纯内网部署或专线接入；默认返回外网地址
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "is_lan": false,
+  "record_ids": [
+    "rc3p9w",
+    "rc3p9x"
+  ]
+}
+```
+
+**响应参数**
+
+<ResponseField name="record_id" type="string">
+  录像文件ID
+</ResponseField>
+
+<ResponseField name="addr" type="string">
+  预签名播放地址，有效期2小时
+</ResponseField>
+
+<ResponseField name="size" type="integer">
+  录像大小(字节)
+</ResponseField>
+
+<ResponseField name="duration" type="integer">
+  本片时长(秒)
+</ResponseField>
+
+<ResponseField name="began_at" type="integer">
+  本片开始时间，秒级时间戳
+</ResponseField>
+
+<ResponseField name="offset_ms" type="integer">
+  相对任务开始的偏移(毫秒)
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "addr": "",
+      "began_at": 0,
+      "duration": 0,
+      "offset_ms": 0,
+      "record_id": "",
+      "size": 0
+    }
+  ]
+}
+```
+
+---
+
+## 删除录像任务
+
+`POST /server/v1/mcu/del-task`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+删除录像任务，其下全部录像文件一并删除，删除后不再出现在列表与详情中。
 
 只传 channel 不传 task_id 时，该频道下**所有**含录像的任务会被一起删掉，
 要删指定的一次录制请传 task_id。
@@ -370,13 +1020,57 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
   示例：`fire`
 </ParamField>
 
+<ParamField body="is_lan" type="boolean">
+  是否返回内网播放地址，适合纯内网部署或专线接入；默认返回外网地址
+</ParamField>
+
 
 请求示例：
 
 ```json
 {
   "channel": "fire",
+  "is_lan": false,
   "task_id": "sxjgwy"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 删除单个录像文件
+
+`POST /server/v1/mcu/del-record`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+删除单个录像文件，同一次录制的其他文件不受影响。
+
+**请求参数**
+
+<ParamField body="record_id" type="string" required>
+  录像文件ID
+  示例：`rc3p9w`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "record_id": "rc3p9w"
 }
 ```
 
@@ -664,140 +1358,14 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 
 ---
 
-## 录像详情
+## 修改录像任务的标题与标签
 
-`POST /server/v1/mcu/record-detail`
-
-鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
-
-查询一次录制任务的详情：任务类型、状态、起止时间、时长、录像文件信息。
-
-有 task_id 时按任务查；只传 channel 则取该频道最近一次的录像。
-用响应里的 task_status 判断任务跑到哪一步了（0 待开始 1 进行中 2 待结束
-3 异常结束 4 正常结束）。
-
-**请求参数**
-
-<ParamField body="task_id" type="string">
-  任务ID
-  示例：`sxjgwy`
-</ParamField>
-
-<ParamField body="channel" type="string">
-  频道(无TaskId时必填)
-  示例：`fire`
-</ParamField>
-
-
-请求示例：
-
-```json
-{
-  "channel": "fire",
-  "task_id": "sxjgwy"
-}
-```
-
-**响应参数**
-
-<ResponseField name="task_id" type="string">
-  任务ID
-</ResponseField>
-
-<ResponseField name="op_uid" type="string">
-  任务发起人ID
-</ResponseField>
-
-<ResponseField name="op_name" type="string">
-  任务发起人名
-</ResponseField>
-
-<ResponseField name="channel" type="string">
-  频道
-</ResponseField>
-
-<ResponseField name="title" type="string">
-  频道标题
-</ResponseField>
-
-<ResponseField name="room_no" type="string">
-  外部会议号
-</ResponseField>
-
-<ResponseField name="task_status" type="integer">
-  0待开始 1进行中 2待结束 3异常结束 4正常结束
-</ResponseField>
-
-<ResponseField name="err_desc" type="string">
-  错误描述
-</ResponseField>
-
-<ResponseField name="vod_key" type="string">
-  录像文件key
-</ResponseField>
-
-<ResponseField name="vod_size" type="integer">
-  录像大小(字节)
-</ResponseField>
-
-<ResponseField name="mcu_at" type="integer">
-  MCU开始时间
-</ResponseField>
-
-<ResponseField name="mcu_dur" type="integer">
-  Mcu时长(秒)
-</ResponseField>
-
-<ResponseField name="tags" type="string">
-  录像标签 逗号隔开
-</ResponseField>
-
-<ResponseField name="created_at" type="integer">
-  任务创建时间，秒级时间戳
-  示例：`1718194666`
-</ResponseField>
-
-<ResponseField name="updated_at" type="integer">
-  任务最后变更时间，秒级时间戳
-  示例：`1718194705`
-</ResponseField>
-
-
-响应示例：
-
-```json
-{
-  "code": 0,
-  "data": {
-    "channel": "",
-    "created_at": 1718194666,
-    "err_desc": "",
-    "mcu_at": 0,
-    "mcu_dur": 0,
-    "op_name": "",
-    "op_uid": "",
-    "room_no": "",
-    "tags": "",
-    "task_id": "",
-    "task_status": 0,
-    "title": "",
-    "updated_at": 1718194705,
-    "vod_key": "",
-    "vod_size": 0
-  }
-}
-```
-
----
-
-## 修改录像标题与标签
-
-`POST /server/v1/mcu/update-record`
+`POST /server/v1/mcu/update-task`
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-修改录像的标题与标签，用于归档整理，不影响录像文件本身。
-标题与标签都可以用录像列表的 search 检索到。
+修改录像任务的标题与标签，用于归档整理，不影响录像文件本身。
+标题与标签都可以用录像任务列表的 search 检索到。
 
 **请求参数**
 
@@ -868,12 +1436,17 @@ task_type 带了直播位（8）。地址有有效期，不要长期缓存。
   示例：`fire`
 </ParamField>
 
+<ParamField body="is_lan" type="boolean">
+  是否返回内网播放地址，适合纯内网部署或专线接入；默认返回外网地址
+</ParamField>
+
 
 请求示例：
 
 ```json
 {
   "channel": "fire",
+  "is_lan": false,
   "task_id": "sxjgwy"
 }
 ```

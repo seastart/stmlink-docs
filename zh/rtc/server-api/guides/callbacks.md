@@ -98,31 +98,67 @@ Content-Type: application/json; charset=utf-8
   "task_id": "sxjgwy",
   "task_type": 9,
   "task_status": 1,
-  "err_desc": ""
+  "err_desc": "",
+  "began_at": 1718250917,
+  "ended_at": 0,
+  "record_count": 0,
+  "total_duration": 0,
+  "total_size": 0
 }
 ```
 
 + `task_type` 按位组合，含义见[云录制与直播接入指南](/zh/rtc/server-api/guides/recording)
 + `task_status`：`0` 待开始、`1` 进行中、`2` 待结束、`3` 异常结束、`4` 正常结束
 + `err_desc` 仅在异常结束时有内容
++ `record_count` / `total_duration` / `total_size` 是本次录制产出的文件数、总时长（秒）、总字节
 
 这是判断"录制到底跑起来没有"最可靠的信号——比启动接口返回成功更有意义。
 
-### `mcu_record` — 录像文件已完成
+**任务结束时这条事件里的 `record_count` 往往还是 0**：录像文件要等任务结束后才开始转码上传。
+全部文件传完后我们会**再补发一条本事件**，那一条里的计数才是完整的，用它对账。
+
+### `mcu_record` — 一个录像文件已完成
 
 ```json
 {
   "channel": "fire",
   "task_id": "sxjgwy",
+  "record_id": "rc3p9w",
+  "seq": 2,
+  "is_last": false,
   "task_type": 1,
-  "vod_key": "record/2024/06/12/sxjgwy.mp4",
-  "vod_size": 20971520,
-  "mcu_dur": 1800
+  "vod_size": 481920000,
+  "duration": 3600,
+  "offset_ms": 3600000,
+  "began_at": 1718254517,
+  "ended_at": 1718258117,
+  "reason": 1
 }
 ```
 
-收到这个事件才说明转码完成、录像文件可播，此时去调[获取录像播放地址](/zh/rtc/server-api/mcu#获取录像播放地址)一定拿得到。
-`vod_size` 单位字节，`mcu_dur` 单位秒。
+**一次录制会产出多个文件，本事件按文件推送，一次任务推多条。** 两种情况会切出新文件：
+
++ 录制时长超过分片上限（默认 1 小时），转码时按时长滚动切段，片间时间连续
++ 录制中途底层因 30 秒无音视频流自动停止、随后被重新拉起，另起一段，**片间存在时间空洞**
+
+所以：
+
++ **取播放地址必须用 `record_id`，不是 `task_id`** —— `task_id` 是任务的，一次任务下有多个
+  `record_id`。调[获取录像文件播放地址](/zh/rtc/server-api/mcu#获取单个录像文件的播放地址)时传它
++ `seq` 从 1 开始，按它排序就是播放顺序
++ `offset_ms` 是这一片相对整场录制开始的偏移（毫秒），做多片连播的进度轴用它；
+  `began_at`/`ended_at` 是墙钟时间，用来跟你自己业务的时间线对齐
++ `reason`：`1` 按时长切段、`2` 中断后续录（**与上一片之间有空洞**，连播会跳变，UI 上值得提示）、
+  `3` 任务结束收尾、`0` 未知
++ `is_last` 为 `true` 表示本次录制的文件已全部产出，可以开始拼完整回放了
+
+`vod_size` 单位字节，`duration` 单位秒。
+
+<Tip>
+  想一次拿到整场录制的全部可播地址，直接调
+  [录像任务详情](/zh/rtc/server-api/mcu#录像任务详情)——它的 `records` 数组里
+  每一段都带好了播放地址，比逐条取省事。
+</Tip>
 
 ### `mcu_alarm` — 录制任务告警
 
