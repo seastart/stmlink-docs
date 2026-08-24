@@ -101,13 +101,12 @@ sequenceDiagram
 | `version` | 否 | 客户端版本号，排查问题时用 |
 | `no_menu=1` | 否 | 隐藏左上角的主菜单按钮，便于换成你自己的 UI |
 | `no_tool=1` | 否 | 隐藏底部工具栏 |
-| `readonly=1` | 否 | 只读：可以看，不能画 |
-| `role=host` / `role=member` | 否 | 多页跟随中的角色，见下文[多页白板](#多页白板与跟随主持人)；不传则各看各的页 |
+| `readonly=1` | 否 | 只读：可以看，不能画（也不能建 / 删页），见下文[权限控制](#权限只有一个开关) |
 | `export_btn=1` | 否 | 显示导出图片按钮（导出结果通过宿主接口回传，见下文） |
 | `overlay=1` | 否 | 桌面批注模式，见下文 |
 
 <Note>
-`no_menu` / `no_tool` / `readonly` / `role` **只决定打开时的初始状态**。会中要改（例如主持人临时收回某人的画笔权限、转交主持人），得调[宿主接口](#原生端-webview-内嵌)里对应的 `window` 方法，改 URL 是不会生效的。
+`no_menu` / `no_tool` / `readonly` **只决定打开时的初始状态**。会中要改（例如临时收回某人的画笔权限、过一会儿再放开），得调[宿主接口](#原生端-webview-内嵌)里对应的 `window` 方法，改 URL 是不会生效的。
 </Note>
 
 ### overlay 批注模式
@@ -118,25 +117,41 @@ sequenceDiagram
 
 ---
 
-## 多页白板与跟随主持人
+## 权限：只有一个开关
+
+要不要让某个人画，只看一处：
+
+```javascript
+window.setReadonly(true)   // 只能看
+window.setReadonly(false)  // 可以画
+```
+
+它是白板内核的能力开关——开启后画、建页、删页在内核层就被拦掉，快捷键和右键菜单一样不好使。会中随时可调，不需要重新加载页面（URL 上的 `readonly=1` 只是初始值）。
+
+<Warning>
+**别用"隐藏工具栏"来当权限控制。** `no_menu` / `no_tool`（以及对应的 `setShowMenu` / `setShowToolUi`）只是把界面元素藏起来，用户照样能用快捷键（`D` 画笔、`E` 橡皮）和右键菜单画。要禁止操作只有 `setReadonly`。
+
+反过来 `setReadonly(true)` 也不会替你把界面收干净：白板只会留下选择 / 抓手 / 激光笔三个工具并收起样式面板，主菜单和页面菜单仍然在。两者按需搭配。
+</Warning>
+
+---
+
+## 多页白板与翻页跟随
 
 白板支持多页，**页面列表在各端之间自动同步**——任何人新建、删除、重命名页面，其他人都能看到。用右键菜单的「移动到页面」把图形挪到另一页，对方也能在那一页上看到它。
 
-翻页由谁做主，用 `role` 参数（或运行时的 `window.setWbRole()`）决定：
+跟随规则只有一句：**能画的人翻页，其他人跟着翻。**
 
-| 角色 | 行为 |
-| --- | --- |
-| `host` 主持人 | 自由翻页 / 新建 / 删除页；**切页时所有成员自动跟着翻** |
-| `member` 成员 | 跟随主持人翻页；页面菜单与右键「移动到页面」会被隐藏，避免自己翻了又被拉回 |
-| 不传 | 自由模式：页面列表照常同步，但各看各的页，谁也不跟随谁 |
+| 这个人 | 翻页时 | 别人翻页时 |
+| --- | --- | --- |
+| 能画（默认） | 其他人跟着翻过来 | 自己也跟着翻 |
+| 只读（`readonly`） | 只有自己翻，不影响别人 | 自己也跟着翻 |
 
-成员中途进入（或会中被 `setWbRole('member')` 指派）时会自动对齐到主持人当前所在页，不需要你额外做什么。
+没有主持人、角色之类的概念——翻页话语权跟着"能不能画"走，你只需要管好 `setReadonly`。中途进来的人会自动对齐到大家当前所在页，不用你额外做什么。
 
-<Warning>
-**白板页自己判断不出谁是主持人**，必须由你在打开时用 `role=host` 指定，或会中用 `setWbRole` 转交。同一块板上出现两个 `host` 会互相抢翻页，唯一性由业务侧保证。
-</Warning>
+多人同时能画时，最后翻页的人说了算。这是有意的：共享白板本来就该让大家看同一页。真要让某一端能自由翻看而不打扰别人，把它设成 `readonly` 即可。
 
-"当前停在哪一页"是会话状态，不会被持久化——换一场会不会残留上一场的翻页位置，但页面本身（和上面的笔迹）会一直留在板上，直到白板被销毁。
+"当前在第几页"是会话状态，不会被持久化——换一场会不会残留上一场停在哪页；页面本身和上面的笔迹则一直留在板上，直到白板被销毁。
 
 ---
 
@@ -218,9 +233,8 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 | --- | --- |
 | `window.setShowMenu(show)` | 左上角主菜单按钮显隐（URL `no_menu=1` 的动态版） |
 | `window.setShowToolUi(show)` | 底部工具栏显隐（URL `no_tool=1` 的动态版） |
-| `window.setReadonly(readonly)` | 只读模式：禁止编辑，白板会自动收起编辑类 UI |
+| `window.setReadonly(readonly)` | **权限开关**：能不能画（含建页 / 删页），同时决定翻页话语权，见[权限](#权限只有一个开关) |
 | `window.setCurrentTool(tool)` | 切换工具：`select` / `hand` / `draw` / `eraser` / `arrow` / `text` / `geo` / `line` / `highlight` / `laser` |
-| `window.setWbRole(role)` | 切换角色 `host` / `member`，见[多页白板](#多页白板与跟随主持人) |
 | `window.setReceiverScreenSize(w, h)` | 仅 overlay 模式：告知本机屏幕尺寸 |
 
 ```java
@@ -229,12 +243,12 @@ webView.evaluateJavascript("window.setReadonly(true)", null);
 ```
 
 ```swift
-// iOS：把主持人交给本端
-webView.evaluateJavaScript("window.setWbRole('host')", completionHandler: nil)
+// iOS：进入观众席（仍会跟着别人翻页）
+webView.evaluateJavaScript("window.setReadonly(true)", completionHandler: nil)
 ```
 
 <Note>
-这些方法在页面加载完成后（`onPageFinished` / `didFinish navigation`）才挂上，之前调用会是 `undefined`。建议在加载完成的回调里按业务角色先调一次 `setWbRole` 与 `setReadonly` 做初始化，之后权限有变随时再调，不需要重新加载页面。
+这些方法在页面加载完成后（`onPageFinished` / `didFinish navigation`）才挂上，之前调用会是 `undefined`。建议在加载完成的回调里按业务身份先调一次 `setReadonly` 做初始化，之后权限有变随时再调，不需要重新加载页面。
 </Note>
 
 <Note>

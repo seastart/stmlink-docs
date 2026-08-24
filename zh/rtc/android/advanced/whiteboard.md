@@ -65,13 +65,12 @@ webView.loadUrl(whiteBoard + param)
 |------|----|------|
 | `no_menu` | `1` | 隐藏左上角主菜单按钮 |
 | `no_tool` | `1` | 隐藏底部工具栏 |
-| `readonly` | `1` | 只读：可以看，不能画 |
-| `role` | `host` / `member` | 多页跟随中的角色，不传则各看各的页 |
+| `readonly` | `1` | 只读：可以看，不能画（也不能建 / 删页） |
 | `export_btn` | `1` | 显示"导出图片"按钮 |
 
 > 参数以 `&` 拼接，依赖链接本身已带 query（`joinChannel` 回调给的地址已经带了 `?code=...`）。**别拼成第二个 `?`**，那样后面的参数会被整个吞掉。
 
-> 这几个参数只是**初始状态**。会中要改（收放工具栏、收回画笔权限、转交主持人）请调 3.4 的 JS 方法，改 URL 不重新加载是不生效的。
+> 这几个参数只是**初始状态**。会中要改（收放工具栏、收回或放开画笔权限）请调 3.4 的 JS 方法，改 URL 不重新加载是不生效的。
 
 ### 2.3 注入 JS Bridge
 
@@ -129,7 +128,6 @@ override fun onDestroy() {
 | `no_menu=1` | 隐藏左上角主菜单按钮 |
 | `no_tool=1` | 隐藏底部工具栏 |
 | `readonly=1` | 只读，禁止编辑 |
-| `role=host` / `role=member` | 多页跟随中的角色 |
 | `export_btn=1` | 显示导出按钮 |
 
 ### 3.2 白板 → 原生：JS Bridge 事件
@@ -185,22 +183,22 @@ webView.webChromeClient = object : WebChromeClient() {
 
 ### 3.4 原生 → 白板：会中动态控制
 
-URL 参数只在打开那一刻生效。会中要收放 UI、收回画笔权限、转交主持人，用 `evaluateJavascript` 调白板挂在 `window` 上的方法：
+URL 参数只在打开那一刻生效。会中要收放 UI、收回或放开画笔权限，用 `evaluateJavascript` 调白板挂在 `window` 上的方法：
 
 | 方法 | 说明 |
 |------|------|
+| `window.setReadonly(readonly)` | **权限开关**：能不能画（含建页 / 删页），同时决定翻页话语权 |
 | `window.setShowMenu(show)` | 左上角主菜单按钮显隐 |
-| `window.setShowToolUi(show)` | 底部工具栏显隐 |
-| `window.setReadonly(readonly)` | 只读模式，禁止编辑 |
+| `window.setShowToolUi(show)` | 底部工具栏显隐（想自绘工具栏时用） |
 | `window.setCurrentTool(tool)` | 切换工具：`select` / `hand` / `draw` / `eraser` / `arrow` / `text` / `geo` / `line` / `highlight` / `laser` |
-| `window.setWbRole(role)` | 切换角色 `host`（主持人，翻页带着大家走）/ `member`（跟随主持人翻页） |
+
+> **藏 UI 不等于禁止操作**：`setShowMenu` / `setShowToolUi` 只是把界面藏起来，用户仍能用快捷键和右键菜单画。要"这个人不能画"只能用 `setReadonly`。
 
 ```kotlin
 webView.webViewClient = object : WebViewClient() {
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
         // 页面加载完成后方法才挂上，之前调用是 undefined
-        webView.evaluateJavascript("window.setWbRole('${if (isHost) "host" else "member"}')", null)
         webView.evaluateJavascript("window.setReadonly(${!canDraw})", null)
     }
 }
@@ -211,4 +209,4 @@ fun revokeDrawPermission() {
 }
 ```
 
-> 多页白板的跟随规则（谁翻页、成员如何自动对齐）见 [SRTC · 电子白板 · 多页白板](/zh/rtc/whiteboard#多页白板与跟随主持人)。**同一块板上只能有一个 `host`**，唯一性由业务侧保证。
+> 多页白板的跟随规则是"能画的人翻页、其他人跟着翻"，只读端只跟随不广播，详见 [SRTC · 电子白板 · 多页白板](/zh/rtc/whiteboard#多页白板与翻页跟随)。宿主不需要指定谁是主持人。
