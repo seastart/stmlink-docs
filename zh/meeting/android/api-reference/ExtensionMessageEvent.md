@@ -3,7 +3,7 @@ title: "ExtensionMessageEvent"
 description: "接收会中自定义业务消息（给程序看的信令，不是聊天消息）"
 ---
 
-说明：`ExtensionMessageEvent` 是扩展消息回调接口，用于接收自定义业务扩展消息。通过 `MeetingEngine.extensionMsgEvent` 设置。
+说明：`ExtensionMessageEvent` 是扩展消息回调接口，用于接收自定义业务扩展消息。通过 `MeetingSession.setExtensionMessageEvent(...)` 设置。
 
 ## 回调方法
 

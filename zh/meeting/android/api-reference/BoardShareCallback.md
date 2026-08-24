@@ -16,13 +16,12 @@ fun onSucceed(whiteBoard: String)
 - `whiteBoard`：`String`，白板共享信息。
 返回值说明：无（`Unit`）。
 
-### onFail(code, errorMsg, showMsg)
+### onFail(code, message)
 ```kotlin
-fun onFail(code: Int, errorMsg: String?, showMsg: String?)
+fun onFail(code: Int, message: String?)
 ```
 方法说明：发起白板共享失败回调。  
 参数说明：
-- `code`：`Int`，错误码。
-- `errorMsg`：`String?`，技术错误信息。
-- `showMsg`：`String?`，面向用户的提示信息。
+- `code`：`Int`，Meeting 自产错误为 `202xxx`，上游错误保留原始值。
+- `message`：`String?`，面向开发者的诊断信息，不保证可以直接展示给用户。
 返回值说明：无（`Unit`）。

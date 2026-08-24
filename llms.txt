@@ -108,7 +108,9 @@
 ## SRTC 音视频 SDK · Windows SDK · 接口文档
 
 - [IRTCEngine](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngine.md): Windows 音视频 SDK 的核心接口：创建与释放实例、频道进出、成员信息查询、媒体控制
-- [IRTCEngineEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngineEvent.md): 事件回调接口，继承并重写方法以接收加入频道、用户进出、流变化与自定义消息
+- [IRTCEngineEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngineEvent.md): 引擎级事件回调接口：设备变化、网络探测与 IM 相关通知
+- [IRTCChannel](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCChannel.md): 一个频道（会议）对象：频道配置、事件回调、进入频道、成员信息查询、轨道与推拉流
+- [IRTCChannelEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCChannelEvent.md): 频道级事件回调接口：加入频道、用户进出、流变化、自定义消息、统计与断线重连
 - [IRTCRecord](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCRecord.md): 本地录制：文件名、水印、输出尺寸、成员视图布局与录制过程控制
 - [IRTCLocalScreenTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalScreenTrack.md): 本地屏幕共享推流对象：更新采集参数、开始与停止采集
 - [IRTCLocalCameraTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalCameraTrack.md): 本地摄像头推流对象：更新采集参数、开始与停止采集
@@ -121,7 +123,7 @@
 - [IRTCCustomAudioTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCCustomAudioTrack.md): 推送自定义音频数据流的轨道接口
 - [IRTCView](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCView.md): 渲染对象虚基类，继承它可接管渲染数据回调或设置渲染窗口句柄
 - [IRTCTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCTrack.md): 轨道基类，提供轨道基本信息的获取
-- [IRTCSetting](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCSetting.md): SDK 各项运行参数的读取与设置，含默认值说明
+- [IRTCChannelSetting](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCChannelSetting.md): 单个频道的各项运行参数读取与设置，含默认值和生效时机
 
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS）
 
@@ -253,7 +255,7 @@
 - [模型类型](https://docs.stmlink.com/zh/meeting/android/types.md): Android SMeeting 会议 SDK 数据模型与参数定义
 - [枚举类型](https://docs.stmlink.com/zh/meeting/android/enums.md): Android SMeeting 会议 SDK 枚举值定义
 - [媒体质量](https://docs.stmlink.com/zh/meeting/android/media-quality.md): Android SMeeting 会议 SDK 媒体质量统计数据结构说明
-- [错误码](https://docs.stmlink.com/zh/meeting/android/error-codes.md): Android SMeeting 会议 SDK 错误码枚举与处理说明
+- [错误码](https://docs.stmlink.com/zh/meeting/android/error-codes.md): SMeeting Android SDK 的错误来源、202xxx 常量与应用处理原则
 - [更新日志](https://docs.stmlink.com/zh/meeting/android/changelog.md): Android SMeeting 会议 SDK 版本更新记录
 
 ## SMeeting 会议 SDK · Android SDK · 进阶实践
@@ -263,25 +265,18 @@
 
 ## SMeeting 会议 SDK · Android SDK · 接口文档
 
-- [MeetingEngine](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngine.md): Android 会议 SDK 的总入口，覆盖会前管理、进出会议、会控、媒体与消息能力
+- [MeetingEngine](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngine.md): SMeeting Android SDK 全局入口，负责初始化、IM、设备、会前管理和发起入会
+- [MeetingSession](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingSession.md): 一次已接受的会议会话，承载会中事件、会控、媒体、共享、消息与订阅能力
+- [Meeting 事件接口](https://docs.stmlink.com/zh/meeting/android/api-reference/meeting-events.md): 2.0.34 按 Engine 与 Session 生命周期划分的 IM、房间、成员、媒体和设备事件
 - [InfosManager](https://docs.stmlink.com/zh/meeting/android/api-reference/InfosManager.md): 读取当前会议、成员与轨道的本地状态快照，不发起网络请求
 - [SignInManager](https://docs.stmlink.com/zh/meeting/android/api-reference/SignInManager.md): 会中签到：发起与结束签到活动、用户签到、统计人数、查询与导出记录
 - [RemoteVideoTrack](https://docs.stmlink.com/zh/meeting/android/api-reference/RemoteVideoTrack.md): 远端成员画面的渲染与接收卡顿状态监听，含继承自 VideoTrack 的渲染方法
-- [MeetingResultCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingResultCallback.md): 会控类操作的成功/失败回调，不返回数据
+- [MeetingResultCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingResultCallback.md): Meeting SDK 一次性操作结果回调，统一使用 errorCode 与开发诊断 message
 - [Callback](https://docs.stmlink.com/zh/meeting/android/api-reference/Callback.md): 会议请求的通用结果回调基类，覆盖开始、成功、失败、取消四个状态
-- [CommonCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/CommonCallback.md): 只关心成功或失败、不返回数据的通用操作回调
-- [EnterMeetingCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/EnterMeetingCallback.md): 进入会议的结果回调，成功时返回会议 ID 与自己的 uid
-- [EnableImCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/EnableImCallback.md): 启用会议外消息通道（IM）的结果回调，成功时返回 uid 与本次连接的 sid
 - [BoardShareCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/BoardShareCallback.md): 发起白板共享后的成功/失败回调，成功时返回白板对象
-- [RoomEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/RoomEvent.md): 房间级事件：全场静音与禁聊等会控开关变化、共享开始与结束、主持人转移、云录制状态
-- [UserEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/UserEvent.md): 成员级事件：进退会、角色变化、摄像头与麦克风状态、举手与开麦请求
-- [MediaEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MediaEvent.md): 媒体层事件：连接建立、远端视频帧、音量与活跃说话人、摄像头设备变化、传输统计
-- [ImEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ImEvent.md): 会议外消息通道的事件回调：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助
 - [RoomMsgEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/RoomMsgEvent.md): 接收会中聊天消息与系统消息
 - [ScreenShareEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ScreenShareEvent.md): Android 录屏共享的状态变化回调（授权、开始、停止）
-- [ErrorEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ErrorEvent.md): token 失效、会控或流媒体连接断开等全局错误的上报入口
 - [ExtensionMessageEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ExtensionMessageEvent.md): 接收会中自定义业务消息（给程序看的信令，不是聊天消息）
-- [LocalVideoPreviewEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/LocalVideoPreviewEvent.md): 拿到本地采集的原始视频帧，用于自渲染或美颜等二次处理
 
 ## SMeeting 会议 SDK · Android SDK · 预设配置项
 
@@ -294,13 +289,22 @@
 
 - [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署
 - [C++ 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart.md): Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能
-- [C 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart-c.md): Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能
 - [错误码](https://docs.stmlink.com/zh/meeting/windows/error-codes.md): Windows SMeeting 会议 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/meeting/windows/changelog.md): Windows SMeeting 会议 SDK 版本更新记录
 
-## SMeeting 会议 SDK · Windows SDK · 接口列表
+## SMeeting 会议 SDK · Windows SDK · 接口文档
 
 - [C++ API 参考](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting.md): Windows SMeeting 会议 SDK C++ 接口完整参考
-- [C API 参考](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-c.md): Windows SMeeting 会议 SDK C 接口完整参考
+- [ISMeetingEngine 引擎接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-engine.md): Windows SMeeting SDK 引擎级 C++ 接口参考
+- [ISMeetingChannel 会议接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-channel.md): Windows SMeeting SDK 会议级 C++ 接口参考
+- [主持人管理接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-admin.md): Windows SMeeting SDK 主持人 / 管理员 C++ 接口参考
+- [分组会议接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-submeeting.md): Windows SMeeting SDK 分组会议 C++ 接口参考
+- [MCU 接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-mcu.md): Windows SMeeting SDK MCU 合成视频 C++ 接口参考
+- [签到接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-signin.md): Windows SMeeting SDK 签到 C++ 接口参考
+- [媒体轨道接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-media.md): Windows SMeeting SDK 本地 / 远端 / 自定义媒体轨道 C++ 接口参考
+- [事件回调](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-events.md): Windows SMeeting SDK 引擎级与会议级事件回调 C++ 接口参考
+- [配置项](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-settings.md): Windows SMeeting SDK 引擎级与会议级配置项 C++ 参考
+- [枚举类型与数据结构](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-types.md): Windows SMeeting SDK C++ 枚举类型与数据结构参考
 
 ## SMeeting 会议 SDK · Swift SDK（iOS/macOS）
 

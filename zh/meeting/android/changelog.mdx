@@ -5,6 +5,27 @@ description: "Android SMeeting 会议 SDK 版本更新记录"
 
 > 本页记录 Android SMeeting SDK 各版本的主要变更，版本号与 [集成](/zh/meeting/android/integration) 中的依赖版本一致。可通过 `MeetingEngine.version()` 获取当前 SDK 版本。
 
+## 2.0.34
+
+### 新增
+
++ 新增 `MeetingSession` 与 `MeetingSessionState`。入会成功后由 Session 承载会中控制、媒体、共享、消息和订阅能力，并阻止已经离会的旧 Session 操作后续会议。
++ 新增 `MeetingErrorCode`，使用 `202001`～`202999` 表示 Meeting SDK 自身错误，`202000` 作为未定义通用错误。
++ 新增按 Engine、Session、媒体与设备作用域划分的 Meeting 事件接口，并提供可按需覆写的 `SimpleEvent` 空实现。
++ 新增本地音视频帧、活跃说话人、网络质量以及麦克风设备事件。
+
+### 变更
+
++ `MeetingEngine` 只负责 SDK、IM、设备和会前能力；大量会中接口迁移到入会返回的 `MeetingSession`。
++ 入会回调统一为 `MeetingValueResultCallback<MeetingSession>`；无返回值操作使用 `MeetingResultCallback`。
++ Meeting 一次性失败回调统一为 `onFail(errorCode, message)`，不再提供 `showMsg`。`message` 仅用于开发诊断，App 应根据错误码维护用户文案和国际化。
++ `InfosManager`、`SignInManager`、`RollCallManager` 移入 `cn.seastart.meeting.manager` 包。
++ 底层 SRTC SDK 从 `2.0.24` 升级到 `2.0.29`，适配频道化生命周期、媒体与设备回调。
+
+### 兼容性说明
+
+本版本包含公开 API 破坏性变更。升级时不能只替换 Maven 版本：应用必须保存入会成功返回的 `MeetingSession`，将会中调用和事件注册迁移到 Session，并更新事件接口、manager import 和失败回调签名。
+
 ## 2.0.27-alpha.7
 
 - 当前接入文档对应的 SDK 版本。

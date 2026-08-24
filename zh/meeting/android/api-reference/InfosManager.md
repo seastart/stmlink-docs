@@ -3,7 +3,7 @@ title: "InfosManager"
 description: "读取当前会议、成员与轨道的本地状态快照，不发起网络请求"
 ---
 
-说明：`InfosManager` 是会中信息管理器，用于读取当前会议、成员与轨道的本地状态快照。
+说明：`InfosManager` 位于 `cn.seastart.meeting.manager` 包，通过 `MeetingSession.infosManager` 获取，用于读取当前会议、成员与轨道的本地状态快照。
 
 ## 核心属性
 

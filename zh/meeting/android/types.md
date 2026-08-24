@@ -143,6 +143,15 @@ description: "Android SMeeting 会议 SDK 数据模型与参数定义"
 | meetingId | String | 会议 ID |
 | title | String | 会议标题 |
 
+### MeetingImConnection
+
+`MeetingEngine.enableIm(...)` 成功时返回的连接标识。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| uid | String | 当前 IM 用户标识 |
+| sid | String | 本次 IM 连接标识 |
+
 ### ImContent.MeetingRemind
 
 | 属性名称 | 数据类型 | 说明 |

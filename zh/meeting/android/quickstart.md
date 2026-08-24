@@ -24,6 +24,7 @@ description: "Android SMeeting 会议 SDK 快速集成，10 分钟跑通基础�
 
 ```kotlin
 private var engine: MeetingEngine? = null
+private var session: MeetingSession? = null
 
 fun initMeetingSdk(app: Application, meetToken: String) {
     engine = MeetingEngine.create(app)
@@ -32,8 +33,8 @@ fun initMeetingSdk(app: Application, meetToken: String) {
             // SDK 初始化成功，可继续创建会议、查询会议、加入会议等操作
         }
 
-        override fun onFail(code: Int, errorMsg: String?, showMsg: String?) {
-            // SDK 初始化失败
+        override fun onFail(errorCode: Int, message: String?) {
+            // message 仅用于开发诊断；用户文案请根据 errorCode 生成
         }
     })
 }
@@ -43,6 +44,8 @@ fun initMeetingSdk(app: Application, meetToken: String) {
 
 ```kotlin
 fun releaseMeetingSdk() {
+    session?.leave()
+    session = null
     engine?.release()
     engine = null
 }
@@ -156,6 +159,7 @@ engine?.createScheduleMeeting(
 - `nick`：入会昵称，建议传业务用户名或展示名。
 - `avatar`：头像地址或头像标识，没有可传空字符串。
 - `streamVendor`：流媒体厂商标识。当前 Android Demo 使用 `"wangsucdn"`；如果你们的部署环境由后端指定其他值，请以后端配置为准。
+- `isAudience`：是否以观众身份入会；观众不能执行开设备、共享或发流等受限操作，普通参会者传 `false`。
 - `extendInfo`：业务扩展字段，可传 JSON 字符串；没有扩展数据时传 `null`。
 
 ### 3.2 加入会议
@@ -173,16 +177,16 @@ engine?.enterMeeting(
     nick,
     avatar,
     streamVendor,
+    false,
     null,
-    object : EnterMeetingCallback {
-        override fun onSucceed(meetingId: String, uid: String) {
-            // 入会成功
-            // meetingId: 当前会议 ID
-            // uid: 当前用户在本次会议中的 UID
+    object : MeetingValueResultCallback<MeetingSession> {
+        override fun onSuccess(value: MeetingSession) {
+            session = value
+            // 在 value 上注册会中事件，并调用媒体、会控和消息接口
         }
 
-        override fun onFail(code: Int, errorMsg: String?, showMsg: String?) {
-            // 入会失败
+        override fun onFail(errorCode: Int, message: String?) {
+            // message 仅用于开发诊断
         }
     }
 )
@@ -195,7 +199,8 @@ engine?.enterMeeting(
 普通成员离会直接调用：
 
 ```kotlin
-engine?.exitMeeting()
+session?.leave()
+session = null
 ```
 
 ### 3.4 结束会议
@@ -203,7 +208,7 @@ engine?.exitMeeting()
 只有主持人场景才需要调用 `adminDestroyMeeting(...)` 结束整个会议：
 
 ```kotlin
-engine?.adminDestroyMeeting(
+session?.adminDestroyMeeting(
     object : Callback<Data<String?>>() {
         override fun onSuccess(data: Data<String?>) {
             // 结束会议成功
@@ -237,7 +242,7 @@ engine?.adminDestroyMeeting(
 ### 4.2 开启摄像头
 
 ```kotlin
-engine?.requestOpenCamera(
+session?.requestOpenCamera(
     null,
     PreOptionCamera._480P,
     object : Callback<Data<String?>>() {
@@ -255,7 +260,7 @@ engine?.requestOpenCamera(
 ### 4.3 关闭摄像头
 
 ```kotlin
-engine?.closeCamera()
+session?.closeCamera()
 ```
 
 ### 4.4 切换前后摄像头
@@ -264,7 +269,7 @@ engine?.closeCamera()
 - `false`：切到后置摄像头。
 
 ```kotlin
-engine?.switchCamera(isFrontCamera = false)
+session?.switchCamera(isFrontCamera = false)
 ```
 
 ## Step 5：开启和关闭麦克风
@@ -287,7 +292,7 @@ engine?.switchCamera(isFrontCamera = false)
 ### 5.2 开启麦克风
 
 ```kotlin
-engine?.requestOpenMic(
+session?.requestOpenMic(
     PreOptionMic.def,
     object : Callback<Data<String?>>() {
         override fun onSuccess(data: Data<String?>) {
@@ -304,7 +309,7 @@ engine?.requestOpenMic(
 ### 5.3 关闭麦克风
 
 ```kotlin
-engine?.closeMic()
+session?.closeMic()
 ```
 
 如果你还需要切换扬声器、听筒、蓝牙耳机或有线耳机，可继续参考 [音频路由使用](/zh/meeting/android/advanced/audio-routing)。
@@ -315,8 +320,8 @@ engine?.closeMic()
 
 订阅远端视频前，需要两个关键参数：
 
-- `uid`：目标成员 UID。通常来自成员列表、用户事件回调，或者 `engine?.infosManager?.getMembersInfo()`。
-- `trackDesc`：目标轨道描述。可通过 `engine?.infosManager?.getTrackInfos(uid)` 获取。
+- `uid`：目标成员 UID。通常来自成员列表、用户事件回调，或者 `session?.infosManager?.getMembersInfo()`。
+- `trackDesc`：目标轨道描述。可通过 `session?.infosManager?.getTrackInfos(uid)` 获取。
 
 常见的 `trackDesc` 包括：
 
@@ -329,14 +334,14 @@ engine?.closeMic()
 `startPlayRemoteVideo(...)` 会返回一个 `RemoteVideoTrack`，你可以直接传入渲染视图，也可以先订阅再调用 `addPlayView(view)` 绑定渲染控件。
 
 ```kotlin
-val infosManager = engine?.infosManager ?: return
+val infosManager = session?.infosManager ?: return
 val targetUid = "remote-user-001"
 val trackInfo = infosManager
     .getTrackInfos(targetUid)
     .firstOrNull { it.desc == "camera_big" }
     ?: return
 
-val remoteVideoTrack = engine?.startPlayRemoteVideo(
+val remoteVideoTrack = session?.startPlayRemoteVideo(
     targetUid,
     trackInfo.desc,
     remoteView,
@@ -349,13 +354,13 @@ remoteVideoTrack?.addPlayView(remoteView)
 如果你想先查某一条固定轨道，也可以使用：
 
 ```kotlin
-val trackInfo = engine?.infosManager?.getTrackInfoByTrackDesc(targetUid, "screen")
+val trackInfo = session?.infosManager?.getTrackInfoByTrackDesc(targetUid, "screen")
 ```
 
 ### 6.3 取消订阅远端视频
 
 ```kotlin
-engine?.stopPlayRemoteVideo(targetUid, trackInfo.desc)
+session?.stopPlayRemoteVideo(targetUid, trackInfo.desc)
 ```
 
 如果你还持有 `RemoteVideoTrack`，在界面销毁前也建议把渲染控件移除，例如调用 `removeAllPlayView()`，避免重复绑定。
@@ -364,6 +369,8 @@ engine?.stopPlayRemoteVideo(targetUid, trackInfo.desc)
 
 - [集成](/zh/meeting/android/integration)
 - [MeetingEngine API](/zh/meeting/android/api-reference/MeetingEngine)
+- [MeetingSession API](/zh/meeting/android/api-reference/MeetingSession)
+- [事件接口](/zh/meeting/android/api-reference/meeting-events)
 - [InfosManager](/zh/meeting/android/api-reference/InfosManager)
 - [RemoteVideoTrack](/zh/meeting/android/api-reference/RemoteVideoTrack)
 - [模型类型](/zh/meeting/android/types)

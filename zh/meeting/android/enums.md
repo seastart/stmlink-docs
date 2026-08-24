@@ -75,14 +75,27 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Open | 1 | 开启 |
 | Closed | 2 | 关闭 |
 
-### DisconnectedImReason
+### DeviceType
 
 | 枚举名 | 值 | 说明 |
 | --- | --- | --- |
-| Unknown | 0 | 未知 |
-| KickOut | 2 | 被踢出 |
-| BeReplaced | 3 | 被顶号 |
-| HeartbeatTimeout | 4 | 心跳超时 |
+| Unknown | 0 | 未知设备 |
+| Windows | 1 | Windows 客户端 |
+| Android | 2 | Android 客户端 |
+| iOS | 3 | iOS 客户端 |
+| Linux | 4 | Linux 客户端 |
+| MacOS | 5 | macOS 客户端 |
+| WebRTC | 6 | WebRTC 客户端 |
+| Rtmp | 7 | RTMP 终端 |
+
+### MeetingSessionState
+
+| 枚举名 | 说明 |
+| --- | --- |
+| JOINING | 正在执行入会流程 |
+| ACTIVE | 已加入 RTC 频道 |
+| LEAVING | 正在离会并回收资源 |
+| CLOSED | Session 已关闭 |
 
 ### HandUpType
 

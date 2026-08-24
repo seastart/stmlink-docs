@@ -60,11 +60,11 @@ dependencies {
 - `artifactId`：`meeting`
 - `version`：请替换为你要接入的 SDK 版本
 
-当前工作区内 `meeting-android` 工程使用的版本号示例为：
+当前已发布版本为：
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.meeting:meeting:2.0.27-alpha.7'
+    implementation 'cn.seastart.meeting:meeting:2.0.34'
 }
 ```
 

@@ -3,7 +3,7 @@ title: "SignInManager"
 description: "会中签到：发起与结束签到活动、用户签到、统计人数、查询与导出记录"
 ---
 
-说明：`SignInManager` 是会中签到功能管理器，通过 `MeetingEngine.signInManager` 获取，用于发起/结束签到活动、用户签到、查询与导出签到记录。
+说明：`SignInManager` 位于 `cn.seastart.meeting.manager` 包，通过 `MeetingSession.signInManager` 获取，用于发起/结束签到活动、用户签到、查询与导出签到记录。
 
 ## 签到方法
 
