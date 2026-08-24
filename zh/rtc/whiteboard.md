@@ -99,15 +99,44 @@ sequenceDiagram
 | `device_id` | 否 | 设备 ID |
 | `device_type` | 否 | 终端类型：`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 小程序；缺省 `0` 未知 |
 | `version` | 否 | 客户端版本号，排查问题时用 |
-| `no_menu=1` | 否 | 隐藏白板自带的主菜单，便于换成你自己的 UI |
+| `no_menu=1` | 否 | 隐藏左上角的主菜单按钮，便于换成你自己的 UI |
+| `no_tool=1` | 否 | 隐藏底部工具栏 |
+| `readonly=1` | 否 | 只读：可以看，不能画 |
+| `role=host` / `role=member` | 否 | 多页跟随中的角色，见下文[多页白板](#多页白板与跟随主持人)；不传则各看各的页 |
 | `export_btn=1` | 否 | 显示导出图片按钮（导出结果通过宿主接口回传，见下文） |
 | `overlay=1` | 否 | 桌面批注模式，见下文 |
+
+<Note>
+`no_menu` / `no_tool` / `readonly` / `role` **只决定打开时的初始状态**。会中要改（例如主持人临时收回某人的画笔权限、转交主持人），得调[宿主接口](#原生端-webview-内嵌)里对应的 `window` 方法，改 URL 是不会生效的。
+</Note>
 
 ### overlay 批注模式
 
 `overlay=1` 让白板**半透明叠在共享桌面画面之上**做批注，画布固定 1920×1080 且禁止缩放——各端必须共用同一套坐标系，笔迹才会落在桌面内容的同一位置上。宿主需要调 `window.setReceiverScreenSize(w, h)` 告诉白板本机的屏幕尺寸。
 
 普通互动白板不要带这个参数：它会隐藏主菜单并让背景近乎全透明。
+
+---
+
+## 多页白板与跟随主持人
+
+白板支持多页，**页面列表在各端之间自动同步**——任何人新建、删除、重命名页面，其他人都能看到。用右键菜单的「移动到页面」把图形挪到另一页，对方也能在那一页上看到它。
+
+翻页由谁做主，用 `role` 参数（或运行时的 `window.setWbRole()`）决定：
+
+| 角色 | 行为 |
+| --- | --- |
+| `host` 主持人 | 自由翻页 / 新建 / 删除页；**切页时所有成员自动跟着翻** |
+| `member` 成员 | 跟随主持人翻页；页面菜单与右键「移动到页面」会被隐藏，避免自己翻了又被拉回 |
+| 不传 | 自由模式：页面列表照常同步，但各看各的页，谁也不跟随谁 |
+
+成员中途进入（或会中被 `setWbRole('member')` 指派）时会自动对齐到主持人当前所在页，不需要你额外做什么。
+
+<Warning>
+**白板页自己判断不出谁是主持人**，必须由你在打开时用 `role=host` 指定，或会中用 `setWbRole` 转交。同一块板上出现两个 `host` 会互相抢翻页，唯一性由业务侧保证。
+</Warning>
+
+"当前停在哪一页"是会话状态，不会被持久化——换一场会不会残留上一场的翻页位置，但页面本身（和上面的笔迹）会一直留在板上，直到白板被销毁。
 
 ---
 
@@ -183,11 +212,30 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 | `window.AndroidInterface.onWbDestroy(reason)` | 白板被销毁（被人调了 destroy、或到期清理），宿主应关掉白板视图 |
 | `window.AndroidInterface.onExportImage(dataUrl)` | 用户点了导出按钮（需 `export_btn=1`），回传 `data:image/png;base64,...` 形式的 Data URL |
 
-**宿主调 H5**：
+**宿主调 H5**（用 `evaluateJavascript` / `evaluateJavaScript` 调用，页面加载完成后才可用）：
 
 | 接口 | 说明 |
 | --- | --- |
+| `window.setShowMenu(show)` | 左上角主菜单按钮显隐（URL `no_menu=1` 的动态版） |
+| `window.setShowToolUi(show)` | 底部工具栏显隐（URL `no_tool=1` 的动态版） |
+| `window.setReadonly(readonly)` | 只读模式：禁止编辑，白板会自动收起编辑类 UI |
+| `window.setCurrentTool(tool)` | 切换工具：`select` / `hand` / `draw` / `eraser` / `arrow` / `text` / `geo` / `line` / `highlight` / `laser` |
+| `window.setWbRole(role)` | 切换角色 `host` / `member`，见[多页白板](#多页白板与跟随主持人) |
 | `window.setReceiverScreenSize(w, h)` | 仅 overlay 模式：告知本机屏幕尺寸 |
+
+```java
+// Android：会中收回某人的画笔权限
+webView.evaluateJavascript("window.setReadonly(true)", null);
+```
+
+```swift
+// iOS：把主持人交给本端
+webView.evaluateJavaScript("window.setWbRole('host')", completionHandler: nil)
+```
+
+<Note>
+这些方法在页面加载完成后（`onPageFinished` / `didFinish navigation`）才挂上，之前调用会是 `undefined`。建议在加载完成的回调里按业务角色先调一次 `setWbRole` 与 `setReadonly` 做初始化，之后权限有变随时再调，不需要重新加载页面。
+</Note>
 
 <Note>
 接口名 `AndroidInterface` 是历史命名，iOS / Windows 端同样按这个名字挂载即可。
@@ -225,6 +273,10 @@ Android 端的完整示例（WebView 配置、JS Bridge 实现、插入图片时
 **会议结束后白板内容没了**
 
 `board` 取了频道名，频道销毁时连带销毁了它。需要留存就换一个独立的 `board`，并自己管理销毁时机。
+
+**白板能插入什么格式的图片？**
+
+JPEG / PNG / GIF / WebP / SVG，**单张不超过 3 MB**，不支持视频。SVG 是矢量图，放大不失真，贴图标、图纸比位图更合适。原生端要让用户能选图，还得在 WebView 里处理 `onShowFileChooser`（见 [Android · 白板接入](/zh/rtc/android/advanced/whiteboard)），建议回传前把图压到 1 MB 以内。
 
 **能不能把白板画面推流给不能内嵌 WebView 的端？**
 
