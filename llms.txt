@@ -108,7 +108,9 @@
 ## SRTC 音视频 SDK · Windows SDK · 接口文档
 
 - [IRTCEngine](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngine.md): Windows 音视频 SDK 的核心接口：创建与释放实例、频道进出、成员信息查询、媒体控制
-- [IRTCEngineEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngineEvent.md): 事件回调接口，继承并重写方法以接收加入频道、用户进出、流变化与自定义消息
+- [IRTCEngineEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCEngineEvent.md): 引擎级事件回调接口：设备变化、网络探测与 IM 相关通知
+- [IRTCChannel](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCChannel.md): 一个频道（会议）对象：频道配置、事件回调、进入频道、成员信息查询、轨道与推拉流
+- [IRTCChannelEvent](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCChannelEvent.md): 频道级事件回调接口：加入频道、用户进出、流变化、自定义消息、统计与断线重连
 - [IRTCRecord](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCRecord.md): 本地录制：文件名、水印、输出尺寸、成员视图布局与录制过程控制
 - [IRTCLocalScreenTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalScreenTrack.md): 本地屏幕共享推流对象：更新采集参数、开始与停止采集
 - [IRTCLocalCameraTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCLocalCameraTrack.md): 本地摄像头推流对象：更新采集参数、开始与停止采集
@@ -121,7 +123,7 @@
 - [IRTCCustomAudioTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCCustomAudioTrack.md): 推送自定义音频数据流的轨道接口
 - [IRTCView](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCView.md): 渲染对象虚基类，继承它可接管渲染数据回调或设置渲染窗口句柄
 - [IRTCTrack](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCTrack.md): 轨道基类，提供轨道基本信息的获取
-- [IRTCSetting](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCSetting.md): SDK 各项运行参数的读取与设置，含默认值说明
+- [IRTCChannelSetting](https://docs.stmlink.com/zh/rtc/windows/api-reference/IRTCChannelSetting.md): 单个频道的各项运行参数读取与设置，含默认值和生效时机
 
 ## SRTC 音视频 SDK · Swift SDK（iOS/macOS）
 
@@ -294,13 +296,22 @@
 
 - [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署
 - [C++ 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart.md): Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能
-- [C 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart-c.md): Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能
 - [错误码](https://docs.stmlink.com/zh/meeting/windows/error-codes.md): Windows SMeeting 会议 SDK 错误码枚举与处理说明
+- [更新日志](https://docs.stmlink.com/zh/meeting/windows/changelog.md): Windows SMeeting 会议 SDK 版本更新记录
 
-## SMeeting 会议 SDK · Windows SDK · 接口列表
+## SMeeting 会议 SDK · Windows SDK · 接口文档
 
 - [C++ API 参考](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting.md): Windows SMeeting 会议 SDK C++ 接口完整参考
-- [C API 参考](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-c.md): Windows SMeeting 会议 SDK C 接口完整参考
+- [ISMeetingEngine 引擎接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-engine.md): Windows SMeeting SDK 引擎级 C++ 接口参考
+- [ISMeetingChannel 会议接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-channel.md): Windows SMeeting SDK 会议级 C++ 接口参考
+- [主持人管理接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-admin.md): Windows SMeeting SDK 主持人 / 管理员 C++ 接口参考
+- [分组会议接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-submeeting.md): Windows SMeeting SDK 分组会议 C++ 接口参考
+- [MCU 接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-mcu.md): Windows SMeeting SDK MCU 合成视频 C++ 接口参考
+- [签到接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-signin.md): Windows SMeeting SDK 签到 C++ 接口参考
+- [媒体轨道接口](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-media.md): Windows SMeeting SDK 本地 / 远端 / 自定义媒体轨道 C++ 接口参考
+- [事件回调](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-events.md): Windows SMeeting SDK 引擎级与会议级事件回调 C++ 接口参考
+- [配置项](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-settings.md): Windows SMeeting SDK 引擎级与会议级配置项 C++ 参考
+- [枚举类型与数据结构](https://docs.stmlink.com/zh/meeting/windows/api-reference/smeeting-types.md): Windows SMeeting SDK C++ 枚举类型与数据结构参考
 
 ## SMeeting 会议 SDK · Swift SDK（iOS/macOS）
 
