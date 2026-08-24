@@ -1,0 +1,30 @@
+# 校验 llms.txt 与 docs.json 的导航是否一致。
+#
+# llms.txt 是本仓自己生成的（覆盖 Mintlify 的自动版本），生成源是 docs.json 的导航顺序
+# 与各页 frontmatter 的 title / description。改了这些却忘了重跑生成脚本，llms.txt 就会
+# 停在旧目录上——站点看着没问题，客户侧 AI 却拿到一份对不上的目录，而且**没有任何征兆**。
+# 这条 CI 就是那个征兆。
+#
+# 只做这一项检查：
+#   - `mint validate` 需要装 Mintlify CLI，留给本地跑
+#   - `mint broken-links` 目前有一批历史缺图（130+ 处），接进来会长期红着，失去告警意义
+name: llms.txt check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 脚本只用 Python 标准库（json / re / sys / pathlib），用 runner 自带的 python3 即可
+      - name: 校验 llms.txt 是否与当前导航一致
+        run: |
+          if ! python3 scripts/gen-llms-txt.py --check; then
+            echo "::error::llms.txt 与 docs.json 的导航不一致。本地跑 'python3 scripts/gen-llms-txt.py' 重新生成并提交。"
+            exit 1
+          fi
