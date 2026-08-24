@@ -19,7 +19,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # 脚本只用 Python 标准库（json / re / sys / pathlib），用 runner 自带的 python3 即可
       - name: 校验 llms.txt 是否与当前导航一致
