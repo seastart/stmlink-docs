@@ -25,6 +25,24 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 + `RTCLocalAudioFrameEvent` 改为跟随 Engine 级物理麦克风采集，在 SDK 音频分发线程串行回调，不再依赖某个频道是否发布音频；应用回调耗时不会阻塞上行，旁路队列满载时会丢弃较旧的应用回调帧。
 
+### [2.0.27_screenCapture.1] - 2026.08.25
+
+#### 新增
+
++ FY 和 WS 流媒体引擎新增 Android 原生屏幕采集能力，支持应用退至后台后继续共享，并支持将同一次屏幕采集发布到多个频道；
++ 新增 Engine 级本地屏幕 I420 帧回调，仅在应用注册监听器后复制并回调帧数据。
+
+#### 变更
+
++ `LocalScreenTrack.startCapture` 统一为带操作结果回调的启动入口；结果回调表示 SDK 是否接纳启动操作，后续采集状态通过 `RTCScreenStateEvent.onScreenCaptureStateChanged` 通知；
++ 屏幕采集状态类型调整为 `ScreenCaptureState`，包含 `START`、`STOP` 和 `ERROR` 三种状态；
++ FY 和 WS 屏幕采集不再依赖 WebRTC `ScreenCapturerAndroid`，OOK 屏幕采集链路保持不变。
+
+#### 修复
+
++ 修复共享静态页面时首帧可能长时间不显示的问题；
++ 完善系统停止共享、应用主动停止、屏幕旋转、锁屏以及单应用内容隐藏等场景下的状态通知和资源释放。
+
 ### [2.0.28] - 2026.08.22
 
 #### 修复
