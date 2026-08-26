@@ -125,14 +125,13 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | WIRED_EARPHONE | 无显式值 | 有线耳机 |
 | BLUETOOTH_HEADSET | 无显式值 | 蓝牙耳机 |
 
-### ScreenRecordState
+### ScreenCaptureState
 
 | 枚举名 | 值 | 说明 |
 | --- | --- | --- |
-| START | "start" | 开始录屏。 |
-| STOP | "stop" | 停止录屏。 |
-| ERROR | "error" | 录屏出错。 |
-| AUDIO_ERROR | "audio_error" | 录屏音频出错。 |
+| START | "start" | 屏幕采集已经启动。 |
+| STOP | "stop" | 屏幕采集已经停止。 |
+| ERROR | "error" | 屏幕采集启动或运行失败。 |
 
 ### CameraCaptureOptions.CamraPosition
 

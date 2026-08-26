@@ -208,6 +208,40 @@ interface RTCLocalVideoFrameEvent {
 - `onLocalVideoFrame`：回调一帧本地视频。`yuv` 为 SDK 为外部应用单独拷贝的数据，应用层可自行缓存或处理；`stamp` 为帧时间戳；`format` 为帧格式；`facing` 为摄像头朝向。
 - `onLocalVideoFrameSizeChanged`：本地视频帧尺寸或摄像头方向发生变化时回调。
 
+### setRtcLocalScreenFrameEvent(e)
+```kotlin
+fun setRtcLocalScreenFrameEvent(e: RTCLocalScreenFrameEvent?)
+```
+方法说明：设置 Engine 级本地屏幕 I420 帧回调。同一次共享采集发布到多个频道时只回调一份数据；未设置监听器时不会为应用复制 YUV 数据。传 `null` 可移除回调。OOK 的屏幕采集由厂商内部管理，不支持该原始帧回调。
+
+参数说明：
+- `e`：`RTCLocalScreenFrameEvent?`，本地屏幕帧回调实现；`null` 表示移除。
+
+返回值说明：无（`Unit`）。
+
+`RTCLocalScreenFrameEvent` 接口方法：
+
+```kotlin
+interface RTCLocalScreenFrameEvent {
+    fun onLocalScreenFrame(
+        yuv: ByteArray,
+        width: Int,
+        height: Int,
+        stamp: Long,
+        format: Int,
+        rotation: Int
+    )
+}
+```
+
+- `yuv`：紧凑排列的 I420 数据，顺序为 Y、U、V。SDK 已创建独立副本，回调返回后应用仍可缓存或异步处理。
+- `width` / `height`：实际分发帧的宽高。
+- `stamp`：基于单调时钟的纳秒时间戳。
+- `format`：视频格式，当前固定为 `VCS_EVENT_TYPE.YUVI420`。
+- `rotation`：顺时针旋转角度，取值为 `0`、`90`、`180` 或 `270`。
+
+回调在屏幕采集线程同步执行，应用不应阻塞。单应用目标不可见时可能收到黑帧，静态页面可能收到最近真实帧的保活重放帧，与实际发送链路保持一致。
+
 ### setRtcLocalAudioFrameEvent(e)
 
 ```kotlin

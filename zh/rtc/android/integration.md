@@ -70,7 +70,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.rtc:rtc:2.0.28'
+    implementation 'cn.seastart.rtc:rtc:2.0.29'
 }
 ```
 

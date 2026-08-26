@@ -85,6 +85,12 @@ Android SRTC 的错误码分为两类：
 | `MIC_STATE_INVALID` | `102254` | 操作不符合麦克风状态机约束。 |
 | `MIC_FORMAT_UNSUPPORTED` | `102255` | 请求的麦克风采集格式不受支持。 |
 
+### `RtcScreenErrorCode`
+
+| 常量 | 值 | 说明 |
+| --- | ---: | --- |
+| `SCREEN_CAPTURE_OPERATION_REJECTED` | `102270` | 当前 SDK 状态不能接纳新的屏幕采集启动操作。 |
+
 ## 流媒体与 HTTP 错误
 
 ### `RtcStreamErrorCode`
@@ -141,6 +147,7 @@ descriptor?.let {
 | `CHANNEL` | `102200..102229` |
 | `CAMERA` | `102230..102249` |
 | `MIC` | `102250..102269` |
+| `SCREEN` | `102270..102289` |
 | `STREAM` | `102300..102349` |
 | `HTTP` | `102350..102379` |
 

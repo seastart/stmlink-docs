@@ -39,7 +39,7 @@ description: "Android SRTC 音视频 SDK 屏幕共享预设 PreOptionScreen"
 作用说明：SDK 提供默认屏幕共享预设 `PreOptionScreen.def`。
 
 ```kotlin
-capture: deviceId="screenCapDef", width=1920, height=1080, maxFps=10, maxBitrate=1024*1024
+capture: deviceId="screenCapDef", width=1920, height=1080, maxFps=15, maxBitrate=1024*1024
 publish: desc="screen"(TRACK_SHARE), codec=H264, maxBitrate=1024*1024,
-         width=1920, height=1080, maxFps=10, props=null, simulcasts=null
+         width=1920, height=1080, maxFps=15, props=null, simulcasts=null
 ```
