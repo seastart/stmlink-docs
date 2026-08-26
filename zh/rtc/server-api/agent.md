@@ -306,6 +306,24 @@ sip_no）。无请求参数。
   api接口，用于rtc调设备网关
 </ResponseField>
 
+<ResponseField name="load" type="object">
+  最近一次心跳捎带的节点负载（老网关不报为空）
+  <Expandable title="字段">
+    <ResponseField name="cpu_usage" type="number">
+      CPU使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="mem_usage" type="number">
+      内存使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="metrics" type="object">
+      业务指标名值对（如 tasks=进行中任务数）
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
 
 响应示例：
 
@@ -317,6 +335,11 @@ sip_no）。无请求参数。
       "heartbeat_at": 0,
       "host": "",
       "id": "",
+      "load": {
+        "cpu_usage": 0,
+        "mem_usage": 0,
+        "metrics": {}
+      },
       "types": [
         0
       ]
@@ -369,6 +392,24 @@ sip_no）。无请求参数。
   api接口，用于rtc调设备网关
 </ResponseField>
 
+<ResponseField name="load" type="object">
+  最近一次心跳捎带的节点负载（老网关不报为空）
+  <Expandable title="字段">
+    <ResponseField name="cpu_usage" type="number">
+      CPU使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="mem_usage" type="number">
+      内存使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="metrics" type="object">
+      业务指标名值对（如 tasks=进行中任务数）
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
 <ResponseField name="info" type="any">
   网关的平台信息
 </ResponseField>
@@ -385,6 +426,11 @@ sip_no）。无请求参数。
       "host": "",
       "id": "",
       "info": null,
+      "load": {
+        "cpu_usage": 0,
+        "mem_usage": 0,
+        "metrics": {}
+      },
       "types": [
         0
       ]
