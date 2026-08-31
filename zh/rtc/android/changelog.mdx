@@ -5,6 +5,22 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.31] - 2026.08.31
+
+#### 变更
+
++ 将 `audio-optimization` 分支合并入 `master` 分支。
+
+### [2.0.30] - 2026.08.29
+
+#### 修复
+
++ 修复本端被移出频道或发生不可恢复断开后，频道 Session 未及时摘除和媒体资源未完整释放，导致同频道重新加入可能被误判为重复入会的问题。
+
+#### 变更
+
++ 重构部分内部目录并优化 AAR 混淆规则，明确 Track 与公开枚举的保留边界；仅供 SDK 内部使用的 `RemoteStreamStatus` 移入 `enumerateLocal`，未使用的 `AudioOutputOptions` 已删除。
+
 ### [2.0.29] - 2026.08.26
 
 #### 变更

@@ -70,7 +70,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.rtc:rtc:2.0.29'
+    implementation 'cn.seastart.rtc:rtc:2.0.31'
 }
 ```
 
@@ -79,7 +79,7 @@ dependencies {
 开始编码前，建议同步确认以下事项：
 
 - **运行时权限**：如果业务中需要采集音视频，请在应用侧主动申请 `CAMERA` 和 `RECORD_AUDIO` 权限。
-- **ABI 兼容性**：当前 SDK 仅支持 `arm64-v8a`，业务应用必须包含该 ABI。
+- **ABI 兼容性**：当前 SDK 支持 `arm64-v8a` 和 `armeabi-v7a`，业务应用应按目标设备选择并包含对应 ABI。
 - **后台麦克风采集**：采集已与入会和发布解耦；如需在后台持续调用 `LocalMicTrack.startCapture(...)`，请按 Android 版本要求配置麦克风类型前台服务及相关权限。
 - **后续流程**：依赖接入完成后，请继续参考 [快速开始](/zh/rtc/android/quickstart) 完成 `RTCEngine.create(...)`、`initSDK()`、加入频道、发布与订阅等流程；如果需要管理扬声器、听筒、蓝牙耳机等输出设备，可继续参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
 

@@ -99,14 +99,6 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | DEGRADED | 无显式值 | 档位变差（立即回调）。 |
 | RECOVERED | 无显式值 | 档位变好（已通过连续确认）。 |
 
-### RemoteStreamStatus
-
-| 枚举名 | 值 | 说明 |
-| --- | --- | --- |
-| NOT_SUBSCRIBED | "not_subscribed" | 未订阅 |
-| STREAM_NORMAL | "stream_normal" | 流状态正常 |
-| STREAM_CHOKE | "stream_choke" | 流状态阻塞 |
-
 ### StreamVendor
 
 | 枚举名 | 值 | 说明 |
