@@ -12,7 +12,7 @@ description: "Android SMeeting 会议 SDK 摄像头预设 PreOptionCamera"
 - 采集配置：控制本地采集行为（分辨率、帧率、采样率、设备参数等）。
 - 推送配置：控制发布行为（`desc`、`codec`、`maxBitrate`、联播参数等）。
 
-会议场景下，摄像头、麦克风预设通过 `requestOpenCamera` / `requestOpenMic` 传入，屏幕共享预设通过 `initScreenShare` 传入。传 `null` 时使用 SDK 默认预设。
+会议场景下，摄像头预设通过 `openCamera` / `openCameraAndPublish` 传入，麦克风预设通过 `openMic` / `openMicAndPublish` 传入，屏幕共享预设通过 `initScreenShare` 传入。传 `null` 时使用 SDK 默认预设。
 
 ## PreOptionCamera
 

@@ -251,12 +251,12 @@
 ## SMeeting 会议 SDK · Android SDK
 
 - [集成](https://docs.stmlink.com/zh/meeting/android/integration.md): Android SMeeting 会议 SDK 环境配置与 SDK 安装指南
-- [快速开始](https://docs.stmlink.com/zh/meeting/android/quickstart.md): Android SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
-- [模型类型](https://docs.stmlink.com/zh/meeting/android/types.md): Android SMeeting 会议 SDK 数据模型与参数定义
-- [枚举类型](https://docs.stmlink.com/zh/meeting/android/enums.md): Android SMeeting 会议 SDK 枚举值定义
-- [媒体质量](https://docs.stmlink.com/zh/meeting/android/media-quality.md): Android SMeeting 会议 SDK 媒体质量统计数据结构说明
+- [快速开始](https://docs.stmlink.com/zh/meeting/android/quickstart.md): 使用 SMeeting Android 2.0.35 完成初始化、创建会议、注册事件、入会、发布本地音视频与订阅远端视频
+- [模型类型](https://docs.stmlink.com/zh/meeting/android/types.md): SMeeting Android 2.0.35 公开接口直接使用的配置、结果、会议、成员、点名、签到、IM 与录制布局模型
+- [枚举类型](https://docs.stmlink.com/zh/meeting/android/enums.md): Android SMeeting 2.0.35 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举
+- [媒体质量](https://docs.stmlink.com/zh/meeting/android/media-quality.md): 通过 MeetingEngine 主动查询或监听 Android SMeeting 的媒体统计、服务端质量报告和网络质量变化
 - [错误码](https://docs.stmlink.com/zh/meeting/android/error-codes.md): SMeeting Android SDK 的错误来源、202xxx 常量与应用处理原则
-- [更新日志](https://docs.stmlink.com/zh/meeting/android/changelog.md): Android SMeeting 会议 SDK 版本更新记录
+- [更新日志](https://docs.stmlink.com/zh/meeting/android/changelog.md): Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.35 的新增能力、修复、依赖升级与兼容性说明
 
 ## SMeeting 会议 SDK · Android SDK · 进阶实践
 
@@ -265,18 +265,24 @@
 
 ## SMeeting 会议 SDK · Android SDK · 接口文档
 
-- [MeetingEngine](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngine.md): SMeeting Android SDK 全局入口，负责初始化、IM、设备、会前管理和发起入会
-- [MeetingSession](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingSession.md): 一次已接受的会议会话，承载会中事件、会控、媒体、共享、消息与订阅能力
-- [Meeting 事件接口](https://docs.stmlink.com/zh/meeting/android/api-reference/meeting-events.md): 2.0.34 按 Engine 与 Session 生命周期划分的 IM、房间、成员、媒体和设备事件
-- [InfosManager](https://docs.stmlink.com/zh/meeting/android/api-reference/InfosManager.md): 读取当前会议、成员与轨道的本地状态快照，不发起网络请求
-- [SignInManager](https://docs.stmlink.com/zh/meeting/android/api-reference/SignInManager.md): 会中签到：发起与结束签到活动、用户签到、统计人数、查询与导出记录
-- [RemoteVideoTrack](https://docs.stmlink.com/zh/meeting/android/api-reference/RemoteVideoTrack.md): 远端成员画面的渲染与接收卡顿状态监听，含继承自 VideoTrack 的渲染方法
-- [MeetingResultCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingResultCallback.md): Meeting SDK 一次性操作结果回调，统一使用 errorCode 与开发诊断 message
-- [Callback](https://docs.stmlink.com/zh/meeting/android/api-reference/Callback.md): 会议请求的通用结果回调基类，覆盖开始、成功、失败、取消四个状态
-- [BoardShareCallback](https://docs.stmlink.com/zh/meeting/android/api-reference/BoardShareCallback.md): 发起白板共享后的成功/失败回调，成功时返回白板对象
-- [RoomMsgEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/RoomMsgEvent.md): 接收会中聊天消息与系统消息
-- [ScreenShareEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ScreenShareEvent.md): Android 录屏共享的状态变化回调（授权、开始、停止）
-- [ExtensionMessageEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/ExtensionMessageEvent.md): 接收会中自定义业务消息（给程序看的信令，不是聊天消息）
+- [MeetingEngine](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngine.md): SMeeting Android SDK 的唯一公开入口，覆盖初始化、会前业务、入会、会控、本地媒体、共享、消息与远端订阅
+- [InfosManager](https://docs.stmlink.com/zh/meeting/android/api-reference/InfosManager.md): 读取当前会议、成员与 SRTC 轨道的本地状态快照，不发起网络请求
+- [RollCallManager](https://docs.stmlink.com/zh/meeting/android/api-reference/RollCallManager.md): 会中点名管理器：发起与结束点名、主持人呼叫和确认、成员应答、详情查询与导出
+- [SignInManager](https://docs.stmlink.com/zh/meeting/android/api-reference/SignInManager.md): 会中签到管理器：创建与结束签到、成员签到、人数统计、记录查询和流式导出
+- [Meeting 结果回调](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingResultCallback.md): MeetingResultCallback 与 MeetingValueResultCallback 的成功、失败、线程和错误码契约
+- [Meeting 事件概览](https://docs.stmlink.com/zh/meeting/android/api-reference/meeting-events.md): 选择并注册 SMeeting Android 的 Engine、IM、设备、房间、成员、消息、媒体与原始帧事件
+- [MeetingEngineEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngineEvent.md): 接收无法归属到单次调用或当前会议的 Meeting Engine 全局运行错误
+- [MeetingImEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingImEvent.md): 接收 Meeting IM 连接、重连、原始消息、呼叫、会议提醒、等候室与讨论组求助事件
+- [MeetingCameraDeviceEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingCameraDeviceEvent.md): 接收进程共享摄像头列表变化、设备断开与运行错误
+- [MeetingMicDeviceEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingMicDeviceEvent.md): 接收进程共享麦克风输入设备列表变化与当前设备失效事件
+- [MeetingScreenCaptureEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingScreenCaptureEvent.md): 接收 Android 本地屏幕采集状态，不等同于服务端屏幕共享业务状态
+- [MeetingRoomEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingRoomEvent.md): 接收当前会议的房间配置、连接、主持人、录制、共享、举手、讨论组与签到事件
+- [MeetingUserEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingUserEvent.md): 接收当前会议成员进出、角色与权限、设备状态、请求确认、等候室、会场移动和轨道变化
+- [MeetingMessageEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingMessageEvent.md): 接收当前会议的成员聊天、系统消息与应用扩展消息
+- [MeetingMediaEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingMediaEvent.md): 接收当前会议的媒体连接、远端原始帧、媒体统计、音量、活跃说话人与网络质量变化
+- [MeetingLocalVideoFrameEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingLocalVideoFrameEvent.md): 接收本地视频 YUV 帧以及采集尺寸或摄像头方向变化
+- [MeetingLocalAudioFrameEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingLocalAudioFrameEvent.md): 接收本地麦克风 PCM 帧及其采样率、声道数和音频格式
+- [MeetingRemoteVideoEvent](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingRemoteVideoEvent.md): 接收单条远端视频、合成流或网宿视频流的接收与卡顿状态
 
 ## SMeeting 会议 SDK · Android SDK · 预设配置项
 

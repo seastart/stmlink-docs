@@ -6,7 +6,7 @@ description: "SMeeting Android SDK 的错误来源、202xxx 常量与应用处�
 Meeting 一次性结果和 Engine 错误事件统一返回：
 
 ```kotlin
-fun onFail(errorCode: Int, message: String?)
+fun onFailure(errorCode: Int, message: String?)
 fun onError(errorCode: Int, message: String?)
 ```
 
@@ -51,6 +51,7 @@ fun onError(errorCode: Int, message: String?)
 | `ENTER_MEETING_CANCELLED` | `202103` | 入会流程被显式取消 |
 | `WAITING_ROOM_CONTEXT_MISSING` | `202104` | 退出等候室时缺少有效会议上下文 |
 | `AUDIENCE_OPERATION_FORBIDDEN` | `202105` | 观众调用了开设备、共享或发流等受限能力 |
+| `SESSION_OPERATION_CANCELLED` | `202106` | 会中异步操作尚未完成时，所属会议已经开始结束 |
 
 ### 媒体错误（202200～202299）
 
@@ -65,6 +66,8 @@ fun onError(errorCode: Int, message: String?)
 | `CLOUD_RECORD_CAPTURE_DISABLED` | `202207` | 未开启客户端云录制采集配置时启动课程录制轨道 |
 | `LOCAL_TRACK_UNAVAILABLE` | `202208` | Meeting 需要的本地媒体轨道不存在且无更精确错误 |
 | `REMOTE_TRACK_UNAVAILABLE` | `202209` | Meeting 需要订阅的远端媒体轨道不存在 |
+| `LOCAL_DEVICE_OPERATION_CANCELLED` | `202210` | 本地设备操作被更新的开启、关闭或释放动作取消 |
+| `LOCAL_DEVICE_CAPABILITY_UNSUPPORTED` | `202211` | 当前 SRTC 采集链路不支持请求的本地设备能力 |
 
 ### IM 错误（202300～202349）
 
@@ -82,11 +85,12 @@ fun onError(errorCode: Int, message: String?)
 | `REQUEST_TIMEOUT` | `202353` | 本地 HTTP 请求超时 |
 | `REQUEST_CANCELLED` | `202354` | HTTP 请求被取消并需要转换为失败回调 |
 | `EMPTY_RESPONSE_BODY` | `202355` | HTTP 请求成功但响应体为空 |
+| `RESPONSE_PARSE_FAILED` | `202356` | HTTP 响应存在，但无法转换为公共业务结果 |
 
 ## 推荐处理方式
 
 ```kotlin
-override fun onFail(errorCode: Int, message: String?) {
+override fun onFailure(errorCode: Int, message: String?) {
     logger.error("Meeting failed: code=$errorCode, message=$message")
 
     val userMessage = when (errorCode) {

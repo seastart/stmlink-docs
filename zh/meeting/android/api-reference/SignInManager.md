@@ -1,76 +1,135 @@
 ---
 title: "SignInManager"
-description: "会中签到：发起与结束签到活动、用户签到、统计人数、查询与导出记录"
+description: "会中签到管理器：创建与结束签到、成员签到、人数统计、记录查询和流式导出"
 ---
 
-说明：`SignInManager` 位于 `cn.seastart.meeting.manager` 包，通过 `MeetingSession.signInManager` 获取，用于发起/结束签到活动、用户签到、查询与导出签到记录。
+`SignInManager` 通过 `MeetingEngine.signInManager` 获取，所有操作都绑定 Engine 当前的单场会议。
 
-## 签到方法
+## 特殊说明
+
++ 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.SESSION_NOT_ACTIVE`。
+
+## 注意事项
+
++ 结果回调保持网络来源线程，不自动切换主线程。
++ `exportSignInDetail()` 返回一次性 `MeetingDownload`，读取完成或放弃时必须关闭。
+
+## 接口方法
 
 ### listSignInActivities(callback)
+
 ```kotlin
-fun listSignInActivities(callback: Callback<Data<SignInListBean>>)
+fun listSignInActivities(
+    callback: MeetingValueResultCallback<SignInListBean>
+)
 ```
-方法说明：获取签到活动列表。  
+
+方法说明：获取当前会议的签到活动列表与服务端当前时间。
+
 参数说明：
-- `callback`：`Callback<Data<SignInListBean>>`，异步结果回调，返回活动列表与服务器当前时间。
-返回值说明：无（`Unit`）。
+
++ `callback`：成功返回 `SignInListBean` 的结果回调。
+
+返回值说明：无（异步结果见回调）。
 
 ### createSignInActivity(dur, desc, callback)
+
 ```kotlin
-fun createSignInActivity(dur: Int, desc: String, callback: Callback<Data<String>>?)
+fun createSignInActivity(
+    dur: Int,
+    desc: String,
+    callback: MeetingResultCallback
+)
 ```
-方法说明：创建签到活动。  
+
+方法说明：由主持人创建一轮签到活动。
+
 参数说明：
-- `dur`：`Int`，活动持续时长（分钟），`0` 表示不限时。
-- `desc`：`String`，活动描述。
-- `callback`：`Callback<Data<String>>?`，异步结果回调。
-返回值说明：无（`Unit`）。
+
++ `dur`：签到持续时长，单位分钟；`0` 表示不限时。
++ `desc`：签到说明。
++ `callback`：创建结果回调。
+
+返回值说明：无（异步结果见回调）。
 
 ### countSignInMembers(epoch, callback)
+
 ```kotlin
-fun countSignInMembers(epoch: Int, callback: Callback<Data<SignInCountBean>>)
+fun countSignInMembers(
+    epoch: Int,
+    callback: MeetingValueResultCallback<SignInCountBean>
+)
 ```
-方法说明：统计指定轮次的签到人数。  
+
+方法说明：统计指定签到轮次的实际签到人数。
+
 参数说明：
-- `epoch`：`Int`，签到轮次（从 0 开始）。
-- `callback`：`Callback<Data<SignInCountBean>>`，异步结果回调，返回实际签到人数。
-返回值说明：无（`Unit`）。
+
++ `epoch`：签到轮次。
++ `callback`：成功返回 `SignInCountBean` 的结果回调。
+
+返回值说明：无（异步结果见回调）。
 
 ### finishSignInActivity(callback)
+
 ```kotlin
-fun finishSignInActivity(callback: Callback<Data<String>>?)
+fun finishSignInActivity(callback: MeetingResultCallback)
 ```
-方法说明：结束当前签到活动。  
+
+方法说明：结束当前进行中的签到活动。
+
 参数说明：
-- `callback`：`Callback<Data<String>>?`，异步结果回调。
-返回值说明：无（`Unit`）。
+
++ `callback`：结束结果回调。
+
+返回值说明：无（异步结果见回调）。
 
 ### getSignInDetail(epoch, callback)
+
 ```kotlin
-fun getSignInDetail(epoch: Int, callback: Callback<Data<List<SignInRecordBean>>>)
+fun getSignInDetail(
+    epoch: Int,
+    callback: MeetingValueResultCallback<List<SignInRecordBean>>
+)
 ```
-方法说明：获取指定轮次的签到活动详情。  
+
+方法说明：查询指定签到轮次的成员记录。
+
 参数说明：
-- `epoch`：`Int`，签到轮次（从 0 开始）。
-- `callback`：`Callback<Data<List<SignInRecordBean>>>`，异步结果回调，返回签到记录列表。
-返回值说明：无（`Unit`）。
+
++ `epoch`：签到轮次。
++ `callback`：成功返回签到记录列表的结果回调。
+
+返回值说明：无（异步结果见回调）。
 
 ### signIn(callback)
+
 ```kotlin
-fun signIn(callback: Callback<Data<String>>?)
+fun signIn(callback: MeetingResultCallback)
 ```
-方法说明：用户签到。  
+
+方法说明：当前成员对正在进行的签到活动执行签到。
+
 参数说明：
-- `callback`：`Callback<Data<String>>?`，异步结果回调。
-返回值说明：无（`Unit`）。
+
++ `callback`：签到结果回调。
+
+返回值说明：无（异步结果见回调）。
 
 ### exportSignInDetail(epoch, callback)
+
 ```kotlin
-fun exportSignInDetail(epoch: Int, callback: StreamCallback?)
+fun exportSignInDetail(
+    epoch: Int,
+    callback: MeetingValueResultCallback<MeetingDownload>
+)
 ```
-方法说明：导出签到数据，返回原始流。  
+
+方法说明：导出指定签到轮次或全部轮次的数据流。
+
 参数说明：
-- `epoch`：`Int`，签到轮次（从 0 开始）。
-- `callback`：`StreamCallback?`，流式结果回调，返回导出文件的原始数据流。
-返回值说明：无（`Unit`）。
+
++ `epoch`：签到轮次；`-1` 表示全部轮次。
++ `callback`：成功返回一次性 `MeetingDownload` 的结果回调。
+
+返回值说明：无（异步结果见回调）。调用方应使用 `use { ... }` 或显式 `close()` 关闭下载流。

@@ -16,15 +16,15 @@ description: "会议里怎么开白板：用 requestShareBoard() 拿到白板地
 `requestShareBoard()` 做两件事：向会议广播「我在共享白板」，并在回调里返回白板地址。
 
 ```kotlin
-meetingSession.requestShareBoard(object : BoardShareCallback {
-    override fun onSucceed(whiteBoard: String) {
+meetingEngine.requestShareBoard(object : MeetingValueResultCallback<String> {
+    override fun onSuccess(whiteBoard: String) {
         // whiteBoard 是拼好授权码的完整 URL，直接加载
         showBoard(whiteBoard)
     }
 
-    override fun onFail(code: Int, message: String?) {
+    override fun onFailure(errorCode: Int, message: String?) {
         // 常见失败：主持人开启了「房间禁共享」、已有他人在共享
-        toast(errorMessageFor(code))
+        toast(errorMessageFor(errorCode))
     }
 })
 ```
@@ -34,11 +34,11 @@ meetingSession.requestShareBoard(object : BoardShareCallback {
 停止共享：
 
 ```kotlin
-meetingSession.stopShareWhiteBoard()
+meetingEngine.stopShareWhiteBoard()
 ```
 
 <Note>
-主持人处理他人的共享申请，用 [`confirmStartWhiteBoardShareAgree()`](/zh/meeting/android/api-reference/MeetingSession) / `confirmStartWhiteBoardShareRefuse()`，同意时同样会在回调里拿到白板地址。
+主持人处理他人的共享申请，用 [`confirmStartWhiteBoardShareAgree()`](/zh/meeting/android/api-reference/MeetingEngine) / `confirmStartWhiteBoardShareRefuse()`，同意时同样会在回调里拿到白板地址。
 </Note>
 
 ---
@@ -50,7 +50,7 @@ meetingSession.stopShareWhiteBoard()
 ```kotlin
 override fun onRoomShareStart(shareUid: String, shareType: ShareType) {
     if (shareType == ShareType.WhiteBoardShare) {
-        showBoard(meetingSession.infosManager.whiteBoard ?: return)
+        showBoard(meetingEngine.infosManager.whiteBoard ?: return)
     }
 }
 
@@ -64,10 +64,10 @@ override fun onRoomShareStop(shareUid: String, shareType: ShareType) {
 **中途入会的人收不到这个事件**，进会后要自己补一次判断：
 
 ```kotlin
-val info = meetingSession.infosManager.getMeetingInfo()
+val info = meetingEngine.infosManager.getMeetingInfo()
 if (info?.shareState == ShareType.WhiteBoardShare) {
     // 会议中已经有人在共享白板
-    showBoard(meetingSession.infosManager.whiteBoard ?: return)
+    showBoard(meetingEngine.infosManager.whiteBoard ?: return)
 }
 ```
 
@@ -104,6 +104,6 @@ webView.loadUrl(whiteBoard)
 ### 相关
 
 + [SRTC · 电子白板](/zh/rtc/whiteboard) —— 白板页面的 URL 参数、状态同步原理、生命周期与销毁
-+ [MeetingSession](/zh/meeting/android/api-reference/MeetingSession) —— `requestShareBoard()` / `stopShareWhiteBoard()` 接口签名
-+ [BoardShareCallback](/zh/meeting/android/api-reference/BoardShareCallback) —— 共享结果回调
-+ [Meeting 事件接口](/zh/meeting/android/api-reference/meeting-events) —— `MeetingRoomEvent` 的共享开始 / 结束事件
++ [MeetingEngine](/zh/meeting/android/api-reference/MeetingEngine) —— `requestShareBoard()` / `stopShareWhiteBoard()` 接口签名
++ [Meeting 结果回调](/zh/meeting/android/api-reference/MeetingResultCallback) —— 白板地址与失败结果回调
++ [MeetingRoomEvent](/zh/meeting/android/api-reference/MeetingRoomEvent) —— 共享开始 / 结束事件

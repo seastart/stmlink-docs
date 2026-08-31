@@ -1,35 +1,76 @@
 ---
-title: "MeetingResultCallback"
-description: "Meeting SDK 一次性操作结果回调，统一使用 errorCode 与开发诊断 message"
+title: "Meeting 结果回调"
+description: "MeetingResultCallback 与 MeetingValueResultCallback 的成功、失败、线程和错误码契约"
 ---
 
-Meeting SDK 的一次性异步结果分为无返回值和有返回值两种。两种接口的失败契约一致，均不提供 `showMsg`。
+Meeting SDK 使用两类一次性结果回调：无业务返回值时使用 `MeetingResultCallback`，成功需要返回对象时使用 `MeetingValueResultCallback<T>`。
+
+## 特殊说明
+
++ 每次异步调用只返回一个最终状态，不会同时成功和失败。
++ Meeting 自产错误为 `202xxx`；SRTC、服务端或 HTTP 的有效错误码原样透传。
+
+## 注意事项
+
++ 回调保持实际来源线程，不保证主线程。
++ `message` 面向开发诊断，不属于稳定的用户展示文案契约。
 
 ## MeetingResultCallback
 
-用于成功时不需要返回数据的操作。
+### onSuccess()
 
 ```kotlin
-interface MeetingResultCallback {
-    fun onSuccess()
-    fun onFail(errorCode: Int, message: String?)
-}
+fun onSuccess()
 ```
+
+方法说明：不携带业务值的操作成功完成。
+
+参数说明：无。
+
+返回值说明：无（`Unit`）。
+
+### onFailure(errorCode, message)
+
+```kotlin
+fun onFailure(errorCode: Int, message: String?)
+```
+
+方法说明：操作失败。
+
+参数说明：
+
++ `errorCode`：实际错误来源的开放整数错误码。
++ `message`：可空诊断信息，仅用于日志和排障。
+
+返回值说明：无（`Unit`）。
 
 ## MeetingValueResultCallback&lt;T&gt;
 
-用于成功时需要返回对象的操作，例如入会成功后返回 `MeetingSession`。
+### onSuccess(value)
 
 ```kotlin
-interface MeetingValueResultCallback<T> {
-    fun onSuccess(value: T)
-    fun onFail(errorCode: Int, message: String?)
-}
+fun onSuccess(value: T)
 ```
 
-## 失败参数
+方法说明：操作成功完成并返回业务值。
 
-+ `errorCode`：Meeting 自产错误使用 `202xxx`；RTC、librtc、服务端或 HTTP 的有效错误码可能原样透传。
-+ `message`：面向开发者的诊断信息，可能为空，不保证适合直接展示给用户。
+参数说明：
 
-应用应根据 `errorCode` 维护用户展示文案和国际化。错误来源和 Meeting 自产错误常量见 [错误码](/zh/meeting/android/error-codes)。
++ `value`：方法签名声明的业务对象，例如 `MeetingEnterInfo`、`MeetingPage<T>` 或 `RemoteVideoTrack`。
+
+返回值说明：无（`Unit`）。
+
+### onFailure(errorCode, message)
+
+```kotlin
+fun onFailure(errorCode: Int, message: String?)
+```
+
+方法说明：操作失败，语义与 `MeetingResultCallback.onFailure()` 相同。
+
+参数说明：
+
++ `errorCode`：实际错误码。
++ `message`：可空诊断信息。
+
+返回值说明：无（`Unit`）。详见[错误码](/zh/meeting/android/error-codes)。

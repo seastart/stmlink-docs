@@ -1,6 +1,6 @@
 ---
 title: "枚举类型"
-description: "Android SMeeting 会议 SDK 枚举值定义"
+description: "Android SMeeting 2.0.35 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举"
 ---
 
 ### AgentStatus
@@ -75,28 +75,6 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Open | 1 | 开启 |
 | Closed | 2 | 关闭 |
 
-### DeviceType
-
-| 枚举名 | 值 | 说明 |
-| --- | --- | --- |
-| Unknown | 0 | 未知设备 |
-| Windows | 1 | Windows 客户端 |
-| Android | 2 | Android 客户端 |
-| iOS | 3 | iOS 客户端 |
-| Linux | 4 | Linux 客户端 |
-| MacOS | 5 | macOS 客户端 |
-| WebRTC | 6 | WebRTC 客户端 |
-| Rtmp | 7 | RTMP 终端 |
-
-### MeetingSessionState
-
-| 枚举名 | 说明 |
-| --- | --- |
-| JOINING | 正在执行入会流程 |
-| ACTIVE | 已加入 RTC 频道 |
-| LEAVING | 正在离会并回收资源 |
-| CLOSED | Session 已关闭 |
-
 ### HandUpType
 
 | 枚举名 | 值 | 说明 |
@@ -107,6 +85,7 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Chat | 3 | 申请聊天 |
 | Share | 4 | 申请共享 |
 | Draw | 5 | 申请白板涂鸦 |
+| Other | 6 | 其他申请 |
 
 ### LeaveMeetingReason
 
@@ -170,6 +149,13 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | MuteState2 | 2 | 关闭入会静音（跟随客户端初始音频状态） |
 | MuteState3 | 3 | 超 6 人静音（超过 6 人后入会静音） |
 
+### RollCallMethod
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| Auto | 1 | 自动点名 |
+| Manual | 2 | 手动点名 |
+
 ### ShareType
 
 | 枚举名 | 值 | 说明 |
@@ -194,3 +180,7 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Normal | 1 | 普通成员 |
 | SIP | 2 | SIP 设备 |
 | H323 | 3 | H323 设备 |
+
+## SRTC 枚举
+
+Meeting 的公开接口还会直接使用传递依赖 SRTC 中的 `DeviceType`、`LeaveReason`、`ScreenCaptureState`、`TrackDesc`、网络质量等级等类型。它们不是 Meeting 自定义枚举，统一以 [SRTC Android 枚举类型](/zh/rtc/android/enums) 为准。

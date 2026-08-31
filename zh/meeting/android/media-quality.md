@@ -1,12 +1,18 @@
 ---
 title: "媒体质量"
-description: "Android SMeeting 会议 SDK 媒体质量统计数据结构说明"
+description: "通过 MeetingEngine 主动查询或监听 Android SMeeting 的媒体统计、服务端质量报告和网络质量变化"
 ---
 
 ## 说明
 
-本文基于 `MediaMetric.kt` 中的数据类（`data class`）整理。  
-不包含接口（`interface`）定义说明。
+SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange` 与相关统计类型。当前 `2.0.35` 对应 SRTC `2.0.31`。
+
+可通过两种方式获取质量数据：
+
++ `MeetingEngine.getMetric()`：主动读取当前会议最近一次采样的线程安全副本；不会触发即时采样，入会初期可能为 `null`。
++ `MeetingEngine.mediaEvent`：监听 `MeetingMediaEvent.onMediaMetric()` 与 `onNetworkQualityChanged()`。统计通常约每 5 秒回调一次；回调保持 SRTC 来源线程。
+
+弱网等级变差会及时通知，恢复通常需要连续采样确认。等级、方向与趋势枚举见 [SRTC 枚举类型](/zh/rtc/android/enums)，完整弱网策略见 [SRTC 网络质量](/zh/rtc/android/network-quality)。下方字段字典与 [SRTC 媒体质量](/zh/rtc/android/media-quality) 保持一致。
 
 ## MediaMetric.Metric
 

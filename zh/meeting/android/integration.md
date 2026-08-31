@@ -64,7 +64,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.meeting:meeting:2.0.34'
+    implementation 'cn.seastart.meeting:meeting:2.0.35'
 }
 ```
 

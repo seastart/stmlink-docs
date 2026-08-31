@@ -1,32 +1,146 @@
 ---
 title: "更新日志"
-description: "Android SMeeting 会议 SDK 版本更新记录"
+description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.35 的新增能力、修复、依赖升级与兼容性说明"
 ---
 
-> 本页记录 Android SMeeting SDK 各版本的主要变更，版本号与 [集成](/zh/meeting/android/integration) 中的依赖版本一致。可通过 `MeetingEngine.version()` 获取当前 SDK 版本。
+> 本页记录 Android SMeeting SDK 的主要版本变化。依赖版本见[集成](/zh/meeting/android/integration)，运行时可通过 `MeetingEngine.version()` 查询实际版本。
 
-## 2.0.34
+## 2.0.35（2026-08-31）
 
 ### 新增
 
-+ 新增 `MeetingSession` 与 `MeetingSessionState`。入会成功后由 Session 承载会中控制、媒体、共享、消息和订阅能力，并阻止已经离会的旧 Session 操作后续会议。
-+ 新增 `MeetingErrorCode`，使用 `202001`～`202999` 表示 Meeting SDK 自身错误，`202000` 作为未定义通用错误。
-+ 新增按 Engine、Session、媒体与设备作用域划分的 Meeting 事件接口，并提供可按需覆写的 `SimpleEvent` 空实现。
-+ 新增本地音视频帧、活跃说话人、网络质量以及麦克风设备事件。
++ 新增 `MeetingResultCallback` 与 `MeetingValueResultCallback<T>`，分别承载无业务值和有业务值的异步结果；每次调用只返回一个终态。
++ 新增 `MeetingErrorCode`，Meeting SDK 自产错误使用 `202xxx`；RTC、服务端与 HTTP 的有效错误码继续原样透传。
++ 新增 `MeetingPage<T>`、`MeetingDownload`、`MeetingEnterInfo` 与 `MeetingImConnection` 等稳定公共结果模型。
++ 新增 Engine、IM、房间、成员、消息、媒体、本地帧、屏幕采集和设备事件接口，并为每组事件提供可按需覆写的 `SimpleEvent` 空实现。
++ 新增会前摄像头、麦克风采集能力 `openCamera()` / `openMic()`，会中采集并发布使用 `openCameraAndPublish()` / `openMicAndPublish()`。
++ 新增摄像头与麦克风设备列表查询、指定设备切换、本地音视频帧监听和屏幕采集状态监听。
 
 ### 变更
 
-+ `MeetingEngine` 只负责 SDK、IM、设备和会前能力；大量会中接口迁移到入会返回的 `MeetingSession`。
-+ 入会回调统一为 `MeetingValueResultCallback<MeetingSession>`；无返回值操作使用 `MeetingResultCallback`。
-+ Meeting 一次性失败回调统一为 `onFail(errorCode, message)`，不再提供 `showMsg`。`message` 仅用于开发诊断，App 应根据错误码维护用户文案和国际化。
-+ `InfosManager`、`SignInManager`、`RollCallManager` 移入 `cn.seastart.meeting.manager` 包。
-+ 底层 SRTC SDK 从 `2.0.24` 升级到 `2.0.29`，适配频道化生命周期、媒体与设备回调。
++ 统一 `MeetingEngine` 的公开结果回调；失败方法名为 `onFailure(errorCode, message)`，`message` 只用于开发诊断。
++ 会前接口直接返回业务模型，不再向应用暴露 `Callback<Data<T>>`、`Data<T>`、`Data2<T>` 等网络传输包装。
++ 入会成功返回 `MeetingEnterInfo`；会中能力仍统一从 `MeetingEngine` 调用。`MeetingSession` 只用于 SDK 内部分层，不属于公开 API。
++ `InfosManager`、`RollCallManager`、`SignInManager` 统一位于 `cn.seastart.meeting.manager` 包，并通过稳定门面绑定当前会议。
++ 旧的 `RoomEvent`、`UserEvent`、`MediaEvent`、`ImEvent`、`RoomMsgEvent`、`ExtensionMessageEvent`、`ScreenShareEvent` 等事件类型被新的 `Meeting*Event` 接口替代。
++ 网宿通用流拆分为视频和音频接口：`subscribeWsVideoStream()` / `subscribeWsAudioStream()` 及对应取消订阅方法。
++ 内部引入单会议 Session 分层和 generation 隔离，避免旧会议的迟到回调或异步结果影响下一场会议，但不向应用暴露 Session 对象。
++ SRTC 依赖依次升级到 `2.0.30`、`2.0.31`。
 
 ### 兼容性说明
 
-本版本包含公开 API 破坏性变更。升级时不能只替换 Maven 版本：应用必须保存入会成功返回的 `MeetingSession`，将会中调用和事件注册迁移到 Session，并更新事件接口、manager import 和失败回调签名。
+本版本包含公开 API 破坏性变更。升级后需要替换旧网络回调和旧事件接口，使用 `onFailure`，并按新签名处理入会、分页、下载、远端订阅及网宿流结果。会中接口继续在 `MeetingEngine` 上调用，不要引用 SDK 内部的 `MeetingSession`。
 
-## 2.0.27-alpha.7
+## 2.0.34（2026-08-26）
 
-- 当前接入文档对应的 SDK 版本。
-- 具体变更条目待补充。
+### 变更
+
++ SRTC 依赖升级到 `2.0.29`。
++ 适配 SRTC 的频道化生命周期、媒体事件与设备事件变化。
++ 兼容新的远端订阅附加流参数，并补充 `RTCMediaEvent.onActiveSpeakersChanged` 等底层回调适配。
+
+## 2.0.33（2026-08-19）
+
+### 修复
+
++ 优化云端录制、屏幕共享与课程录制共用 `TRACK_SHARE` 轨道时的创建、发布和回收逻辑。
++ 避免停止某一种共享业务时错误释放仍被另一种业务使用的轨道。
+
+## 2.0.32（2026-07-29）
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.24`，Meeting SDK 完成对应兼容适配。
+
+## 2.0.31（2026-07-23）
+
+### 新增
+
++ 新增 `getMetric()`，可主动获取最近一次媒体质量统计快照。
++ 新增媒体质量统计和网络质量变化事件，支持监听弱网档位变化。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.21`。
++ 前置摄像头预览镜像默认值由关闭调整为开启。
+
+## 2.0.30（2026-07-15）
+
+### 新增
+
++ 入会接口新增 `isAudience` 参数，支持以观众身份入会。
++ 观众可接收会议成员与音视频信息，但不能打开设备、共享或发布媒体流。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.16`，完成观众身份相关适配。
+
+## 2.0.29（2026-07-04）
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.15`。
++ 重构本地视频预览和媒体状态回调的底层适配。
+
+### 修复
+
++ 为 `MeetingProps` 的字段补充稳定默认值，避免 Gson 反序列化缺少字段时覆盖业务默认行为。
+
+## 2.0.28-alpha.5（2026-06-17）
+
+### 新增
+
++ 新增前置摄像头预览镜像开关和镜像状态查询接口。
+
+### 变更
+
++ 完善 Maven POM 描述信息。
+
+## 2.0.28-alpha.4（2026-06-15）
+
+### 新增
+
++ 新增网宿流媒体引擎专用的通用流订阅、取消订阅与视频控制轨获取能力。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.10`，此前先适配过 `2.0.7-optimize-publish-flow.1`。
+
+## 2.0.28-alpha.3（2026-05-09）
+
+### 新增
+
++ 发布共享轨道时支持通过 `props` 携带附加流信息，可在共享流中加入麦克风音频。
+
+## 2.0.28-alpha.2（2026-04-29）
+
+### 新增
+
++ `HandUpType` 新增 `Other(6)`，用于未归入摄像头、麦克风、聊天、共享或涂鸦的举手请求。
++ 新增会中扩展消息分发能力。
+
+## 2.0.28-alpha.1（2026-04-14）
+
+### 新增
+
++ 新增点名管理能力，包括创建、结束、呼叫、应答、查询和导出。
++ 新增会中签到能力，包括发起、结束、签到、统计、查询和流式导出。
+
+### 修复
+
++ 屏幕共享开始事件改为同时等待服务端共享状态和 RTC 轨道事件，减少状态误报。
++ 修复入会前已有成员共享屏幕时无法感知的问题。
++ 修复其他成员入会时错误上报共享状态的问题。
++ 关闭摄像头不再发送多余的 HTTP 请求。
+
+## 2.0.27-alpha.7（2026-03-10）
+
+### 新增
+
++ 入会接口新增流媒体厂商参数，用于选择部署环境约定的 RTC 流媒体引擎。
++ 新增课程录制轨道能力；课程录制与屏幕录制复用同一条共享发送轨道。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.6-alpha.9`。
++ Android Gradle Plugin 升级到 `8.9.1`，Kotlin 升级到 `2.0.21`，并完成配套构建适配。
