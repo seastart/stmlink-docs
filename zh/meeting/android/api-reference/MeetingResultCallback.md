@@ -5,12 +5,10 @@ description: "MeetingResultCallback 与 MeetingValueResultCallback 的成功、�
 
 Meeting SDK 使用两类一次性结果回调：无业务返回值时使用 `MeetingResultCallback`，成功需要返回对象时使用 `MeetingValueResultCallback<T>`。
 
-## 特殊说明
+## 使用说明
 
 + 每次异步调用只返回一个最终状态，不会同时成功和失败。
 + Meeting 自产错误为 `202xxx`；SRTC、服务端或 HTTP 的有效错误码原样透传。
-
-## 注意事项
 
 + 回调保持实际来源线程，不保证主线程。
 + `message` 面向开发诊断，不属于稳定的用户展示文案契约。
@@ -39,8 +37,10 @@ fun onFailure(errorCode: Int, message: String?)
 
 参数说明：
 
-+ `errorCode`：实际错误来源的开放整数错误码。
-+ `message`：可空诊断信息，仅用于日志和排障。
+| 参数 | 说明 |
+| --- | --- |
+| `errorCode` | 实际错误来源的开放整数错误码。 |
+| `message` | 可空诊断信息，仅用于日志和排障。 |
 
 返回值说明：无（`Unit`）。
 
@@ -56,7 +56,9 @@ fun onSuccess(value: T)
 
 参数说明：
 
-+ `value`：方法签名声明的业务对象，例如 `MeetingEnterInfo`、`MeetingPage<T>` 或 `RemoteVideoTrack`。
+| 参数 | 说明 |
+| --- | --- |
+| `value` | 方法签名声明的业务对象，例如 `MeetingEnterInfo`、`MeetingPage<T>` 或 `RemoteVideoTrack`。 |
 
 返回值说明：无（`Unit`）。
 
@@ -70,7 +72,9 @@ fun onFailure(errorCode: Int, message: String?)
 
 参数说明：
 
-+ `errorCode`：实际错误码。
-+ `message`：可空诊断信息。
+| 参数 | 说明 |
+| --- | --- |
+| `errorCode` | 实际错误码。 |
+| `message` | 可空诊断信息。 |
 
 返回值说明：无（`Unit`）。详见[错误码](/zh/meeting/android/error-codes)。

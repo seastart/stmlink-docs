@@ -3,16 +3,13 @@ title: "MeetingEngine"
 description: "SMeeting Android SDK 的唯一公开入口，覆盖初始化、会前业务、入会、会控、本地媒体、共享、消息与远端订阅"
 ---
 
-`MeetingEngine` 是 SMeeting Android SDK 的唯一公开业务入口。应用通过它初始化 SDK、注册事件、创建或查询会议、加入与离开会议，并调用全部会中业务和媒体能力。
+`MeetingEngine` 是 SMeeting Android SDK 的公开业务入口，通过 `MeetingEngine.create(application)` 创建。它负责 SDK 初始化与释放、会前会议管理、入会与离会、会中控制、本地媒体、共享、消息和远端媒体订阅。
 
-## 特殊说明
+## 使用说明
 
 + `MeetingEngine.create(application)` 每次创建一个 Engine 实例。应用应在进程内集中持有一个实例，并在不再使用时调用 `release()`。
 + 当前公开 API 采用单会议模型：同一 Engine 同时只能有一场加入中或活动会议；重复入会返回 `MeetingErrorCode.SESSION_ALREADY_ACTIVE`。
-+ `MeetingSession` 是 SDK 内部实现类型，不属于公开 API。入会成功返回 [MeetingEnterInfo](/zh/meeting/android/types#meetingenterinfo)，后续会中调用仍通过当前 `MeetingEngine` 完成。
-
-## 注意事项
-
++ 入会成功返回 [MeetingEnterInfo](/zh/meeting/android/types#meetingenterinfo)，后续会中能力继续通过当前 `MeetingEngine` 调用。
 + 所有异步结果回调保持实际来源线程，不保证主线程；更新 UI 前应切换到主线程。
 + `MeetingResultCallback` / `MeetingValueResultCallback<T>` 的失败方法是 `onFailure(errorCode, message)`。`message` 仅用于诊断，不应直接展示给用户。
 + `roomEvent`、`userEvent`、`mediaEvent`、`messageEvent` 会绑定当前会议并在离会时清除；需要接收下一场会议事件时应重新赋值。Engine、IM 和设备事件与 Engine 生命周期一致。
@@ -29,7 +26,9 @@ fun create(app: Application): MeetingEngine
 
 参数说明：
 
-+ `app`：`Application`，应用级上下文。
+| 参数 | 说明 |
+| --- | --- |
+| `app` | `Application`，应用级上下文。 |
 
 返回值说明：新建的 `MeetingEngine`。
 
@@ -117,9 +116,11 @@ fun initSdk(
 
 参数说明：
 
-+ `meetToken`：`String`，Meeting 服务端签发的初始化 token。
-+ `options`：`RTCMediaOptions?`，SRTC 媒体配置；传 `null` 使用默认配置。
-+ `callback`：`MeetingResultCallback`，初始化唯一终态回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetToken` | `String`，Meeting 服务端签发的初始化 token。 |
+| `options` | `RTCMediaOptions?`，SRTC 媒体配置；传 `null` 使用默认配置。 |
+| `callback` | `MeetingResultCallback`，初始化唯一终态回调。 |
 
 返回值说明：无（`Unit`）。
 
@@ -133,7 +134,9 @@ fun updateMediaOptions(options: RTCMediaOptions)
 
 参数说明：
 
-+ `options`：`RTCMediaOptions`，新的媒体配置。
+| 参数 | 说明 |
+| --- | --- |
+| `options` | `RTCMediaOptions`，新的媒体配置。 |
 
 返回值说明：无（`Unit`）。
 
@@ -181,7 +184,9 @@ fun getShareCustomVideoTrack(preOpt: PreOptionCustomVideo?): LocalCustomVideoTra
 
 参数说明：
 
-+ `preOpt`：`PreOptionCustomVideo?`，自定义视频采集参数；传 `null` 使用底层默认配置。
+| 参数 | 说明 |
+| --- | --- |
+| `preOpt` | `PreOptionCustomVideo?`，自定义视频采集参数；传 `null` 使用底层默认配置。 |
 
 返回值说明：缓存或新建的 `LocalCustomVideoTrack`；底层 SRTC 尚未就绪或无法创建轨道时为 `null`。`enableClientCloudRecordCapture` 约束的是后续课程录制发布流程，不阻止提前取得并写入该轨道。
 
@@ -197,7 +202,9 @@ fun getSelfInfo(callback: MeetingValueResultCallback<UserBean>)
 
 参数说明：
 
-+ `callback`：成功返回 `UserBean` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 成功返回 `UserBean` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -217,9 +224,11 @@ fun adminUpdateUserName(
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `name`：新昵称。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `name` | 新昵称。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -237,9 +246,11 @@ fun adminUpdateUserRole(
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `role`：新的 `MemberRoleType`。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `role` | 新的 `MemberRoleType`。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -253,8 +264,10 @@ fun adminMoveHost(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：新主持人的 UID。
-+ `callback`：移交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 新主持人的 UID。 |
+| `callback` | 移交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -272,9 +285,11 @@ fun adminUpdateUserDrawDisabled(
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `drawDisabled`：`true` 表示禁止涂鸦。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `drawDisabled` | `true` 表示禁止涂鸦。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -292,9 +307,11 @@ fun adminUpdateUserChatDisabled(
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `chatDisabled`：`true` 表示禁止聊天。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `chatDisabled` | `true` 表示禁止聊天。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -308,8 +325,10 @@ fun adminRequestUserOpenCamera(targetId: String, callback: MeetingResultCallback
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `callback`：请求提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `callback` | 请求提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -323,8 +342,10 @@ fun adminCloseUserCamera(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `callback`：操作结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `callback` | 操作结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -342,9 +363,11 @@ fun adminDisableUserCamera(
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `cameraDisabled`：目标禁用状态。
-+ `callback`：结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `cameraDisabled` | 目标禁用状态。 |
+| `callback` | 结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -362,8 +385,10 @@ fun adminRequestUserOpenMic(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `callback`：请求提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `callback` | 请求提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -377,8 +402,10 @@ fun adminCloseUserMic(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `callback`：操作结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `callback` | 操作结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -396,9 +423,11 @@ fun adminDisableUserMic(
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `micDisabled`：目标禁用状态。
-+ `callback`：结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `micDisabled` | 目标禁用状态。 |
+| `callback` | 结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -416,8 +445,10 @@ fun adminRequestUserShare(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `callback`：请求提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `callback` | 请求提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -431,7 +462,9 @@ fun adminStopRoomShare(callback: MeetingResultCallback)
 
 参数说明：
 
-+ `callback`：停止共享结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 停止共享结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -448,8 +481,10 @@ fun adminInviteAgent(
 
 参数说明：
 
-+ `agents`：设备类型和联系标识列表。
-+ `callback`：邀请结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `agents` | 设备类型和联系标识列表。 |
+| `callback` | 邀请结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -463,8 +498,10 @@ fun adminKickUserOut(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：目标成员 UID。
-+ `callback`：操作结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID。 |
+| `callback` | 操作结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -483,10 +520,12 @@ fun adminConfirmHandUp(
 
 参数说明：
 
-+ `targetId`：申请成员 UID。
-+ `code`：举手类型。
-+ `approve`：`true` 同意，`false` 拒绝。
-+ `callback`：处理结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 申请成员 UID。 |
+| `code` | 举手类型。 |
+| `approve` | `true` 同意，`false` 拒绝。 |
+| `callback` | 处理结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -505,10 +544,12 @@ fun adminGetOnlineMembers(
 
 参数说明：
 
-+ `meetingId`：目标会议 ID；传 `null` 使用当前会议。
-+ `page`：页码，从 `1` 开始。
-+ `prePage`：每页最大条目数。参数名为历史拼写，含义等同 `perPage`。
-+ `callback`：成功返回在线成员分页结果的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingId` | 目标会议 ID；传 `null` 使用当前会议。 |
+| `page` | 页码，从 `1` 开始。 |
+| `prePage` | 每页最大条目数。参数名为历史拼写，含义等同 `perPage`。 |
+| `callback` | 成功返回在线成员分页结果的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -543,8 +584,10 @@ fun adminWaitingRoomDisabled(
 
 参数说明：
 
-+ `waitingRoomDisabled`：`true` 禁用等候室，`false` 启用等候室。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `waitingRoomDisabled` | `true` 禁用等候室，`false` 启用等候室。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -558,8 +601,10 @@ fun adminMoveOutWaitingRoom(uid: String?, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `uid`：目标成员 UID；传 `null` 表示处理等候室中的全部成员。
-+ `callback`：操作结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标成员 UID；传 `null` 表示处理等候室中的全部成员。 |
+| `callback` | 操作结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -577,9 +622,11 @@ fun adminMoveInWaitingRoom(
 
 参数说明：
 
-+ `uid`：目标成员 UID。
-+ `nickName`：目标成员昵称。
-+ `callback`：操作结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标成员 UID。 |
+| `nickName` | 目标成员昵称。 |
+| `callback` | 操作结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -595,7 +642,9 @@ fun adminGetWaitingRoomUsers(
 
 参数说明：
 
-+ `callback`：成功返回等候室成员列表的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 成功返回等候室成员列表的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -614,8 +663,10 @@ fun createSubMeeting(
 
 参数说明：
 
-+ `subMeetingTitles`：讨论组标题列表。
-+ `callback`：创建结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `subMeetingTitles` | 讨论组标题列表。 |
+| `callback` | 创建结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -633,9 +684,11 @@ fun updateSubMeetingTitle(
 
 参数说明：
 
-+ `id`：讨论组记录 ID。
-+ `title`：新标题。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `id` | 讨论组记录 ID。 |
+| `title` | 新标题。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -653,9 +706,11 @@ fun updateSubMeetingUsers(
 
 参数说明：
 
-+ `id`：讨论组记录 ID。
-+ `members`：目标成员 UID 和昵称列表。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `id` | 讨论组记录 ID。 |
+| `members` | 目标成员 UID 和昵称列表。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -669,8 +724,10 @@ fun deleteSubMeeting(ids: MutableList<String>, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `ids`：讨论组记录 ID 列表。
-+ `callback`：删除结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `ids` | 讨论组记录 ID 列表。 |
+| `callback` | 删除结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -686,7 +743,9 @@ fun getSubMeetingList(
 
 参数说明：
 
-+ `callback`：成功返回讨论组列表的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 成功返回讨论组列表的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -700,8 +759,10 @@ fun startSubMeeting(ids: MutableList<String>, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `ids`：讨论组记录 ID 列表。
-+ `callback`：启动结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `ids` | 讨论组记录 ID 列表。 |
+| `callback` | 启动结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -715,8 +776,10 @@ fun stopSubMeeting(ids: MutableList<String>, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `ids`：讨论组记录 ID 列表。
-+ `callback`：停止结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `ids` | 讨论组记录 ID 列表。 |
+| `callback` | 停止结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -735,10 +798,12 @@ fun moveSubMeetingUser(
 
 参数说明：
 
-+ `fromId`：来源讨论组记录 ID。
-+ `toId`：目标讨论组记录 ID；传 `null` 表示移回主会场。
-+ `uid`：目标成员 UID。
-+ `callback`：移动结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `fromId` | 来源讨论组记录 ID。 |
+| `toId` | 目标讨论组记录 ID；传 `null` 表示移回主会场。 |
+| `uid` | 目标成员 UID。 |
+| `callback` | 移动结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -756,9 +821,11 @@ fun updateEnterBeforeHostDisabled(
 
 参数说明：
 
-+ `meetingId`：目标主会议或讨论组会议 ID。
-+ `enterBeforeHostDisabled`：`true` 表示禁止主持人前入会。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingId` | 目标主会议或讨论组会议 ID。 |
+| `enterBeforeHostDisabled` | `true` 表示禁止主持人前入会。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -772,8 +839,10 @@ fun helpSubMeeting(meetingId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `meetingId`：当前讨论组会议 ID。
-+ `callback`：请求提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingId` | 当前讨论组会议 ID。 |
+| `callback` | 请求提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -789,8 +858,10 @@ fun updateName(name: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `name`：新昵称。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `name` | 新昵称。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -812,11 +883,13 @@ fun getAgentList(
 
 参数说明：
 
-+ `types`：要查询的 `AgentType` 列表。
-+ `keyword`：服务端支持字段的过滤关键字；不筛选时传空字符串。
-+ `page`：页码，从 `1` 开始。
-+ `perPage`：每页最大条目数。
-+ `callback`：成功返回 `MeetingPage<AgentBean>` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `types` | 要查询的 `AgentType` 列表。 |
+| `keyword` | 服务端支持字段的过滤关键字；不筛选时传空字符串。 |
+| `page` | 页码，从 `1` 开始。 |
+| `perPage` | 每页最大条目数。 |
+| `callback` | 成功返回 `MeetingPage<AgentBean>` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -830,7 +903,9 @@ fun enableIm(callback: MeetingValueResultCallback<MeetingImConnection>)
 
 参数说明：
 
-+ `callback`：成功返回 `MeetingImConnection(uid, sid)` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 成功返回 `MeetingImConnection(uid, sid)` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -856,8 +931,10 @@ fun callUser(targetUids: MutableList<String>, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetUids`：目标用户 UID 列表。
-+ `callback`：服务端提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetUids` | 目标用户 UID 列表。 |
+| `callback` | 服务端提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -877,9 +954,11 @@ fun createImmediateMeeting(
 
 参数说明：
 
-+ `title`：会议标题。
-+ `option`：即时会议可选参数。
-+ `callback`：成功返回会议 ID 与房间号的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `title` | 会议标题。 |
+| `option` | 即时会议可选参数。 |
+| `callback` | 成功返回会议 ID 与房间号的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -899,11 +978,13 @@ fun createScheduleMeeting(
 
 参数说明：
 
-+ `title`：会议标题。
-+ `planTime`：计划开始时间，秒级 Unix 时间戳。
-+ `planDur`：计划时长，单位分钟。
-+ `option`：预约会议可选参数。
-+ `callback`：成功返回会议 ID 与房间号的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `title` | 会议标题。 |
+| `planTime` | 计划开始时间，秒级 Unix 时间戳。 |
+| `planDur` | 计划时长，单位分钟。 |
+| `option` | 预约会议可选参数。 |
+| `callback` | 成功返回会议 ID 与房间号的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -921,9 +1002,11 @@ fun updateMeetingBeforeStart(
 
 参数说明：
 
-+ `meetingId`：目标会议 ID。
-+ `option`：要更新的字段；未设置的可空字段不参与更新。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingId` | 目标会议 ID。 |
+| `option` | 要更新的字段；未设置的可空字段不参与更新。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -941,9 +1024,11 @@ fun getMeetingList(
 
 参数说明：
 
-+ `page`：页码，从 `1` 开始。
-+ `perPage`：每页最大条目数。
-+ `callback`：成功返回会议分页结果的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `page` | 页码，从 `1` 开始。 |
+| `perPage` | 每页最大条目数。 |
+| `callback` | 成功返回会议分页结果的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -961,9 +1046,11 @@ fun getHistoryMeetingList(
 
 参数说明：
 
-+ `page`：页码，从 `1` 开始。
-+ `perPage`：每页最大条目数。
-+ `callback`：成功返回历史会议分页结果的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `page` | 页码，从 `1` 开始。 |
+| `perPage` | 每页最大条目数。 |
+| `callback` | 成功返回历史会议分页结果的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -980,8 +1067,10 @@ fun getMeetingDetail(
 
 参数说明：
 
-+ `meetingId`：目标会议 ID。
-+ `callback`：成功返回 `MeetDetail` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingId` | 目标会议 ID。 |
+| `callback` | 成功返回 `MeetDetail` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -998,8 +1087,10 @@ fun getMeetingDetailByRoomNo(
 
 参数说明：
 
-+ `roomNo`：目标房间号。
-+ `callback`：成功返回 `MeetDetail` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `roomNo` | 目标房间号。 |
+| `callback` | 成功返回 `MeetDetail` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1013,8 +1104,10 @@ fun cancelMeetingBeforeStart(meetingId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `meetingId`：目标会议 ID。
-+ `callback`：取消结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingId` | 目标会议 ID。 |
+| `callback` | 取消结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1040,15 +1133,17 @@ fun enterMeeting(
 
 参数说明：
 
-+ `activity`：SRTC 入会所需的当前 `Activity`。
-+ `roomNo`：目标房间号。
-+ `password`：入会密码；无密码时传 `null`。
-+ `nick`：本次入会昵称。
-+ `avatar`：头像地址或业务头像标识；没有时传空字符串。
-+ `streamVendor`：服务端约定的流媒体厂商标识，例如 `wangsucdn`。
-+ `isAudience`：是否以观众身份入会；观众不能开设备、共享或发流。
-+ `extendInfo`：业务扩展字符串；没有时传 `null`。
-+ `callback`：成功返回 `MeetingEnterInfo(meetingId, uid)` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `activity` | SRTC 入会所需的当前 `Activity`。 |
+| `roomNo` | 目标房间号。 |
+| `password` | 入会密码；无密码时传 `null`。 |
+| `nick` | 本次入会昵称。 |
+| `avatar` | 头像地址或业务头像标识；没有时传空字符串。 |
+| `streamVendor` | 服务端约定的流媒体厂商标识，例如 `wangsucdn`。 |
+| `isAudience` | 是否以观众身份入会；观众不能开设备、共享或发流。 |
+| `extendInfo` | 业务扩展字符串；没有时传 `null`。 |
+| `callback` | 成功返回 `MeetingEnterInfo(meetingId, uid)` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1072,15 +1167,17 @@ fun enterMeetingByMeetingId(
 
 参数说明：
 
-+ `activity`：SRTC 入会所需的当前 `Activity`。
-+ `meetingId`：目标会议 ID。
-+ `password`：入会密码；无密码时传 `null`。
-+ `nick`：本次入会昵称。
-+ `avatar`：头像地址或业务头像标识。
-+ `streamVendor`：服务端约定的流媒体厂商标识。
-+ `isAudience`：是否以观众身份入会。
-+ `extendInfo`：业务扩展字符串；没有时传 `null`。
-+ `callback`：成功返回 `MeetingEnterInfo` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `activity` | SRTC 入会所需的当前 `Activity`。 |
+| `meetingId` | 目标会议 ID。 |
+| `password` | 入会密码；无密码时传 `null`。 |
+| `nick` | 本次入会昵称。 |
+| `avatar` | 头像地址或业务头像标识。 |
+| `streamVendor` | 服务端约定的流媒体厂商标识。 |
+| `isAudience` | 是否以观众身份入会。 |
+| `extendInfo` | 业务扩展字符串；没有时传 `null`。 |
+| `callback` | 成功返回 `MeetingEnterInfo` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1094,7 +1191,9 @@ fun exitWaitingRoom(callback: MeetingResultCallback)
 
 参数说明：
 
-+ `callback`：退出结果回调；缺少等候室上下文时返回 `WAITING_ROOM_CONTEXT_MISSING`。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 退出结果回调；缺少等候室上下文时返回 `WAITING_ROOM_CONTEXT_MISSING`。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1122,7 +1221,9 @@ fun adminDestroyMeeting(callback: MeetingResultCallback)
 
 参数说明：
 
-+ `callback`：结束会议结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 结束会议结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1139,8 +1240,10 @@ fun adminUpdateConferee(
 
 参数说明：
 
-+ `conferees`：完整受邀成员 UID 列表。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `conferees` | 完整受邀成员 UID 列表。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1158,9 +1261,11 @@ fun adminUpdateRoomCameraState(
 
 参数说明：
 
-+ `selfUnMuteCameraDisabled`：`true` 表示成员不能自行解除禁画。
-+ `cameraDisabled`：`true` 表示全体摄像头禁用。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `selfUnMuteCameraDisabled` | `true` 表示成员不能自行解除禁画。 |
+| `cameraDisabled` | `true` 表示全体摄像头禁用。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1177,8 +1282,10 @@ fun adminUpdateRoomSelfUnmuteCameraDisabled(
 
 参数说明：
 
-+ `selfUnMuteCameraDisabled`：`true` 表示禁止自行解除。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `selfUnMuteCameraDisabled` | `true` 表示禁止自行解除。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1196,9 +1303,11 @@ fun adminUpdateRoomMicState(
 
 参数说明：
 
-+ `selfUnMuteMicDisabled`：`true` 表示成员不能自行解除禁音。
-+ `micDisabled`：`true` 表示全体麦克风禁用。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `selfUnMuteMicDisabled` | `true` 表示成员不能自行解除禁音。 |
+| `micDisabled` | `true` 表示全体麦克风禁用。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1215,8 +1324,10 @@ fun adminUpdateRoomSelfUnmuteMicDisabled(
 
 参数说明：
 
-+ `selfUnMuteMicDisabled`：`true` 表示禁止自行解除。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `selfUnMuteMicDisabled` | `true` 表示禁止自行解除。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1230,8 +1341,10 @@ fun adminUpdateRoomShareState(shareDisabled: Boolean, callback: MeetingResultCal
 
 参数说明：
 
-+ `shareDisabled`：`true` 表示禁止成员发起共享。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `shareDisabled` | `true` 表示禁止成员发起共享。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1245,8 +1358,10 @@ fun adminUpdateRoomChatDisabled(chatDisabled: Boolean, callback: MeetingResultCa
 
 参数说明：
 
-+ `chatDisabled`：`true` 表示禁用聊天。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `chatDisabled` | `true` 表示禁用聊天。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1263,8 +1378,10 @@ fun adminUpdateRoomScreenshotDisabled(
 
 参数说明：
 
-+ `screenshotDisabled`：`true` 表示业务上禁止截屏。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `screenshotDisabled` | `true` 表示业务上禁止截屏。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1281,8 +1398,10 @@ fun adminUpdateRoomWatermarkDisabled(
 
 参数说明：
 
-+ `watermarkDisabled`：`true` 表示禁用水印。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `watermarkDisabled` | `true` 表示禁用水印。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1296,8 +1415,10 @@ fun adminUpdateRoomLocked(locked: Boolean, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `locked`：`true` 表示锁定房间。
-+ `callback`：更新结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `locked` | `true` 表示锁定房间。 |
+| `callback` | 更新结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1317,9 +1438,11 @@ fun openCamera(
 
 参数说明：
 
-+ `view`：可选预览控件；仅支持 SRTC 指定的 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。
-+ `preOption`：摄像头预设；传 `null` 使用 SRTC 默认 480P 配置。
-+ `callback`：物理采集稳定开启后的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `view` | 可选预览控件；仅支持 SRTC 指定的 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。 |
+| `preOption` | 摄像头预设；传 `null` 使用 SRTC 默认 480P 配置。 |
+| `callback` | 物理采集稳定开启后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1337,9 +1460,11 @@ fun openCameraAndPublish(
 
 参数说明：
 
-+ `view`：可选本地预览控件，类型限制同 `openCamera()`。
-+ `preOption`：摄像头采集预设；传 `null` 使用默认配置。
-+ `callback`：授权、采集和发布全部完成后的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `view` | 可选本地预览控件，类型限制同 `openCamera()`。 |
+| `preOption` | 摄像头采集预设；传 `null` 使用默认配置。 |
+| `callback` | 授权、采集和发布全部完成后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1365,7 +1490,9 @@ fun switchCamera(isFrontCamera: Boolean)
 
 参数说明：
 
-+ `isFrontCamera`：`true` 使用前置摄像头，`false` 使用后置摄像头。
+| 参数 | 说明 |
+| --- | --- |
+| `isFrontCamera` | `true` 使用前置摄像头，`false` 使用后置摄像头。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1391,7 +1518,9 @@ fun switchCameraDevice(cameraId: String)
 
 参数说明：
 
-+ `cameraId`：`getCameraDevices()` 返回的摄像头 ID。
+| 参数 | 说明 |
+| --- | --- |
+| `cameraId` | `getCameraDevices()` 返回的摄像头 ID。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1405,7 +1534,9 @@ fun switchFrontCameraMirror(open: Boolean)
 
 参数说明：
 
-+ `open`：`true` 开启镜像，`false` 关闭镜像。
+| 参数 | 说明 |
+| --- | --- |
+| `open` | `true` 开启镜像，`false` 关闭镜像。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1431,7 +1562,9 @@ fun addPreview(view: View): Boolean
 
 参数说明：
 
-+ `view`：SRTC 支持的本地视频渲染控件。
+| 参数 | 说明 |
+| --- | --- |
+| `view` | SRTC 支持的本地视频渲染控件。 |
 
 返回值说明：`true` 表示绑定成功，`false` 表示控件类型无效或当前轨道不可用。
 
@@ -1445,7 +1578,9 @@ fun removePreview(view: View?)
 
 参数说明：
 
-+ `view`：要移除的控件；传 `null` 移除全部预览控件。
+| 参数 | 说明 |
+| --- | --- |
+| `view` | 要移除的控件；传 `null` 移除全部预览控件。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1459,7 +1594,9 @@ fun replacePreview(views: List<View>)
 
 参数说明：
 
-+ `views`：新的预览控件列表，所有控件都必须是 SRTC 支持的类型。
+| 参数 | 说明 |
+| --- | --- |
+| `views` | 新的预览控件列表，所有控件都必须是 SRTC 支持的类型。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1487,8 +1624,10 @@ fun openMic(preOption: PreOptionMic?, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `preOption`：麦克风预设；传 `null` 使用 SRTC 默认配置。
-+ `callback`：物理采集稳定开启后的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `preOption` | 麦克风预设；传 `null` 使用 SRTC 默认配置。 |
+| `callback` | 物理采集稳定开启后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1505,8 +1644,10 @@ fun openMicAndPublish(
 
 参数说明：
 
-+ `preOption`：麦克风采集预设；传 `null` 使用默认配置。
-+ `callback`：授权、采集和发布全部完成后的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `preOption` | 麦克风采集预设；传 `null` 使用默认配置。 |
+| `callback` | 授权、采集和发布全部完成后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1556,7 +1697,9 @@ fun switchMicDevice(deviceId: String)
 
 参数说明：
 
-+ `deviceId`：`getMicDevices()` 返回的设备 ID。
+| 参数 | 说明 |
+| --- | --- |
+| `deviceId` | `getMicDevices()` 返回的设备 ID。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1576,9 +1719,11 @@ fun initScreenShare(
 
 参数说明：
 
-+ `activity`：用于发起 Android MediaProjection 授权的 `Activity`。
-+ `notificationParam`：前台服务通知配置；不使用通知栏时可传 `null`。
-+ `preOpt`：屏幕采集预设；传 `null` 使用 SRTC 默认配置。
+| 参数 | 说明 |
+| --- | --- |
+| `activity` | 用于发起 Android MediaProjection 授权的 `Activity`。 |
+| `notificationParam` | 前台服务通知配置；不使用通知栏时可传 `null`。 |
+| `preOpt` | 屏幕采集预设；传 `null` 使用 SRTC 默认配置。 |
 
 返回值说明：无（`Unit`）。采集状态通过 `screenCaptureEvent` 返回。
 
@@ -1592,8 +1737,10 @@ fun startScreenShare(hasBar: Boolean, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `hasBar`：是否启用前台服务通知栏。
-+ `callback`：全部步骤完成后的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `hasBar` | 是否启用前台服务通知栏。 |
+| `callback` | 全部步骤完成后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1623,9 +1770,11 @@ fun confirmStartScreenShareAgree(
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `hasBar`：是否启用前台服务通知栏。
-+ `callback`：服务端确认和本地共享全部完成后的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `hasBar` | 是否启用前台服务通知栏。 |
+| `callback` | 服务端确认和本地共享全部完成后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1642,8 +1791,10 @@ fun confirmStartScreenShareRefuse(
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `callback`：服务端确认结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `callback` | 服务端确认结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1659,7 +1810,9 @@ fun requestShareBoard(callback: MeetingValueResultCallback<String>)
 
 参数说明：
 
-+ `callback`：成功返回当前会议白板地址的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 成功返回当前会议白板地址的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1688,8 +1841,10 @@ fun confirmStartWhiteBoardShareAgree(
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `callback`：成功返回白板地址的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `callback` | 成功返回白板地址的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1706,8 +1861,10 @@ fun confirmStartWhiteBoardShareRefuse(
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `callback`：服务端确认结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `callback` | 服务端确认结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1728,10 +1885,12 @@ fun sendRoomChatMessage(
 
 参数说明：
 
-+ `targetId`：目标成员 UID；传 `null` 群发。
-+ `msg`：消息内容。
-+ `msgType`：文本、文件、图片或语音等聊天类型。
-+ `callback`：消息提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID；传 `null` 群发。 |
+| `msg` | 消息内容。 |
+| `msgType` | 文本、文件、图片或语音等聊天类型。 |
+| `callback` | 消息提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1749,9 +1908,11 @@ fun sendRoomCustomMessage(
 
 参数说明：
 
-+ `targetId`：目标成员 UID；传 `null` 群发。
-+ `msg`：自定义消息内容。
-+ `callback`：消息提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 目标成员 UID；传 `null` 群发。 |
+| `msg` | 自定义消息内容。 |
+| `callback` | 消息提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1769,9 +1930,11 @@ fun getRoomChatMsgList(
 
 参数说明：
 
-+ `page`：页码，从 `1` 开始。
-+ `prePage`：每页最大条目数。参数名为历史拼写，含义等同 `perPage`。
-+ `callback`：成功返回聊天记录分页结果的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `page` | 页码，从 `1` 开始。 |
+| `prePage` | 每页最大条目数。参数名为历史拼写，含义等同 `perPage`。 |
+| `callback` | 成功返回聊天记录分页结果的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1785,8 +1948,10 @@ fun requestHandUp(code: HandUpType, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `code`：举手申请类型。
-+ `callback`：请求提交结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `code` | 举手申请类型。 |
+| `callback` | 请求提交结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1800,7 +1965,9 @@ fun cancelHandUp(code: HandUpType)
 
 参数说明：
 
-+ `code`：要取消的举手类型。
+| 参数 | 说明 |
+| --- | --- |
+| `code` | 要取消的举手类型。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1821,10 +1988,12 @@ fun confirmOpenCameraAgree(
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `view`：可选本地预览控件。
-+ `preOpt`：摄像头采集预设；传 `null` 使用默认配置。
-+ `callback`：服务端确认、采集与发布的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `view` | 可选本地预览控件。 |
+| `preOpt` | 摄像头采集预设；传 `null` 使用默认配置。 |
+| `callback` | 服务端确认、采集与发布的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1838,8 +2007,10 @@ fun confirmOpenCameraRefuse(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `callback`：服务端确认结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `callback` | 服务端确认结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1857,9 +2028,11 @@ fun confirmOpenMicAgree(
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `preOpt`：麦克风采集预设；传 `null` 使用默认配置。
-+ `callback`：服务端确认、采集与发布的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `preOpt` | 麦克风采集预设；传 `null` 使用默认配置。 |
+| `callback` | 服务端确认、采集与发布的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1873,8 +2046,10 @@ fun confirmOpenMicRefuse(targetId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `targetId`：发起请求的主持人 UID。
-+ `callback`：服务端确认结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `targetId` | 发起请求的主持人 UID。 |
+| `callback` | 服务端确认结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1893,8 +2068,10 @@ fun startCloudRecord(
 
 参数说明：
 
-+ `layoutData`：可选录制布局；传 `null` 使用服务端默认布局。
-+ `callback`：启动请求结果回调。实际任务状态通过 `MeetingRoomEvent.onCloudRecordStatusChange()` 通知。
+| 参数 | 说明 |
+| --- | --- |
+| `layoutData` | 可选录制布局；传 `null` 使用服务端默认布局。 |
+| `callback` | 启动请求结果回调。实际任务状态通过 `MeetingRoomEvent.onCloudRecordStatusChange()` 通知。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1908,7 +2085,9 @@ fun stopCloudRecord(callback: MeetingResultCallback)
 
 参数说明：
 
-+ `callback`：停止请求结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 停止请求结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1925,8 +2104,10 @@ fun enableCourseRecordTrack(
 
 参数说明：
 
-+ `track`：应用持续写入课程画面的 `LocalCustomVideoTrack`。
-+ `callback`：轨道发布结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `track` | 应用持续写入课程画面的 `LocalCustomVideoTrack`。 |
+| `callback` | 轨道发布结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -1954,7 +2135,9 @@ fun toggleRemoteAudioMute(mute: Boolean)
 
 参数说明：
 
-+ `mute`：`true` 静音，`false` 恢复播放。
+| 参数 | 说明 |
+| --- | --- |
+| `mute` | `true` 静音，`false` 恢复播放。 |
 
 返回值说明：无（`Unit`）。
 
@@ -2000,11 +2183,13 @@ fun startPlayRemoteVideo(
 
 参数说明：
 
-+ `uid`：远端成员 UID。
-+ `trackDesc`：轨道描述，例如摄像头主流、辅流或共享流描述。
-+ `view`：可选渲染控件；必须是 `VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`。
-+ `event`：可选的单轨接收与卡顿状态监听。
-+ `callback`：成功返回 `RemoteVideoTrack` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 远端成员 UID。 |
+| `trackDesc` | 轨道描述，例如摄像头主流、辅流或共享流描述。 |
+| `view` | 可选渲染控件；必须是 `VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`。 |
+| `event` | 可选的单轨接收与卡顿状态监听。 |
+| `callback` | 成功返回 `RemoteVideoTrack` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -2018,8 +2203,10 @@ fun stopPlayRemoteVideo(uid: String, trackDesc: String)
 
 参数说明：
 
-+ `uid`：订阅时使用的远端成员 UID。
-+ `trackDesc`：订阅时使用的轨道描述。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 订阅时使用的远端成员 UID。 |
+| `trackDesc` | 订阅时使用的轨道描述。 |
 
 返回值说明：无（`Unit`）。
 
@@ -2033,8 +2220,10 @@ fun getRemoteVideoTrack(uid: String, trackDesc: String): RemoteVideoTrack?
 
 参数说明：
 
-+ `uid`：远端成员 UID。
-+ `trackDesc`：轨道描述。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 远端成员 UID。 |
+| `trackDesc` | 轨道描述。 |
 
 返回值说明：匹配的 `RemoteVideoTrack`；未入会或未创建控制轨时为 `null`。轨道渲染方法见 [SRTC RemoteVideoTrack](/zh/rtc/android/api-reference/RemoteVideoTrack)。
 
@@ -2054,9 +2243,11 @@ fun startPlayRemoteMixture(
 
 参数说明：
 
-+ `view`：可选合成流渲染控件。
-+ `event`：可选的合成流接收状态监听。
-+ `callback`：成功返回已准备的 `RemoteVideoTrack` 控制对象。
+| 参数 | 说明 |
+| --- | --- |
+| `view` | 可选合成流渲染控件。 |
+| `event` | 可选的合成流接收状态监听。 |
+| `callback` | 成功返回已准备的 `RemoteVideoTrack` 控制对象。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -2107,12 +2298,14 @@ fun subscribeWsVideoStream(
 
 参数说明：
 
-+ `streamName`：完整视频流名，例如 `rtc_v_lesson_fknqb`。
-+ `uid`：渲染路由标识；无特殊需求时使用默认的 `streamName`。
-+ `trackDesc`：区分多路通用流的轨道描述。
-+ `view`：可选视频渲染控件。
-+ `event`：可选的单轨接收状态监听。
-+ `callback`：成功返回视频控制轨的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `streamName` | 完整视频流名，例如 `rtc_v_lesson_fknqb`。 |
+| `uid` | 渲染路由标识；无特殊需求时使用默认的 `streamName`。 |
+| `trackDesc` | 区分多路通用流的轨道描述。 |
+| `view` | 可选视频渲染控件。 |
+| `event` | 可选的单轨接收状态监听。 |
+| `callback` | 成功返回视频控制轨的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -2131,10 +2324,12 @@ fun subscribeWsAudioStream(
 
 参数说明：
 
-+ `streamName`：完整音频流名，例如 `rtc_a_lesson_fknqb`。
-+ `uid`：音频路由标识；无特殊需求时使用默认的 `streamName`。
-+ `trackDesc`：区分多路通用流的轨道描述。
-+ `callback`：SRTC 订阅结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `streamName` | 完整音频流名，例如 `rtc_a_lesson_fknqb`。 |
+| `uid` | 音频路由标识；无特殊需求时使用默认的 `streamName`。 |
+| `trackDesc` | 区分多路通用流的轨道描述。 |
+| `callback` | SRTC 订阅结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -2152,9 +2347,11 @@ fun unsubscribeWsVideoStream(
 
 参数说明：
 
-+ `streamName`：订阅时使用的完整流名。
-+ `uid`：订阅时使用的路由标识。
-+ `trackDesc`：订阅时使用的轨道描述。
+| 参数 | 说明 |
+| --- | --- |
+| `streamName` | 订阅时使用的完整流名。 |
+| `uid` | 订阅时使用的路由标识。 |
+| `trackDesc` | 订阅时使用的轨道描述。 |
 
 返回值说明：无（`Unit`）。
 
@@ -2172,9 +2369,11 @@ fun unsubscribeWsAudioStream(
 
 参数说明：
 
-+ `streamName`：订阅时使用的完整流名。
-+ `uid`：订阅时使用的路由标识。
-+ `trackDesc`：订阅时使用的轨道描述。
+| 参数 | 说明 |
+| --- | --- |
+| `streamName` | 订阅时使用的完整流名。 |
+| `uid` | 订阅时使用的路由标识。 |
+| `trackDesc` | 订阅时使用的轨道描述。 |
 
 返回值说明：无（`Unit`）。
 
@@ -2188,7 +2387,9 @@ fun getWsVideoStreamTrack(uid: String, trackDesc: String): RemoteVideoTrack?
 
 参数说明：
 
-+ `uid`：视频路由标识。
-+ `trackDesc`：轨道描述。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 视频路由标识。 |
+| `trackDesc` | 轨道描述。 |
 
 返回值说明：`RemoteVideoTrack?`；音频流、非 WS 引擎或未入会时为 `null`。

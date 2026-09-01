@@ -5,11 +5,9 @@ description: "接收当前会议的媒体连接、远端原始帧、媒体统计
 
 `MeetingMediaEvent` 承载当前会议的媒体事件，通过 `MeetingEngine.mediaEvent` 注册。可继承 `MeetingMediaSimpleEvent` 按需覆写。
 
-## 特殊说明
+## 使用说明
 
-该接口同时包含连接状态、原始远端帧和聚合质量统计；单条远端视频的接收状态应使用 `MeetingRemoteVideoEvent`。
-
-## 注意事项
++ 该接口同时包含连接状态、原始远端帧和聚合质量统计；单条远端视频的接收状态应使用 `MeetingRemoteVideoEvent`。
 
 + `onRemoteVideoFrame()` 在 SRTC 媒体线程回调，不得阻塞。
 + 媒体统计通常约每 5 秒产生一次；弱网档位变化优先使用 `onNetworkQualityChanged()`。
@@ -49,12 +47,17 @@ fun onRemoteVideoFrame(
 
 参数说明：
 
-+ `uid`：远端用户 UID。
-+ `trackDesc`：远端轨道描述。
-+ `y` / `u` / `v`：可空图像分量。
-+ `width` / `height`：画面尺寸，单位像素。
-+ `format`：SRTC 定义的像素格式值。
-+ `angle`：画面旋转角度。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 远端用户 UID。 |
+| `trackDesc` | 远端轨道描述。 |
+| `y` | 可空 Y 图像分量。 |
+| `u` | 可空 U 图像分量。 |
+| `v` | 可空 V 图像分量。 |
+| `width` | 画面宽度，单位像素。 |
+| `height` | 画面高度，单位像素。 |
+| `format` | SRTC 定义的像素格式值。 |
+| `angle` | 画面旋转角度。 |
 
 返回值说明：无（`Unit`）。
 
@@ -68,7 +71,9 @@ fun onMediaMetric(metric: MediaMetric.Metric)
 
 参数说明：
 
-+ `metric`：发送、接收、网络与服务端质量统计，字段见[媒体质量](/zh/meeting/android/media-quality)。
+| 参数 | 说明 |
+| --- | --- |
+| `metric` | 发送、接收、网络与服务端质量统计，字段见[媒体质量](/zh/meeting/android/media-quality)。 |
 
 返回值说明：无（`Unit`）。
 
@@ -82,7 +87,9 @@ fun onVolumesReport(volumes: MutableMap<UserTrackDesc, VolumeInfo>)
 
 参数说明：
 
-+ `volumes`：以 `UserTrackDesc` 标识用户轨道的音量映射。
+| 参数 | 说明 |
+| --- | --- |
+| `volumes` | 以 `UserTrackDesc` 标识用户轨道的音量映射。 |
 
 返回值说明：无（`Unit`）。
 
@@ -96,7 +103,9 @@ fun onActiveSpeakersChanged(speakers: List<ActiveSpeakerInfo>)
 
 参数说明：
 
-+ `speakers`：按 SRTC 规则排序的活跃说话人快照。
+| 参数 | 说明 |
+| --- | --- |
+| `speakers` | 按 SRTC 规则排序的活跃说话人快照。 |
 
 返回值说明：无（`Unit`）。
 
@@ -110,6 +119,8 @@ fun onNetworkQualityChanged(change: NetworkQualityChange)
 
 参数说明：
 
-+ `change`：方向、旧等级、新等级和变化趋势等信息。
+| 参数 | 说明 |
+| --- | --- |
+| `change` | 方向、旧等级、新等级和变化趋势等信息。 |
 
 返回值说明：无（`Unit`）。数据类型见 [SRTC 类型](/zh/rtc/android/types)，等级见 [SRTC 枚举](/zh/rtc/android/enums)。

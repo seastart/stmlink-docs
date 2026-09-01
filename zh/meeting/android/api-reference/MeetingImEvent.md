@@ -5,11 +5,9 @@ description: "接收 Meeting IM 连接、重连、原始消息、呼叫、会议
 
 `MeetingImEvent` 接收与 Engine 中 IM 连接同生命周期的持续状态和业务消息，通过 `MeetingEngine.imEvent` 注册。可继承 `MeetingImSimpleEvent` 按需覆写。
 
-## 特殊说明
+## 使用说明
 
-IM 连接独立于当前会议 Session；会议提醒、等候室和讨论组求助等会外消息也从该接口分发。
-
-## 注意事项
++ IM 连接独立于当前会议；会议提醒、等候室和讨论组求助等会外消息也从该接口分发。
 
 + 先调用 `enableIm()` 建立连接；`disableIm()` 或 `release()` 导致的主动断开不会触发 `onImDisconnected()`。
 + 回调保持 IM 实际来源线程，更新 UI 前应切换到主线程。
@@ -26,8 +24,10 @@ fun onImConnected(uid: String, sid: String)
 
 参数说明：
 
-+ `uid`：当前用户 IM UID。
-+ `sid`：本次 IM 会话标识。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 当前用户 IM UID。 |
+| `sid` | 本次 IM 会话标识。 |
 
 返回值说明：无（`Unit`）。
 
@@ -41,9 +41,11 @@ fun onImDisconnected(reason: LeaveReason, statusCode: Int, message: String?)
 
 参数说明：
 
-+ `reason`：SRTC 定义的断开原因。
-+ `statusCode`：底层状态码。
-+ `message`：可空诊断信息。
+| 参数 | 说明 |
+| --- | --- |
+| `reason` | SRTC 定义的断开原因。 |
+| `statusCode` | 底层状态码。 |
+| `message` | 可空诊断信息。 |
 
 返回值说明：无（`Unit`）。
 
@@ -87,11 +89,13 @@ fun onImMessage(
 
 参数说明：
 
-+ `uid`：发送者 UID。
-+ `sid`：消息所属会话标识。
-+ `name`：发送者昵称。
-+ `action`：消息动作名。
-+ `content`：原始消息内容。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 发送者 UID。 |
+| `sid` | 消息所属会话标识。 |
+| `name` | 发送者昵称。 |
+| `action` | 消息动作名。 |
+| `content` | 原始消息内容。 |
 
 返回值说明：无（`Unit`）。
 
@@ -109,9 +113,11 @@ fun onCallReceived(
 
 参数说明：
 
-+ `uid`：邀请方 UID。
-+ `nickname`：邀请方昵称。
-+ `callingMsg`：目标会议 ID、房间号与标题。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 邀请方 UID。 |
+| `nickname` | 邀请方昵称。 |
+| `callingMsg` | 目标会议 ID、房间号与标题。 |
 
 返回值说明：无（`Unit`）。
 
@@ -125,8 +131,10 @@ fun onMeetingRemind(uid: String, meetingRemind: ImContent.MeetingRemind)
 
 参数说明：
 
-+ `uid`：消息发送方 UID。
-+ `meetingRemind`：会议与创建者、计划时间信息。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 消息发送方 UID。 |
+| `meetingRemind` | 会议与创建者、计划时间信息。 |
 
 返回值说明：无（`Unit`）。
 
@@ -143,8 +151,10 @@ fun onMoveOutWaitingRoom(
 
 参数说明：
 
-+ `uid`：消息发送方 UID。
-+ `moveOutWaitingRoom`：目标会议 ID 与标题。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 消息发送方 UID。 |
+| `moveOutWaitingRoom` | 目标会议 ID 与标题。 |
 
 返回值说明：无（`Unit`）。
 
@@ -161,7 +171,9 @@ fun onUserHelpSubMeeting(
 
 参数说明：
 
-+ `uid`：求助成员 UID。
-+ `userHelpSubMeeting`：主会议、子会议和讨论组标题信息。
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 求助成员 UID。 |
+| `userHelpSubMeeting` | 主会议、子会议和讨论组标题信息。 |
 
 返回值说明：无（`Unit`）。

@@ -5,12 +5,10 @@ description: "会中点名管理器：发起与结束点名、主持人呼叫和
 
 `RollCallManager` 通过 `MeetingEngine.rollCallManager` 获取，所有操作都绑定 Engine 当前的单场会议。
 
-## 特殊说明
+## 使用说明
 
 + 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.SESSION_NOT_ACTIVE`。
 + 列表和详情中的 `id` 含义不同：列表 `RollCallBean.id` 是点名活动 ID，详情用户 `RollCallUserBean.id` 是后续呼叫与应答使用的点名用户 ID。
-
-## 注意事项
 
 + `allMember` 为 `false` 时必须提供 `members`；成员项包含 UID 与昵称。
 + 结果回调保持网络来源线程，更新 UI 前应切换到主线程。
@@ -31,9 +29,11 @@ fun listRollCall(
 
 参数说明：
 
-+ `page`：页码，从 `1` 开始。
-+ `perPage`：每页最大条目数。
-+ `callback`：成功返回点名活动分页结果的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `page` | 页码，从 `1` 开始。 |
+| `perPage` | 每页最大条目数。 |
+| `callback` | 成功返回点名活动分页结果的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -52,10 +52,12 @@ fun startRollCall(
 
 参数说明：
 
-+ `method`：自动或手动点名方式。
-+ `allMember`：`true` 对全体成员点名；`false` 只点名 `members`。
-+ `members`：指定成员列表；`allMember=false` 时必填。
-+ `callback`：成功返回新建点名活动 ID 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `method` | 自动或手动点名方式。 |
+| `allMember` | `true` 对全体成员点名；`false` 只点名 `members`。 |
+| `members` | 指定成员列表；`allMember=false` 时必填。 |
+| `callback` | 成功返回新建点名活动 ID 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -69,8 +71,10 @@ fun stopRollCall(rollCallId: String, callback: MeetingResultCallback)
 
 参数说明：
 
-+ `rollCallId`：点名活动 ID。
-+ `callback`：结束结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `rollCallId` | 点名活动 ID。 |
+| `callback` | 结束结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -87,8 +91,10 @@ fun rollCallNamed(
 
 参数说明：
 
-+ `rollCallUserId`：`RollCallUserBean.id`，不是会议成员 UID。
-+ `callback`：呼叫结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `rollCallUserId` | `RollCallUserBean.id`，不是会议成员 UID。 |
+| `callback` | 呼叫结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -106,9 +112,11 @@ fun adminRollCallAnswer(
 
 参数说明：
 
-+ `rollCallUserId`：`RollCallUserBean.id`。
-+ `clear`：`true` 清除已有应答记录；`false` 确认应答。
-+ `callback`：操作结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `rollCallUserId` | `RollCallUserBean.id`。 |
+| `clear` | `true` 清除已有应答记录；`false` 确认应答。 |
+| `callback` | 操作结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -125,8 +133,10 @@ fun detailRollCall(
 
 参数说明：
 
-+ `rollCallId`：点名活动 ID。
-+ `callback`：成功返回 `RollCallDetailBean` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `rollCallId` | 点名活动 ID。 |
+| `callback` | 成功返回 `RollCallDetailBean` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -143,8 +153,10 @@ fun exportRollCallDetail(
 
 参数说明：
 
-+ `rollCallId`：点名活动 ID。
-+ `callback`：成功返回服务端导出结果字符串的回调。
+| 参数 | 说明 |
+| --- | --- |
+| `rollCallId` | 点名活动 ID。 |
+| `callback` | 成功返回服务端导出结果字符串的回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -161,7 +173,9 @@ fun userRollCallAnswer(
 
 参数说明：
 
-+ `rollCallUserId`：当前用户在点名详情中的 `RollCallUserBean.id`。
-+ `callback`：应答结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `rollCallUserId` | 当前用户在点名详情中的 `RollCallUserBean.id`。 |
+| `callback` | 应答结果回调。 |
 
 返回值说明：无（异步结果见回调）。

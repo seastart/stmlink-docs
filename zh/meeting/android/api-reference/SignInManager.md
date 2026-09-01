@@ -5,11 +5,9 @@ description: "会中签到管理器：创建与结束签到、成员签到、人
 
 `SignInManager` 通过 `MeetingEngine.signInManager` 获取，所有操作都绑定 Engine 当前的单场会议。
 
-## 特殊说明
+## 使用说明
 
 + 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.SESSION_NOT_ACTIVE`。
-
-## 注意事项
 
 + 结果回调保持网络来源线程，不自动切换主线程。
 + `exportSignInDetail()` 返回一次性 `MeetingDownload`，读取完成或放弃时必须关闭。
@@ -28,7 +26,9 @@ fun listSignInActivities(
 
 参数说明：
 
-+ `callback`：成功返回 `SignInListBean` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 成功返回 `SignInListBean` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -46,9 +46,11 @@ fun createSignInActivity(
 
 参数说明：
 
-+ `dur`：签到持续时长，单位分钟；`0` 表示不限时。
-+ `desc`：签到说明。
-+ `callback`：创建结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `dur` | 签到持续时长，单位分钟；`0` 表示不限时。 |
+| `desc` | 签到说明。 |
+| `callback` | 创建结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -65,8 +67,10 @@ fun countSignInMembers(
 
 参数说明：
 
-+ `epoch`：签到轮次。
-+ `callback`：成功返回 `SignInCountBean` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `epoch` | 签到轮次。 |
+| `callback` | 成功返回 `SignInCountBean` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -80,7 +84,9 @@ fun finishSignInActivity(callback: MeetingResultCallback)
 
 参数说明：
 
-+ `callback`：结束结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 结束结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -97,8 +103,10 @@ fun getSignInDetail(
 
 参数说明：
 
-+ `epoch`：签到轮次。
-+ `callback`：成功返回签到记录列表的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `epoch` | 签到轮次。 |
+| `callback` | 成功返回签到记录列表的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -112,7 +120,9 @@ fun signIn(callback: MeetingResultCallback)
 
 参数说明：
 
-+ `callback`：签到结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `callback` | 签到结果回调。 |
 
 返回值说明：无（异步结果见回调）。
 
@@ -129,7 +139,9 @@ fun exportSignInDetail(
 
 参数说明：
 
-+ `epoch`：签到轮次；`-1` 表示全部轮次。
-+ `callback`：成功返回一次性 `MeetingDownload` 的结果回调。
+| 参数 | 说明 |
+| --- | --- |
+| `epoch` | 签到轮次；`-1` 表示全部轮次。 |
+| `callback` | 成功返回一次性 `MeetingDownload` 的结果回调。 |
 
 返回值说明：无（异步结果见回调）。调用方应使用 `use { ... }` 或显式 `close()` 关闭下载流。

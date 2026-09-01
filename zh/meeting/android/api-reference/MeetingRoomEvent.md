@@ -5,11 +5,9 @@ description: "接收当前会议的房间配置、连接、主持人、录制、
 
 `MeetingRoomEvent` 承载当前会议的房间整体状态和连接生命周期，通过 `MeetingEngine.roomEvent` 注册。可继承 `MeetingRoomSimpleEvent` 按需覆写。
 
-## 特殊说明
+## 使用说明
 
-房间级事件描述整场会议的共享状态、配置和生命周期；指定成员的设备、权限或轨道变化由 `MeetingUserEvent` 分发。
-
-## 注意事项
++ 房间级事件描述整场会议的共享状态、配置和生命周期；指定成员的设备、权限或轨道变化由 `MeetingUserEvent` 分发。
 
 + 监听可在入会前赋值，以接收首次房间状态；离会后会被清除。
 + 回调保持实际来源线程。`onDisconnected()` 表示底层已经真实断开，主动调用 `exitMeeting()` 不保证产生该回调。
@@ -26,7 +24,9 @@ fun onMeetingUpdated(meetingInfo: MeetingInfo?)
 
 参数说明：
 
-+ `meetingInfo`：更新后的房间快照；解析或生命周期边界下可能为 `null`。
+| 参数 | 说明 |
+| --- | --- |
+| `meetingInfo` | 更新后的房间快照；解析或生命周期边界下可能为 `null`。 |
 
 返回值说明：无（`Unit`）。
 
@@ -40,9 +40,11 @@ fun onDisconnected(reason: LeaveReason, statusCode: Int, message: String?)
 
 参数说明：
 
-+ `reason`：SRTC 断开原因。
-+ `statusCode`：底层状态码。
-+ `message`：可空诊断信息。
+| 参数 | 说明 |
+| --- | --- |
+| `reason` | SRTC 断开原因。 |
+| `statusCode` | 底层状态码。 |
+| `message` | 可空诊断信息。 |
 
 返回值说明：无（`Unit`）。
 
@@ -86,9 +88,11 @@ fun onRoomCameraStateChanged(
 
 参数说明：
 
-+ `operatorUid`：操作者 UID；系统事件时可能为 `null`。
-+ `selfUnMuteCameraDisabled`：是否禁止成员自行解除禁画。
-+ `disabled`：是否全体禁画。
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 操作者 UID；系统事件时可能为 `null`。 |
+| `selfUnMuteCameraDisabled` | 是否禁止成员自行解除禁画。 |
+| `disabled` | 是否全体禁画。 |
 
 返回值说明：无（`Unit`）。
 
@@ -106,9 +110,11 @@ fun onRoomMicStateChanged(
 
 参数说明：
 
-+ `operatorUid`：可空操作者 UID。
-+ `selfUnMuteMicDisabled`：是否禁止成员自行解除禁音。
-+ `disabled`：是否全体禁音。
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 可空操作者 UID。 |
+| `selfUnMuteMicDisabled` | 是否禁止成员自行解除禁音。 |
+| `disabled` | 是否全体禁音。 |
 
 返回值说明：无（`Unit`）。
 
@@ -120,7 +126,12 @@ fun onRoomChatDisabledChanged(operatorUid: String?, disabled: Boolean)
 
 方法说明：房间聊天禁用状态变化。
 
-参数说明：`operatorUid` 为可空操作者 UID；`disabled=true` 表示禁用。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 操作者 UID；系统事件时可能为 `null`。 |
+| `disabled` | `true` 表示禁止房间成员聊天。 |
 
 返回值说明：无（`Unit`）。
 
@@ -132,7 +143,12 @@ fun onRoomScreenshotDisabledChanged(operatorUid: String?, disabled: Boolean)
 
 方法说明：房间截屏禁用状态变化。
 
-参数说明：`operatorUid` 为可空操作者 UID；`disabled=true` 表示禁用。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 操作者 UID；系统事件时可能为 `null`。 |
+| `disabled` | `true` 表示禁止房间成员截屏。 |
 
 返回值说明：无（`Unit`）。
 
@@ -144,7 +160,12 @@ fun onRoomWatermarkDisabledChanged(operatorUid: String?, disabled: Boolean)
 
 方法说明：房间水印禁用状态变化。
 
-参数说明：`operatorUid` 为可空操作者 UID；`disabled=true` 表示禁用。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 操作者 UID；系统事件时可能为 `null`。 |
+| `disabled` | `true` 表示禁用房间水印。 |
 
 返回值说明：无（`Unit`）。
 
@@ -156,7 +177,12 @@ fun onRoomLockedChanged(operatorUid: String?, locked: Boolean)
 
 方法说明：房间锁定状态变化。
 
-参数说明：`operatorUid` 为可空操作者 UID；`locked=true` 表示已锁定。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 操作者 UID；系统事件时可能为 `null`。 |
+| `locked` | `true` 表示房间已经锁定。 |
 
 返回值说明：无（`Unit`）。
 
@@ -168,7 +194,12 @@ fun onWaitingRoomDisabledChanged(operatorUid: String?, disabled: Boolean)
 
 方法说明：等候室启停状态变化。
 
-参数说明：`operatorUid` 为可空操作者 UID；`disabled=true` 表示等候室已禁用。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 操作者 UID；系统事件时可能为 `null`。 |
+| `disabled` | `true` 表示等候室已经禁用。 |
 
 返回值说明：无（`Unit`）。
 
@@ -182,8 +213,10 @@ fun onRoomHostMove(sourceUid: String?, targetUid: String?)
 
 参数说明：
 
-+ `sourceUid`：原主持人 UID，可能为 `null`。
-+ `targetUid`：新主持人 UID，可能为 `null`。
+| 参数 | 说明 |
+| --- | --- |
+| `sourceUid` | 原主持人 UID，可能为 `null`。 |
+| `targetUid` | 新主持人 UID，可能为 `null`。 |
 
 返回值说明：无（`Unit`）。
 
@@ -203,9 +236,11 @@ fun onCloudRecordStatusChange(
 
 参数说明：
 
-+ `type`：录制任务类型。
-+ `status`：当前任务状态。
-+ `errorMessage`：异常信息；无异常时通常为空字符串。
+| 参数 | 说明 |
+| --- | --- |
+| `type` | 录制任务类型。 |
+| `status` | 当前任务状态。 |
+| `errorMessage` | 异常信息；无异常时通常为空字符串。 |
 
 返回值说明：无（`Unit`）。
 
@@ -219,8 +254,10 @@ fun onMcuAlarmReceived(operatorUid: String, alarm: McuAlarm)
 
 参数说明：
 
-+ `operatorUid`：消息发送方 UID。
-+ `alarm`：任务、网关、时间和摘要信息。
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 消息发送方 UID。 |
+| `alarm` | 任务、网关、时间和摘要信息。 |
 
 返回值说明：无（`Unit`）。
 
@@ -232,7 +269,12 @@ fun onRoomShareStart(shareUid: String?, shareType: ShareType)
 
 方法说明：指定成员开始屏幕或白板共享。
 
-参数说明：`shareUid` 为可空共享者 UID；`shareType` 为共享类型。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `shareUid` | 共享者 UID；无法确定时可能为 `null`。 |
+| `shareType` | 开始的共享类型。 |
 
 返回值说明：无（`Unit`）。
 
@@ -244,7 +286,12 @@ fun onRoomShareStop(shareUid: String?, shareType: ShareType)
 
 方法说明：指定成员结束屏幕或白板共享。
 
-参数说明：`shareUid` 为可空共享者 UID；`shareType` 为共享类型。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `shareUid` | 共享者 UID；无法确定时可能为 `null`。 |
+| `shareType` | 结束的共享类型。 |
 
 返回值说明：无（`Unit`）。
 
@@ -256,7 +303,12 @@ fun onAdminRoomShareStop(shareUid: String, shareType: ShareType)
 
 方法说明：主持人强制结束指定成员共享。
 
-参数说明：`shareUid` 为共享者 UID；`shareType` 为共享类型。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `shareUid` | 被停止共享的成员 UID。 |
+| `shareType` | 被停止的共享类型。 |
 
 返回值说明：无（`Unit`）。
 
@@ -274,9 +326,11 @@ fun onRoomHandUpChanged(
 
 参数说明：
 
-+ `operatorUid`：可空成员 UID。
-+ `enabled`：`true` 举手，`false` 取消；无法解析时为 `null`。
-+ `handUpType`：举手类型；无法解析时为 `null`。
+| 参数 | 说明 |
+| --- | --- |
+| `operatorUid` | 可空成员 UID。 |
+| `enabled` | `true` 举手，`false` 取消；无法解析时为 `null`。 |
+| `handUpType` | 举手类型；无法解析时为 `null`。 |
 
 返回值说明：无（`Unit`）。
 
@@ -294,7 +348,13 @@ fun onAdminRoomStartSubMeeting(
 
 方法说明：主持人启动指定讨论组。
 
-参数说明：`subMeetingId` 为子会议 ID，`subTitle` 为标题，`uids` 为分配成员 UID 列表。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `subMeetingId` | 启动的讨论组会议 ID。 |
+| `subTitle` | 讨论组标题。 |
+| `uids` | 分配到该讨论组的成员 UID 列表。 |
 
 返回值说明：无（`Unit`）。
 
@@ -310,7 +370,13 @@ fun onAdminRoomStopSubMeeting(
 
 方法说明：主持人结束指定讨论组。
 
-参数说明：分别为主会议 ID、子会议 ID 和讨论组标题。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `mainMeetingId` | 主会议 ID。 |
+| `subMeetingId` | 结束的讨论组会议 ID。 |
+| `subTitle` | 讨论组标题。 |
 
 返回值说明：无（`Unit`）。
 
@@ -331,11 +397,14 @@ fun onSignInActivity(
 
 参数说明：
 
-+ `hostName`：发起人昵称。
-+ `epoch`：签到轮次。
-+ `beginAt` / `endAt`：开始与结束的秒级时间戳。
-+ `duration`：持续时长，单位分钟；`0` 表示不限时。
-+ `description`：签到说明。
+| 参数 | 说明 |
+| --- | --- |
+| `hostName` | 发起人昵称。 |
+| `epoch` | 签到轮次。 |
+| `beginAt` | 开始时间，秒级时间戳。 |
+| `duration` | 持续时长，单位分钟；`0` 表示不限时。 |
+| `endAt` | 结束时间，秒级时间戳。 |
+| `description` | 签到说明。 |
 
 返回值说明：无（`Unit`）。
 
@@ -347,6 +416,11 @@ fun onSignInFinish(hostName: String, epoch: Int)
 
 方法说明：收到会中签到活动结束消息。
 
-参数说明：`hostName` 为结束活动的主持人昵称，`epoch` 为签到轮次。
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `hostName` | 结束活动的主持人昵称。 |
+| `epoch` | 签到轮次。 |
 
 返回值说明：无（`Unit`）。

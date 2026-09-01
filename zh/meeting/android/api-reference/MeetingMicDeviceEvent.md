@@ -5,11 +5,9 @@ description: "接收进程共享麦克风输入设备列表变化与当前设备
 
 `MeetingMicDeviceEvent` 是不绑定具体会议的 Engine 级麦克风设备监听，通过 `MeetingEngine.micDeviceEvent` 注册。可继承 `MeetingMicDeviceSimpleEvent` 按需覆写。
 
-## 特殊说明
+## 使用说明
 
-该事件覆盖进程共享的音频输入设备变化，会前和会中使用同一监听。
-
-## 注意事项
++ 该事件覆盖进程共享的音频输入设备变化，会前和会中使用同一监听。
 
 + 回调保持设备层实际来源线程，更新 UI 前应切换到主线程。
 + 当前设备失效后 SRTC 可能自动回落到其他输入，应用应结合后续设备列表刷新界面。
@@ -26,7 +24,9 @@ fun onMicDeviceListChanged(devices: List<MicDeviceCapability>)
 
 参数说明：
 
-+ `devices`：变化后的完整设备能力列表。
+| 参数 | 说明 |
+| --- | --- |
+| `devices` | 变化后的完整设备能力列表。 |
 
 返回值说明：无（`Unit`）。
 
@@ -40,7 +40,9 @@ fun onMicDeviceInvalid(deviceId: String, reason: String)
 
 参数说明：
 
-+ `deviceId`：失效设备 ID。
-+ `reason`：底层提供的失效原因。
+| 参数 | 说明 |
+| --- | --- |
+| `deviceId` | 失效设备 ID。 |
+| `reason` | 底层提供的失效原因。 |
 
 返回值说明：无（`Unit`）。

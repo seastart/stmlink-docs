@@ -5,11 +5,9 @@ description: "接收进程共享摄像头列表变化、设备断开与运行错
 
 `MeetingCameraDeviceEvent` 是不绑定具体会议的 Engine 级摄像头设备监听，通过 `MeetingEngine.cameraDeviceEvent` 注册。可继承 `MeetingCameraDeviceSimpleEvent` 按需覆写。
 
-## 特殊说明
+## 使用说明
 
-该事件覆盖进程共享的 Camera2 设备变化，会前和会中使用同一监听。
-
-## 注意事项
++ 该事件覆盖进程共享的 Camera2 设备变化，会前和会中使用同一监听。
 
 + 回调保持设备层实际来源线程，更新 UI 前应切换到主线程。
 + 列表变化回调提供变化后的完整列表，不是增量列表。
@@ -26,7 +24,9 @@ fun onCameraDeviceListChanged(devices: List<CameraDeviceCapability>)
 
 参数说明：
 
-+ `devices`：变化后的完整摄像头能力列表。
+| 参数 | 说明 |
+| --- | --- |
+| `devices` | 变化后的完整摄像头能力列表。 |
 
 返回值说明：无（`Unit`）。
 
@@ -40,7 +40,9 @@ fun onCameraDeviceDisconnected(cameraId: String)
 
 参数说明：
 
-+ `cameraId`：失效的 Camera2 设备 ID。
+| 参数 | 说明 |
+| --- | --- |
+| `cameraId` | 失效的 Camera2 设备 ID。 |
 
 返回值说明：无（`Unit`）。
 
@@ -58,8 +60,10 @@ fun onCameraDeviceError(
 
 参数说明：
 
-+ `cameraId`：发生错误的设备 ID。
-+ `errorCode`：SRTC 或系统来源错误码。
-+ `message`：可空诊断信息。
+| 参数 | 说明 |
+| --- | --- |
+| `cameraId` | 发生错误的设备 ID。 |
+| `errorCode` | SRTC 或系统来源错误码。 |
+| `message` | 可空诊断信息。 |
 
 返回值说明：无（`Unit`）。

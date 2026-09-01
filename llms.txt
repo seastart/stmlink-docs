@@ -266,7 +266,7 @@
 ## SMeeting 会议 SDK · Android SDK · 接口文档
 
 - [MeetingEngine](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingEngine.md): SMeeting Android SDK 的唯一公开入口，覆盖初始化、会前业务、入会、会控、本地媒体、共享、消息与远端订阅
-- [InfosManager](https://docs.stmlink.com/zh/meeting/android/api-reference/InfosManager.md): 读取当前会议、成员与 SRTC 轨道的本地状态快照，不发起网络请求
+- [InfosManager](https://docs.stmlink.com/zh/meeting/android/api-reference/InfosManager.md): 读取当前会议、成员与 SRTC 轨道的本地状态快照
 - [RollCallManager](https://docs.stmlink.com/zh/meeting/android/api-reference/RollCallManager.md): 会中点名管理器：发起与结束点名、主持人呼叫和确认、成员应答、详情查询与导出
 - [SignInManager](https://docs.stmlink.com/zh/meeting/android/api-reference/SignInManager.md): 会中签到管理器：创建与结束签到、成员签到、人数统计、记录查询和流式导出
 - [Meeting 结果回调](https://docs.stmlink.com/zh/meeting/android/api-reference/MeetingResultCallback.md): MeetingResultCallback 与 MeetingValueResultCallback 的成功、失败、线程和错误码契约

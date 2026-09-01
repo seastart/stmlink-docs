@@ -3,7 +3,18 @@ title: "Meeting 事件概览"
 description: "选择并注册 SMeeting Android 的 Engine、IM、设备、房间、成员、消息、媒体与原始帧事件"
 ---
 
-SMeeting Android 事件都通过 `MeetingEngine` 的可空属性注册。每组事件同时提供 `MeetingXxxSimpleEvent` 空实现，只覆写需要的方法即可。
+SMeeting Android 的持续事件按作用域拆分为 Engine、IM、设备、房间、成员、消息和媒体等接口。大部分事件通过 `MeetingEngine` 的可空属性注册，单条远端视频事件通过订阅方法的参数注册。
+
+## 使用说明
+
++ Engine、IM、摄像头设备和麦克风设备事件与 `MeetingEngine` 生命周期一致，赋 `null` 后停止新的分发。
++ 房间、成员、消息和媒体事件绑定当前会议，离会时自动清除；下一场会议需要重新赋值。
++ `MeetingRemoteVideoEvent` 随一次远端订阅传入，取消订阅或离会后停止分发。
++ 回调保持 SRTC、IM 或网络的实际来源线程，不自动切换到 Android 主线程。
++ 本地和远端原始帧回调处于高频媒体线程，不得执行阻塞操作。
++ 每组事件均提供对应的 `MeetingXxxSimpleEvent` 空实现，只需覆写实际关注的方法。
+
+## 注册示例
 
 ```kotlin
 engine.engineEvent = object : MeetingEngineSimpleEvent() {
@@ -35,11 +46,3 @@ engine.userEvent = object : MeetingUserSimpleEvent() {
 | [MeetingLocalVideoFrameEvent](/zh/meeting/android/api-reference/MeetingLocalVideoFrameEvent) | 本地 YUV 视频帧 |
 | [MeetingLocalAudioFrameEvent](/zh/meeting/android/api-reference/MeetingLocalAudioFrameEvent) | 本地 PCM 音频帧 |
 | [MeetingRemoteVideoEvent](/zh/meeting/android/api-reference/MeetingRemoteVideoEvent) | 单条远端视频的接收和卡顿状态 |
-
-## 生命周期与线程
-
-+ Engine、IM、摄像头设备和麦克风设备事件与 `MeetingEngine` 生命周期一致，赋 `null` 后停止新的分发。
-+ 房间、成员、消息和媒体事件绑定当前会议，离会时自动清除；下一场会议需要重新赋值。
-+ `MeetingRemoteVideoEvent` 随一次远端订阅传入，取消订阅或离会后停止分发。
-+ 回调保持 SRTC、IM 或网络的实际来源线程，不自动切换到 Android 主线程。
-+ 本地和远端原始帧回调处于高频媒体线程，不得执行阻塞操作。
