@@ -1,0 +1,30 @@
+---
+title: "更新日志"
+description: "HarmonyOS SRTC 音视频 SDK 版本更新记录"
+---
+
+### [0.0.1] - 2026.09.07
+#### 首个版本
+
++ **频道**：`SRTCEngine.joinChannel` / `leaveChannel`，支持多频道实例；入会选项 `JoinOptions` 可指定自动订阅音频 / 视频与优先编码格式。
++ **本地推流**：麦克风（`createLocalMicTrack`）、摄像头（`createLocalCameraTrack`）、屏幕共享（`createLocalScreenTrack`），配套预设 `micPreset*` / `cameraPreset*` / `screenPreset*`。
++ **订阅**：`subscribeRemoteAudioTrack` / `subscribeRemoteVideoTrack` 按 `uid` + `trackId` 显式订阅，支持 Simulcast 多层选订。
++ **渲染**：ArkUI 组件 `SRTCVideoView`，视频帧由底层直接写入 XComponent surface，不经过 ArkUI 绘制流程。
++ **事件**：`ChannelDelegate` 覆盖连接状态、成员进出、流增删、自定义消息、网络质量、活跃说话人、Simulcast 层切换。
++ **音频路由**：`AudioRouteSession` 统一管理输出路由，支持扬声器 / 听筒的持久设置与通话中临时切换；外接设备（蓝牙 / 有线）由系统接管，SDK 只上报。
++ **设备管理**：`DeviceManager` 支持设备枚举与热插拔事件。
++ **IM**：`enableIm` / `disableIm`，频道内自定义消息与信令通道。
+
+<Warning>
+**视频编码只有硬编，没有软编兜底。**
+
+视频预设统一使用 H264，而底层 `@ohos/webrtc` 的 H264 / H265 只走设备硬件编解码器。模拟器上建不出编码器，SDP 中不会出现 H264；在缺少 H264 硬编能力的真机上，SDK **不报错而是静默退回 VP8**，表现为和 Web / iOS / Android 端互通不上。
+
+自测时请确认实际协商到的编码格式，不要以"看到画面"为准。
+</Warning>
+
+<Note>
+**仅支持 arm64-v8a。**
+
+**升级需要手动替换 HAR 文件。** ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 路径引用具体的 HAR 文件名，升级时要同步修改 `libs/` 下的文件与 `oh-package.json5` 中的版本号。
+</Note>

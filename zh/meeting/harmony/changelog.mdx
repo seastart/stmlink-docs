@@ -1,0 +1,40 @@
+---
+title: "更新日志"
+description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
+---
+
+### [0.0.1] - 2026.09.07
+#### 首个版本
+
++ **账号与会议管理**：`login` / `logout`；`createRoom` / `updateRoom` / `cancelRoom` / `detailRoom`；`attendeeRoom`（即将开始）与 `attendedRoom`（历史会议）分页查询；支持预约会议（`planTime` / `planDur` / `conferee`）。
++ **入会**：`enterRoom` 支持按 `meetingId` 或 `roomNo` 入会，可带入会密码；`exitRoom` 离会。
++ **媒体一体化接口**：`requestOpenMic` / `requestOpenCamera` / `requestShare` 内部完成"后端授权 → 建轨道 → 采集 → 发布"，无需自行拼装；配套 `closeMic` / `closeCamera` / `stopShare`、`setMicMuted`、`switchCamera`。
++ **订阅**：`subscribeRemoteVideoTrack` / `subscribeRemoteAudioTrack` 按成员订阅，支持 MCU 合流轨道（`subscribeRemoteVideoMcu`）；`toggleRemoteAudioMute` 切换本地播放而不退订。
++ **会控**：全体静音 / 禁摄像头 / 禁共享 / 禁聊天 / 禁截图 / 水印 / 锁定会议、成员改名与角色变更、移交主持人、请求开麦开摄像头、移出会议、举手确认、呼叫成员与短信提醒。
++ **等候室**：开关等候室、查询等候成员、移入移出。
++ **子会议**：创建 / 改名 / 分配成员 / 删除 / 启停 / 成员跨子会议移动。
++ **录制与资源**：MCU 录制任务启停与详情、资源列表与创建、预签名上传下载、会议背景与附件。
++ **签到**：发起 / 结束 / 签到 / 统计 / 明细。
++ **聊天**：`sendRoomChatMessage` 支持群发与私聊。
++ **事件**：`SMeetingDelegate` 覆盖连接状态、成员进出、成员与房间状态变化、聊天、会控指令、等候室、子会议、签到、点名、音频路由与设备变化。
++ **音频路由**：扬声器 / 听筒的持久设置与通话中临时切换；外接设备由系统接管，SDK 只上报。
+
+<Warning>
+**必须同时引入 SRTC 与 SMeeting 两个 HAR。**
+
+HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDependencies`，需要由你的工程提供。只声明 `smeeting` 会在 `ohpm install` 阶段报缺少 `srtc`。
+</Warning>
+
+<Warning>
+**视频编码只有硬编，没有软编兜底。**
+
+视频预设统一使用 H264，底层只走设备硬件编解码器。模拟器上建不出编码器；在缺少 H264 硬编能力的真机上，SDK **不报错而是静默退回 VP8**，表现为和其它端互通不上。自测时请确认实际协商到的编码格式。
+</Warning>
+
+<Note>
+**仅支持 arm64-v8a。**
+
+**升级需要手动替换 HAR 文件。** ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 路径引用具体的 HAR 文件名，升级时要同步修改 `libs/` 下的文件与 `oh-package.json5` 中的版本号。
+
+两个 SDK 独立编号，当前 SMeeting 0.0.1 依赖 SRTC 0.0.1。
+</Note>

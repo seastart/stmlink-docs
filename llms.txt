@@ -173,6 +173,12 @@
 - [RTCEngineChannelDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineChannelDelegate.md): 频道级会话事件回调协议：连接与重连、成员进出、自定义消息、音频状态、码流质量与屏幕共享，每个回调都带事件来源频道实例
 - [RTCEngineIMDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineIMDelegate.md): 频道外消息通道（IM）的回调协议：连接状态变化与消息接收
 
+## SRTC 音视频 SDK · HarmonyOS SDK
+
+- [集成方式](https://docs.stmlink.com/zh/rtc/harmony/integration.md): SRTC HarmonyOS SDK 的环境要求、HAR 集成方式与权限配置
+- [快速开始](https://docs.stmlink.com/zh/rtc/harmony/quickstart.md): 在 HarmonyOS 应用中用 SRTC 完成加入频道、推流、订阅远端画面的最小流程
+- [更新日志](https://docs.stmlink.com/zh/rtc/harmony/changelog.md): HarmonyOS SRTC 音视频 SDK 版本更新记录
+
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式）
 
 - [集成方式](https://docs.stmlink.com/zh/rtc/capi/integration.md): SRTC C SDK 的能力边界、支持平台、库文件说明与链接方式
@@ -366,6 +372,12 @@
 - [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会议组件全局事件回调协议：音频路由变更与应用性能，与加入了几个房间无关
 - [MeetingKitRoomDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoomDelegate.md): 会议房间事件回调协议：进出房间、房间设置与主持人操作、成员状态、聊天消息、云录制、屏幕共享、码流质量与签到，每个回调都带事件来源房间实例
 - [MeetingKitIMDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitIMDelegate.md): 会议外消息通道的回调协议：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助
+
+## SMeeting 会议 SDK · HarmonyOS SDK
+
+- [集成方式](https://docs.stmlink.com/zh/meeting/harmony/integration.md): SMeeting HarmonyOS SDK 的环境要求、HAR 集成方式与权限配置
+- [快速开始](https://docs.stmlink.com/zh/meeting/harmony/quickstart.md): 在 HarmonyOS 应用中用 SMeeting 完成登录、创建会议、入会、开麦开摄像头的最小流程
+- [更新日志](https://docs.stmlink.com/zh/meeting/harmony/changelog.md): HarmonyOS SMeeting 会议 SDK 版本更新记录
 
 ## SMeeting 会议 SDK · 服务端 API
 
