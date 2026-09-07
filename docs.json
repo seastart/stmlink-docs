@@ -547,6 +547,39 @@
                 "pages": [
                   "zh/meeting/harmony/integration",
                   "zh/meeting/harmony/quickstart",
+                  "zh/meeting/harmony/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/meeting/harmony/advanced/media-control",
+                      "zh/meeting/harmony/advanced/host-controls",
+                      "zh/meeting/harmony/advanced/video-rendering",
+                      "zh/meeting/harmony/advanced/handup",
+                      "zh/meeting/harmony/advanced/waiting-room",
+                      "zh/meeting/harmony/advanced/sub-meetings",
+                      "zh/meeting/harmony/advanced/messaging",
+                      "zh/meeting/harmony/advanced/im",
+                      "zh/meeting/harmony/advanced/screen-sharing",
+                      "zh/meeting/harmony/advanced/recording",
+                      "zh/meeting/harmony/advanced/resources",
+                      "zh/meeting/harmony/advanced/sign-in",
+                      "zh/meeting/harmony/advanced/audio-routing",
+                      "zh/meeting/harmony/advanced/device-management"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/meeting/harmony/api-reference/SMeetingEngine",
+                      "zh/meeting/harmony/api-reference/media-control",
+                      "zh/meeting/harmony/api-reference/admin-actions",
+                      "zh/meeting/harmony/api-reference/devices",
+                      "zh/meeting/harmony/api-reference/SMeetingRemoteVideoView"
+                    ]
+                  },
+                  "zh/meeting/harmony/events",
+                  "zh/meeting/harmony/types",
+                  "zh/meeting/harmony/error-codes",
                   "zh/meeting/harmony/changelog"
                 ]
               },
