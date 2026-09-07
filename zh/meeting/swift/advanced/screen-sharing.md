@@ -82,7 +82,7 @@ class SampleHandler: SRTCBroadcastSampleHandler {}
 `SRTCBroadcastKit` 是音视频层 `srtc-swift-sdk` 的产物，而 SwiftPM 不允许使用传递依赖的产品，所以要在工程里**再加一条依赖**，版本与 SMeeting 内部锁定的 SRTC 版本保持一致（见 [集成方式](/zh/meeting/swift/integration)）：
 
 ```swift
-.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.3.0"),
+.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.3.2"),
 ```
 
 <Warning>

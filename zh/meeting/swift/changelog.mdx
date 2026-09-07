@@ -3,6 +3,14 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.2.1] - 2026.09.07
+#### 修复
++ 修复远端屏幕共享状态的判定：成员的`shareState`现在要求「房间共享状态（`share_state`/`share_uid`）+ 存在 screen 轨道」两者都满足才跃变为共享中，不再单凭轨道存在就判定。修掉了轨道先于房间状态到达时的误报，以及房间状态未变、轨道短暂消失时误报「共享已停止」。
++ 白板共享（`whiteBoard`）无媒体轨道，仍完全由房间 props 推导，行为不变。
+
+#### 变更
++ 依赖的 SRTC 升级到 **1.3.2**（含 mqtt`content`为`null`的崩溃修复，以及`DeviceType.harmonyOS`）。
+
 ### [1.2.0] - 2026.08.20
 #### 新增
 + iOS 全屏屏幕共享：新增`prepareBroadcastShare(appGroup:preset:)`、`publishBroadcastShare(view:byAdmin:adminUid:)`、`stopBroadcastListening()`、`requestShare(broadcastAppGroup:...)`与只读属性`isShareBroadcastActive`，可共享整个系统屏幕（此前 iOS 只能采到本 App 画面），需额外集成一个 Broadcast Upload Extension，详见[屏幕共享](/zh/meeting/swift/advanced/screen-sharing)；
