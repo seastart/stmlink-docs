@@ -46,9 +46,22 @@ aboutToDisappear(): void {
 | `onMeetingReconnecting` | — | 会议连接中断，正在自动重连 |
 | `onMeetingReconnected` | — | 重连成功 |
 | `onDisconnected` | `reason: DisconnectReason`, `error?: Error` | 断开且不再自动恢复 |
+| `onMediaStateChange` | `state: MediaConnectionState`, `reason?: string` | **媒体面**（PeerConnection）连通性变化 |
 
 `onReconnecting` / `onReconnected` 之间 SDK 会自行恢复，业务侧只需更新连接指示。
 收到 `onDisconnected` 才走"退出会议"流程。
+
+<Warning>
+**`onMediaStateChange` 与上面三个不是同一条线。**
+
+`onMeetingReconnecting` / `onMeetingReconnected` 说的是**信令面**，`onMediaStateChange` 说的是**画面和声音还在不在**。两者会各自独立地断开与恢复。
+
+会议 UI 的「网络异常」提示应当同时看这两条线：只接信令那条会出现"提示已经消失、画面还是黑的"；只接这条会漏掉成员列表已经不再更新。
+
+收到 `disconnected` 表示 SDK 已放弃重连、**不会再自行恢复**，此时应引导用户重新入会。参数 `reason` **只用于日志，不要拿它做分支判断**。
+
+状态取值见 [`MediaConnectionState`](/zh/rtc/harmony/types#mediaconnectionstate)。
+</Warning>
 
 ---
 
@@ -196,11 +209,22 @@ UI 要切到等候页，并停止渲染会议内容。
 | --- | --- | --- |
 | `onAdminRequestOpenMic` | `opUid?` | 主持人请求你开麦 |
 | `onAdminRequestOpenCamera` | `opUid?` | 主持人请求你开摄像头 |
+| `onAdminRequestOpenShare` | `opUid?` | 主持人请求你开启共享 |
 
 <Note>
 这是**请求**而不是命令 —— 应当弹窗征求用户同意，同意后调
 `requestOpenMic()` / `requestOpenCamera()`。SDK 不会自动开。
 </Note>
+
+<Warning>
+**共享的响应方式与开麦 / 开摄像头不同。** 同意主持人的共享邀请要显式带上邀请来源：
+
+```typescript
+await meeting.requestShare(shareType, preset, /* byAdmin */ true, /* adminUid */ opUid);
+```
+
+漏传后两个参数会走成"自己主动发起共享"的路径，与后端的邀请确认对不上。
+</Warning>
 
 ---
 

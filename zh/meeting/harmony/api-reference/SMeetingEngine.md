@@ -220,6 +220,28 @@ sendRoomChatMessage(msg: string, type?: ChatMsgType, targetId?: string): Promise
 
 ---
 
+### 统计
+
+```typescript
+getStats(): Promise<RtcStatsSnapshot>
+```
+
+采集一次**本端** WebRTC 统计：实际编码分辨率与帧率、编码器降级原因、发送侧丢包、RTT 与可用上行带宽。做会中「网络状况」面板用它。
+
+字段说明见 [SRTC 类型定义 · RtcStatsSnapshot](/zh/rtc/harmony/types#rtcstatssnapshot)。
+
+与 `onQualityReport` 的分工：后者由 SFU 通过控制面下发，**只有 SeaStart 引擎有**，是服务端视角；`getStats()` 是本端观察，**两条引擎都有**，且能回答服务端答不了的问题（我实际编码出来是多少分辨率、编码器是被 CPU 还是被带宽限住了）。
+
+<Warning>
+**首次调用的码率恒为 0** —— 码率由两次采集的字节差算出。做面板要周期性调用，1 秒一次比较合适。
+</Warning>
+
+<Note>
+与「会中查询」那一组不同，**不在会中时 `getStats()` 返回空快照而不抛错** —— 诊断能力不该让业务流程失败。
+</Note>
+
+---
+
 ### 其它
 
 ```typescript

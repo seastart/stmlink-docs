@@ -71,6 +71,24 @@ import { Role, MeetingUserInfo, RoomInfo, MeetingCreateReq } from 'smeeting';
 | `pic` | `3` |
 | `sound` | `4` |
 
+### `ChatMessageInfo`
+
+一条**历史**聊天消息，由 `chatMessageInfoFromJson(o)` 从后端 JSON 还原。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `string` | 消息 ID |
+| `msg` | `string` | 消息内容（后端字段名是 `msg`） |
+| `senderId` | `string` | 发送者 ID |
+| `senderName` | `string` | 发送者昵称 |
+| `createdAt` | `string` | 创建时间。后端下发的是**字符串**，原样保留，不做隐式转换 |
+
+<Note>
+**这个结构里没有消息类型字段。** 实时事件里的 `ChatMsgType`（文本 / 文件 / 图片 / 语音）在历史消息里区分不出来，所以没有它 —— 不要凭空补一个默认值上去。
+
+`createdAt` 保持字符串是有意的：后端给的格式没有约定，强转数字可能得到 `NaN`。
+</Note>
+
 ### `MeetingType` / `MeetingStatus` / `MeetingMode`
 
 | 枚举 | 成员 |

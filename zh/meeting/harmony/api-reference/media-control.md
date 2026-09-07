@@ -78,6 +78,24 @@ switchCamera(cameraId?: string): void
 所以只有 `closeCamera()`。
 </Note>
 
+### 变焦
+
+```typescript
+cameraZoomRange(): ZoomRange
+setCameraZoom(ratio: number): Promise<void>
+currentCameraZoom(): number
+```
+
+`currentCameraZoom()` 在摄像头未开或没设过时返回 `1`。`setCameraZoom()` 对超范围的值做夹取而不抛错；摄像头未开或设备不支持时记 warning 后返回。
+
+<Warning>
+**`cameraZoomRange()` 反映的是"现在这一刻能不能变焦"，不是设备能力。**
+
+变焦挂在系统的 CaptureSession 上，该 session 只有在**真的有人消费视频帧**时才 active。所以摄像头刚打开、画面还没真正跑起来的那个中间态里，它返回的是 `{ min: 1, max: 1, supported: false }`。
+
+**不要用 `supported` 决定变焦控件的显示与否**，否则控件会在这个常见中间态里莫名消失。详细实测数据见 [SRTC 轨道接口 · 变焦](/zh/rtc/harmony/api-reference/media-tracks#变焦)。
+</Warning>
+
 ---
 
 ## 屏幕共享

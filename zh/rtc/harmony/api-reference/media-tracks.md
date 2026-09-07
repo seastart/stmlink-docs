@@ -124,12 +124,47 @@ await channel.publishLocalAudioTrack(mic);
 | `switchCamera(cameraId?)` | `void` | 前后置切换；传 ID 可切到指定摄像头 |
 | `changeDeviceId(deviceId)` | `void` | 切换摄像头 |
 | `restartCapture()` | `Promise<void>` | 重启采集 |
+| `zoomRange()` | `ZoomRange` | 当前可用的变焦范围 |
+| `setZoom(ratio)` | `Promise<void>` | 设置变焦倍率 |
+| `currentZoom()` | `number` | 当前倍率，没设过时返回 `1` |
 
 ```typescript
 const camera = srtc.createLocalCameraTrack(cameraPreset720p());
 await camera.startCapture();
 await channel.publishLocalVideoTrack(camera);
 ```
+
+#### 变焦
+
+```typescript
+// ⚠️ 要在发布之后调
+await channel.publishLocalVideoTrack(camera);
+
+const range = camera.zoomRange();   // 例如 { min: 0.67, max: 6, supported: true }
+await camera.setZoom(2);
+```
+
+<Warning>
+**`zoomRange()` 返回的是"现在这一刻能不能变焦"，不是"这台设备支不支持变焦"。**
+
+变焦范围与变焦设置都挂在系统的 CaptureSession 上，而该 session 只有在**真的有人在消费视频帧**时才处于 active 状态。同一台设备、同一条轨道的真机实测：
+
+| 状态 | `zoomRange()` |
+| --- | --- |
+| 只 `startCapture()`、没有任何消费者 | `{ min: 1, max: 1, supported: false }` |
+| 轨道已发布、正在编码出帧 | `{ min: 0.67, max: 6, supported: true }` |
+
+因此：
+
++ **变焦要在轨道发布之后（或已挂上渲染之后）调**，光 `startCapture()` 不够；
++ UI 上**不要用 `supported` 决定变焦控件的显示与否** —— 在"开了摄像头但还没发布"这个很常见的中间态里它是 `false`，控件会莫名消失。
+</Warning>
+
+<Note>
+`setZoom()` 在不支持或超范围时**不抛错**：相机变焦是连续调节，手势滑到端点是常态，抛错会让调用方每次都得自己判边界。超范围的值会被夹到范围内。
+
+排障看 `hdc shell hilog -x | grep -a SetZoomRatio`，native 侧三种结果各有日志：`clamped=`（已生效）、`ignored: zoom not supported by device`、`ignored: capture session not active`。
+</Note>
 
 ### `LocalScreenTrack`
 

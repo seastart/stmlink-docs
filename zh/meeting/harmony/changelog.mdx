@@ -3,6 +3,34 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.0.0] - 2026.09.07
+#### 新增
+
++ **本端统计**：`SMeetingEngine.getStats()` 返回 `RtcStatsSnapshot`，包含实际编码分辨率与帧率、编码器降级原因、发送侧丢包与往返时延。与 `onQualityReport` 互补——后者由 SFU 下发、只有 SeaStart 引擎有，而本端统计两条引擎路径都能出。
++ **媒体面连接状态**：新增回调 `SMeetingDelegate.onMediaStateChange`，参数类型 `MediaConnectionState`。它反映音视频通路的连通性，与信令面的连接 / 重连事件是**两条独立的线**。
++ **聊天消息类型**：`ChatMessageInfo` 与 `chatMessageInfoFromJson`。
++ **会控事件**：主持人请求开启共享 `AdminRequestOpenShareEventData`。
++ **摄像头变焦**：`cameraZoomRange()` 与变焦设置接口。
++ **长时任务**：支持通话切后台后继续采集与推流。
+
+#### 修复
+
++ 长时任务在部分场景下启动失败（`9800005 bgMode is invalid`）：ability 需额外声明 `"backgroundModes": ["audioRecording"]`。
+
+#### 变更
+
++ 依赖的 SRTC 升级至 **1.0.0**（`peerDependencies`）。升级 SMeeting 时必须同步替换 SRTC 的 HAR。
+
+<Warning>
+**不要把媒体面状态和信令面状态当成一条线。**
+
+信令面（`ConnectionState`）与媒体面（`MediaConnectionState`）各自断开、各自恢复：信令断了媒体流往往照旧，反过来媒体通路失败时信令通常一切正常。历史上把两者合并导致过两种真实故障——"网络恢复提示已消失、画面还是黑的"，以及"媒体已永久断开、界面仍显示已连接"。
+</Warning>
+
+<Note>
+**不在会中时相关接口走降级返回而不抛错**：`getStats()` 返回空快照，`cameraZoomRange()` 返回 unsupported。
+</Note>
+
 ### [0.0.1] - 2026.09.07
 #### 首个版本
 

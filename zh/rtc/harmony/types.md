@@ -52,6 +52,29 @@ H264 / H265 在 HarmonyOS 上**只有硬编、没有软编兜底**。设备不�
 | `reconnecting` | `2` | 正在重连 |
 | `left` | `3` | 已主动离开 |
 
+### `MediaConnectionState`
+
+**媒体面**（PeerConnection）连接状态，由 `channel.mediaState` 读取、`onMediaStateChange` 上报。
+
+| 成员 | 值 | 说明 |
+| --- | --- | --- |
+| `disconnected` | `0` | 未连接，或已断开且不再重试 |
+| `connecting` | `1` | 首次连接中 |
+| `connected` | `2` | 已连接，正常收发 |
+| `reconnecting` | `3` | 重连中（引擎正在重建 PeerConnection 并恢复发布订阅） |
+
+配套函数：`mediaConnectionStateName(s)`。
+
+<Warning>
+**它与 `ConnectionState` 不是同一条线，不要合并成一个状态。**
+
+信令面（MQTT）与媒体面（PeerConnection）会**各自独立地断开和恢复**：信令断了媒体流往往照旧（SFU 不经信令通道转发媒体），反过来媒体通路失败时信令通常一切正常。
+
+把两者当成一条线会导致两种故障：只看信令 → "网络恢复提示已消失、画面还是黑的"；只看媒体 → 成员列表早已不再更新却毫无提示。UI 上的网络异常提示应当同时接这两条线。
+
+`disconnected` 意味着 SDK 已经放弃重连、**不会再自行恢复**，此时应引导用户重新入会。
+</Warning>
+
 ### `DisconnectReason`
 
 | 成员 | 值 | 说明 |
@@ -296,6 +319,10 @@ SDK 能上报你现在走的是它们，但**不能主动切到某个具体外�
 
 + `VideoCaptureParams`：`width` / `height` / `frameRate`
 + `CaptureSize`：`width` / `height`，配套 `orientCaptureSize(size, orientation)`
++ `ZoomRange`：`min` / `max` / `supported`。设备变焦范围，由 `track.zoomRange()` 返回。
+  `supported === false` 时 `min` / `max` 均为 `1`，调用方不必判空。
+  ⚠️ 它反映的是**当前这一刻能不能变焦**而不是设备能力，详见
+  [轨道接口](/zh/rtc/harmony/api-reference/media-tracks#变焦)
 + 默认值函数：`defaultMicCaptureOptions()` / `defaultCameraCaptureOptions()` /
   `defaultScreenCaptureOptions()` / `defaultScreenAudioCaptureOptions()`
 + 合并函数：`mergeMicCaptureOptions()` / `mergeCameraCaptureOptions()` /
@@ -410,6 +437,82 @@ Simulcast 层切换。
 
 配套解析函数：`qualityReportFromJson`、`activeSpeakersFromJson`、`layerSwitchedFromJson`、
 `signalMessageType`。
+
+### `RtcStatsSnapshot`
+
+`channel.getStats()` 返回的一次采集快照。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `timestampMs` | `number` | 采集时刻（`Date.now()`，毫秒） |
+| `outbound` | `OutboundStreamStats[]` | 发送侧各路流 |
+| `inbound` | `InboundStreamStats[]` | 接收侧各路流 |
+| `connection` | `ConnectionStats` | 连接级统计 |
+
+#### `OutboundStreamStats`
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `kind` | `string` | `audio` / `video` |
+| `ssrc?` | `number` | |
+| `trackIdentifier?` | `string` | 对应的 `Track.id` |
+| `rid?` | `string` | Simulcast 分层标识 |
+| `codec?` | `string` | 实际协商使用的编码名（大写，如 `H264`） |
+| `bitrateKbps` | `number` | 实际发送码率 |
+| `packetsSent?` | `number` | |
+| `packetsLost?` | `number` | **远端报回来的**丢包数，不是本端统计 |
+| `frameWidth?` / `frameHeight?` | `number` | 实际编码宽高。与预设不一致说明被设备档位吸附了 |
+| `framesPerSecond?` | `number` | |
+| `qualityLimitationReason?` | `string` | 编码器降级原因：`none` / `cpu` / `bandwidth` / `other` |
+
+<Note>
+**判断"某条轨道的 RTP 有没有在发"必须用 `trackIdentifier` 匹配**，不能只看"有任意一条 outbound 的 `packetsSent > 0`"。取消发布后 transceiver 只是 stop、不从连接上移除，它那条旧统计会一直留在报告里（真机实测：关掉摄像头再重开，旧统计的 `packetsSent` 卡在原值不动）。
+</Note>
+
+`qualityLimitationReason` 是弱网排障的第一现场：`bandwidth` 说明码率被带宽估计压了，`cpu` 说明设备扛不住，两者的处理完全不同。
+
+#### `InboundStreamStats`
+
+`kind`、`ssrc?`、`codec?`、`bitrateKbps`、`packetsReceived?`、`packetsLost?`（本端统计）、`jitter?`（**秒**，不是毫秒）、`frameWidth?` / `frameHeight?`、`framesPerSecond?`、`totalFreezesDuration?`（累计冻结秒数，卡顿的直接指标）。
+
+#### `ConnectionStats`
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `roundTripTimeMs?` | `number` | 当前 RTT（**毫秒**，W3C 原值是秒，这里已换算） |
+| `availableOutgoingBitrateKbps?` | `number` | 带宽估计得出的可用上行带宽 |
+| `availableIncomingBitrateKbps?` | `number` | 可用下行带宽。见下方警告 |
+| `bytesSent?` / `bytesReceived?` | `number` | |
+
+<Warning>
+**`availableIncomingBitrateKbps` 实测恒为 `undefined`。** 海思平台（nova 12 Pro / OpenHarmony-6.1.1.120）的 `candidate-pair` 统计里没有这个字段（上行那个有）。W3C 规范里它本就是可选的，底层只在部分路径上填。
+
+保留该字段是为了对齐 W3C 与其它端的结构，**不要在 UI 上依赖它** —— 要展示下行状况请用 `inbound` 各路 `bitrateKbps` 求和。
+</Warning>
+
+配套函数：`emptyStatsSnapshot()`（空快照，取不到统计时返回它而不抛错）、
+`statsSummary(s)`（压成便于阅读的多行文本，形如 `发送 video H264 1180kbps 1280x720@30 (bandwidth) 丢包=3`）。
+
+### 协商结果
+
+| 类型 / 函数 | 说明 |
+| --- | --- |
+| `NegotiatedMedia` | `kind`、`mid`、`codec`（大写）、`fmtp`（`a=fmtp:` 参数原文） |
+| `negotiatedMedias(sdp)` | 解出每条 m-line 实际协商到的编码 |
+| `negotiatedVideoCodec(sdp)` | 本次协商的视频编码名，多条视频 m-line 时取第一条 |
+| `negotiatedAudioCodec(sdp)` | 本次协商的音频编码名 |
+| `negotiatedSummary(sdp)` | 压成一行，形如 `video/mid=1 H264 [profile-level-id=42e01f]; audio/mid=0 OPUS` |
+
+<Warning>
+**这是"视频到底是不是 H264"唯一可靠的判据。**
+
+要传 **answer**（本端发布看远端 answer，本端订阅看远端 offer）—— offer 里是候选列表，只有 answer 才代表最终选中的那一个。
+
+不要拿 `videoCodecReport()` 核对：它回答的是**设备能不能** H264，而静默降级恰恰发生在能力表漂亮、协商结果却是 VP8 的情况下，拿它核对等于没核对。
+
+SDK 内部在每次协商后已自动打日志，真机排障可直接
+`hdc shell hilog -x | grep -a 协商结果`。
+</Warning>
 
 ---
 

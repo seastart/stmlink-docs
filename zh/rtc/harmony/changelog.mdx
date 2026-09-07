@@ -3,6 +3,30 @@ title: "更新日志"
 description: "HarmonyOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.0.0] - 2026.09.07
+#### 新增
+
++ **本端统计**：`Channel.getStats()` 返回 `RtcStatsSnapshot`，包含实际编码分辨率与帧率、编码器降级原因（`qualityLimitationReason`）、发送侧丢包与往返时延；配套 `logStats()` 与 `statsSummary()`。与服务端下发的 `onQualityReport` 互补——后者只有 SeaStart 引擎有，而本端统计两条引擎路径都能出，且能回答服务端答不了的问题（实际编码分辨率、为什么降级）。
++ **SDP 协商结果查询**：`negotiatedVideoCodec()` / `negotiatedAudioCodec()` / `negotiatedMedias()` / `negotiatedSummary()`，用于核对本次通话实际协商到的编码格式。
++ **媒体面连接状态**：`MediaConnectionState` 与 `mediaConnectionStateName()`，反映 PeerConnection 的连通性，与信令面的 `ConnectionState` 相互独立。
++ **摄像头变焦**：`ZoomRange` 类型与变焦接口。
++ **长时任务**：支持通话切后台后继续采集与推流。
++ **诊断工具**：`statsFieldReport()` / `cameraSwitchOrderReport()` / `publishSdpReport()`，用于在新机型或升级底层库后自检字段可用性。
+
+#### 修复
+
++ 长时任务在部分场景下启动失败（`9800005 bgMode is invalid`）：除 `ohos.permission.KEEP_BACKGROUND_RUNNING` 外，`module.json5` 的 ability 还需声明 `"backgroundModes": ["audioRecording"]`。
+
+<Warning>
+**`zoomRange()` 回答的是"现在这一刻能不能变焦"，不是"设备支不支持"。**
+
+变焦挂在系统的 CaptureSession 上，该 session 只有在**真的有人在消费视频帧**时才处于 active 状态。因此变焦要在轨道**发布之后**调用；UI 上不要用 `supported` 决定控件的显示与否——"已开摄像头但还没发布"这个常见中间态里它是 `false`。
+</Warning>
+
+<Note>
+**`getStats()` 的字段可用性因机型而异。** 底层 `webrtc.d.ts` 未声明 `outbound-rtp` 等类型的字段，native 侧没有填充的字段读出来是 `undefined`（不会报错）。上新机型时可先调用 `rawStatsTypeCounts()` 确认类型覆盖面。
+</Note>
+
 ### [0.0.1] - 2026.09.07
 #### 首个版本
 

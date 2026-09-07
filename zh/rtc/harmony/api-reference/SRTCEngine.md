@@ -164,7 +164,8 @@ IM 是**只收不发**的：SDK 提供 `onImMessage` 回调，但没有发送接
 | --- | --- | --- |
 | `token` | `ChannelToken` | 本次入会用的 Token（已解析） |
 | `delegates` | `MulticastDelegate<ChannelDelegate>` | 事件回调容器 |
-| `connectState` | `ConnectionState` | 当前连接状态 |
+| `connectState` | `ConnectionState` | **信令面**连接状态 |
+| `mediaState` | `MediaConnectionState` | **媒体面**连接状态（PeerConnection），与 `connectState` 相互独立 |
 | `channelInfo` | `ChannelInfo \| undefined` | 频道信息 |
 | `me` | `User \| undefined` | 自己 |
 | `streamVendor` | `StreamVendor` | 当前流媒体引擎，排障用 |
@@ -253,6 +254,35 @@ getConnectionQuality(): QualityEvaluation | undefined
 
 主动查询当前连接质量。做 UI 指示器更建议监听 `onConnectionQualityChange`，
 它已经做过等级判定与抖动抑制。
+
+### 统计
+
+```typescript
+getStats(): Promise<RtcStatsSnapshot>
+logStats(): Promise<void>
+rawStatsTypeCounts(): Promise<string>
+```
+
+采集一次**本端** WebRTC 统计，返回 [`RtcStatsSnapshot`](/zh/rtc/harmony/types#rtcstatssnapshot)。
+
+与 `getConnectionQuality()` / `onQualityReport` 的分工：
+
+| | 来源 | 覆盖范围 |
+| --- | --- | --- |
+| `QualityReport` | SFU 通过控制面下发 | **只有 SeaStart 引擎**，服务端视角 |
+| `getStats()` | 本端观察 PeerConnection | **两条引擎都有**，本端视角 |
+
+所以网宿 CDN 路径上想拿到任何质量数据，只有 `getStats()` 这一条路；而"我实际编码出来是多少分辨率""编码器是被 CPU 还是被带宽限住了"这类问题服务端根本答不了，也只有这一条路。
+
+`logStats()` 是排障快捷入口，采集一次并按每行一路流打成日志。
+
+<Warning>
+**首次调用的码率恒为 0。** 码率由两次采集之间的字节差算出，没有上一次快照就没有差分区间。要展示码率就周期性调用，**1 秒一次**比较合适；排障时连着调两次、看第二次。
+</Warning>
+
+<Note>
+**上新机型或升级底层库后先跑 `rawStatsTypeCounts()`。** 底层 `webrtc.d.ts` 没有声明 `outbound-rtp` 等类型的字段，native 侧究竟填了哪些未经约定。类型缺失时上面所有统计读出来都是 `undefined`，**而且不报错**。
+</Note>
 
 ### 离开
 

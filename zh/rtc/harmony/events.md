@@ -46,11 +46,24 @@ aboutToDisappear(): void {
 | `onReconnecting` | — | 连接中断，SDK 正在自动重连 |
 | `onReconnected` | `info: ChannelInfo` | 重连成功，频道信息可能已变化 |
 | `onDisconnected` | `reason: DisconnectReason`, `error?: Error` | 连接断开且不再自动恢复 |
+| `onMediaStateChange` | `state: MediaConnectionState`, `reason?: string` | **媒体面**（PeerConnection）连通性变化 |
 
 <Note>
 `onReconnecting` / `onReconnected` 之间 SDK 会自行恢复发布与订阅，业务侧一般只需要
 更新 UI 上的连接指示。收到 `onDisconnected` 才需要走「退出会议」的业务流程。
 </Note>
+
+<Warning>
+**`onMediaStateChange` 与上面几个不是同一条线。**
+
+`onReconnecting` / `onReconnected` 说的是**信令面**（MQTT），`onMediaStateChange` 说的是**画面和声音还在不在**。两者各自独立地断开与恢复。
+
+UI 上的「网络异常」提示应当同时接这两条线：只接信令那条会出现"提示已经消失、画面还是黑的"；只接媒体这条会漏掉成员列表已经不再更新。
+
+参数 `reason` **只用于日志，不要拿它做分支判断**。收到 `disconnected` 表示 SDK 已放弃重连、不会再自行恢复。
+
+状态取值见 [`MediaConnectionState`](/zh/rtc/harmony/types#mediaconnectionstate)。
+</Warning>
 
 #### 成员
 
