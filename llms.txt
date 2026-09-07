@@ -177,7 +177,25 @@
 
 - [集成方式](https://docs.stmlink.com/zh/rtc/harmony/integration.md): SRTC HarmonyOS SDK 的环境要求、HAR 集成方式与权限配置
 - [快速开始](https://docs.stmlink.com/zh/rtc/harmony/quickstart.md): 在 HarmonyOS 应用中用 SRTC 完成加入频道、推流、订阅远端画面的最小流程
+- [核心概念](https://docs.stmlink.com/zh/rtc/harmony/key-concepts.md): 理解 SRTC HarmonyOS SDK 中 SRTCEngine、Channel、Track、渲染层与设备管理的关系
+- [事件参考](https://docs.stmlink.com/zh/rtc/harmony/events.md): SRTC HarmonyOS SDK 的全部事件回调：ChannelDelegate、TrackDelegate、DeviceManagerDelegate、AudioRouteSessionDelegate、ImDelegate
+- [类型定义](https://docs.stmlink.com/zh/rtc/harmony/types.md): SRTC HarmonyOS SDK 的枚举、接口与预设函数完整清单
+- [错误码](https://docs.stmlink.com/zh/rtc/harmony/error-codes.md): SRTC HarmonyOS SDK 的错误类型 SRTCError、数字错误码表与处理建议
 - [更新日志](https://docs.stmlink.com/zh/rtc/harmony/changelog.md): HarmonyOS SRTC 音视频 SDK 版本更新记录
+
+## SRTC 音视频 SDK · HarmonyOS SDK · 进阶实践
+
+- [静音与停止发布](https://docs.stmlink.com/zh/rtc/harmony/advanced/mute-vs-unpublish.md): mute / unmute 与 unpublish + stopCapture 的语义差别，以及麦克风与摄像头为什么用法不同
+- [设备管理](https://docs.stmlink.com/zh/rtc/harmony/advanced/device-management.md): 用 DeviceManager 枚举摄像头与麦克风、切换设备、处理热插拔
+- [音频路由](https://docs.stmlink.com/zh/rtc/harmony/advanced/audio-routing.md): 用 AudioRouteSession 管理扬声器与听筒切换、处理蓝牙与有线耳机、监听系统通话状态
+- [屏幕共享](https://docs.stmlink.com/zh/rtc/harmony/advanced/screen-sharing.md): 在 HarmonyOS 上采集屏幕与系统音频、三种采集模式、以及授权窗与常见报错的排查
+- [多频道](https://docs.stmlink.com/zh/rtc/harmony/advanced/multi-channel.md): 一个引擎同时加入多个频道、轨道跨频道共享、以及默认频道的顺延规则
+- [通话质量](https://docs.stmlink.com/zh/rtc/harmony/advanced/call-quality.md): 读取网络质量、监听质量等级变化、活跃说话人、Simulcast 层切换，以及编解码能力核对
+
+## SRTC 音视频 SDK · HarmonyOS SDK · 接口文档
+
+- [SRTCEngine 与 Channel](https://docs.stmlink.com/zh/rtc/harmony/api-reference/SRTCEngine.md): SRTC HarmonyOS SDK 主入口 SRTCEngine 与频道对象 Channel 的接口说明
+- [轨道接口](https://docs.stmlink.com/zh/rtc/harmony/api-reference/media-tracks.md): SRTC HarmonyOS SDK 的 Track 继承体系、本地采集与远端播放接口
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式）
 

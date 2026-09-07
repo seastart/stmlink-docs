@@ -272,6 +272,28 @@
                 "pages": [
                   "zh/rtc/harmony/integration",
                   "zh/rtc/harmony/quickstart",
+                  "zh/rtc/harmony/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/harmony/advanced/mute-vs-unpublish",
+                      "zh/rtc/harmony/advanced/device-management",
+                      "zh/rtc/harmony/advanced/audio-routing",
+                      "zh/rtc/harmony/advanced/screen-sharing",
+                      "zh/rtc/harmony/advanced/multi-channel",
+                      "zh/rtc/harmony/advanced/call-quality"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/harmony/api-reference/SRTCEngine",
+                      "zh/rtc/harmony/api-reference/media-tracks"
+                    ]
+                  },
+                  "zh/rtc/harmony/events",
+                  "zh/rtc/harmony/types",
+                  "zh/rtc/harmony/error-codes",
                   "zh/rtc/harmony/changelog"
                 ]
               },
