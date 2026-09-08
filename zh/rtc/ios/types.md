@@ -240,6 +240,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | SRTCDeviceTypeMacOS | `5` | MacOS |
 | SRTCDeviceTypeWebRTC | `6` | WebRTC |
 | SRTCDeviceTypeRtmp | `7` | RTMP |
+| SRTCDeviceTypeHarmonyOS | `8` | HarmonyOS |
 
 
 ### RTCUserRole

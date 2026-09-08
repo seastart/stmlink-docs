@@ -164,6 +164,7 @@
 
 - [屏幕录制](https://docs.stmlink.com/zh/rtc/ios/advanced/screen-recording.md): iOS SRTC 音视频 SDK 屏幕录制功能配置指南
 - [视频美颜](https://docs.stmlink.com/zh/rtc/ios/advanced/beauty.md): iOS SRTC 音视频 SDK 视频渲染与美颜组件集成
+- [虚拟背景](https://docs.stmlink.com/zh/rtc/ios/advanced/virtual-background.md): iOS SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代与美颜的先后顺序、低端机保帧率的两个参数，以及必须补上的 onnxruntime 依赖
 
 ## SRTC 音视频 SDK · iOS SDK · 接口文档
 

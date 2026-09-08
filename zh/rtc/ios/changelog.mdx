@@ -3,6 +3,23 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [3.1.0] - 2026.09.08
+#### 新增
++ 新增虚拟背景能力：`installVirtualBackground:`、`uninstallVirtualBackground`、`enabledVirtualBackground:`、`setVirtualBackgroundBlur:`、`setVirtualBackgroundImage:`、`setVirtualBackgroundInferenceInterval:`、`setVirtualBackgroundMaskSync:`、`isVirtualBackgroundEnabled`，支持人像分割后做背景虚化或背景替换，且**装载不需要授权密钥**；
++ 虚拟背景与美颜作用于同一条共享摄像头采集链路，两者同时开启时顺序固定为美颜在前、虚拟背景在后，用法详见[虚拟背景](/zh/rtc/ios/advanced/virtual-background)；
++ `SRTCDeviceType`新增`SRTCDeviceTypeHarmonyOS`（`8`），用于识别鸿蒙端成员。
+#### 变更
++ 最低系统要求由 iOS 10.0 提升到 **iOS 16.0**；
++ CocoaPods 集成新增`onnxruntime-c`（`~> 1.24.0`）依赖，SDK 内部只保留其未定义符号，由接入 App 在链接期解决；手动集成需自行引入`onnxruntime.xcframework`。
+#### 修复
++ 修复美颜、虚拟背景开启后本端预览仍是摄像头原始画面、只有对端能看到效果的问题：本地预览改为显示前处理后的画面，两者都关闭时回到系统预览直出；
++ 修复前处理输出缓冲被提前释放，以及送显缓冲与下一帧写入在 GPU 上冲突导致的画面卡死；
++ 修复渲染组件与虚拟背景组件的装载、卸载、开关在采集线程渲染期间并发访问的问题。
+
+<Warning>
+本版本为不兼容变更：接入工程的`IPHONEOS_DEPLOYMENT_TARGET`与`Podfile`的`platform :ios`需不低于 16.0，否则依赖无法参与解析。公开接口与回调签名均未删除或变更，已有代码无需改写。
+</Warning>
+
 ### [3.0.2] - 2026.08.28
 #### 修复
 + 升级`librtc`依赖，修复流媒体服务响应不再返回`upload`字段时因解析异常导致崩溃的问题。

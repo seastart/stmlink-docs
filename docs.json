@@ -248,7 +248,8 @@
                     "group": "进阶实践",
                     "pages": [
                       "zh/rtc/ios/advanced/screen-recording",
-                      "zh/rtc/ios/advanced/beauty"
+                      "zh/rtc/ios/advanced/beauty",
+                      "zh/rtc/ios/advanced/virtual-background"
                     ]
                   },
                   {
