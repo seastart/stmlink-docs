@@ -524,7 +524,8 @@
                   {
                     "group": "进阶实践",
                     "pages": [
-                      "zh/meeting/ios/advanced/screen-recording"
+                      "zh/meeting/ios/advanced/screen-recording",
+                      "zh/meeting/ios/advanced/virtual-background"
                     ]
                   },
                   {

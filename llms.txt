@@ -383,6 +383,7 @@
 ## SMeeting 会议 SDK · iOS SDK · 进阶实践
 
 - [屏幕录制](https://docs.stmlink.com/zh/meeting/ios/advanced/screen-recording.md): iOS SMeeting 会议 SDK 屏幕录制功能配置指南
+- [虚拟背景](https://docs.stmlink.com/zh/meeting/ios/advanced/virtual-background.md): iOS SMeeting 会议 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么是设备级配置、切换摄像头与断线重连后不用自己补，以及低端机保帧率的两个参数
 
 ## SMeeting 会议 SDK · iOS SDK · 接口列表
 

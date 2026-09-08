@@ -334,6 +334,100 @@ description: "会议组件全局入口单例：登录登出、即时通讯、会
 
 调用该接口，SDK 会通过该接口返回是否存在蓝牙耳机设备。
 
+## 虚拟背景接口
+虚拟背景作用于进程内唯一的共享摄像头采集链路，属设备级能力，设置会同时作用于全部房间。会中切换摄像头、断线重连后 SDK 会自动把当前配置重新应用，调用方不必自己补。用法详见 [虚拟背景](/zh/meeting/ios/advanced/virtual-background)。
+
+### installVirtualBackground:()
+`- (SEAError)installVirtualBackground:(nullable NSString *)modelPath`
+
+装载虚拟背景组件
+
+建议在进入房间、打开摄像头之前调用；装载后需要再调 [enabledVirtualBackground:()](#enabledvirtualbackground) 才会生效。
+
+| 参数 | 描述 |
+| :--- | --- |
+| modelPath | 人像分割模型（`selfie_segmenter_fixed.onnx`）文件路径，传 `nil` 使用 SDK 内置的那一份 |
+
+| 返回值 | 描述 |
+| :--- | --- |
+| SEAErrorOK | 装载成功 |
+| SEAErrorConflict | 组件已装载，本次指令被丢弃 |
+| SEAErrorNotFound | 模型文件不存在，检查 `modelPath` |
+| SEAErrorSystemError | 推理会话创建失败，属于运行环境问题 |
+
+
+### uninstallVirtualBackground()
+`- (void)uninstallVirtualBackground`
+
+卸载虚拟背景组件
+
+释放推理会话与相关缓冲。
+
+### enabledVirtualBackground:()
+`- (SEAError)enabledVirtualBackground:(BOOL)enabled`
+
+虚拟背景功能开关
+
+装载后默认不开启，需要显式打开。关闭后是零开销直通，不再跑推理。组件未装载时调用返回 `SEAErrorConflict`。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enabled | YES-开启 NO-关闭 |
+
+
+### setVirtualBackgroundBlur:()
+`- (void)setVirtualBackgroundBlur:(NSInteger)level`
+
+设置背景虚化
+
+与 [setVirtualBackgroundImage:()](#setvirtualbackgroundimage) 互斥，后调用的生效。
+
+| 参数 | 描述 |
+| :--- | --- |
+| level | 虚化等级，取值范围 `1`-`10`，默认 `5`，超出范围会被收敛到边界值 |
+
+
+### setVirtualBackgroundImage:()
+`- (void)setVirtualBackgroundImage:(nullable UIImage *)image`
+
+设置背景替换
+
+与 [setVirtualBackgroundBlur:()](#setvirtualbackgroundblur) 互斥，后调用的生效。
+
+| 参数 | 描述 |
+| :--- | --- |
+| image | 背景图片，按 cover 裁剪不拉伸；传 `nil` 表示取消替换回到虚化 |
+
+
+### setVirtualBackgroundInferenceInterval:()
+`- (void)setVirtualBackgroundInferenceInterval:(NSInteger)interval`
+
+设置分割推理间隔
+
+给调用方按机型下发的性能档，不建议暴露给终端用户。
+
+| 参数 | 描述 |
+| :--- | --- |
+| interval | 分割每 N 帧跑一次（合成仍每帧跑），默认 `1`，小于 `1` 按 `1` 处理；低端机可调大保帧率 |
+
+
+### setVirtualBackgroundMaskSync:()
+`- (void)setVirtualBackgroundMaskSync:(BOOL)enabled`
+
+设置蒙版对齐
+
+消除挥手时的错位拖影，代价是画面更新率降到蒙版率。`interval` 为 `1` 时开与不开没有任何区别，它只在调大推理间隔后才起作用。
+
+| 参数 | 描述 |
+| :--- | --- |
+| enabled | YES-开启 NO-关闭，默认 NO |
+
+
+### isVirtualBackgroundEnabled()
+`- (BOOL)isVirtualBackgroundEnabled`
+
+获取虚拟背景开启状态
+
 ## 屏幕共享接口
 ### broadcastStartedWithAppGroup:delegate:()
 `- (void)broadcastStartedWithAppGroup:(NSString *)appGroup delegate:(id<MeetingKitScreenDelegate>)delegate`
