@@ -3,6 +3,41 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.4.0] - 2026.09.09
+#### 新增
++ **虚拟背景**：在摄像头采集链路上做人像分割，把人像之外的区域替换成虚化或指定图片，装载不需要授权密钥。`SRTCEngine`新增`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`，以及实例访问器`virtualBackground`（诊断用只读状态与`droppedFrameCount`）。配套新增类型`SRTCVirtualBackground`、`SRTCVirtualBackgroundEffect`、`SRTCNativeImage`，详见[虚拟背景](/zh/rtc/swift/advanced/virtual-background)；
+    - 开启后**自动作用于所有摄像头轨道**（含开启之后才新建的），不需要往`videoProcessors`里挂东西；
+    - 状态整机一份，切前后摄像头 / 切换摄像头设备后不需要重新下发配置；
+    - 分割失败或输出缓冲池耗尽时**丢掉该帧**而不是送出未处理的原始画面（避免把真实背景闪给对端），丢帧计数见`virtualBackground.droppedFrameCount`。
++ `SRTCEngine`新增`defaultVideoProcessors`：视频处理器管线配置一次，此后新建的摄像头轨道自动带上（摄像头轨道每次开摄像头都是新建的，只在轨道上设一次会丢）。
++ `SRTCError`新增四个取值：`virtualBackgroundAlreadyInstalled`、`virtualBackgroundNotInstalled`、`virtualBackgroundModelNotFound(String)`、`virtualBackgroundSessionFailed(String)`。
+
+<Warning>
+**最低系统要求抬到 iOS 16.0 / macOS 14.0**（此前为 iOS 13.0 / macOS 10.15）。这是破坏性变更：低于此下限的工程解析不到本版本及以后的版本，报的是依赖解析失败而不是编译错误。下限由虚拟背景的推理运行时决定，SwiftPM 的`platforms:`是包级的、没有 target 级下限，无法只让虚拟背景吃这条线。
+
+**SDK 二进制增大约 29MB**（`onnxruntime`静态链入，ios-arm64 切片由 5.8MB 增至约 34.7MB），**与你是否使用虚拟背景无关**。换来的是客户侧零配置：不需要声明依赖、不需要 embed 任何东西。
+</Warning>
+
+<Note>
+`SRTCError`是非 frozen 的公开枚举，若你对它写了穷举`switch`，需补`@unknown default`分支才能编过。
+
+`SRTCBroadcastKit`本次为 **1.0.5**，代码无变化，仅随 SDK 同步递增版本号。它**不含** `onnxruntime`（Broadcast Upload Extension 进程有 50MB 内存上限）。
+</Note>
+
+### [1.3.3] - 2026.09.07
+#### 修复
++ `DegradationPreference`现在真正生效：发布视频时会下发到底层编码器，弱网下按设置降级分辨率或帧率（此前该设置被忽略）。
+
+#### 变更
++ 摄像头与屏幕共享预设统一改为`maintainResolution`（优先保清晰度、必要时降帧率），此前各预设取值不一致。共享文档、演示这类以文字为主的场景由此明显更清晰。
+
+#### 新增
++ macOS `DeviceManager`新增`setSystemDefaultOutputDevice(_:)`，直接切换系统默认音频输出设备（对齐 Windows 端行为）。
+
+<Note>
+`SRTCBroadcastKit`本次为 **1.0.4**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.3.2] - 2026.09.07
 #### 修复
 + 修复 mqtt 消息中`content`为`null`时，`JSONSerialization`抛 ObjC 异常导致的崩溃（取值时统一过滤`NSNull`）。

@@ -3,6 +3,24 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.0] - 2026.09.09
+#### 新增
++ **虚拟背景**：`SMeetingEngine`新增`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`，以及实例访问器`virtualBackground`（诊断用只读状态与丢帧计数），装载不需要授权密钥，详见[虚拟背景](/zh/meeting/swift/advanced/virtual-background)；
+    - 属**设备级配置**，设置同时作用于全部会议；会中切换摄像头、关掉摄像头再打开、断线重连后都不需要业务层重新下发。
+
+#### 变更
++ 依赖的 SRTC 升级到 **1.4.0**（虚拟背景、`DegradationPreference`真正生效、预设改为`maintainResolution`、macOS 系统默认输出设备接口），详见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)。
+
+<Warning>
+**最低系统要求抬到 iOS 16.0 / macOS 14.0**（此前为 iOS 13.0 / macOS 10.15）。这是破坏性变更：低于此下限的工程解析不到本版本及以后的版本，报的是依赖解析失败而不是编译错误。下限来自音视频层——SwiftPM 的`platforms:`是包级的，依赖方只能等于或高于被依赖方。
+
+**SDK 依赖的音视频层二进制增大约 29MB**（推理运行时静态链入），与你是否使用虚拟背景无关。
+</Warning>
+
+<Note>
+**iOS 全屏共享的扩展 target 那条额外依赖要跟着升到 1.4.0**：`.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.0")`。它必须与本 SDK 清单里 pin 的版本一致，否则依赖解析冲突，见[集成方式](/zh/meeting/swift/integration)。
+</Note>
+
 ### [1.2.1] - 2026.09.07
 #### 修复
 + 修复远端屏幕共享状态的判定：成员的`shareState`现在要求「房间共享状态（`share_state`/`share_uid`）+ 存在 screen 轨道」两者都满足才跃变为共享中，不再单凭轨道存在就判定。修掉了轨道先于房间状态到达时的误报，以及房间状态未变、轨道短暂消失时误报「共享已停止」。

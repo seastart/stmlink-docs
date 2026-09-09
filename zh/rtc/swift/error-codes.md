@@ -75,6 +75,19 @@ Swift SDK 当前公开的错误模型是 `SRTCError`。它不是传统的整数�
 
 ---
 
+### 虚拟背景相关
+
+| 错误 | 说明 | 建议处理 |
+| --- | --- | --- |
+| `virtualBackgroundAlreadyInstalled` | 组件已装载，本次指令被丢弃 | 通常可忽略，或先判 `virtualBackground.isInstalled` |
+| `virtualBackgroundNotInstalled` | 组件未装载就调开关 | 先 `installVirtualBackground()` |
+| `virtualBackgroundModelNotFound(String)` | 模型文件不存在 | 检查 `modelPath`；传 `nil` 用内置模型 |
+| `virtualBackgroundSessionFailed(String)` | 推理会话创建失败 | 属运行环境问题，结合日志排查 |
+
+用法见 [虚拟背景](/zh/rtc/swift/advanced/virtual-background)。
+
+---
+
 ### 推荐的错误处理方式
 
 ```swift

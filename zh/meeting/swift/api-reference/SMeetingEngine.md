@@ -426,8 +426,31 @@ await meeting.disableIm()
 
 ---
 
+### 虚拟背景
+
+属**设备级配置**（作用于进程内唯一的共享摄像头采集链路），设置同时作用于全部会议。会中切换摄像头、关掉摄像头再打开、断线重连后都不需要业务层重新下发。用法与调优见 [虚拟背景](/zh/meeting/swift/advanced/virtual-background)。
+
+| 成员 | 签名 | 说明 |
+| --- | --- | --- |
+| 装载 | `installVirtualBackground(modelPath: String? = nil) throws` | 加载模型 + 建推理会话，耗时百毫秒级，不要在主线程 / 采集线程调；`nil` 用内置模型 |
+| 卸载 | `uninstallVirtualBackground()` | 释放推理会话与缓冲，不清效果参数 |
+| 总开关 | `enableVirtualBackground(_ enabled: Bool) throws` | 关闭即零开销直通，不跑推理 |
+| 开关状态 | `isVirtualBackgroundEnabled: Bool` | 只读 |
+| 背景虚化 | `setVirtualBackgroundBlur(level: Int)` | `level` 取值 1~10，默认 5，超出范围收敛到边界 |
+| 背景替换 | `setVirtualBackgroundImage(_ image: SRTCNativeImage?)` | 按 cover 裁剪不拉伸；`nil` 回落到虚化 |
+| 推理间隔 | `setVirtualBackgroundInferenceInterval(_ interval: Int)` | 分割每 N 帧跑一次（合成仍每帧跑），默认 1 |
+| 蒙版对齐 | `setVirtualBackgroundMaskSync(_ enabled: Bool)` | 默认 `false`；`interval` 为 1 时开关无区别 |
+| 实例 | `virtualBackground: SRTCVirtualBackground` | 诊断用只读状态与丢帧计数 |
+
+**可能抛出：** `SRTCError.virtualBackgroundAlreadyInstalled`、`.virtualBackgroundNotInstalled`、`.virtualBackgroundModelNotFound(String)`、`.virtualBackgroundSessionFailed(String)`
+
+这一组是对音视频层的转发，会议层不另存一份状态，因此与直接用 `meeting.srtc` 调等价，推荐用会议层的方法。
+
+---
+
 ### 相关页面
 
++ [虚拟背景](/zh/meeting/swift/advanced/virtual-background)
 + [媒体控制接口](/zh/meeting/swift/api-reference/media-control)
 + [外设接口](/zh/meeting/swift/api-reference/devices)
 + [会议管理接口](/zh/meeting/swift/api-reference/admin-actions)
