@@ -13,7 +13,7 @@ SMeeting Swift SDK 是一套 `Swift Package` 形态的会议 SDK，对外模块�
 <Warning>
 **`1.3.0` 起系统下限由 iOS 13 / macOS 10.15 抬到 iOS 16 / macOS 14。** 低于此下限的工程解析不到 1.3.0 及以后的版本（报依赖解析失败，不是编译错误）；仍需支持更低系统的项目请留在 `1.2.1`。
 
-下限来自音视频层的虚拟背景推理运行时——SwiftPM 的 `platforms:` 是包级的，依赖方只能等于或高于被依赖方。同时依赖的音视频层二进制增大约 29MB，与你是否使用虚拟背景无关，详见 [虚拟背景](/zh/meeting/swift/advanced/virtual-background)。
+下限来自音视频层的虚拟背景推理运行时——SwiftPM 的 `platforms:` 是包级的，依赖方只能等于或高于被依赖方，详见 [虚拟背景](/zh/meeting/swift/advanced/virtual-background)。
 </Warning>
 
 SMeeting 构建在 SRTC 音视频能力之上：会议层负责房间、会议、参会成员、主持人管控等业务语义，底层的音视频采集、编解码、渲染仍由 SRTC 提供。引入 `SMeeting` 时，SRTC 会作为依赖被一并解析，你不需要单独再加一次。

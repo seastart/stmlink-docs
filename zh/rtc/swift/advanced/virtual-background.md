@@ -1,6 +1,6 @@
 ---
 title: "虚拟背景"
-description: "Swift SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么开一次就作用于全部摄像头轨道、切摄像头不用自己补、低端机保帧率的两个参数，以及 1.4.0 抬高系统要求与包体的代价"
+description: "Swift SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么开一次就作用于全部摄像头轨道、切摄像头不用自己补、低端机保帧率的两个参数，以及 1.4.0 抬高的系统要求"
 ---
 
 虚拟背景在摄像头采集链路上做人像分割，把人像之外的区域替换成虚化或指定图片。它是自研组件，装载**不需要授权密钥**。
@@ -16,7 +16,7 @@ description: "Swift SRTC 音视频 SDK 的虚拟背景：人像分割后做背�
 <Warning>
 `1.4.0` 起最低系统要求抬到 **iOS 16.0 / macOS 14.0**（此前为 iOS 13 / macOS 10.15）。低于此下限的工程解析不到 1.4.0 及以后的版本，详见 [集成方式](/zh/rtc/swift/integration)。
 
-推理运行时 `onnxruntime` 已**静态链入** `SRTC.xcframework`，你不需要额外声明任何依赖、也不需要 embed 任何东西；代价是 SDK 二进制增大约 29MB，**与你是否使用虚拟背景无关**。
+推理运行时 `onnxruntime` 已**静态链入** `SRTC.xcframework`，你不需要额外声明任何依赖、也不需要 embed 任何东西。
 </Warning>
 
 ---
@@ -164,6 +164,6 @@ srtc.virtualBackground.reset()      // 只清帧间状态，配置不受影响
 
 ### 相关页面
 
-+ [集成方式](/zh/rtc/swift/integration) —— 系统要求与包体说明
++ [集成方式](/zh/rtc/swift/integration) —— 系统要求与集成步骤
 + [错误码](/zh/rtc/swift/error-codes) —— `SRTCError` 的虚拟背景相关取值
 + [自定义推流](/zh/rtc/swift/advanced/custom-track) —— 自己接管采集时的处理器链

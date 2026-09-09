@@ -14,8 +14,6 @@ description: "Swift SRTC 音视频 SDK 版本更新记录"
 
 <Warning>
 **最低系统要求抬到 iOS 16.0 / macOS 14.0**（此前为 iOS 13.0 / macOS 10.15）。这是破坏性变更：低于此下限的工程解析不到本版本及以后的版本，报的是依赖解析失败而不是编译错误。下限由虚拟背景的推理运行时决定，SwiftPM 的`platforms:`是包级的、没有 target 级下限，无法只让虚拟背景吃这条线。
-
-**SDK 二进制增大约 29MB**（`onnxruntime`静态链入，ios-arm64 切片由 5.8MB 增至约 34.7MB），**与你是否使用虚拟背景无关**。换来的是客户侧零配置：不需要声明依赖、不需要 embed 任何东西。
 </Warning>
 
 <Note>
