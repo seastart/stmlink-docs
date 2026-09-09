@@ -1,6 +1,6 @@
 ---
 title: "虚拟背景"
-description: "iOS SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代与美颜的先后顺序、低端机保帧率的两个参数，以及必须补上的 onnxruntime 依赖"
+description: "iOS SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代与美颜的先后顺序、低端机保帧率的两个参数、真机实测的单帧耗时与 CPU 占用，以及必须补上的 onnxruntime 依赖"
 ---
 
 虚拟背景在摄像头采集链路上做人像分割，把人像之外的区域替换成虚化或指定图片。它是自研组件，**与美颜不同，装载不需要授权密钥**。
@@ -85,6 +85,22 @@ BOOL enabled = [[RTCEngineKit sharedEngine] isVirtualBackgroundEnabled];
 <Note>
 `inferenceInterval` 为 `1` 时，`setVirtualBackgroundMaskSync:` 开与不开没有任何区别——它只在调大推理间隔后才起作用。
 </Note>
+
+### 性能开销
+
+自 `3.1.1` 起人像分割固定走 CPU 推理，不再启用 CoreML。该模型只有 256×256，算子无法被 CoreML 完整承接，每帧在 CPU 与 CoreML 之间反复搬运数据的开销超过省下的算力，实测是负优化。
+
+iPhone XS Max / iOS 18.7.9 实测（720p@25fps 采集，300 帧均值，`inferenceInterval` 为默认 `1`）：
+
+| **指标** | **3.1.0** | **3.1.1** |
+| --- | :---: | :---: |
+| 单帧总耗时 | 53.17 ms | 20.61 ms |
+| 其中人像分割推理 | 41.66 ms | 6.06 ms |
+| `installVirtualBackground:` 耗时 | 1271 ms | 130 ms |
+| 进程 CPU 占用 | 172% | 63% |
+| 内存占用 | 83 MB | 58.6 MB |
+
+`3.1.0` 上单帧 53 ms 已超出 25 fps 的 40 ms 预算，会把编码器拖到丢帧；`3.1.1` 在该机型上默认每帧跑分割即可满足 25 fps，`inferenceInterval` 通常不需要调大，更低端机型仍建议按上一节实测后再决定。
 
 ### step 5：**卸载虚拟背景组件**
 
