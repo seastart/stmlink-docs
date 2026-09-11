@@ -65,7 +65,7 @@ targets: [
 dependencies: [
     .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.0"),
     // 版本必须与 SMeeting 内部锁定的 SRTC 版本一致
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.1"),
 ],
 ```
 

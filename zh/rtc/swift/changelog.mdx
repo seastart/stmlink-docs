@@ -3,6 +3,18 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.4.1] - 2026.09.11
+#### 修复
++ **WangSu(CDN) 频道下`ChannelDelegate.didChangeActiveSpeakers`不再触发**：活跃说话人此前只有 SeaStart(SFU) 引擎有数据（由服务端通过信令通道下发），CDN 链路上没有该通道，导致同一个对外回调在 WangSu 频道里恒不触发，业务据此绘制的音量条、发言人提示会静默失效且无任何报错。现在 CDN 侧在本地按 WebRTC 标准统计（`inbound-rtp`的`audioLevel`）每 500ms 采样一次，产出与 SFU 完全相同的`ActiveSpeakersSnapshot`，两种引擎对外行为一致，业务代码无需改动。
+
+<Note>
+CDN 架构下没有服务端控制面，说话人只能由本地统计推导，因此与 SeaStart 相比有两点固有差异：只能反映**已订阅**的音频流（未订阅的成员检测不到）；精度与实时性略低于服务端判定。SeaStart 仍走服务端下发那条路，不受本次改动影响。
+
+`ActiveSpeakersSnapshot`只包含**远端**说话人、不含自己，两种引擎一致。需要本端音量请用`SRTCEngine.audioCaptureProcessor`从采集 PCM 自行计算。
+
+`SRTCBroadcastKit`本次为 **1.0.6**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.4.0] - 2026.09.09
 #### 新增
 + **虚拟背景**：在摄像头采集链路上做人像分割，把人像之外的区域替换成虚化或指定图片，装载不需要授权密钥。`SRTCEngine`新增`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`，以及实例访问器`virtualBackground`（诊断用只读状态与`droppedFrameCount`）。配套新增类型`SRTCVirtualBackground`、`SRTCVirtualBackgroundEffect`、`SRTCNativeImage`，详见[虚拟背景](/zh/rtc/swift/advanced/virtual-background)；
