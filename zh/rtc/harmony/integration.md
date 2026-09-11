@@ -25,16 +25,16 @@ SDK 的视频预设统一使用 H264，底层的 H264 / H265 编解码只走设�
 SDK 以预编译 HAR 分发，从制品仓下载：
 
 ```bash
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.0.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.0.1.har
 ```
 
-把下载到的文件放进模块的 `libs/` 目录，并重命名为 `srtc-1.0.0.har`：
+把下载到的文件放进模块的 `libs/` 目录，并重命名为 `srtc-1.0.1.har`：
 
 ```
 your-project/
 └── entry/
     ├── libs/
-    │   └── srtc-1.0.0.har
+    │   └── srtc-1.0.1.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
@@ -52,7 +52,7 @@ HarmonyOS 的 ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 
 ```json5
 {
   "dependencies": {
-    "srtc": "file:./libs/srtc-1.0.0.har"
+    "srtc": "file:./libs/srtc-1.0.1.har"
   }
 }
 ```
