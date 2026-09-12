@@ -3,6 +3,40 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [3.1.1] - 2026.09.09
+#### 修复
++ 修复 seastart 流媒体下订阅远端视频后画面全黑的问题：远端画面按「频道\_用户标识\_轨道标识」的索引键分发，而频道名与用户标识本身可能含下划线，原先按下划线拆键取到的是频道名，每一帧都派发到不存在的成员上；
++ 修复 seastart 流媒体下频道内有多个发布者时，第二个及以后发布者的画面渲染到错误成员控件上的问题：服务端会复用同一条媒体段依次转发不同发布者的码流，渲染绑定改为在订阅协商完成后按码流标识重建；
++ 修复主副码流的分层声明上报错位的问题：主层的`variant`与副层的`fallbackIds`原先被写到了对方的 [RTCEngineStreamTrackModel](/zh/rtc/ios/types#rtcenginestreamtrackmodel) 上，导致服务端收到的分层声明不可用；
++ 修复 seastart 流媒体下先协商数据通道、后追加媒体段时，新媒体段被单独建立传输通道的问题：订阅侧显式声明 BUNDLE 与 ICE 策略以匹配服务端的 ice-lite 单端口形态。
+#### 优化
++ 虚拟背景的人像分割固定走 CPU 推理，不再启用 CoreML。iPhone XS Max / iOS 18.7.9 实测（720p@25fps，300 帧均值）单帧耗时由 53.17ms 降至 20.61ms、`installVirtualBackground:`耗时由 1271ms 降至 130ms、进程 CPU 占用由 172% 降至 63%、内存由 83MB 降至 58.6MB，详见[虚拟背景](/zh/rtc/ios/advanced/virtual-background)；
++ 背景虚化改为降采样后高斯模糊再升采样，参与运算的像素降到原先的 1/16，图像合成口径与 Web、Android、鸿蒙端对齐；
++ seastart 流媒体的副码流不再单独建立轨道发布，改为在同一条连接上声明主层与副层两路联播编码，分层参数按层套用各自的缩放因子、最大码率与最大帧率。
+#### 变更
++ seastart 流媒体的订阅候选层收窄为只包含所订阅的那一层。候选层同时包含主副两层时，服务端会在同一个输出 SSRC 上依次转发两路 RTP 且不重写序列号，接收端会持续判定为重放丢包并在两种分辨率之间抖动。代价是不再由服务端在弱网下自动降级到副层，需要业务侧按场景自行调用 `startRemoteView:trackId:view:` 订阅低层码流。
+
+<Note>
+`RTCEngineKit`的公开接口、回调签名与类型定义均未变化，已有业务代码无需改写，最低系统要求仍为 iOS 16.0。使用 seastart 流媒体的工程建议直接升级到本版本。
+</Note>
+
+### [3.1.0] - 2026.09.08
+#### 新增
++ 新增虚拟背景能力：`installVirtualBackground:`、`uninstallVirtualBackground`、`enabledVirtualBackground:`、`setVirtualBackgroundBlur:`、`setVirtualBackgroundImage:`、`setVirtualBackgroundInferenceInterval:`、`setVirtualBackgroundMaskSync:`、`isVirtualBackgroundEnabled`，支持人像分割后做背景虚化或背景替换，且**装载不需要授权密钥**；
++ 虚拟背景与美颜作用于同一条共享摄像头采集链路，两者同时开启时顺序固定为美颜在前、虚拟背景在后，用法详见[虚拟背景](/zh/rtc/ios/advanced/virtual-background)；
++ `SRTCDeviceType`新增`SRTCDeviceTypeHarmonyOS`（`8`），用于识别鸿蒙端成员。
+#### 变更
++ 最低系统要求由 iOS 10.0 提升到 **iOS 16.0**；
++ CocoaPods 集成新增`onnxruntime-c`（`~> 1.24.0`）依赖，SDK 内部只保留其未定义符号，由接入 App 在链接期解决；手动集成需自行引入`onnxruntime.xcframework`。
+#### 修复
++ 修复美颜、虚拟背景开启后本端预览仍是摄像头原始画面、只有对端能看到效果的问题：本地预览改为显示前处理后的画面，两者都关闭时回到系统预览直出；
++ 修复前处理输出缓冲被提前释放，以及送显缓冲与下一帧写入在 GPU 上冲突导致的画面卡死；
++ 修复渲染组件与虚拟背景组件的装载、卸载、开关在采集线程渲染期间并发访问的问题。
+
+<Warning>
+本版本为不兼容变更：接入工程的`IPHONEOS_DEPLOYMENT_TARGET`与`Podfile`的`platform :ios`需不低于 16.0，否则依赖无法参与解析。公开接口与回调签名均未删除或变更，已有代码无需改写。
+</Warning>
+
 ### [3.0.2] - 2026.08.28
 #### 修复
 + 升级`librtc`依赖，修复流媒体服务响应不再返回`upload`字段时因解析异常导致崩溃的问题。

@@ -237,7 +237,7 @@ Content-Type: application/json; charset=utf-8
   "name": "大门监控",
   "net": "内网",
   "sg": "",
-  "extend_info": ""
+  "extend_info": "{\"gw\":\"devgate-1\"}"
 }
 ```
 
@@ -251,6 +251,29 @@ Content-Type: application/json; charset=utf-8
 ```
 
 返回 `code` 非 0 即拒绝该设备入会。若你的用户详情不需要扩展 `props`，且设备无条件可信，可以不订阅本事件。
+
+<Warning>
+  调[获取加入频道token](/zh/rtc/server-api/channel#获取加入频道token)时，**必须把本回调里收到的
+  `extend_info` 原样放进该接口的 `props` 参数**（键名就用 `extend_info`，值是收到的那个字符串，
+  不要解析改写）：
+
+  ```json
+  {
+    "channel": "fire",
+    "uid": "gb_34020000001320000001",
+    "props": {
+      "extend_info": "{\"gw\":\"devgate-1\"}",
+      "其它你自己的字段": "……"
+    }
+  }
+  ```
+
+  这个字段里带着设备所属的网关标识，我们靠它把会中的设备关联回网关。**丢了它，这些依赖反向
+  通知网关的能力会静默失效**：[踢人](/zh/rtc/server-api/channel#踢人)对设备不生效（设备会被网关
+  当成断线，随后自动重新入会）、[开关设备视频](/zh/rtc/server-api/agent#开关设备视频)与
+  [开关设备音频](/zh/rtc/server-api/agent#开关设备音频)调用失败。你自己的 `props` 字段照常放，
+  二者不冲突。
+</Warning>
 
 ### `agent_operate` — 会中设备被操作（开关麦、开关摄像头）
 

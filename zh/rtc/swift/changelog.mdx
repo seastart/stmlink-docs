@@ -3,6 +3,93 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.4.2] - 2026.09.12
+#### 新增
++ **macOS 整屏共享支持按窗口排除**：`createLocalScreenTrack(source:preset:audioPreset:)`新增`excludedWindowIds`与`excludesCurrentApplication`两个带默认值的参数，`ScreenCaptureOptions`同步新增同名属性。`excludedWindowIds`的取值是`UInt32(NSWindow.windowNumber)`，仅在共享**整个显示器**时有意义（采集单个窗口时忽略）；列表在`startCapture()`时快照一次，之后新开的窗口一律进画面。两个参数都有默认值，现有调用点源码兼容。
+
+#### 变更
++ **macOS 整屏共享默认包含本 App 自己的窗口**：此前 SDK 把整个进程的窗口都从画面里挖掉，表现为「共享整屏时对端看不到你自己的应用窗口」——这不是系统限制，是 SDK 自己排的。现在改为默认包含，与 Zoom / 腾讯会议一致，需要挖掉的窗口通过`excludedWindowIds`逐个指定。
++ `ScreenCaptureSources.availableWindows(includeCurrentApp:)`的默认值由`false`改为`true`，自己的窗口可以作为单窗口共享源出现在列表里。
+
+<Warning>
+放开自身窗口后，**任何正在渲染这路共享画面的窗口都会形成无限镜像**（界面上的共享预览窗口，或同机双开自测时渲染远端共享流的会中窗口）。把这些窗口的 ID 放进`excludedWindowIds`逐个挖掉，不要为此把整个 App 排除掉；确实要回到旧行为，把`excludesCurrentApplication`置`true`（此时`excludedWindowIds`被忽略）。
+</Warning>
+
+#### 修复
++ **只共享屏幕音频时麦克风被一起发出去**：mix 模式下所有音频源共用同一条采集流，原先靠混音节点的音量决定要不要混入麦克风，但那个节点实际上没有输入，改它的音量对硬件麦克风毫无作用——结果是业务侧没有发布麦克风轨、只共享屏幕音频时，对端仍能听到本端的环境声。现改为在音频设备模块层面直接静音硬件麦克风（默认静音，只有发布麦克风轨或`LocalMicTrack.unmute()`才解除），屏幕音频与自定义音频注入的声音不受影响。
++ 同一根因下，macOS 上`LocalMicTrack.mute()`此前是空操作（调用后对端仍能听到），现已真正生效。
+
+<Note>
+`SRTCBroadcastKit`本次为 **1.0.7**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
+### [1.4.1] - 2026.09.11
+#### 修复
++ **WangSu(CDN) 频道下`ChannelDelegate.didChangeActiveSpeakers`不再触发**：活跃说话人此前只有 SeaStart(SFU) 引擎有数据（由服务端通过信令通道下发），CDN 链路上没有该通道，导致同一个对外回调在 WangSu 频道里恒不触发，业务据此绘制的音量条、发言人提示会静默失效且无任何报错。现在 CDN 侧在本地按 WebRTC 标准统计（`inbound-rtp`的`audioLevel`）每 500ms 采样一次，产出与 SFU 完全相同的`ActiveSpeakersSnapshot`，两种引擎对外行为一致，业务代码无需改动。
+
+<Note>
+CDN 架构下没有服务端控制面，说话人只能由本地统计推导，因此与 SeaStart 相比有两点固有差异：只能反映**已订阅**的音频流（未订阅的成员检测不到）；精度与实时性略低于服务端判定。SeaStart 仍走服务端下发那条路，不受本次改动影响。
+
+`ActiveSpeakersSnapshot`只包含**远端**说话人、不含自己，两种引擎一致。需要本端音量请用`SRTCEngine.audioCaptureProcessor`从采集 PCM 自行计算。
+
+`SRTCBroadcastKit`本次为 **1.0.6**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
+### [1.4.0] - 2026.09.09
+#### 新增
++ **虚拟背景**：在摄像头采集链路上做人像分割，把人像之外的区域替换成虚化或指定图片，装载不需要授权密钥。`SRTCEngine`新增`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`，以及实例访问器`virtualBackground`（诊断用只读状态与`droppedFrameCount`）。配套新增类型`SRTCVirtualBackground`、`SRTCVirtualBackgroundEffect`、`SRTCNativeImage`，详见[虚拟背景](/zh/rtc/swift/advanced/virtual-background)；
+    - 开启后**自动作用于所有摄像头轨道**（含开启之后才新建的），不需要往`videoProcessors`里挂东西；
+    - 状态整机一份，切前后摄像头 / 切换摄像头设备后不需要重新下发配置；
+    - 分割失败或输出缓冲池耗尽时**丢掉该帧**而不是送出未处理的原始画面（避免把真实背景闪给对端），丢帧计数见`virtualBackground.droppedFrameCount`。
++ `SRTCEngine`新增`defaultVideoProcessors`：视频处理器管线配置一次，此后新建的摄像头轨道自动带上（摄像头轨道每次开摄像头都是新建的，只在轨道上设一次会丢）。
++ `SRTCError`新增四个取值：`virtualBackgroundAlreadyInstalled`、`virtualBackgroundNotInstalled`、`virtualBackgroundModelNotFound(String)`、`virtualBackgroundSessionFailed(String)`。
+
+<Warning>
+**最低系统要求抬到 iOS 16.0 / macOS 14.0**（此前为 iOS 13.0 / macOS 10.15）。这是破坏性变更：低于此下限的工程解析不到本版本及以后的版本，报的是依赖解析失败而不是编译错误。下限由虚拟背景的推理运行时决定，SwiftPM 的`platforms:`是包级的、没有 target 级下限，无法只让虚拟背景吃这条线。
+</Warning>
+
+<Note>
+`SRTCError`是非 frozen 的公开枚举，若你对它写了穷举`switch`，需补`@unknown default`分支才能编过。
+
+`SRTCBroadcastKit`本次为 **1.0.5**，代码无变化，仅随 SDK 同步递增版本号。它**不含** `onnxruntime`（Broadcast Upload Extension 进程有 50MB 内存上限）。
+</Note>
+
+### [1.3.3] - 2026.09.07
+#### 修复
++ `DegradationPreference`现在真正生效：发布视频时会下发到底层编码器，弱网下按设置降级分辨率或帧率（此前该设置被忽略）。
+
+#### 变更
++ 摄像头与屏幕共享预设统一改为`maintainResolution`（优先保清晰度、必要时降帧率），此前各预设取值不一致。共享文档、演示这类以文字为主的场景由此明显更清晰。
+
+#### 新增
++ macOS `DeviceManager`新增`setSystemDefaultOutputDevice(_:)`，直接切换系统默认音频输出设备（对齐 Windows 端行为）。
+
+<Note>
+`SRTCBroadcastKit`本次为 **1.0.4**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
+### [1.3.2] - 2026.09.07
+#### 修复
++ 修复 mqtt 消息中`content`为`null`时，`JSONSerialization`抛 ObjC 异常导致的崩溃（取值时统一过滤`NSNull`）。
+
+<Warning>
+**1.3.1 不含该崩溃修复，已接入 1.3.1 的请直接升到 1.3.2。**
+</Warning>
+
+<Note>
+`SRTCBroadcastKit`本次为 **1.0.3**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
+### [1.3.1] - 2026.09.07
+#### 新增
++ `DeviceType`新增`harmonyOS`（值为`8`），用于识别鸿蒙端接入的成员。
+
+<Note>
+`DeviceType`是非 frozen 的公开枚举，若你对它写了穷举`switch`，需补`@unknown default`分支才能编过。
+
+`SRTCBroadcastKit`本次为 **1.0.2**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.3.0] - 2026.08.20
 #### 新增
 + **iOS 音频路由**：新增`AudioRouteSession.shared`，统一管理 iOS 的音频会话与输出路由。配套新增类型`AudioRoute`（当前路由，只读五态，含蓝牙 / 有线耳机）、`AudioRouteTarget`（可切换目标，扬声器 / 听筒两态）、`AudioRouteInfo`、`AudioCallState`，以及事件协议`AudioRouteSessionDelegate`（路由变化 / 会话中断 / 中断恢复 / 系统通话状态）。

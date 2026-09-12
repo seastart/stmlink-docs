@@ -63,6 +63,12 @@ await localMicTrack.startCapture();
 await srtc.publishLocalTrack(localMicTrack);
 ```
 
+<Warning>
+重新发布前要确保上一条同 `desc` 的轨道已经 `unpublishLocalTrack` 完成——同一个频道内一个 `desc` 只允许一条轨道在发布，用另一条轨道重复发布同一个 `desc` 会抛错。
+
+尤其别让「关麦」和「开麦」两个动作交错执行：如果在上一次 `publishLocalTrack` 的 await 窗口里又发起一次开麦，两条麦克风轨会同时推流，而你手上只留得下后创建的那条引用，先发的那条既取消不掉、采集也停不了，对端会一直听到声音。给这类入口加个串行队列或按钮 loading 态。
+</Warning>
+
 ---
 
 ### 选择建议

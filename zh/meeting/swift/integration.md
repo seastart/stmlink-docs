@@ -5,10 +5,16 @@ description: "SMeeting Swift SDK 的环境要求、Swift Package Manager 集成�
 
 SMeeting Swift SDK 是一套 `Swift Package` 形态的会议 SDK，对外模块名为 `SMeeting`，当前支持：
 
-+ iOS 13.0 及以上
-+ macOS 10.15 及以上
++ iOS 16.0 及以上
++ macOS 14.0 及以上
 + Xcode 15 及以上
 + Swift 5.9 及以上
+
+<Warning>
+**`1.3.0` 起系统下限由 iOS 13 / macOS 10.15 抬到 iOS 16 / macOS 14。** 低于此下限的工程解析不到 1.3.0 及以后的版本（报依赖解析失败，不是编译错误）；仍需支持更低系统的项目请留在 `1.2.1`。
+
+下限来自音视频层的虚拟背景推理运行时——SwiftPM 的 `platforms:` 是包级的，依赖方只能等于或高于被依赖方，详见 [虚拟背景](/zh/meeting/swift/advanced/virtual-background)。
+</Warning>
 
 SMeeting 构建在 SRTC 音视频能力之上：会议层负责房间、会议、参会成员、主持人管控等业务语义，底层的音视频采集、编解码、渲染仍由 SRTC 提供。引入 `SMeeting` 时，SRTC 会作为依赖被一并解析，你不需要单独再加一次。
 
@@ -31,7 +37,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.2.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.2"),
 ],
 targets: [
     .target(
@@ -57,9 +63,9 @@ targets: [
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.2.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.2"),
     // 版本必须与 SMeeting 内部锁定的 SRTC 版本一致
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.3.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.2"),
 ],
 ```
 
@@ -96,6 +102,7 @@ import SRTC
 | macOS 选择共享源 | `ScreenCaptureSources`、`DisplaySource`、`WindowSource` |
 | iOS 全屏共享 | `SRTCBroadcastPicker`（唤起系统广播选择器） |
 | iOS 音频路由 | `AudioRoute`、`AudioRouteTarget`、`AudioRouteInfo`、`AudioCallState` |
+| 虚拟背景 | `SRTCNativeImage`（背景图，`UIImage` / `NSImage` 的别名）、`SRTCVirtualBackgroundEffect` |
 | 通话质量事件 | `QualityReport`、`ConnectionQualityChange`、`ActiveSpeakersSnapshot`、`LayerSwitchedInfo` |
 | 断开原因 | `DisconnectReason` |
 

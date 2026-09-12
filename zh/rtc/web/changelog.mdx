@@ -19,6 +19,12 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### v0.6.2 - 2026-09-02
+
++ fix(channel): 同一 desc 重复发布直接抛错，堵住关不掉的幽灵轨
++ fix: 默认频道判定不再只靠对象身份，避免实例被响应式代理时事件全丢
++ fix: 业务错误不再被吞成「调用被取消」，重连遇容量不足可自愈
+
 ### v0.6.1 - 2026-08-06
 
 + fix: Channel 直订远端轨事件丢失（muted/ended/pip 等不通知）；channel.subscribeRemote* 返回平台化类型（RemoteVideoTrack 等），无需再断言

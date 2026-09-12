@@ -3,6 +3,22 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.1.0] - 2026.09.08
+#### 新增
++ `MeetingKit`新增虚拟背景能力：`installVirtualBackground:`、`uninstallVirtualBackground`、`enabledVirtualBackground:`、`setVirtualBackgroundBlur:`、`setVirtualBackgroundImage:`、`setVirtualBackgroundInferenceInterval:`、`setVirtualBackgroundMaskSync:`、`isVirtualBackgroundEnabled`，支持人像分割后做背景虚化或背景替换，且**装载不需要授权密钥**；
++ 虚拟背景作用于进程内唯一的共享摄像头采集链路，属设备级配置，设置同时作用于全部房间；会中切换摄像头与断线重连后由 SDK 自动重新应用当前配置，业务层不需要自己补，用法详见[虚拟背景](/zh/meeting/ios/advanced/virtual-background)；
++ `SEADeviceType`新增`SEADeviceTypeHarmonyOS`（`8`），用于识别鸿蒙端成员。
+#### 变更
++ 最低系统要求由 iOS 10.0 提升到 **iOS 16.0**；
++ 依赖`RTCEngineKit`升级至`3.1.0`，podspec 最低依赖由`>= 3.0.0`提升为`>= 3.1.0`；虚拟背景的推理引擎`onnxruntime-c`由`RTCEngineKit`的 podspec 传递引入，`Podfile`中不需要显式声明。
+#### 修复
++ 同步`RTCEngineKit 3.1.0`的本地预览修复：开启虚拟背景后本端预览显示的是处理后的画面，与对端看到的一致，此前本端只能看到摄像头原始画面；
++ 同步`RTCEngineKit 3.1.0`对前处理输出缓冲被提前释放、送显缓冲与下一帧写入冲突导致画面卡死的修复。
+
+<Warning>
+本版本为不兼容变更：接入工程的`IPHONEOS_DEPLOYMENT_TARGET`与`Podfile`的`platform :ios`需不低于 16.0，否则依赖无法参与解析。`MeetingKit`与`MeetingKitRoom`的已有公开接口和回调签名均未删除或变更，已有代码无需改写。
+</Warning>
+
 ### [2.0.2] - 2026.08.28
 #### 变更
 + 依赖`RTCEngineKit`升级至`3.0.2`，同步流媒体服务响应解析修复。

@@ -141,6 +141,7 @@
 - [设备管理](https://docs.stmlink.com/zh/rtc/swift/advanced/device-management.md): 使用 DeviceManager 枚举摄像头与音频设备、切换设备，并处理热插拔和中断恢复；iOS 的输出路由控制见音频路由页
 - [音频路由（iOS）](https://docs.stmlink.com/zh/rtc/swift/advanced/audio-routing.md): iOS 上用 AudioRouteSession 控制声音从扬声器还是听筒出，理解持久/临时两层设置、外设为何不可主动切换，以及入会即申请麦克风权限的原因
 - [屏幕共享](https://docs.stmlink.com/zh/rtc/swift/advanced/screen-sharing.md): SRTC Swift SDK 在 macOS 与 iOS 上的屏幕共享接入方式与平台差异
+- [虚拟背景](https://docs.stmlink.com/zh/rtc/swift/advanced/virtual-background.md): Swift SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么开一次就作用于全部摄像头轨道、切摄像头不用自己补、低端机保帧率的两个参数，以及 1.4.0 抬高的系统要求
 - [多频道](https://docs.stmlink.com/zh/rtc/swift/advanced/multi-channel.md): 同时加入多个频道：轨道如何跨频道复用、采集何时回收、以及多频道发布音频的硬约束
 - [通话质量与活跃说话人](https://docs.stmlink.com/zh/rtc/swift/advanced/call-quality.md): 读取网络质量数值与等级、做「网络不佳」提示与主动降级、渲染说话人高亮，以及大小流主动切层
 - [自定义推流](https://docs.stmlink.com/zh/rtc/swift/advanced/custom-track.md): 使用自定义音视频轨道、视频处理器和音频处理器扩展 Swift SDK 的采集能力
@@ -164,6 +165,7 @@
 
 - [屏幕录制](https://docs.stmlink.com/zh/rtc/ios/advanced/screen-recording.md): iOS SRTC 音视频 SDK 屏幕录制功能配置指南
 - [视频美颜](https://docs.stmlink.com/zh/rtc/ios/advanced/beauty.md): iOS SRTC 音视频 SDK 视频渲染与美颜组件集成
+- [虚拟背景](https://docs.stmlink.com/zh/rtc/ios/advanced/virtual-background.md): iOS SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代与美颜的先后顺序、低端机保帧率的两个参数、真机实测的单帧耗时与 CPU 占用，以及必须补上的 onnxruntime 依赖
 
 ## SRTC 音视频 SDK · iOS SDK · 接口文档
 
@@ -172,6 +174,30 @@
 - [RTCEngineDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineDelegate.md): 进程级引擎事件回调协议：音频路由变更、网络测速结果与应用性能，与具体频道无关
 - [RTCEngineChannelDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineChannelDelegate.md): 频道级会话事件回调协议：连接与重连、成员进出、自定义消息、音频状态、码流质量与屏幕共享，每个回调都带事件来源频道实例
 - [RTCEngineIMDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineIMDelegate.md): 频道外消息通道（IM）的回调协议：连接状态变化与消息接收
+
+## SRTC 音视频 SDK · HarmonyOS SDK
+
+- [集成方式](https://docs.stmlink.com/zh/rtc/harmony/integration.md): SRTC HarmonyOS SDK 的环境要求、HAR 集成方式与权限配置
+- [快速开始](https://docs.stmlink.com/zh/rtc/harmony/quickstart.md): 在 HarmonyOS 应用中用 SRTC 完成加入频道、推流、订阅远端画面的最小流程
+- [核心概念](https://docs.stmlink.com/zh/rtc/harmony/key-concepts.md): 理解 SRTC HarmonyOS SDK 中 SRTCEngine、Channel、Track、渲染层与设备管理的关系
+- [事件参考](https://docs.stmlink.com/zh/rtc/harmony/events.md): SRTC HarmonyOS SDK 的全部事件回调：ChannelDelegate、TrackDelegate、DeviceManagerDelegate、AudioRouteSessionDelegate、ImDelegate
+- [类型定义](https://docs.stmlink.com/zh/rtc/harmony/types.md): SRTC HarmonyOS SDK 的枚举、接口与预设函数完整清单
+- [错误码](https://docs.stmlink.com/zh/rtc/harmony/error-codes.md): SRTC HarmonyOS SDK 的错误类型 SRTCError、数字错误码表与处理建议
+- [更新日志](https://docs.stmlink.com/zh/rtc/harmony/changelog.md): HarmonyOS SRTC 音视频 SDK 版本更新记录
+
+## SRTC 音视频 SDK · HarmonyOS SDK · 进阶实践
+
+- [静音与停止发布](https://docs.stmlink.com/zh/rtc/harmony/advanced/mute-vs-unpublish.md): mute / unmute 与 unpublish + stopCapture 的语义差别，以及麦克风与摄像头为什么用法不同
+- [设备管理](https://docs.stmlink.com/zh/rtc/harmony/advanced/device-management.md): 用 DeviceManager 枚举摄像头与麦克风、切换设备、处理热插拔
+- [音频路由](https://docs.stmlink.com/zh/rtc/harmony/advanced/audio-routing.md): 用 AudioRouteSession 管理扬声器与听筒切换、处理蓝牙与有线耳机、监听系统通话状态
+- [屏幕共享](https://docs.stmlink.com/zh/rtc/harmony/advanced/screen-sharing.md): 在 HarmonyOS 上采集屏幕与系统音频、三种采集模式、以及授权窗与常见报错的排查
+- [多频道](https://docs.stmlink.com/zh/rtc/harmony/advanced/multi-channel.md): 一个引擎同时加入多个频道、轨道跨频道共享、以及默认频道的顺延规则
+- [通话质量](https://docs.stmlink.com/zh/rtc/harmony/advanced/call-quality.md): 读取网络质量、监听质量等级变化、活跃说话人、Simulcast 层切换，以及编解码能力核对
+
+## SRTC 音视频 SDK · HarmonyOS SDK · 接口文档
+
+- [SRTCEngine 与 Channel](https://docs.stmlink.com/zh/rtc/harmony/api-reference/SRTCEngine.md): SRTC HarmonyOS SDK 主入口 SRTCEngine 与频道对象 Channel 的接口说明
+- [轨道接口](https://docs.stmlink.com/zh/rtc/harmony/api-reference/media-tracks.md): SRTC HarmonyOS SDK 的 Track 继承体系、本地采集与远端播放接口
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式）
 
@@ -327,6 +353,7 @@
 - [媒体控制](https://docs.stmlink.com/zh/meeting/swift/advanced/media-control.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的开关与切换，以及房间媒体策略的影响
 - [视频渲染](https://docs.stmlink.com/zh/meeting/swift/advanced/video-rendering.md): 在 SwiftUI 与 UIKit / AppKit 中渲染 SMeeting 的本端画面、远端画面与合屏画面
 - [屏幕共享](https://docs.stmlink.com/zh/meeting/swift/advanced/screen-sharing.md): SMeeting Swift SDK 的屏幕共享接入：默认采集、macOS 指定共享源、iOS 全屏共享（Broadcast Upload Extension）、白板共享与共享事件
+- [虚拟背景](https://docs.stmlink.com/zh/meeting/swift/advanced/virtual-background.md): Swift SMeeting 会议 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么是设备级配置、切换摄像头与重新开摄像头后不用自己补、低端机保帧率的两个参数，以及 1.3.0 抬高的系统要求
 - [外设管理](https://docs.stmlink.com/zh/meeting/swift/advanced/device-management.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的枚举与切换，以及设备插拔事件处理
 - [音频路由（iOS）](https://docs.stmlink.com/zh/meeting/swift/advanced/audio-routing.md): 会议中控制声音从扬声器还是听筒出：持久默认与临时切换两层、外设为什么不能主动切、以及入会即申请麦克风权限的原因
 - [会中消息](https://docs.stmlink.com/zh/meeting/swift/advanced/messaging.md): SMeeting Swift SDK 的会中聊天消息、自定义消息发送与接收，以及禁言控制
@@ -358,6 +385,7 @@
 ## SMeeting 会议 SDK · iOS SDK · 进阶实践
 
 - [屏幕录制](https://docs.stmlink.com/zh/meeting/ios/advanced/screen-recording.md): iOS SMeeting 会议 SDK 屏幕录制功能配置指南
+- [虚拟背景](https://docs.stmlink.com/zh/meeting/ios/advanced/virtual-background.md): iOS SMeeting 会议 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么是设备级配置、切换摄像头与断线重连后不用自己补，以及低端机保帧率的两个参数
 
 ## SMeeting 会议 SDK · iOS SDK · 接口列表
 
@@ -366,6 +394,41 @@
 - [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会议组件全局事件回调协议：音频路由变更与应用性能，与加入了几个房间无关
 - [MeetingKitRoomDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoomDelegate.md): 会议房间事件回调协议：进出房间、房间设置与主持人操作、成员状态、聊天消息、云录制、屏幕共享、码流质量与签到，每个回调都带事件来源房间实例
 - [MeetingKitIMDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitIMDelegate.md): 会议外消息通道的回调协议：连接状态、来电呼叫、会议提醒、等候室移入、子会议求助
+
+## SMeeting 会议 SDK · HarmonyOS SDK
+
+- [集成方式](https://docs.stmlink.com/zh/meeting/harmony/integration.md): SMeeting HarmonyOS SDK 的环境要求、HAR 集成方式与权限配置
+- [快速开始](https://docs.stmlink.com/zh/meeting/harmony/quickstart.md): 在 HarmonyOS 应用中用 SMeeting 完成登录、创建会议、入会、开麦开摄像头的最小流程
+- [核心概念](https://docs.stmlink.com/zh/meeting/harmony/key-concepts.md): 理解 SMeeting HarmonyOS SDK 的对象模型、与 SRTC 的分层关系、角色与会控体系
+- [事件参考](https://docs.stmlink.com/zh/meeting/harmony/events.md): SMeeting HarmonyOS SDK 的全部 52 个事件回调与各自的数据结构字段
+- [类型定义](https://docs.stmlink.com/zh/meeting/harmony/types.md): SMeeting HarmonyOS SDK 的枚举、数据模型与请求参数完整清单
+- [错误码](https://docs.stmlink.com/zh/meeting/harmony/error-codes.md): SMeeting HarmonyOS SDK 的错误类型 SMeetingError、数字错误码表与处理建议
+- [更新日志](https://docs.stmlink.com/zh/meeting/harmony/changelog.md): HarmonyOS SMeeting 会议 SDK 版本更新记录
+
+## SMeeting 会议 SDK · HarmonyOS SDK · 进阶实践
+
+- [媒体控制](https://docs.stmlink.com/zh/meeting/harmony/advanced/media-control.md): 开麦开摄像头的完整流程、静音与关闭的区别、响应主持人请求、按需订阅控制带宽
+- [会控](https://docs.stmlink.com/zh/meeting/harmony/advanced/host-controls.md): 主持人权限、房间级开关的两字段语义、对成员的媒体操作与主持人移交
+- [视频渲染](https://docs.stmlink.com/zh/meeting/harmony/advanced/video-rendering.md): 两种渲染写法的取舍、@Prop 的陷阱、同一路画面渲染在多处的限制、宫格与大窗布局
+- [举手](https://docs.stmlink.com/zh/meeting/harmony/advanced/handup.md): 四种举手类型、状态流转、主持人处理与 UI 状态同步
+- [等候室](https://docs.stmlink.com/zh/meeting/harmony/advanced/waiting-room.md): 开启等候室、放行成员、成员被移入等候室时的处理
+- [子会议](https://docs.stmlink.com/zh/meeting/harmony/advanced/sub-meetings.md): 创建与分组、启停子会议、跨组移动成员、成员求助
+- [聊天与自定义消息](https://docs.stmlink.com/zh/meeting/harmony/advanced/messaging.md): 群发与私聊、四种消息类型、自定义消息、禁言控制
+- [IM 通道](https://docs.stmlink.com/zh/meeting/harmony/advanced/im.md): 会议 IM 的四类事件、base + content 结构、呼叫与会议提醒、连接状态
+- [屏幕共享](https://docs.stmlink.com/zh/meeting/harmony/advanced/screen-sharing.md): 发起共享、订阅别人的共享画面、白板共享、以及授权窗相关的坑
+- [录制与 MCU](https://docs.stmlink.com/zh/meeting/harmony/advanced/recording.md): 启动录制与混流、布局配置、任务状态监听与异常处理
+- [资源与附件](https://docs.stmlink.com/zh/meeting/harmony/advanced/resources.md): 预签名直传上传文件、资源列表与目录、会议背景与附件
+- [签到](https://docs.stmlink.com/zh/meeting/harmony/advanced/sign-in.md): 发起签到、成员签到、查询统计与明细
+- [音频路由](https://docs.stmlink.com/zh/meeting/harmony/advanced/audio-routing.md): 扬声器与听筒切换、持久设置与临时设置的优先级、蓝牙与有线耳机、系统来电
+- [设备管理](https://docs.stmlink.com/zh/meeting/harmony/advanced/device-management.md): 枚举摄像头与麦克风、切换设备、热插拔监听与设备选择器
+
+## SMeeting 会议 SDK · HarmonyOS SDK · 接口文档
+
+- [SMeetingEngine](https://docs.stmlink.com/zh/meeting/harmony/api-reference/SMeetingEngine.md): SMeeting HarmonyOS SDK 主入口：登录、会议管理、入会离会与查询接口
+- [媒体控制接口](https://docs.stmlink.com/zh/meeting/harmony/api-reference/media-control.md): SMeetingEngine 的开麦、摄像头、屏幕共享、订阅与远端音频控制接口
+- [会控接口](https://docs.stmlink.com/zh/meeting/harmony/api-reference/admin-actions.md): SMeetingEngine 的 admin* 会控方法、等候室、子会议、录制、签到与资源接口
+- [设备与音频路由接口](https://docs.stmlink.com/zh/meeting/harmony/api-reference/devices.md): SMeetingEngine 上的设备枚举、热插拔监听与音频输出路由接口
+- [SMeetingRemoteVideoView](https://docs.stmlink.com/zh/meeting/harmony/api-reference/SMeetingRemoteVideoView.md): 远端画面组件的参数、订阅生命周期管理，以及同一路画面渲染在多处时的限制
 
 ## SMeeting 会议 SDK · 服务端 API
 

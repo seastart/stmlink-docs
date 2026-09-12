@@ -3,6 +3,62 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.2] - 2026.09.12
+#### 新增
++ `requestShare(source:preset:view:messageOnly:byAdmin:adminUid:)`新增`excludedWindowIds`与`excludesCurrentApplication`两个带默认值的参数，透传给音视频层，用于 macOS 整屏共享时挖掉自家的某些窗口。现有调用点源码兼容。
+
+#### 变更
++ 依赖的 SRTC 升级到 **1.4.2**：macOS 整屏共享改为默认**包含**本 App 自己的窗口（此前整个进程都被排除），并修复了「只共享屏幕音频时麦克风被一起发出去」，详见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)。
+
+<Warning>
+会中主窗口通常正在渲染远端画面。整屏共享放开自身窗口后，如果界面上有共享预览、或是同机双开自测，这类窗口会形成**无限镜像**。把它们的 ID（`UInt32(NSWindow.windowNumber)`）放进`excludedWindowIds`：
+
+```swift
+let ids = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.windowNumber > 0 }
+    .map { UInt32($0.windowNumber) }
+try await meeting.requestShare(source: chosen, excludedWindowIds: ids)
+```
+
+确实要回到旧的「整个 App 都不共享」行为，把`excludesCurrentApplication`置`true`。
+</Warning>
+
+<Note>
+**iOS 全屏共享的扩展 target 那条额外依赖要跟着升到 1.4.2**：`.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.2")`。它必须与本 SDK 清单里 pin 的版本一致，否则依赖解析冲突，见[集成方式](/zh/meeting/swift/integration)。
+</Note>
+
+### [1.3.1] - 2026.09.11
+#### 变更
++ 依赖的 SRTC 升级到 **1.4.1**：修复 WangSu(CDN) 频道下活跃说话人事件不触发的问题。会议若使用 CDN 流媒体，`SMeetingDelegate`的`meeting(_:activeSpeakersDidChange:)`现在同样会收到事件（此前仅 SeaStart 频道有数据），详见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)。
+
+<Note>
+**iOS 全屏共享的扩展 target 那条额外依赖要跟着升到 1.4.1**：`.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.1")`。它必须与本 SDK 清单里 pin 的版本一致，否则依赖解析冲突，见[集成方式](/zh/meeting/swift/integration)。
+</Note>
+
+### [1.3.0] - 2026.09.09
+#### 新增
++ **虚拟背景**：`SMeetingEngine`新增`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`，以及实例访问器`virtualBackground`（诊断用只读状态与丢帧计数），装载不需要授权密钥，详见[虚拟背景](/zh/meeting/swift/advanced/virtual-background)；
+    - 属**设备级配置**，设置同时作用于全部会议；会中切换摄像头、关掉摄像头再打开、断线重连后都不需要业务层重新下发。
+
+#### 变更
++ 依赖的 SRTC 升级到 **1.4.0**（虚拟背景、`DegradationPreference`真正生效、预设改为`maintainResolution`、macOS 系统默认输出设备接口），详见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)。
+
+<Warning>
+**最低系统要求抬到 iOS 16.0 / macOS 14.0**（此前为 iOS 13.0 / macOS 10.15）。这是破坏性变更：低于此下限的工程解析不到本版本及以后的版本，报的是依赖解析失败而不是编译错误。下限来自音视频层——SwiftPM 的`platforms:`是包级的，依赖方只能等于或高于被依赖方。
+</Warning>
+
+<Note>
+**iOS 全屏共享的扩展 target 那条额外依赖要跟着升到 1.4.0**：`.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.0")`。它必须与本 SDK 清单里 pin 的版本一致，否则依赖解析冲突，见[集成方式](/zh/meeting/swift/integration)。
+</Note>
+
+### [1.2.1] - 2026.09.07
+#### 修复
++ 修复远端屏幕共享状态的判定：成员的`shareState`现在要求「房间共享状态（`share_state`/`share_uid`）+ 存在 screen 轨道」两者都满足才跃变为共享中，不再单凭轨道存在就判定。修掉了轨道先于房间状态到达时的误报，以及房间状态未变、轨道短暂消失时误报「共享已停止」。
++ 白板共享（`whiteBoard`）无媒体轨道，仍完全由房间 props 推导，行为不变。
+
+#### 变更
++ 依赖的 SRTC 升级到 **1.3.2**（含 mqtt`content`为`null`的崩溃修复，以及`DeviceType.harmonyOS`）。
+
 ### [1.2.0] - 2026.08.20
 #### 新增
 + iOS 全屏屏幕共享：新增`prepareBroadcastShare(appGroup:preset:)`、`publishBroadcastShare(view:byAdmin:adminUid:)`、`stopBroadcastListening()`、`requestShare(broadcastAppGroup:...)`与只读属性`isShareBroadcastActive`，可共享整个系统屏幕（此前 iOS 只能采到本 App 画面），需额外集成一个 Broadcast Upload Extension，详见[屏幕共享](/zh/meeting/swift/advanced/screen-sharing)；

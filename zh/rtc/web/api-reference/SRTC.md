@@ -287,6 +287,12 @@ publishLocalTrack(
 
 **返回值：** `TrackInfo`，本次发布在频道内的轨道描述快照；后续要拿最新值请用 `channel.getPublishInfo(track)`。
 
+<Warning>
+同一个频道内，一个 `desc` 只能有一条轨道处于发布状态。用**另一条**轨道重复发布同一个 `desc`（例如已经发着一条 `mic`，又发布第二条 `mic`）会抛错；同一条轨道重复发布不受影响，仍是幂等的。
+
+所以开麦、开摄像头这类入口要自行串行：上一次 `publishLocalTrack` 还没 await 完就再发一次，两条轨道会同时推流，而你手上通常只留得下后创建的那条引用，先发的那条就再也取消不掉了。
+</Warning>
+
 ---
 
 ### unpublishLocalTrack

@@ -1,0 +1,67 @@
+---
+title: "更新日志"
+description: "HarmonyOS SRTC 音视频 SDK 版本更新记录"
+---
+
+### [1.0.1] - 2026.09.11
+#### 修复
+
+三处都是鸿蒙硬件编码器与 WebRTC 通用假设对不上导致的**静默故障**——不报错、日志也看不出异常，只有对端画面或后台数据不对。
+
++ **分层发布降级**：引擎声明支持 Simulcast、实际却发不出多层时，SDK 会把分层配置降成单层再发布，而不是发一路"以为是多层"的流。共享同一采集源的分层不再下发缩放系数——硬件编码器对共享源做的是**中心裁剪**而不是缩放，下发反而产生错误的帧。
++ **分辨率对账**：编码器实际输出的分辨率会因码率爬坡与档位限制而与申报值不同。SDK 现在每 3 秒从 `outbound-rtp` 读回实际值并回报服务端，后台看到的分辨率与实际发出的一致。
++ **发布探针基线**：发布完成的判据此前只看 `packetsSent` 是否非零，复用同一 transceiver 时会把上一路的计数当成本路已经在发。改为先记录基线、要求计数**超过基线**才算真的在发。
+
+<Note>
+本版无 API 变更，升级只需替换 HAR 文件与 `oh-package.json5` 中的版本号。
+</Note>
+
+### [1.0.0] - 2026.09.07
+#### 新增
+
++ **本端统计**：`Channel.getStats()` 返回 `RtcStatsSnapshot`，包含实际编码分辨率与帧率、编码器降级原因（`qualityLimitationReason`）、发送侧丢包与往返时延；配套 `logStats()` 与 `statsSummary()`。与服务端下发的 `onQualityReport` 互补——后者只有 SeaStart 引擎有，而本端统计两条引擎路径都能出，且能回答服务端答不了的问题（实际编码分辨率、为什么降级）。
++ **SDP 协商结果查询**：`negotiatedVideoCodec()` / `negotiatedAudioCodec()` / `negotiatedMedias()` / `negotiatedSummary()`，用于核对本次通话实际协商到的编码格式。
++ **媒体面连接状态**：`MediaConnectionState` 与 `mediaConnectionStateName()`，反映 PeerConnection 的连通性，与信令面的 `ConnectionState` 相互独立。
++ **摄像头变焦**：`ZoomRange` 类型与变焦接口。
++ **长时任务**：支持通话切后台后继续采集与推流。
++ **诊断工具**：`statsFieldReport()` / `cameraSwitchOrderReport()` / `publishSdpReport()`，用于在新机型或升级底层库后自检字段可用性。
+
+#### 修复
+
++ 长时任务在部分场景下启动失败（`9800005 bgMode is invalid`）：除 `ohos.permission.KEEP_BACKGROUND_RUNNING` 外，`module.json5` 的 ability 还需声明 `"backgroundModes": ["audioRecording"]`。
+
+<Warning>
+**`zoomRange()` 回答的是"现在这一刻能不能变焦"，不是"设备支不支持"。**
+
+变焦挂在系统的 CaptureSession 上，该 session 只有在**真的有人在消费视频帧**时才处于 active 状态。因此变焦要在轨道**发布之后**调用；UI 上不要用 `supported` 决定控件的显示与否——"已开摄像头但还没发布"这个常见中间态里它是 `false`。
+</Warning>
+
+<Note>
+**`getStats()` 的字段可用性因机型而异。** 底层 `webrtc.d.ts` 未声明 `outbound-rtp` 等类型的字段，native 侧没有填充的字段读出来是 `undefined`（不会报错）。上新机型时可先调用 `rawStatsTypeCounts()` 确认类型覆盖面。
+</Note>
+
+### [0.0.1] - 2026.09.07
+#### 首个版本
+
++ **频道**：`SRTCEngine.joinChannel` / `leaveChannel`，支持多频道实例；入会选项 `JoinOptions` 可指定自动订阅音频 / 视频与优先编码格式。
++ **本地推流**：麦克风（`createLocalMicTrack`）、摄像头（`createLocalCameraTrack`）、屏幕共享（`createLocalScreenTrack`），配套预设 `micPreset*` / `cameraPreset*` / `screenPreset*`。
++ **订阅**：`subscribeRemoteAudioTrack` / `subscribeRemoteVideoTrack` 按 `uid` + `trackId` 显式订阅，支持 Simulcast 多层选订。
++ **渲染**：ArkUI 组件 `SRTCVideoView`，视频帧由底层直接写入 XComponent surface，不经过 ArkUI 绘制流程。
++ **事件**：`ChannelDelegate` 覆盖连接状态、成员进出、流增删、自定义消息、网络质量、活跃说话人、Simulcast 层切换。
++ **音频路由**：`AudioRouteSession` 统一管理输出路由，支持扬声器 / 听筒的持久设置与通话中临时切换；外接设备（蓝牙 / 有线）由系统接管，SDK 只上报。
++ **设备管理**：`DeviceManager` 支持设备枚举与热插拔事件。
++ **IM**：`enableIm` / `disableIm`，频道内自定义消息与信令通道。
+
+<Warning>
+**视频编码只有硬编，没有软编兜底。**
+
+视频预设统一使用 H264，而底层 `@ohos/webrtc` 的 H264 / H265 只走设备硬件编解码器。模拟器上建不出编码器，SDP 中不会出现 H264；在缺少 H264 硬编能力的真机上，SDK **不报错而是静默退回 VP8**，表现为和 Web / iOS / Android 端互通不上。
+
+自测时请确认实际协商到的编码格式，不要以"看到画面"为准。
+</Warning>
+
+<Note>
+**仅支持 arm64-v8a。**
+
+**升级需要手动替换 HAR 文件。** ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 路径引用具体的 HAR 文件名，升级时要同步修改 `libs/` 下的文件与 `oh-package.json5` 中的版本号。
+</Note>

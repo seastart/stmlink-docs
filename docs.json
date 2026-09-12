@@ -220,6 +220,7 @@
                       "zh/rtc/swift/advanced/device-management",
                       "zh/rtc/swift/advanced/audio-routing",
                       "zh/rtc/swift/advanced/screen-sharing",
+                      "zh/rtc/swift/advanced/virtual-background",
                       "zh/rtc/swift/advanced/multi-channel",
                       "zh/rtc/swift/advanced/call-quality",
                       "zh/rtc/swift/advanced/custom-track"
@@ -248,7 +249,8 @@
                     "group": "进阶实践",
                     "pages": [
                       "zh/rtc/ios/advanced/screen-recording",
-                      "zh/rtc/ios/advanced/beauty"
+                      "zh/rtc/ios/advanced/beauty",
+                      "zh/rtc/ios/advanced/virtual-background"
                     ]
                   },
                   {
@@ -265,6 +267,36 @@
                   "zh/rtc/ios/error-codes",
                   "zh/rtc/ios/changelog",
                   "zh/rtc/ios/faq"
+                ]
+              },
+              {
+                "group": "HarmonyOS SDK",
+                "pages": [
+                  "zh/rtc/harmony/integration",
+                  "zh/rtc/harmony/quickstart",
+                  "zh/rtc/harmony/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/harmony/advanced/mute-vs-unpublish",
+                      "zh/rtc/harmony/advanced/device-management",
+                      "zh/rtc/harmony/advanced/audio-routing",
+                      "zh/rtc/harmony/advanced/screen-sharing",
+                      "zh/rtc/harmony/advanced/multi-channel",
+                      "zh/rtc/harmony/advanced/call-quality"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/harmony/api-reference/SRTCEngine",
+                      "zh/rtc/harmony/api-reference/media-tracks"
+                    ]
+                  },
+                  "zh/rtc/harmony/events",
+                  "zh/rtc/harmony/types",
+                  "zh/rtc/harmony/error-codes",
+                  "zh/rtc/harmony/changelog"
                 ]
               },
               {
@@ -457,6 +489,7 @@
                       "zh/meeting/swift/advanced/media-control",
                       "zh/meeting/swift/advanced/video-rendering",
                       "zh/meeting/swift/advanced/screen-sharing",
+                      "zh/meeting/swift/advanced/virtual-background",
                       "zh/meeting/swift/advanced/device-management",
                       "zh/meeting/swift/advanced/audio-routing",
                       "zh/meeting/swift/advanced/messaging",
@@ -493,7 +526,8 @@
                   {
                     "group": "进阶实践",
                     "pages": [
-                      "zh/meeting/ios/advanced/screen-recording"
+                      "zh/meeting/ios/advanced/screen-recording",
+                      "zh/meeting/ios/advanced/virtual-background"
                     ]
                   },
                   {
@@ -510,6 +544,47 @@
                   "zh/meeting/ios/error-codes",
                   "zh/meeting/ios/changelog",
                   "zh/meeting/ios/faq"
+                ]
+              },
+              {
+                "group": "HarmonyOS SDK",
+                "pages": [
+                  "zh/meeting/harmony/integration",
+                  "zh/meeting/harmony/quickstart",
+                  "zh/meeting/harmony/key-concepts",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/meeting/harmony/advanced/media-control",
+                      "zh/meeting/harmony/advanced/host-controls",
+                      "zh/meeting/harmony/advanced/video-rendering",
+                      "zh/meeting/harmony/advanced/handup",
+                      "zh/meeting/harmony/advanced/waiting-room",
+                      "zh/meeting/harmony/advanced/sub-meetings",
+                      "zh/meeting/harmony/advanced/messaging",
+                      "zh/meeting/harmony/advanced/im",
+                      "zh/meeting/harmony/advanced/screen-sharing",
+                      "zh/meeting/harmony/advanced/recording",
+                      "zh/meeting/harmony/advanced/resources",
+                      "zh/meeting/harmony/advanced/sign-in",
+                      "zh/meeting/harmony/advanced/audio-routing",
+                      "zh/meeting/harmony/advanced/device-management"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/meeting/harmony/api-reference/SMeetingEngine",
+                      "zh/meeting/harmony/api-reference/media-control",
+                      "zh/meeting/harmony/api-reference/admin-actions",
+                      "zh/meeting/harmony/api-reference/devices",
+                      "zh/meeting/harmony/api-reference/SMeetingRemoteVideoView"
+                    ]
+                  },
+                  "zh/meeting/harmony/events",
+                  "zh/meeting/harmony/types",
+                  "zh/meeting/harmony/error-codes",
+                  "zh/meeting/harmony/changelog"
                 ]
               },
               {

@@ -96,7 +96,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 </ParamField>
 
 <ParamField body="props" type="object">
-  用户扩展属性
+  用户扩展属性。为响应agent_join回调而调用本接口时，必须把回调里收到的extend_info原样放进来(键名extend_info)，否则踢人、开关设备视频/音频对该设备会失效，详见《回调事件接入指南》
   示例：`{"avatar":"https://cdn.example.com/avatar/1001.png"}`
 </ParamField>
 
