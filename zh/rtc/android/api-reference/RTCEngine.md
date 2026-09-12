@@ -314,6 +314,83 @@ fun switchMicDevice(deviceId: String)
 
 方法说明：切换共享麦克风采集使用的输入设备。`deviceId` 来自 `getMicDevices()`，只在本次设备连接期间有效；采集中切换会重建录音链路。也可以通过 `LocalMicTrack` 上的同名方法操作。
 
+## 虚拟背景
+
+对摄像头采集画面做本地人像分割，支持背景虚化和背景图替换。本端预览与对端画面一致。
+
+调用顺序：`installVirtualBackground` → `setVirtualBackgroundBlur` 或 `setVirtualBackgroundImage` → `enabledVirtualBackground(true)`，不再使用时调用 `uninstallVirtualBackground`。
+
+### installVirtualBackground(modelData)
+
+```kotlin
+fun installVirtualBackground(modelData: ByteArray): Int
+```
+
+方法说明：装载虚拟背景模块。虚拟背景为自研模块，不需要授权密钥，只需要人像分割模型。  
+参数说明：`modelData` 为 selfie_segmenter onnx 模型内容，由应用层从 assets 读出后传入。  
+返回值说明：错误码，`0` 表示成功。模型为空或无效时返回 `VIRTUAL_BACKGROUND_MODEL_INVALID`，见 [错误码](/zh/rtc/android/error-codes)。
+
+### uninstallVirtualBackground()
+
+```kotlin
+fun uninstallVirtualBackground()
+```
+
+方法说明：卸载虚拟背景模块，释放模型与 GPU 资源。
+
+### enabledVirtualBackground(enabled)
+
+```kotlin
+fun enabledVirtualBackground(enabled: Boolean): Int
+```
+
+方法说明：虚拟背景总开关。关闭时采集链路零开销直通，不做任何推理与合成。  
+参数说明：`enabled` 为 `true` 开启，`false` 关闭。  
+返回值说明：错误码，`0` 表示成功。未装载模块时返回 `VIRTUAL_BACKGROUND_NOT_INSTALL`。
+
+### setVirtualBackgroundBlur(level)
+
+```kotlin
+fun setVirtualBackgroundBlur(level: Int)
+```
+
+方法说明：设置背景虚化强度。与 `setVirtualBackgroundImage` 互斥，后调用的生效。  
+参数说明：`level` 取值 `1~10`，默认 `5`。
+
+### setVirtualBackgroundImage(image)
+
+```kotlin
+fun setVirtualBackgroundImage(image: Bitmap?)
+```
+
+方法说明：设置背景替换图，按 cover 方式裁剪不拉伸。与 `setVirtualBackgroundBlur` 互斥，后调用的生效。  
+参数说明：`image` 为背景图；传 `null` 表示取消换图。
+
+### setVirtualBackgroundInferenceInterval(interval)
+
+```kotlin
+fun setVirtualBackgroundInferenceInterval(interval: Int)
+```
+
+方法说明：设置分割推理间隔，每 `interval` 帧跑一次人像分割，默认 `1`。用于低端机型降低开销，建议由应用层按机型下发，不暴露给终端用户。  
+参数说明：`interval` 最小为 `1`。
+
+### setVirtualBackgroundMaskSync(on)
+
+```kotlin
+fun setVirtualBackgroundMaskSync(on: Boolean)
+```
+
+方法说明：设置蒙版对齐开关，默认 `false`。用于消除快速挥手时的错位拖影，只在推理间隔大于 `1` 时才有区别。
+
+### isVirtualBackgroundEnabled()
+
+```kotlin
+fun isVirtualBackgroundEnabled(): Boolean
+```
+
+方法说明：查询当前虚拟背景是否处于开启状态。
+
 ## Track 获取
 
 ### getLocalCameraTrack(preOpt)

@@ -46,7 +46,8 @@ description: "Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera �
 | --- | --- | --- |
 | desc | `String` | 轨道描述（主流常用 `TRACK_MAIN`，辅流常用 `TRACK_SUB`）。 |
 | codec | `CodecType` | 编码格式（常用 `H264`）。 |
-| maxBitrate | `Int` | 最大码率。 |
+| maxBitrate | `Int` | 最大码率，单位 bps。 |
+| minBitrate | `Int?` | 最小码率，单位 bps。`null` 使用引擎默认下限；非空时应满足 `0 <= minBitrate <= maxBitrate`。目前仅 SFU 引擎支持。 |
 | width | `Int` | 推送宽度。 |
 | height | `Int` | 推送高度。 |
 | maxFps | `Int` | 最大推送帧率。 |
@@ -59,24 +60,24 @@ description: "Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera �
 
 ```kotlin
 // _1080P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=1920, height=1080, maxFps=30
-publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=2000*1024, width=1920, height=1080, maxFps=25
-publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=128*1024, width=320, height=180, maxFps=25
+capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=1920, height=1080, maxFps=15
+publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=5000*1024, minBitrate=2500*1024, width=1920, height=1080, maxFps=15
+publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 
 // _720P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=1280, height=720, maxFps=30
-publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=900*1024, width=1280, height=720, maxFps=25
-publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=128*1024, width=320, height=180, maxFps=25
+capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=1280, height=720, maxFps=15
+publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=2400*1024, minBitrate=1500*1024, width=1280, height=720, maxFps=15
+publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 
 // _480P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=640, height=480, maxFps=30
-publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=512*1024, width=640, height=480, maxFps=25
-publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=128*1024, width=320, height=180, maxFps=25
+capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=640, height=480, maxFps=15
+publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=800*1024, minBitrate=400*1024, width=640, height=480, maxFps=15
+publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 
 // _180P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=320, height=180, maxFps=30
-publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=128*1024, width=320, height=180, maxFps=25
-publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=128*1024, width=320, height=180, maxFps=25
+capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=320, height=180, maxFps=15
+publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
+publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 ```
 
 ## 发布自定义参数：PublishCustomOptions

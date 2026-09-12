@@ -73,6 +73,8 @@ Android SRTC 的错误码分为两类：
 | `CAMERA_DISCONNECTED` | `102235` | 摄像头在运行期间断开。 |
 | `CAMERA_RUNTIME_ERROR` | `102236` | 摄像头运行时系统错误。 |
 | `CAMERA_STATE_INVALID` | `102237` | 操作不符合摄像头状态机约束。 |
+| `VIRTUAL_BACKGROUND_MODEL_INVALID` | `102240` | 虚拟背景人像分割模型为空或无效。 |
+| `VIRTUAL_BACKGROUND_NOT_INSTALL` | `102241` | 虚拟背景模块尚未装载，需先调用 `installVirtualBackground`。 |
 
 ### `RtcMicErrorCode`
 
