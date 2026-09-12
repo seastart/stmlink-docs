@@ -130,13 +130,19 @@ try await meeting.requestShare()
 
 ---
 
-#### `requestShare(source:preset:view:byAdmin:adminUid:)`
+#### `requestShare(source:preset:view:byAdmin:adminUid:excludedWindowIds:excludesCurrentApplication:)`
 
 指定采集源的重载，**仅 macOS 12.3 及以上**。
 
 ```swift
 let displays = try await ScreenCaptureSources.availableDisplays()
 try await meeting.requestShare(source: displays[0])
+
+// 整屏共享，同时挖掉会中窗口（否则同机自测时形成无限镜像）
+let ids = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.windowNumber > 0 }
+    .map { UInt32($0.windowNumber) }
+try await meeting.requestShare(source: displays[0], excludedWindowIds: ids)
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -146,10 +152,16 @@ try await meeting.requestShare(source: displays[0])
 | `view` | `NativeVideoView?` | 否 | 本地预览视图 |
 | `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请 |
 | `adminUid` | `String?` | 否 | 发起邀请的主持人 ID |
+| `excludedWindowIds` | `[UInt32]` | 否 | 整屏共享时要挖掉的自家窗口，取值 `UInt32(NSWindow.windowNumber)`；采集单个窗口时无意义。默认 `[]` |
+| `excludesCurrentApplication` | `Bool` | 否 | 置 `true` 回到「整个 App 都不共享」的旧行为，此时 `excludedWindowIds` 被忽略。默认 `false` |
 
 **返回值：** 无
 
 **可能抛出：** 同上一个重载。
+
+<Warning>
+自 1.3.2（SRTC 1.4.2）起，整屏共享**默认包含本 App 自己的窗口**。会中主窗口通常正在渲染远端画面，界面上若有共享预览、或同机双开自测，务必把这些窗口放进 `excludedWindowIds`，否则形成无限镜像。
+</Warning>
 
 ---
 

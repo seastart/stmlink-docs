@@ -59,6 +59,26 @@ func startShare(meeting: SMeetingEngine) async throws {
 
 > SDK 负责「发现可共享的源」和「开始采集」，「怎么把源列表展示给用户」由你决定，这样 SDK 不绑定任何 UI 方案。
 
+#### macOS：整屏共享时排除会中窗口
+
+共享**整个显示器**时，画面默认**包含本 App 自己的窗口**（与 Zoom / 腾讯会议一致）。而会中主窗口通常正在渲染远端画面，如果它渲染的正是你这路共享流（同机双开自测，或界面上有共享预览），就会形成无限镜像。把这些窗口的 ID 传进去逐个挖掉：
+
+```swift
+let ids = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.windowNumber > 0 }
+    .map { UInt32($0.windowNumber) }
+
+try await meeting.requestShare(source: source, excludedWindowIds: ids)
+```
+
++ 取值是 `UInt32(NSWindow.windowNumber)`，只在共享整个显示器时有意义，采集单个窗口时忽略
++ 列表在开始采集时快照一次，之后新开的窗口一律进画面
++ 确实要回到「整个 App 都不共享」的旧行为，把 `excludesCurrentApplication` 置 `true`，此时 `excludedWindowIds` 被忽略
+
+<Warning>
+这是 1.3.2（SRTC 1.4.2）的**行为变更**：此前整个进程的窗口都会被从整屏画面里挖掉，对端看不到你的会中窗口。跨机器共享时新行为更自然（对端能看到你的会议界面），依赖旧行为的产品升级后需显式设置 `excludesCurrentApplication: true`。
+</Warning>
+
 #### 本地预览
 
 如果你在 UIKit / AppKit 下需要本地预览共享画面，可以传入 `view`；SwiftUI 下不传，改用 `SRTCVideoView(track: meeting.screenTrack)`。

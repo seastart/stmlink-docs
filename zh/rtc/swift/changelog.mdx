@@ -3,6 +3,26 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.4.2] - 2026.09.12
+#### 新增
++ **macOS 整屏共享支持按窗口排除**：`createLocalScreenTrack(source:preset:audioPreset:)`新增`excludedWindowIds`与`excludesCurrentApplication`两个带默认值的参数，`ScreenCaptureOptions`同步新增同名属性。`excludedWindowIds`的取值是`UInt32(NSWindow.windowNumber)`，仅在共享**整个显示器**时有意义（采集单个窗口时忽略）；列表在`startCapture()`时快照一次，之后新开的窗口一律进画面。两个参数都有默认值，现有调用点源码兼容。
+
+#### 变更
++ **macOS 整屏共享默认包含本 App 自己的窗口**：此前 SDK 把整个进程的窗口都从画面里挖掉，表现为「共享整屏时对端看不到你自己的应用窗口」——这不是系统限制，是 SDK 自己排的。现在改为默认包含，与 Zoom / 腾讯会议一致，需要挖掉的窗口通过`excludedWindowIds`逐个指定。
++ `ScreenCaptureSources.availableWindows(includeCurrentApp:)`的默认值由`false`改为`true`，自己的窗口可以作为单窗口共享源出现在列表里。
+
+<Warning>
+放开自身窗口后，**任何正在渲染这路共享画面的窗口都会形成无限镜像**（界面上的共享预览窗口，或同机双开自测时渲染远端共享流的会中窗口）。把这些窗口的 ID 放进`excludedWindowIds`逐个挖掉，不要为此把整个 App 排除掉；确实要回到旧行为，把`excludesCurrentApplication`置`true`（此时`excludedWindowIds`被忽略）。
+</Warning>
+
+#### 修复
++ **只共享屏幕音频时麦克风被一起发出去**：mix 模式下所有音频源共用同一条采集流，原先靠混音节点的音量决定要不要混入麦克风，但那个节点实际上没有输入，改它的音量对硬件麦克风毫无作用——结果是业务侧没有发布麦克风轨、只共享屏幕音频时，对端仍能听到本端的环境声。现改为在音频设备模块层面直接静音硬件麦克风（默认静音，只有发布麦克风轨或`LocalMicTrack.unmute()`才解除），屏幕音频与自定义音频注入的声音不受影响。
++ 同一根因下，macOS 上`LocalMicTrack.mute()`此前是空操作（调用后对端仍能听到），现已真正生效。
+
+<Note>
+`SRTCBroadcastKit`本次为 **1.0.7**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.4.1] - 2026.09.11
 #### 修复
 + **WangSu(CDN) 频道下`ChannelDelegate.didChangeActiveSpeakers`不再触发**：活跃说话人此前只有 SeaStart(SFU) 引擎有数据（由服务端通过信令通道下发），CDN 链路上没有该通道，导致同一个对外回调在 WangSu 频道里恒不触发，业务据此绘制的音量条、发言人提示会静默失效且无任何报错。现在 CDN 侧在本地按 WebRTC 标准统计（`inbound-rtp`的`audioLevel`）每 500ms 采样一次，产出与 SFU 完全相同的`ActiveSpeakersSnapshot`，两种引擎对外行为一致，业务代码无需改动。

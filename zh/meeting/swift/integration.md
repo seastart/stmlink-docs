@@ -37,7 +37,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.2"),
 ],
 targets: [
     .target(
@@ -63,9 +63,9 @@ targets: [
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.3.2"),
     // 版本必须与 SMeeting 内部锁定的 SRTC 版本一致
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.1"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.2"),
 ],
 ```
 

@@ -172,7 +172,7 @@ iOS 全屏采集下 `startCapture()` 成功只代表 SDK 开始监听，画面�
 `screenBroadcastDidFinish(_:reason:)` 通知。
 </Note>
 
-#### `createLocalScreenTrack(source:preset:audioPreset:)`
+#### `createLocalScreenTrack(source:preset:audioPreset:excludedWindowIds:excludesCurrentApplication:)`
 
 macOS 12.3+ 专用重载，用于指定显示器或窗口源。
 
@@ -182,6 +182,15 @@ let track = srtc.createLocalScreenTrack(
     preset: .h1080p,
     audioPreset: .default
 )
+
+// 共享整屏，同时挖掉自家正在渲染这路画面的窗口
+let previewWindowIds = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.identifier?.rawValue == "meeting-room" }
+    .map { UInt32($0.windowNumber) }
+let shared = srtc.createLocalScreenTrack(
+    source: display,
+    excludedWindowIds: previewWindowIds
+)
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -189,8 +198,14 @@ let track = srtc.createLocalScreenTrack(
 | `source` | `ScreenCaptureSource?` | 否 | `DisplaySource` 或 `WindowSource`，为空时默认主显示器 |
 | `preset` | `ScreenPreset` | 否 | 默认 `.h1080p` |
 | `audioPreset` | `ScreenAudioPreset?` | 否 | 是否采集系统音频 |
+| `excludedWindowIds` | `[UInt32]` | 否 | 整屏共享时要挖掉的自家窗口，取值 `UInt32(NSWindow.windowNumber)`；采集单个窗口时无意义。默认 `[]` |
+| `excludesCurrentApplication` | `Bool` | 否 | 置 `true` 回到「整个 App 都不共享」的旧行为，此时 `excludedWindowIds` 被忽略。默认 `false` |
 
 **返回值：** `LocalScreenTrack`
+
+<Warning>
+自 1.4.2 起，整屏共享**默认包含本 App 自己的窗口**。凡是会渲染这路共享画面的窗口都要放进 `excludedWindowIds`，否则形成无限镜像。窗口列表在 `startCapture()` 时快照一次，之后新开的窗口一律进画面。
+</Warning>
 
 ---
 
