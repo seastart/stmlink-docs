@@ -3,6 +3,16 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [3.1.2] - 2026.09.14
+#### 修复
++ 修复 wangsu 流媒体下 [onRemoteMemberAudioStatus:](/zh/rtc/ios/api-reference/RTCEngineChannelDelegate#enginechannelonremotememberaudiostatus) 回调把讲话成员归属到错误用户的问题：该链路的服务端不下发连接标识，[RTCStreamAudioModel](/zh/rtc/ios/types#rtcstreamaudiomodel) 的 `linkId` 恒为 `0`，原先据此反查成员会命中列表里第一个匹配到的人，业务层做语音激励时高亮的往往不是真正在说话的那个人；现在改为按底层连接解析用户标识，解析不出时才回退到原有的 `linkId` 反查；
++ 修复统计数据缺少音量项时 `db` 被填成 `-60`（静音）而不是跳过该项的问题：原先取不到音量统计时按 `0` 参与换算，恒得 `-60` 分贝，业务层会把「这项统计本次不可用」误判成「这个人没在说话」；
++ 修复接入工程上传 App Store 被 `ITMS-90171`、`ITMS-90166` 拒绝的问题：`RTCEngineKit.bundle` 是纯资源包，但构建产物里带了一个无用的占位可执行文件与 `Info.plist` 的 `CFBundleExecutable`，被苹果判定为「资源包内不允许包含独立可执行文件」；现在构建期即移除两者，升级到本版本后直接重新打包上传即可，接入工程无需改动。
+
+<Note>
+`RTCEngineKit`的公开接口、回调签名与类型定义均未变化，已有业务代码无需改写，最低系统要求仍为 iOS 16.0。使用 wangsu 流媒体做语音激励、或此前上传 App Store 被上述两个错误码拒绝的工程，建议升级到本版本。
+</Note>
+
 ### [3.1.1] - 2026.09.09
 #### 修复
 + 修复 seastart 流媒体下订阅远端视频后画面全黑的问题：远端画面按「频道\_用户标识\_轨道标识」的索引键分发，而频道名与用户标识本身可能含下划线，原先按下划线拆键取到的是频道名，每一帧都派发到不存在的成员上；

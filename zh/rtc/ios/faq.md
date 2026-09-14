@@ -33,4 +33,9 @@ description: "iOS SRTC 音视频 SDK 集成与使用常见问题解答"
 ![](images/162287_1646648601308-e47d7e73-d5c2-499d-baf0-7c46925be1bb.png)
 
 
+#### 5、上传 App Store 被 ITMS-90171 / ITMS-90166 拒绝，提示 RTCEngineKit.bundle 内不允许包含独立可执行文件
+> 这是 `3.1.1` 及更早版本的 SDK 缺陷：`RTCEngineKit.bundle` 是纯资源包，却在构建产物里带了一个无用的占位可执行文件与 `Info.plist` 的 `CFBundleExecutable`。升级到 `3.1.2` 及以上版本后重新打包上传即可，接入工程无需改动。
+>
+
+
 
