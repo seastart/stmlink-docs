@@ -68,6 +68,7 @@ fun onError(errorCode: Int, message: String?)
 | `REMOTE_TRACK_UNAVAILABLE` | `202209` | Meeting 需要订阅的远端媒体轨道不存在 |
 | `LOCAL_DEVICE_OPERATION_CANCELLED` | `202210` | 本地设备操作被更新的开启、关闭或释放动作取消 |
 | `LOCAL_DEVICE_CAPABILITY_UNSUPPORTED` | `202211` | 当前 SRTC 采集链路不支持请求的本地设备能力 |
+| `LOCAL_DEVICE_OPERATION_IN_PROGRESS` | `202212` | 同一本地设备上一次开启事务尚未结束，终态由该次操作给出 |
 
 ### IM 错误（202300～202349）
 
