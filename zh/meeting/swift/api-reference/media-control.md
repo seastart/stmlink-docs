@@ -175,6 +175,42 @@ await meeting.stopShare()
 
 ---
 
+### 视图录制
+
+以下接口自 **1.3.4** 起可用。调用方负责将视图渲染为 `CVPixelBuffer` 并持续推帧，SDK 只负责创建和发布视频轨道，不负责截取视图或保存本地录制文件。
+
+#### `startViewCaptureShare()`
+
+```swift
+public func startViewCaptureShare() async throws -> LocalVideoTrack
+```
+
+**参数：** 无。
+
+**返回值：** 已发布的 `LocalVideoTrack`，轨道描述为 `screen`，降级策略为保持分辨率。重复调用返回已有轨道。
+
+**可能抛出：**
+
++ `SMeetingError.notInMeeting` —— 尚未加入会议。
++ `SMeetingError.internalError(_:)` —— 屏幕共享轨道已存在，包括已准备但尚未发布的广播监听轨道。
++ 底层轨道发布错误。
+
+该接口直接发布媒体轨道，不执行 `requestShare()` 的会议后端申请及共享状态通知流程。调用方应按自己的业务管理共享状态，并保证视图录制与屏幕共享互斥；需要切换到屏幕共享时，先停止视图录制。
+
+#### `stopViewCaptureShare()`
+
+```swift
+public func stopViewCaptureShare() async
+```
+
+**参数：** 无。
+
+**返回值：** 无，不抛错。尝试取消发布并清除轨道及其渲染器，不关闭或取消发布麦克风轨道。调用方同时停止推帧。
+
+视图录制应通过此接口结束，不能用 `stopShare()` 代替。
+
+---
+
 ### iOS 全屏共享
 
 以下接口仅 iOS 可用，用于共享整个系统屏幕（`requestShare()` 在 iOS 上只能采到本 App 画面）。需要先集成 Broadcast Upload Extension，完整步骤见 [屏幕共享](/zh/meeting/swift/advanced/screen-sharing)。
