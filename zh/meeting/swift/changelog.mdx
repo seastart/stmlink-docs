@@ -3,6 +3,10 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.5] - 2026.09.15
+#### 变更
++ 视图录制共享在 WangSu(CDN) 推流中附带麦克风音频；移除共享接口 `messageOnly` 模式。依赖 SRTC 1.4.4。
+
 ### [1.3.4] - 2026.09.15
 #### 新增
 + `startViewCaptureShare()`：创建并发布使用 `screen` 描述的自定义视频轨道，调用方可将视图渲染为 `CVPixelBuffer`，通过返回的 `LocalVideoTrack.pushFrame` 持续推帧。
