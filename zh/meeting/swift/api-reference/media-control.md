@@ -103,6 +103,8 @@ await meeting.closeMic()
 
 ### 屏幕共享
 
+> **1.3.5 变更**：`requestShare` 已移除 `messageOnly` 参数及对应模式。需要仅广播共享状态时，请使用 `requestShare(shareType: .whiteBoard)`；屏幕共享仍会执行正常的媒体采集与发布。旧代码中的 `messageOnly: true` 需要删除或改用白板共享。
+
 #### `requestShare(shareType:preset:view:byAdmin:adminUid:)`
 
 ```swift
