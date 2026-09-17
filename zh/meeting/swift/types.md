@@ -165,6 +165,7 @@ req.resKey = key
 | `cameraState` | `CameraState` | 摄像头状态 |
 | `shareState` | `Int` | 共享状态：`0` 无、`1` 屏幕、`2` 白板 |
 | `chatDisabled` | `Bool` | 是否被单独禁言 |
+| `drawDisabled` | `Bool` | 是否被禁止涂鸦 |
 | `isKickout` | `Bool` | 是否已被移出 |
 | `trackDescs` | `[String]` | 当前已发布的轨道描述列表 |
 | `deviceType` | `String` | 设备类型 |
@@ -321,6 +322,7 @@ result.meta      // MetaRes
 | `UserNameChangeEventData` | `uid`、`nickname`、`byAdmin`、`opUid` |
 | `UserRoleChangeEventData` | `uid`、`role`、`opUid` |
 | `UserChatDisabledChangeEventData` | `uid`、`chatDisabled`、`opUid` |
+| `UserDrawDisabledChangeEventData` | `uid`、`drawDisabled`、`opUid` |
 | `UserHandupEventData` | `uid`、`type: HandupType`、`step: UserHandupStep` |
 
 #### 房间状态

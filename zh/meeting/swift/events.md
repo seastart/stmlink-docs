@@ -61,6 +61,7 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:userNameDidChange:)` | 成员会中昵称变化 | `UserNameChangeEventData` |
 | `meeting(_:userRoleDidChange:)` | 成员角色变化，含主持人转移 | `UserRoleChangeEventData` |
 | `meeting(_:userChatDisabledDidChange:)` | 成员被单独禁言 / 解除 | `UserChatDisabledChangeEventData` |
+| `meeting(_:userDrawDisabledDidChange:)` | 成员被禁止涂鸦 / 解除 | `UserDrawDisabledChangeEventData` |
 | `meeting(_:userDidHandup:)` | 成员举手、取消举手，或响应了主持人的开启邀请 | `UserHandupEventData` |
 
 媒体状态事件里的 `byAdmin` 为 `true` 时表示这次变化是主持人操作导致的，`opUid` 是操作者。你可以据此给用户一个「已被主持人关闭麦克风」这类提示。

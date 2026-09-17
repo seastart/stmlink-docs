@@ -115,6 +115,15 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 | `targetId` | `String` | 是 | 目标成员 ID |
 | `chatDisabled` | `Bool` | 是 | 是否禁言该成员 |
 
+#### `adminUpdateUserDrawDisabled(targetId:drawDisable:)`
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `targetId` | `String` | 是 | 目标成员 ID |
+| `drawDisable` | `Bool` | 是 | 是否禁止该成员涂鸦 |
+
+当前状态读 `MeetingUserInfo.drawDisabled`，变化时所有成员收到 `meeting(_:userDrawDisabledDidChange:)`（1.3.6 起提供）。
+
 #### `adminMoveHost(targetId:)`
 
 转移主持人身份。
