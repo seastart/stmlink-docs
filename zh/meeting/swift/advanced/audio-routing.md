@@ -100,6 +100,28 @@ meeting.availableAudioRoutes()      // 系统音频端口快照，诊断 / 展�
 
 ---
 
+### 纯本地播放时停掉音频单元
+
+录像直播课这类场景：人在会议里，但只是放一段录像，**没有任何通话音频要收发**。此时 VoIP 语音处理单元仍占着音频会话，会把 `AVPlayer` 的播放音量压低一大截。把音频单元停掉，系统音频会话交还给本地播放器，音量即恢复正常。
+
+```swift
+meeting.setAudioModuleEnabled(false)   // 开始播放录像前
+meeting.setAudioModuleEnabled(true)    // 录像播放结束后
+meeting.isAudioModuleEnabled           // 当前是否由流媒体自动管理（默认 true）
+```
+
+<Warning>
+**停用期间通话音频收不到也发不出。** 录像放完必须调回 `true`，否则这一场会议后面全程是哑的 —— 表现和「所有人都没开麦」一模一样，排查时先看这里。
+</Warning>
+
+<Note>
+重新入会不用自己收尾：每次入会都会自动把它复位为 `true`，上一场手动停用的状态不会跨会议泄漏。
+
+这个开关只针对「整场都不需要通话音频」的场景。只是想静音自己或某个人，用麦克风开关或取消订阅，别停音频单元。这是底层 `AudioRouteSession.setAudioModuleEnabled(_:)` 的薄封装，见 [SRTC · 音频路由](/zh/rtc/swift/advanced/audio-routing)。
+</Note>
+
+---
+
 ### 监听路由变化
 
 ```swift

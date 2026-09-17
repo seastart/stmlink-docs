@@ -336,6 +336,7 @@ result.meta      // MetaRes
 | `RoomScreenshotDisabledChangeEventData` | `screenshotDisabled`、`opUid` |
 | `RoomWatermarkDisabledChangeEventData` | `watermarkDisabled`、`opUid` |
 | `RoomLockedChangeEventData` | `locked`、`opUid` |
+| `RoomTitleChangeEventData` | `title`、`previousTitle`（**无 `opUid`**，见 [事件参考](/zh/meeting/swift/events)） |
 | `RoomShareStartEventData` | `uid`、`shareType: ShareType` |
 | `RoomShareStopEventData` | `uid`、`shareType`、`byAdmin`、`opUid` |
 | `ShareBroadcastStartEventData` | `uid`（仅 iOS 全屏共享，共享方自己） |
@@ -623,6 +624,14 @@ result.meta      // MetaRes
 | `LayerSwitchedInfo` | `subKey`、`fromTrackId`、`toTrackId`、`reason`（如 `bwe_down` / `bwe_up`）、`latencyMs` |
 
 字段的取值范围与用法见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+
+#### 收流状态
+
+| 类型 | 字段 |
+| --- | --- |
+| `ReceiveStreamStatus` | `uid`（发流成员）、`trackId`、`trackDesc`（`camera` / `screen` 等）、`timedOut`（`true` 超时，`false` 恢复） |
+
+由 `meeting(_:didChangeReceiveStreamStatus:)` 带出，按轨道判定某一路视频是否还在出帧，与整条链路的质量档位是两回事，见 [事件参考](/zh/meeting/swift/events)。
 
 ---
 

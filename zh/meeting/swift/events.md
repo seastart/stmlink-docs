@@ -81,6 +81,7 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:roomScreenshotDisabledDidChange:)` | 禁止截屏设置变化 | `RoomScreenshotDisabledChangeEventData` |
 | `meeting(_:roomWatermarkDisabledDidChange:)` | 水印开关变化 | `RoomWatermarkDisabledChangeEventData` |
 | `meeting(_:roomLockedDidChange:)` | 会议锁定状态变化 | `RoomLockedChangeEventData` |
+| `meeting(_:roomTitleDidChange:)` | 会议标题被改名，含小组会议改名 | `RoomTitleChangeEventData` |
 | `meeting(_:roomShareDidStart:)` | 有人开始共享（屏幕或白板） | `RoomShareStartEventData` |
 | `meeting(_:roomShareDidStop:)` | 共享结束 | `RoomShareStopEventData` |
 | `meeting(_:shareBroadcastDidStart:)` | 仅 iOS 全屏共享：扩展真的开始出帧 | `ShareBroadcastStartEventData` |
@@ -93,6 +94,8 @@ extension MeetingController: SMeetingDelegate {
 `shareBroadcastDidStart` / `shareBroadcastDidFinish` 只在 iOS 全屏共享、且只在共享方自己这一端触发，用于区分「监听已挂上」和「真的有画面了」，接法见 [屏幕共享](/zh/meeting/swift/advanced/screen-sharing)。
 
 当主持人开启「全体静音」或「全体禁画」时，非主持人成员的本地设备会被 SDK 自动关闭，并额外上报一次对应的成员媒体状态事件。
+
+`roomTitleDidChange` 的载荷带 `title` 与 `previousTitle`，主会议改名和小组会议改名（`adminUpdateSubMeetingTitle`）都会触发。它**没有 `opUid`**：会议改名没有独立的广播指令，事件是频道属性更新后比对标题得出的，属性里只有结果没有操作者，编一个操作者出来反而会误导调用方。
 
 ---
 
@@ -196,6 +199,26 @@ extension MeetingController: SMeetingDelegate {
 
 <Note>
 这四个事件只在会议使用 **SeaStart（SFU）** 引擎时有 —— 走 CDN（WangSu）的会议没有这条信令通道，不会收到任何一个。
+</Note>
+
+---
+
+### 收流状态事件
+
+| 方法 | 触发时机 | 数据类型 |
+| --- | --- | --- |
+| `meeting(_:didChangeReceiveStreamStatus:)` | 某一路远端视频收流超时 / 恢复 | `ReceiveStreamStatus` |
+
+**按轨道**判定：某一路视频连续一段时间没有出帧就报超时（`timedOut == true`），帧一恢复立即再报一次（`timedOut == false`）。典型用法是开关某一格画面上的「加载中」指示。订阅后首帧到达时会先收到一次恢复，据此关掉初始 loading。
+
+载荷直接复用底层 SRTC 的 `ReceiveStreamStatus`（需要 `import SRTC`），字段见 [类型定义](/zh/meeting/swift/types)。对应老 `MeetingKit` 的 `onReceiveStreamStatusChange:streamType:status:`。
+
+<Warning>
+**不要用 `connectionQualityDidChange` 代替它。** 质量档位是整条链路一个值，说的是「网好不好」，不是「这一格画面停没停」：单路轨道被停推、发送端摄像头卡死、某一路解码失败时，档位可以一直是 excellent。用档位驱动单格的加载指示必然误报。
+</Warning>
+
+<Note>
+与上面四个质量事件不同，这个事件**两种引擎都有** —— 它由本地是否收到视频帧判定，不依赖 SFU 的信令通道。
 </Note>
 
 ---

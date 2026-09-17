@@ -3,6 +3,21 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.4.5] - 2026.09.18
+#### 新增
++ **远端视频收流超时 / 恢复检测**：新增 `ChannelDelegate` 的 `channel(_:didChangeReceiveStreamStatus:)` 回调与 `ReceiveStreamStatus`（`uid` / `trackId` / `trackDesc` / `timedOut`），另有 `RemoteVideoTrack.isReceiveTimedOut` 可随时查询。**按轨道判定**：订阅之后连续一段时间没收到该路视频帧即判超时，帧一恢复立即再报一次，用来驱动画面上的「加载中 / 对方网络异常」指示。订阅后首帧到达时会先收到一次 `timedOut == false`，据此关掉初始 loading。对应老 `RTCEngineKit` 的 `engineChannel:onReceiveStreamStatusChange:trackId:status:`，`timedOut` 与老版 `status` 真假值一致（`true` 为超时），迁移不需要取反。
++ **音频单元启停**：新增 `AudioRouteSession.setAudioModuleEnabled(_:)` 与 `isAudioModuleEnabled`（iOS）。录像直播课这类**纯本地播放**场景可以停掉 VoIP 语音处理单元，避免它压低 `AVPlayer` 的播放音量。
+
+<Warning>
+`setAudioModuleEnabled(false)` 期间**通话音频收不到也发不出**，本地播放结束后必须调回 `true`，否则这一场后面全程是哑的。唯一不用自己收尾的情况是重新入会：每次**首次**占用音频通道（入会 / 开始采集）会自动复位为 `true`，上一场的手动停用状态不会跨会话泄漏，与老版 `RTCEngineKit` 进房即 `enabledAudioModule:YES` 一致。
+</Warning>
+
+<Note>
+不要用 `didChangeConnectionQuality` 代替收流超时检测。质量档位描述的是整条链路「网好不好」，不是「这一路画面停没停」：单路轨道被停推、发送端摄像头卡死、某一路解码失败时，链路档位可以一直是 excellent；反过来网络抖一下档位掉了，几路画面其实都在正常出帧。
+
+本版为纯新增公开 API，协议方法带默认空实现，无破坏性变更，1.4.4 的接入代码可直接升级。`SRTCBroadcastKit` 本次为 **1.0.10**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.4.4] - 2026.09.15
 #### 变更
 + WangSu(CDN) 视图录制共享视频流现在与标准屏幕共享一样附带麦克风录制音频；SRTCBroadcastKit 升级至 1.0.9。

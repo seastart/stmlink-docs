@@ -46,8 +46,15 @@ final class RoomController: ChannelDelegate {
 | `channel(_:user:didAddTrack:)` | 远端用户新增轨道 | `UserInfo`、`TrackInfo` |
 | `channel(_:user:didUpdateTrack:)` | 远端轨道信息更新 | `UserInfo`、`TrackInfo` |
 | `channel(_:user:didRemoveTrack:)` | 远端轨道移除 | `UserInfo`、`TrackInfo` |
+| `channel(_:didChangeReceiveStreamStatus:)` | 某一路远端视频收流超时 / 恢复 | `ReceiveStreamStatus` |
 
 最常见的业务入口是 `didAddTrack`，因为你通常会在这里决定是否订阅远端视频或远端音频。
+
+`didChangeReceiveStreamStatus` **按轨道**判定：订阅之后连续一段时间没收到该路视频帧就报超时（`timedOut == true`），帧一旦恢复立即再报一次（`timedOut == false`），用来开关某一格画面上的「加载中 / 对方网络异常」指示。订阅后首帧到达时会先收到一次恢复，据此关掉初始 loading。也可以随时查 `RemoteVideoTrack.isReceiveTimedOut`。
+
+<Warning>
+**不要拿 `didChangeConnectionQuality` 代替它。** 质量档位是整条链路一个值，描述的是「网好不好」，不是「这一路画面停没停」：单路轨道被停推、发送端摄像头卡死、某一路解码失败时，链路档位可以一直是 excellent；反过来网络抖一下档位掉了，几路画面其实都在正常出帧。用档位顶替按轨道的卡顿判定必然误报。
+</Warning>
 
 ---
 
