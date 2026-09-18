@@ -399,7 +399,7 @@ fun getLocalCameraTrack(preOpt: PreOptionCamera = PreOptionCamera._480P): LocalC
 ```
 方法说明：获取本地摄像头轨道控制器。  
 参数说明：
-- `preOpt`：`PreOptionCamera`，摄像头采集/发布预设，默认 `_480P`。参见 [摄像头预设](/zh/rtc/android/presets/camera)。
+- `preOpt`：`PreOptionCamera`，摄像头采集/发布预设，默认 `_480P`。参见 [摄像头预设](/zh/rtc/android/presets/camera)。轨道会复制一份 `preOpt.capture`，取到轨道后再改原对象的 `capture` 不生效，需重新赋值 `track.preOpt`；改 `preOpt.publish` 仍然生效，见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
 
 返回值说明：`LocalCameraTrack`，本地摄像头轨道实例。
 

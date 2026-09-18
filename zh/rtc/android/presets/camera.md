@@ -31,7 +31,7 @@ description: "Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera �
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| deviceId | `String` | 设备 ID。 |
+| deviceId | `String` | 建议使用的摄像头设备 ID，取自 [`RTCEngine.getCameraDevices`](/zh/rtc/android/api-reference/RTCEngine) 返回的 `CameraDeviceCapability.cameraId`。空串表示不指定，由 SDK 自行选择。 |
 | position | `CamraPosition` | 手机摄像头位置：`FRONT` / `BACK` / `External`。 |
 | facingMode | `CameraFacingMode` | WebRTC 朝向：`USER` / `ENVIRONMENT` / `LEFT` / `RIGHT`。 |
 | width | `Int` | 采集宽度。 |
@@ -60,22 +60,22 @@ description: "Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera �
 
 ```kotlin
 // _1080P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=1920, height=1080, maxFps=15
+capture: deviceId="", position=FRONT, facingMode=USER, width=1920, height=1080, maxFps=15
 publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=5000*1024, minBitrate=2500*1024, width=1920, height=1080, maxFps=15
 publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 
 // _720P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=1280, height=720, maxFps=15
+capture: deviceId="", position=FRONT, facingMode=USER, width=1280, height=720, maxFps=15
 publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=2400*1024, minBitrate=1500*1024, width=1280, height=720, maxFps=15
 publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 
 // _480P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=640, height=480, maxFps=15
+capture: deviceId="", position=FRONT, facingMode=USER, width=640, height=480, maxFps=15
 publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=800*1024, minBitrate=400*1024, width=640, height=480, maxFps=15
 publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 
 // _180P
-capture: deviceId="cameraCapMain", position=FRONT, facingMode=USER, width=320, height=180, maxFps=15
+capture: deviceId="", position=FRONT, facingMode=USER, width=320, height=180, maxFps=15
 publish(main): desc="camera_big"(TRACK_MAIN), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, minBitrate=80*1024, width=320, height=180, maxFps=15
 ```

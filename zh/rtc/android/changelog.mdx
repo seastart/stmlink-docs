@@ -5,6 +5,48 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.32-bugfix.2] - 2026.09.18
+
+#### 新增
+
++ `LocalCameraTrack` 新增 `getCurrentCameraId`，用于查询实际生效的摄像头设备，接口见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
++ 新增摄像头错误码 `CAMERA_FORMAT_UNAVAILABLE`、`CAMERA_OPEN_TIMEOUT` 和 `CAMERA_SESSION_TIMEOUT`，说明见 [错误码](/zh/rtc/android/error-codes)。
+
+#### 修复
+
++ 修复摄像头打开或配置阶段无响应时，本次操作一直不返回结果的问题。
++ 修复摄像头会话已就绪即上报成功，但画面仍然全黑的问题。
++ 修复切换摄像头成功后，配置中的摄像头设备信息未同步更新的问题。
++ 修复连续快速切换摄像头时偶发采集异常或黑屏的问题。
+
+#### 变更
+
++ 启动采集时配置的摄像头设备与方向改为建议值，不可用时自动改选其他设备；按方向切换只在该方向内尝试，按设备 ID 切换只尝试指定设备。
++ 切换摄像头失败后不再自动回退到原摄像头，需由应用自行调用 `startCapture` 恢复画面，说明见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
++ 切换摄像头请求被后一次请求取代或被停止采集取消时不再回调结果，错误码 `CAMERA_SWITCH_SUPERSEDED` 已删除。
++ 获取摄像头轨道时会复制一份采集配置，取到轨道后再修改原预设的 `capture` 不再生效，修改 `publish` 仍然生效。
++ 摄像头预设的 `deviceId` 默认值由 `cameraCapMain` 改为空串，表示不指定设备。具体数值见 [摄像头预设](/zh/rtc/android/presets/camera)。
+
+### [2.0.32-bugfix.1] - 2026.09.16
+
+#### 新增
+
++ `LocalCameraTrack` 的 `switchCameraPosition` 和 `switchCameraDevice` 新增切换结果回调，接口见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
++ 新增摄像头错误码 `CAMERA_SWITCH_SUPERSEDED` 和 `CAMERA_FIRST_FRAME_TIMEOUT`，说明见 [错误码](/zh/rtc/android/error-codes)。
+
+#### 修复
+
++ 修复切换摄像头失败后画面停在最后一帧、且切换功能不再响应的问题。
++ 修复切换摄像头失败后重新开启摄像头持续黑屏的问题。
++ 修复切换摄像头失败时可能静默切到非目标摄像头的问题。
++ 修复部分设备本地预览画面旋转角度错误、对端画面正常的问题。
++ 修复开麦或开摄像头协商失败后，同一次通话内反复开启持续失败、只能退会重进的问题。
++ 修复接入方开启 R8 full mode 后网络请求初始化失败的问题。
+
+#### 变更
+
++ 摄像头启动改为以首帧到达为准，选中的摄像头起不来时自动尝试下一个可用设备，全部不可用时回调 `CAMERA_FIRST_FRAME_TIMEOUT`。
+
 ### [2.0.32] - 2026.09.12
 
 #### 新增
