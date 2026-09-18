@@ -1,11 +1,11 @@
 ---
 title: "快速开始"
-description: "使用 SMeeting Android 2.0.35 完成初始化、创建会议、注册事件、入会、发布本地音视频与订阅远端视频"
+description: "使用 SMeeting Android 2.0.37 完成初始化、创建会议、注册事件、入会、发布本地音视频与订阅远端视频"
 ---
 
 ## 前置准备
 
-+ 按[集成](/zh/meeting/android/integration)添加 `cn.seastart.meeting:meeting:2.0.35`。
++ 按[集成](/zh/meeting/android/integration)添加 `cn.seastart.meeting:meeting:2.0.37`。
 + 从业务服务端获取 `meetToken`，不要在客户端保存生成 token 所需的密钥。
 + 在应用侧申请相机和录音运行时权限。
 + 准备部署环境约定的 `streamVendor`；示例使用 `wangsucdn`，实际值以后端配置为准。

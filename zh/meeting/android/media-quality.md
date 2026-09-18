@@ -5,7 +5,7 @@ description: "通过 MeetingEngine 主动查询或监听 Android SMeeting 的媒
 
 ## 说明
 
-SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange` 与相关统计类型。当前 `2.0.35` 对应 SRTC `2.0.31`。
+SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange` 与相关统计类型。当前 `2.0.37` 对应 SRTC `2.0.33`。
 
 可通过两种方式获取质量数据：
 

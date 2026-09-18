@@ -1,9 +1,33 @@
 ---
 title: "更新日志"
-description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.35 的新增能力、修复、依赖升级与兼容性说明"
+description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.37 的新增能力、修复、依赖升级与兼容性说明"
 ---
 
 > 本页记录 Android SMeeting SDK 的主要版本变化。依赖版本见[集成](/zh/meeting/android/integration)，运行时可通过 `MeetingEngine.version()` 查询实际版本。
+
+## 2.0.37（2026-09-18）
+
+### 新增
+
++ 新增投屏码注册、注销及发起投屏接口 `registerCastCode()`、`unregisterCastCode()`、`startCast()`。
++ 新增摄像头切换结果回调和历史设备查询 `getCurrentCameraId()`。
++ 新增 `stopShareWhiteBoard(callback)` 白板停止结果回调。
++ 呼叫消息新增 `forceJoin`，用于表示服务端要求大屏直接入会。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.33`。
++ 摄像头切换失败不再自动恢复原设备，应用可按需精确恢复，详见[摄像头接口](/zh/meeting/android/api-reference/MeetingEngine#应用层精确恢复示例)。
++ 已创建摄像头轨道时，停止采集后切换设备会重新打开采集，但不会自动发布。
++ 调整摄像头预设帧率和码率，并增加最小码率配置，详见[摄像头预设](/zh/meeting/android/presets/camera)。
++ 新增本地设备操作进行中错误 `LOCAL_DEVICE_OPERATION_IN_PROGRESS`。
+
+### 修复
+
++ 修复摄像头切换失败后再次开启无法恢复画面的问题。
++ 修复关闭摄像头或切换设备时，旧操作干扰后续采集的问题。
++ 修复房间设备控制操作的本端状态通知。
++ 修复混淆构建中部分网络接口异常，并保留旧版呼叫消息的二进制兼容性。
 
 ## 2.0.35（2026-08-31）
 

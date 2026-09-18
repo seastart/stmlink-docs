@@ -1,6 +1,6 @@
 ---
 title: "模型类型"
-description: "SMeeting Android 2.0.35 公开接口直接使用的配置、结果、会议、成员、点名、签到、IM 与录制布局模型"
+description: "SMeeting Android 2.0.37 公开接口直接使用的配置、结果、会议、成员、点名、签到、IM 与录制布局模型"
 ---
 
 本页只列出 `MeetingEngine`、公开 manager、事件和结果回调直接暴露的 Meeting 模型。`RTCMediaOptions`、`TrackInfo`、`RemoteVideoTrack`、设备能力和媒体统计等来自传递依赖 SRTC，详见 [SRTC Android 模型类型](/zh/rtc/android/types)。
@@ -433,6 +433,7 @@ SRTC 频道属性转换得到的当前房间快照。
 | `roomNo` | `String` | 房间号 |
 | `meetingId` | `String` | 会议 ID |
 | `title` | `String` | 会议标题 |
+| `forceJoin` | `Boolean` | 默认 false；true 表示服务端要求大屏不经人工确认进入指定会议 |
 
 ### ImContent.MeetingRemind
 
@@ -508,3 +509,31 @@ SRTC 频道属性转换得到的当前房间快照。
 | `idx` | `Int` | 格子序号 |
 | `bindShare` | `Boolean` | 是否优先绑定频道内共享流 |
 | `tag` | `LayoutData.Tag` | 标签配置 |
+
+
+## 投屏模型
+
+### CastCodeInfo
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| code | `String` | `""` | 当前六位投屏码；注销响应为空 |
+| expireIn | `Int` | `0` | 剩余有效时间，秒 |
+
+### CastStartInfo
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| meetingId | `String` | `""` | 目标会议唯一标识 |
+| roomNo | `String` | `""` | 目标会议房间号 |
+| canShare | `Boolean` | `false` | 是否允许本次投屏端继续发起共享 |
+
+### CastStartOption
+
+新建投屏会议时使用；大屏已在会中时全部字段被服务端忽略。null 使用服务端默认值。
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| selfRole | `MemberRoleType?` | `null` | 投屏发起者角色 |
+| screenRole | `MemberRoleType?` | `null` | 注册投屏码的大屏角色 |
+| owner | `CastMeetingOwner?` | `null` | 新建会议归属策略 |

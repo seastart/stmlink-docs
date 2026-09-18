@@ -42,7 +42,7 @@ fun version(): String
 
 参数说明：无。
 
-返回值说明：构建时写入的版本字符串，例如 `2.0.35`。
+返回值说明：构建时写入的版本字符串，例如 `2.0.37`。
 
 ### buildTime()
 
@@ -1436,12 +1436,14 @@ fun openCamera(
 
 方法说明：只开启本地摄像头采集和预览，不请求会议权限，也不发布视频；初始化成功后可在会前调用。
 
+已在采集或启动中时复用现有操作，新的 `preOption` 不生效；修改参数需先 `closeCamera()`。启动参数中的设备 ID、方向为建议值，不可用时 RTC 会自动改选。在途启动被切换或关闭取消时，回调 `LOCAL_DEVICE_OPERATION_CANCELLED`。
+
 参数说明：
 
 | 参数 | 说明 |
 | --- | --- |
 | `view` | 可选预览控件；仅支持 SRTC 指定的 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`。 |
-| `preOption` | 摄像头预设；传 `null` 使用 SRTC 默认 480P 配置。 |
+| `preOption` | 摄像头预设；传 `null` 复用已有 Track 配置，首次使用 SRTC 默认 480P 配置。 |
 | `callback` | 物理采集稳定开启后的结果回调。 |
 
 返回值说明：无（异步结果见回调）。
@@ -1456,7 +1458,7 @@ fun openCameraAndPublish(
 )
 ```
 
-方法说明：在当前会议中完成服务端授权、摄像头采集和 SRTC 发布。任一步失败都会回滚本次发布并关闭采集。
+方法说明：在当前会议中完成服务端授权、摄像头采集和 SRTC 发布。普通失败会回滚本次发布并仅关闭所属采集代次，不会停止之后的切换或恢复；采集被更新的切换取代时回调 `LOCAL_DEVICE_OPERATION_CANCELLED`，只结束旧发布事务，不停止新切换。
 
 参数说明：
 
@@ -1484,15 +1486,21 @@ fun closeCamera()
 
 ```kotlin
 fun switchCamera(isFrontCamera: Boolean)
+fun switchCamera(isFrontCamera: Boolean, callback: MeetingResultCallback?)
 ```
 
-方法说明：在前后置摄像头之间切换。
+方法说明：只在指定方向内尝试设备，以新画面首帧为成功判据。
+
+**兼容性变更（Meeting 2.0.37，RTC 2.0.33）：切换失败后不保证仍在采集，不再自动回退；目标校验失败时可能保留原采集。** 应用需回滚 UI，并自行决定是否恢复。Track 从未创建时仅保存意图并回调成功，不会打开设备；Track 已存在时，即使已 `closeCamera()`，切换也会重新打开采集（不会自动发布）。建议关闭摄像头时禁用切换入口。
+
+请求被后续切换或 `closeCamera()` 取消时回调 `MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED`。取消代表更新的用户意图，**不要在取消回调中恢复**。SDK `release()` 清理等待者，不再交付取消回调。
 
 参数说明：
 
 | 参数 | 说明 |
 | --- | --- |
 | `isFrontCamera` | `true` 使用前置摄像头，`false` 使用后置摄像头。 |
+| `callback` | 带回调重载的 `MeetingResultCallback?`，可传 null；首帧成功或失败结果。 |
 
 返回值说明：无（`Unit`）。
 
@@ -1512,17 +1520,66 @@ fun getCameraDevices(): List<CameraDeviceCapability>
 
 ```kotlin
 fun switchCameraDevice(cameraId: String)
+fun switchCameraDevice(cameraId: String, callback: MeetingResultCallback?)
 ```
 
-方法说明：按 Camera2 设备 ID 切换摄像头输入。
+方法说明：只尝试指定 Camera2 设备 ID，以首帧为成功判据；失败不会改选，也不会自动回退。未建轨时保存意图，已有 Track 时即使采集停止也会重新打开。取消、释放约定与 `switchCamera` 相同。
+
+需要精确恢复时，使用**切换前**的 `getCurrentCameraId()` 快照再次调用本方法；`openCamera` 的建议语义不能保证回到原设备。
 
 参数说明：
 
 | 参数 | 说明 |
 | --- | --- |
 | `cameraId` | `getCameraDevices()` 返回的摄像头 ID。 |
+| `callback` | 带回调重载的 `MeetingResultCallback?`，可传 null；首帧成功或失败结果。 |
 
 返回值说明：无（`Unit`）。
+
+### getCurrentCameraId()
+
+```kotlin
+fun getCurrentCameraId(): String
+```
+
+返回最后真正出过首帧的摄像头 ID；SDK 未就绪、尚未成功采集或释放后返回空串。该值是历史记录，**不表示正在采集**；切换中、失败后、停止后或设备拔出后均可能保留旧值。
+
+### 应用层精确恢复示例
+
+在 UI 线程发起切换。`cameraUiGeneration` 由应用维护，每次关闭摄像头、再次切换或页面销毁时递增；`cameraEnabled` 表示应用仍希望采集，防止迟到回调重开设备。`runOnUiThread`、`updateCameraUi`、`showCameraLost` 为应用自己的 UI 方法。
+
+```kotlin
+val generation = ++cameraUiGeneration
+val previousId = engine.getCurrentCameraId() // 必须在切换前快照
+engine.switchCamera(targetFront, object : MeetingResultCallback {
+    override fun onSuccess() = runOnUiThread {
+        if (generation == cameraUiGeneration && cameraEnabled) updateCameraUi()
+    }
+
+    override fun onFailure(errorCode: Int, message: String?) = runOnUiThread {
+        if (generation != cameraUiGeneration || !cameraEnabled) return@runOnUiThread
+        if (errorCode == MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED ||
+            errorCode == MeetingErrorCode.SESSION_OPERATION_CANCELLED ||
+            errorCode == MeetingErrorCode.LOCAL_DEVICE_OPERATION_IN_PROGRESS ||
+            errorCode == MeetingErrorCode.SDK_NOT_READY) return@runOnUiThread
+        // UI 方向只在成功后更新，所以失败时仍保留原状态。
+        if (previousId.isBlank()) {
+            showCameraLost()
+            return@runOnUiThread
+        }
+        engine.switchCameraDevice(previousId, object : MeetingResultCallback {
+            override fun onSuccess() = Unit // 原设备已恢复
+            override fun onFailure(errorCode: Int, message: String?) = runOnUiThread {
+                if (generation == cameraUiGeneration && cameraEnabled &&
+                    errorCode != MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED &&
+                    errorCode != MeetingErrorCode.SDK_NOT_READY) showCameraLost()
+            }
+        })
+    }
+})
+```
+
+首次失败表示切换失败；恢复请求再次失败才表示画面无法恢复，应用应停止发布、关闭设备并提示用户。完整示例见 Demo 的 `CameraFragment`：切换及恢复期间忽略重复点击，最终成功时按真实设备校准 UI 方向。
 
 ### switchFrontCameraMirror(open)
 
@@ -1820,11 +1877,14 @@ fun requestShareBoard(callback: MeetingValueResultCallback<String>)
 
 ```kotlin
 fun stopShareWhiteBoard()
+fun stopShareWhiteBoard(callback: MeetingResultCallback)
 ```
 
-方法说明：停止当前用户的白板共享。
+方法说明：停止当前用户的白板共享；带回调重载在服务端确认结果后返回。
 
-参数说明：无。
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| callback | `MeetingResultCallback` | 带回调重载必填 | 白板停止请求的结果 |
 
 返回值说明：无（`Unit`）。
 
@@ -2393,3 +2453,51 @@ fun getWsVideoStreamTrack(uid: String, trackDesc: String): RemoteVideoTrack?
 | `trackDesc` | 轨道描述。 |
 
 返回值说明：`RemoteVideoTrack?`；音频流、非 WS 引擎或未入会时为 `null`。
+
+
+## 投屏码
+
+### registerCastCode(meetingId, callback)
+
+```kotlin
+fun registerCastCode(meetingId: String?, callback: MeetingValueResultCallback<CastCodeInfo>)
+```
+
+注册或续期当前设备投屏码，并同步大屏当前会议。相同设备重复调用会返回同一个有效码并刷新有效期；入会、离会后应立即调用，在线时按服务端约定周期续期。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| meetingId | `String?` | 是 | 当前会议 ID；未在会中传 null 或空串 |
+| callback | `MeetingValueResultCallback<CastCodeInfo>` | 是 | 返回投屏码和剩余有效秒数 |
+
+返回值：`Unit`，业务结果由回调返回。
+
+### unregisterCastCode(callback)
+
+```kotlin
+fun unregisterCastCode(callback: MeetingResultCallback)
+```
+
+注销当前设备投屏码，通常在退出登录或设备关机前调用。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| callback | `MeetingResultCallback` | 是 | 注销结果 |
+
+返回值：`Unit`，结果由回调返回。
+
+### startCast(code, option, callback)
+
+```kotlin
+fun startCast(code: String, option: CastStartOption, callback: MeetingValueResultCallback<CastStartInfo>)
+```
+
+消费投屏码并取得目标会议。投屏码由服务端原子消费，即使后续入会失败也不得复用；应用根据结果进入会议，并在 `canShare` 为 true 时继续请求共享。大屏已在会中时，服务端忽略 option 中的角色和归属。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| code | `String` | 是 | 六位大写投屏码 |
+| option | `CastStartOption` | 是 | 新建投屏会议时双方角色和归属，可传默认实例 |
+| callback | `MeetingValueResultCallback<CastStartInfo>` | 是 | 目标会议及共享许可 |
+
+返回值：`Unit`，业务结果由回调返回。相关模型见模型类型页，归属取值见枚举类型页。

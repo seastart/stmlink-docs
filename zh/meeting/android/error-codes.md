@@ -88,6 +88,17 @@ fun onError(errorCode: Int, message: String?)
 | `EMPTY_RESPONSE_BODY` | `202355` | HTTP 请求成功但响应体为空 |
 | `RESPONSE_PARSE_FAILED` | `202356` | HTTP 响应存在，但无法转换为公共业务结果 |
 
+## RTC 摄像头错误（原样透传）
+
+以下错误来自 RTC `2.0.33`，随 Meeting `2.0.37` 生效，不属于 `MeetingErrorCode`。切换失败后不保证仍在采集，目标校验失败时可能保留原采集；SDK 不自动回退，恢复策略由应用决定。
+
+| RTC 常量 | 值 | 说明 |
+| --- | --- | --- |
+| `CAMERA_FIRST_FRAME_TIMEOUT` | `102239` | 等待摄像头首帧超时 |
+| `CAMERA_FORMAT_UNAVAILABLE` | `102242` | 没有可用的采集格式 |
+| `CAMERA_OPEN_TIMEOUT` | `102243` | 打开摄像头超时 |
+| `CAMERA_SESSION_TIMEOUT` | `102244` | 创建摄像头会话超时 |
+
 ## 推荐处理方式
 
 ```kotlin

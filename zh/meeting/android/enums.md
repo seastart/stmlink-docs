@@ -1,6 +1,6 @@
 ---
 title: "枚举类型"
-description: "Android SMeeting 2.0.35 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举"
+description: "Android SMeeting 2.0.37 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举"
 ---
 
 ### AgentStatus
@@ -180,6 +180,14 @@ description: "Android SMeeting 2.0.35 的会议、成员、设备、消息、共
 | Normal | 1 | 普通成员 |
 | SIP | 2 | SIP 设备 |
 | H323 | 3 | H323 设备 |
+
+### CastMeetingOwner
+
+新建投屏会议的归属策略，供 `CastStartOption.owner` 使用。
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| Self | `"self"` | 归属于调用 startCast 的投屏发起者 |
 
 ## SRTC 枚举
 
