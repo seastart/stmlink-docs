@@ -51,7 +51,9 @@ fun switchCameraPosition(
 ```
 方法说明：切换摄像头朝向。方向是**指令**：只在该方向内依次尝试，方向内第一颗打不开会继续试下一颗，但不会切到其他方向。新摄像头真正产出首帧才算成功，成功后由 SDK 把方向写回配置并清空 `deviceId`。  
 未在采集时（首次、`stopCapture()` 之后、上次启动失败之后）可以直接调用，无需先 `startCapture()`；已在采集时沿用当前的分辨率与帧率。  
-**失败不会自动回退到原摄像头**，是否恢复画面由应用自行决定，调用一次 `startCapture(listener)` 即可。  
+**失败不会自动回退到原摄像头**。目标设备或格式校验失败时可能保留原采集，因此失败回调不代表摄像头一定已停止；需要关闭时仍应调用 `stopCapture()`。
+
+应用若只需恢复可用画面，可调用 `startCapture(listener)`，但其设备配置为建议值，不保证选中原设备。若需精确恢复原摄像头，应在切换前保存 `getCurrentCameraId()`，失败后使用非空快照调用 `switchCameraDevice(previousId, listener)`；恢复本身失败时应提示画面中断，避免循环重试。
 参数说明：
 - `position`：`CameraCaptureOptions.CamraPosition`，目标摄像头位置：
   - `FRONT`：前置摄像头
