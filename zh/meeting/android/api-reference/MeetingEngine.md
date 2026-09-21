@@ -2501,3 +2501,97 @@ fun startCast(code: String, option: CastStartOption, callback: MeetingValueResul
 | callback | `MeetingValueResultCallback<CastStartInfo>` | 是 | 目标会议及共享许可 |
 
 返回值：`Unit`，业务结果由回调返回。相关模型见模型类型页，归属取值见枚举类型页。
+
+## 虚拟背景
+
+自 `2.0.39` 起支持。先初始化 SDK 并装载人像分割模型，再设置虚化或背景图片，最后开启效果。摄像头采集或切换成功、断线重连成功后，会议层会重新下发缓存配置；`release()` 清理缓存并释放底层资源。
+
+### installVirtualBackground(modelData)
+
+```kotlin
+fun installVirtualBackground(modelData: ByteArray): Int
+```
+
+装载虚拟背景模块，无需授权密钥。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| modelData | `ByteArray` | 是 | 应用读取的 selfie_segmenter ONNX 模型内容；会议层直接持有数组引用，不做拷贝 |
+
+返回值：`0` 表示成功；SDK 未就绪时返回 `MeetingErrorCode.SDK_NOT_READY`，其他错误透传 RTC 的 `102xxx` 错误码。应检查结果后再开启效果。
+
+### uninstallVirtualBackground()
+
+```kotlin
+fun uninstallVirtualBackground()
+```
+
+卸载模型和 GPU 资源，并清空会议层缓存的模型、背景图片、模式和开关状态，后续不会自动重新装载。无参数，返回值为 `Unit`。
+
+### enabledVirtualBackground(enabled)
+
+```kotlin
+fun enabledVirtualBackground(enabled: Boolean): Int
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| enabled | `Boolean` | 是 | true 开启；false 关闭并直通原始采集画面 |
+
+返回值：`0` 表示成功；SDK 未就绪时返回 `MeetingErrorCode.SDK_NOT_READY`，其他错误透传 RTC 返回值。关闭效果不会卸载模型。
+
+### setVirtualBackgroundBlur(level)
+
+```kotlin
+fun setVirtualBackgroundBlur(level: Int)
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| level | `Int` | 是 | 虚化强度 1～10，默认 5，越界值按边界收敛 |
+
+返回值：`Unit`。与背景图片模式互斥，后调用的模式生效；设置强度不会自动开启总开关。
+
+### setVirtualBackgroundImage(image)
+
+```kotlin
+fun setVirtualBackgroundImage(image: Bitmap?)
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| image | `android.graphics.Bitmap?` | 是 | 背景图片，按 cover 裁剪、不拉伸；null 取消换图并回到直通 |
+
+返回值：`Unit`。与虚化模式互斥，后调用的模式生效。应用需先将图片 URI 或文件解码成 Bitmap；会议层缓存该对象供配置重放使用，使用期间不要主动回收。设置图片不会自动开启总开关。
+
+### setVirtualBackgroundInferenceInterval(interval)
+
+```kotlin
+fun setVirtualBackgroundInferenceInterval(interval: Int)
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| interval | `Int` | 是 | 每 N 帧执行一次分割，默认 1，小于 1 按 1 处理 |
+
+返回值：`Unit`。用于应用按设备性能配置，不建议直接暴露给终端用户。
+
+### setVirtualBackgroundMaskSync(on)
+
+```kotlin
+fun setVirtualBackgroundMaskSync(on: Boolean)
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| on | `Boolean` | 是 | 是否开启蒙版对齐，默认 false |
+
+返回值：`Unit`。仅推理间隔大于 1 时有区别，用于减轻快速运动时的蒙版错位拖影。
+
+### isVirtualBackgroundEnabled()
+
+```kotlin
+fun isVirtualBackgroundEnabled(): Boolean
+```
+
+无参数。返回值：RTC 当前虚拟背景开关状态；RTC 尚未创建时回退到会议层缓存值。该状态不表示模型推理或画面效果已经验证成功。
