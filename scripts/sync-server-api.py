@@ -74,6 +74,9 @@ PROJECTS = [
         tab='SRTC 音视频 SDK',
         subdir='rtc',
         src_repo='rtc-backend',
+        # agent/list 是为兼容存量第三方调用保留的废弃别名（等价于 list-invite），
+        # 不进对外文档，与 rtc-backend Makefile 的 apidoc 目标 -skip 保持一致。
+        skip='/server/v1/agent/list',
         manual_head=['zh/rtc/server-api/overview'],
         manual_guides={
             'group': '接入指南',

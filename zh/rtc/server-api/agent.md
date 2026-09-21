@@ -266,6 +266,147 @@ sip_no）。无请求参数。
 
 ---
 
+## 控制国标设备的云台（方向与变焦）
+
+`POST /server/v1/agent/gb28181-ptz`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+控制国标摄像头的云台（方向与变焦）。
+
+command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"组合（如 left+up）；
+速度取 0~255：speed_h/speed_v/speed_zoom 为 0 时回落到 speed，speed 也为 0 时使用
+网关默认速度 50。
+
+设备必须已用「新增设备」登记（type 为 gb28181），否则无法定位它所属的网关。
+
+**请求参数**
+
+<ParamField body="contact" type="string" required>
+  设备编号，国标设备的 SIP 编号（最大长度 20）
+  示例：`33010806661328458475`
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  通道编号，需与设备端配置一致；可用「生成国标设备的通道编号」生成（最大长度 20）
+  示例：`33010806661329301268`
+</ParamField>
+
+<ParamField body="command" type="string" required>
+  云台动作，支持两个动作的+组合
+  示例：`left+up`
+</ParamField>
+
+<ParamField body="speed" type="integer">
+  基准速度
+  示例：`50`
+</ParamField>
+
+<ParamField body="speed_h" type="integer">
+  水平旋转速度
+  示例：`50`
+</ParamField>
+
+<ParamField body="speed_v" type="integer">
+  垂直旋转速度
+  示例：`50`
+</ParamField>
+
+<ParamField body="speed_zoom" type="integer">
+  缩放速度
+  示例：`50`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "command": "left+up",
+  "contact": "33010806661328458475",
+  "speed": 50,
+  "speed_h": 50,
+  "speed_v": 50,
+  "speed_zoom": 50,
+  "subject": "33010806661329301268"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 操作国标设备的预置位
+
+`POST /server/v1/agent/gb28181-preset`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+操作国标摄像头的预置位：set 设置到当前位置、goto 跳到预置位、delete 删除预置位，
+三种动作都要传预置位号 num(1~255)。
+
+与「控制国标摄像头的云台」一样，设备必须已登记。
+
+**请求参数**
+
+<ParamField body="contact" type="string" required>
+  设备编号，国标设备的 SIP 编号（最大长度 20）
+  示例：`33010806661328458475`
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  通道编号（最大长度 20）
+  示例：`33010806661329301268`
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  预置位动作，set 设置到当前位置、goto 跳到预置位、delete 删除预置位
+  示例：`goto`
+</ParamField>
+
+<ParamField body="num" type="integer" required>
+  预置位号
+  示例：`1`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "action": "goto",
+  "contact": "33010806661328458475",
+  "num": 1,
+  "subject": "33010806661329301268"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
 ## 设备网关列表
 
 `POST /server/v1/agent/list-gw`
