@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.4.6] - 2026.09.23
+#### 修复
++ **摄像头采集方向跟随界面方向，设备平放不再回落竖屏**：此前设备平放在桌面上（`faceUp` / `faceDown`）或方向未知时，一律按竖屏处理，于是**锁定横屏的 App 里，把设备放到桌上就会突然推出一路竖画面**，对端只能在横向窗口里看到上下加黑边的画面——即业务侧反馈的「横竖屏采集画面自己切来切去」。现在优先按 `UIWindowScene.interfaceOrientation` 解析（宿主锁横屏时它恒为横向），取不到才退回设备方向；平放与未知方向维持上一次有效方向，不再回落竖屏。
++ **横屏屏幕共享画面倒 180°**：ReplayKit 在 `RPVideoSampleOrientationKey` 里给的是 `CGImagePropertyOrientation`（描述「这一帧怎么摆才是正的」），而 SDK 内部的 `VideoRotation` 描述的是「接收端要顺时针转多少度」，两者方向相反。此前把 `right` / `left` 当作同向直接映射，导致**两种横屏都差 180°**，表现为老师横屏发起屏幕共享、学生看到的画面是倒的。现已修正映射关系。
+
+<Note>
+本版为纯修复，没有公开 API 变动，1.4.5 的接入代码可直接升级。
+
+第二条修复落在 `SRTCBroadcastKit` 里，本次版本为 **1.0.11**。做 iOS 全屏屏幕共享的接入方升级后，请确认 Broadcast Upload Extension target 链接的是本 tag 的 `SRTCBroadcastKit`（它与本包同 tag 发布，不需要也不应该单独指定版本）——扩展侧若仍是旧包，方向映射不变，共享画面依旧是倒的。
+</Note>
+
 ### [1.4.5] - 2026.09.18
 #### 新增
 + **远端视频收流超时 / 恢复检测**：新增 `ChannelDelegate` 的 `channel(_:didChangeReceiveStreamStatus:)` 回调与 `ReceiveStreamStatus`（`uid` / `trackId` / `trackDesc` / `timedOut`），另有 `RemoteVideoTrack.isReceiveTimedOut` 可随时查询。**按轨道判定**：订阅之后连续一段时间没收到该路视频帧即判超时，帧一恢复立即再报一次，用来驱动画面上的「加载中 / 对方网络异常」指示。订阅后首帧到达时会先收到一次 `timedOut == false`，据此关掉初始 loading。对应老 `RTCEngineKit` 的 `engineChannel:onReceiveStreamStatusChange:trackId:status:`，`timedOut` 与老版 `status` 真假值一致（`true` 为超时），迁移不需要取反。

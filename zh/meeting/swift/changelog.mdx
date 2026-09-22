@@ -3,6 +3,25 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.8] - 2026.09.23
+#### 新增
++ **`updateLocalCameraView(_:)`**：在不中断采集的前提下，把本地摄像头预览的渲染器搬到另一个视图上。UIKit 宿主在宫格重建、首屏与视频墙切换这类布局变化里会销毁并重建承载预览的视图，此前只能关掉摄像头再开一次，现在直接搬迁即可。
+
+#### 修复
++ **摄像头已开启时重复调用 `requestOpenCamera(view:)`，新传入的预览视图被忽略**：此前复用已有轨道的分支直接返回，新视图没有被接上，渲染器还挂在已从视图树上摘掉的旧视图，表现为**本端画面黑屏**（对端一切正常）。现在复用分支会把渲染器搬到新传入的视图上。
++ **已在教室里的学生收不到屏幕共享开始事件**：屏幕共享的开始信号是异步汇合的——房间共享状态（`user_start_room_share` 广播、频道属性里的 `share_state` / `share_uid`）与 `screen` 轨道各走各的路径。此前两条路径各自判定，且没有覆盖属性刷新这一路：广播先到时轨道还没登记、轨道先到时房间状态还没刷新，两边都各自放弃，之后属性刷新到了也没有人补判，结果是**已经在教室里的学生完全收不到 `ROOM_SHARE_START`，退出重进反而能看到**（重进走的是另一条已有共享的通知路径）。现改为三路汇合判定，谁最后到齐由谁触发，防重逻辑不变。
+
+#### 变更
++ SRTC 依赖升级到 **1.4.6**（含摄像头方向与横屏屏幕共享画面倒 180° 两项修复，详见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)）。
+
+<Warning>
+做 iOS 全屏共享的工程，扩展 target 那条额外的 `srtc-swift-sdk` 依赖要**同步改为 `exact: "1.4.6"`**，与本包 pin 的版本保持一致，否则依赖解析冲突。横屏共享画面倒 180° 的修复落在 `SRTCBroadcastKit`（本次 **1.0.11**）里，扩展侧不升就不会生效。
+</Warning>
+
+<Note>
+本版为纯新增 API + 修复，没有破坏性变更，1.3.7 的接入代码可直接升级。
+</Note>
+
 ### [1.3.7] - 2026.09.18
 #### 新增
 + **会议标题变化事件**：新增 `SMeetingDelegate` 的 `meeting(_:roomTitleDidChange:)` 回调、`RoomTitleChangeEventData`（`title` / `previousTitle`）与 `RoomEventType.roomTitleChanged`。主持人改主会议标题、以及小组会议改名（`adminUpdateSubMeetingTitle`）都会触发，对应老 `MeetingKit` 的 `onRoomMeetingTitleChanged:`。
