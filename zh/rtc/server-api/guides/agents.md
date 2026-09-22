@@ -33,6 +33,8 @@ description: "SIP / H323 话机、国标监控、RTSP 流怎么登记进来，�
 | `gb28181` | 国标监控设备 | `sip_no`（18–20 位数字）、`auth_pwd`，可选 `subjects` |
 | `rtsp` | RTSP 拉流 | `uri`（必须以 `rtsp` 开头），可选 `transport_type`（`UDP` 默认 / `TCP`）|
 
+上表只列各方式**特有**的字段，每种取值下的完整请求体见
+[新增设备](/zh/rtc/server-api/agent#新增设备)（按 `type` 分节列出）。
 所有方式都必填 `display_name`（显示名称）和 `gw`（设备网关），`remark` 可选。
 `rtsp` 之外的方式还需要注意：注册模式要求设备主动向网关注册，IP 直连则由我们去连设备，
 选哪种取决于设备所在网络能不能被我们访问到。
