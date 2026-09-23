@@ -480,6 +480,34 @@ stopPlay(): void
 isPlaying(): boolean
 ```
 
+#### setJitterBufferTarget
+
+设置接收端抗抖动缓冲的目标延迟，单位 ms。
+
+```typescript
+setJitterBufferTarget(ms?: number): void
+```
+
+参数说明：
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `ms` | `number` | 否 | 目标延迟。`0` 表示低延迟优先，`200` 到 `500` 这类较大值更偏向平滑播放；不传或传 `undefined` 表示清除设置，回到浏览器默认自适应策略。 |
+
+默认不设置，由浏览器自适应。一般无需调整，仅在对播放延迟有明确要求时使用。
+
+> 该能力依赖浏览器 WebRTC 接收端实现。Chrome / Edge 会优先使用 `jitterBufferTarget`，并兼容旧的 `playoutDelayHint`；Firefox / Safari 不支持时会静默忽略。
+
+#### getJitterBufferTarget
+
+获取当前设置的接收端抗抖动缓冲目标延迟。
+
+```typescript
+getJitterBufferTarget(): number | undefined
+```
+
+返回值为当前业务设置的目标延迟，单位 ms；返回 `undefined` 表示未设置，使用浏览器默认自适应策略。
+
 ---
 
 ## RemoteAudioMixTrack

@@ -19,6 +19,12 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### v0.6.3 - 2026-09-23
+
++ fix: 本地混音改为直连 AudioContext 出声，修复 Web 端接收音频发钝
++ fix: 混音内部用于激活远端轨的隐藏音频元素补上静音并保留引用，避免被回收后混音偶发无声
++ feat: RemoteAudioTrack 补齐 setJitterBufferTarget / getJitterBufferTarget（此前仅视频轨支持）
+
 ### v0.6.2 - 2026-09-02
 
 + fix(channel): 同一 desc 重复发布直接抛错，堵住关不掉的幽灵轨
