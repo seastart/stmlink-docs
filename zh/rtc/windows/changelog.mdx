@@ -4,6 +4,27 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [7] - 2026.09.22
+版本号：0.2.1-alpha.9
+
+**修改**
+
++ webrtc2 重连与线程安全重构：`web_pccontrol2` 加锁保护 `peer` / `_recv` / `_pc_stat`，
+  统计与订阅状态改为值拷贝快照，跨线程读写的状态（`_use` / `_status` 等）改为原子变量
++ 重连后按订阅快照恢复推流与订阅，并清理收发包统计基线（避免重连后速率/丢包率算出负值）
++ `SetRemoteDescription` 失败结果上抛，避免握手失败却标记为已连接
++ 统一源码文件默认编码（修复 UTF-8 中文注释在 GBK 环境下的 C4819 警告与乱码隐患）
++ 整理流初始化对象（`SRTCChannel`）
+
+**修复**
+
++ 修复 CreateOffer / CreateAnswer 无限死等 SDP 回调，导致退会时 pubsub 线程与
+  `CloseRoom` 死锁卡住的问题：改为带超时等待
+
+**API 变更**
+
+无。`srtc.h` / `srtc_def.h` 本次没有任何改动，vtable 未变，只替换 dll 即可，不需要重新编译。
+
 ### [6] - 2026.08.21
 版本号：0.2.1-alpha.7
 
