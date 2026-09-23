@@ -38,6 +38,7 @@ description: "SIP / H323 话机、国标监控、RTSP 流怎么登记进来，�
 所有方式都必填 `display_name`（显示名称）和 `gw`（设备网关），`remark` 可选。
 `rtsp` 之外的方式还需要注意：注册模式要求设备主动向网关注册，IP 直连则由我们去连设备，
 选哪种取决于设备所在网络能不能被我们访问到。
+注册模式的设备上线、离线可以订阅 `agent_online` / `agent_offline` 回调来感知，见[回调事件接入指南](/zh/rtc/server-api/guides/callbacks)。
 
 修改设备时 `type` **必须与设备登记时一致**，不能借此把 SIP 设备改成 RTSP；
 要换接入方式请删除后重新登记。

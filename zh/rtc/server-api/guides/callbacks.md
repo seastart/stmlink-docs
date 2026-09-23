@@ -90,6 +90,34 @@ Content-Type: application/json; charset=utf-8
 `device_type`：`0` 未知、`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 微信小程序。
 `80` 起是服务端代理入会的号段（`81` MCU、`82` SIP、`83` H323、`84` GB28181、`85` RTSP、`86` RTMP、`87` 文件播放、`88` 流分发、`89` 语音转写）。
 
+### `agent_online` / `agent_offline` — 设备上线 / 离线
+
+感知**频道外**的设备在不在线：话机、国标摄像头注册到设备网关即上线，注销或断线即离线，
+与它在不在频道里无关（进出频道看 `user_join` / `user_leave`）。
+
+```json
+{ "id": "sz8nk8", "type": 4, "contact": "34020000001320000001", "name": "大门监控", "gw": "devgate-1" }
+```
+
+`agent_offline` 多两个字段：
+
+```json
+{ "id": "sz8nk8", "type": 4, "contact": "34020000001320000001", "name": "大门监控", "gw": "devgate-1", "reason": 4, "heartbeat_at": 1718250917 }
+```
+
++ `id` 即[设备列表](/zh/rtc/server-api/agent#设备列表)里的设备 ID，`gw` 是设备所在网关
++ `type`：`2` SIP、`3` H323、`4` GB28181 监控
++ `contact` 是设备标识：SIP 为注册用户名，H323 为短号码，国标为设备编号（`sip_no`，不是通道编号）
++ `reason`：`1` 设备主动注销、`4` 心跳超时
++ `heartbeat_at` 是最后一次心跳时间。心跳超时的离线要等超时判定，**比真实断线晚 5~7 分钟**才推送，
+  需要真实断线时刻时以它为准
+
+只有**注册模式**的设备（`regsip`、`regh323`、`gb28181`）才有在线状态、才会推这两个事件；
+IP 直连与 RTSP 拉流由我们主动去连，不存在上下线。
+
+每次状态翻转只推一次：设备周期性的注册刷新、国标 Keepalive 不会重复推 `agent_online`；
+离线后恢复心跳会再推一次上线。设备不归属某个应用，所以订阅了本事件的每个应用都会收到。
+
 ### `mcu_task` — 录制/合流/直播任务状态变化
 
 ```json
