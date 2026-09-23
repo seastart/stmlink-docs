@@ -45,6 +45,8 @@ description: "服务端 API 响应体中 code 的取值"
 | `2117` | ShareNotAllow | 不允许共享 |
 | `2118` | EnterWaitingRoom | 加入会议失败，进入了等候室 |
 | `2120` | EnterBeforeHost | 不能在主持人进入前加入会议 |
+| `2131` | CastCodeInvalid | 投屏码无效或已过期 |
+| `2132` | CastToSelf | 不能向自己的设备投屏 |
 
 ## 框架通用错误码
 
