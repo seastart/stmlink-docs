@@ -172,7 +172,7 @@ iOS 全屏采集下 `startCapture()` 成功只代表 SDK 开始监听，画面�
 `screenBroadcastDidFinish(_:reason:)` 通知。
 </Note>
 
-#### `createLocalScreenTrack(source:preset:audioPreset:)`
+#### `createLocalScreenTrack(source:preset:audioPreset:excludedWindowIds:excludesCurrentApplication:)`
 
 macOS 12.3+ 专用重载，用于指定显示器或窗口源。
 
@@ -182,6 +182,15 @@ let track = srtc.createLocalScreenTrack(
     preset: .h1080p,
     audioPreset: .default
 )
+
+// 共享整屏，同时挖掉自家正在渲染这路画面的窗口
+let previewWindowIds = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.identifier?.rawValue == "meeting-room" }
+    .map { UInt32($0.windowNumber) }
+let shared = srtc.createLocalScreenTrack(
+    source: display,
+    excludedWindowIds: previewWindowIds
+)
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -189,8 +198,14 @@ let track = srtc.createLocalScreenTrack(
 | `source` | `ScreenCaptureSource?` | 否 | `DisplaySource` 或 `WindowSource`，为空时默认主显示器 |
 | `preset` | `ScreenPreset` | 否 | 默认 `.h1080p` |
 | `audioPreset` | `ScreenAudioPreset?` | 否 | 是否采集系统音频 |
+| `excludedWindowIds` | `[UInt32]` | 否 | 整屏共享时要挖掉的自家窗口，取值 `UInt32(NSWindow.windowNumber)`；采集单个窗口时无意义。默认 `[]` |
+| `excludesCurrentApplication` | `Bool` | 否 | 置 `true` 回到「整个 App 都不共享」的旧行为，此时 `excludedWindowIds` 被忽略。默认 `false` |
 
 **返回值：** `LocalScreenTrack`
+
+<Warning>
+自 1.4.2 起，整屏共享**默认包含本 App 自己的窗口**。凡是会渲染这路共享画面的窗口都要放进 `excludedWindowIds`，否则形成无限镜像。窗口列表在 `startCapture()` 时快照一次，之后新开的窗口一律进画面。
+</Warning>
 
 ---
 
@@ -230,8 +245,49 @@ let customAudioTrack = srtc.createLocalCustomAudioTrack(desc: "bgm")
 
 ---
 
+### 视频前处理
+
+#### `defaultVideoProcessors`
+
+默认视频处理器管线。在这里配一次，**此后每条新建的摄像头轨道自动带上**。
+
+```swift
+srtc.defaultVideoProcessors = [myProcessor]
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `defaultVideoProcessors` | `[VideoProcessor]` | 否 | 默认为空 |
+
+摄像头轨道每次开摄像头都是新建的（关摄像头即销毁），只在轨道上设一次，下次开摄像头效果就没了 —— 这个属性就是为此存在。只影响**此后**新建的轨道，不追溯已存在的轨道；自定义视频轨道不受影响（那条路的帧由业务方 `pushFrame`，要不要过处理器自己决定）。
+
+---
+
+### 虚拟背景
+
+以下方法转发到 `SRTCVirtualBackground.shared`，状态整机一份。开启后**自动作用于所有摄像头轨道**，不需要往 `videoProcessors` 里挂东西。用法与调优见 [虚拟背景](/zh/rtc/swift/advanced/virtual-background)。
+
+| 成员 | 签名 | 说明 |
+| --- | --- | --- |
+| 装载 | `installVirtualBackground(modelPath: String? = nil) throws` | 加载模型 + 建推理会话，耗时百毫秒级，不要在主线程 / 采集线程调；`nil` 用内置模型 |
+| 卸载 | `uninstallVirtualBackground()` | 释放推理会话与缓冲，不清效果参数 |
+| 总开关 | `enableVirtualBackground(_ enabled: Bool) throws` | 关闭即零开销直通，不跑推理 |
+| 开关状态 | `isVirtualBackgroundEnabled: Bool` | 只读 |
+| 背景虚化 | `setVirtualBackgroundBlur(level: Int)` | `level` 取值 1~10，默认 5，超出范围收敛到边界 |
+| 背景替换 | `setVirtualBackgroundImage(_ image: SRTCNativeImage?)` | 按 cover 裁剪不拉伸；`nil` 回落到虚化。另有 `CGImage` 重载 |
+| 推理间隔 | `setVirtualBackgroundInferenceInterval(_ interval: Int)` | 分割每 N 帧跑一次（合成仍每帧跑），默认 1 |
+| 蒙版对齐 | `setVirtualBackgroundMaskSync(_ enabled: Bool)` | 默认 `false`；`interval` 为 1 时开关无区别 |
+| 实例 | `virtualBackground: SRTCVirtualBackground` | 诊断用：`droppedFrameCount`、`isInstalled`、`effect`、`inferenceIntervalMs` 等 |
+
+**可能抛出：** `SRTCError.virtualBackgroundAlreadyInstalled`、`.virtualBackgroundNotInstalled`、`.virtualBackgroundModelNotFound(String)`、`.virtualBackgroundSessionFailed(String)`
+
+背景虚化与背景替换互斥，后调用的生效；两者在装载前调用也会被记住，装载完成后自动生效。
+
+---
+
 ### 相关页面
 
 + [核心概念](/zh/rtc/swift/key-concepts)
++ [虚拟背景](/zh/rtc/swift/advanced/virtual-background)
 + [Channel 与 Track](/zh/rtc/swift/api-reference/media-tracks)
 + [事件参考](/zh/rtc/swift/events)

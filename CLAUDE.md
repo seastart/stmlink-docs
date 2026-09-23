@@ -49,7 +49,10 @@ python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
 
 脚本按 `docs.json` 的导航顺序输出，用 `## {产品} · {分组} · {子分组}` 分节。所以：
 
-- **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页
+- **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页。
+  忘了也不会白忘：CI（`.github/workflows/llms-txt-check.yml`）在 push / PR 上跑 `--check`，
+  不一致直接红。**改了页面 frontmatter 的 `title` / `description` 同样要重跑**——
+  llms.txt 的每行摘要就是从它们生成的，不是只有增删页面才需要
 - 页面的 `description` 直接就是 AI 拿到的摘要（Mintlify 侧限 300 字符、截到第一个换行）。
   **别写「{平台} {产品} SDK {类名} 接口参考」这种模板句** —— 对 AI 选页零信息量，
   要写「这个类干什么、什么时候该读它」
@@ -165,6 +168,10 @@ SMeeting 在 `meeting-backend/openapi/groups.json`。**两个产品不能共用�
 **不进对外文档的路由**用 `Project.skip` 排除。SMeeting 排掉了两类：`callback/rtc` 是
 RTC 调进来的入站回调（客户不会调），`im/*api` 与 `agent/*api` 是原样转发到 RTC 的通配
 代理（真正的接口文档在 SRTC 那两页，由手写的 `guides/agent-and-im.md` 交代指向）。
+SRTC 排掉 `agent/list` —— 它是为兼容存量第三方调用保留的废弃别名，与 `list-invite` 等价。
+**这份清单要与后端 Makefile 的 `apidoc` 目标的 `-skip` 保持一致**：后端加别名时只改了
+Makefile 而漏了这里，下次同步就会把别名生成成一页对外接口，接口名还会取成路由上方
+「内部：」注释的最后一行（`agent/list` 就这么漏过一次）。
 
 **参数渲染用 Mintlify 的 `<ParamField>` / `<ResponseField>` 组件，不用 markdown 表格**
 （与下面「各端通用文档规范」里 SDK 文档的表格约定不同）。原因是 Mintlify 把表格列等宽

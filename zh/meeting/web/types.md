@@ -717,11 +717,43 @@ export interface McuRecordConfig {
 }
 
 /**
- * 录制配置详情
+ * 录制文件(一次录制任务的一个分片)
+ *
+ * 一次录制会产出多个文件：按时长切段、或中断后续录都会多出一片，按 seq 排序即播放顺序。
+ */
+export interface McuRecordFile {
+    /** 录制文件ID，单独取播放地址/删除时用 */
+	record_id: string;
+    /** 所属录制任务ID */
+	task_id: string;
+    /** 会议id */
+	channel: string;
+    /** 分片序号，从1开始 */
+	seq: number;
+    /** 文件大小(字节) */
+	vod_size: number;
+    /** 本片时长(秒) */
+	duration: number;
+    /** 本片开始时间(秒级时间戳) */
+	began_at: number;
+    /** 本片结束时间(秒级时间戳) */
+	ended_at: number;
+    /** 相对任务开始的偏移(毫秒)，做多片连播的进度轴用 */
+	offset_ms: number;
+    /** 分片原因 0未知 1按时长切段 2中断后续录(与上一片间有空洞) */
+	reason: number;
+    /** 预签名播放地址，有效期2小时 */
+	addr: string;
+    /** 记录创建时间(秒级时间戳) */
+	created_at: number;
+}
+
+/**
+ * 录制任务详情
  */
 export interface McuRecordDetail {
     /** 任务id */
-	id: string;
+	task_id: string;
     /** 操作人ID */
 	op_uid: string;
     /** 操作人 */
@@ -736,13 +768,27 @@ export interface McuRecordDetail {
 	task_status: McuTaskStatus;
     /** 任务状态描述 */
 	err_desc: string;
-    /** 录制文件key */
-	vod_key: string;
-    /** 录制文件大小 */
-	vod_size: number;
-    /** 录制时间 */
+    /** 录制开始时间(秒级时间戳)，0表示底层任务还没跑起来 */
+	began_at: number;
+    /** 录制结束时间(秒级时间戳)，0表示未结束 */
+	ended_at: number;
+    /** 录制文件数 */
+	record_count: number;
+    /** 全部录制文件的总时长(秒) */
+	total_duration: number;
+    /** 全部录制文件的总字节 */
+	total_size: number;
+    /** 录制文件列表 */
+	records: McuRecordFile[] | null;
+    /**
+     * 录制开始时间(秒级时间戳)
+     * @deprecated 两级模型改造前的老字段，与 began_at 等价，请改用 began_at
+     */
 	mcu_at: number;
-    /** 录制时长 */
+    /**
+     * 录制总时长(秒)
+     * @deprecated 两级模型改造前的老字段，与 total_duration 等价，请改用 total_duration
+     */
 	mcu_dur: number;
     /** 标签 */
 	tags: string;
@@ -750,6 +796,8 @@ export interface McuRecordDetail {
 	created_at: number;
     /** 更新时间 */
 	updated_at: number;
+    /** 服务器当前时间(秒)，用于前端本地时间不准时辅助计算录制时长 */
+	now: number;
 }
 
 /**

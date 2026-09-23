@@ -190,18 +190,36 @@ fun startMicrophone() {
 ```kotlin
 val screenTrack = rtcEngine.getLocalScreenTrack(this, PreOptionScreen.def)
 
+screenTrack.setEvent(object : RTCScreenStateEvent {
+    override fun onScreenCaptureStateChanged(state: ScreenCaptureState, args: String?) {
+        when (state) {
+            ScreenCaptureState.START -> Unit // 屏幕采集已经建立
+            ScreenCaptureState.STOP -> Unit  // 屏幕采集已经停止
+            ScreenCaptureState.ERROR -> Unit // args 中包含错误信息
+        }
+    }
+})
+
 screenTrack.request { granted, intent ->
     if (granted && intent != null) {
-        screenTrack.startCapture(intent, hasBar = true)
-        rtcEngine.publishLocalVideo(
-            track = screenTrack,
-            publishCustomOpt = PublishCustomOptions(
-                desc = TrackDesc.TRACK_SHARE.value,
-                props = null,
-                simulcasts = null
-            ),
-            listener = null
-        )
+        screenTrack.startCapture(intent, object : RTCResultListener {
+            override fun onSuccess() {
+                // 这里只表示 SDK 已接纳启动操作，真实状态由 RTCScreenStateEvent 通知
+                rtcEngine.publishLocalVideo(
+                    track = screenTrack,
+                    publishCustomOpt = PublishCustomOptions(
+                        desc = TrackDesc.TRACK_SHARE.value,
+                        props = null,
+                        simulcasts = null
+                    ),
+                    listener = null
+                )
+            }
+
+            override fun onFail(code: Int) {
+                // 例如重复启动或当前生命周期状态不允许启动
+            }
+        })
     }
 }
 ```

@@ -10,8 +10,14 @@ description: "iOS SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
 </Note>
 
 ### 环境准备
-+ iOS 10.0 及以上版本
++ iOS 16.0 及以上版本（`2.1.0` 起，此前为 iOS 10.0）
 + Xcode 10.0 及以上版本
+
+<Warning>
+`2.1.0` 起 SDK 内置虚拟背景，最低系统要求由 iOS 10.0 提升到 **iOS 16.0**，接入工程的 `IPHONEOS_DEPLOYMENT_TARGET` 与 `Podfile` 的 `platform :ios` 都需要不低于 16.0，否则依赖无法参与解析。
+
+虚拟背景的推理引擎 `onnxruntime-c` 由 `RTCEngineKit` 的 podspec 传递引入，`Podfile` 中不需要显式声明。
+</Warning>
 
 <Note>
 自 `2.0.0` 起，组件分为两层：`MeetingKit` 是全局单例，负责登录、即时通讯、会议查询与预约、共享设备（摄像头、音频路由、屏幕采集）与房间实例的创建；`MeetingKitRoom` 是房间实例，负责进出房间与一切会中操作。同一账号可以创建多个房间实例并同时加入多个房间。

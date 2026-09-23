@@ -1,127 +1,172 @@
 ---
 title: "InfosManager"
-description: "读取当前会议、成员与轨道的本地状态快照，不发起网络请求"
+description: "读取当前会议、成员与 SRTC 轨道的本地状态快照"
 ---
 
-说明：`InfosManager` 是会中信息管理器，用于读取当前会议、成员与轨道的本地状态快照。
+`InfosManager` 是当前会议的只读信息查询入口，通过 `MeetingEngine.infosManager` 获取。它提供会议信息、成员信息和媒体轨道信息，不发起网络请求，也不修改会议状态。
 
-## 核心属性
+## 使用说明
 
-### meUid（属性）
++ `MeetingEngine` 始终返回同一个 `InfosManager` 门面，应用可以长期持有；每次查询都会读取 Engine 当前已加入的会议，不会继续暴露上一场会议的数据。
++ 查询结果来自 SDK 本地缓存，可能与刚发起但服务端尚未确认的操作存在短暂时间差。需要感知状态变化时，应同时监听对应的 `MeetingRoomEvent` 或 `MeetingUserEvent`。
++ 没有已加入的会议时，可空属性和对象查询返回 `null`，列表查询返回空列表，布尔查询返回 `false`。
++ 观众不属于正式成员列表。当前用户以观众身份入会时，`isAudience()` 返回 `true`，但 `getMeInfo()` 可能返回 `null`。
++ 返回的模型和列表用于表示查询时的状态快照，不应依赖修改这些对象来更新 SDK 或服务端会议状态。
+
+## 属性
+
+### meUid
+
 ```kotlin
 val meUid: String?
 ```
-方法说明：当前登录成员的 UID。  
-参数说明：无。  
-返回值说明：`String?`，当前用户 UID；未入会或未就绪时为 `null`。
 
-### meetingId（属性）
+属性说明：当前用户在 SRTC 频道中的 UID；尚未完成入会或已经离会时为 `null`。
+
+### meetingId
+
 ```kotlin
 val meetingId: String?
 ```
-方法说明：当前会议 ID。  
-参数说明：无。  
-返回值说明：`String?`，当前会议 ID；未入会时为 `null`。
 
-### whiteBoard（属性）
+属性说明：当前会议 ID；尚未完成入会或已经离会时为 `null`。
+
+### whiteBoard
+
 ```kotlin
 val whiteBoard: String?
 ```
-方法说明：当前会议白板地址。  
-参数说明：无。  
-返回值说明：`String?`，白板 URL/地址；未配置时为 `null`。
 
-### meetingIdForWaitingRoom（属性）
-```kotlin
-val meetingIdForWaitingRoom: String?
-```
-方法说明：等候室场景下缓存的会议 ID。  
-参数说明：无。  
-返回值说明：`String?`，等候室关联会议 ID；无数据时为 `null`。
+属性说明：当前会议的白板地址；未入会、已经离会或会议没有白板地址时为 `null`。
 
-## 会议信息
+## 接口方法
 
 ### getMeetingInfo()
+
 ```kotlin
 fun getMeetingInfo(): MeetingInfo?
 ```
-方法说明：获取当前会议信息。  
-参数说明：无。  
-返回值说明：`MeetingInfo?`，会议信息对象；无会议上下文时返回 `null`。
 
-## 成员信息
+方法说明：读取当前会议的房间配置和共享、录制等状态快照。
 
-### isAudience()
-```kotlin
-fun isAudience(): Boolean
-```
-方法说明：判断当前用户是否为观众身份。观众可观看但不在成员列表中，且不能开设备、共享或推流。  
-参数说明：无。  
-返回值说明：`Boolean`，`true` 表示当前为观众，`false` 表示为正式成员。
+参数说明：无。
+
+返回值说明：当前会议的 [MeetingInfo](/zh/meeting/android/types#meetinginfo)；没有已加入的会议或房间属性无法解析时返回 `null`。
 
 ### getMeInfo()
+
 ```kotlin
 fun getMeInfo(): MemberInfo?
 ```
-方法说明：获取当前用户成员信息。  
-参数说明：无。  
-返回值说明：`MemberInfo?`，当前成员信息；未入会或数据未同步时返回 `null`。
+
+方法说明：读取当前用户的正式会议成员信息，包括角色、设备状态和成员权限。
+
+参数说明：无。
+
+返回值说明：当前用户的 [MemberInfo](/zh/meeting/android/types#memberinfo)；未入会、当前用户为观众或成员属性无法解析时返回 `null`。
+
+### isAudience()
+
+```kotlin
+fun isAudience(): Boolean
+```
+
+方法说明：判断当前用户是否以观众身份加入会议。
+
+参数说明：无。
+
+返回值说明：`true` 表示当前是观众；未入会或当前是正式成员时返回 `false`。
 
 ### getMembersInfo()
+
 ```kotlin
 fun getMembersInfo(): MutableList<MemberInfo>
 ```
-方法说明：获取当前会议全部成员信息（包含自己）。  
-参数说明：无。  
-返回值说明：`MutableList<MemberInfo>`，成员信息列表；无成员时返回空列表。
+
+方法说明：读取当前会议的正式成员列表，包括作为正式成员入会的当前用户，不包含观众。
+
+参数说明：无。
+
+返回值说明：成员信息快照列表；未入会、会议内没有正式成员或成员属性均无法解析时返回空列表。
 
 ### getMemberByUid(uid)
+
 ```kotlin
 fun getMemberByUid(uid: String): MemberInfo?
 ```
-方法说明：按用户 UID 获取成员信息。  
+
+方法说明：根据 UID 读取指定正式成员的信息。
+
 参数说明：
-- `uid`：`String`，目标成员 UID。
-返回值说明：`MemberInfo?`，目标成员信息；未找到时返回 `null`。
+
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标成员在当前会议中的 UID |
+
+返回值说明：匹配的 `MemberInfo`；未入会或成员不存在时返回 `null`。
 
 ### isExistMember(uid)
+
 ```kotlin
 fun isExistMember(uid: String): Boolean
 ```
-方法说明：判断指定 UID 的成员是否存在于当前会议。  
-参数说明：
-- `uid`：`String`，目标成员 UID。
-返回值说明：`Boolean`，`true` 表示存在，`false` 表示不存在。
 
-## 轨道信息
+方法说明：判断指定 UID 是否存在于当前会议的正式成员列表中。
+
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标成员在当前会议中的 UID |
+
+返回值说明：成员存在时返回 `true`；未入会或成员不存在时返回 `false`。
 
 ### getTrackInfos(uid)
+
 ```kotlin
 fun getTrackInfos(uid: String): MutableList<TrackInfo>
 ```
-方法说明：获取指定成员的全部轨道信息。  
+
+方法说明：读取指定用户当前公开的全部 SRTC 媒体轨道信息。
+
 参数说明：
-- `uid`：`String`，目标成员 UID。
-返回值说明：`MutableList<TrackInfo>`，该成员轨道列表；无轨道时返回空列表。
+
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标用户在当前会议中的 UID |
+
+返回值说明：SRTC `TrackInfo` 快照列表；未入会、用户不存在或用户没有公开轨道时返回空列表。模型字段见 [SRTC Android 模型类型](/zh/rtc/android/types)。
 
 ### getTrackInfoByTrackDesc(uid, trackDesc)
+
 ```kotlin
 fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
 ```
-方法说明：按成员 UID 与轨道描述查询轨道信息。  
+
+方法说明：根据用户 UID 和轨道描述读取一条 SRTC 媒体轨道。
+
 参数说明：
-- `uid`：`String`，目标成员 UID。
-- `trackDesc`：`String`，轨道描述（如 `camera_big`、`camera_small`、`screen`、`mic`）。
-返回值说明：`TrackInfo?`，匹配到的轨道信息；未找到时返回 `null`。
+
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标用户在当前会议中的 UID |
+| `trackDesc` | 轨道描述，例如摄像头主流 `TRACK_MAIN`、麦克风 `TRACK_AUDIO` 或共享流 `TRACK_SHARE` 对应的字符串值 |
+
+返回值说明：匹配的 `TrackInfo`；未入会或没有匹配轨道时返回 `null`。轨道描述定义见 [SRTC Android 枚举类型](/zh/rtc/android/enums)。
 
 ### getTrackInfoByTrackId(uid, trackId)
+
 ```kotlin
 fun getTrackInfoByTrackId(uid: String, trackId: String): TrackInfo?
 ```
-方法说明：按成员 UID 与轨道 ID 查询轨道信息。  
+
+方法说明：根据用户 UID 和 SRTC 轨道 ID 读取一条媒体轨道。
+
 参数说明：
-- `uid`：`String`，目标成员 UID。
-- `trackId`：`String`，轨道 ID。
-返回值说明：`TrackInfo?`，匹配到的轨道信息；未找到时返回 `null`。
 
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 目标用户在当前会议中的 UID |
+| `trackId` | SRTC 为目标轨道分配的唯一 ID |
 
+返回值说明：匹配的 `TrackInfo`；未入会或没有匹配轨道时返回 `null`。

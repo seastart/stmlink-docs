@@ -99,15 +99,59 @@ sequenceDiagram
 | `device_id` | 否 | 设备 ID |
 | `device_type` | 否 | 终端类型：`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 小程序；缺省 `0` 未知 |
 | `version` | 否 | 客户端版本号，排查问题时用 |
-| `no_menu=1` | 否 | 隐藏白板自带的主菜单，便于换成你自己的 UI |
+| `no_menu=1` | 否 | 隐藏左上角的主菜单按钮，便于换成你自己的 UI |
+| `no_tool=1` | 否 | 隐藏底部工具栏 |
+| `readonly=1` | 否 | 只读：可以看，不能画（也不能建 / 删页），见下文[权限控制](#权限只有一个开关) |
 | `export_btn=1` | 否 | 显示导出图片按钮（导出结果通过宿主接口回传，见下文） |
 | `overlay=1` | 否 | 桌面批注模式，见下文 |
+
+<Note>
+`no_menu` / `no_tool` / `readonly` **只决定打开时的初始状态**。会中要改（例如临时收回某人的画笔权限、过一会儿再放开），得调[宿主接口](#原生端-webview-内嵌)里对应的 `window` 方法，改 URL 是不会生效的。
+</Note>
 
 ### overlay 批注模式
 
 `overlay=1` 让白板**半透明叠在共享桌面画面之上**做批注，画布固定 1920×1080 且禁止缩放——各端必须共用同一套坐标系，笔迹才会落在桌面内容的同一位置上。宿主需要调 `window.setReceiverScreenSize(w, h)` 告诉白板本机的屏幕尺寸。
 
 普通互动白板不要带这个参数：它会隐藏主菜单并让背景近乎全透明。
+
+---
+
+## 权限：只有一个开关
+
+要不要让某个人画，只看一处：
+
+```javascript
+window.setReadonly(true)   // 只能看
+window.setReadonly(false)  // 可以画
+```
+
+它是白板内核的能力开关——开启后画、建页、删页在内核层就被拦掉，快捷键和右键菜单一样不好使。会中随时可调，不需要重新加载页面（URL 上的 `readonly=1` 只是初始值）。
+
+<Warning>
+**别用"隐藏工具栏"来当权限控制。** `no_menu` / `no_tool`（以及对应的 `setShowMenu` / `setShowToolUi`）只是把界面元素藏起来，用户照样能用快捷键（`D` 画笔、`E` 橡皮）和右键菜单画。要禁止操作只有 `setReadonly`。
+
+反过来 `setReadonly(true)` 也不会替你把界面收干净：白板只会留下选择 / 抓手 / 激光笔三个工具并收起样式面板，主菜单和页面菜单仍然在。两者按需搭配。
+</Warning>
+
+---
+
+## 多页白板与翻页跟随
+
+白板支持多页，**页面列表在各端之间自动同步**——任何人新建、删除、重命名页面，其他人都能看到。用右键菜单的「移动到页面」把图形挪到另一页，对方也能在那一页上看到它。
+
+跟随规则只有一句：**能画的人翻页，其他人跟着翻。**
+
+| 这个人 | 翻页时 | 别人翻页时 |
+| --- | --- | --- |
+| 能画（默认） | 其他人跟着翻过来 | 自己也跟着翻 |
+| 只读（`readonly`） | 只有自己翻，不影响别人 | 自己也跟着翻 |
+
+没有主持人、角色之类的概念——翻页话语权跟着"能不能画"走，你只需要管好 `setReadonly`。中途进来的人会自动对齐到大家当前所在页，不用你额外做什么。
+
+多人同时能画时，最后翻页的人说了算。这是有意的：共享白板本来就该让大家看同一页。真要让某一端能自由翻看而不打扰别人，把它设成 `readonly` 即可。
+
+"当前在第几页"是会话状态，不会被持久化——换一场会不会残留上一场停在哪页；页面本身和上面的笔迹则一直留在板上，直到白板被销毁。
 
 ---
 
@@ -183,11 +227,29 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 | `window.AndroidInterface.onWbDestroy(reason)` | 白板被销毁（被人调了 destroy、或到期清理），宿主应关掉白板视图 |
 | `window.AndroidInterface.onExportImage(dataUrl)` | 用户点了导出按钮（需 `export_btn=1`），回传 `data:image/png;base64,...` 形式的 Data URL |
 
-**宿主调 H5**：
+**宿主调 H5**（用 `evaluateJavascript` / `evaluateJavaScript` 调用，页面加载完成后才可用）：
 
 | 接口 | 说明 |
 | --- | --- |
+| `window.setShowMenu(show)` | 左上角主菜单按钮显隐（URL `no_menu=1` 的动态版） |
+| `window.setShowToolUi(show)` | 底部工具栏显隐（URL `no_tool=1` 的动态版） |
+| `window.setReadonly(readonly)` | **权限开关**：能不能画（含建页 / 删页），同时决定翻页话语权，见[权限](#权限只有一个开关) |
+| `window.setCurrentTool(tool)` | 切换工具：`select` / `hand` / `draw` / `eraser` / `arrow` / `text` / `geo` / `line` / `highlight` / `laser` |
 | `window.setReceiverScreenSize(w, h)` | 仅 overlay 模式：告知本机屏幕尺寸 |
+
+```java
+// Android：会中收回某人的画笔权限
+webView.evaluateJavascript("window.setReadonly(true)", null);
+```
+
+```swift
+// iOS：进入观众席（仍会跟着别人翻页）
+webView.evaluateJavaScript("window.setReadonly(true)", completionHandler: nil)
+```
+
+<Note>
+这些方法在页面加载完成后（`onPageFinished` / `didFinish navigation`）才挂上，之前调用会是 `undefined`。建议在加载完成的回调里按业务身份先调一次 `setReadonly` 做初始化，之后权限有变随时再调，不需要重新加载页面。
+</Note>
 
 <Note>
 接口名 `AndroidInterface` 是历史命名，iOS / Windows 端同样按这个名字挂载即可。
@@ -225,6 +287,10 @@ Android 端的完整示例（WebView 配置、JS Bridge 实现、插入图片时
 **会议结束后白板内容没了**
 
 `board` 取了频道名，频道销毁时连带销毁了它。需要留存就换一个独立的 `board`，并自己管理销毁时机。
+
+**白板能插入什么格式的图片？**
+
+JPEG / PNG / GIF / WebP / SVG，**单张不超过 3 MB**，不支持视频。SVG 是矢量图，放大不失真，贴图标、图纸比位图更合适。原生端要让用户能选图，还得在 WebView 里处理 `onShowFileChooser`（见 [Android · 白板接入](/zh/rtc/android/advanced/whiteboard)），建议回传前把图压到 1 MB 以内。
 
 **能不能把白板画面推流给不能内嵌 WebView 的端？**
 

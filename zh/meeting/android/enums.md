@@ -1,6 +1,6 @@
 ---
 title: "枚举类型"
-description: "Android SMeeting 会议 SDK 枚举值定义"
+description: "Android SMeeting 2.0.37 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举"
 ---
 
 ### AgentStatus
@@ -75,15 +75,6 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Open | 1 | 开启 |
 | Closed | 2 | 关闭 |
 
-### DisconnectedImReason
-
-| 枚举名 | 值 | 说明 |
-| --- | --- | --- |
-| Unknown | 0 | 未知 |
-| KickOut | 2 | 被踢出 |
-| BeReplaced | 3 | 被顶号 |
-| HeartbeatTimeout | 4 | 心跳超时 |
-
 ### HandUpType
 
 | 枚举名 | 值 | 说明 |
@@ -94,6 +85,7 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Chat | 3 | 申请聊天 |
 | Share | 4 | 申请共享 |
 | Draw | 5 | 申请白板涂鸦 |
+| Other | 6 | 其他申请 |
 
 ### LeaveMeetingReason
 
@@ -157,6 +149,13 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | MuteState2 | 2 | 关闭入会静音（跟随客户端初始音频状态） |
 | MuteState3 | 3 | 超 6 人静音（超过 6 人后入会静音） |
 
+### RollCallMethod
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| Auto | 1 | 自动点名 |
+| Manual | 2 | 手动点名 |
+
 ### ShareType
 
 | 枚举名 | 值 | 说明 |
@@ -181,3 +180,15 @@ description: "Android SMeeting 会议 SDK 枚举值定义"
 | Normal | 1 | 普通成员 |
 | SIP | 2 | SIP 设备 |
 | H323 | 3 | H323 设备 |
+
+### CastMeetingOwner
+
+新建投屏会议的归属策略，供 `CastStartOption.owner` 使用。
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| Self | `"self"` | 归属于调用 startCast 的投屏发起者 |
+
+## SRTC 枚举
+
+Meeting 的公开接口还会直接使用传递依赖 SRTC 中的 `DeviceType`、`LeaveReason`、`ScreenCaptureState`、`TrackDesc`、网络质量等级等类型。它们不是 Meeting 自定义枚举，统一以 [SRTC Android 枚举类型](/zh/rtc/android/enums) 为准。

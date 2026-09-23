@@ -16,15 +16,15 @@ description: "会议里怎么开白板：用 requestShareBoard() 拿到白板地
 `requestShareBoard()` 做两件事：向会议广播「我在共享白板」，并在回调里返回白板地址。
 
 ```kotlin
-meetingEngine.requestShareBoard(object : BoardShareCallback {
-    override fun onSucceed(whiteBoard: String) {
+meetingEngine.requestShareBoard(object : MeetingValueResultCallback<String> {
+    override fun onSuccess(whiteBoard: String) {
         // whiteBoard 是拼好授权码的完整 URL，直接加载
         showBoard(whiteBoard)
     }
 
-    override fun onFail(code: Int, errorMsg: String?, showMsg: String?) {
+    override fun onFailure(errorCode: Int, message: String?) {
         // 常见失败：主持人开启了「房间禁共享」、已有他人在共享
-        toast(showMsg)
+        toast(errorMessageFor(errorCode))
     }
 })
 ```
@@ -105,5 +105,5 @@ webView.loadUrl(whiteBoard)
 
 + [SRTC · 电子白板](/zh/rtc/whiteboard) —— 白板页面的 URL 参数、状态同步原理、生命周期与销毁
 + [MeetingEngine](/zh/meeting/android/api-reference/MeetingEngine) —— `requestShareBoard()` / `stopShareWhiteBoard()` 接口签名
-+ [BoardShareCallback](/zh/meeting/android/api-reference/BoardShareCallback) —— 共享结果回调
-+ [RoomEvent](/zh/meeting/android/api-reference/RoomEvent) —— 共享开始 / 结束事件
++ [Meeting 结果回调](/zh/meeting/android/api-reference/MeetingResultCallback) —— 白板地址与失败结果回调
++ [MeetingRoomEvent](/zh/meeting/android/api-reference/MeetingRoomEvent) —— 共享开始 / 结束事件

@@ -195,6 +195,7 @@ https://<你的域名>/meeting/stm/ui/outer?token=<第2步的token>&room_no=<第
 
 活动结束后（可选）
   └─ POST /server/v1/mcu/vods-url       取回放，等 mcu_record_done 回调之后
+                                        一次录制可能有多段，这里会一并返回
 ```
 
 回调怎么接、怎么验签见[回调事件接入指南](/zh/meeting/server-api/guides/callbacks)。

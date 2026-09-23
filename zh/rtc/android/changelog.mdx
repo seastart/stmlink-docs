@@ -5,6 +5,153 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.34] - 2026.09.21
+
+#### 修复
+
++ 修复开启虚拟背景虚化后背景显示为黑色的问题。
+
+### [2.0.33] - 2026.09.18
+
+#### 变更
+
++ 将 `fix/bugfix` 分支合并入 `master` 分支。
+
+### [2.0.32-bugfix.2] - 2026.09.18
+
+#### 新增
+
++ `LocalCameraTrack` 新增 `getCurrentCameraId`，用于查询实际生效的摄像头设备，接口见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
++ 新增摄像头错误码 `CAMERA_FORMAT_UNAVAILABLE`、`CAMERA_OPEN_TIMEOUT` 和 `CAMERA_SESSION_TIMEOUT`，说明见 [错误码](/zh/rtc/android/error-codes)。
+
+#### 修复
+
++ 修复摄像头打开或配置阶段无响应时，本次操作一直不返回结果的问题。
++ 修复摄像头会话已就绪即上报成功，但画面仍然全黑的问题。
++ 修复切换摄像头成功后，配置中的摄像头设备信息未同步更新的问题。
++ 修复连续快速切换摄像头时偶发采集异常或黑屏的问题。
+
+#### 变更
+
++ 启动采集时配置的摄像头设备与方向改为建议值，不可用时自动改选其他设备；按方向切换只在该方向内尝试，按设备 ID 切换只尝试指定设备。
++ 切换摄像头失败后不再自动回退到原摄像头，需由应用自行调用 `startCapture` 恢复画面，说明见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
++ 切换摄像头请求被后一次请求取代或被停止采集取消时不再回调结果，错误码 `CAMERA_SWITCH_SUPERSEDED` 已删除。
++ 获取摄像头轨道时会复制一份采集配置，取到轨道后再修改原预设的 `capture` 不再生效，修改 `publish` 仍然生效。
++ 摄像头预设的 `deviceId` 默认值由 `cameraCapMain` 改为空串，表示不指定设备。具体数值见 [摄像头预设](/zh/rtc/android/presets/camera)。
+
+### [2.0.32-bugfix.1] - 2026.09.16
+
+#### 新增
+
++ `LocalCameraTrack` 的 `switchCameraPosition` 和 `switchCameraDevice` 新增切换结果回调，接口见 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack)。
++ 新增摄像头错误码 `CAMERA_SWITCH_SUPERSEDED` 和 `CAMERA_FIRST_FRAME_TIMEOUT`，说明见 [错误码](/zh/rtc/android/error-codes)。
+
+#### 修复
+
++ 修复切换摄像头失败后画面停在最后一帧、且切换功能不再响应的问题。
++ 修复切换摄像头失败后重新开启摄像头持续黑屏的问题。
++ 修复切换摄像头失败时可能静默切到非目标摄像头的问题。
++ 修复部分设备本地预览画面旋转角度错误、对端画面正常的问题。
++ 修复开麦或开摄像头协商失败后，同一次通话内反复开启持续失败、只能退会重进的问题。
++ 修复接入方开启 R8 full mode 后网络请求初始化失败的问题。
+
+#### 变更
+
++ 摄像头启动改为以首帧到达为准，选中的摄像头起不来时自动尝试下一个可用设备，全部不可用时回调 `CAMERA_FIRST_FRAME_TIMEOUT`。
+
+### [2.0.32] - 2026.09.12
+
+#### 新增
+
++ 新增虚拟背景，支持背景虚化和背景图替换，接口见 [`RTCEngine`](/zh/rtc/android/api-reference/RTCEngine)。
++ `VideoPublishOptions` 新增 `minBitrate`，支持配置单路视频最小码率。
+
+#### 修复
+
++ 修复入会即开麦时对端听不到人声的问题。
++ 修复订阅协商应答超时后开麦失败的问题。
++ 修复弱网环境下网络请求异常的问题。
++ 修复部分 SFU 视频轨道未应用保持分辨率策略的问题。
+
+#### 优化
+
++ 减少音频路由的重复下发。
+
+#### 变更
+
++ 调整摄像头预设参数：采集与大流推送帧率统一为 15，部分档位最大码率上调，各档位补充默认最小码率。具体数值见 [摄像头预设](/zh/rtc/android/presets/camera)。
++ 更新随 AAR 下发的混淆规则，保留 JNI Zero 与 WebRTC 相关类。
+
+### [2.0.31] - 2026.08.31
+
+#### 变更
+
++ 将 `audio-optimization` 分支合并入 `master` 分支。
+
+### [2.0.30] - 2026.08.29
+
+#### 修复
+
++ 修复本端被移出频道或发生不可恢复断开后，频道 Session 未及时摘除和媒体资源未完整释放，导致同频道重新加入可能被误判为重复入会的问题。
+
+#### 变更
+
++ 重构部分内部目录并优化 AAR 混淆规则，明确 Track 与公开枚举的保留边界；仅供 SDK 内部使用的 `RemoteStreamStatus` 移入 `enumerateLocal`，未使用的 `AudioOutputOptions` 已删除。
+
+### [2.0.29] - 2026.08.26
+
+#### 变更
+
++ 将 `screenCapture` 分支合并入 `master` 分支。
+
+### [2.0.28_audioOptimization.2] - 2026.08.26
+
+#### 优化
+
++ FY 和 WS 流媒体引擎的外部麦克风上行新增 AEC、NS 硬件优先、软件兜底策略：两项能力独立探测和验证，平台效果未真正启用时自动回退到 WebRTC 软件处理，避免重复处理或处理缺失。
+
+#### 变更
+
++ `RTCLocalAudioFrameEvent` 的 PCM 数据阶段随本版本的 AEC/NS 策略调整：平台 AEC/NS 已启用时包含对应平台处理；回退到 WebRTC 软件处理的项目，返回的是软件 APM 处理前数据。
+
+### [2.0.28_audioOptimization.1] - 2026.08.26
+
+#### 修复
+
++ 优化 FY 和 WS 流媒体引擎的外部麦克风推送到 WebRTC ADM 的桥接节拍，修复部分设备上行音频出现卡顿、断流、气泡音或类似丢帧听感的问题。
+
+#### 变更
+
++ `RTCLocalAudioFrameEvent` 改为跟随 Engine 级物理麦克风采集，在 SDK 音频分发线程串行回调，不再依赖某个频道是否发布音频；应用回调耗时不会阻塞上行，旁路队列满载时会丢弃较旧的应用回调帧。
+
+### [2.0.27_screenCapture.1] - 2026.08.25
+
+#### 新增
+
++ FY 和 WS 流媒体引擎新增 Android 原生屏幕采集能力，支持应用退至后台后继续共享，并支持将同一次屏幕采集发布到多个频道；
++ 新增 Engine 级本地屏幕 I420 帧回调，仅在应用注册监听器后复制并回调帧数据。
+
+#### 变更
+
++ `LocalScreenTrack.startCapture` 统一为带操作结果回调的启动入口；结果回调表示 SDK 是否接纳启动操作，后续采集状态通过 `RTCScreenStateEvent.onScreenCaptureStateChanged` 通知；
++ 屏幕采集状态类型调整为 `ScreenCaptureState`，包含 `START`、`STOP` 和 `ERROR` 三种状态；
++ FY 和 WS 屏幕采集不再依赖 WebRTC `ScreenCapturerAndroid`，OOK 屏幕采集链路保持不变。
+
+#### 修复
+
++ 修复共享静态页面时首帧可能长时间不显示的问题；
++ 完善系统停止共享、应用主动停止、屏幕旋转、锁屏以及单应用内容隐藏等场景下的状态通知和资源释放。
+
+### [2.0.28] - 2026.08.22
+
+#### 修复
+
++ 修复 OOK 媒体客户端释放线程与初始化线程不一致可能导致的不稳定问题。
+
+#### 变更
+
++ 更新 `librtc.so`，适配服务端移除 OOK 流媒体配置。
+
 ### [2.0.27] - 2026.08.19
 
 #### 变更

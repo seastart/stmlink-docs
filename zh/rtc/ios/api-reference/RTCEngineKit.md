@@ -469,3 +469,110 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 `- (NSString *)getFilterName`
 
 获取当前滤镜效果
+
+## 虚拟背景接口函数
+
+<Note>
+虚拟背景与美颜作用于同一条共享摄像头采集链路，设置对全部频道实例同时生效。两者同时开启时顺序固定为美颜在前、虚拟背景在后。
+
+虚拟背景是自研组件，**装载不需要授权密钥**；使用前请确认工程已满足 iOS 16.0 与 `onnxruntime` 依赖，详见 [集成方式](/zh/rtc/ios/integration)与[虚拟背景](/zh/rtc/ios/advanced/virtual-background)。
+</Note>
+
+### installVirtualBackground:()
+`- (RTCEngineError)installVirtualBackground:(nullable NSString *)modelPath`
+
+装载虚拟背景组件
+
+使用背景虚化或背景替换前需要先调用此方法装载人像分割模型并创建推理会话。装载后默认不开启，由`enabledVirtualBackground:()`决定。
+
+**参数**
+
+| modelPath | 人像分割模型文件路径，传 nil 使用 SDK 内置模型 |
+| --- | --- |
+
+
+**返回值**
+
+| RTCEngineErrorOK | 装载成功 |
+| --- | --- |
+| RTCEngineErrorConflict | 组件已装载，本次指令被丢弃 |
+| RTCEngineErrorNotFound | 模型文件不存在 |
+| RTCEngineErrorSystemError | 推理会话创建失败 |
+
+
+### uninstallVirtualBackground()
+`- (void)uninstallVirtualBackground`
+
+卸载虚拟背景组件
+
+虚拟背景不再使用时，调用此方法释放推理会话与相关缓冲。引擎销毁时会自动卸载。
+
+### enabledVirtualBackground:()
+`- (RTCEngineError)enabledVirtualBackground:(BOOL)enabled`
+
+虚拟背景功能开关
+
+组件未装载时调用返回`RTCEngineErrorConflict`。关闭后为零开销直通，不再进行推理，并清除帧间状态，下次开启从首帧重新收敛。
+
+**参数**
+
+| enabled | YES-开启 NO-关闭 |
+| --- | --- |
+
+
+### setVirtualBackgroundBlur:()
+`- (void)setVirtualBackgroundBlur:(NSInteger)level`
+
+设置背景虚化
+
+与`setVirtualBackgroundImage:()`互斥，后调用的生效。装载前调用也会被记住，装载完成后自动生效。
+
+**参数**
+
+| level | 虚化等级，取值范围 1-10，默认 5，超出范围收敛到边界值 |
+| --- | --- |
+
+
+### setVirtualBackgroundImage:()
+`- (void)setVirtualBackgroundImage:(nullable UIImage *)image`
+
+设置背景替换
+
+与`setVirtualBackgroundBlur:()`互斥，后调用的生效。
+
+**参数**
+
+| image | 背景图片，按 cover 裁剪不拉伸；传 nil 表示取消替换回到背景虚化 |
+| --- | --- |
+
+
+### setVirtualBackgroundInferenceInterval:()
+`- (void)setVirtualBackgroundInferenceInterval:(NSInteger)interval`
+
+设置分割推理间隔
+
+低端机保帧率使用，合成仍是每帧进行。
+
+**参数**
+
+| interval | 分割每 N 帧跑一次，默认 1，小于 1 按 1 处理 |
+| --- | --- |
+
+
+### setVirtualBackgroundMaskSync:()
+`- (void)setVirtualBackgroundMaskSync:(BOOL)enabled`
+
+设置蒙版对齐
+
+开启后非推理帧不重新合成，画面与蒙版永远同一时刻，可消除挥手时的错位拖影，代价是画面更新率降到蒙版率。`interval`为 1 时开启与否没有区别。
+
+**参数**
+
+| enabled | YES-开启 NO-关闭，默认 NO |
+| --- | --- |
+
+
+### isVirtualBackgroundEnabled()
+`- (BOOL)isVirtualBackgroundEnabled`
+
+获取虚拟背景开启状态

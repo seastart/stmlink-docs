@@ -73,6 +73,16 @@ try await meeting.requestOpenCamera(
 + `view` 只在 UIKit / AppKit 场景需要传，且必须是一个**已经挂在视图层级上**的 `SRTCVideoRenderer`。SwiftUI 场景一律传 `nil`，把 `meeting.cameraTrack` 交给 `SRTCVideoView(track:)` 即可
 + `preset` 取值来自 SRTC 的 `CameraPreset`：`.h180p`、`.h360p`、`.h720p`（默认）、`.h1080p`
 
+#### 更换预览视图（UIKit / AppKit，1.3.8+）
+
+```swift
+meeting.updateLocalCameraView(newPreviewView)
+```
+
+UIKit 宿主在布局变化时常常会销毁并重建承载预览的视图（宫格重建、首屏与视频墙切换）。视图一旦被重建，渲染器还挂在旧视图上，本端画面就黑了。`updateLocalCameraView(_:)` 在**不中断采集**的前提下把渲染器搬到新视图上，无需关掉摄像头再开一次。
+
+摄像头已经开启时再调 `requestOpenCamera(view:)` 同样会把渲染器搬到新传入的视图上（1.3.8 起；此前新视图会被静默忽略）。
+
 #### 切换摄像头
 
 ```swift

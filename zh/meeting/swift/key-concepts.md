@@ -98,6 +98,7 @@ let me = try meeting.getUserInfo(meeting.currentUserId ?? "")
 | `shareState` | `Int` | `0` 无共享、`1` 屏幕共享、`2` 白板，可与 `ShareType` 的 `rawValue` 比较 |
 | `role` | `Role` | `.member` / `.host` / `.coHost` |
 | `chatDisabled` | `Bool` | 是否被单独禁言 |
+| `drawDisabled` | `Bool` | 是否被禁止涂鸦 |
 
 ---
 

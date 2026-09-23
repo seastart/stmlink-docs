@@ -125,6 +125,34 @@ session.isEngaged              // 音频通道是否已建立（入会中 / 采�
 
 ---
 
+### 纯本地播放时停掉音频单元
+
+录像直播课这类场景：人在房间里，但只是放一段录像，**没有任何通话音频要收发**。此时 VoIP 语音处理单元（VPIO）仍占着音频会话，会把 `AVPlayer` 的播放音量压低一大截。把音频单元停掉，系统音频会话交还给本地播放器，音量即恢复正常。
+
+```swift
+let session = AudioRouteSession.shared
+
+// 开始播放录像前：停掉音频单元
+session.setAudioModuleEnabled(false)
+
+// 录像播放结束后：交还给流媒体自动管理
+session.setAudioModuleEnabled(true)
+
+session.isAudioModuleEnabled   // 当前是否由流媒体自动管理（默认 true）
+```
+
+<Warning>
+**停用期间通话音频收不到也发不出。** 录像放完必须调回 `true`，否则这一场后面全程是哑的——没有声音的表现和「对方没开麦」一模一样，排查时先看这里。
+</Warning>
+
+<Note>
+有一种情况不用自己收尾：每次**首次**占用音频通道（入会 / 开始采集）会自动复位为 `true`，上一场手动停用的状态不会跨会话泄漏。这与老版 `RTCEngineKit` 进房即 `enabledAudioModule:YES` 的行为一致。
+
+这个开关只针对「整场都不需要通话音频」的场景。只是想让自己或对方静音，用 `LocalMicTrack.mute()` 或取消订阅，别停音频单元。
+</Note>
+
+---
+
 ### 监听路由变化
 
 ```swift

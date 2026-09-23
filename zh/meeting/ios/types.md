@@ -593,6 +593,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEADeviceTypeMacOS | `5` | MacOS |
 | SEADeviceTypeWebRTC | `6` | WebRTC |
 | SEADeviceTypeWeChat | `7` | 微信小程序 |
+| SEADeviceTypeHarmonyOS | `8` | HarmonyOS |
 
 
 ### SEACodecType

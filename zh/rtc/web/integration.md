@@ -103,3 +103,22 @@ import type { ChannelEvent } from '@seastart/srtc-web-sdk';
   const srtc = new SRTC({ logLevel: 'debug' });
 </script>
 ```
+
+### 与响应式框架集成
+
+<Warning>
+不要把 `SRTC` 实例和 `join()` 返回的 `Channel` 放进 Vue 的 `reactive()` / `ref()`、Pinia 的 state 这类**深层响应式容器**。SDK 内部多处依赖对象身份比较（频道、轨道、订阅关系），实例被代理后这些比较会失效，而且失败是静默的——典型表现是频道事件一个都收不到，却没有任何报错。
+</Warning>
+
+请用 `markRaw()` 或 `shallowRef` 存放：
+
+```typescript
+import { markRaw, shallowRef } from 'vue';
+
+// 引擎实例
+const srtc = markRaw(new SRTC({ logLevel: LogLevel.DEBUG }));
+
+// join 返回的 Channel 同样要脱代理
+const channel = shallowRef();
+channel.value = markRaw(await srtc.join(token));
+```

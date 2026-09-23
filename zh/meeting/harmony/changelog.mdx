@@ -1,0 +1,68 @@
+---
+title: "更新日志"
+description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
+---
+
+### [1.0.0] - 2026.09.07
+#### 新增
+
++ **本端统计**：`SMeetingEngine.getStats()` 返回 `RtcStatsSnapshot`，包含实际编码分辨率与帧率、编码器降级原因、发送侧丢包与往返时延。与 `onQualityReport` 互补——后者由 SFU 下发、只有 SeaStart 引擎有，而本端统计两条引擎路径都能出。
++ **媒体面连接状态**：新增回调 `SMeetingDelegate.onMediaStateChange`，参数类型 `MediaConnectionState`。它反映音视频通路的连通性，与信令面的连接 / 重连事件是**两条独立的线**。
++ **聊天消息类型**：`ChatMessageInfo` 与 `chatMessageInfoFromJson`。
++ **会控事件**：主持人请求开启共享 `AdminRequestOpenShareEventData`。
++ **摄像头变焦**：`cameraZoomRange()` 与变焦设置接口。
++ **长时任务**：支持通话切后台后继续采集与推流。
+
+#### 修复
+
++ 长时任务在部分场景下启动失败（`9800005 bgMode is invalid`）：ability 需额外声明 `"backgroundModes": ["audioRecording"]`。
+
+#### 变更
+
++ 依赖的 SRTC 升级至 **1.0.0**（`peerDependencies`）。升级 SMeeting 时必须同步替换 SRTC 的 HAR。
+
+<Warning>
+**不要把媒体面状态和信令面状态当成一条线。**
+
+信令面（`ConnectionState`）与媒体面（`MediaConnectionState`）各自断开、各自恢复：信令断了媒体流往往照旧，反过来媒体通路失败时信令通常一切正常。历史上把两者合并导致过两种真实故障——"网络恢复提示已消失、画面还是黑的"，以及"媒体已永久断开、界面仍显示已连接"。
+</Warning>
+
+<Note>
+**不在会中时相关接口走降级返回而不抛错**：`getStats()` 返回空快照，`cameraZoomRange()` 返回 unsupported。
+</Note>
+
+### [0.0.1] - 2026.09.07
+#### 首个版本
+
++ **账号与会议管理**：`login` / `logout`；`createRoom` / `updateRoom` / `cancelRoom` / `detailRoom`；`attendeeRoom`（即将开始）与 `attendedRoom`（历史会议）分页查询；支持预约会议（`planTime` / `planDur` / `conferee`）。
++ **入会**：`enterRoom` 支持按 `meetingId` 或 `roomNo` 入会，可带入会密码；`exitRoom` 离会。
++ **媒体一体化接口**：`requestOpenMic` / `requestOpenCamera` / `requestShare` 内部完成"后端授权 → 建轨道 → 采集 → 发布"，无需自行拼装；配套 `closeMic` / `closeCamera` / `stopShare`、`setMicMuted`、`switchCamera`。
++ **订阅**：`subscribeRemoteVideoTrack` / `subscribeRemoteAudioTrack` 按成员订阅，支持 MCU 合流轨道（`subscribeRemoteVideoMcu`）；`toggleRemoteAudioMute` 切换本地播放而不退订。
++ **会控**：全体静音 / 禁摄像头 / 禁共享 / 禁聊天 / 禁截图 / 水印 / 锁定会议、成员改名与角色变更、移交主持人、请求开麦开摄像头、移出会议、举手确认、呼叫成员与短信提醒。
++ **等候室**：开关等候室、查询等候成员、移入移出。
++ **子会议**：创建 / 改名 / 分配成员 / 删除 / 启停 / 成员跨子会议移动。
++ **录制与资源**：MCU 录制任务启停与详情、资源列表与创建、预签名上传下载、会议背景与附件。
++ **签到**：发起 / 结束 / 签到 / 统计 / 明细。
++ **聊天**：`sendRoomChatMessage` 支持群发与私聊。
++ **事件**：`SMeetingDelegate` 覆盖连接状态、成员进出、成员与房间状态变化、聊天、会控指令、等候室、子会议、签到、点名、音频路由与设备变化。
++ **音频路由**：扬声器 / 听筒的持久设置与通话中临时切换；外接设备由系统接管，SDK 只上报。
+
+<Warning>
+**必须同时引入 SRTC 与 SMeeting 两个 HAR。**
+
+HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDependencies`，需要由你的工程提供。只声明 `smeeting` 会在 `ohpm install` 阶段报缺少 `srtc`。
+</Warning>
+
+<Warning>
+**视频编码只有硬编，没有软编兜底。**
+
+视频预设统一使用 H264，底层只走设备硬件编解码器。模拟器上建不出编码器；在缺少 H264 硬编能力的真机上，SDK **不报错而是静默退回 VP8**，表现为和其它端互通不上。自测时请确认实际协商到的编码格式。
+</Warning>
+
+<Note>
+**仅支持 arm64-v8a。**
+
+**升级需要手动替换 HAR 文件。** ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 路径引用具体的 HAR 文件名，升级时要同步修改 `libs/` 下的文件与 `oh-package.json5` 中的版本号。
+
+两个 SDK 独立编号，当前 SMeeting 0.0.1 依赖 SRTC 0.0.1。
+</Note>

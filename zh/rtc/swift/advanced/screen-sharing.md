@@ -75,6 +75,36 @@ func startScreenShare(srtc: SRTCEngine, channel: Channel) async throws {
 
 ---
 
+### macOS：整屏共享时排除自家窗口
+
+共享**整个显示器**时，画面默认**包含本 App 自己的窗口**（与 Zoom / 腾讯会议一致）。这意味着正在渲染这路共享画面的窗口——界面上的共享预览、同机双开自测时显示远端共享流的会中窗口——会形成无限镜像。把这些窗口的 ID 放进 `excludedWindowIds` 逐个挖掉：
+
+```swift
+let previewWindowIds = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.identifier?.rawValue == "meeting-room" }
+    .map { UInt32($0.windowNumber) }
+
+let screenTrack = srtc.createLocalScreenTrack(
+    source: selectedDisplay,
+    preset: .h1080p,
+    excludedWindowIds: previewWindowIds
+)
+```
+
++ 取值是 `UInt32(NSWindow.windowNumber)`，只在共享整个显示器时有意义，采集单个窗口（`WindowSource`）时忽略
++ 列表在 `startCapture()` 时快照一次，之后新开的窗口一律进画面
++ 确实要回到「整个 App 都不共享」的旧行为，把 `excludesCurrentApplication` 置 `true`，此时 `excludedWindowIds` 被忽略
+
+<Note>
+`ScreenCaptureSources.availableWindows(includeCurrentApp:)` 默认包含自己的窗口，因此共享自家的某个窗口是正常可选项。但同样不要把「正在渲染共享画面的窗口」作为共享源选出去。
+</Note>
+
+<Warning>
+这是 1.4.2 的**行为变更**：此前 SDK 把整个进程的窗口都从整屏画面里挖掉，对端看不到你自己的应用窗口。如果你的产品依赖旧行为，升级后需显式设置 `excludesCurrentApplication: true`。
+</Warning>
+
+---
+
 ### macOS：同时采集系统音频
 
 如果你要在屏幕共享时一起发送系统音频，可以传入 `audioPreset`：

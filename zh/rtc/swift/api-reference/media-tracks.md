@@ -287,6 +287,12 @@ micTrack.unmute()
 
 远端视频通常在订阅成功后，通过 `SRTCVideoView(track:)` 或 `SRTCVideoRenderer` 展示。
 
+#### 收流状态
+
++ `isReceiveTimedOut: Bool`
+
+这一路视频当前是否已判定收流超时。值与 `channel(_:didChangeReceiveStreamStatus:)` 最近一次上报的 `timedOut` 一致，适合在渲染视图初始化、或从后台回到前台时**补一次当前状态**，避免只靠事件导致 UI 与实际不同步。日常的「加载中」指示仍建议由事件驱动，详见[事件参考](/zh/rtc/swift/events)。
+
 ---
 
 ### 渲染组件

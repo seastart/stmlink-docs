@@ -98,31 +98,67 @@ Content-Type: application/json; charset=utf-8
   "task_id": "sxjgwy",
   "task_type": 9,
   "task_status": 1,
-  "err_desc": ""
+  "err_desc": "",
+  "began_at": 1718250917,
+  "ended_at": 0,
+  "record_count": 0,
+  "total_duration": 0,
+  "total_size": 0
 }
 ```
 
 + `task_type` 按位组合，含义见[云录制与直播接入指南](/zh/rtc/server-api/guides/recording)
 + `task_status`：`0` 待开始、`1` 进行中、`2` 待结束、`3` 异常结束、`4` 正常结束
 + `err_desc` 仅在异常结束时有内容
++ `record_count` / `total_duration` / `total_size` 是本次录制产出的文件数、总时长（秒）、总字节
 
 这是判断"录制到底跑起来没有"最可靠的信号——比启动接口返回成功更有意义。
 
-### `mcu_record` — 录像文件已完成
+**任务结束时这条事件里的 `record_count` 往往还是 0**：录像文件要等任务结束后才开始转码上传。
+全部文件传完后我们会**再补发一条本事件**，那一条里的计数才是完整的，用它对账。
+
+### `mcu_record` — 一个录像文件已完成
 
 ```json
 {
   "channel": "fire",
   "task_id": "sxjgwy",
+  "record_id": "rc3p9w",
+  "seq": 2,
+  "is_last": false,
   "task_type": 1,
-  "vod_key": "record/2024/06/12/sxjgwy.mp4",
-  "vod_size": 20971520,
-  "mcu_dur": 1800
+  "vod_size": 481920000,
+  "duration": 3600,
+  "offset_ms": 3600000,
+  "began_at": 1718254517,
+  "ended_at": 1718258117,
+  "reason": 1
 }
 ```
 
-收到这个事件才说明转码完成、录像文件可播，此时去调[获取录像播放地址](/zh/rtc/server-api/mcu#获取录像播放地址)一定拿得到。
-`vod_size` 单位字节，`mcu_dur` 单位秒。
+**一次录制会产出多个文件，本事件按文件推送，一次任务推多条。** 两种情况会切出新文件：
+
++ 录制时长超过分片上限（默认 1 小时），转码时按时长滚动切段，片间时间连续
++ 录制中途底层因 30 秒无音视频流自动停止、随后被重新拉起，另起一段，**片间存在时间空洞**
+
+所以：
+
++ **取播放地址必须用 `record_id`，不是 `task_id`** —— `task_id` 是任务的，一次任务下有多个
+  `record_id`。调[获取录像文件播放地址](/zh/rtc/server-api/mcu#获取单个录像文件的播放地址)时传它
++ `seq` 从 1 开始，按它排序就是播放顺序
++ `offset_ms` 是这一片相对整场录制开始的偏移（毫秒），做多片连播的进度轴用它；
+  `began_at`/`ended_at` 是墙钟时间，用来跟你自己业务的时间线对齐
++ `reason`：`1` 按时长切段、`2` 中断后续录（**与上一片之间有空洞**，连播会跳变，UI 上值得提示）、
+  `3` 任务结束收尾、`0` 未知
++ `is_last` 为 `true` 表示本次录制的文件已全部产出，可以开始拼完整回放了
+
+`vod_size` 单位字节，`duration` 单位秒。
+
+<Tip>
+  想一次拿到整场录制的全部可播地址，直接调
+  [录像任务详情](/zh/rtc/server-api/mcu#录像任务详情)——它的 `records` 数组里
+  每一段都带好了播放地址，比逐条取省事。
+</Tip>
 
 ### `mcu_alarm` — 录制任务告警
 
@@ -201,7 +237,7 @@ Content-Type: application/json; charset=utf-8
   "name": "大门监控",
   "net": "内网",
   "sg": "",
-  "extend_info": ""
+  "extend_info": "{\"gw\":\"devgate-1\"}"
 }
 ```
 
@@ -215,6 +251,29 @@ Content-Type: application/json; charset=utf-8
 ```
 
 返回 `code` 非 0 即拒绝该设备入会。若你的用户详情不需要扩展 `props`，且设备无条件可信，可以不订阅本事件。
+
+<Warning>
+  调[获取加入频道token](/zh/rtc/server-api/channel#获取加入频道token)时，**必须把本回调里收到的
+  `extend_info` 原样放进该接口的 `props` 参数**（键名就用 `extend_info`，值是收到的那个字符串，
+  不要解析改写）：
+
+  ```json
+  {
+    "channel": "fire",
+    "uid": "gb_34020000001320000001",
+    "props": {
+      "extend_info": "{\"gw\":\"devgate-1\"}",
+      "其它你自己的字段": "……"
+    }
+  }
+  ```
+
+  这个字段里带着设备所属的网关标识，我们靠它把会中的设备关联回网关。**丢了它，这些依赖反向
+  通知网关的能力会静默失效**：[踢人](/zh/rtc/server-api/channel#踢人)对设备不生效（设备会被网关
+  当成断线，随后自动重新入会）、[开关设备视频](/zh/rtc/server-api/agent#开关设备视频)与
+  [开关设备音频](/zh/rtc/server-api/agent#开关设备音频)调用失败。你自己的 `props` 字段照常放，
+  二者不冲突。
+</Warning>
 
 ### `agent_operate` — 会中设备被操作（开关麦、开关摄像头）
 

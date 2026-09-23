@@ -389,3 +389,22 @@ SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `Audi
 | `latencyMs` | `Int` | 从发起切层到真正切到目标层的耗时，毫秒 |
 
 以上质量相关类型的用法见 [通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+
+---
+
+### ReceiveStreamStatus
+
+某一路远端视频的收流状态变更载荷，由 `channel(_:didChangeReceiveStreamStatus:)` 回调带出。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `uid` | `String` | 发流成员标识 |
+| `trackId` | `String` | 轨道标识 |
+| `trackDesc` | `String` | 轨道描述（`camera` / `screen` 等，对应 `TrackInfo.desc`） |
+| `timedOut` | `Bool` | `true` 接收已超时，`false` 接收已恢复 |
+
+**按轨道判定**，只看这一路有没有在出帧，与整条链路的质量档位无关——不要用 `ConnectionQualityChange` 代替，详见[事件参考](/zh/rtc/swift/events)。
+
+<Note>
+对应老 `RTCEngineKit` 的 `engineChannel:onReceiveStreamStatusChange:trackId:status:`，`timedOut` 与老版 `status` 的真假值一致（`true` 为超时），迁移时不需要取反。
+</Note>

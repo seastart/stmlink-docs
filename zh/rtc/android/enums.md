@@ -99,14 +99,6 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | DEGRADED | 无显式值 | 档位变差（立即回调）。 |
 | RECOVERED | 无显式值 | 档位变好（已通过连续确认）。 |
 
-### RemoteStreamStatus
-
-| 枚举名 | 值 | 说明 |
-| --- | --- | --- |
-| NOT_SUBSCRIBED | "not_subscribed" | 未订阅 |
-| STREAM_NORMAL | "stream_normal" | 流状态正常 |
-| STREAM_CHOKE | "stream_choke" | 流状态阻塞 |
-
 ### StreamVendor
 
 | 枚举名 | 值 | 说明 |
@@ -125,14 +117,13 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | WIRED_EARPHONE | 无显式值 | 有线耳机 |
 | BLUETOOTH_HEADSET | 无显式值 | 蓝牙耳机 |
 
-### ScreenRecordState
+### ScreenCaptureState
 
 | 枚举名 | 值 | 说明 |
 | --- | --- | --- |
-| START | "start" | 开始录屏。 |
-| STOP | "stop" | 停止录屏。 |
-| ERROR | "error" | 录屏出错。 |
-| AUDIO_ERROR | "audio_error" | 录屏音频出错。 |
+| START | "start" | 屏幕采集已经启动。 |
+| STOP | "stop" | 屏幕采集已经停止。 |
+| ERROR | "error" | 屏幕采集启动或运行失败。 |
 
 ### CameraCaptureOptions.CamraPosition
 

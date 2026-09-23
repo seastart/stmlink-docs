@@ -37,11 +37,15 @@ description: "服务端 API 响应体中 code 的取值"
 | `1031` | ImTokenUsed | IM Token已被使用 |
 | `1032` | SidNotFound | 该会话不在线 |
 | `1033` | ConcurrentLimit | 并发已达上限 |
+| `1034` | SfuNoAvailableNode | 没有可用的流媒体节点 |
+| `1035` | SfuNodeOverloaded | 流媒体节点已满载 |
 | `1040` | McuTaskNotFound | 未找到MCU任务 |
 | `1041` | McuRecordNotStop | 录像任务还未结束 |
 | `1042` | McuRecordNoVod | 录像任务还未生成录像文件 |
 | `1043` | McuLayoutDataErr | MCU的布局数据出错 |
 | `1044` | McuTaskIsEnd | MCU任务已经停止 |
+| `1045` | McuRecordNotFound | 未找到录像文件 |
+| `1046` | McuRecordNotDone | 录像文件还未上传完成 |
 | `1050` | TalkrecTaskNotFound | 未找到语音录制任务 |
 | `1051` | TalkrecRecordNotFound | 未找到语音录制段 |
 | `1052` | TalkrecRecordNoVod | 语音录制段还未生成录音文件 |

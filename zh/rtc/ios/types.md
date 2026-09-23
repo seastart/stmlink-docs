@@ -162,9 +162,11 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | **属性** | **必填** | **属性说明** |
 | --- | :---: | --- |
 | NSString *userId | 否 | 用户标识，自`3.0.0`起可空 |
-| int linkId | 是 | 连接标识(流媒体) |
+| int linkId | 是 | 连接标识(流媒体)，wangsu 流媒体下服务端不下发该值，恒为`0` |
 | NSInteger power | 否 | 音频功率 |
 | NSInteger db | 否 | 音频分贝值 |
+
+> 注：识别讲话成员请直接使用`userId`，不要用`linkId`反查成员。`linkId`在 wangsu 流媒体下对所有成员恒为`0`，据此反查必然命中错误的人；SDK 自`3.1.2`起已在该链路下改用底层连接解析`userId`。
 
 
 ### RTCStreamSendModel
@@ -240,6 +242,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | SRTCDeviceTypeMacOS | `5` | MacOS |
 | SRTCDeviceTypeWebRTC | `6` | WebRTC |
 | SRTCDeviceTypeRtmp | `7` | RTMP |
+| SRTCDeviceTypeHarmonyOS | `8` | HarmonyOS |
 
 
 ### RTCUserRole

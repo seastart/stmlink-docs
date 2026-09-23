@@ -74,11 +74,22 @@ try await meeting.adminMoveHost(targetId: uid)
 // 单独禁言
 try await meeting.adminUpdateUserChatDisabled(targetId: uid, chatDisabled: true)
 
+// 禁止涂鸦
+try await meeting.adminUpdateUserDrawDisabled(targetId: uid, drawDisable: true)
+
 // 移出会议；joinDisabled 为 true 表示同时禁止再次入会
 try await meeting.adminKickUserOut(targetId: uid, joinDisabled: true)
 ```
 
-对应的成员状态事件：`userNameDidChange`、`userRoleDidChange`、`userChatDisabledDidChange`。被移出的成员通过 `didDisconnect` 感知。
+对应的成员状态事件：`userNameDidChange`、`userRoleDidChange`、`userChatDisabledDidChange`、`userDrawDisabledDidChange`（1.3.6 起）。被移出的成员通过 `didDisconnect` 感知。
+
+涂鸦权限的当前状态读 `MeetingUserInfo.drawDisabled`，变化时收到：
+
+```swift
+func meeting(_ meeting: SMeetingEngine, userDrawDisabledDidChange data: UserDrawDisabledChangeEventData) {
+    // data.uid、data.drawDisabled、data.opUid
+}
+```
 
 关闭成员麦克风 / 摄像头，以及邀请成员开启，见 [举手与开启请求](/zh/meeting/swift/advanced/handup)。
 

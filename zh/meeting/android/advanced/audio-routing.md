@@ -3,7 +3,7 @@ title: "音频路由使用"
 description: "Android SMeeting 会议 SDK 音频路由管理（扬声器/听筒/有线耳机/蓝牙耳机）"
 ---
 
-音频路由由 `AudioRouterManager` 管理，其行为与 SRTC 一致；在 SMeeting 中使用时，只需把获取和释放入口换成 `MeetingEngine`：
+音频路由由 `AudioRouterManager` 管理，其行为与 SRTC 一致；在 SMeeting 中通过 `MeetingEngine` 获取和释放：
 
 ```kotlin
 var audioRouterManager = meetingEngine.getAudioRouterManager()
@@ -18,7 +18,7 @@ audioRouterManager = null
 
 ## 1. 获取 `AudioRouterManager`
 
-在 `meetingSDK` 中，应通过 `MeetingEngine` 获取：
+在 SMeeting 中，应通过当前 `MeetingEngine` 获取：
 
 ```kotlin
 var audioRouterManager = meetingEngine.getAudioRouterManager()
@@ -95,7 +95,7 @@ private fun initAudioRouterManager(meetingEngine: MeetingEngine) {
 这与当前 Demo 中 `MeetingActivity.kt` 的实现保持一致：
 
 ```kotlin
-audioRouterManager = MeetingEngineHelper.getInstance().engine.getAudioRouterManager()
+audioRouterManager = MeetingEngineHelper.getInstance().session.getAudioRouterManager()
 audioRouterManager?.setAudioRouterCalllback(/* callback */)
 audioRouterManager?.setMode(AudioManager.MODE_IN_COMMUNICATION)
 audioRouterManager?.setAutoChangeAudioRouter(true, true, false)
@@ -315,7 +315,7 @@ audioRouterManager = null
 
 ```kotlin
 private fun releaseAudioRouterManager() {
-    MeetingEngineHelper.getInstance().engine.releaseAudioRouterManager()
+    MeetingEngineHelper.getInstance().session.releaseAudioRouterManager()
     audioRouterManager = null
 }
 
@@ -355,4 +355,4 @@ AudioRouterManager.AudioOutputDeviceType.BLUETOOTH_HEADSET
 4. 展示“当前使用中的设备”时，以 `activeOutputDeviceChange(...)` 为准。
 5. 展示“当前可选设备列表”时，以 `exitOutputDeviceChange(...)` 或 `getExitAudioOutputDevices()` 为准。
 6. 蓝牙 / 有线耳机 / 扬声器 / 听筒切换建议在真机上完整验证。
-7. 当前文档中的 `meetingEngine` 默认表示你已经持有的 `MeetingEngine` 实例。
+7. `AudioRouterManager` 是 Engine 级缓存对象，调用方不要直接执行其 `release()`，统一使用 `meetingEngine.releaseAudioRouterManager()`。

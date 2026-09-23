@@ -165,6 +165,7 @@ req.resKey = key
 | `cameraState` | `CameraState` | 摄像头状态 |
 | `shareState` | `Int` | 共享状态：`0` 无、`1` 屏幕、`2` 白板 |
 | `chatDisabled` | `Bool` | 是否被单独禁言 |
+| `drawDisabled` | `Bool` | 是否被禁止涂鸦 |
 | `isKickout` | `Bool` | 是否已被移出 |
 | `trackDescs` | `[String]` | 当前已发布的轨道描述列表 |
 | `deviceType` | `String` | 设备类型 |
@@ -321,6 +322,7 @@ result.meta      // MetaRes
 | `UserNameChangeEventData` | `uid`、`nickname`、`byAdmin`、`opUid` |
 | `UserRoleChangeEventData` | `uid`、`role`、`opUid` |
 | `UserChatDisabledChangeEventData` | `uid`、`chatDisabled`、`opUid` |
+| `UserDrawDisabledChangeEventData` | `uid`、`drawDisabled`、`opUid` |
 | `UserHandupEventData` | `uid`、`type: HandupType`、`step: UserHandupStep` |
 
 #### 房间状态
@@ -334,6 +336,7 @@ result.meta      // MetaRes
 | `RoomScreenshotDisabledChangeEventData` | `screenshotDisabled`、`opUid` |
 | `RoomWatermarkDisabledChangeEventData` | `watermarkDisabled`、`opUid` |
 | `RoomLockedChangeEventData` | `locked`、`opUid` |
+| `RoomTitleChangeEventData` | `title`、`previousTitle`（**无 `opUid`**，见 [事件参考](/zh/meeting/swift/events)） |
 | `RoomShareStartEventData` | `uid`、`shareType: ShareType` |
 | `RoomShareStopEventData` | `uid`、`shareType`、`byAdmin`、`opUid` |
 | `ShareBroadcastStartEventData` | `uid`（仅 iOS 全屏共享，共享方自己） |
@@ -621,6 +624,14 @@ result.meta      // MetaRes
 | `LayerSwitchedInfo` | `subKey`、`fromTrackId`、`toTrackId`、`reason`（如 `bwe_down` / `bwe_up`）、`latencyMs` |
 
 字段的取值范围与用法见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+
+#### 收流状态
+
+| 类型 | 字段 |
+| --- | --- |
+| `ReceiveStreamStatus` | `uid`（发流成员）、`trackId`、`trackDesc`（`camera` / `screen` 等）、`timedOut`（`true` 超时，`false` 恢复） |
+
+由 `meeting(_:didChangeReceiveStreamStatus:)` 带出，按轨道判定某一路视频是否还在出帧，与整条链路的质量档位是两回事，见 [事件参考](/zh/meeting/swift/events)。
 
 ---
 

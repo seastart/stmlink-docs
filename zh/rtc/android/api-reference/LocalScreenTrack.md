@@ -11,11 +11,12 @@ description: "Android 录屏：申请授权、启停屏幕采集、配置前台�
 
 ### setEvent(e)
 ```kotlin
-fun setEvent(e: RTCScreenStateEvent)
+fun setEvent(e: RTCScreenStateEvent?)
 ```
-方法说明：设置录屏状态回调。  
+方法说明：设置或清除屏幕采集状态回调。页面销毁时应传入 `null`，解除页面与 Track 之间的引用。
+
 参数说明：
-- `e`：`RTCScreenStateEvent`，录屏状态回调实现。
+- `e`：`RTCScreenStateEvent?`，屏幕采集状态回调实现；`null` 表示清除回调。
 返回值说明：无（`Unit`）。
 
 ### request(result)
@@ -39,14 +40,15 @@ fun setRecordNotification(smallIcon: Int, title: String?, desc: String?, buttonT
 - `buttonText`：`String?`，通知按钮文本，可为 `null`。
 返回值说明：无（`Unit`）。
 
-### startCapture(intent, hasBar)
+### startCapture(intent, resultListener)
 ```kotlin
-fun startCapture(intent: Intent, hasBar: Boolean)
+fun startCapture(intent: Intent, resultListener: RTCResultListener?)
 ```
-方法说明：开始屏幕采集。  
+方法说明：提交屏幕采集启动操作。`onSuccess()` 只表示 SDK 已接纳本次操作，不表示采集已经建立；后续真实状态通过 `RTCScreenStateEvent` 通知。结果回调不保证位于主线程。
+
 参数说明：
 - `intent`：`Intent`，由 `request` 授权成功回调返回的录屏授权数据。
-- `hasBar`：`Boolean`，是否包含系统栏参数（当前版本内部未使用，建议按业务语义传值）。
+- `resultListener`：`RTCResultListener?`，启动操作受理结果；`onFail(code)` 表示本次操作未被接纳，且不会产生本次请求对应的屏幕生命周期事件。可为 `null`。
 返回值说明：无（`Unit`）。
 
 ### stopCapture()
@@ -98,12 +100,15 @@ fun removeAllPlayView()
 
 `RTCScreenStateEvent` 为录屏状态回调接口，通过 `setEvent(e)` 注册。
 
-### onScreenRecordStateChanged(state, args)
+### onScreenCaptureStateChanged(state, args)
 ```kotlin
-fun onScreenRecordStateChanged(state: ScreenRecordState, args: String?)
+fun onScreenCaptureStateChanged(state: ScreenCaptureState, args: String?)
 ```
-方法说明：录屏状态变化回调。  
+方法说明：屏幕采集真实生命周期状态变化回调。启动操作是否被 SDK 接纳由 `startCapture` 的 `RTCResultListener` 单独表达。
+
 参数说明：
-- `state`：`ScreenRecordState`，录屏状态，枚举值参见 [枚举定义](/zh/rtc/android/enums)。
+- `state`：`ScreenCaptureState`，包含 `START`、`STOP`、`ERROR`，枚举值参见 [枚举定义](/zh/rtc/android/enums)。
 - `args`：`String?`，扩展信息，可为 `null`。
 返回值说明：无（`Unit`）。
+
+> 从 2.0.29 起，`onScreenRecordStateChanged(ScreenRecordState, ...)` 已替换为 `onScreenCaptureStateChanged(ScreenCaptureState, ...)`，`ScreenRecordState.AUDIO_ERROR` 不再提供。

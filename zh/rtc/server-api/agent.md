@@ -16,8 +16,8 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 「邀请设备入会」把它拉进频道。返回的是设备 ID，请保存下来 —— 后续修改、删除、
 查详情都用它。
 
-请求体字段随 URL 查询参数 type 变化（每种接入方式的必填项不同），
-六种接入方式各自要传什么，见「设备接入指南」。
+请求体字段随 URL 查询参数 type 变化（每种接入方式的必填项不同），六种接入方式
+各自要传什么在下面按取值列出；怎么选接入方式见「设备接入指南」。
 
 **URL 查询参数**
 
@@ -27,7 +27,243 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-请求体字段随上面的查询参数变化，见接口说明中指引的指南页。
+请求体字段随 URL 查询参数 `type` 变化，下面按取值分别列出。
+
+### `type=ipsip` —— SIP 话机，IP 直连
+
+<ParamField body="uri" type="string" required>
+  设备地址，ip:port（最大长度 100）
+  示例：`192.168.1.50:5060`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室话机`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "display_name": "三楼会议室话机",
+  "gw": "devgw-1",
+  "remark": "三楼东侧",
+  "uri": "192.168.1.50:5060"
+}
+```
+
+### `type=regsip` —— SIP 话机，注册模式
+
+<ParamField body="username" type="string" required>
+  用户名，设备向网关注册用的账号，不能含 :（最大长度 100）
+  示例：`6001`
+</ParamField>
+
+<ParamField body="auth_pwd" type="string" required>
+  密码，需与设备端配置一致（最大长度 50）
+  示例：`Abc123456`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室话机`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "auth_pwd": "Abc123456",
+  "display_name": "三楼会议室话机",
+  "gw": "devgw-1",
+  "remark": "三楼东侧",
+  "username": "6001"
+}
+```
+
+### `type=iph323` —— H323 终端，IP 直连
+
+<ParamField body="uri" type="string" required>
+  设备地址，ip:port（最大长度 100）
+  示例：`192.168.1.60:1720`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室终端`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "display_name": "三楼会议室终端",
+  "gw": "devgw-1",
+  "remark": "三楼东侧",
+  "uri": "192.168.1.60:1720"
+}
+```
+
+### `type=regh323` —— H323 终端，注册模式
+
+<ParamField body="username" type="string" required>
+  用户名，只能是数字短号（最大长度 100）
+  示例：`6002`
+</ParamField>
+
+<ParamField body="auth_pwd" type="string" required>
+  密码，需与设备端配置一致（最大长度 50）
+  示例：`Abc123456`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室终端`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "auth_pwd": "Abc123456",
+  "display_name": "三楼会议室终端",
+  "gw": "devgw-1",
+  "remark": "三楼东侧",
+  "username": "6002"
+}
+```
+
+### `type=gb28181` —— GB28181 国标监控设备
+
+<ParamField body="sip_no" type="string" required>
+  设备sip编号，18~20 位数字，可用「生成国标设备的 SIP 编号」生成（最大长度 20）
+  示例：`33010806661328458475`
+</ParamField>
+
+<ParamField body="auth_pwd" type="string" required>
+  密码，需与设备端的国标配置一致（最大长度 50）
+  示例：`Abc123456`
+</ParamField>
+
+<ParamField body="subjects" type="object">
+  通道编号 → 名称，一台设备下的各路画面，登记后也可用「设置国标设备的一个通道」增改
+  示例：`{"33010806661329301268":"嘉宾席"}`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`一号球机`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`大厅入口`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "auth_pwd": "Abc123456",
+  "display_name": "一号球机",
+  "gw": "devgw-1",
+  "remark": "大厅入口",
+  "sip_no": "33010806661328458475",
+  "subjects": {
+    "33010806661329301268": "嘉宾席"
+  }
+}
+```
+
+### `type=rtsp` —— RTSP 拉流
+
+<ParamField body="uri" type="string" required>
+  rtsp流地址，必须以 rtsp 开头（最大长度 100）
+  示例：`rtsp://192.168.1.70:554/stream1`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`大厅监控`
+</ParamField>
+
+<ParamField body="transport_type" type="string">
+  传输方式，UDP(默认)|TCP
+  示例：`TCP`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`大厅入口`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "display_name": "大厅监控",
+  "gw": "devgw-1",
+  "remark": "大厅入口",
+  "transport_type": "TCP",
+  "uri": "rtsp://192.168.1.70:554/stream1"
+}
+```
 
 **响应参数**
 
@@ -54,7 +290,7 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
 修改已登记设备的连接信息或显示名称。请求体字段与「新增设备」相同（按 type 变化），
-另需带上设备 id，见「设备接入指南」。
+另需带上设备 id，各取值下的完整字段在下面列出。
 
 + type 必须与设备原本的接入方式一致，不能借此把 SIP 设备改成 RTSP；要换接入方式请删除后重新登记
 + 改动会在设备下次连接时生效，正在会中的设备不受影响
@@ -67,7 +303,279 @@ description: "SIP / H323 / GB28181 监控等设备的接入与会中操作"
 
 **请求参数**
 
-请求体字段随上面的查询参数变化，见接口说明中指引的指南页。
+请求体字段随 URL 查询参数 `type` 变化，下面按取值分别列出。
+
+### `type=ipsip` —— SIP 话机，IP 直连（修改）
+
+<ParamField body="id" type="string" required>
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
+  示例：`sw8kjx`
+</ParamField>
+
+<ParamField body="uri" type="string" required>
+  设备地址，ip:port（最大长度 100）
+  示例：`192.168.1.50:5060`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室话机`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "display_name": "三楼会议室话机",
+  "gw": "devgw-1",
+  "id": "sw8kjx",
+  "remark": "三楼东侧",
+  "uri": "192.168.1.50:5060"
+}
+```
+
+### `type=regsip` —— SIP 话机，注册模式（修改）
+
+<ParamField body="id" type="string" required>
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
+  示例：`sw8kjx`
+</ParamField>
+
+<ParamField body="username" type="string" required>
+  用户名，设备向网关注册用的账号，不能含 :（最大长度 100）
+  示例：`6001`
+</ParamField>
+
+<ParamField body="auth_pwd" type="string" required>
+  密码，需与设备端配置一致（最大长度 50）
+  示例：`Abc123456`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室话机`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "auth_pwd": "Abc123456",
+  "display_name": "三楼会议室话机",
+  "gw": "devgw-1",
+  "id": "sw8kjx",
+  "remark": "三楼东侧",
+  "username": "6001"
+}
+```
+
+### `type=iph323` —— H323 终端，IP 直连（修改）
+
+<ParamField body="id" type="string" required>
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
+  示例：`sw8kjx`
+</ParamField>
+
+<ParamField body="uri" type="string" required>
+  设备地址，ip:port（最大长度 100）
+  示例：`192.168.1.60:1720`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室终端`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "display_name": "三楼会议室终端",
+  "gw": "devgw-1",
+  "id": "sw8kjx",
+  "remark": "三楼东侧",
+  "uri": "192.168.1.60:1720"
+}
+```
+
+### `type=regh323` —— H323 终端，注册模式（修改）
+
+<ParamField body="id" type="string" required>
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
+  示例：`sw8kjx`
+</ParamField>
+
+<ParamField body="username" type="string" required>
+  用户名，只能是数字短号（最大长度 100）
+  示例：`6002`
+</ParamField>
+
+<ParamField body="auth_pwd" type="string" required>
+  密码，需与设备端配置一致（最大长度 50）
+  示例：`Abc123456`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`三楼会议室终端`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`三楼东侧`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "auth_pwd": "Abc123456",
+  "display_name": "三楼会议室终端",
+  "gw": "devgw-1",
+  "id": "sw8kjx",
+  "remark": "三楼东侧",
+  "username": "6002"
+}
+```
+
+### `type=gb28181` —— GB28181 国标监控设备（修改）
+
+<ParamField body="id" type="string" required>
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
+  示例：`sw8kjx`
+</ParamField>
+
+<ParamField body="sip_no" type="string" required>
+  设备sip编号，18~20 位数字，可用「生成国标设备的 SIP 编号」生成（最大长度 20）
+  示例：`33010806661328458475`
+</ParamField>
+
+<ParamField body="auth_pwd" type="string" required>
+  密码，需与设备端的国标配置一致（最大长度 50）
+  示例：`Abc123456`
+</ParamField>
+
+<ParamField body="subjects" type="object">
+  通道编号 → 名称，一台设备下的各路画面，登记后也可用「设置国标设备的一个通道」增改
+  示例：`{"33010806661329301268":"嘉宾席"}`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`一号球机`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`大厅入口`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "auth_pwd": "Abc123456",
+  "display_name": "一号球机",
+  "gw": "devgw-1",
+  "id": "sw8kjx",
+  "remark": "大厅入口",
+  "sip_no": "33010806661328458475",
+  "subjects": {
+    "33010806661329301268": "嘉宾席"
+  }
+}
+```
+
+### `type=rtsp` —— RTSP 拉流（修改）
+
+<ParamField body="id" type="string" required>
+  设备id，来自「新增设备」的返回值或「设备列表」（最大长度 64）
+  示例：`sw8kjx`
+</ParamField>
+
+<ParamField body="uri" type="string" required>
+  rtsp流地址，必须以 rtsp 开头（最大长度 100）
+  示例：`rtsp://192.168.1.70:554/stream1`
+</ParamField>
+
+<ParamField body="display_name" type="string" required>
+  显示名称，设备入会后的会中昵称（最大长度 100）
+  示例：`大厅监控`
+</ParamField>
+
+<ParamField body="transport_type" type="string">
+  传输方式，UDP(默认)|TCP
+  示例：`TCP`
+</ParamField>
+
+<ParamField body="gw" type="string" required>
+  设备网关，取值见「设备网关列表」（最大长度 60）
+  示例：`devgw-1`
+</ParamField>
+
+<ParamField body="remark" type="string">
+  备注（最大长度 200）
+  示例：`大厅入口`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "display_name": "大厅监控",
+  "gw": "devgw-1",
+  "id": "sw8kjx",
+  "remark": "大厅入口",
+  "transport_type": "TCP",
+  "uri": "rtsp://192.168.1.70:554/stream1"
+}
+```
 
 **响应参数**
 
@@ -266,6 +774,147 @@ sip_no）。无请求参数。
 
 ---
 
+## 控制国标设备的云台（方向与变焦）
+
+`POST /server/v1/agent/gb28181-ptz`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+控制国标摄像头的云台（方向与变焦）。
+
+command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"组合（如 left+up）；
+速度取 0~255：speed_h/speed_v/speed_zoom 为 0 时回落到 speed，speed 也为 0 时使用
+网关默认速度 50。
+
+设备必须已用「新增设备」登记（type 为 gb28181），否则无法定位它所属的网关。
+
+**请求参数**
+
+<ParamField body="contact" type="string" required>
+  设备编号，国标设备的 SIP 编号（最大长度 20）
+  示例：`33010806661328458475`
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  通道编号，需与设备端配置一致；可用「生成国标设备的通道编号」生成（最大长度 20）
+  示例：`33010806661329301268`
+</ParamField>
+
+<ParamField body="command" type="string" required>
+  云台动作，支持两个动作的+组合
+  示例：`left+up`
+</ParamField>
+
+<ParamField body="speed" type="integer">
+  基准速度
+  示例：`50`
+</ParamField>
+
+<ParamField body="speed_h" type="integer">
+  水平旋转速度
+  示例：`50`
+</ParamField>
+
+<ParamField body="speed_v" type="integer">
+  垂直旋转速度
+  示例：`50`
+</ParamField>
+
+<ParamField body="speed_zoom" type="integer">
+  缩放速度
+  示例：`50`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "command": "left+up",
+  "contact": "33010806661328458475",
+  "speed": 50,
+  "speed_h": 50,
+  "speed_v": 50,
+  "speed_zoom": 50,
+  "subject": "33010806661329301268"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 操作国标设备的预置位
+
+`POST /server/v1/agent/gb28181-preset`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+操作国标摄像头的预置位：set 设置到当前位置、goto 跳到预置位、delete 删除预置位，
+三种动作都要传预置位号 num(1~255)。
+
+与「控制国标摄像头的云台」一样，设备必须已登记。
+
+**请求参数**
+
+<ParamField body="contact" type="string" required>
+  设备编号，国标设备的 SIP 编号（最大长度 20）
+  示例：`33010806661328458475`
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  通道编号（最大长度 20）
+  示例：`33010806661329301268`
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  预置位动作，set 设置到当前位置、goto 跳到预置位、delete 删除预置位
+  示例：`goto`
+</ParamField>
+
+<ParamField body="num" type="integer" required>
+  预置位号
+  示例：`1`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "action": "goto",
+  "contact": "33010806661328458475",
+  "num": 1,
+  "subject": "33010806661329301268"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
 ## 设备网关列表
 
 `POST /server/v1/agent/list-gw`
@@ -306,6 +955,24 @@ sip_no）。无请求参数。
   api接口，用于rtc调设备网关
 </ResponseField>
 
+<ResponseField name="load" type="object">
+  最近一次心跳捎带的节点负载（老网关不报为空）
+  <Expandable title="字段">
+    <ResponseField name="cpu_usage" type="number">
+      CPU使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="mem_usage" type="number">
+      内存使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="metrics" type="object">
+      业务指标名值对（如 tasks=进行中任务数）
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
 
 响应示例：
 
@@ -317,6 +984,11 @@ sip_no）。无请求参数。
       "heartbeat_at": 0,
       "host": "",
       "id": "",
+      "load": {
+        "cpu_usage": 0,
+        "mem_usage": 0,
+        "metrics": {}
+      },
       "types": [
         0
       ]
@@ -369,6 +1041,24 @@ sip_no）。无请求参数。
   api接口，用于rtc调设备网关
 </ResponseField>
 
+<ResponseField name="load" type="object">
+  最近一次心跳捎带的节点负载（老网关不报为空）
+  <Expandable title="字段">
+    <ResponseField name="cpu_usage" type="number">
+      CPU使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="mem_usage" type="number">
+      内存使用率(0~100)
+    </ResponseField>
+
+    <ResponseField name="metrics" type="object">
+      业务指标名值对（如 tasks=进行中任务数）
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
 <ResponseField name="info" type="any">
   网关的平台信息
 </ResponseField>
@@ -385,6 +1075,11 @@ sip_no）。无请求参数。
       "host": "",
       "id": "",
       "info": null,
+      "load": {
+        "cpu_usage": 0,
+        "mem_usage": 0,
+        "metrics": {}
+      },
       "types": [
         0
       ]

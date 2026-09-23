@@ -103,6 +103,8 @@ await meeting.closeMic()
 
 ### 屏幕共享
 
+> **1.3.5 变更**：`requestShare` 已移除 `messageOnly` 参数及对应模式。需要仅广播共享状态时，请使用 `requestShare(shareType: .whiteBoard)`；屏幕共享仍会执行正常的媒体采集与发布。旧代码中的 `messageOnly: true` 需要删除或改用白板共享。
+
 #### `requestShare(shareType:preset:view:byAdmin:adminUid:)`
 
 ```swift
@@ -130,13 +132,19 @@ try await meeting.requestShare()
 
 ---
 
-#### `requestShare(source:preset:view:byAdmin:adminUid:)`
+#### `requestShare(source:preset:view:byAdmin:adminUid:excludedWindowIds:excludesCurrentApplication:)`
 
 指定采集源的重载，**仅 macOS 12.3 及以上**。
 
 ```swift
 let displays = try await ScreenCaptureSources.availableDisplays()
 try await meeting.requestShare(source: displays[0])
+
+// 整屏共享，同时挖掉会中窗口（否则同机自测时形成无限镜像）
+let ids = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.windowNumber > 0 }
+    .map { UInt32($0.windowNumber) }
+try await meeting.requestShare(source: displays[0], excludedWindowIds: ids)
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -146,10 +154,16 @@ try await meeting.requestShare(source: displays[0])
 | `view` | `NativeVideoView?` | 否 | 本地预览视图 |
 | `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请 |
 | `adminUid` | `String?` | 否 | 发起邀请的主持人 ID |
+| `excludedWindowIds` | `[UInt32]` | 否 | 整屏共享时要挖掉的自家窗口，取值 `UInt32(NSWindow.windowNumber)`；采集单个窗口时无意义。默认 `[]` |
+| `excludesCurrentApplication` | `Bool` | 否 | 置 `true` 回到「整个 App 都不共享」的旧行为，此时 `excludedWindowIds` 被忽略。默认 `false` |
 
 **返回值：** 无
 
 **可能抛出：** 同上一个重载。
+
+<Warning>
+自 1.3.2（SRTC 1.4.2）起，整屏共享**默认包含本 App 自己的窗口**。会中主窗口通常正在渲染远端画面，界面上若有共享预览、或同机双开自测，务必把这些窗口放进 `excludedWindowIds`，否则形成无限镜像。
+</Warning>
 
 ---
 
@@ -160,6 +174,42 @@ await meeting.stopShare()
 ```
 
 **返回值：** 无，不抛错。
+
+---
+
+### 视图录制
+
+以下接口自 **1.3.4** 起可用。调用方负责将视图渲染为 `CVPixelBuffer` 并持续推帧，SDK 只负责创建和发布视频轨道，不负责截取视图或保存本地录制文件。
+
+#### `startViewCaptureShare()`
+
+```swift
+public func startViewCaptureShare() async throws -> LocalVideoTrack
+```
+
+**参数：** 无。
+
+**返回值：** 已发布的 `LocalVideoTrack`，轨道描述为 `screen`，降级策略为保持分辨率。重复调用返回已有轨道。
+
+**可能抛出：**
+
++ `SMeetingError.notInMeeting` —— 尚未加入会议。
++ `SMeetingError.internalError(_:)` —— 屏幕共享轨道已存在，包括已准备但尚未发布的广播监听轨道。
++ 底层轨道发布错误。
+
+该接口直接发布媒体轨道，不执行 `requestShare()` 的会议后端申请及共享状态通知流程。调用方应按自己的业务管理共享状态，并保证视图录制与屏幕共享互斥；需要切换到屏幕共享时，先停止视图录制。
+
+#### `stopViewCaptureShare()`
+
+```swift
+public func stopViewCaptureShare() async
+```
+
+**参数：** 无。
+
+**返回值：** 无，不抛错。尝试取消发布并清除轨道及其渲染器，不关闭或取消发布麦克风轨道。调用方同时停止推帧。
+
+视图录制应通过此接口结束，不能用 `stopShare()` 代替。
 
 ---
 
