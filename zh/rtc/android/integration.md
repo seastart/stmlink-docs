@@ -70,7 +70,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.rtc:rtc:2.0.34'
+    implementation 'cn.seastart.rtc:rtc:2.0.35'
 }
 ```
 
@@ -83,3 +83,8 @@ dependencies {
 - **后台麦克风采集**：采集已与入会和发布解耦；如需在后台持续调用 `LocalMicTrack.startCapture(...)`，请按 Android 版本要求配置麦克风类型前台服务及相关权限。
 - **后续流程**：依赖接入完成后，请继续参考 [快速开始](/zh/rtc/android/quickstart) 完成 `RTCEngine.create(...)`、`initSDK()`、加入频道、发布与订阅等流程；如果需要管理扬声器、听筒、蓝牙耳机等输出设备，可继续参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
 
+## 流媒体与视频显示
+
++ 支持 FY（风远）和网宿流媒体服务，使用服务端分配的厂商配置。
++ 本地预览与远端视频显示使用 `cn.seastart.rtc.media.original.render` 包中的 `VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`，代码导入与 XML 布局使用同一包路径，使用方式见 [视频渲染](/zh/rtc/android/api-reference/RemoteVideoTrack)。
++ 外部画面通过 `LocalCustomVideoTrack` 输入未编码 I420 帧，由 SDK 完成编码和发布，接入方式见 [自定义推流](/zh/rtc/android/advanced/custom-track)。

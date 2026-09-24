@@ -12,6 +12,8 @@ description: "Android SRTC 的最小接入流程，涵盖 Engine 初始化、显
 + 在应用侧申请摄像头和麦克风运行时权限。
 + 如需管理扬声器、听筒或蓝牙耳机等输出设备，请参考 [音频路由使用](/zh/rtc/android/advanced/audio-routing)。
 
+预览和远端显示控件应使用 `cn.seastart.rtc.media.original.render.VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`，代码导入与 XML 布局均使用该包路径。
+
 ## Step 1：创建并初始化 `RTCEngine`
 
 `RTCEngine.create(...)` 必须传入 Engine 级错误监听器。它用于接收无法归入频道业务回调的错误，以及调用未开始频道等阻断错误；`channelId` 无法确定时为 `null`。

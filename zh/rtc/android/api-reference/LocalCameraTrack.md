@@ -109,7 +109,7 @@ fun isFrontCameraMirrorOpen(): Boolean
 参数说明：无。  
 返回值说明：`Boolean`，`true` 表示镜像开启，`false` 表示关闭。
 
-> 前置镜像仅影响**本地预览渲染**，不改变编码发布到远端的画面。
+> 前置镜像仅影响**本地预览渲染**，不改变编码发布到远端的画面；正常显示模式从下一帧采用新配置。启用控件的 `customDisplayCtrl(true)` 后，预览使用控件自身的旋转和翻转设置，不叠加轨道的默认前置镜像。
 
 ### setCameraAngleOffset(offset)
 ```kotlin
@@ -130,6 +130,8 @@ fun switchLight(open: Boolean)
 返回值说明：无（`Unit`）。
 
 ## 继承自 VideoTrack 的渲染方法
+
+控件使用 `cn.seastart.rtc.media.original.render` 包中的 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`；显示控制与生命周期见 [视频渲染](/zh/rtc/android/api-reference/RemoteVideoTrack)。
 
 ### addPlayView(view)
 ```kotlin

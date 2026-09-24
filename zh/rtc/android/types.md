@@ -172,3 +172,16 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | address | String? | 设备地址，可能为空。 |
 | productName | String? | 设备产品名，可能为空。 |
 
+## YuvFormat
+
+包路径：`cn.seastart.rtc.media.format.YuvFormat`。用于标识原始视频帧的像素布局，不代表每个输入接口都支持所有格式。
+
+| 常量 | 值 | 像素布局 |
+| --- | --- | --- |
+| `NV21` | `17` | Y 平面 + VU 交错平面。 |
+| `NV12` | `19` | Y 平面 + UV 交错平面。 |
+| `I420` | `808596553` | Y、U、V 三平面。 |
+| `YV12` | `842094169` | Y、V、U 三平面。 |
+| `YUY2` | `20` | YUYV 打包格式。 |
+
+屏幕原始帧回调与 `LocalCustomVideoTrack.inputData` 使用 I420。渲染控件的 `updateFrame` 支持 I420、NV12、NV21，不支持 YV12、YUY2。

@@ -212,7 +212,7 @@ interface RTCLocalVideoFrameEvent {
 ```kotlin
 fun setRtcLocalScreenFrameEvent(e: RTCLocalScreenFrameEvent?)
 ```
-方法说明：设置 Engine 级本地屏幕 I420 帧回调。同一次共享采集发布到多个频道时只回调一份数据；未设置监听器时不会为应用复制 YUV 数据。传 `null` 可移除回调。OOK 的屏幕采集由厂商内部管理，不支持该原始帧回调。
+方法说明：设置 Engine 级本地屏幕 I420 帧回调。同一次共享采集发布到多个频道时只回调一份数据；未设置监听器时不会为应用复制 YUV 数据。传 `null` 可移除回调。
 
 参数说明：
 - `e`：`RTCLocalScreenFrameEvent?`，本地屏幕帧回调实现；`null` 表示移除。
@@ -237,7 +237,7 @@ interface RTCLocalScreenFrameEvent {
 - `yuv`：紧凑排列的 I420 数据，顺序为 Y、U、V。SDK 已创建独立副本，回调返回后应用仍可缓存或异步处理。
 - `width` / `height`：实际分发帧的宽高。
 - `stamp`：基于单调时钟的纳秒时间戳。
-- `format`：视频格式，当前固定为 `VCS_EVENT_TYPE.YUVI420`。
+- `format`：视频格式，当前固定为 `cn.seastart.rtc.media.format.YuvFormat.I420`。
 - `rotation`：顺时针旋转角度，取值为 `0`、`90`、`180` 或 `270`。
 
 回调在屏幕采集线程同步执行，应用不应阻塞。单应用目标不可见时可能收到黑帧，静态页面可能收到最近真实帧的保活重放帧，与实际发送链路保持一致。

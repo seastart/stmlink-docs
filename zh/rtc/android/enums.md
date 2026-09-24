@@ -60,26 +60,6 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | TRACK_CUSTOM | "custom" | 自定义流 |
 | TRACK_UN_KNOW | "unknow" | 未知轨道描述 |
 
-### MediaDownLevel
-
-| 枚举名 | 值 | 说明 |
-| --- | --- | --- |
-| UnKnown | 1000 | 未知数据 |
-| Normal | 0 | 下行质量正常 |
-| Poor | -1 | 下行质量较差 |
-| Bad | -2 | 下行质量很差 |
-| VeryBad | -3 | 下行质量极差 |
-
-### MediaDownLossLevel
-
-| 枚举名 | 值 | 说明 |
-| --- | --- | --- |
-| Invalid | -1 | 无效值 |
-| Normal | 0 | 丢包情况正常 |
-| Poor | 1 | 丢包情况较差 |
-| Bad | 2 | 丢包情况很差 |
-| VeryBad | 3 | 丢包情况极差 |
-
 ### QualityDirection
 
 网络质量变化方向，用于 [`NetworkQualityChange`](/zh/rtc/android/types)。
@@ -104,7 +84,6 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | 枚举名 | 值 | 说明 |
 | --- | --- | --- |
 | FY | "seastart" | 风远服务 |
-| OOK | "ook" | 网仕服务 |
 | WS | "wangsucdn" | 网宿 CDN |
 
 ### AudioOutputDeviceType

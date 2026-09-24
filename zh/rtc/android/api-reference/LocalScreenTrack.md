@@ -61,6 +61,8 @@ fun stopCapture()
 
 ## 继承自 VideoTrack 的渲染方法
 
+控件使用 `cn.seastart.rtc.media.original.render` 包中的 `VcsPlayerGlTextureView` / `VcsPlayerGlSurfaceView`；显示控制与生命周期见 [视频渲染](/zh/rtc/android/api-reference/RemoteVideoTrack)。
+
 ### addPlayView(view)
 ```kotlin
 fun addPlayView(view: View): Boolean

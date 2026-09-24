@@ -74,8 +74,6 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 | delay | Float | 延迟。 |
 | lossrateUp | Float | 上行丢包率。 |
 | lossrateDown | Float | 下行丢包率。 |
-| upLevel | MediaUploadLevel | 上行质量等级。 |
-| downLossLevel | MediaDownLossLevel | 下行丢包等级。 |
 | pktUp | Long | 上行包数。 |
 | pktDown | Long | 下行包数。 |
 | pktLossUp | Long | 上行丢包数。 |
@@ -105,7 +103,6 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 | packetsLost | Long | 丢包数。 |
 | retransmittedPackets | Long | 重传包数（视频）。 |
 | lossrate | Float | 丢包率。 |
-| downLevel | MediaDownLevel | 下行质量等级。 |
 | audioBitrate | Float | 音频码率（kb/s）。 |
 | videoBitrate | Float | 视频码率（kb/s）。 |
 

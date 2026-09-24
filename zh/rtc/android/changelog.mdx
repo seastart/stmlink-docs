@@ -5,6 +5,22 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.35] - 2026.09.24
+
+#### 修复
+
++ 修复部分视频画面旋转、镜像及显示比例异常的问题。
++ 修复断线重连返回配置不完整时，原频道配置未正确沿用的问题。
+
+#### 变更
+
++ 移除 OOK（网仕）流媒体引擎，当前支持 FY（风远）和网宿；使用 OOK 的应用需完成迁移后再升级。
++ 视频渲染由 OOK 提供的控件调整为 SDK 自带控件，统一处理画面旋转、镜像和缩放，保留自定义显示控制能力。升级时需将代码和 XML 中的控件包路径由 `com.ook.android.ikPlayer` 调整为 `cn.seastart.rtc.media.original.render`，轨道的 `addPlayView` 等绑定接口保持不变，当前用法见 [视频渲染](/zh/rtc/android/api-reference/RemoteVideoTrack)。
++ 移除 `RTCEngine.getCustomVideoTrack()`、`CustomVideoTrack` 和 `CustomVideoOptions`；自定义推流使用 `LocalCustomVideoTrack` 输入未编码 I420 帧，不可直接传入 H264/H265 数据，见 [自定义推流](/zh/rtc/android/advanced/custom-track)。
++ 移除 OOK 专用的 `RTCEngine.mediaOptions()`、`setMediaOptions(...)` 和 `RTCMediaOptions`，采集与发布使用各轨道对应的配置。
++ 移除 `NetworkStats.upLevel`、`downLossLevel`、`RemoteDownloadStats.downLevel` 及对应的三个质量等级枚举，当前字段见 [媒体质量](/zh/rtc/android/media-quality)。
++ 屏幕原始帧格式改用 `YuvFormat.I420` 常量，数值保持不变，见 [类型定义](/zh/rtc/android/types)。
+
 ### [2.0.34] - 2026.09.21
 
 #### 修复
