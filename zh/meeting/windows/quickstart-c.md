@@ -3,7 +3,7 @@ title: "C 快速开始"
 description: "Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能"
 ---
 
-> 注意：`SMeeting_C.h` / `SMeetingEngineGlobal` 在 `1.0.0-alpha.5` 版本中暂未更新，仍保持单会议旧写法，不能与新版的 `ISMeetingEngine`/`ISMeetingChannel` 结构混用。如需使用 C 接口，请等待后续版本或直接使用 C++ 接口。
+> 注意：截至 `1.0.0-alpha.6`，`SMeeting_C.h` / `SMeetingEngineGlobal` 仍未随引擎级 / 会议级的拆分更新，依旧是单会议旧写法，不能与新版的 `ISMeetingEngine` / `ISMeetingChannel` 结构混用。当前发布包（`meeting_dll/include/`）**也不包含** `SMeeting_C.h`，如需使用 C 接口请另行索取头文件，或直接使用 C++ 接口。
 
 本文档介绍如何在 Windows 平台使用 C 语言集成 SMeeting SDK。
 
@@ -597,7 +597,7 @@ int main() {
 | SMeeting_Event_RoomShareStart | 206 | 共享开始 |
 | SMeeting_Event_RoomShareStop | 207 | 共享停止 |
 
-更多事件常量请参考 [C API 参考](/zh/meeting/windows/api-reference/smeeting-c)。
+更多事件常量见 `SMeeting_C.h`。
 
 ---
 

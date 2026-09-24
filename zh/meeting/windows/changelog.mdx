@@ -5,6 +5,41 @@ description: "Windows SMeeting 会议 SDK 版本更新记录"
 
 > 本页记录 Windows SMeeting SDK 各版本的主要变更。可通过 `SMeetingEngine_Version` 获取当前 SDK 版本。
 
+## 1.0.0-alpha.6 - 2026-09-24
+
+**添加**
+
++ **新增 x64（64 位）包**，Windows 交付改为 x86 + x64 双包：
+  + `meeting-win-sdk-2.0.zip`（x86，32 位）—— **包名与之前完全一致**
+  + `meeting-win-sdk-x64-2.0.zip`（x64，64 位）—— 新增，包名是在版本号**前面**多一段 `-x64`
+
+  两个包内部结构相同（根目录都是 `meeting_dll/`），但 `SMeeting.dll` / `SMeeting.lib`
+  的位数不同，**不能混用、也不要解压到同一个目录**，请按工程的目标平台选对应的包。
+  下载地址见[集成](/zh/meeting/windows/integration)。
++ 依赖库按架构拆分为 `lib/<库>/lib/win32` 与 `lib/<库>/lib/win64` 两套
+
+**修改**
+
++ x64 工程配置修正：输出类型从 `Application` 改为 `DynamicLibrary`，补上 x64 自己的包含目录
+  与库目录（指向 `lib/*/lib/win64`），产物输出到 `Release_x64`
++ 升级底层 curl：libcurl 换用新版头文件与导入库，并新增 zlib 依赖（`zlib1.dll`）
++ jsoncpp 导入库由 `jsoncpp_static.lib` 改名为 `jsoncpp.lib`，并按 win32 / win64 分目录
++ 移除不再使用的 pthread 依赖；底层音视频库同步刷新，`bin` 不再包含 `DenModule.dll`、
+  `rtp.dll`、`zlib.dll`，改用 `zlib1.dll`
++ 统一源码与头文件编码为 UTF-8 with BOM，并新增 `.editorconfig` 约束 ——
+  修复 `SMeeting_def.h` 等文件中文注释在 GBK 环境下的 C4819 警告与乱码隐患
+
+**修复**
+
++ 修正 4 处 jsoncpp 数组遍历：索引类型由 `size_t` 改为 `Json::Value::ArrayIndex`，
+  避免 64 位编译下的类型不匹配
+
+**API 变更**
+
+无。`SMeeting.h` / `SMeeting_def.h` / `SMeeting_C.h` 本次只有编码变化，没有任何签名改动，
+vtable 未变，不存在 ABI 破坏。按[快速开始](/zh/meeting/windows/quickstart)的通用约定，
+升级 SDK 后仍**建议**重新编译业务工程。
+
 ## 1.0.0-alpha.5 - 2026-08-21
 
 **添加**

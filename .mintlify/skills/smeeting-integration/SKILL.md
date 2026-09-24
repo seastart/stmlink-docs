@@ -102,7 +102,7 @@ SMeeting 的接口不接受频道名，SRTC 的接口也不认识会议号。少
 | --- | --- | --- |
 | Web | `npm i @seastart/smeeting-web-sdk` | `new SMeeting({...})` |
 | Android | `implementation 'cn.seastart.meeting:meeting:<version>'` | `MeetingEngine.create()` |
-| Windows | 下载 [meeting-win-sdk-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-2.0.zip)，**x86 32 位** | C++ 接口 |
+| Windows | 下载 [meeting-win-sdk-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-2.0.zip)（x86 32 位）或 [meeting-win-sdk-x64-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-x64-2.0.zip)（x64 64 位），必须与工程目标平台一致 | C++ 接口 |
 | Swift（iOS/macOS） | Swift Package `smeeting-swift-sdk` | `import SMeeting` → `SMeetingEngine()` |
 | Objective-C（iOS） | CocoaPods | `MeetingKit`（单例） |
 
