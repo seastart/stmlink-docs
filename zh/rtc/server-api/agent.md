@@ -1258,6 +1258,74 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
   备注
 </ResponseField>
 
+<ResponseField name="subjects" type="array<object>">
+  通道列表, 每个通道带最后一次上报的位置
+  <Expandable title="元素字段">
+    <ResponseField name="subject" type="string">
+      通道编号, 空表示设备级位置
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      通道名称
+    </ResponseField>
+
+    <ResponseField name="lng" type="number">
+      经度
+    </ResponseField>
+
+    <ResponseField name="lat" type="number">
+      纬度
+    </ResponseField>
+
+    <ResponseField name="alt" type="number">
+      海拔(米)
+    </ResponseField>
+
+    <ResponseField name="speed" type="number">
+      速度
+    </ResponseField>
+
+    <ResponseField name="dir" type="number">
+      方向(度)
+    </ResponseField>
+
+    <ResponseField name="pos_at" type="integer">
+      设备侧定位时间, 0表示从未上报过位置
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="pos" type="object">
+  设备级位置(上报时不带通道编号的那条)
+  <Expandable title="字段">
+    <ResponseField name="lng" type="number">
+      经度
+    </ResponseField>
+
+    <ResponseField name="lat" type="number">
+      纬度
+    </ResponseField>
+
+    <ResponseField name="alt" type="number">
+      海拔(米)
+    </ResponseField>
+
+    <ResponseField name="speed" type="number">
+      速度
+    </ResponseField>
+
+    <ResponseField name="dir" type="number">
+      方向(度)
+    </ResponseField>
+
+    <ResponseField name="pos_at" type="integer">
+      设备侧定位时间
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
 
 响应示例：
 
@@ -1271,8 +1339,28 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
     "heartbeat_at": 0,
     "id": "",
     "name": "",
+    "pos": {
+      "alt": 0,
+      "dir": 0,
+      "lat": 0,
+      "lng": 0,
+      "pos_at": 0,
+      "speed": 0
+    },
     "remark": "",
     "status": 0,
+    "subjects": [
+      {
+        "alt": 0,
+        "dir": 0,
+        "lat": 0,
+        "lng": 0,
+        "name": "",
+        "pos_at": 0,
+        "speed": 0,
+        "subject": ""
+      }
+    ],
     "type": 0
   }
 }
@@ -1375,6 +1463,74 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
   备注
 </ResponseField>
 
+<ResponseField name="subjects" type="array<object>">
+  通道列表, 每个通道带最后一次上报的位置
+  <Expandable title="元素字段">
+    <ResponseField name="subject" type="string">
+      通道编号, 空表示设备级位置
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      通道名称
+    </ResponseField>
+
+    <ResponseField name="lng" type="number">
+      经度
+    </ResponseField>
+
+    <ResponseField name="lat" type="number">
+      纬度
+    </ResponseField>
+
+    <ResponseField name="alt" type="number">
+      海拔(米)
+    </ResponseField>
+
+    <ResponseField name="speed" type="number">
+      速度
+    </ResponseField>
+
+    <ResponseField name="dir" type="number">
+      方向(度)
+    </ResponseField>
+
+    <ResponseField name="pos_at" type="integer">
+      设备侧定位时间, 0表示从未上报过位置
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="pos" type="object">
+  设备级位置(上报时不带通道编号的那条)
+  <Expandable title="字段">
+    <ResponseField name="lng" type="number">
+      经度
+    </ResponseField>
+
+    <ResponseField name="lat" type="number">
+      纬度
+    </ResponseField>
+
+    <ResponseField name="alt" type="number">
+      海拔(米)
+    </ResponseField>
+
+    <ResponseField name="speed" type="number">
+      速度
+    </ResponseField>
+
+    <ResponseField name="dir" type="number">
+      方向(度)
+    </ResponseField>
+
+    <ResponseField name="pos_at" type="integer">
+      设备侧定位时间
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
 
 响应示例：
 
@@ -1395,8 +1551,28 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
       "heartbeat_at": 0,
       "id": "",
       "name": "",
+      "pos": {
+        "alt": 0,
+        "dir": 0,
+        "lat": 0,
+        "lng": 0,
+        "pos_at": 0,
+        "speed": 0
+      },
       "remark": "",
       "status": 0,
+      "subjects": [
+        {
+          "alt": 0,
+          "dir": 0,
+          "lat": 0,
+          "lng": 0,
+          "name": "",
+          "pos_at": 0,
+          "speed": 0,
+          "subject": ""
+        }
+      ],
       "type": 0
     }
   ]
