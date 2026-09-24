@@ -4,6 +4,46 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [8] - 2026.09.24
+版本号：0.2.1-alpha.10
+
+**添加**
+
++ **新增 x64（64 位）包**，交付改为 x86 + x64 双包：
+  + `rtc-win-sdk-2.1.zip`（x86，32 位）—— **包名与之前完全一致**
+  + `rtc-win-sdk-x64-2.1.zip`（x64，64 位）—— 新增，包名是在版本号**前面**多一段 `-x64`
+
+  两个包内部结构相同（根目录都是 `rtc_dll/`），但 `srtc.dll`、`srtcLive.dll`、`srtc.lib`
+  的位数不同，**不能混用、也不要解压到同一个目录**，请按工程的目标平台选对应的包。
+  下载地址见[集成](/zh/rtc/windows/integration)。
++ 依赖库按架构拆分为 `lib/<库>/lib/win32` 与 `lib/<库>/lib/win64` 两套
+
+**修改**
+
++ `srtcLive` 的 x64 工程配置修正：输出类型从 `Application` 改为 `DynamicLibrary`，
+  补上 x64 自己的包含目录与库目录（指向 `lib/*/lib/win64`），产物输出到 `Release_x64`
++ 升级第三方依赖：libfaac 换用新版编码器接口（`faac_encoder_open` /
+  `faac_encoder_get_info` / `faac_encoder_encode`）、libswresample 换用
+  `swr_alloc_set_opts2`、openh264 头文件路径由 `wels/` 改为 `svc/`；
+  移除已不再使用的 x264、webrtc_aec3、rtpsdk、pthread 依赖
++ `utils::getPathFile` 改用 `std::filesystem` 枚举目录
++ 日志流 `SDebug` 的 `operator<<(size_t)` 改为 `operator<<(unsigned int)`：
+  64 位下 `size_t` 就是 `unsigned __int64`，会与 `uint64_t` 重载冲突，
+  改后 32 位无符号值命中本重载、64 位值命中 `uint64_t`，两种架构行为一致
++ custom/rtp 流相关代码加 `RTC_ENABLE_RTP_STREAM` 编译开关
+
+**修复**
+
++ 修复 64 位编译报错：虚拟机探测 `IsInsideVPC` / `IsInsideVMWare` 依赖 x86 内联汇编和
+  x86 专有的 `CONTEXT` 字段（`Ebx` / `Eip`），MSVC 的 x64 不支持内联汇编 ——
+  64 位构建下这两个探测直接返回 false
++ `FAACEncode`：关闭句柄改用 `faac_encoder_close(&hEncoder)`；编码改为按返回的状态码
+  与写出的字节数判断，避免新版接口返回值语义变化导致的误判
+
+**API 变更**
+
+无。`srtc.h` / `srtc_def.h` 本次没有任何改动，vtable 未变，只替换 dll 即可，不需要重新编译。
+
 ### [7] - 2026.09.22
 版本号：0.2.1-alpha.9
 

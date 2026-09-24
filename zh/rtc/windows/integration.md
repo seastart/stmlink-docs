@@ -6,11 +6,12 @@ description: "Windows SRTC 音视频 SDK 的下载地址、环境要求、工程
 ### 环境要求
 
 <Warning>
-**SDK 为 x86（32 位）**。你的工程必须以 **Win32 / x86** 为目标平台编译 —— 64 位程序无法链接
-32 位的 `srtc.lib`，表现为链接期报「模块计算机类型 x86 与目标计算机类型 x64 冲突」。
+**SDK 提供 x86（Win32 / 32 位）与 x64（64 位）两个包，必须与你的工程目标平台一致。**
+用 x86 包链接 64 位工程（或反过来）会在链接期报
+「模块计算机类型 x86 与目标计算机类型 x64 冲突」。
 </Warning>
 
-+ 目标平台：Windows x86（32 位）
++ 目标平台：Windows x86（Win32 / 32 位）或 x64（64 位）—— **按工程的目标平台选对应的包**
 + 语言：C++
 + 运行时：SDK 包内已附带所需的 VC++ 运行库 DLL，**无需**在目标机器上单独安装运行库分发包
 
@@ -18,21 +19,23 @@ description: "Windows SRTC 音视频 SDK 的下载地址、环境要求、工程
 
 ### 下载 SDK
 
-| 版本 | 下载地址 |
-| --- | --- |
-| 2.1 | [rtc-win-sdk-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-2.1.zip) |
+| 版本 | 架构 | 下载地址 |
+| --- | --- | --- |
+| 2.1 | x86（32 位） | [rtc-win-sdk-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-2.1.zip) |
+| 2.1 | x64（64 位） | [rtc-win-sdk-x64-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-x64-2.1.zip) |
 
-新版本发布后按同样的命名规则取用，替换版本号即可：
+新版本发布后按同样的命名规则取用，替换版本号即可。x64 包是在版本号**前面**多一段 `-x64`：
 
 ```text
 https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-<版本号>.zip
+https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-x64-<版本号>.zip
 ```
 
 ---
 
 ### 目录结构
 
-解压后得到：
+解压后得到（两个包的结构完全一样，内部根目录都是 `rtc_dll/`）：
 
 ```text
 rtc_dll/
@@ -48,8 +51,14 @@ rtc_dll/
     └── plugin/       # 插件及其 xml 配置
 ```
 
+<Warning>
+两个包解压后目录名相同，**不要解压到同一个目录互相覆盖**，也不要跨架构混用
+`lib` 与 `bin`（x86 的 `srtc.lib` / `srtc.dll` 与 x64 的不是同一套二进制）。
+</Warning>
+
 <Note>
-本版本包内共 28 个文件。AnyLive/ook 运行时不在包内，见下面「部署运行时依赖」的说明。
+包内的文件清单（数量和名称）会随版本调整，不要按文件名逐个挑选。
+AnyLive/ook 运行时不在包内，见下面「部署运行时依赖」的说明。
 </Note>
 
 ---
@@ -84,15 +93,17 @@ rtc_dll/
 ```
 
 <Warning>
-两个容易遗漏的点：
+三个容易遗漏的点：
 
++ **DLL 的位数必须与 `YourApp.exe` 一致**：32 位程序配 x86 包的 `bin`，64 位程序配 x64 包的 `bin`
 + **`plugin/` 必须保持为子目录**，不能把里面的 DLL 平铺到根目录
 + **`plugin/` 下的 `.xml` 配置文件也要一起拷贝**（`conf.xml`、`cocktail_service.xml`、
   `linkmic_service.xml`），缺失会导致插件加载失败，表现为屏幕共享等功能不可用
 </Warning>
 
 <Warning>
-**0.2.1-alpha.6 起，`rtc-win-sdk-2.1.zip` 不再包含 AnyLive/ook 运行时**：
+**0.2.1-alpha.6 起，`rtc-win-sdk-2.1.zip`（x86）与 `rtc-win-sdk-x64-2.1.zip`（x64）
+都不再包含 AnyLive/ook 运行时**：
 `AnyLiveMVSC.dll`、`libEGL.dll`、`libGLESv2.dll`、`libeay32.dll`、`ssleay32.dll`、
 `stlport.5.1.dll`，以及 `plugin/` 下的 `anyLiveM.dll`、`cocktail_service.dll`、`libmm.dll`、
 `linkmic_service.dll`、`onvif_receiver.dll`、`transcoder.dll` 和上面提到的三个 `.xml`。
