@@ -32,6 +32,7 @@ SRTC C SDK 是一套面向**服务端与嵌入式**场景的音视频 SDK，对�
 | `librtc.a` | 静态库（Linux / Windows，GNU ar 格式，适用于 GCC、MinGW 工具链） |
 | `librtc.dll` | 动态库（Windows） |
 | `librtc.lib` | 导入库（Windows），MSVC 链接 `librtc.dll` 时使用 |
+| `librtc.dylib` | 动态库（macOS） |
 
 <Note>
 MSVC（Visual Studio）项目请使用 `librtc.dll` + `librtc.lib`，不能直接链接 `librtc.a`。
@@ -48,6 +49,7 @@ MSVC（Visual Studio）项目请使用 `librtc.dll` + `librtc.lib`，不能直�
 | Linux（musl / Alpine） | aarch64 | `librtc.so` |
 | Linux | armv7（32 位） | `librtc.so`、`librtc.a` |
 | Windows | x86_64 | `librtc.dll`、`librtc.lib`、`librtc.a` |
+| macOS | Apple Silicon（arm64） | `librtc.dylib`（用于本地开发调试） |
 
 <Warning>
 **请按目标系统的 libc 选择对应的库。** 主流发行版（CentOS / Ubuntu / Debian 等）用 glibc 版本，Alpine 用 musl 版本，两者不能混用。
@@ -56,6 +58,10 @@ Alpine（musl）平台只提供动态库 `librtc.so`，不提供静态库。
 </Warning>
 
 需要上表以外的平台或架构，请联系我们。
+
+<Warning>
+**升级 SDK 时请用新版的 `librtc.h` 重新编译**，不要只替换库文件。结构体字段有增删时（如 0.0.9 删除了 `rtc_user_info_t.link_id`），旧头文件编出来的程序会读错字段。各版本变化见 [更新日志](/zh/rtc/capi/changelog)。
+</Warning>
 
 ---
 

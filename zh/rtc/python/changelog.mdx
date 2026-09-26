@@ -1,0 +1,21 @@
+---
+title: "更新日志"
+description: "Python SDK（PyPI 包 srtc）版本更新记录"
+---
+
+### [0.1.0] - 2026.09.26
+首个版本，发布到 PyPI：`pip install srtc`。
+
+#### 新增
++ 加入 / 离开频道，成员、轨道、频道信息查询，自动订阅与手动订阅
++ 远端音频解码为指定格式的 PCM，按 RTP 时间戳补齐 DTX 静音帧，时间轴连续
++ 发布音频：任意采样率 PCM 写入，SDK 重采样、编码并按实时节奏发送；`clear()` 支持插话打断，`write()` 自带背压
++ 远端视频接收，可选解码为 RGB 图像，解码出错自动请求关键帧
++ 说话人、网络质量、切层、自定义消息事件，断线原因区分被踢 / 顶号 / 频道销毁
++ `async for` 逐帧消费与 `ChannelHandler` 回调两种用法
++ 内置 pipecat transport（`pip install "srtc[pipecat]"`）
++ 平台：Linux x86_64 / aarch64、macOS Apple Silicon、Windows x64，Python 3.10+
+
+<Note>
+本版只支持接收视频，不支持发布视频。
+</Note>

@@ -126,6 +126,10 @@ int rtc_write_sample(void* track_handle, uint8_t* data, int length, uint32_t sam
 SDK 会拷贝一份传入的数据，调用返回后你可以立即复用或释放 `data` 缓冲区。
 </Note>
 
+<Warning>
+**SDK 不控制发送节奏**，写入一帧就立即发出。数据源比实时快时（读文件、TTS 合成），必须由你按帧时长的节奏写入（如音频每 20ms 写一包），否则一瞬间发出几秒的数据，对端的抖动缓冲装不下就会丢，听起来是吞字或加速。
+</Warning>
+
 ---
 
 ## rtc_set_keyframe_request_callback

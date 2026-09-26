@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 StmLink 开发者文档站，基于 [Mintlify](https://mintlify.com) 构建，覆盖两款 SDK 产品：
 
-- **SRTC 音视频 SDK** (`zh/rtc/`) - 底层音视频流媒体 SDK，支持 iOS、Swift、Android、Windows、Web、微信小程序，以及面向服务端/嵌入式的 C SDK（`zh/rtc/capi/`，内容源自 `rtc-go/capi`）
+- **SRTC 音视频 SDK** (`zh/rtc/`) - 底层音视频流媒体 SDK，支持 iOS、Swift、Android、Windows、Web、微信小程序，以及面向服务端/嵌入式的 C SDK（`zh/rtc/capi/`，内容源自 `rtc-go/capi`）和面向服务端 AI 的 Python SDK（`zh/rtc/python/`，内容源自 `rtc-python`，PyPI 包 `srtc`）
 - **SMeeting 会议 SDK** (`zh/meeting/`) - 基于 SRTC 的会议业务 SDK，同样覆盖上述平台
 
 ## 本地开发

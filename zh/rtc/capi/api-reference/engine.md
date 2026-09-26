@@ -91,8 +91,34 @@ int rtc_join_channel_sync(void* handle, const char* token, int timeout_ms);
 | --- | --- |
 | `RTC_OK` | 加入成功 |
 | `RTC_INVALID_PARAM` | 句柄无效，或 token 为空字符串 |
-| `RTC_ERROR` | 加入失败（Token 失效、会话被占用、服务端拒绝等） |
+| `RTC_ERROR` | 加入失败（Token 失效、会话被占用、服务端拒绝等），具体原因用 `rtc_get_last_error` 取 |
 | `RTC_TIMEOUT` | 超时未完成 |
+
+### rtc_get_last_error
+
+```c
+int rtc_get_last_error(void* handle, char* msg_buf, int buf_len);
+```
+
+取该实例**最近一次失败调用**的错误详情（0.0.9 起）。入会、订阅、发布等接口返回 `RTC_ERROR` / `RTC_TIMEOUT` 后调用。
+
+| 参数 | 说明 |
+| --- | --- |
+| `msg_buf` / `buf_len` | 可选，传入则写入错误原因（超长截断，保证以 `\0` 结尾）；不需要原因可传 `NULL, 0` |
+
+**返回值**：错误码。`180xxx` 为 SDK 自身错误，`≥1000` 为服务端错误码，`-1` 为没有具体错误码的内部错误，`0` 表示没有记录。
+
+```c
+if (rtc_join_channel_sync(rtc, token, 10000) != RTC_OK) {
+    char msg[256];
+    int code = rtc_get_last_error(rtc, msg, sizeof(msg));
+    fprintf(stderr, "join failed: %d %s\n", code, msg);    // 如 1033 并发已达上限
+}
+```
+
+<Note>
+每个实例只保留最近一条。同一实例上多个线程并发调用接口时，后失败的会覆盖先失败的。
+</Note>
 
 ### rtc_leave_channel
 
@@ -136,6 +162,10 @@ void rtc_set_auto_subscribe(void* handle, int auto_audio, int auto_video);
 所有回调都通过 `context` 参数携带业务上下文，SDK 原样回传，不做任何解释。
 
 <Warning>
+`context` 必须是**真实指针**（或 `NULL`）。不要把 `1`、`2` 这样的小整数强转成指针当 id 用：SDK 内部会把它当指针保存，遇到小于 4096 的值会判定为非法指针并直接终止进程。需要 id 时，请传指向该 id 的内存地址。
+</Warning>
+
+<Warning>
 **回调执行在 SDK 内部线程上**，注意三点：
 
 1. 不同回调可能并发触发，业务侧要自己做并发保护
@@ -151,6 +181,25 @@ void rtc_set_connection_callback(void* handle, rtc_connection_callback callback,
 ```
 
 连接状态变化。`state`：`0`=连接中，`1`=已连接，`2`=已断开，`3`=重连中。
+
+### rtc_set_disconnected_callback
+
+```c
+typedef void (*rtc_disconnected_callback)(void* context, int reason, int code, const char* msg);
+void rtc_set_disconnected_callback(void* handle, rtc_disconnected_callback callback, void* context);
+```
+
+彻底离开频道时触发一次（与连接状态回调的 `state=2` 同时机，且先于它触发），带上断线原因（0.0.9 起）。
+
+| 参数 | 说明 |
+| --- | --- |
+| `reason` | 断线原因 `RTC_DISCONNECT_*`，见 [类型定义 · 回调参数枚举](/zh/rtc/capi/types#回调参数枚举) |
+| `code` | 有错误时为错误码（`180xxx` 或服务端 `1xxx`，见 [错误码](/zh/rtc/capi/error-codes)），否则为 `0` |
+| `msg` | 错误原因，无错误时为 `NULL`，仅在回调期间有效 |
+
+<Tip>
+用它区分"该不该自动重进"：被踢（`KICKED`）、被顶号（`REPLACE`）、频道销毁（`DESTROY`）时不应自动重进；心跳超时（`TIMEOUT`）等情况可以用新签发的 Token 重新加入。
+</Tip>
 
 ### rtc_set_user_event_callback
 

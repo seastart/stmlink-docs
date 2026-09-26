@@ -322,7 +322,33 @@
                     ]
                   },
                   "zh/rtc/capi/types",
-                  "zh/rtc/capi/error-codes"
+                  "zh/rtc/capi/error-codes",
+                  "zh/rtc/capi/changelog"
+                ]
+              },
+              {
+                "group": "Python SDK（服务端 AI）",
+                "pages": [
+                  "zh/rtc/python/integration",
+                  "zh/rtc/python/quickstart",
+                  {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/rtc/python/advanced/ai-agent",
+                      "zh/rtc/python/advanced/pipecat"
+                    ]
+                  },
+                  {
+                    "group": "接口文档",
+                    "pages": [
+                      "zh/rtc/python/api-reference/channel",
+                      "zh/rtc/python/api-reference/events",
+                      "zh/rtc/python/api-reference/audio"
+                    ]
+                  },
+                  "zh/rtc/python/types",
+                  "zh/rtc/python/error-codes",
+                  "zh/rtc/python/changelog"
                 ]
               },
               {

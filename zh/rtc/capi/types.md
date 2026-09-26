@@ -64,7 +64,6 @@ typedef struct {
     int64_t join_at;
     int64_t leave_at;
     int64_t updated_at;
-    int64_t link_id;
     rtc_track_info_t* stream_tracks;
     int stream_track_count;
 } rtc_user_info_t;
@@ -82,13 +81,37 @@ typedef struct {
 | `device_type` | `int` | 设备类型 |
 | `is_audience` | `int` | `1`=观众（不出现在他人成员列表里），`0`=普通用户 |
 | `join_at` / `leave_at` / `updated_at` | `int64_t` | 加入 / 离开 / 更新时间戳 |
-| `link_id` | `int64_t` | 连接 ID |
 | `stream_tracks` | `rtc_track_info_t*` | 该用户已发布的轨道数组 |
 | `stream_track_count` | `int` | 轨道数量 |
 
 <Warning>
 `props` 和 `stream_tracks` 是 SDK 动态分配的，查询接口返回的 `rtc_user_info_t` 必须用 `rtc_free_user_info` / `rtc_free_users_info` 释放。详见 [用户信息查询](/zh/rtc/capi/api-reference/users)。
 </Warning>
+
+<Warning>
+**0.0.9 起删除了 `link_id` 字段**，结构体布局随之变化。从旧版本升级时必须用新的 `librtc.h` **重新编译**，只替换库文件会读错字段甚至崩溃；代码里引用了 `link_id` 的地方直接删掉即可（它此前恒为 0）。
+</Warning>
+
+### rtc_channel_info_t
+
+频道信息，由 `rtc_get_channel_info` 返回（0.0.9 起）。
+
+```c
+typedef struct {
+    char app_id[64];
+    char channel[128];
+    const char* props;
+    int64_t created_at;
+    int64_t updated_at;
+} rtc_channel_info_t;
+```
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `app_id` | `char[64]` | 应用 ID |
+| `channel` | `char[128]` | 频道名 |
+| `props` | `const char*` | 频道自定义属性，JSON 字符串；可能为 `NULL`。用完调用 `rtc_free_channel_info` 释放 |
+| `created_at` / `updated_at` | `int64_t` | 创建 / 更新时间戳 |
 
 ### rtc_publish_options_t
 
@@ -171,6 +194,17 @@ static inline const char* rtc_codec_to_string(int codec);
 | `2` | disconnected，已断开 |
 | `3` | reconnecting，重连中 |
 
+**断线原因**（`rtc_disconnected_callback` 的 `reason`，0.0.9 起，头文件中有对应的宏）
+
+| 宏 | 值 | 含义 |
+| --- | --- | --- |
+| `RTC_DISCONNECT_ERROR` | `-1` | 出错离开，`code` / `msg` 带具体错误 |
+| `RTC_DISCONNECT_SELF` | `1` | 主动离开 |
+| `RTC_DISCONNECT_KICKED` | `2` | 被踢出频道 |
+| `RTC_DISCONNECT_REPLACE` | `3` | 同一 uid 在别处入会，被顶号 |
+| `RTC_DISCONNECT_TIMEOUT` | `4` | 心跳超时 |
+| `RTC_DISCONNECT_DESTROY` | `5` | 频道被销毁 |
+
 **用户事件**（`rtc_user_event_callback` 的 `event_type`）
 
 | 值 | 含义 |
@@ -222,4 +256,6 @@ typedef void (*rtc_active_speakers_callback)(void* context, int64_t ts,
 typedef void (*rtc_custom_msg_callback)(void* context, const rtc_custom_msg_t* msg);
 
 typedef void (*rtc_keyframe_request_callback)(void* context, const char* track_id);
+
+typedef void (*rtc_disconnected_callback)(void* context, int reason, int code, const char* msg);
 ```

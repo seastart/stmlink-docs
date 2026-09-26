@@ -26,7 +26,7 @@ C 接口用返回值表达结果。返回 `int` 的接口统一使用下面 5 �
 | `RTC_TIMEOUT` | `-4` | 超时 | 仅 `rtc_join_channel_sync` 返回。Token 过期、网络不通、服务端不可达 |
 
 <Note>
-`RTC_ERROR` 是一个笼统的失败码，本身不携带具体原因。定位问题时请先调高日志级别：
+`RTC_ERROR` 是一个笼统的失败码。具体原因用 [`rtc_get_last_error`](/zh/rtc/capi/api-reference/engine#rtc_get_last_error) 取（0.0.9 起），它返回的就是下面两节的 `180xxx` / `1xxx` 错误码。也可以调高日志级别看原因：
 
 ```c
 rtc_set_log_level(RTC_LOG_DEBUG);
@@ -86,7 +86,9 @@ void* rtc = rtc_create();
 
 int ret = rtc_join_channel_sync(rtc, token, 10000);
 if (ret != RTC_OK) {
-    fprintf(stderr, "join failed: %d\n", ret);
+    char msg[256];
+    int code = rtc_get_last_error(rtc, msg, sizeof(msg));   // 具体原因，如 1033 并发已达上限
+    fprintf(stderr, "join failed: %d, code=%d %s\n", ret, code, msg);
     rtc_destroy(rtc);        // 失败也要销毁实例
     return -1;
 }

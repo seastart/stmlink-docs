@@ -1,0 +1,36 @@
+---
+title: "更新日志"
+description: "C SDK（librtc）版本更新记录，含 0.0.9 删除 rtc_user_info_t.link_id 这一需要重新编译的变更。升级 C SDK 前先读这页。"
+---
+
+### [0.0.10] - 2026.09.26
+#### 变更
++ 库文件去掉调试符号，Linux 版 `librtc.so` 体积约减小 27%（17.6MB → 12.8MB）。接口与行为无变化，崩溃时的堆栈仍会打印函数名与行号
+
+<Note>
+与 0.0.9 接口完全一致，已按 0.0.9 头文件编译的程序可以直接替换库文件。
+</Note>
+
+### [0.0.9] - 2026.09.26
+#### 新增
++ `rtc_get_last_error`：接口返回 `RTC_ERROR` / `RTC_TIMEOUT` 后取具体错误码与原因，不必再翻日志
++ `rtc_set_disconnected_callback`：彻底断开时回调断线原因（被踢 / 顶号 / 心跳超时 / 频道销毁），宏 `RTC_DISCONNECT_*`
++ `rtc_get_local_user_info`：获取本端 uid / sid
++ `rtc_get_channel_info` / `rtc_free_channel_info` 与结构体 `rtc_channel_info_t`
++ 新增 macOS Apple Silicon 平台（`librtc.dylib`）
+
+#### 修复
++ **加入频道快约 3 秒**：此前每次入会都要空等约 3 秒才开始建立信令连接，现在立即连接（实测入会耗时 3.4s → 0.4s）；断线重连的间隔不变
++ 修复实例句柄在特定时机被运行时判为非法指针、导致进程终止的问题
++ 频道流媒体引擎配置未知时回退到默认引擎，不再无法入会
+
+#### 破坏性变更
++ **删除 `rtc_user_info_t.link_id` 字段**（此前恒为 0，无实际含义）
+
+<Warning>
+`rtc_user_info_t` 的内存布局随之变化。**从 0.0.8 及更早版本升级必须用新的 `librtc.h` 重新编译**，只替换库文件会读错 `stream_tracks` 等字段，甚至崩溃。代码里引用了 `link_id` 的地方直接删掉即可。
+</Warning>
+
+<Note>
+回调的 `context` 必须是真实指针（或 `NULL`），不要把小整数强转成指针当 id 用，见 [实例与频道 · 回调注册](/zh/rtc/capi/api-reference/engine#回调注册)。
+</Note>

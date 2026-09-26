@@ -29,11 +29,12 @@ SRTC 只负责音视频通道本身，**不带用户体系、不带业务规则*
 | Swift | iOS 与 macOS，`import SRTC` | [集成](/zh/rtc/swift/integration) · [快速开始](/zh/rtc/swift/quickstart) |
 | iOS | Objective-C，`RTCEngineKit` | [集成](/zh/rtc/ios/integration) · [快速开始](/zh/rtc/ios/quickstart) |
 | C | 服务端与嵌入式，纯 C 接口 | [集成](/zh/rtc/capi/integration) · [快速开始](/zh/rtc/capi/quickstart) |
+| Python | 服务端 AI 场景（语音机器人、录音、转写），收发 PCM，支持 pipecat | [集成](/zh/rtc/python/integration) · [快速开始](/zh/rtc/python/quickstart) |
 | 服务端 | HTTP 接口与事件回调 | [服务端 API](/zh/rtc/server-api/overview) |
 
 <Note>
 各端的获取方式不同：Web 走 npm、Android 走 Maven、Windows 从制品仓库下载 zip，均见对应的集成页。
-Swift 走 Swift Package Manager（预编译 XCFramework）。iOS、C SDK 的安装包请向我们获取。
+Swift 走 Swift Package Manager（预编译 XCFramework），Python 走 PyPI（`pip install srtc`）。iOS、C SDK 的安装包请向我们获取。
 </Note>
 
 

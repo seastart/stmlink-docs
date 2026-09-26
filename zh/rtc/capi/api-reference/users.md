@@ -110,3 +110,28 @@ void rtc_free_user_info(rtc_user_info_t* user);
 ---
 
 字段说明见 [类型定义 · rtc_user_info_t](/zh/rtc/capi/types#rtc_user_info_t)。
+
+---
+
+## rtc_get_local_user_info
+
+```c
+int rtc_get_local_user_info(void* handle, rtc_user_info_t* user);
+```
+
+获取本端的用户信息（`uid`、`sid` 等），0.0.9 起。用完同样要调用 `rtc_free_user_info`。
+
+**返回值**：`RTC_OK` / `RTC_INVALID_PARAM`（句柄或 `user` 无效）/ `RTC_NOT_CONNECTED`（尚未入会）。
+
+---
+
+## rtc_get_channel_info
+
+```c
+int rtc_get_channel_info(void* handle, rtc_channel_info_t* info);
+void rtc_free_channel_info(rtc_channel_info_t* info);
+```
+
+获取频道信息，0.0.9 起。字段见 [类型定义 · rtc_channel_info_t](/zh/rtc/capi/types#rtc_channel_info_t)。返回 `RTC_OK` 后必须调用 `rtc_free_channel_info` 释放其中的 `props`。
+
+**返回值**：`RTC_OK` / `RTC_INVALID_PARAM` / `RTC_NOT_CONNECTED`（尚未入会）。

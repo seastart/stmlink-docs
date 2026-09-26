@@ -1,6 +1,6 @@
 ---
 name: SRTC 音视频接入
-description: 用 SRTC 音视频 SDK 做实时音视频时使用——加入频道、发布与订阅音视频轨道、屏幕共享、频道内外消息、云录制。覆盖 Web、Android、Windows、Swift（iOS/macOS）、Objective-C（iOS）、C（服务端/嵌入式）各端。做的是会议产品时先读「SMeeting 会议接入」。
+description: 用 SRTC 音视频 SDK 做实时音视频时使用——加入频道、发布与订阅音视频轨道、屏幕共享、频道内外消息、云录制。覆盖 Web、Android、Windows、Swift（iOS/macOS）、Objective-C（iOS）、C（服务端/嵌入式）、Python（服务端 AI）各端。做的是会议产品时先读「SMeeting 会议接入」。
 metadata:
   version: "1.0"
   docs: https://docs.stmlink.com
@@ -17,7 +17,8 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 | 做会议产品，要主持人、举手、静音全场、等候室 | **SMeeting**，读「SMeeting 会议接入」 |
 | 直播连麦、客服双人通话、AI 语音对话、远程巡检 | SRTC |
 | 已有自己的业务规则和 UI，只缺音视频传输 | SRTC |
-| 服务端旁路录制、转推、AI Agent 接入 | SRTC 的 C SDK |
+| 服务端旁路录制、转推 | SRTC 的 C SDK |
+| 服务端 AI 语音机器人（ASR/LLM/TTS）、录音转写、pipecat | SRTC 的 Python SDK（收发 PCM，不用碰编解码） |
 
 会控规则（谁能说话、谁是主持人）在 SRTC 里**不存在**，要自己实现。如果发现自己在 SRTC 上手写会控，说明该换 SMeeting。
 
@@ -55,6 +56,7 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 | Swift（iOS/macOS） | Swift Package `srtc-swift-sdk` | `import SRTC` → `SRTCEngine()` |
 | Objective-C（iOS） | CocoaPods | `RTCEngineKit` |
 | C（服务端/嵌入式） | 向我们获取 SDK 包 | `rtc_create()` |
+| Python（服务端 AI） | `pip install srtc` | `await srtc.Channel.join(token)` |
 
 **苹果平台有两套 SDK**：Swift 原生（`import SRTC`，同时支持 iOS 与 macOS）和 Objective-C（`RTCEngineKit`，仅 iOS）。**新项目用 Swift 那套**，两套 API 不能混用，也不要在同一工程里同时引入。
 
@@ -177,4 +179,4 @@ await srtc.leave();
 先取 https://docs.stmlink.com/llms.txt 看全站目录，再按需读具体页面（URL 末尾加 `.md` 可直接拿 Markdown）。
 
 - 核心概念 `/zh/rtc/key-concepts` · Token 与鉴权 `/zh/rtc/token` · 电子白板 `/zh/rtc/whiteboard` · 错误码规则 `/zh/rtc/error-codes`
-- 各端：`/zh/rtc/{web,android,windows,swift,ios,capi}/quickstart`
+- 各端：`/zh/rtc/{web,android,windows,swift,ios,capi,python}/quickstart`

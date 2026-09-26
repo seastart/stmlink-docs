@@ -75,6 +75,7 @@ SRTC 只有三个对象：频道、用户、流轨道。它不带用户体系，
 | Swift（iOS / macOS） | [集成](/zh/rtc/swift/integration) · [快速开始](/zh/rtc/swift/quickstart) |
 | iOS（Objective-C） | [集成](/zh/rtc/ios/integration) · [快速开始](/zh/rtc/ios/quickstart) |
 | C（服务端 / 嵌入式） | [集成](/zh/rtc/capi/integration) · [快速开始](/zh/rtc/capi/quickstart) |
+| Python（服务端 AI） | [集成](/zh/rtc/python/integration) · [快速开始](/zh/rtc/python/quickstart) |
 | 服务端 | [服务端 API](/zh/rtc/server-api/overview) |
 
 <Note>

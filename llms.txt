@@ -205,6 +205,7 @@
 - [快速开始](https://docs.stmlink.com/zh/rtc/capi/quickstart.md): SRTC C SDK 快速集成，10 分钟跑通加入频道、接收远端音视频与推流
 - [类型定义](https://docs.stmlink.com/zh/rtc/capi/types.md): SRTC C SDK 的结构体、编码常量、枚举取值与回调签名一览
 - [错误码](https://docs.stmlink.com/zh/rtc/capi/error-codes.md): SRTC C SDK 接口返回值的取值、含义与排查建议
+- [更新日志](https://docs.stmlink.com/zh/rtc/capi/changelog.md): C SDK（librtc）版本更新记录，含 0.0.9 删除 rtc_user_info_t.link_id 这一需要重新编译的变更。升级 C SDK 前先读这页。
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式） · 进阶实践
 
@@ -218,6 +219,25 @@
 - [订阅与收流](https://docs.stmlink.com/zh/rtc/capi/api-reference/subscribe.md): SRTC C SDK 订阅远端音视频轨道、取消订阅与主动请求关键帧
 - [发布与推流](https://docs.stmlink.com/zh/rtc/capi/api-reference/publish.md): SRTC C SDK 本地轨道的创建、发布、推送编码数据与关键帧请求响应
 - [用户信息查询](https://docs.stmlink.com/zh/rtc/capi/api-reference/users.md): SRTC C SDK 查询频道内用户列表与单个用户信息，以及对应的内存释放规则
+
+## SRTC 音视频 SDK · Python SDK（服务端 AI）
+
+- [集成方式](https://docs.stmlink.com/zh/rtc/python/integration.md): SRTC Python SDK 适合什么场景、怎么安装、支持哪些平台，以及 asyncio 线程模型与部署时的 fork、容量注意事项。接入 Python SDK 前先读这页。
+- [快速开始](https://docs.stmlink.com/zh/rtc/python/quickstart.md): SRTC Python SDK 快速上手：加入频道、逐帧拿到每个人的 PCM 音频、把 TTS 音频推回频道，附可直接运行的最小示例。
+- [类型定义](https://docs.stmlink.com/zh/rtc/python/types.md): Python SDK 的数据类型与枚举：UserInfo、TrackInfo、ChannelInfo、ConnectionQuality、ActiveSpeaker、LayerSwitched、CustomMsg，以及 TrackKind、Codec、DeviceType、ConnectionState、DisconnectReason 和合成流常量的全部字段。
+- [错误码](https://docs.stmlink.com/zh/rtc/python/error-codes.md): Python SDK 的 SdkError：code 的三类取值（SDK 自身 180xxx、服务端 1xxx 原样透传、-1 内部错误），常见错误的原因与排查，以及入会失败时的处理建议。
+- [更新日志](https://docs.stmlink.com/zh/rtc/python/changelog.md): Python SDK（PyPI 包 srtc）版本更新记录
+
+## SRTC 音视频 SDK · Python SDK（服务端 AI） · 进阶实践
+
+- [语音 AI Agent 实践](https://docs.stmlink.com/zh/rtc/python/advanced/ai-agent.md): 用 Python SDK 搭语音机器人时的关键做法：按说话人断句、用户插话时立即打断播报、DTX 静音补帧与时间轴、采样率怎么选、如何只听特定的人。做 ASR/LLM/TTS 管线前读这页。
+- [接入 pipecat](https://docs.stmlink.com/zh/rtc/python/advanced/pipecat.md): 用 SRTCTransport 把现有的 pipecat 语音 agent 管线接进 SRTC 频道：安装、参数、事件、插话打断的行为，以及与 pipecat 其它 transport 的差异。
+
+## SRTC 音视频 SDK · Python SDK（服务端 AI） · 接口文档
+
+- [Channel](https://docs.stmlink.com/zh/rtc/python/api-reference/channel.md): Python SDK 的核心入口 Channel：加入与离开频道、查询成员与频道信息、订阅远端音视频、发布音频、用 async for 逐帧消费媒体数据。查某个方法的参数、返回值和异常时读这页。
+- [事件回调](https://docs.stmlink.com/zh/rtc/python/api-reference/events.md): Python SDK 的 ChannelHandler 事件列表：连接状态、断线原因、成员进出、轨道增删、音视频帧、说话人、网络质量、自定义消息，各自的触发时机、参数和顺序保证。
+- [音视频数据](https://docs.stmlink.com/zh/rtc/python/api-reference/audio.md): Python SDK 的媒体数据类型：发布用的 AudioTrack（write 推 PCM、clear 打断、背压与实时控速），以及收到的 AudioFrame / VideoFrame 的字段、时间轴与静音帧语义，和格式参数 AudioFormat。
 
 ## SRTC 音视频 SDK · 服务端 API
 
