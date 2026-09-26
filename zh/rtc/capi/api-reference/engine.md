@@ -43,7 +43,15 @@ void* rtc_create();
 void rtc_destroy(void* handle);
 ```
 
-销毁实例并释放资源。SDK 保证 `rtc_destroy` 返回后不会再触发任何回调，因此可以安全地在它之后释放你传给回调的 `context`。
+销毁实例并释放资源。**0.0.11 起**，`rtc_destroy` 会等正在执行的回调全部返回后才返回，返回后不再触发本实例的任何回调，此时可以安全释放你传给回调的 `context`。
+
++ 允许在本实例的回调里调用 `rtc_destroy`（包括断线回调）。此时只等其它线程上的回调，**当前这个回调返回之前不要释放它的 `context`**
++ 回调里如果有耗时操作（解码、写文件），`rtc_destroy` 会相应地等更久
++ `rtc_leave_channel` 和用 `rtc_set_*_callback` 替换回调**都不会**等正在执行的回调，不能作为释放 `context` 的时机
+
+<Warning>
+**0.0.10 及更早版本没有上述保证**：`rtc_destroy` 返回时可能仍有回调在执行，在断线回调里调用 `rtc_destroy` 还会卡死。使用旧版本时请不要在 `rtc_destroy` 后立即释放 `context`，也不要在断线回调里销毁实例；建议升级到 0.0.11。
+</Warning>
 
 <Warning>
 必须调用 `rtc_destroy`，否则实例资源不会释放。销毁后该句柄不可再使用。

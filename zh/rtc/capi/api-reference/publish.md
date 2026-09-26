@@ -36,6 +36,8 @@ void rtc_destroy_local_track(void* track_handle);
 
 销毁本地轨道。已发布的轨道应先 `rtc_unpublish_local_track` 再销毁。
 
+**0.0.11 起**会先摘掉关键帧请求回调，并等正在执行的关键帧回调返回后才返回，之后可以安全释放传给 `rtc_set_keyframe_request_callback` 的 `context`。0.0.10 及更早版本销毁轨道后仍可能触发关键帧回调。
+
 ---
 
 ## rtc_publish_local_track
