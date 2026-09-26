@@ -35,9 +35,9 @@ npm install @seastart/srtc-wx-sdk@latest --save
 
 
 ```typescript
-import SRTC from './lib/srtc-wx'; // 静态文件引入
+import { SRTC } from './lib/srtc-wx'; // 静态文件引入
 
-import SRTC from '@seastart/srtc-wx-sdk'; // 小程序构建npm引入
+import { SRTC } from '@seastart/srtc-wx-sdk'; // 小程序构建npm引入
 ```
 
 

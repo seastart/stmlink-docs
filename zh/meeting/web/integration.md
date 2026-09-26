@@ -57,7 +57,7 @@ npm install @seastart/smeeting-web-sdk@latest --save
 通过 import 引入或者 script 引入
 
 ```typescript
-import SMeeting from '@seastart/smeeting-web-sdk';
+import { SMeeting } from '@seastart/smeeting-web-sdk';
 // or
 <script src="smeeting.js"></script>
 ```

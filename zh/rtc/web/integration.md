@@ -78,7 +78,8 @@ CDN 引入后，全局变量 `SRTC` 即可直接使用。
 #### ES Module（推荐，配合 npm）
 
 ```typescript
-import SRTC, {
+import {
+  SRTC,
   LocalMicTrack,
   LocalCameraTrack,
   LocalScreenTrack,

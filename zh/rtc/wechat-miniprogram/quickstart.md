@@ -23,7 +23,7 @@ description: "微信小程序 SRTC 音视频 SDK 快速集成，10 分钟跑通�
 
 ### 初始化SDK
 ```typescript
-import {LogTarget, LogTarget, SRTC} form "./lib/srtc-wx"
+import { SRTC, LogLevel, LogTarget } from "./lib/srtc-wx"
 
 // 创建实例
 const srtc = new SRTC({

@@ -18,7 +18,7 @@ description: "自定义视频轨道推流使用说明"
 通过 `srtc.createLocalCustomAudioTrack(msTrack)` 包装一个 `MediaStreamTrack`，即可作为本地音频流发布：
 
 ```typescript
-import SRTC from '@seastart/srtc-web-sdk';
+import { SRTC } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 
@@ -43,7 +43,7 @@ await srtc.publishLocalTrack(customAudioTrack, { desc: '合成音频' });
 通过 `srtc.createLocalCustomVideoTrack(msTrack)` 包装，适合 Canvas 绘制场景：
 
 ```typescript
-import SRTC from '@seastart/srtc-web-sdk';
+import { SRTC } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 
@@ -81,7 +81,7 @@ await srtc.publishLocalTrack(customVideoTrack, { desc: 'canvas 视频' });
 当需要将多路 `MediaStreamTrack` 合并为一路音频推送时，可使用 `createMixedAudioMediaStreamTrack` 工具函数：
 
 ```typescript
-import SRTC, { createMixedAudioMediaStreamTrack } from '@seastart/srtc-web-sdk';
+import { SRTC, createMixedAudioMediaStreamTrack } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 

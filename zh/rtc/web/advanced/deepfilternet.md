@@ -45,7 +45,7 @@ cp -r node_modules/@seastart/srtc-plugin-deepfilternet/assets/v2 public/deepfilt
 ### 使用
 
 ```typescript
-import SRTC from "@seastart/srtc-web-sdk";
+import { SRTC } from "@seastart/srtc-web-sdk";
 import { DeepFilterNetProcessor } from "@seastart/srtc-plugin-deepfilternet";
 
 const srtc = new SRTC();

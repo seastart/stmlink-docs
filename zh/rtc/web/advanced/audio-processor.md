@@ -28,7 +28,7 @@ await track.removeProcessor();
 挂载后，**无论轨道是否已发布**都会生效：未发布时处理后的轨道会在发布时自动使用；已发布时 SDK 通过 `replaceTrack` 免重协商地切换，远端无感知。
 
 ```typescript
-import SRTC from "@seastart/srtc-web-sdk";
+import { SRTC } from "@seastart/srtc-web-sdk";
 import { RnnoiseProcessor } from "@seastart/srtc-plugin-rnnoise";
 
 const srtc = new SRTC();

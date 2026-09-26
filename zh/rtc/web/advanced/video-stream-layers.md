@@ -109,7 +109,7 @@ await srtc.publishLocalTrack(localCameraTrack, {
 例如把大流改成 1080p，同时继续发一条 320 × 180 的小流：
 
 ```typescript
-import SRTC, { CameraPresets } from '@seastart/srtc-web-sdk';
+import { SRTC, CameraPresets } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 
@@ -149,7 +149,7 @@ await srtc.publishLocalTrack(localCameraTrack, {
 这时不要只改 `width / height`，而是要把 `simulcasts` 显式清空。
 
 ```typescript
-import SRTC, { CameraPresets } from '@seastart/srtc-web-sdk';
+import { SRTC, CameraPresets } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 
@@ -185,7 +185,7 @@ await srtc.publishLocalTrack(localCameraTrack, {
 这时不要用“720p 大流 + 小流”的思路，而是直接创建一条低分辨率摄像头轨道并只发布这一层：
 
 ```typescript
-import SRTC from '@seastart/srtc-web-sdk';
+import { SRTC } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 

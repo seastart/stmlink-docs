@@ -74,7 +74,7 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 顺序错了是最常见的失败原因，尤其是第 2 步和第 5 步。
 
 ```typescript
-import SRTC, { MicPresets, CameraPresets, TrackKind, ChannelEventType } from '@seastart/srtc-web-sdk';
+import { SRTC, MicPresets, CameraPresets, TrackKind, ChannelEventType } from '@seastart/srtc-web-sdk';
 
 // 1. 创建实例
 const srtc = new SRTC({ logLevel: 'debug' });

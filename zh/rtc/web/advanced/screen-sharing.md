@@ -8,7 +8,8 @@ description: "Web SRTC 音视频 SDK 屏幕共享功能集成指南"
 屏幕共享使用 `LocalScreenTrack`，流程与摄像头类似：
 
 ```typescript
-import SRTC, {
+import {
+  SRTC,
   LocalScreenTrack,
   ScreenPresets,
   ChannelEventType,
@@ -67,7 +68,8 @@ srtc.onNotifyChannelEvent = async (evt) => {
 `createLocalScreenTrack` 接受第二个参数 `audioPreset`，传入后 SDK 会在系统支持时同时采集系统音频：
 
 ```typescript
-import SRTC, {
+import {
+  SRTC,
   LocalScreenTrack,
   ScreenPresets,
   ScreenAudioPresets,

@@ -11,7 +11,7 @@ description: "Web SRTC 音视频 SDK 核心概念与架构说明"
 + 频道内事件通过 `srtc.onNotifyChannelEvent` 回调通知；多频道时用各频道的 `channel.onNotifyEvent` 区分，详见[多频道](/zh/rtc/web/advanced/multi-channel)
 
 ```typescript
-import SRTC, { LogLevel, LogTarget } from '@seastart/srtc-web-sdk';
+import { SRTC, LogLevel, LogTarget } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC({
   logLevel: LogLevel.DEBUG,   // 开发阶段建议使用 DEBUG

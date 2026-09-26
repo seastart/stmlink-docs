@@ -22,7 +22,7 @@ description: "轻操作（静音）与重操作（停止发布）的区别与使
 这两个方法仅控制**媒体数据的发送**，底层 WebRTC 连接仍然保持。适合需要快速切换静音/取消静音的场景。
 
 ```typescript
-import SRTC, { LocalMicTrack, MicPresets } from '@seastart/srtc-web-sdk';
+import { SRTC, LocalMicTrack, MicPresets } from '@seastart/srtc-web-sdk';
 
 const srtc = new SRTC();
 // 假设已加入频道且 localMicTrack 已发布

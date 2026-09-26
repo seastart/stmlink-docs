@@ -16,7 +16,8 @@ description: "Web SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
 以下代码展示了一个最小可运行的音视频通话流程：初始化 → 环境检测 → 监听事件 → 加入频道 → 订阅混音 → 订阅远端视频 → 开麦克风 → 开摄像头 → 离开频道。
 
 ```typescript
-import SRTC, {
+import {
+  SRTC,
   ChannelEventType,
   LocalCameraTrack,
   LocalMicTrack,

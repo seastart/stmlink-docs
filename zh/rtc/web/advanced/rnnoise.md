@@ -42,7 +42,7 @@ cp node_modules/@seastart/srtc-plugin-rnnoise/assets/* public/rnnoise/
 ### 使用
 
 ```typescript
-import SRTC from "@seastart/srtc-web-sdk";
+import { SRTC } from "@seastart/srtc-web-sdk";
 import { RnnoiseProcessor } from "@seastart/srtc-plugin-rnnoise";
 
 const srtc = new SRTC();

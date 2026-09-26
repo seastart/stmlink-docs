@@ -32,9 +32,9 @@ npm install @seastart/smeeting-wx-sdk@latest --save
 可通过本地引用，也可通过 [小程序构建npm](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html) 直接引入。
 
 ```typescript
-import SMeeting from './lib/smeeting-wx'; // 静态文件引入
+import { SMeeting } from './lib/smeeting-wx'; // 静态文件引入
 // or
-import SMeeting from '@seastart/smeeting-wx-sdk'; // 小程序构建npm引入
+import { SMeeting } from '@seastart/smeeting-wx-sdk'; // 小程序构建npm引入
 ```
 
   
