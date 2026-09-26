@@ -61,9 +61,10 @@ const createRoom = async () => {
   
     let token = "后台返回的Meet授权token";
     await smeeting.login(token);
-    const roomNo = await smeeting.createRoom({
-        title: 'shu的会议',  // 会议名称
-    }); // 获取到会议号
+    const { room_no, meeting_id } = await smeeting.createRoom({
+        title: 'shu的会议',                 // 会议名称
+        meeting_mode: MeetingMode.Normal,  // 会议模式（必填）：Normal 普通 / Mix 合成 / Voice 语音 / Training 培训
+    }); // 返回会议号与会议 id
 }
 ```
 
@@ -89,7 +90,7 @@ await smeeting.adminDestroyRoom()
 
 ### 取消会议
 ```typescript
-await smeeting.value.cancelRoom(meeting_id)
+await smeeting.cancelRoom(meeting_id)
 ```
 
 ### 获取房间信息/用户信息/用户列表
