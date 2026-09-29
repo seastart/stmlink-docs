@@ -62,10 +62,10 @@ publish: desc="screen"(TRACK_SHARE), codec=H264, maxBitrate=1024*1024,
 | --- | --- | --- |
 | desc | `String?` | 自定义轨道描述；`null` 表示不修改。 |
 | props | `Any?` | 自定义附加属性；`null` 表示不修改。 |
-| simulcasts | `MutableList<PublishCustomOptions>?` | 对联播/辅流参数进行覆盖；`null` 表示不修改。 |
+| simulcasts | `MutableList<PublishCustomOptions>?` | 对联播/小流参数进行覆盖；`null` 表示不修改。 |
 
 ### 使用建议
 
 - 若只需改轨道描述，传入 `desc` 即可。
-- 对摄像头主/辅流可分别通过 `simulcasts` 覆盖辅流参数。
+- 对摄像头大/小流可分别通过 `simulcasts` 覆盖小流参数。
 - 对麦克风、屏幕共享、自定义视频流，通常只需主轨参数，不需要 `simulcasts`。

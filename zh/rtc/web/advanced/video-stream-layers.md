@@ -316,5 +316,5 @@ SDK 在自动订阅时也遵循这个原则：会跳过副层，真正的层切�
 
 + [核心概念](/zh/rtc/web/key-concepts)
 + [SRTC 接口参考](/zh/rtc/web/api-reference/SRTC)
-+ [类型定义](/zh/rtc/web/types#videopublishoptions)
++ [类型定义](/zh/rtc/web/types#视频采集、播放、发布相关)
 + [media-tracks 接口参考](/zh/rtc/web/api-reference/media-tracks)

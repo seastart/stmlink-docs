@@ -115,7 +115,7 @@ fun onActiveSpeakersChanged(speakers: List<ActiveSpeakerInfo>)
 fun onNetworkQualityChanged(change: NetworkQualityChange)
 ```
 
-方法说明：当前会议的上行或下行网络质量跨档变化。
+方法说明：当前会议收到服务端质量报告时，为上行、下行各回调一次，不做去抖；等级未变化时 `trend` 为 `STABLE`。
 
 参数说明：
 

@@ -46,7 +46,7 @@ description: "Android SMeeting 会议 SDK 摄像头预设 PreOptionCamera"
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| desc | `String` | 轨道描述（主流常用 `TRACK_MAIN`，辅流常用 `TRACK_SUB`）。 |
+| desc | `String` | 轨道描述（大流常用 `TRACK_MAIN`，小流常用 `TRACK_SUB`）。 |
 | codec | `CodecType` | 编码格式（常用 `H264`）。 |
 | maxBitrate | `Int` | 单路最大码率，单位 bps，发布前设置。 |
 | minBitrate | `Int?` | 单路最小码率（bps），`null` 使用引擎默认下限；非空应满足 `0 <= minBitrate <= maxBitrate`。各路独立配置，发布前设置，目前仅 SFU 支持。 |
@@ -54,15 +54,15 @@ description: "Android SMeeting 会议 SDK 摄像头预设 PreOptionCamera"
 | height | `Int` | 推送高度。 |
 | maxFps | `Int` | 最大推送帧率。 |
 | props | `Any?` | 自定义属性。 |
-| simulcasts | `MutableList<VideoPublishOptions>?` | 联播/辅流配置（当前摄像头场景可配置 1 路辅流）。 |
+| simulcasts | `MutableList<VideoPublishOptions>?` | 联播/小流配置（当前摄像头场景可配置 1 路小流）。 |
 
-### 当前 RTC 版本的 minBitrate 限制
+### minBitrate 已知限制
 
-当前 RTC `2.0.33` 仍有此限制：`VideoPublishOptions.deepCopy()` 未复制 `minBitrate`，大小流经过复制后均会变为 `null`。Meeting 参数解析和 RTC 发布链路会使用深拷贝，因此下表中的最小码率是预设声明值，不能据此认定该版本已按此下限发布。此问题需 RTC 修复并发布后再验证；仅在应用侧设置该字段不能绕过后续深拷贝。
+RTC `2.0.33`～`2.0.35` 仍有此限制：`VideoPublishOptions.deepCopy()` 未复制 `minBitrate`，大小流的 `minBitrate` 经过复制后均会变为 `null`。Meeting 参数解析和 RTC 发布链路会使用深拷贝，因此下表中的最小码率是预设声明值，不能据此认定上述版本已按此下限发布。此问题需 RTC 修复并发布后再验证；仅在应用侧设置该字段不能绕过后续深拷贝。
 
 ### 内置预设
 
-作用说明：以下为 RTC `2.0.33` 的内置值，随 Meeting `2.0.37` 生效。采集与推送帧率统一为 15，是 RTC 有意调整；需要其它帧率时由应用显式传参。已采集时新预设不生效，需先关闭再打开。
+作用说明：以下内置值自 RTC `2.0.33` 起生效（随 Meeting `2.0.37` 引入）。采集与推送帧率统一为 15，是 RTC 有意调整；需要其它帧率时由应用显式传参。已采集时新预设不生效，需先关闭再打开。
 
 支持以下预设：`_1080P`、`_720P`、`_480P`、`_180P`。
 

@@ -53,7 +53,7 @@ fun onNetworkQualityChanged(
 )
 ```
 
-本频道网络质量发生跨档变化。等级变差立即回调，变好需要连续采样确认；上、下行独立触发。回调运行在 SDK 后台线程，更新 UI 前请切换到主线程。用法见 [网络质量](/zh/rtc/android/network-quality)。
+本频道收到服务端质量报告。每份报告都为上、下行各回调一次，等级未变时 `trend` 为 `STABLE`；SDK 不做跨档判定与去抖，需要时请自行去抖。回调运行在 SDK 后台线程，更新 UI 前请切换到主线程。用法见 [网络质量](/zh/rtc/android/network-quality)。
 
 ### onVolumesReport(channel, volumes)
 

@@ -150,7 +150,7 @@ fun getTrackInfoByTrackDesc(uid: String, trackDesc: String): TrackInfo?
 | 参数 | 说明 |
 | --- | --- |
 | `uid` | 目标用户在当前会议中的 UID |
-| `trackDesc` | 轨道描述，例如摄像头主流 `TRACK_MAIN`、麦克风 `TRACK_AUDIO` 或共享流 `TRACK_SHARE` 对应的字符串值 |
+| `trackDesc` | 轨道描述，例如摄像头大流 `TRACK_MAIN`、麦克风 `TRACK_AUDIO` 或共享流 `TRACK_SHARE` 对应的字符串值 |
 
 返回值说明：匹配的 `TrackInfo`；未入会或没有匹配轨道时返回 `null`。轨道描述定义见 [SRTC Android 枚举类型](/zh/rtc/android/enums)。
 

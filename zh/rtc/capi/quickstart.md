@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
 
 ## 开启日志
 
-排查问题时把日志级别调到 `RTC_LOG_DEBUG`，需在 `rtc_create` 之前调用：
+排查问题时把日志级别调到 `RTC_LOG_DEBUG`，建议在 `rtc_create` 之前调用：
 
 ```c
 rtc_set_log_level(RTC_LOG_DEBUG);   // 0=DEBUG 1=INFO 2=WARN 3=ERROR

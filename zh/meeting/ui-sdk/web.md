@@ -7,7 +7,6 @@ description: "SMeeting Web UI 套件快速集成指南"
 
 github源码地址：[https://github.com/seastart/meeting-web-demo](https://github.com/seastart/meeting-web-demo)
 
-## 项目介绍
 ## 项目技术栈
 + Vue 3
 + TypeScript
@@ -80,7 +79,7 @@ npm run type-check
 ```
 
 ## 页面功能介绍
-## 登录页
+### 登录页
 ```text
 ├── login/                	
 │   ├── cpn/ 
@@ -92,7 +91,7 @@ npm run type-check
 
 ![](images/339904_1736926098475-78d5f4b6-14de-4e1c-84ab-ea41db0c02ee.png)
 
-## 首页
+### 首页
 ```text
 ├── home/                	
 │   ├── cpn/ 
@@ -118,7 +117,7 @@ npm run type-check
 
 ![](images/226736_1732102028492-c5aa427f-0e2e-4cc0-8893-81c2bc38e940.png)
 
-## 会议
+### 会议
 ```text
 ├── meeting/                	
 │   ├── cpn/                 
@@ -196,7 +195,8 @@ npm run type-check
 ### 右侧小窗口
 ![](images/648091_1737017818264-45982e58-89e9-4542-a008-45b9573ed978.png)
 
-### 顶部小窗口![](images/840562_1737017829365-15053ff0-20bc-402c-9206-67d827eaefdc.png)
+### 顶部小窗口
+![](images/840562_1737017829365-15053ff0-20bc-402c-9206-67d827eaefdc.png)
 ### 下L型布局
 ![](images/676110_1737017848599-22056345-7314-430e-b1a3-addf203b8203.png)
 

@@ -1,6 +1,6 @@
 ---
 title: "枚举类型"
-description: "Android SMeeting 2.0.37 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举"
+description: "Android SMeeting 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举"
 ---
 
 ### AgentStatus

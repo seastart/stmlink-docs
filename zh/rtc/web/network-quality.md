@@ -407,7 +407,7 @@ await srtc.publishLocalTrack(localVideoTrack, {
 });
 ```
 
-内置预设中，摄像头 720p / 1080p 与全部屏幕共享预设默认已是 `maintain-resolution`；480p / 360p 未设置，走浏览器默认。
+内置预设中，摄像头 720p / 1080p 与全部屏幕共享预设默认已是 `maintain-resolution`；360p / 180p 未设置，走浏览器默认。
 
 ### 5.5 连接断开（`lost`）
 

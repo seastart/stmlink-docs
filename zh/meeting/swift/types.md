@@ -512,6 +512,8 @@ result.meta      // MetaRes
 | `seastart` | `seastart` |
 | `wangsuCDN` | `wangsucdn` |
 
+`ook` 已随服务端退役（2026-08），仅为兼容存量环境保留，新接入不要使用。
+
 不确定该填哪一个时不要传，让服务端按部署配置决定。
 
 #### UserType
@@ -545,7 +547,7 @@ result.meta      // MetaRes
 | `auto` | `auto` | 自动布局 |
 | `full` | `full` | 全屏 |
 | `grids2` | `grids_2` | 二等分 |
-| `grids3` | `grids_3` | 品字形 |
+| `grids3` | `grids_3` | 品字形（上 2 下 1 居中） |
 | `grids4` | `grids_4` | 四宫格 |
 | `grids5` | `grids_5` | 五宫格 |
 | `grids6` | `grids_6` | 六宫格 |
@@ -560,7 +562,7 @@ result.meta      // MetaRes
 | `top4` | `top_4` | 顶部小窗口 |
 | `br7` | `br_7` | 下 L 型布局 |
 | `tl7` | `tl_7` | 上 L 型布局 |
-| `tb8` | `tb_8` | 左右布局 |
+| `tb8` | `tb_8` | 左右布局（上下各 4 个小窗，中间 2 个大窗左右并排） |
 
 #### AgentType
 

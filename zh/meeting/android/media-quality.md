@@ -5,14 +5,14 @@ description: "通过 MeetingEngine 主动查询或监听 Android SMeeting 的媒
 
 ## 说明
 
-SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange` 与相关统计类型。当前 `2.0.37` 对应 SRTC `2.0.33`。
+SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange` 与相关统计类型，字段以所依赖的 SRTC 版本为准，见 SRTC [媒体质量](/zh/rtc/android/media-quality)。
 
 可通过两种方式获取质量数据：
 
 + `MeetingEngine.getMetric()`：主动读取当前会议最近一次采样的线程安全副本；不会触发即时采样，入会初期可能为 `null`。
 + `MeetingEngine.mediaEvent`：监听 `MeetingMediaEvent.onMediaMetric()` 与 `onNetworkQualityChanged()`。统计通常约每 5 秒回调一次；回调保持 SRTC 来源线程。
 
-弱网等级变差会及时通知，恢复通常需要连续采样确认。等级、方向与趋势枚举见 [SRTC 枚举类型](/zh/rtc/android/enums)，完整弱网策略见 [SRTC 网络质量](/zh/rtc/android/network-quality)。下方字段字典与 [SRTC 媒体质量](/zh/rtc/android/media-quality) 保持一致。
+`onNetworkQualityChanged()` 原样透传 SRTC 回调：每收到一份服务端质量报告就为上、下行各回调一次，不做去抖，等级没变也会回调（`trend` 为 `STABLE`）；弱网提示等动作请自行去抖。等级、方向与趋势枚举见 [SRTC 枚举类型](/zh/rtc/android/enums)，完整弱网策略见 [SRTC 网络质量](/zh/rtc/android/network-quality)。下方字段字典与 [SRTC 媒体质量](/zh/rtc/android/media-quality) 保持一致。
 
 ## MediaMetric.Metric
 
@@ -138,7 +138,7 @@ SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
 | firCount | Long | 请求发送 I 帧次数。 |
-| pliCount | Long | 请求发送 P 帧次数。 |
+| pliCount | Long | PLI 请求（请求关键帧）次数。 |
 | nackCount | Long | 请求重传丢失 RTP 包次数。 |
 | rid | String | Simulcast 流标识。 |
 | frameWidth | Int | 视频帧宽度。 |
@@ -198,7 +198,7 @@ SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange
 | frameWidth | Int | 接收帧宽度。 |
 | frameHeight | Int | 接收帧高度。 |
 | firCount | Int | 请求发送 I 帧次数。 |
-| pliCount | Int | 请求发送 P 帧次数。 |
+| pliCount | Int | PLI 请求（请求关键帧）次数。 |
 | nackCount | Int | 请求重传丢失 RTP 包次数。 |
 | retransmittedPacketsReceived | Long | 接收端统计的重传包数。 |
 | decoderImplementation | String | 解码器实现名称。 |

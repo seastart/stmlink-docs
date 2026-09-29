@@ -7,7 +7,7 @@ SDK 提供三种获取网络质量的方式，从"被动感知变化"到"主动�
 
 | 方式 | 接口 | 使用场景 |
 |---|---|---|
-| 订阅质量等级变化（推荐） | `RTCMediaEvent.onNetworkQualityChanged` | 网络状态灯、弱网提示；**仅在质量等级跨档变化时回调**，内置迟滞去抖 |
+| 订阅质量等级变化（推荐） | `RTCMediaEvent.onNetworkQualityChanged` | 网络状态灯、弱网提示；**每收到一份服务端质量报告就为上、下行各回调一次**，不做去抖 |
 | 周期性质量快照 | `RTCMediaEvent.onMediaMetric` | 详细诊断面板；每约 5 秒下发一份完整 `MediaMetric.Metric` |
 | 主动查询快照 | `RTCEngine.getMetric()` | 任意时刻主动拉取最近一次完整质量快照 |
 
@@ -17,9 +17,10 @@ SDK 提供三种获取网络质量的方式，从"被动感知变化"到"主动�
 
 ## 一、订阅质量等级变化（推荐）
 
-大多数业务只需要"网络状态灯 + 弱网提示"，推荐优先使用 `onNetworkQualityChanged`。它**只在质量等级发生跨档变化时回调**（而非每个采样周期都回调），并已处理好弱网抖动：
+大多数业务只需要"网络状态灯 + 弱网提示"，推荐优先使用 `onNetworkQualityChanged`。它由服务端质量报告驱动（约 5 秒一份），**每份报告都会回调**，等级没变也会回调：
 
-- **非对称迟滞**：等级下降（变差）**立即**回调，便于及时响应；等级回升（变好）需连续多次采样**确认后**才回调，避免网络抖动导致状态灯频繁跳变。因此业务层无需自己再做时间去抖，直接响应回调即可。
+- **不做去抖**：SDK 不做跨档判定，也没有迟滞确认，等级在边界附近抖动时回调结果会随之来回变化。状态灯直接显示 `currentLevel` 即可；弱网提示、自动降级这类会打扰用户或改变通话形态的动作，请自行去抖（见 5.1）。
+- **`trend` 只与上一次回调比较**：首次为 `INITIAL`，变差为 `DEGRADED`，变好为 `RECOVERED`，不变（或本次等级无法识别）为 `STABLE`。
 - **分方向**：上行、下行各自独立判断与回调，一次回调只表示**一个方向**（`direction`）的变化。
 
 继承 `RTCMediaSimpleEvent` 只重写关心的回调，再通过 `setRtcMediaEvent` 注册：
@@ -33,10 +34,10 @@ import cn.seastart.rtc.info.QualityTrend
 rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
     override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
         // change.direction     : UPLINK / DOWNLINK，本次变化的方向
-        // change.previousLevel : 变化前等级
-        // change.currentLevel  : 变化后等级（excellent / good / poor / lost）
-        // change.trend         : INITIAL(首次) / DEGRADED(变差) / RECOVERED(变好)
-        // change.report        : 触发本次变化时的完整 QualityReport
+        // change.previousLevel : 上一次回调的等级
+        // change.currentLevel  : 本次等级（excellent / good / poor / lost）
+        // change.trend         : INITIAL(首次) / DEGRADED(变差) / RECOVERED(变好) / STABLE(不变)
+        // change.report        : 触发本次回调的完整 QualityReport
 
         // 回调可能在非主线程，更新 UI 请切主线程
         runOnUiThread {
@@ -71,19 +72,21 @@ enum class QualityTrend {
     /** 等级下降，网络变差 */
     DEGRADED,
     /** 等级回升，网络变好 */
-    RECOVERED
+    RECOVERED,
+    /** 等级与上次相同，或本次等级无法识别 */
+    STABLE
 }
 
 data class NetworkQualityChange(
-    /** 本次变化的方向 */
+    /** 本次回调的方向 */
     var direction: QualityDirection,
-    /** 变化前的等级；首次(INITIAL)时为占位空值 */
+    /** 上一次回调的等级；首次(INITIAL)时为空串 */
     var previousLevel: String,
-    /** 变化后的等级：excellent / good / poor / lost */
+    /** 本次等级：excellent / good / poor / lost */
     var currentLevel: String,
     /** 变化趋势 */
     var trend: QualityTrend,
-    /** 触发本次变化时的完整质量报告，含上下行明细 */
+    /** 触发本次回调的完整质量报告，含上下行明细 */
     var report: MediaMetric.QualityReport
 )
 ```
@@ -177,7 +180,7 @@ data class QualityStats(
 | `poor` | 较差，明显卡顿、丢包 |
 | `lost` | 连接已丢失，媒体无法传输 |
 
-> `onNetworkQualityChanged`、`onMediaMetric.qualityReport`、`getMetric().qualityReport` 三者数据源一致，均来自服务端下发的同一份质量报告；区别只在下发方式（变化触发 / 周期 / 主动拉取）。
+> `onNetworkQualityChanged`、`onMediaMetric.qualityReport`、`getMetric().qualityReport` 三者数据源一致，均来自服务端下发的同一份质量报告；区别只在下发方式（逐份报告回调 / 周期 / 主动拉取）。
 
 除 `qualityReport` 外，`Metric` 还包含网络总体统计 `networkStats`、上下行聚合 `localUploadStats` / `remoteDownloadStats`、以及轨道级统计 `localAudios` / `localVideos` / `remoteAudios` / `remoteVideos`，完整字段见[媒体质量](/zh/rtc/android/media-quality)。
 
@@ -186,7 +189,7 @@ data class QualityStats(
 处理弱网先分清两件事：**方向**和**处置**。
 
 + 上行差是你发不出去，可以主动降级(关摄像头、取消发布视频)；下行差是你收不进来，多数由服务端自动优化，必要时可退订视频。所以要看 `uplink` / `downlink` 两个方向，而不是只看一侧。
-+ 用 `onNetworkQualityChanged` 驱动即可——它已内置迟滞去抖，无需业务层再做时间去抖；若走 `onMediaMetric` 周期读取，则需自行去抖（见 5.1）。
++ `onNetworkQualityChanged` 每份质量报告都会回调，SDK 不做去抖。状态灯直接跟随 `currentLevel` 即可；弱网提示、降级这类动作要自行去抖，持续变差一段时间再处理（见 5.1）。用 `onMediaMetric` 周期读取时同理。
 
 ### 5.1 展示网络状态
 
@@ -198,38 +201,33 @@ data class QualityStats(
 | `poor` | 较差，画质可能下降 |
 | `lost` | 连接中断，重连中 |
 
-上行差和下行差的提示文案不同，需要区分。用 `onNetworkQualityChanged` 时，直接响应变化即可，无需自己去抖：
+上行差和下行差的提示文案不同，需要区分。回调不做去抖，等级在 `good` / `poor` 边界抖动时会反复出现变差，建议持续变差超过阈值才提示，并且同一次弱网只提示一次：
 
 ```kotlin
+// 各方向进入 poor / lost 的起始时间；没有记录表示当前不差
+private val badSince = mutableMapOf<QualityDirection, Long>()
+// 本次弱网已提示过的方向，避免反复打扰
+private val tipped = mutableSetOf<QualityDirection>()
+
 override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-    if (change.trend != QualityTrend.DEGRADED) return
-    when (change.direction) {
-        QualityDirection.UPLINK ->
-            if (isBad(change.currentLevel)) showTip("您的网络不佳，对方可能看不清您")
-        QualityDirection.DOWNLINK ->
-            if (isBad(change.currentLevel)) showTip("网络不佳，正在优化画质")
+    val dir = change.direction
+    if (!isBad(change.currentLevel)) {
+        // 恢复后清空，下次变差重新计时
+        badSince.remove(dir)
+        tipped.remove(dir)
+        return
+    }
+    val since = badSince.getOrPut(dir) { System.currentTimeMillis() }
+    // 持续变差超过 10 秒才提示
+    if (System.currentTimeMillis() - since >= 10_000 && tipped.add(dir)) {
+        when (dir) {
+            QualityDirection.UPLINK -> showTip("您的网络不佳，对方可能看不清您")
+            QualityDirection.DOWNLINK -> showTip("网络不佳，正在优化画质")
+        }
     }
 }
 
 private fun isBad(level: String) = level == "poor" || level == "lost"
-```
-
-若改用周期性的 `onMediaMetric`，由于每约 5 秒回调一次，需自行做一次去抖，避免频繁打扰：
-
-```kotlin
-// 简单去抖：记录某方向进入 poor 的起始时间，持续超过阈值才提示
-private var uplinkPoorSince = 0L
-
-private fun checkUplink(level: String) {
-    if (level == "poor" || level == "lost") {
-        if (uplinkPoorSince == 0L) uplinkPoorSince = System.currentTimeMillis()
-        if (System.currentTimeMillis() - uplinkPoorSince > 5000) {
-            showTip("您的网络不佳，对方可能看不清您")
-        }
-    } else {
-        uplinkPoorSince = 0L
-    }
-}
 ```
 
 ### 5.2 上行变差
@@ -334,7 +332,7 @@ val rtcChannel = rtcEngine.join(this, token, clientEvent, null)
 
 ## 六、完整示例
 
-把上面的做法串起来：用 `onNetworkQualityChanged` 驱动状态灯与分方向提示（内置迟滞，无需自行去抖），按需降级与恢复，并处理断线重连。
+把上面的做法串起来：用 `onNetworkQualityChanged` 驱动状态灯与分方向提示（只在 `DEGRADED` 时提示，`STABLE` 不会重复提示；等级在边界抖动时仍可能重复，需要时按 5.1 去抖），按需降级与恢复，并处理断线重连。
 
 ```kotlin
 import cn.seastart.rtc.impl.RTCMediaSimpleEvent

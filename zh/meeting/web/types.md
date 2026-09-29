@@ -110,7 +110,7 @@ export enum ShareType {
      */
     Screen = 1,
     /**
-     * 电子白板s
+     * 电子白板
      */
     WhiteBoard = 2,
 }
@@ -171,7 +171,7 @@ export enum ChatMsgType {
 #### 用户离开房间的原因 DisconnectReason
 ```typescript
 /**
- * 用户离开频道的原因
+ * 用户离开房间的原因
  */
 export declare enum DisconnectReason {
 	/** 错误 */
@@ -184,7 +184,7 @@ export declare enum DisconnectReason {
 	Replace = 3,
 	/** 心跳超时离开 */
 	Timeout = 4,
-	/** 频道销毁离开 */
+	/** 房间销毁离开 */
 	Destroy = 5
 }
 ```
@@ -498,14 +498,14 @@ export interface MetaRes {
 }
 ```
 
-#### 参会人员信息
+#### 参会记录
 ```typescript
 export interface ParticipantInfo {
     /** id */
     id: string;
-    /** 参会人员用户id */
+    /** 参会成员用户id */
     user_id: string;
-    /** 参会人员昵称 */
+    /** 参会成员昵称 */
     nickname: string;
     /** 进入时间 */
     enter_at: number;
@@ -647,7 +647,7 @@ export interface Tag {
 export interface Cell {
     /** 格子序号, 排序规则按HTML中标签的顺序 */
 	idx: number;
-    /** 是否优化绑定会议内的共享流 */
+    /** 是否优先绑定会议内的共享流 */
 	bind_share: boolean;
     /** 标签 */
 	tag: Tag;
@@ -684,7 +684,7 @@ export interface LayoutData {
  * 开启录制请求参数
  */
 export interface McuStartReq {
-    /** 1录像模式 2合流模式 3混合模式 */
+    /** 1录像模式 2合流模式 3录像+合流 */
 	task_type: McuTaskType;
     /** 录制文件标题 */
 	title: string;
@@ -762,9 +762,9 @@ export interface McuRecordDetail {
 	channel: string;
     /** 会议标题 */
 	title: string;
-    /** 会议号 */
+    /** 房间号 */
 	room_no: string;
-    /** 任务类型 */
+    /** 任务状态 */
 	task_status: McuTaskStatus;
     /** 任务状态描述 */
 	err_desc: string;
@@ -809,7 +809,7 @@ export enum McuTaskType {
     Record = 1,
     /** 合流模式 */
     Mix = 2,
-    /** 混合模式 */
+    /** 录像+合流 */
     MixAndRecord = 3,
 }
 

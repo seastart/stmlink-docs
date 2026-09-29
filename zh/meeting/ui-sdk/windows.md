@@ -25,10 +25,10 @@ smeeting-windows-demo                   // 提供 C++（qt框架） 语言 Demo
 │  ├─ Common              				// 通用视图
 │  ├─ Home             					// 主窗口视图
 │  │  ├─ MainView             			// 主窗口视图内的主要视图：通讯录，会议列表，会议预约界面
-│  │  ├─ ToolView						// 主窗口视图内的弹框视图：历史会议，加入会议，改名，创建即使会议
+│  │  ├─ ToolView						// 主窗口视图内的弹框视图：历史会议，加入会议，改名，创建即时会议
 │  │  ├─ ToolWidgets             		// 主窗口视图内的小控件视图
 │  ├─ Login               				// 登录视图
-│  ├─ Room	               				// 会中试图
+│  ├─ Room	               				// 会中视图
 │  │  ├─ Chat							//会中聊天UI及相关逻辑
 │  │  ├─ Invite							//会中邀请设备UI及相关逻辑
 │  │  ├─ Mcu							//会中录制及mcu布局修改UI及相关逻辑
@@ -119,7 +119,7 @@ public static extern int MEETING_DEMO_Init();
 ```cpp
 代码目录
 ├─ View                  				// 视图
-│  ├─ Room	               				// 会中试图
+│  ├─ Room	               				// 会中视图
 │  │  ├─ Chat							//会中聊天UI及相关逻辑
 │  │  ├─ Invite							//会中邀请设备UI及相关逻辑
 │  │  ├─ Mcu							//会中录制及mcu布局修改UI及相关逻辑
@@ -237,8 +237,6 @@ MEETING_DEMO_API int MEETING_DEMO_CALL MEETING_DEMO_SettingData(int tp,int idata
 ###### 参数
 | tp | 参数类型 |
 | --- | --- |
-| pass | 密码 |
-| token | sdk 登录所需的token |
 
 
 注：调用成功后，ui窗口如果已经展示，将跳转到主窗口视图

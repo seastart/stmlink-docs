@@ -15,7 +15,7 @@ SFU 会周期性下发一组控制面消息，SDK 把它们转成四个 `Channel
 | `didSwitchLayer` | 大小流切层结果 | 排查画质突变 |
 
 <Note>
-这四个事件**仅 SeaStart（SFU）引擎有**。它们走的是订阅 PeerConnection 上的信令 DataChannel，而 WangSu（CDN）引擎没有这条通道，因此走 CDN 时不会收到任何一个，`getConnectionQuality()` 也返回 `nil`。用 `ChannelInfo.vendor` 判断当前引擎，见 [类型定义](/zh/rtc/swift/types#streamvendor)。
+这四个事件**仅 SeaStart（SFU）引擎有**。它们走的是订阅 PeerConnection 上的信令 DataChannel，而网宿（CDN）引擎没有这条通道，因此走 CDN 时不会收到任何一个，`getConnectionQuality()` 也返回 `nil`。用 `Channel.streamVendor` 判断当前引擎，见 [类型定义](/zh/rtc/swift/types#streamvendor)。
 </Note>
 
 所有回调都有默认空实现，只实现关心的即可。注册方式与其他频道事件一致：

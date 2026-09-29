@@ -1,6 +1,6 @@
 ---
 title: "模型类型"
-description: "SMeeting Android 2.0.37 公开接口直接使用的配置、结果、会议、成员、点名、签到、IM 与录制布局模型"
+description: "SMeeting Android 公开接口直接使用的配置、结果、会议、成员、点名、签到、IM 与录制布局模型"
 ---
 
 本页只列出 `MeetingEngine`、公开 manager、事件和结果回调直接暴露的 Meeting 模型。`RTCMediaOptions`、`TrackInfo`、`RemoteVideoTrack`、设备能力和媒体统计等来自传递依赖 SRTC，详见 [SRTC Android 模型类型](/zh/rtc/android/types)。

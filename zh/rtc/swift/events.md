@@ -81,7 +81,7 @@ final class RoomController: ChannelDelegate {
 `didChangeActiveSpeakers` 给的是**全量快照**（已按音量降序），业务侧直接覆盖 UI，不需要自己合并增量；无人说话时为空数组。
 
 <Note>
-这四个事件仅 **SeaStart（SFU）引擎**有 —— 它们走订阅 PeerConnection 上的信令 DataChannel，WangSu（CDN）引擎没有这条通道。详见 [通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
+这四个事件仅 **SeaStart（SFU）引擎**有 —— 它们走订阅 PeerConnection 上的信令 DataChannel，网宿（CDN）引擎没有这条通道。详见 [通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
 </Note>
 
 ---

@@ -5,7 +5,7 @@ description: "SMeeting iOS UI 套件快速集成指南"
 
 视频会议 SDK 提供了上层 UI 开源套件，目前 iOS 平台仅支持 Objective-C 语言，通过简单 API 调用即可唤起会议 UI。
 
-> 说明：如果您有自己的 UI 设计，想结合会议业务自行开发，我们同时提供有灵活性更好，功能更全面的 MeetingKit SDK，您可以通过查看我们的 [MeetingKit API](https://www.yuque.com/anyconf/eanoso/fb2vg0nhmwue9kvd) 文档，了解更多功能。
+> 说明：如果您有自己的 UI 设计，想结合会议业务自行开发，我们同时提供有灵活性更好，功能更全面的 MeetingKit SDK，您可以通过查看我们的 [MeetingKit API](/zh/meeting/ios/api-reference/MeetingKit) 文档，了解更多功能。
 >
 
 ## 功能概述
@@ -69,7 +69,7 @@ pod install
 ![](images/619379_1736934737291-dc604cf6-4816-4707-a9ef-6309fbe54f81.png)
 
 ##### 3.2、单击运行，即可将我们的 MeetingKit iOS Demo 运行到目标设备上。
-| **登录界面****** | **主界面** | **创建会议界面** |
+| **登录界面** | **主界面** | **创建会议界面** |
 | --- | --- | --- |
 | ![](images/575796_1736992186065-cd369eb8-8399-4824-8d33-a6a07704a6f1.png) | ![](images/449513_1736934945587-e3c0abcb-b5b0-4368-b192-e920a572ee36.png) | ![](images/622236_1736934974549-ee575fc1-6c95-4c11-9efc-c5abfaedc5e2.png) |
 
@@ -79,7 +79,7 @@ pod install
 
 #### 创建房间
 ##### 构建会议参数
-会议参数由很多的字段构成，但通常您只需要关注特定几个字段，详情可参看 [SEAMeetingParam](https://www.yuque.com/anyconf/eanoso/gkeau9oyh5vms80z#gQ8nA)。
+会议参数由很多的字段构成，但通常您只需要关注特定几个字段，详情可参看 [SEAMeetingParam](/zh/meeting/ios/types#seameetingparam)。
 
 ```objectivec
 SEAMeetingParam *meetingParam = [[SEAMeetingParam alloc] init];
@@ -180,8 +180,7 @@ detailsModel.memberLists = [self.viewModel.memberLists mutableCopy];
 | ![](images/190717_1736943827676-11dac981-e1db-4c1d-9708-e70d842ef347.png) | ![](images/342963_1736943835475-6d78b8b1-bf7f-4f71-bf52-a5319dcffa40.png) | ![](images/268033_1736943844704-8fc67f84-b50a-4965-92de-de058919f442.png) |
 
 
-##   
-会议控制
+## 会议控制
 ### 使用说明
 用户创建并进入房间后，创建者或管理员角色通过点击底部工具栏成员按钮，在底部弹出的成员列表中既可以选中任一普通成员进行请求开始视频/音频、设置管理员、禁言、踢出房间等会控操作，也可以对房间内所有成员进行全体静音等会控操作。
 
@@ -273,7 +272,7 @@ enterModel.avatar = @"User avatar";
 iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要增加 **Broadcast Upload Extension** 录屏进程以配合宿主 App 进程进行推流。Extension 录屏进程由系统在需要录屏的时候创建，并负责接收系统采集到屏幕图像。因此需要：
 
 1. 创建 **App Group**，并在 Xcode 中进行配置(必选)。这一步的目的是让 Extension 录屏进程可以同宿主 App 进程进行跨进程通信；
-2. 在工程中，新建一个 **Broadcast Upload Extension** 的 Target，并在其中集成 SDK 中专门为扩展模块定制的 `**MeetingKit.framework**`；
+2. 在工程中，新建一个 **Broadcast Upload Extension** 的 Target，并在其中集成 SDK 中专门为扩展模块定制的 **`MeetingKit.framework`**；
 3. 对接宿主 App 端的接收逻辑，让宿主 App 等待来自 **Broadcast Upload Extension** 的录屏数据。
 
 #### 1、创建 App Group
@@ -284,7 +283,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
 3. 选择 **App Groups**，单击 **Continue**
 4. 在弹出的表单中填写 **Description** 和 **Identifier**, 其中 **Identifier** 需要传入接口中的对应的 **AppGroup** 参数，完成后单击 **Continue**![](images/302892_1681213421985-54346121-8573-4894-8e11-d565d65f6f8a.png)![](images/959701_1681213164507-c107986e-b8b0-4325-8d02-36167e3474f5.png)
 5. 回到 **Identifier** 页面，右上边的菜单中选择 **App IDs**，然后单击您的 **App ID**（宿主 **App** 与 **Extension** 的 **AppID** 需要进行同样的配置）
-6. 选中 **App Groups **并单击 **Edit**
+6. 选中 **App Groups** 并单击 **Edit**
 7. 在弹出的表单中选择您之前创建的 **App Group**，单击 **Continue** 返回编辑页，单击 **Save** 保存![](images/583210_1681263123253-b6f939a2-e88e-42ce-ac8f-79f595f96355.png)
 8. 重新下载 **Provisioning Profile** 文件，并配置到 **Xcode** 中
 
@@ -296,7 +295,7 @@ iOS 系统上的跨应用屏幕分享，需满足系统在 iOS12 以上，需要
 配置好 Product Name。单击【Finish】后可以看到，工程多了所输 Product Name 的目录，目录下有个系统自动生成的 SampleHandler类，这个类负责录屏的相关处理。
 
 #### 3、为扩展添加SDK依赖
-1. 手动集成方式需要将`**MeetingKit.framework**`导入上述Product Name 的工程目录，并配置依赖的系统库；
+1. 手动集成方式需要将 **`MeetingKit.framework`** 导入上述Product Name 的工程目录，并配置依赖的系统库；
 2. 自动集成方式需更改`Podfile`文件，并执行`pod install`，如下图所示：
 
 ![](images/486570_1736940851016-5ec8f955-6e57-4c56-9c04-5ec68e2f656d.png)
@@ -485,7 +484,7 @@ Message
   └── FWRoomMessageViewController.h          // 聊天界面控制器
   └── FWRoomMessageTableSectionHeaderView.h      // 聊天界面分组头
   └── FWRoomMessageMineTableViewCell.h      // 自己的文本聊天信息单元格
-  └── FWRoomMessageMineFileTableViewCell.h      // 自己的文本聊天信息单元格
+  └── FWRoomMessageMineFileTableViewCell.h      // 自己的文件聊天信息单元格
   └── FWRoomMessageTableViewCell.h      // 成员的文本聊天信息单元格
   └── FWRoomMessageFileTableViewCell.h      // 成员的文件聊天信息单元格
 ```

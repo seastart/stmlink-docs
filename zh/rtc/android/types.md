@@ -98,19 +98,19 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 
 ## NetworkQualityChange
 
-作用说明：网络质量档位变化事件，由 [`RTCMediaEvent.onNetworkQualityChanged`](/zh/rtc/android/api-reference/RTCMediaEvent) 回调。上行、下行各自独立触发，一次回调只表示一个方向的变化。
+作用说明：网络质量档位事件，由 [`RTCMediaEvent.onNetworkQualityChanged`](/zh/rtc/android/api-reference/RTCMediaEvent) 回调。每份服务端质量报告都为上行、下行各回调一次（不做去抖），一次回调只表示一个方向。
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
 | direction | QualityDirection | 发生变化的方向（`UPLINK` / `DOWNLINK`）。枚举见 [枚举类型](/zh/rtc/android/enums)。 |
-| previousLevel | String | 变化前的等级；首次（`INITIAL`）时为空串。 |
-| currentLevel | String | 变化后的当前等级（`excellent` / `good` / `poor` / `lost`）。 |
-| trend | QualityTrend | 变化趋势（`INITIAL` / `DEGRADED` / `RECOVERED`）。枚举见 [枚举类型](/zh/rtc/android/enums)。 |
+| previousLevel | String | 上一次回调的等级；首次（`INITIAL`）时为空串。 |
+| currentLevel | String | 本次等级（`excellent` / `good` / `poor` / `lost`）。 |
+| trend | QualityTrend | 与上一次相比的趋势（`INITIAL` / `DEGRADED` / `RECOVERED` / `STABLE`）。枚举见 [枚举类型](/zh/rtc/android/enums)。 |
 | report | MediaMetric.QualityReport | 触发本次事件时的完整质量报告快照。字段见 [媒体质量](/zh/rtc/android/media-quality)。 |
 
 ## CameraDeviceCapability
 
-作用说明：摄像头设备能力信息，由 [`RTCEngine.getCameraDevices`](/zh/rtc/android/api-reference/RTCEngine) 与 [`RTCMediaEvent.onCameraDeviceListChanged`](/zh/rtc/android/api-reference/RTCMediaEvent) 返回。
+作用说明：摄像头设备能力信息，由 [`RTCEngine.getCameraDevices`](/zh/rtc/android/api-reference/RTCEngine) 与 [`RTCCameraDeviceEvent.onCameraDeviceListChanged`](/zh/rtc/android/api-reference/RTCCameraDeviceEvent) 返回。
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |

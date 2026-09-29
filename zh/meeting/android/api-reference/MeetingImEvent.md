@@ -174,6 +174,6 @@ fun onUserHelpSubMeeting(
 | 参数 | 说明 |
 | --- | --- |
 | `uid` | 求助成员 UID。 |
-| `userHelpSubMeeting` | 主会议、子会议和讨论组标题信息。 |
+| `userHelpSubMeeting` | 主会议、讨论组及讨论组标题信息。 |
 
 返回值说明：无（`Unit`）。

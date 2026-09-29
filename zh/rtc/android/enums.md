@@ -75,9 +75,10 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 
 | 枚举名 | 值 | 说明 |
 | --- | --- | --- |
-| INITIAL | 无显式值 | 首次建立档位（非跨档，用于初始化 UI）。 |
-| DEGRADED | 无显式值 | 档位变差（立即回调）。 |
-| RECOVERED | 无显式值 | 档位变好（已通过连续确认）。 |
+| INITIAL | 无显式值 | 首次建立档位（用于初始化 UI）。 |
+| DEGRADED | 无显式值 | 相较上次档位变差。 |
+| RECOVERED | 无显式值 | 相较上次档位变好。 |
+| STABLE | 无显式值 | 相较上次档位不变，或本次等级无法识别。 |
 
 ### StreamVendor
 

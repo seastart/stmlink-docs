@@ -568,7 +568,7 @@ fun unSubscribeRemoteMixture()
 ```kotlin
 fun getRemoteStreamTrack(uid: String, trackDesc: String): RemoteVideoTrack?
 ```
-方法说明：获取网宿通用流的视频流控制类（用于 `addPlayView` 渲染）。不依赖房间成员，按订阅时传入的 `(uid, trackDesc)` 获取；可在 `subscribeRemoteStream` 之前调用——先获取控制类并 `addPlayView`，再订阅，画面到达后即渲染。  
+方法说明：获取网宿通用流的视频流控制类（用于 `addPlayView` 渲染）。不依赖频道成员，按订阅时传入的 `(uid, trackDesc)` 获取；可在 `subscribeRemoteStream` 之前调用——先获取控制类并 `addPlayView`，再订阅，画面到达后即渲染。  
 参数说明：
 - `uid`：`String`，渲染路由标识（上层自定义；可与流名相同）。
 - `trackDesc`：`String`，特殊流标识，用于渲染绑定与区分多路通用流。

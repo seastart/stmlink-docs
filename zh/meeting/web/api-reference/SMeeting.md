@@ -69,7 +69,7 @@ SMeeting是绝大多数操作的入口。
      */
     cancelRoom(meeting_id: string): Promise<void>;
     /**
-     * 会议参会人员
+     * 会议参会记录
      * @param meeting_id 会议id
      * @param pageParam 分页参数
      */

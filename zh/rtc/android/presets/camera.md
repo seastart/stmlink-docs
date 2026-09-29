@@ -44,7 +44,7 @@ description: "Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera �
 
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
-| desc | `String` | 轨道描述（主流常用 `TRACK_MAIN`，辅流常用 `TRACK_SUB`）。 |
+| desc | `String` | 轨道描述（大流常用 `TRACK_MAIN`，小流常用 `TRACK_SUB`）。 |
 | codec | `CodecType` | 编码格式（常用 `H264`）。 |
 | maxBitrate | `Int` | 最大码率，单位 bps。 |
 | minBitrate | `Int?` | 最小码率，单位 bps。`null` 使用引擎默认下限；非空时应满足 `0 <= minBitrate <= maxBitrate`。目前仅 SFU 引擎支持。 |
@@ -52,7 +52,7 @@ description: "Android SRTC 音视频 SDK 摄像头轨道预设 PreOptionCamera �
 | height | `Int` | 推送高度。 |
 | maxFps | `Int` | 最大推送帧率。 |
 | props | `Any?` | 自定义属性。 |
-| simulcasts | `MutableList<VideoPublishOptions>?` | 联播/辅流配置（当前摄像头场景可配置 1 路辅流）。 |
+| simulcasts | `MutableList<VideoPublishOptions>?` | 联播/小流配置（当前摄像头场景可配置 1 路小流）。 |
 
 ### 内置预设
 
@@ -90,10 +90,10 @@ publish(sub):  desc="camera_small"(TRACK_SUB), codec=H264, maxBitrate=160*1024, 
 | --- | --- | --- |
 | desc | `String?` | 自定义轨道描述；`null` 表示不修改。 |
 | props | `Any?` | 自定义附加属性；`null` 表示不修改。 |
-| simulcasts | `MutableList<PublishCustomOptions>?` | 对联播/辅流参数进行覆盖；`null` 表示不修改。 |
+| simulcasts | `MutableList<PublishCustomOptions>?` | 对联播/小流参数进行覆盖；`null` 表示不修改。 |
 
 ### 使用建议
 
 - 若只需改轨道描述，传入 `desc` 即可。
-- 对摄像头主/辅流可分别通过 `simulcasts` 覆盖辅流参数。
+- 对摄像头大/小流可通过 `simulcasts` 覆盖小流参数。
 - 对麦克风、屏幕共享、自定义视频流，通常只需主轨参数，不需要 `simulcasts`。

@@ -52,7 +52,7 @@ allprojects {
 
 
 ## 整体集成
-1. 新建项目，按照[《集成方式》文档中整体集成](https://www.yuque.com/anyconf/eanoso/qyxl89y40h1097y9#wNe8z)方式导入 StmLink 库
+1. 新建项目，按照[整体集成](#整体集成)方式导入 StmLink 库
 2. 新建 MyApplication，在 MyApplication 中实现如下代码
 
 ```kotlin

@@ -42,7 +42,7 @@ fun version(): String
 
 参数说明：无。
 
-返回值说明：构建时写入的版本字符串，例如 `2.0.37`。
+返回值说明：构建时写入的版本字符串，形如 `x.y.z`。
 
 ### buildTime()
 
@@ -2246,7 +2246,7 @@ fun startPlayRemoteVideo(
 | 参数 | 说明 |
 | --- | --- |
 | `uid` | 远端成员 UID。 |
-| `trackDesc` | 轨道描述，例如摄像头主流、辅流或共享流描述。 |
+| `trackDesc` | 轨道描述，例如摄像头大流、小流或共享流描述。 |
 | `view` | 可选渲染控件；必须是 `VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`。 |
 | `event` | 可选的单轨接收与卡顿状态监听。 |
 | `callback` | 成功返回 `RemoteVideoTrack` 的结果回调。 |

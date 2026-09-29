@@ -131,7 +131,7 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 | 属性名称 | 数据类型 | 说明 |
 | --- | --- | --- |
 | firCount | Long | 请求发送 I 帧次数。 |
-| pliCount | Long | 请求发送 P 帧次数。 |
+| pliCount | Long | PLI 请求（请求关键帧）次数。 |
 | nackCount | Long | 请求重传丢失 RTP 包次数。 |
 | rid | String | Simulcast 流标识。 |
 | frameWidth | Int | 视频帧宽度。 |
@@ -191,7 +191,7 @@ description: "Android SRTC 音视频 SDK 媒体质量统计数据结构说明"
 | frameWidth | Int | 接收帧宽度。 |
 | frameHeight | Int | 接收帧高度。 |
 | firCount | Int | 请求发送 I 帧次数。 |
-| pliCount | Int | 请求发送 P 帧次数。 |
+| pliCount | Int | PLI 请求（请求关键帧）次数。 |
 | nackCount | Int | 请求重传丢失 RTP 包次数。 |
 | retransmittedPacketsReceived | Long | 接收端统计的重传包数。 |
 | decoderImplementation | String | 解码器实现名称。 |
