@@ -10,8 +10,9 @@ description: "Windows SMeeting 会议 SDK 版本更新记录"
 **添加**
 
 + **`SMeeting_C` C 接口正式可用**：`SMeeting_C.cpp` / `SMeetingEngineGlobal.cpp` 重新编入
-  `SMeeting.vcxproj`，`SMeeting.dll` 现在真正导出 `SMeetingEngine_*_C` 系列 C 函数
-  （在此之前该 wrapper 被排除在工程外，包里的 dll 并不包含这些符号）。
+  `SMeeting.vcxproj`，`SMeeting.dll` 现在真正导出 `SMeetingEngine_*` 系列 C 函数
+  （x86 导出符号由 3 个增至 139 个）。在此之前该 wrapper 被排除在工程外，
+  包里的 dll 并不包含这些符号。
 
 **修改**
 
