@@ -7,7 +7,7 @@ description: "Android SMeeting 会议 SDK 环境配置与 SDK 安装指南"
 
 ## 配置 Maven 仓库
 
-当前工作区内的 Android 工程使用的是 **Gradle 7+ / `settings.gradle`** 写法，建议优先按下面方式配置仓库：
+官方示例工程使用的是 **Gradle 7+ / `settings.gradle`** 写法，建议优先按下面方式配置仓库：
 
 ```groovy
 pluginManagement {

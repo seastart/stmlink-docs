@@ -1598,7 +1598,7 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
 **请求参数**
 
 <ParamField body="agents" type="array<any>" required>
-  设备列表
+  待邀请的设备列表
 </ParamField>
 
 <ParamField body="no" type="string" required>

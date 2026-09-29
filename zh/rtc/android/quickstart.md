@@ -185,7 +185,7 @@ fun startMicrophone() {
 }
 ```
 
-显式采集也可以脱离频道使用。先设置 `setRtcLocalAudioFrameEvent(...)`，再调用 `micTrack.startCapture(...)`，即可接收本地 PCM 数据用于录制或处理；仅注册回调不会自动打开麦克风。详见 [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack) 与 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine#setrtclocalaudioframeevente)。
+显式采集也可以脱离频道使用。先设置 `setRtcLocalAudioFrameEvent(...)`，再调用 `micTrack.startCapture(...)`，即可接收本地 PCM 数据用于录制或处理；仅注册回调不会自动打开麦克风。详见 [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack) 与 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine#setrtclocalaudioframeevent-e)。
 
 ### 4.3 屏幕共享（可选）
 

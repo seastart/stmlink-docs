@@ -16,15 +16,15 @@ SDK 对外抛出的错误类型是 `SMeetingError`，一个带语义的 Swift �
 
 | 错误 | 客户端码 | 描述 | 建议处理 |
 | --- | :---: | --- | --- |
-| `notLoggedIn` | `1` | 您尚未登录 meeting sdk | 先调用 `login(token:)` |
-| `tokenExpired` | `2` | token 已过期 | 向业务后端重新获取 token |
-| `notInMeeting` | `3` | 您不在会议中 | 检查调用时机，会中接口需要先 `enterRoom` |
-| `unauthorized` | `4` | 您没有权限进行此操作 | 检查房间策略与自己的角色，见下文 |
-| `tokenInvalid` | `5` | Token 格式无效 | 检查后端签发逻辑与传输过程中是否被截断 |
-| `alreadyInMeeting` | `6` | 已在会议中，请先退出 | 先 `exitRoom()` 再进入新会议 |
-| `networkError(String)` | `7` | 网络错误 | 提示用户检查网络后重试 |
-| `deviceError(String)` | `8` | 设备错误 | 检查设备是否已开启、是否被占用 |
-| `internalError(String)` | `9` | 内部错误 | 结合关联字符串与日志排查 |
+| `notLoggedIn` | `1` | `您尚未登录meeting sdk` | 先调用 `login(token:)` |
+| `tokenExpired` | `2` | `token已过期` | 向业务后端重新获取 token |
+| `notInMeeting` | `3` | `您不在会议中` | 检查调用时机，会中接口需要先 `enterRoom` |
+| `unauthorized` | `4` | `您没有权限进行此操作` | 检查房间策略与自己的角色，见下文 |
+| `tokenInvalid` | `5` | `Token 格式无效` | 检查后端签发逻辑与传输过程中是否被截断 |
+| `alreadyInMeeting` | `6` | `已在会议中，请先退出` | 先 `exitRoom()` 再进入新会议 |
+| `networkError(String)` | `7` | `网络错误: <detail>` | 提示用户检查网络后重试 |
+| `deviceError(String)` | `8` | `设备错误: <detail>` | 检查设备是否已开启、是否被占用 |
+| `internalError(String)` | `9` | `内部错误: <detail>` | 结合关联字符串与日志排查 |
 | `apiError(code:message:)` | 服务端码 | 服务端返回的业务错误 | 按服务端错误码处理，`message` 可直接用于提示 |
 
 ---

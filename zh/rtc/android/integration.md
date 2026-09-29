@@ -7,7 +7,7 @@ description: "Android SRTC 音视频 SDK 环境配置与依赖安装"
 
 ## 接入前确认
 
-基于当前工作区中的 `rtc-android` 示例工程，建议接入前先确认以下环境条件：
+基于官方示例工程，建议接入前先确认以下环境条件：
 
 - **AndroidX**：示例工程已启用 `android.useAndroidX=true`。
 - **最低系统版本**：示例工程的 `minSdk` 为 `24`。
