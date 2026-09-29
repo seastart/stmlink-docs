@@ -1,0 +1,9 @@
+# 不发布到文档站的仓库文件（gitignore 语法）。
+# Mintlify 默认已排除 .git/.github/.claude/.agents/README.md 等，见 @mintlify/common 的 DEFAULT_MINT_IGNORES；
+# 模式必须以 / 开头锚定根目录，否则 skills/ 会连带忽略要发布的 .mintlify/skills/。
+# 仓库里其余 md 即使不在导航里也会被公开（按 URL 可直接访问）。
+/CLAUDE.md
+# npx skills 安装的 Mintlify 编写 skill，给本仓的 AI 用
+/skills/
+# 英文版翻译的术语表、写作规范、翻译记忆表
+/i18n/
