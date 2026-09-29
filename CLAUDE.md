@@ -34,7 +34,12 @@ mint validate
 - 主题色、Logo、页脚链接
 - 站点 URL 和基本元数据
 
-**添加新页面后，必须同步更新 `docs.json` 的导航配置，否则页面不会出现在侧边栏。**
+**添加新页面后，必须同步更新 `docs.json` 的导航配置，否则页面不会出现在侧边栏。** 中文页新增后的待办：
+
++ 改 `docs.json` 的 **zh** 导航（en 导航由 `python3 scripts/i18n.py nav` 推导，不手写）
++ 重跑 `python3 scripts/gen-llms-txt.py`
++ **无需同步英文**：若该页在英文版范围内（`i18n/scope.json`），它会出现在 `i18n.py status` 的「缺译」里，
+  下次增量翻译时补上；不在任何批次、也不在排除列表的页会被报成「未纳入范围」，要回头改 `scope.json`
 
 ### 给 AI 看的产物（llms.txt）
 
@@ -47,7 +52,9 @@ python3 scripts/gen-llms-txt.py          # 改了导航或 frontmatter 后重跑
 python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
 ```
 
-脚本按 `docs.json` 的导航顺序输出，用 `## {产品} · {分组} · {子分组}` 分节。所以：
+脚本按 `docs.json` 的导航顺序输出，用 `## {产品} · {分组} · {子分组}` 分节。多语言时遍历
+`navigation.languages`：zh 分节不加标记、排在最前；en 分节标题前缀 `[EN]`（如 `## [EN] SRTC Audio & Video SDK · Web SDK`），
+整体排在所有 zh 分节之后。所以：
 
 - **新增页面后除了改 `docs.json`，还要重跑这个脚本**，否则 AI 侧看不到新页。
   忘了也不会白忘：CI（`.github/workflows/llms-txt-check.yml`）在 push / PR 上跑 `--check`，
@@ -56,6 +63,9 @@ python3 scripts/gen-llms-txt.py --check  # 只校验是否与当前导航一致
 - 页面的 `description` 直接就是 AI 拿到的摘要（Mintlify 侧限 300 字符、截到第一个换行）。
   **别写「{平台} {产品} SDK {类名} 接口参考」这种模板句** —— 对 AI 选页零信息量，
   要写「这个类干什么、什么时候该读它」
+- 英文版另有一条 CI：`.github/workflows/i18n-check.yml` 跑 `python3 scripts/i18n.py check`，
+  只对硬错误红（en 导航与 zh 推导结果不一致、lock 与文件不符、en 页链接目标或锚点不存在、
+  en 生成页 `##` 标题重名）；英文过期、未审校、翻译记忆缺失只打印告警，不拦中文更新
 - `llms-full.txt` 仍是自动生成（1.6MB 量级，AI 无法整份读入，只能当按需取单页的索引用）
 
 `docs.json` 里另有两处影响 AI 侧的配置：
@@ -102,8 +112,30 @@ Mintlify 会用 agent 读文档**自动生成**一份 `/skill.md`，但那是单
 
 ### 语言目录
 
-- `zh/` - 中文文档（当前主要维护）
-- `en/` - 英文文档（待补充，目前为空）
+- `zh/` - 中文文档，**唯一源头**
+- `en/` - 英文文档，从中文派生、与中文同路径（`zh/rtc/overview.md` → `en/rtc/overview.md`），只放已译的页。
+  规则：先改中文再译英文，禁止先改英文；鸿蒙、微信小程序不翻，范围与批次见 `i18n/scope.json`；
+  en 导航由 `python3 scripts/i18n.py nav` 从 zh 导航推导（en 文件不存在的页自动剔除，Mintlify 无回退、缺页即 404）；
+  每个英文页对应哪个中文版本登记在 `i18n/en.lock.json`（不放 frontmatter，免得进 llms.txt 被客户的 AI 读到），
+  `i18n.py status` 列出缺译 / 过期 / 未审校
+
+翻译、增量同步、审校的操作步骤见项目 skill **`.claude/skills/translate-en/`**。`i18n/` 目录：
+
+| 文件 | 作用 |
+| --- | --- |
+| `glossary.yml` | 术语表（含禁止译法），译前必读 |
+| `STYLE.md` | 英文写作规范与审校清单 |
+| `nav.en.json` | tab / group 标题的英文对照 + 英文 footer（`i18n.py nav` 读取） |
+| `scope.json` | 英文版范围与批次 |
+| `en.lock.json` | 英文页 ↔ 中文版本登记（`i18n.py lock` 写入） |
+| `server-api/<产品>.en.json` / `.missing.json` | 服务端 API 生成页的翻译记忆表与缺失清单，见「自动生成的页面」 |
+
+### 不发布的文件（.mintignore）
+
+Mintlify 会把仓库里**所有** md 都发布出去——不在导航里也能按 URL 直接访问（2026-09-29 曾因此公开了
+本文件 `CLAUDE.md`）。默认只排除 `.git` / `.github` / `.claude` / `README.md` 等少数路径。
+**新增内部 md（规范、计划、脚本说明等）要加进 `.mintignore`**，模式必须以 `/` 开头锚定根目录——
+不锚定的 `skills/` 会连带忽略要发布的 `.mintlify/skills/`。
 
 ### 导航层级结构
 
@@ -142,6 +174,16 @@ python3 scripts/gen-llms-txt.py                # 页面有增删时同步重跑
 mint broken-links                              # 提交前校验
 ```
 
+**英文页**：每个产品在 zh 之后再跑一遍 `apidoc -lang en`，输出到 `en/{rtc,meeting}/server-api/`，
+同样不要手工编辑。后端注释只写中文，英文靠翻译记忆表（TM）`i18n/server-api/<产品>.en.json`
+（扁平 `{中文原文: 英文}`，译文为空视同缺失）；查不到的串在页面上回退为中文，并汇总到
+`i18n/server-api/<产品>.missing.json`。补译：`python3 scripts/sync-server-api.py --tm-missing`
+只刷新缺失清单（不写页面、不动 docs.json）→ 填好译文后 `python3 scripts/i18n.py tm-merge <产品>`
+合并进 `.en.json`（重跑 `--tm-missing` 会把缺失清单重置为空值，必须先合并）→ 重跑 sync，
+细则（锚点、同一次提交等）见 translate-en skill。生成页靠页内标记识别：中文「由后端源码自动生成」、
+英文「auto-generated from the backend source」，两个脚本的 `GENERATED_MARKS` 要保持一致；
+生成页不走 `i18n.py lock`。zh 导航重写后脚本会调 `i18n.py nav` 刷新 en 导航。
+
 后端默认在同级目录（`../rtc-backend`、`../meeting-backend`），可用 `RTC_BACKEND` /
 `MEETING_BACKEND` 覆盖。生成器只有一份，在 `rtc-backend/tools/apidoc`，SMeeting 也是跑它，
 只是换一套参数（见脚本里的 `PROJECTS`）。
@@ -168,7 +210,7 @@ SMeeting 在 `meeting-backend/openapi/groups.json`。**两个产品不能共用�
 **不进对外文档的路由**用 `Project.skip` 排除。SMeeting 排掉了两类：`callback/rtc` 是
 RTC 调进来的入站回调（客户不会调），`im/*api` 与 `agent/*api` 是原样转发到 RTC 的通配
 代理（真正的接口文档在 SRTC 那两页，由手写的 `guides/agent-and-im.md` 交代指向）。
-SRTC 排掉 `agent/list` —— 它是为兼容存量第三方调用保留的废弃别名，与 `list-invite` 等价。
+SRTC 排掉 `agent/list` 与 `mcu/record-detail` —— 都是为兼容存量调用保留的废弃别名，分别与 `list-invite`、`mcu/detail` 等价。
 **这份清单要与后端 Makefile 的 `apidoc` 目标的 `-skip` 保持一致**：后端加别名时只改了
 Makefile 而漏了这里，下次同步就会把别名生成成一页对外接口，接口名还会取成路由上方
 「内部：」注释的最后一行（`agent/list` 就这么漏过一次）。

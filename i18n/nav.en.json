@@ -1,0 +1,58 @@
+{
+  "tabs": {
+    "SRTC 音视频 SDK": "SRTC Audio & Video SDK",
+    "SMeeting 会议 SDK": "SMeeting Conferencing SDK"
+  },
+  "groups": {
+    "概览": "Overview",
+    "Web SDK": "Web SDK",
+    "Android SDK": "Android SDK",
+    "Windows SDK": "Windows SDK",
+    "Swift SDK（iOS/macOS）": "Swift SDK (iOS/macOS)",
+    "iOS SDK": "iOS SDK (Objective-C)",
+    "HarmonyOS SDK": "HarmonyOS SDK",
+    "C SDK（服务端/嵌入式）": "C SDK (server/embedded)",
+    "Python SDK（服务端 AI）": "Python SDK (server-side AI)",
+    "服务端 API": "Server API",
+    "极简对接": "Low-code integration",
+    "进阶实践": "Advanced",
+    "接口文档": "API reference",
+    "接口列表": "API reference",
+    "预设配置项": "Presets",
+    "接入指南": "Guides",
+    "带 UI 极简对接": "Low-code integration with UI"
+  },
+  "footer": {
+    "socials": {
+      "website": "https://www.stmlink.com/en/"
+    },
+    "links": [
+      {
+        "header": "Products",
+        "items": [
+          {
+            "label": "Website",
+            "href": "https://www.stmlink.com/en/"
+          },
+          {
+            "label": "SRTC Audio & Video SDK",
+            "href": "https://docs.stmlink.com/en/rtc/overview"
+          },
+          {
+            "label": "SMeeting Conferencing SDK",
+            "href": "https://docs.stmlink.com/en/meeting/overview"
+          }
+        ]
+      },
+      {
+        "header": "Support",
+        "items": [
+          {
+            "label": "Contact us",
+            "href": "https://www.stmlink.com/en/"
+          }
+        ]
+      }
+    ]
+  }
+}

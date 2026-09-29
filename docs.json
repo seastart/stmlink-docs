@@ -1,14 +1,14 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "STMLink 文档",
-  "description": "STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。",
+  "name": "STMLink Docs",
+  "description": "STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。 STMLink developer docs: the SRTC audio/video SDK (channels, cloud recording and live streaming, voice recording, speech recognition) and the SMeeting conferencing SDK (rooms and meetings), covering client integration on iOS, Android, Windows, Web, WeChat Mini Programs and C (server/embedded), plus the Server API.",
   "markdown": {
     "instructions": [
-      "对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。",
-      "app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。",
-      "SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上。",
-      "同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。"
+      "对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。 Public server APIs use two path prefixes with the same authentication: `/server/v1/...` (the main APIs of both SRTC and SMeeting) and `/stm/srvapi/v1/...` (the SMeeting user system, used by server-side low-code integration). Authenticate with four request headers, app_id + nonce + timestamp + signature, where signature is HMAC-SHA256 keyed with app_key; call these APIs only from the customer's own backend. Any other path is internal: never suggest calling it.",
+      "app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。 app_key is a server-side secret and must never appear in client code, frontend config, or a mobile app. The token a client uses to join must be issued by the customer's backend and passed down to the client (SRTC: `/server/v1/channel/grant`; SMeeting: `/stm/srvapi/v1/member/grant`).",
+      "SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上，也不要用「频道」「加入 / 离开」描述 SMeeting 的概念（接口标识符原样保留）。 SRTC and SMeeting are two separate layers with different terminology. SRTC is the audio/video foundation: it has channels, and users join and leave a channel. SMeeting is built on top of SRTC: it has rooms and meetings, and members enter and exit a meeting. Answer in the terms of the layer the user is working with: never apply \"room\" or \"meeting\" to SRTC APIs, and never describe SMeeting concepts in prose with \"channel\", \"join\", or \"leave\" (API identifiers such as `force_join` keep their literal names).",
+      "同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。 Package, class, and method names differ between platform SDKs for the same capability. In sample code, use the API documented for that platform; never carry one platform's code over to another. On Apple platforms each product ships two SDKs (native Swift and Objective-C) whose APIs must not be mixed."
     ]
   },
   "contextual": {
@@ -640,6 +640,190 @@
             ]
           }
         ]
+      },
+      {
+        "language": "en",
+        "tabs": [
+          {
+            "tab": "SRTC Audio & Video SDK",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "en/rtc/overview",
+                  "en/choose",
+                  "en/rtc/quickstart",
+                  "en/rtc/key-concepts",
+                  "en/rtc/token",
+                  "en/rtc/network-line",
+                  "en/rtc/whiteboard",
+                  "en/rtc/error-codes",
+                  "en/ai"
+                ]
+              },
+              {
+                "group": "Web SDK",
+                "pages": [
+                  "en/rtc/web/integration",
+                  "en/rtc/web/quickstart",
+                  "en/rtc/web/key-concepts",
+                  "en/rtc/web/error-codes"
+                ]
+              },
+              {
+                "group": "Android SDK",
+                "pages": [
+                  "en/rtc/android/integration",
+                  "en/rtc/android/quickstart",
+                  "en/rtc/android/error-codes"
+                ]
+              },
+              {
+                "group": "Swift SDK (iOS/macOS)",
+                "pages": [
+                  "en/rtc/swift/integration",
+                  "en/rtc/swift/quickstart",
+                  "en/rtc/swift/key-concepts",
+                  "en/rtc/swift/error-codes"
+                ]
+              },
+              {
+                "group": "Python SDK (server-side AI)",
+                "pages": [
+                  "en/rtc/python/integration",
+                  "en/rtc/python/quickstart",
+                  "en/rtc/python/error-codes"
+                ]
+              },
+              {
+                "group": "Server API",
+                "pages": [
+                  "en/rtc/server-api/overview",
+                  {
+                    "group": "Guides",
+                    "pages": [
+                      "en/rtc/server-api/guides/recording",
+                      "en/rtc/server-api/guides/callbacks",
+                      "en/rtc/server-api/guides/agents"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/server-api/channel",
+                      "en/rtc/server-api/mcu",
+                      "en/rtc/server-api/talkrec",
+                      "en/rtc/server-api/agent",
+                      "en/rtc/server-api/im",
+                      "en/rtc/server-api/white-board",
+                      "en/rtc/server-api/asr"
+                    ]
+                  },
+                  "en/rtc/server-api/error-codes",
+                  "en/rtc/server-api/server-demo"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "SMeeting Conferencing SDK",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "en/meeting/overview",
+                  "en/choose",
+                  "en/meeting/quickstart",
+                  "en/meeting/key-concepts",
+                  "en/meeting/token",
+                  "en/meeting/error-codes",
+                  "en/ai"
+                ]
+              },
+              {
+                "group": "Web SDK",
+                "pages": [
+                  "en/meeting/web/integration",
+                  "en/meeting/web/quickstart"
+                ]
+              },
+              {
+                "group": "Android SDK",
+                "pages": [
+                  "en/meeting/android/integration",
+                  "en/meeting/android/quickstart",
+                  "en/meeting/android/error-codes"
+                ]
+              },
+              {
+                "group": "Swift SDK (iOS/macOS)",
+                "pages": [
+                  "en/meeting/swift/integration",
+                  "en/meeting/swift/quickstart",
+                  "en/meeting/swift/key-concepts",
+                  "en/meeting/swift/error-codes"
+                ]
+              },
+              {
+                "group": "Server API",
+                "pages": [
+                  "en/meeting/server-api/overview",
+                  {
+                    "group": "Guides",
+                    "pages": [
+                      "en/meeting/server-api/guides/recording",
+                      "en/meeting/server-api/guides/callbacks",
+                      "en/meeting/server-api/guides/agent-and-im"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/meeting/server-api/user-auth",
+                      "en/meeting/server-api/meet",
+                      "en/meeting/server-api/meet-admin",
+                      "en/meeting/server-api/mcu"
+                    ]
+                  },
+                  "en/meeting/server-api/error-codes"
+                ]
+              }
+            ]
+          }
+        ],
+        "footer": {
+          "socials": {
+            "website": "https://www.stmlink.com/en/"
+          },
+          "links": [
+            {
+              "header": "Products",
+              "items": [
+                {
+                  "label": "Website",
+                  "href": "https://www.stmlink.com/en/"
+                },
+                {
+                  "label": "SRTC Audio & Video SDK",
+                  "href": "https://docs.stmlink.com/en/rtc/overview"
+                },
+                {
+                  "label": "SMeeting Conferencing SDK",
+                  "href": "https://docs.stmlink.com/en/meeting/overview"
+                }
+              ]
+            },
+            {
+              "header": "Support",
+              "items": [
+                {
+                  "label": "Contact us",
+                  "href": "https://www.stmlink.com/en/"
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   },

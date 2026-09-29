@@ -1,6 +1,6 @@
 ---
 name: SRTC 音视频接入
-description: 用 SRTC 音视频 SDK 做实时音视频时使用——加入频道、发布与订阅音视频轨道、屏幕共享、频道内外消息、云录制。覆盖 Web、Android、Windows、Swift（iOS/macOS）、Objective-C（iOS）、C（服务端/嵌入式）、Python（服务端 AI）各端。做的是会议产品时先读「SMeeting 会议接入」。
+description: 用 SRTC 音视频 SDK 做实时音视频时使用——加入频道、发布与订阅音视频轨道、屏幕共享、频道内外消息、云录制。覆盖 Web、Android、Windows、Swift（iOS/macOS）、Objective-C（iOS）、C（服务端/嵌入式）、Python（服务端 AI）各端。做的是会议产品时先读「SMeeting 会议接入」。Use when building real-time audio and video with the SRTC SDK—joining a channel, publishing and subscribing to audio/video tracks, screen sharing, in-channel and out-of-channel messages, and cloud recording, on Web, Android, Windows, Swift (iOS/macOS), Objective-C (iOS), C (server/embedded), and Python (server-side AI). If you are building a meeting product, read "SMeeting 会议接入" first.
 metadata:
   version: "1.0"
   docs: https://docs.stmlink.com
@@ -21,6 +21,8 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 | 服务端 AI 语音机器人（ASR/LLM/TTS）、录音转写、pipecat | SRTC 的 Python SDK（收发 PCM，不用碰编解码） |
 
 会控规则（谁能说话、谁是主持人）在 SRTC 里**不存在**，要自己实现。如果发现自己在 SRTC 上手写会控，说明该换 SMeeting。
+
+SRTC has channels that users join and leave; rooms, meetings, and host controls belong to SMeeting.
 
 ## 核心模型
 
@@ -44,7 +46,9 @@ SRTC 是音视频通道层。它**只做三件事：实时消息传输、状态�
 
 - `app_id` 可以出现在客户端；**`app_key` 绝对不行**——拿到它就能签发任意身份、踢人、销毁频道。
 - token 与一次会话绑定，**用过就不能再用**。每个客户端实例各签各的。
-- 签名细节读「SRTC 服务端 API」skill。
+- 签名细节读「SRTC / SMeeting 服务端接入」skill。
+
+Tokens must be issued by your backend via `/server/v1/channel/grant`; `app_key` must never appear in any client.
 
 ## 各端入口
 

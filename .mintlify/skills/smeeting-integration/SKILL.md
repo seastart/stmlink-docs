@@ -1,6 +1,6 @@
 ---
 name: SMeeting 会议接入
-description: 用 SMeeting 会议 SDK 做视频会议时使用——三种对接方式的选择、房间与会议模型、主持人会控、举手与等候室、会中聊天与消息通道。覆盖服务端极简对接、带 UI 极简对接和各端 SDK 自定义对接。只要音视频通道、不要会议规则时读「SRTC 音视频接入」。
+description: 用 SMeeting 会议 SDK 做视频会议时使用——三种对接方式的选择、房间与会议模型、主持人会控、举手与等候室、会中聊天与消息通道。覆盖服务端极简对接、带 UI 极简对接和各端 SDK 自定义对接。只要音视频通道、不要会议规则时读「SRTC 音视频接入」。Use when building video conferencing with the SMeeting conferencing SDK—choosing among server-side low-code integration, low-code integration with UI, and custom integration with the platform SDKs; the room and meeting model; host controls, raise hand, and the waiting room; in-meeting chat and messaging. If you only need an audio/video transport without meeting rules, read "SRTC 音视频接入" instead.
 metadata:
   version: "1.0"
   docs: https://docs.stmlink.com
@@ -33,6 +33,8 @@ SMeeting 建在 SRTC 之上，把会议才需要的规则——主持人、举�
 
 **别漏掉 `/meeting` 网关前缀**——标准部署下同域名的根路径走的是 SRTC 音视频服务，
 漏了就会找不到会议接口。只有第 3 步的 URL 会到达浏览器，`app_key` 始终留在后端。
+
+Don't drop the `/meeting` prefix: the domain root serves SRTC. Only the final redirect URL reaches the browser; `app_key` never leaves your backend.
 
 ## 核心模型
 
@@ -82,6 +84,8 @@ SMeeting 建在 SRTC 之上，把会议才需要的规则——主持人、举�
 | 媒体 | 由会议层管理 | 流轨道 track |
 
 SMeeting 的接口不接受频道名，SRTC 的接口也不认识会议号。少数错误码里带「频道」字样是底层 RTC 原样透传，不是笔误。
+
+SMeeting has rooms and meetings that members enter and exit; SRTC has channels that users join and leave. Never pass a channel name to SMeeting APIs; SRTC APIs don't accept meeting or room numbers either. A few error messages mention "channel" because they are passed through verbatim from the underlying RTC layer—that's not a typo.
 
 ## 三条消息通道，别选错
 

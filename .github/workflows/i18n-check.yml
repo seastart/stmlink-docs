@@ -1,0 +1,38 @@
+# 校验英文版（en/）与中文源头之间能被机器判定的硬错误。
+#
+# 英文页是从中文派生的：导航由 zh 推导、每页对应哪个中文版本登记在 i18n/en.lock.json。
+# 这些东西人工改错了站点照样能构建，但会出现侧边栏缺页、链接/锚点 404、lock 指向不存在的
+# 英文页——都是**没有征兆**的错误，这条 CI 就是那个征兆。
+#
+# 只对硬错误红（导航不一致、lock 与文件不符、链接目标或锚点不存在、en 生成页 ## 标题重名）；
+# 英文「过期」「未审校」「翻译记忆缺失」只打印告警不失败 —— 中文文档的更新不能被翻译进度卡住。
+#
+# 单独成一个工作流、不并入 llms-txt-check.yml：两者关注点不同，PR 上分成两个检查项，
+# 红了一眼能看出是 llms.txt 忘了重跑还是英文版出了问题；另外只有这里需要完整历史（见下）。
+name: i18n check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 拉完整历史。check 判断「过期」用的是 git hash-object 算当前中文文件的
+      # blob hash 与 lock 里登记的比对，不依赖历史，所以默认浅克隆（depth 1）也不会误报；
+      # 但过期告警里附带的「中文改了多少行」要 git diff <登记时的 zh_commit>，浅克隆下
+      # 那个提交不存在，告警只剩一句「提交不存在，无法取增量」。仓库历史很小，拉全量换一条
+      # 有用的告警是值得的
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # 脚本只用 Python 标准库，用 runner 自带的 python3 即可
+      - name: 校验英文版导航、版本登记与链接
+        run: |
+          if ! python3 scripts/i18n.py check; then
+            echo "::error::英文版校验失败，按上面的 [错误] 行修复（本地跑 'python3 scripts/i18n.py check' 复现）。"
+            exit 1
+          fi

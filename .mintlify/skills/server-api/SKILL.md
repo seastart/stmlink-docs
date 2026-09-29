@@ -1,6 +1,6 @@
 ---
 name: SRTC / SMeeting 服务端接入
-description: 从业务后端调 SRTC 或 SMeeting 的 HTTP 接口时使用——HMAC-SHA256 签名怎么算、Token 怎么签发下发、事件回调怎么接、两个产品的服务端差异在哪。出现「认证失败」「签名错误」时先读这个。
+description: 从业务后端调 SRTC 或 SMeeting 的 HTTP 接口时使用——HMAC-SHA256 签名怎么算、Token 怎么签发下发、事件回调怎么接、两个产品的服务端差异在哪。出现「认证失败」「签名错误」时先读这个。Use when calling the SRTC or SMeeting Server API from your backend—how to compute the HMAC-SHA256 signature, issue tokens to clients, and receive event callbacks, and how the two products differ on the server side. Read this first on authentication or signature errors.
 metadata:
   version: "1.0"
   docs: https://docs.stmlink.com
@@ -20,6 +20,8 @@ metadata:
 拿到 `app_key` 的人可以签发任意用户身份的 token、踢人、销毁频道。它不能出现在：客户端代码、前端配置文件、移动 App 包体、Git 仓库、日志。
 
 **客户端拿到的永远只是后端签发好的 token，不是密钥。**
+
+`app_key` is a server-side secret: it must never appear in client code, frontend config, a mobile app, a Git repo, or logs. Clients only ever receive a token issued by your backend.
 
 ## 签名算法（两个产品完全一致）
 
@@ -80,7 +82,7 @@ metadata:
 
 ## 两个产品的服务端差异
 
-签名一致，但其余不同——**不要把一层的接口套到另一层**。
+签名一致，但其余不同——**不要把一层的接口套到另一层**。Signing is identical, everything else differs: never carry one layer's APIs over to the other.
 
 | | SRTC | SMeeting |
 | --- | --- | --- |
@@ -102,6 +104,8 @@ metadata:
 ```
 
 独立域名部署时前缀可能不同，以我们提供的接入信息为准。除上述前缀外的接口都是内部接口，不要调用。
+
+Public server APIs use only `/server/v1/...` and `/stm/srvapi/v1/...` (SMeeting sits under `/meeting/` in standard deployments). Prefixes may differ on dedicated-domain deployments; follow the access details we provide. Any other path is internal: never call it.
 
 ## 常用接口
 

@@ -31,8 +31,11 @@ stmlink-docs/
 ├── zh/                # 中文文档
 │   ├── rtc/           # SRTC SDK
 │   └── meeting/       # SMeeting SDK
-└── en/                # 英文文档（待补充）
+├── en/                # 英文文档（从中文派生，只含已译的页）
+└── i18n/              # 英文版术语表、写作规范、翻译范围与版本登记
 ```
+
+中文是唯一源头，英文版的翻译与同步流程见 `.claude/skills/translate-en/SKILL.md`。
 
 ## 贡献指南
 

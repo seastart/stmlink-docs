@@ -1,0 +1,92 @@
+{
+  "description": "英文版翻译范围（scripts/i18n.py status 读取）。zh 页按 batches 顺序匹配，首个命中的批次生效：先看 pages 精确匹配，再看 prefixes 目录前缀。excluded_prefixes 优先于一切，命中即不纳入。批次划分见 docs/stmlink-docs-英文版-实现计划-20260929.md §0。",
+  "excluded_prefixes": [
+    "zh/rtc/harmony/",
+    "zh/meeting/harmony/",
+    "zh/rtc/wechat-miniprogram/",
+    "zh/meeting/wechat-miniprogram/"
+  ],
+  "batches": [
+    {
+      "name": "P1a",
+      "description": "SRTC / SMeeting 概览；两层服务端 API（手写页 + 生成页，生成页走翻译记忆表）",
+      "pages": [
+        "zh/rtc/overview",
+        "zh/choose",
+        "zh/rtc/quickstart",
+        "zh/rtc/key-concepts",
+        "zh/rtc/token",
+        "zh/rtc/network-line",
+        "zh/rtc/whiteboard",
+        "zh/rtc/error-codes",
+        "zh/ai",
+        "zh/meeting/overview",
+        "zh/meeting/quickstart",
+        "zh/meeting/key-concepts",
+        "zh/meeting/token",
+        "zh/meeting/error-codes"
+      ],
+      "prefixes": [
+        "zh/rtc/server-api/",
+        "zh/meeting/server-api/"
+      ]
+    },
+    {
+      "name": "P1b",
+      "description": "SRTC 的 Web / Android / Swift / Python 与 SMeeting 的 Web / Android / Swift：integration、quickstart、key-concepts、error-codes（没有该页的平台不列）",
+      "pages": [
+        "zh/rtc/web/integration",
+        "zh/rtc/web/quickstart",
+        "zh/rtc/web/key-concepts",
+        "zh/rtc/web/error-codes",
+        "zh/rtc/android/integration",
+        "zh/rtc/android/quickstart",
+        "zh/rtc/android/error-codes",
+        "zh/rtc/swift/integration",
+        "zh/rtc/swift/quickstart",
+        "zh/rtc/swift/key-concepts",
+        "zh/rtc/swift/error-codes",
+        "zh/rtc/python/integration",
+        "zh/rtc/python/quickstart",
+        "zh/rtc/python/error-codes",
+        "zh/meeting/web/integration",
+        "zh/meeting/web/quickstart",
+        "zh/meeting/android/integration",
+        "zh/meeting/android/quickstart",
+        "zh/meeting/android/error-codes",
+        "zh/meeting/swift/integration",
+        "zh/meeting/swift/quickstart",
+        "zh/meeting/swift/key-concepts",
+        "zh/meeting/swift/error-codes"
+      ],
+      "prefixes": []
+    },
+    {
+      "name": "P2",
+      "description": "上述平台其余页（接口文档、事件、类型、进阶、changelog、faq）+ C SDK + SMeeting 极简对接（ui-sdk）",
+      "pages": [],
+      "prefixes": [
+        "zh/rtc/web/",
+        "zh/rtc/android/",
+        "zh/rtc/swift/",
+        "zh/rtc/python/",
+        "zh/rtc/capi/",
+        "zh/meeting/web/",
+        "zh/meeting/android/",
+        "zh/meeting/swift/",
+        "zh/meeting/ui-sdk/"
+      ]
+    },
+    {
+      "name": "P3",
+      "description": "Windows、iOS（Objective-C），两个产品",
+      "pages": [],
+      "prefixes": [
+        "zh/rtc/windows/",
+        "zh/rtc/ios/",
+        "zh/meeting/windows/",
+        "zh/meeting/ios/"
+      ]
+    }
+  ]
+}

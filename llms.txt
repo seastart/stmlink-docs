@@ -1,12 +1,12 @@
-# STMLink 文档
+# STMLink Docs
 
-> STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。
+> STMLink 开发者文档：SRTC 音视频 SDK（频道通信、云录制与直播、语音录制、语音识别）与 SMeeting 会议 SDK（房间、会议管理），覆盖 iOS / Android / Windows / Web / 微信小程序 / C（服务端·嵌入式）多端接入与服务端 API。 STMLink developer docs: the SRTC audio/video SDK (channels, cloud recording and live streaming, voice recording, speech recognition) and the SMeeting conferencing SDK (rooms and meetings), covering client integration on iOS, Android, Windows, Web, WeChat Mini Programs and C (server/embedded), plus the Server API.
 
 > ## Agent Instructions
-> 对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。
-> app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。
-> SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上。
-> 同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。
+> 对外开放的服务端接口有两组前缀，都用同一套鉴权：`/server/v1/...`（SRTC 与 SMeeting 的主接口）和 `/stm/srvapi/v1/...`（SMeeting 的用户体系，服务端极简对接会用到）。鉴权是 app_id + nonce + timestamp + signature 四个请求头，用 app_key 做 HMAC-SHA256 签名，只能从业务方自己的后端调用。除这两组前缀外的接口均为内部接口，不要建议客户调用。 Public server APIs use two path prefixes with the same authentication: `/server/v1/...` (the main APIs of both SRTC and SMeeting) and `/stm/srvapi/v1/...` (the SMeeting user system, used by server-side low-code integration). Authenticate with four request headers, app_id + nonce + timestamp + signature, where signature is HMAC-SHA256 keyed with app_key; call these APIs only from the customer's own backend. Any other path is internal: never suggest calling it.
+> app_key 是服务端密钥，绝不能出现在客户端代码、前端配置或移动 App 里。客户端加入频道用的 token 必须由业务方后端签发后下发（SRTC 走 `/server/v1/channel/grant`，SMeeting 走 `/stm/srvapi/v1/member/grant`）。 app_key is a server-side secret and must never appear in client code, frontend config, or a mobile app. The token a client uses to join must be issued by the customer's backend and passed down to the client (SRTC: `/server/v1/channel/grant`; SMeeting: `/stm/srvapi/v1/member/grant`).
+> SRTC 与 SMeeting 是上下两层不同的产品，术语不通用：SRTC 是音视频底座，说「频道 channel」「加入 / 退出」；SMeeting 建在 SRTC 之上，说「房间 room」「会议 meeting」「进入 / 退出」。回答时按用户所在的层用对应术语，不要把「房间」「会议」安到 SRTC 的接口上，也不要用「频道」「加入 / 离开」描述 SMeeting 的概念（接口标识符原样保留）。 SRTC and SMeeting are two separate layers with different terminology. SRTC is the audio/video foundation: it has channels, and users join and leave a channel. SMeeting is built on top of SRTC: it has rooms and meetings, and members enter and exit a meeting. Answer in the terms of the layer the user is working with: never apply "room" or "meeting" to SRTC APIs, and never describe SMeeting concepts in prose with "channel", "join", or "leave" (API identifiers such as `force_join` keep their literal names).
+> 同一能力在各端 SDK 里的包名、类名、方法名并不相同。写示例代码时请使用文档中该端自己的 API，不要把一个端的写法套到另一个端上。苹果平台每个产品都有两套 SDK（Swift 原生与 Objective-C），两套 API 不能混用。 Package, class, and method names differ between platform SDKs for the same capability. In sample code, use the API documented for that platform; never carry one platform's code over to another. On Apple platforms each product ships two SDKs (native Swift and Objective-C) whose APIs must not be mixed.
 
 ## SRTC 音视频 SDK · 概览
 
@@ -297,7 +297,7 @@
 ## SMeeting 会议 SDK · Android SDK
 
 - [集成](https://docs.stmlink.com/zh/meeting/android/integration.md): Android SMeeting 会议 SDK 环境配置与 SDK 安装指南
-- [快速开始](https://docs.stmlink.com/zh/meeting/android/quickstart.md): 使用 SMeeting Android 2.0.37 完成初始化、创建会议、注册事件、入会、发布本地音视频与订阅远端视频
+- [快速开始](https://docs.stmlink.com/zh/meeting/android/quickstart.md): 使用 SMeeting Android 2.0.39 完成初始化、创建会议、注册事件、入会、发布本地音视频与订阅远端视频
 - [模型类型](https://docs.stmlink.com/zh/meeting/android/types.md): SMeeting Android 2.0.37 公开接口直接使用的配置、结果、会议、成员、点名、签到、IM 与录制布局模型
 - [枚举类型](https://docs.stmlink.com/zh/meeting/android/enums.md): Android SMeeting 2.0.37 的会议、成员、设备、消息、共享、录制、点名与外部设备枚举
 - [媒体质量](https://docs.stmlink.com/zh/meeting/android/media-quality.md): 通过 MeetingEngine 主动查询或监听 Android SMeeting 的媒体统计、服务端质量报告和网络质量变化
@@ -467,3 +467,109 @@
 - [会议管理](https://docs.stmlink.com/zh/meeting/server-api/meet.md): 会前会后的会议编排：创建、修改、取消、查询，以及参会记录与聊天记录
 - [会中控制](https://docs.stmlink.com/zh/meeting/server-api/meet-admin.md): 会议进行中主持人可做的操作：全体音视频管控、成员角色与踢人、举手处理、呼叫入会
 - [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播推流
+
+## [EN] SRTC Audio & Video SDK · Overview
+
+- [Overview](https://docs.stmlink.com/en/rtc/overview.md): What SRTC is, its architecture, and which platforms it supports, with links to each platform's integration and quickstart pages. Read this first when evaluating SRTC or picking your platform SDK.
+- [Choosing SRTC or SMeeting](https://docs.stmlink.com/en/choose.md): How SRTC (audio and video SDK) and SMeeting (conferencing SDK) are layered, how their terms and capabilities differ, and which one fits your product. Read before you start integrating, if you're not sure which layer to build on.
+- [Quickstart](https://docs.stmlink.com/en/rtc/quickstart.md): The shortest path to integrating SRTC: who does what across your client, your backend, our SDK, and our server; the three things to do before you start; per-platform entry points; and the typical call order.
+- [Key concepts](https://docs.stmlink.com/en/rtc/key-concepts.md): The SRTC model of channels, users, and tracks: when channels open and are destroyed, how uid maps to channels, explicit subscription, and in-channel vs. out-of-channel IM messages. Read before calling any SRTC API.
+- [Token and authentication](https://docs.stmlink.com/en/rtc/token.md): How AppID and AppKey divide responsibilities, how your backend issues the token a client needs to join a channel, how to choose the uid, and the errors you hit when a token is reused or a signature is wrong. Read before writing any join logic.
+- [Network lines](https://docs.stmlink.com/en/rtc/network-line.md): How the net parameter of channel/grant (internal or public line) decides which service addresses the client SDK receives, two ways for your backend to choose it, the matchNetwork reference logic, and the Nginx headers it relies on. Read if you deploy both network lines.
+- [Whiteboard](https://docs.stmlink.com/en/rtc/whiteboard.md): Embed the SRTC-hosted whiteboard H5 page: users in the channel open the URL returned on join, others get an auth code from your backend. Covers URL parameters, the read-only permission switch, page following, broadcasting sharing state, WebView host APIs, and when boards are destroyed.
+- [Error code format](https://docs.stmlink.com/en/rtc/error-codes.md): How SRTC error codes are numbered across all platforms: how to tell from a code whether it came from the server or a client SDK and which platform, the platform type table, and where to look next. Read when you get an unfamiliar error code.
+- [Build with AI](https://docs.stmlink.com/en/ai.md): Connect the SRTC / SMeeting docs to AI coding tools such as Claude Code and Cursor: install the integration skills with one command, or connect the docs MCP server. Also covers llms.txt, per-page Markdown, and how to prompt for better results.
+
+## [EN] SRTC Audio & Video SDK · Web SDK
+
+- [Integration](https://docs.stmlink.com/en/rtc/web/integration.md): Set up the SRTC Web SDK: supported browsers and minimum versions, embedding in WeChat Mini Program via web-view, HTTPS/localhost protocol limits for publishing, installing via npm, CDN, or local files, import styles, and using the SDK with Vue and other reactive frameworks.
+- [Quickstart](https://docs.stmlink.com/en/rtc/web/quickstart.md): A minimal runnable Web SDK call in about 10 minutes: initialize, check the environment, register channel events, join with a token, play the channel-wide mixed audio, subscribe to remote video, publish microphone and camera, and leave. Start here after installing the SDK.
+- [Key concepts](https://docs.stmlink.com/en/rtc/web/key-concepts.md): Core model of the SRTC Web SDK: the SRTC instance and the Channel returned by join, tokens, the track class hierarchy and how each track is created, the local track lifecycle, channel and IM event callbacks, and audience mode. Read before writing code beyond the quickstart.
+- [Error codes](https://docs.stmlink.com/en/rtc/web/error-codes.md): Error codes you can get from the SRTC Web SDK: server codes (1011, 1021–1025) for invalid app, used token, and channel state, and Web client codes (106001–106003) for not in channel, expired token, and missing track. Read when handling join or publish failures.
+
+## [EN] SRTC Audio & Video SDK · Android SDK
+
+- [Integration](https://docs.stmlink.com/en/rtc/android/integration.md): Set up an Android project for the SRTC SDK: environment requirements (AndroidX, minSdk 24, compileSdk 35), Maven repository and dependency configuration, runtime permissions, ABIs, background microphone capture, and video rendering views. Read before writing any Android SRTC code.
+- [Quickstart](https://docs.stmlink.com/en/rtc/android/quickstart.md): The minimal Android SRTC flow in Kotlin: create and initialize RTCEngine, register channel and media callbacks, join a channel, explicitly start camera/microphone/screen capture and publish, subscribe to remote video, then leave and release resources. Read after completing integration.
+- [Error codes](https://docs.stmlink.com/en/rtc/android/error-codes.md): Android SRTC error codes: librtc StatusCode values (100xxx), the SDK's own 102xxx codes by domain (channel, camera, microphone, screen, stream, HTTP), the RtcErrorCatalog lookup API, pass-through rules, and which callbacks to handle. Read when handling or logging Android SDK errors.
+
+## [EN] SRTC Audio & Video SDK · Swift SDK (iOS/macOS)
+
+- [Integration](https://docs.stmlink.com/en/rtc/swift/integration.md): Add the SRTC Swift SDK to an iOS or macOS app: system requirements (iOS 16 / macOS 14 since 1.4.0), Swift Package Manager setup in Package.swift or Xcode, when to use SRTCBroadcastKit, camera and microphone permissions, and a minimal integration checklist. Read before the Swift quickstart.
+- [Quickstart](https://docs.stmlink.com/en/rtc/swift/quickstart.md): A minimal SwiftUI example for the SRTC Swift SDK: create SRTCEngine, join a channel, capture and publish local microphone and camera tracks, subscribe to remote video in ChannelDelegate, and leave. Also explains why joinChannel returns a Channel and why create, capture, and publish are separate.
+- [Key concepts](https://docs.stmlink.com/en/rtc/swift/key-concepts.md): The SRTC Swift SDK object model: SRTCEngine vs. Channel, local and remote track types, the default audio mix mode, create/capture/publish steps for video, the three rendering options, DeviceManager, and the ChannelDelegate / TrackDelegate event model. Read before using the Swift API reference.
+- [Error codes](https://docs.stmlink.com/en/rtc/swift/error-codes.md): The SRTCError enum of the SRTC Swift SDK: cases for connection, signaling, WebRTC/transport, tracks and capture, engine, and virtual background errors, with a suggested fix for each, plus a recommended do/catch pattern. Read when handling errors thrown by the Swift SDK.
+
+## [EN] SRTC Audio & Video SDK · Python SDK (server-side AI)
+
+- [Integration](https://docs.stmlink.com/en/rtc/python/integration.md): What the SRTC Python SDK is for, how to install it, and which platforms it supports, plus the asyncio threading model and deployment caveats around fork and capacity. Read this page before integrating the Python SDK.
+- [Quickstart](https://docs.stmlink.com/en/rtc/python/quickstart.md): Get started with the SRTC Python SDK: join a channel, receive each user's PCM audio frame by frame, and push TTS audio back into the channel, with minimal runnable examples.
+- [Error codes](https://docs.stmlink.com/en/rtc/python/error-codes.md): The Python SDK's SdkError: the three kinds of code values (the SDK's own 180xxx, server 1xxx passed through unchanged, and -1 internal errors), causes and troubleshooting for common errors, and how to handle join failures.
+
+## [EN] SRTC Audio & Video SDK · Server API
+
+- [Overview](https://docs.stmlink.com/en/rtc/server-api/overview.md): Basics of the SRTC Server API: channel lifecycle and naming rules, base URL, request headers, the HMAC-SHA256 signing algorithm, uid and sid, and the response format. Read this before calling any SRTC server endpoint.
+- [Error codes](https://docs.stmlink.com/en/rtc/server-api/error-codes.md): Values of the code field in server API responses
+- [Reference backend implementation](https://docs.stmlink.com/en/rtc/server-api/server-demo.md): What your backend should wrap around the SRTC server API and where to draw permission boundaries, plus conventions for channel and user props, custom messages, when to use IM instead of in-channel messages, and track desc values. Read this when designing your own backend.
+
+## [EN] SRTC Audio & Video SDK · Server API · Guides
+
+- [Cloud recording and live streaming guide](https://docs.stmlink.com/en/rtc/server-api/guides/recording.md): How cloud recording, stream mixing, audio recording, and live streaming work for a whole channel: combining task types, how one recording yields multiple files, layouts and grid assignment, and how to get recording files and live stream URLs. Read this before integrating cloud recording.
+- [Callback events guide](https://docs.stmlink.com/en/rtc/server-api/guides/callbacks.md): How SRTC notifies your backend when channels, users, devices, or recordings change: request format, signature verification, response requirements, the fields of each event, synchronous events that can reject an operation, and idempotency. Read this when setting up callbacks.
+- [Device integration guide](https://docs.stmlink.com/en/rtc/server-api/guides/agents.md): How to register SIP / H.323 phones, GB28181 surveillance devices, and RTSP streams through a device gateway and bring them into a channel: the six integration types, GB28181 channels, inviting devices, and controlling them in the channel. Read this before integrating hardware devices.
+
+## [EN] SRTC Audio & Video SDK · Server API · API reference
+
+- [Channel](https://docs.stmlink.com/en/rtc/server-api/channel.md): Create and query channels, manage users, and view history
+- [Cloud recording and live streaming](https://docs.stmlink.com/en/rtc/server-api/mcu.md): Cloud recording of the entire channel, VOD URLs, and live streaming; per-speaker voice recording is a separate set of endpoints, see \"Per-speaker voice recording\"
+- [Per-speaker voice recording](https://docs.stmlink.com/en/rtc/server-api/talkrec.md): Per-speaker voice recording by a server-side listener: split into segments by utterance, with segment-level query and playback; for mixed recording of the entire channel, see \"Cloud recording and live streaming\"
+- [Device integration](https://docs.stmlink.com/en/rtc/server-api/agent.md): Integration and in-channel control of SIP, H.323, GB28181 surveillance, and other devices
+- [IM messages](https://docs.stmlink.com/en/rtc/server-api/im.md): Out-of-channel IM messages and IM device presence management
+- [Whiteboard](https://docs.stmlink.com/en/rtc/server-api/white-board.md): Authorize, check, and destroy whiteboards
+- [Transcription](https://docs.stmlink.com/en/rtc/server-api/asr.md): Start and stop ASR speech recognition and get the results
+
+## [EN] SMeeting Conferencing SDK · Overview
+
+- [Overview](https://docs.stmlink.com/en/meeting/overview.md): What the SMeeting conferencing SDK (STMLink Meeting) covers, the three integration options from server-side low-code integration to fully custom UI, and supported platforms. Start here to decide how to add video meetings to your product.
+- [Choosing SRTC or SMeeting](https://docs.stmlink.com/en/choose.md): How SRTC (audio and video SDK) and SMeeting (conferencing SDK) are layered, how their terms and capabilities differ, and which one fits your product. Read before you start integrating, if you're not sure which layer to build on.
+- [Quickstart](https://docs.stmlink.com/en/meeting/quickstart.md): The shortest path to integrating SMeeting: who is responsible for what across your client, your backend, our SDK, and our server; how data flows; how to choose among the three integration options; and where to start on each platform.
+- [Key concepts](https://docs.stmlink.com/en/meeting/key-concepts.md): The SMeeting model: rooms vs. meetings and the meeting lifecycle, built-in roles (host, co-host, regular member), audience, custom roles, the three types of messages, multi-device presence, and how SMeeting terms differ from the underlying SRTC layer.
+- [Token and authentication](https://docs.stmlink.com/en/meeting/token.md): How SMeeting authentication works: the different roles of AppID and AppKey, how your backend issues the meeting token the client logs in with, what the session covers after login, and a pre-launch secret key security checklist.
+- [Error code format](https://docs.stmlink.com/en/meeting/error-codes.md): How SMeeting error codes are numbered (prefix plus a 3-digit code), how to tell server, cross-platform SDK, and platform-specific errors apart, and why SRTC 1xxxxx codes show up alongside SMeeting 2xxxxx codes. Read this when troubleshooting an error code.
+- [Build with AI](https://docs.stmlink.com/en/ai.md): Connect the SRTC / SMeeting docs to AI coding tools such as Claude Code and Cursor: install the integration skills with one command, or connect the docs MCP server. Also covers llms.txt, per-page Markdown, and how to prompt for better results.
+
+## [EN] SMeeting Conferencing SDK · Web SDK
+
+- [Integration](https://docs.stmlink.com/en/meeting/web/integration.md): Supported browsers, WeChat Mini Program embedding via web-view, protocol requirements for publishing and receiving streams, and how to install the SMeeting Web SDK via npm or a local copy. Read this before writing any meeting code for the Web.
+- [Quickstart](https://docs.stmlink.com/en/meeting/web/quickstart.md): Code snippets for the SMeeting Web SDK: create an instance, check the environment, log in, create / enter / exit / end meetings, manage camera, mic, speaker, and screen sharing, send messages, host controls, device invitations, and recording. Read this to get a basic Web meeting running.
+
+## [EN] SMeeting Conferencing SDK · Android SDK
+
+- [Integration](https://docs.stmlink.com/en/meeting/android/integration.md): Configure the Maven repository (settings.gradle or legacy build.gradle), add the cn.seastart.meeting:meeting dependency, and check AndroidX, minSdk, and runtime permission requirements for the SMeeting Android SDK. Read this before initializing the SDK.
+- [Quickstart](https://docs.stmlink.com/en/meeting/android/quickstart.md): Use SMeeting Android 2.0.39 to initialize MeetingEngine, create a meeting, register in-meeting events, enter and exit the meeting, publish the local camera and mic, and subscribe to remote video. Read this after adding the dependency.
+- [Error codes](https://docs.stmlink.com/en/meeting/android/error-codes.md): Where SMeeting Android SDK errors come from (Meeting SDK, SRTC SDK, librtc, server, HTTP), the full list of 202xxx MeetingErrorCode constants, passed-through RTC camera errors, and how your app should handle them. Read this when handling onFailure / onError.
+
+## [EN] SMeeting Conferencing SDK · Swift SDK (iOS/macOS)
+
+- [Integration](https://docs.stmlink.com/en/meeting/swift/integration.md): Requirements (iOS 16 / macOS 14, Xcode 15, Swift 5.9), adding the SMeeting Swift SDK with Swift Package Manager, the extra SRTCBroadcastKit dependency for iOS full-screen sharing, which types need import SRTC, and Info.plist permissions. Read this before writing any meeting code on iOS or macOS.
+- [Quickstart](https://docs.stmlink.com/en/meeting/swift/quickstart.md): A minimal runnable SMeeting Swift SDK example in SwiftUI: log in with a meeting token, create an instant meeting or enter by room number, turn the microphone and camera on, render local and remote video, and exit. Read this right after integrating the SDK.
+- [Key concepts](https://docs.stmlink.com/en/meeting/swift/key-concepts.md): How the SMeeting Swift SDK is organized: the SMeetingEngine entry point, the meeting lifecycle, meeting ID vs. room number, RoomInfo / MeetingUserInfo snapshots, roles, TrackDesc, media control naming, audio vs. video subscription, and SMeetingDelegate events. Read before building meeting features.
+- [Error handling](https://docs.stmlink.com/en/meeting/swift/error-codes.md): The SMeetingError enum of the SMeeting Swift SDK: every case with its client code, how codes get the iOS 203 / macOS 205 prefix while server codes pass through, common causes of unauthorized, a recommended do-catch pattern, and which APIs never throw. Read when handling or troubleshooting errors.
+
+## [EN] SMeeting Conferencing SDK · Server API
+
+- [Overview](https://docs.stmlink.com/en/meeting/server-api/overview.md): Basics of the SMeeting Server API: request method and format, base URL, request headers, the HMAC-SHA256 signing algorithm, and the response format. Read this before calling any SMeeting server endpoint.
+- [Error codes](https://docs.stmlink.com/en/meeting/server-api/error-codes.md): Values of the code field in server API responses
+
+## [EN] SMeeting Conferencing SDK · Server API · Guides
+
+- [Cloud recording and live streaming guide](https://docs.stmlink.com/en/meeting/server-api/guides/recording.md): How cloud recording, stream mixing, and live streaming work for meetings: combining task types, when tasks start automatically, layouts and grid assignment, and how to get recording files and live stream URLs. Read this before integrating meeting recording.
+- [Callback events guide](https://docs.stmlink.com/en/meeting/server-api/guides/callbacks.md): How SMeeting notifies your backend when meetings, members, or recordings change: request format, signature verification, response requirements, the fields of each event, and idempotency. Read this when setting up callbacks.
+- [Device integration and IM](https://docs.stmlink.com/en/meeting/server-api/guides/agent-and-im.md): SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the meeting_id, not the room number.
+
+## [EN] SMeeting Conferencing SDK · Server API · API reference
+
+- [Meeting authorization](https://docs.stmlink.com/en/meeting/server-api/user-auth.md): Issue meeting tokens for users in your system, and force authorized users to log out
+- [Meeting management](https://docs.stmlink.com/en/meeting/server-api/meet.md): Meeting scheduling before and after the meeting: create, update, cancel, and query meetings, plus attendance records and chat history
+- [In-meeting controls](https://docs.stmlink.com/en/meeting/server-api/meet-admin.md): Actions the host can take during a meeting: audio and video controls for everyone, member roles and removal, raise-hand handling, and calling users into the meeting
+- [Meeting recording and live streaming](https://docs.stmlink.com/en/meeting/server-api/mcu.md): Cloud recording of the whole meeting, playback URLs, and live streaming

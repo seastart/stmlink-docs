@@ -1,0 +1,524 @@
+# STMLink 文档英文版术语表（zh → en）
+#
+# 读者：翻译 agent 与人工审校。脚本不解析本文件（i18n.py 只读 nav.en.json / en.lock.json）。
+# 配套规范见同目录 STYLE.md。
+#
+# 每条字段：
+#   zh:   中文原词（以 zh/ 文档实际出现的写法为准，括号里是次要写法）
+#   en:   唯一推荐译法。多个用 " / " 分隔时，note 里说明各自的使用场景
+#   note: 何时用、何时不能用；与相近词的区分
+#
+# 维护规则：
+#   + 新增译法先改这里，再改页面，保证全站一个词只有一种译法
+#   + 标了「待定」的条目是初版选择、需用户确认；确认后删掉「待定」字样
+#   + 「频次」是 2026-09-29 在 zh/ 下的 grep 计数，只用于判断优先级，不必随文档更新
+#   + 服务端 API 与示例代码中的**示例值**（如 张三、项目周会、三楼东侧）在英文页译成英文示例值
+#     （如 Alice、Weekly project sync、East wing, 3F）——它们只是展示数据，不是系统真实输出
+
+# ---------------------------------------------------------------------------
+# 1. 不译的专有名词与标识符（原样保留，大小写不改）
+# ---------------------------------------------------------------------------
+do_not_translate:
+  - zh: STMLink
+    en: STMLink
+    note: 品牌名，统一写 STMLink。zh 页里偶见的 StmLink / Stmlink 在英文版一律改成 STMLink
+  - zh: SRTC
+    en: SRTC
+    note: RTC 层产品名。不加冠词（"SRTC provides…"，不写 "the SRTC"）
+  - zh: SMeeting
+    en: SMeeting
+    note: 会议层产品名与 SDK 名。官网英文版把会议产品叫 "STMLink Meeting"，但文档里 SDK、类名都是 SMeeting，文档保持 SMeeting；概览页首次出现时说明它即官网的 STMLink Meeting，如 "SMeeting (the SDK behind STMLink Meeting)"（用户已确认 2026-09-29）
+  - zh: SeaStart（seastart）
+    en: SeaStart
+    note: 媒体引擎名，出现在 C SDK「SeaStart 进阶能力」等处。代码里的 seastart 小写原样保留
+  - zh: MCU
+    en: MCU
+    note: 服务端合流录制服务。首次出现可写 "MCU (server-side mixing and recording)"
+  - zh: IM
+    en: IM
+    note: 保留缩写，不展开成 instant messaging app。含义见 SRTC 术语「频道外 IM 消息」
+  - zh: Token（token）
+    en: token
+    note: 句中小写 token；标题首词或专指「Token 与鉴权」页时首字母大写。不写 access token
+  - zh: 各 SDK 类名 / 接口名 / 事件名 / 枚举值
+    en: 原样
+    note: SRTC、SRTCEngine、RTCEngine、RTCChannel、RTCEngineKit、MeetingKit、SMeeting、SMeetingEngine、MeetingEngine、IRTCEngine、ISMeetingEngine、LocalCameraTrack、RemoteAudioMixTrack、onNotifyChannelEvent、USER_JOIN、custom_msg、im_msg 等一律不译，放在反引号里
+  - zh: 标识符与字段名
+    en: 原样
+    note: app_id、app_key、uid、sid、token、channel、task_id、record_id、task_type、host_uid、co_hosts、is_audience、extend_info、desc、role、nonce、timestamp、signature 等。作为字段出现时保持反引号；作为概念在句中出现时也用原样（"the `uid`"），不要改写成 "user ID field"
+  - zh: 接口路径
+    en: 原样
+    note: /server/v1/...、/stm/srvapi/v1/...、channel/grant、member/grant 等不改一个字符
+  - zh: 平台与生态名
+    en: 原样
+    note: Web、Android、iOS、macOS、Windows、Linux、HarmonyOS、WeChat Mini Program（微信小程序）、Swift、Objective-C、C++、Python、npm、Maven、CocoaPods、Swift Package Manager、XCFramework、PyPI、pipecat、WebRTC、H.264、Opus
+  - zh: 协议与设备标准
+    en: 原样
+    note: SIP、H.323（zh 里的 H323 在英文正文统一写 H.323，但 type=iph323 等取值不改）、GB28181、RTSP、RTMP、ONVIF、HMAC-SHA256
+  - zh: 风远（FY）
+    en: Freewind
+    note: 流媒体服务商名。正文写 "FY (Freewind)"，不写 Fengyuan；代码里的 vendor 取值原样
+  - zh: 网宿（wangsucdn）
+    en: Wangsu
+    note: 流媒体服务商名。代码里的 wangsucdn 取值原样
+  - zh: rtc sdk / rtc-js / rtc-go 等仓库名
+    en: 原样
+    note: 仓库名、包名（@seastart/srtc-web-sdk、srtc）不改
+
+# ---------------------------------------------------------------------------
+# 2. 文档结构用词（导航、标题、固定小节）
+# ---------------------------------------------------------------------------
+doc_structure:
+  - zh: SRTC 音视频 SDK / SMeeting 会议 SDK（导航 tab 名）
+    en: SRTC Audio & Video SDK / SMeeting Conferencing SDK
+    note: 用户已确认 2026-09-29。与 nav.en.json 一致
+  - zh: iOS SDK（导航分组，Objective-C 版）
+    en: iOS SDK (Objective-C)
+    note: 用户已确认 2026-09-29。用来与 Swift SDK (iOS/macOS) 区分
+  - zh: 概览
+    en: Overview
+  - zh: 集成
+    en: Integration
+  - zh: 快速开始
+    en: Quickstart
+    note: 一个词，不写 Quick Start
+  - zh: 核心概念
+    en: Key concepts
+  - zh: 进阶实践
+    en: Advanced
+    note: 导航分组名。正文里指这一组页面时写 "advanced guides"
+  - zh: 接口文档 / 接口列表 / API 参考
+    en: API reference
+    note: 三种中文写法同义，英文统一
+  - zh: 事件参考
+    en: Events
+  - zh: 类型定义 / 枚举类型 / 数据结构
+    en: Types / Enums / Data structures
+  - zh: 错误码
+    en: Error codes
+  - zh: 错误码规则
+    en: Error code format
+  - zh: 更新日志
+    en: Changelog
+  - zh: 常见问题
+    en: FAQ
+  - zh: 接入指南
+    en: Guides
+    note: 服务端 API 下的手写长文分组
+  - zh: 预设配置项 / 预设
+    en: Presets
+  - zh: 下一步 / 接下来
+    en: Next steps
+  - zh: 先说结论
+    en: TL;DR
+    note: 待定，也可用 "In short"
+  - zh: 方法说明 / 说明
+    en: Description
+  - zh: 参数 / 返回值 / 异常
+    en: Parameters / Returns / Throws
+  - zh: 必填 / 可选
+    en: Required / Optional
+  - zh: 示例
+    en: Example
+
+# ---------------------------------------------------------------------------
+# 3. SRTC 层（音视频底座）术语
+#    channel / join / leave / user 等「层级词」只用于 zh/rtc/ 下的页面及讲 RTC 层的段落；
+#    媒体、录制类通用词（合流、流轨道、大小流、静音、屏幕共享等）两层通用
+# ---------------------------------------------------------------------------
+srtc:
+  - zh: 频道（频道名）
+    en: channel (channel name)
+    note: 频次 1678。SRTC 的核心空间概念，绝不译 room / meeting / session
+  - zh: 加入（频道）
+    en: join (a channel)
+    note: 频次 478。SRTC 页里的「入会」（频次 170，历史写法）也译 join the channel
+  - zh: 离开 / 退出 / 离会（频道）
+    en: leave (a channel)
+    note: SRTC 页里三种中文写法都译 leave，不用 exit
+  - zh: 打开频道 / 销毁频道
+    en: open a channel / destroy a channel
+    note: 对应回调 channel_open / channel_destroy
+  - zh: 频道扩展属性 / 频道信息
+    en: channel properties / channel info
+    note: 字段名 props 原样
+  - zh: 用户（频道用户）
+    en: user
+    note: 不用 member / participant（会议层用 member）
+  - zh: 会中昵称（SRTC 页，如 zh/rtc/server-api/agent.md）
+    en: display name
+    note: SRTC 页不写 in-meeting；会议层见 SMeeting 节「会中昵称」
+  - zh: 顶掉（同 uid 后加入顶掉先加入）
+    en: replace (the earlier session is kicked out)
+    note: 例 "the later join replaces the earlier one"
+  - zh: 流轨道 / 轨道 / Track
+    en: track
+    note: 频次 1129。不译 stream。「流」单独出现且指数据时可译 stream（如「音视频流」audio and video streams）
+  - zh: 本地 / 远端
+    en: local / remote
+    note: 远端用户 remote user；本地轨道 local track
+  - zh: 发布 / 取消发布（停止发布）
+    en: publish / unpublish
+    note: 「停止发布」也译 unpublish；对应 publishLocalTrack / unpublishLocalTrack
+  - zh: 推流
+    en: publish / push
+    note: 客户端 SDK 语境 = publish；推到 RTMP/CDN 的语境 = push。「自定义推流」见下
+  - zh: 订阅 / 取消订阅
+    en: subscribe / unsubscribe
+  - zh: 自动订阅 / 手动订阅
+    en: auto-subscribe / manual subscription
+  - zh: 拉流 / 收流
+    en: pull (a stream) / receive
+    note: 「直播拉流地址」见录制节
+  - zh: 采集（开始采集 / 停止采集）
+    en: capture (start capture / stop capture)
+  - zh: 渲染
+    en: render
+  - zh: 画面
+    en: video / view
+    note: 指视频内容译 video；指显示区域（九宫格格子）译 view / tile
+  - zh: 静音 / 解除静音
+    en: mute / unmute
+  - zh: 静音与停止发布（mute vs unpublish）
+    en: Mute vs. unpublish
+    note: 页面标题
+  - zh: 混音 / 全频道混音流
+    en: audio mixing / channel-wide mixed audio track
+    note: RemoteAudioMixTrack 的说明；与服务端「合流」区分
+  - zh: 大小流 / 大流 / 小流 / simulcast
+    en: simulcast / high stream / low stream
+    note: 大小流统一 simulcast；大流 = high stream，小流 = low stream（用户已确认 2026-09-29）。不写 big/small stream，也不写 high/low layer
+  - zh: 流媒体引擎 / 流媒体服务
+    en: media streaming engine / media streaming service
+  - zh: 麦克风（麦）
+    en: microphone / mic
+    note: 两种都可用，但同一平台的页面内保持一致、同一页内不混用（现状：SRTC 各端与 SMeeting Swift 用 microphone，SMeeting Web / Android 用 mic）。标识符里的 mic（`.mic`、`MIC_OPEN_FAILED`）原样
+  - zh: 分辨率 / 帧率 / 码率
+    en: resolution / frame rate / bitrate
+  - zh: 屏幕共享
+    en: screen sharing
+    note: 动词 share the screen
+  - zh: 自定义推流 / 自定义轨道 / 自定义音视频流
+    en: custom tracks
+    note: 页面标题「自定义推流」译 Custom tracks
+  - zh: 多频道
+    en: multiple channels
+    note: 页面标题 Multi-channel
+  - zh: 观众（观众模式）/ 听众
+    en: audience (audience mode)
+    note: 对应 is_audience。只收流不发布。SRTC 的 role 字段里的「听众」同义，也译 audience（待定：是否需要保留 listener 以区分）
+  - zh: 频道内自定义消息
+    en: in-channel custom messages
+  - zh: 频道外 IM 消息 / IM 通道
+    en: out-of-channel IM messages / IM channel
+    note: 「IM 通道」每页首次出现写 "IM channel (out-of-channel messaging)"，它是频道外的消息通路，不是 SRTC 的 channel（频道）。强调「不是聊天产品」时写 "IM here is not a chat product"
+  - zh: 频道消息
+    en: channel messages
+  - zh: 事件回调（客户端）
+    en: event callback / event handler
+    note: 客户端 SDK 的 onXxx 回调；服务端回调见第 5 节
+  - zh: 网络质量 / 通话质量 / 媒体质量
+    en: network quality / call quality / media quality
+  - zh: 活跃说话人
+    en: active speaker
+  - zh: 多网络线路 / 线路（内网 / 外网）
+    en: network lines (internal / public network)
+    note: 待定。channel/grant 的 net 参数语境；不写 route
+  - zh: 重连 / 断线 / 弱网
+    en: reconnect / disconnect / poor network
+  - zh: 音频路由
+    en: audio routing
+  - zh: 外设 / 设备管理
+    en: devices / device management
+    note: 指摄像头麦克风扬声器；与「设备接入」的硬件终端区分
+  - zh: 虚拟背景
+    en: virtual background
+  - zh: 美颜
+    en: beauty filter
+  - zh: 降噪
+    en: noise suppression
+  - zh: 音视频处理器（插件）
+    en: audio/video processors (plugins)
+  - zh: 本地合成录制 / 本地录制
+    en: local recording
+  - zh: 电子白板 / 白板 / 白板共享
+    en: whiteboard / whiteboard sharing
+  - zh: 批注
+    en: annotation
+  - zh: 云录制（云录制与直播）
+    en: cloud recording (cloud recording and live streaming)
+    note: 与官网 Cloud Recording 一致；句中小写
+  - zh: 录制任务 / 录像任务
+    en: recording task
+  - zh: 录像 / 录像文件
+    en: video recording / recording file
+    note: task_type=1
+  - zh: 合流
+    en: stream mixing
+    note: task_type=2，MCU 把多路流混成一路。不写 merge / combine
+  - zh: 合成流（program）
+    en: composite stream (program)
+  - zh: 录音（MCU 录音）
+    en: audio recording
+    note: task_type=4，整场混成一路音频。与「语音录制」必须区分，不能都写 voice recording
+  - zh: 直播 / 直播流
+    en: live streaming / live stream
+    note: task_type=8
+  - zh: 旁路推流 / 旁路直播 / 转推
+    en: re-streaming
+    note: 与官网 "re-streaming" 一致。不写 bypass streaming
+  - zh: 直播拉流地址
+    en: live stream playback URL
+  - zh: 播放地址 / 点播地址
+    en: playback URL / VOD URL
+  - zh: 布局 / 合屏布局
+    en: layout / composite layout
+  - zh: 语音录制（talkrec）
+    en: per-speaker voice recording / voice recording
+    note: 按说话人分轨、按一次讲话切段。首次出现写 per-speaker voice recording，后文可简写 voice recording（用户已确认 2026-09-29）。与 MCU「录音」(audio recording) 及 cloud recording 区分
+  - zh: 语音录制段
+    en: voice segment
+  - zh: 语音转写 / 语音识别（asr）
+    en: transcription / speech recognition
+    note: 同一套 asr 接口。强调产出文字时用 transcription，接口名「启动语音识别」用 speech recognition。「会议纪要」译 meeting minutes
+  - zh: 设备接入（agent）
+    en: device integration
+    note: SIP 话机、H.323 终端、GB28181 监控、RTSP 设备以 agent 身份进频道。不用官网营销名 Room Connector（用户已确认 2026-09-29）
+  - zh: 设备网关
+    en: device gateway
+  - zh: 国标设备 / 通道 / 云台 / 预置位
+    en: GB28181 device / channel / PTZ / preset position
+    note: 这里的「通道」是 GB28181 摄像头通道，不是 SRTC 频道，英文都叫 channel 时要写 "GB28181 channel" 区分
+  - zh: 话机 / 终端
+    en: SIP phone / H.323 endpoint
+  - zh: 注册模式 / IP 直连
+    en: registration mode / direct IP
+  - zh: 邀请设备入会 / 呼叫
+    en: invite a device to the channel / call
+    note: SRTC 语境仍是 channel
+
+# ---------------------------------------------------------------------------
+# 4. SMeeting 层（会议业务）术语 —— 只用于 zh/meeting/ 下的页面及讲会议层的段落
+# ---------------------------------------------------------------------------
+smeeting:
+  - zh: 会议 SDK
+    en: conferencing SDK
+    note: 如 "the SMeeting conferencing SDK"；不写 meeting SDK
+  - zh: 房间（房间号）
+    en: room (room number)
+    note: 频次 839。相对固定的会议空间。不用于 SRTC 频道
+  - zh: 会议（会议 ID）
+    en: meeting (meeting ID)
+    note: 一次具体的会议。不写 conference（conference 只在 "video conferencing" 泛指产品类别时用）
+  - zh: 进入（会议）/ 入会
+    en: enter (a meeting)
+    note: SMeeting 页的「入会」「进入会议」都译 enter the meeting；名词「入会」写 entering the meeting
+  - zh: 退出（会议）/ 离会 / 退会
+    en: exit (a meeting)
+    note: 对应回调 user_exit
+  - zh: 创建 / 修改 / 取消 / 结束会议
+    en: create / update / cancel / end a meeting
+  - zh: 预约会议 / 即时会议
+    en: scheduled meeting / instant meeting
+  - zh: 会前 / 会中 / 会后
+    en: before the meeting / in-meeting (during the meeting) / after the meeting
+    note: 形容词用 in-meeting（in-meeting chat），副词用 during the meeting
+  - zh: 登录 / 登出
+    en: log in / log out
+    note: 名词 login
+  - zh: 成员 / 参会成员 / 普通成员
+    en: member / member / regular member
+    note: 与 API 命名（member/grant、MemberInfo）一致，正文也用 member，不用 participant（用户已确认 2026-09-29）
+  - zh: 参会人员 / 参会者（conferee）
+    en: invitee
+    note: 用户已确认 2026-09-29。指建会时登记的 conferee_details 名单（不一定已入会）；已入会的人仍叫 member
+  - zh: 主持人
+    en: host
+    note: 不写 moderator / presenter / admin
+  - zh: 联席主持人
+    en: co-host
+    note: 连字符写法
+  - zh: 观众
+    en: audience
+    note: is_audience，入会形态而非角色
+  - zh: 角色 / 会中角色 / 自定义角色 / 外部角色模式
+    en: role / in-meeting role / custom roles / external role mode
+  - zh: 转移主持人
+    en: transfer host
+  - zh: 会控 / 主持人管控 / 会中控制
+    en: meeting controls / host controls / in-meeting controls
+  - zh: 静音全场 / 全场静音 / 全体静音
+    en: mute all
+  - zh: 全体禁画 / 全体关视频
+    en: camera off for everyone
+    note: 如 "the host turns on camera off for everyone"；与「全体静音」mute all 并列时写 "mute all / camera off for everyone"。不写 all cameras off / video off for everyone
+  - zh: 踢人
+    en: remove a member
+    note: 不写 kick（接口名里的 kick 原样保留）
+  - zh: 锁定会议
+    en: lock the meeting
+  - zh: 举手 / 举手申请发言
+    en: raise hand / raise a hand to request to speak
+  - zh: 邀请开麦 / 开启请求
+    en: ask to unmute / unmute request
+  - zh: 请求 - 批准
+    en: request–approve
+  - zh: 等候室
+    en: waiting room
+  - zh: 子会议 / 分组讨论 / 分组会议
+    en: sub-meeting
+    note: 三种中文写法是同一功能，英文统一 sub-meeting（与 SubMeetingInfo 等 API 一致）。不写 breakout room，避免与「房间 room」冲突（用户已确认 2026-09-29）
+  - zh: 主会议
+    en: main meeting
+  - zh: 签到 / 点名
+    en: sign-in / roll call
+    note: 与 SignInManager / RollCallManager 一致
+  - zh: 会中聊天 / 禁言（聊天禁用）/ 全体禁言
+    en: in-meeting chat / disable chat / disable chat for everyone
+    note: 不写 ban / mute chat
+  - zh: 会中自定义消息
+    en: in-meeting custom messages
+  - zh: 会议外消息（IM）
+    en: out-of-meeting messages (IM)
+  - zh: 会中昵称
+    en: in-meeting display name
+  - zh: 水印 / 截屏开关 / 共享状态
+    en: watermark / screenshot permission / sharing status
+  - zh: 会议资料 / 资源与附件
+    en: meeting materials / resources and attachments
+  - zh: 会议录制与直播
+    en: meeting recording and live streaming
+  - zh: 会议授权 / 免登录 token
+    en: meeting authorization / login-free token
+  - zh: 多端同时在线
+    en: multi-device presence
+    note: 例 "the same user on multiple devices at once"
+  - zh: 对接方式
+    en: integration options
+  - zh: 服务端极简对接
+    en: server-side low-code integration
+    note: 不集成 SDK、只对 3 个接口（用户已确认 2026-09-29）
+  - zh: 带 UI 极简对接 / UI SDK 极简对接
+    en: low-code integration with UI
+    note: 用户已确认 2026-09-29。页面标题如「Web UI SDK 极简对接」译 "Web UI SDK integration"
+  - zh: 自定义对接
+    en: custom integration
+  - zh: 极简对接
+    en: low-code integration
+    note: 用户已确认 2026-09-29（导航分组名 Low-code integration）。不写 minimal docking / simple integration
+
+# ---------------------------------------------------------------------------
+# 5. 服务端 API 术语（两层共用）
+# ---------------------------------------------------------------------------
+server_api:
+  - zh: 服务端 API / 服务端接口
+    en: Server API / server API
+    note: 导航与标题用 Server API，句中 server API
+  - zh: 接口
+    en: API / endpoint / method
+    note: 服务端 HTTP 接口 = endpoint（泛指一组时 API）；客户端 SDK 接口 = method / API
+  - zh: 业务方 / 业务方后端 / 你的后端
+    en: you / your backend
+    note: 不写 business party / the integrator
+  - zh: 业务后端参考实现（服务端 demo）
+    en: Reference backend implementation (server demo)
+  - zh: 请求头 / 请求体 / 请求地址
+    en: request headers / request body / base URL
+  - zh: 鉴权
+    en: authentication
+  - zh: 授权 / 获取授权
+    en: grant / get a grant
+    note: channel/grant、member/grant 语境；泛指权限时用 authorization
+  - zh: 签发（token）
+    en: issue (a token)
+  - zh: 签名 / 签名算法 / 待签名字符串
+    en: signature / signing algorithm / string to sign
+  - zh: 验签
+    en: verify the signature
+  - zh: 密钥（app_key）
+    en: secret key
+    note: app_key 本身不译；不写 app secret / API key
+  - zh: 应用（申请应用）
+    en: app (create an app)
+  - zh: 回调 / 事件回调 / 设置回调
+    en: callback / event callbacks / configure callbacks
+  - zh: 同步调用事件 / 异步通知事件
+    en: synchronous events / asynchronous notification events
+  - zh: 应答要求
+    en: response requirements
+  - zh: 幂等 / 重试
+    en: idempotency / retry
+  - zh: 错误码 / 业务错误码 / 框架通用错误码
+    en: error codes / business error codes / framework error codes
+  - zh: 响应格式
+    en: response format
+  - zh: 分页
+    en: pagination
+  - zh: 私有化部署 / 私有化
+    en: self-hosted deployment
+    note: 与官网一致，不用 on-premises（用户已确认 2026-09-29）
+  - zh: 制品仓 / 制品仓库
+    en: artifact repository
+  - zh: 计费
+    en: billing
+  - zh: 统计（按天聚合）
+    en: statistics (daily)
+
+# ---------------------------------------------------------------------------
+# 6. 禁止译法 —— 审校专项检查项，出现即改
+# ---------------------------------------------------------------------------
+forbidden:
+  - zh: 频道
+    wrong: room / meeting / session / conference
+    right: channel
+    note: SRTC 页里「频道可以理解为一场会议」这类显式类比可以保留 "think of it as a meeting"，但术语本身只能是 channel
+  - zh: 房间 / 会议
+    wrong: channel
+    right: room / meeting
+    note: SMeeting 页只在明确讲底层 SRTC（如「与 RTC 层的术语差异」表、错误码里原样透传的「该会话不在频道中」）时才出现 channel
+  - zh: 进入会议 / 入会 / 退出会议（SMeeting 页）
+    wrong: join the meeting / leave the meeting / join the room
+    right: enter the meeting / exit the meeting
+    note: join / leave 是 SRTC 频道语义。回调 user_join / user_leave 属于 SRTC，user_enter / user_exit 属于 SMeeting，英文动词必须对得上。只管正文用词：SMeeting API 里本身带 join 的标识符（onRoomJoinFailed、force_join、joinAt、join_disabled 等）原样保留，解释它们时仍写 enter（如 force_join："force entering the meeting"）
+  - zh: 加入频道 / 离开频道 / 入会（SRTC 页）
+    wrong: enter the channel / exit the channel / enter the meeting / join the meeting
+    right: join the channel / leave the channel
+  - zh: SRTC 页的任何段落
+    wrong: host / co-host / room / meeting 作为 SRTC 概念
+    right: SRTC 没有这些概念；源文确实在讲会议层时照译，并保留原文的层级提示
+  - zh: 流轨道 / 轨道
+    wrong: stream（单独指 track 时）/ rail / channel
+    right: track
+  - zh: IM
+    wrong: chat / instant messaging app / messenger
+    right: IM（会中聊天另译 in-meeting chat，两者不能互换）
+  - zh: 录音（MCU task_type=4）与 语音录制（talkrec）
+    wrong: 两者用同一个英文
+    right: audio recording / voice recording
+  - zh: 大小流
+    wrong: big and small streams / large and small streams
+    right: simulcast（大流 / 小流见 SRTC 节）
+  - zh: 主持人 / 联席主持人
+    wrong: moderator / presenter / admin / assistant host / cohost
+    right: host / co-host
+  - zh: 子会议
+    wrong: breakout room / child meeting / subconference
+    right: sub-meeting
+  - zh: 对接 / 极简对接
+    wrong: docking / butt joint / simple docking
+    right: integration / low-code integration
+  - zh: 业务方
+    wrong: business party / business side / the integrator
+    right: you / your backend
+  - zh: app_key
+    wrong: app secret / API key / appKey（正文里改写大小写）
+    right: app_key（保持原样），概念上可称 secret key
+  - zh: 签名
+    wrong: sign（作名词）/ autograph
+    right: signature
+  - zh: 旁路推流
+    wrong: bypass streaming / bypass push
+    right: re-streaming
+  - zh: 踢人
+    wrong: kick（正文动词）
+    right: remove（接口名、事件名里的 kick 原样保留）
