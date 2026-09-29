@@ -1,0 +1,191 @@
+---
+title: "Changelog"
+description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
+---
+
+### [1.3.10] - 2026.09.23
+#### Changed
++ The SRTC dependency is bumped from 1.4.6 to **1.4.7**. That release contains only fixes: an unknown `device_type` no longer makes the entire member list fail to parse, and subscriptions rejected one by one by the SFU no longer fail silently (retries and registration rollback were added). For details, see the SRTC changelog.
+
+<Note>
+This release has **no feature changes in the meeting layer itself**; the version number is bumped only to stay paired with SRTC 1.4.7. There are no public API changes and no breaking changes, so integration code for 1.3.9 can be upgraded directly. The minimum OS versions are unchanged (iOS 16 / macOS 14).
+
+For projects that use iOS full-screen sharing, change the extra `srtc-swift-sdk` dependency of the extension target to `exact: "1.4.7"` so it matches the version pinned in this package's manifest; otherwise dependency resolution fails outright.
+</Note>
+
+### [1.3.9] - 2026.09.23
+#### Fixed
++ **After the host forcibly stopped sharing, the sharing state was reported again**: `admin_stop_room_share` previously stopped only the local publishing and didn't clear the room's sharing state (`share_state` / `share_uid`). The leftover state was then re-evaluated as "someone is sharing" by track or property refreshes arriving afterward, so **sharing reappeared right after being forcibly stopped, leaving a share in the room that couldn't be stopped**. Forcibly stopping sharing now also settles the room state.
++ **A fourth convergence path was added for the screen sharing start event**: the three-path convergence in 1.3.8 still missed the timing where "the user snapshot refresh (`freshUserInfo`) arrives before the other three paths." In that case, the snapshot silently changed `shareState` to `screen`, and the deduplication condition shared by all paths then blocked the later path as well, so **the event was never sent, and others in the room didn't receive the share and the video didn't show**. Now the snapshot refresh also reports the event when `shareState` jumps; whichever of the four paths completes last triggers it. This jump check applies only to remote members; local sharing is still reported explicitly by the publish and stop flows.
++ **After the sharer exited the meeting abruptly, the meeting stayed permanently in "someone is sharing"**: when the sharer's process was killed or lost network, there was no `user_stop_room_share`, and no path previously settled the state, so the video stayed stuck on screen. Now, when a member exits (`userDidLeave` fires), the room's sharing state is settled and a stop event is reported—"the person has exited" isn't a transient state, so it's more reliable than a track disappearing.
+
+#### Changed
++ The SRTC dependency stays at **1.4.6**. This release contains only meeting layer changes, with no public API changes.
+
+<Note>
+This release contains only fixes, with no breaking changes, so integration code for 1.3.8 can be upgraded directly. For projects that use iOS full-screen sharing, the extra `srtc-swift-sdk` dependency of the extension target remains `exact: "1.4.6"`; no change is needed this time.
+
+One case is still not covered: "the person is still in the meeting, and only the Broadcast Extension has died on its own." In that case there is neither a `user_stop_room_share` nor a member-left event. This scenario must be handled on the sharer's own side; don't use the disappearance of the `screen` track as the stop signal—a track can also disappear just because of network jitter, which would wrongly remove the video.
+</Note>
+
+### [1.3.8] - 2026.09.23
+#### Added
++ **`updateLocalCameraView(_:)`**: moves the local camera preview's renderer to another view without interrupting capture. During layout changes such as grid rebuilds or switching between the first screen and the video wall, UIKit hosts destroy and rebuild the view that holds the preview; previously you could only turn the camera off and on again, and now you can just move it.
+
+#### Fixed
++ **Calling `requestOpenCamera(view:)` again while the camera was already on ignored the newly passed preview view**: the branch that reuses the existing track previously returned immediately without attaching the new view, and the renderer stayed on the old view that had already been removed from the view hierarchy, so **the local video was black** (everything was normal for the other side). The reuse branch now moves the renderer to the newly passed view.
++ **Members already in the meeting didn't receive the screen sharing start event**: the start signal for screen sharing converges asynchronously—the room's sharing state (the `user_start_room_share` broadcast and `share_state` / `share_uid` in the channel properties) and the `screen` track each arrive through their own path. Previously the two paths were evaluated separately, and the property refresh path wasn't covered: when the broadcast arrived first, the track hadn't been registered yet; when the track arrived first, the room state hadn't been refreshed yet. Both sides gave up, and when the property refresh arrived later, nothing re-evaluated it. As a result, **members already in the meeting never received `ROOM_SHARE_START`, while exiting and re-entering showed the share** (re-entering goes through a different notification path for existing shares). The logic now uses three-path convergence: whichever path completes last triggers the event, and the deduplication logic is unchanged.
+
+#### Changed
++ The SRTC dependency is upgraded to **1.4.6** (including two fixes for camera orientation and for landscape screen sharing video being rotated 180°; for details, see the audio and video SDK's [Changelog](/en/rtc/swift/changelog)).
+
+<Warning>
+For projects that use iOS full-screen sharing, the extra `srtc-swift-sdk` dependency of the extension target must **also change to `exact: "1.4.6"`** so it matches the version this package pins; otherwise dependency resolution conflicts. The fix for landscape sharing video being rotated 180° lives in `SRTCBroadcastKit` (**1.0.11** this time), so it doesn't take effect unless the extension side is upgraded too.
+</Warning>
+
+<Note>
+This release contains only new APIs and fixes, with no breaking changes, so integration code for 1.3.7 can be upgraded directly.
+</Note>
+
+### [1.3.7] - 2026.09.18
+#### Added
++ **Meeting title change event**: adds the `SMeetingDelegate` callback `meeting(_:roomTitleDidChange:)`, `RoomTitleChangeEventData` (`title` / `previousTitle`), and `RoomEventType.roomTitleChanged`. It's triggered both when the host renames the main meeting and when a sub-meeting is renamed (`adminUpdateSubMeetingTitle`), and corresponds to `onRoomMeetingTitleChanged:` in the old `MeetingKit`.
++ **Remote video receive timeout / recovery**: adds the `meeting(_:didChangeReceiveStreamStatus:)` callback and `RoomEventType.receiveStreamStatusChanged`, which determine per track whether a video tile has stopped producing frames, for toggling a "loading" indicator. The payload directly reuses the audio and video SDK's `ReceiveStreamStatus` without wrapping it in a meeting-specific structure. It corresponds to `onReceiveStreamStatusChange:streamType:status:` in the old `MeetingKit`.
++ **Enabling and disabling the audio unit**: adds `SMeetingEngine.setAudioModuleEnabled(_:)` and `isAudioModuleEnabled` (iOS), thin wrappers around the APIs of the same name on the audio and video SDK's `AudioRouteSession`, for purely local playback scenarios such as recorded and live-streamed classes.
+
+#### Changed
++ The SRTC dependency is upgraded to **1.4.5**.
+
+<Warning>
+While `setAudioModuleEnabled(false)` is in effect, **call audio can be neither received nor sent**; you must set it back to `true` after local playback ends. Entering the meeting again resets it to `true` automatically, so a manually disabled state doesn't leak across meetings.
+
+For projects that use iOS full-screen sharing, the extra `srtc-swift-sdk` dependency of the extension target must **also change to `exact: "1.4.5"`** so it matches the version this package pins; otherwise dependency resolution conflicts.
+</Warning>
+
+<Note>
+The payload of `roomTitleDidChange` **has no `opUid`**: renaming a meeting has no dedicated broadcast command, and the event is derived by comparing titles after the channel properties are updated; the properties contain only the result, not the operator. It will be included once the backend adds a corresponding broadcast command.
+
+All three protocol methods have default empty implementations, and there are no breaking changes, so integration code for 1.3.6 can be upgraded directly.
+
+Don't use `connectionQualityDidChange` in place of the receive stream status event: the former is the quality tier of the whole connection, not stalling of a particular video; for details, see the audio and video SDK's [Changelog](/en/rtc/swift/changelog).
+</Note>
+
+### [1.3.6] - 2026.09.17
+#### Added
++ `MeetingUserInfo` adds the `drawDisabled` field, so you can read a member's drawing-disabled state directly.
++ Adds the `SMeetingDelegate` callback `meeting(_:userDrawDisabledDidChange:)` and `UserDrawDisabledChangeEventData`, triggered when the host changes a member's drawing permission; see [Host controls](/en/meeting/swift/advanced/host-controls).
+
+#### Changed
++ Previously there was only the setter `adminUpdateUserDrawDisabled(targetId:drawDisable:)`, with no way to read the state and no change event, so drawing permissions couldn't be fully implemented in your app; this release fills the gap. The protocol method has a default empty implementation, and there are no breaking changes, so integration code for 1.3.5 can be upgraded directly.
++ The SRTC dependency stays at **1.4.4**.
+
+### [1.3.5] - 2026.09.15
+#### Changed
++ View capture sharing now carries microphone audio when publishing through Wangsu (CDN); the `messageOnly` mode of the sharing API is removed. Depends on SRTC 1.4.4.
+
+### [1.3.4] - 2026.09.15
+#### Added
++ `startViewCaptureShare()`: creates and publishes a custom video track with the `screen` description; the caller can render a view into a `CVPixelBuffer` and keep pushing frames through `LocalVideoTrack.pushFrame` on the returned track.
++ `stopViewCaptureShare()`: stops the view capture video track without turning off or unpublishing the microphone. For usage and limitations, see the [Media control API](/en/meeting/swift/api-reference/media-control#view-capture).
+
+#### Changed
++ The SRTC dependency stays at **1.4.3**, and existing integration code is compatible; to use the new APIs, upgrade SMeeting to 1.3.4.
+
+### [1.3.3] - 2026.09.15
+#### Changed
++ The SRTC dependency is upgraded to **1.4.3**: Wangsu (CDN) screen sharing streams now carry an audio track for cloud recording, and an issue where the microphone track handle was lost after unpublishing audio failed has been fixed; for details, see the audio and video SDK's [Changelog](/en/rtc/swift/changelog). SMeeting itself has no changes in this release and no public API changes, so integration code for 1.3.2 can be upgraded directly.
+
+<Note>
+**The extra dependency of the iOS full-screen sharing extension target must be upgraded to 1.4.3 as well**: `.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.3")`. It must match the version pinned in this SDK's manifest; otherwise dependency resolution conflicts. See [Integration](/en/meeting/swift/integration).
+</Note>
+
+### [1.3.2] - 2026.09.12
+#### Added
++ `requestShare(source:preset:view:messageOnly:byAdmin:adminUid:)` adds two parameters with default values, `excludedWindowIds` and `excludesCurrentApplication`, which are passed through to the audio and video layer so you can cut out some of your own windows when sharing the entire screen on macOS. Existing call sites remain source compatible.
+
+#### Changed
++ The SRTC dependency is upgraded to **1.4.2**: full-screen sharing on macOS now **includes** your app's own windows by default (previously the entire process was excluded), and an issue where "the microphone was sent along when sharing only screen audio" has been fixed; for details, see the audio and video SDK's [Changelog](/en/rtc/swift/changelog).
+
+<Warning>
+During a meeting, the main window is usually rendering remote video. Once full-screen sharing no longer excludes your own windows, any window showing a sharing preview—or two instances running on the same machine for self-testing—creates an **infinite mirror**. Put the IDs of these windows (`UInt32(NSWindow.windowNumber)`) into `excludedWindowIds`:
+
+```swift
+let ids = NSApplication.shared.windows
+    .filter { $0.isVisible && $0.windowNumber > 0 }
+    .map { UInt32($0.windowNumber) }
+try await meeting.requestShare(source: chosen, excludedWindowIds: ids)
+```
+
+If you really need the old behavior of "not sharing the app at all," set `excludesCurrentApplication` to `true`.
+</Warning>
+
+<Note>
+**The extra dependency of the iOS full-screen sharing extension target must be upgraded to 1.4.2 as well**: `.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.2")`. It must match the version pinned in this SDK's manifest; otherwise dependency resolution conflicts. See [Integration](/en/meeting/swift/integration).
+</Note>
+
+### [1.3.1] - 2026.09.11
+#### Changed
++ The SRTC dependency is upgraded to **1.4.1**: fixes an issue where active speaker events didn't fire in Wangsu (CDN) channels. If a meeting uses CDN media streaming, `meeting(_:activeSpeakersDidChange:)` of `SMeetingDelegate` now receives events as well (previously only SeaStart channels had data); for details, see the audio and video SDK's [Changelog](/en/rtc/swift/changelog).
+
+<Note>
+**The extra dependency of the iOS full-screen sharing extension target must be upgraded to 1.4.1 as well**: `.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.1")`. It must match the version pinned in this SDK's manifest; otherwise dependency resolution conflicts. See [Integration](/en/meeting/swift/integration).
+</Note>
+
+### [1.3.0] - 2026.09.09
+#### Added
++ **Virtual background**: `SMeetingEngine` adds `installVirtualBackground(modelPath:)`, `uninstallVirtualBackground()`, `enableVirtualBackground(_:)`, `isVirtualBackgroundEnabled`, `setVirtualBackgroundBlur(level:)`, `setVirtualBackgroundImage(_:)`, `setVirtualBackgroundInferenceInterval(_:)`, `setVirtualBackgroundMaskSync(_:)`, and the instance accessor `virtualBackground` (read-only diagnostic state and dropped-frame counts). Installing it doesn't require a license key; for details, see [Virtual background](/en/meeting/swift/advanced/virtual-background);
+    - It's a **device-level configuration**, so a setting applies to all meetings at once; you don't need to reapply it in your app after switching cameras in a meeting, turning the camera off and on again, or reconnecting after a disconnection.
+
+#### Changed
++ The SRTC dependency is upgraded to **1.4.0** (virtual background, `DegradationPreference` now actually takes effect, presets changed to `maintainResolution`, and an API for the macOS system default output device); for details, see the audio and video SDK's [Changelog](/en/rtc/swift/changelog).
+
+<Warning>
+**The minimum OS versions are raised to iOS 16.0 / macOS 14.0** (previously iOS 13.0 / macOS 10.15). This is a breaking change: projects below these minimums can't resolve this version or any later version, and what you get is a dependency resolution failure, not a compile error. The minimums come from the audio and video layer—SwiftPM's `platforms:` is package-wide, and a dependent package can only be equal to or higher than its dependency.
+</Warning>
+
+<Note>
+**The extra dependency of the iOS full-screen sharing extension target must be upgraded to 1.4.0 as well**: `.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.0")`. It must match the version pinned in this SDK's manifest; otherwise dependency resolution conflicts. See [Integration](/en/meeting/swift/integration).
+</Note>
+
+### [1.2.1] - 2026.09.07
+#### Fixed
++ Fixed how remote screen sharing state is determined: a member's `shareState` now jumps to sharing only when both "the room's sharing state (`share_state`/`share_uid`) + an existing screen track" are satisfied, instead of relying on the track's presence alone. This removes false positives when the track arrives before the room state, and false "sharing has stopped" reports when the room state is unchanged but the track briefly disappears.
++ Whiteboard sharing (`whiteBoard`) has no media track and is still derived entirely from the room props; its behavior is unchanged.
+
+#### Changed
++ The SRTC dependency is upgraded to **1.3.2** (including a crash fix for mqtt `content` being `null`, and `DeviceType.harmonyOS`).
+
+### [1.2.0] - 2026.08.20
+#### Added
++ iOS full-screen screen sharing: adds `prepareBroadcastShare(appGroup:preset:)`, `publishBroadcastShare(view:byAdmin:adminUid:)`, `stopBroadcastListening()`, `requestShare(broadcastAppGroup:...)`, and the read-only property `isShareBroadcastActive`, which let you share the entire system screen (previously iOS could capture only your app's own content). It requires integrating an additional Broadcast Upload Extension; for details, see [Screen sharing](/en/meeting/swift/advanced/screen-sharing);
++ Adds the sharing frame events `meeting(_:shareBroadcastDidStart:)` and `meeting(_:shareBroadcastDidFinish:)`, which distinguish "the listener is attached" from "there is actually video," with the data types `ShareBroadcastStartEventData` and `ShareBroadcastStopEventData`;
++ iOS audio routing: adds `defaultAudioRoute` (persistent default), `setAudioRoute(_:)` and `clearAudioRouteOverride()` (temporary switching), and read-only state such as `currentAudioRoute`, `effectiveAudioRouteTarget`, `audioRouteOverride`, `isExternalAudioRouteActive`, `isAudioSessionActive`, `audioCallState`, and `availableAudioRoutes()`; for details, see [Audio routing](/en/meeting/swift/advanced/audio-routing);
++ Adds the audio routing events `meeting(_:audioRouteDidChange:)` and `meetingAudioRouteDidRecoverFromInterruption(_:)`, with the data type `AudioRouteChangeEventData`;
++ Adds the call quality events `meeting(_:didReceiveQualityReport:)`, `meeting(_:connectionQualityDidChange:)`, `meeting(_:activeSpeakersDidChange:)`, and `meeting(_:didSwitchLayer:)`, whose data structures directly reuse SRTC's `QualityReport`, `ConnectionQualityChange`, `ActiveSpeakersSnapshot`, and `LayerSwitchedInfo`.
+
+#### Changed
++ The `SRTC` dependency is upgraded to `1.3.0` (previously `1.1.0`), bringing public API changes such as error enum cases renamed from `mqtt*` to `signaling*`; for details, see the audio and video SDK's changelog;
++ `roomShareDidStart` for screen sharing is now based on the RTC media track: it's reported as soon as the remote screen track arrives, without also requiring the room's sharing state to be in place.
+
+#### Fixed
++ Fixed an issue where, after a remote member started sharing, other clients didn't receive `roomShareDidStart` and the shared video didn't show (when the room state and the media track arrived in an unpredictable order, the two reporting paths blocked each other);
++ Fixed an issue where `roomShareDidStop` wasn't reported when the sharer's process was killed, the network disconnected, etc., leaving the meeting permanently in "someone is sharing";
++ Fixed an issue where whiteboard sharing reported `roomShareDidStart` twice when the room state arrived first;
++ `exitRoom()` now leaves exactly the one RTC channel that belongs to the meeting, and no longer affects channels the caller joined separately through `meeting.srtc`.
+
+<Warning>
+**On iOS, microphone permission is requested as soon as you enter the meeting, and the status bar shows the orange indicator.** After entering the meeting, the SDK sets up a call audio path and keeps it until you exit, even if the member only listens and never turns on the microphone. This is a prerequisite for controllable audio routing on iOS (earpiece output exists only in session categories that allow recording), and it matches apps such as Zoom and Tencent Meeting—the SDK isn't recording. Make sure `Info.plist` contains `NSMicrophoneUsageDescription`; otherwise the app crashes.
+</Warning>
+
+<Note>
+**The iOS full-screen sharing extension target needs one extra dependency declared.** `SRTCBroadcastKit` is a product of the audio and video layer's `srtc-swift-sdk`, and SwiftPM doesn't allow using products of transitive dependencies, so you need to add another `.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.3.0")` to your project, and **add it only to the extension target**; see [Integration](/en/meeting/swift/integration).
+</Note>
+
+### [1.1.0] - 2026.08.02
+#### Changed
++ The `SRTC` dependency is upgraded to `1.1.0`, bringing public API changes such as underlying WebRTC types no longer appearing; for details, see the audio and video SDK's changelog.
+
+### [1.0.0] - 2026.08.02
+#### Added
++ First official release, distributed via Swift Package Manager as a precompiled XCFramework containing three platform slices: iOS device, iOS simulator, and macOS;
++ The SDK's main entry class is `SMeetingEngine`.

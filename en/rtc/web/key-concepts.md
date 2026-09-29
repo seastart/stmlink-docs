@@ -8,7 +8,7 @@ description: "Core model of the SRTC Web SDK: the SRTC instance and the Channel 
 Create an instance with `new SRTC(initParams)`; almost all operations are exposed through this instance.
 
 + One instance can call `join` multiple times to join several channels at once; each `join` returns that channel's Channel object
-+ In-channel events are delivered through the `srtc.onNotifyChannelEvent` callback; with multiple channels, use each channel's `channel.onNotifyEvent` to tell them apart. See [Multi-channel](/zh/rtc/web/advanced/multi-channel) (Chinese)
++ In-channel events are delivered through the `srtc.onNotifyChannelEvent` callback; with multiple channels, use each channel's `channel.onNotifyEvent` to tell them apart. See [Multi-channel](/en/rtc/web/advanced/multi-channel)
 
 ```typescript
 import { SRTC, LogLevel, LogTarget } from '@seastart/srtc-web-sdk';
@@ -33,7 +33,7 @@ const channel = await srtc.join(token);
 console.log(channel.getInfo().channel); // Channel name
 ```
 
-You can perform channel-level operations such as publishing, subscribing, and leaving directly on the **Channel object** returned by `join`. Single-channel apps don't need to care about it—the `srtc` instance keeps all channel-level methods (internally acting on the current channel); you only need it to specify the target when you join multiple channels at once. See [Multi-channel](/zh/rtc/web/advanced/multi-channel) (Chinese).
+You can perform channel-level operations such as publishing, subscribing, and leaving directly on the **Channel object** returned by `join`. Single-channel apps don't need to care about it—the `srtc` instance keeps all channel-level methods (internally acting on the current channel); you only need it to specify the target when you join multiple channels at once. See [Multi-channel](/en/rtc/web/advanced/multi-channel).
 
 After joining, you can get channel and user information at any time with these methods:
 
@@ -130,7 +130,7 @@ srtc.onNotifyImEvent = (evt: ImEvent) => {
 };
 ```
 
-For the full event list, see [Events](/zh/rtc/web/events) (Chinese).
+For the full event list, see [Events](/en/rtc/web/events).
 
 ---
 

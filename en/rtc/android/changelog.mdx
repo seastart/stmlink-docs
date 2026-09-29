@@ -1,0 +1,417 @@
+---
+title: "Changelog"
+description: "Android SRTC SDK release history by version: new features, fixes, improvements, and breaking changes such as the OOK engine removal, multi-channel support, decoupled microphone capture, and camera switching changes. Read before upgrading the Android SDK."
+---
+
+> This page is compiled from the version configuration and commit history of the `rtc-android` repository. Call `RTCEngine.version()` to get the actual SDK version at runtime.
+
+### [2.0.35] - 2026.09.24
+
+#### Fixed
+
++ Fixed incorrect rotation, mirroring, and aspect ratio in some video views.
++ Fixed the original channel configuration not being carried over correctly when the configuration returned on reconnection was incomplete.
+
+#### Changed
+
++ Removed the OOK media streaming engine; FY (Freewind) and Wangsu are currently supported. Apps using OOK must migrate before upgrading.
++ Video rendering moved from the OOK-provided views to the SDK's own views, which handle rotation, mirroring, and scaling uniformly while keeping custom display control. When upgrading, change the view package path in code and XML from `com.ook.android.ikPlayer` to `cn.seastart.rtc.media.original.render`; track binding APIs such as `addPlayView` stay the same. For current usage, see [Video rendering](/en/rtc/android/api-reference/RemoteVideoTrack).
++ Removed `RTCEngine.getCustomVideoTrack()`, `CustomVideoTrack`, and `CustomVideoOptions`. Custom publishing uses `LocalCustomVideoTrack` to input unencoded I420 frames; H264/H265 data can't be passed in directly. See [Custom tracks](/en/rtc/android/advanced/custom-track).
++ Removed the OOK-specific `RTCEngine.mediaOptions()`, `setMediaOptions(...)`, and `RTCMediaOptions`; capture and publishing use each track's own configuration.
++ Removed `NetworkStats.upLevel`, `downLossLevel`, `RemoteDownloadStats.downLevel`, and the three corresponding quality level enums. For current fields, see [Media quality](/en/rtc/android/media-quality).
++ The raw screen frame format now uses the `YuvFormat.I420` constant, with the same value. See [Types](/en/rtc/android/types).
+
+### [2.0.34] - 2026.09.21
+
+#### Fixed
+
++ Fixed the background showing as black when virtual background blur is enabled.
+
+### [2.0.33] - 2026.09.18
+
+#### Changed
+
++ Merged the `fix/bugfix` branch into `master`.
+
+### [2.0.32-bugfix.2] - 2026.09.18
+
+#### Added
+
++ Added `getCurrentCameraId` to `LocalCameraTrack` for querying the camera device actually in use. For the API, see [`LocalCameraTrack`](/en/rtc/android/api-reference/LocalCameraTrack).
++ Added the camera error codes `CAMERA_FORMAT_UNAVAILABLE`, `CAMERA_OPEN_TIMEOUT`, and `CAMERA_SESSION_TIMEOUT`. See [Error codes](/en/rtc/android/error-codes).
+
+#### Fixed
+
++ Fixed an operation never returning a result when the camera became unresponsive while opening or configuring.
++ Fixed success being reported as soon as the camera session was ready while the video was still completely black.
++ Fixed the camera device info in the configuration not being updated after a successful camera switch.
++ Fixed occasional capture errors or black video when switching cameras rapidly in succession.
+
+#### Changed
+
++ The camera device and position configured when starting capture are now suggested values; if unavailable, another device is selected automatically. Switching by position only tries devices in that position, and switching by device ID only tries the specified device.
++ After a failed camera switch, the SDK no longer falls back to the original camera automatically; the app must call `startCapture` itself to restore video. See [`LocalCameraTrack`](/en/rtc/android/api-reference/LocalCameraTrack).
++ A camera switch request that is superseded by a later request or canceled by stopping capture no longer gets a result callback; the error code `CAMERA_SWITCH_SUPERSEDED` has been removed.
++ Getting a camera track now copies the capture configuration, so modifying the original preset's `capture` after getting the track no longer takes effect; modifying `publish` still does.
++ The default `deviceId` of camera presets changed from `cameraCapMain` to an empty string, meaning no device is specified. For the exact values, see [Camera preset](/en/rtc/android/presets/camera).
+
+### [2.0.32-bugfix.1] - 2026.09.16
+
+#### Added
+
++ Added switch result callbacks to `switchCameraPosition` and `switchCameraDevice` of `LocalCameraTrack`. For the API, see [`LocalCameraTrack`](/en/rtc/android/api-reference/LocalCameraTrack).
++ Added the camera error codes `CAMERA_SWITCH_SUPERSEDED` and `CAMERA_FIRST_FRAME_TIMEOUT`. See [Error codes](/en/rtc/android/error-codes).
+
+#### Fixed
+
++ Fixed video freezing on the last frame and camera switching no longer responding after a failed camera switch.
++ Fixed persistent black video when reopening the camera after a failed camera switch.
++ Fixed a failed camera switch possibly switching silently to a non-target camera.
++ Fixed incorrect local preview rotation on some devices while the remote side's video was normal.
++ Fixed turning on the microphone or camera failing repeatedly for the rest of the call after one negotiation failure, requiring the user to leave and rejoin.
++ Fixed network request initialization failing when the app enables R8 full mode.
+
+#### Changed
+
++ Camera startup is now determined by the arrival of the first frame. If the selected camera fails to start, the next available device is tried automatically; if none are available, `CAMERA_FIRST_FRAME_TIMEOUT` is reported.
+
+### [2.0.32] - 2026.09.12
+
+#### Added
+
++ Added virtual background, supporting background blur and background image replacement. For the API, see [`RTCEngine`](/en/rtc/android/api-reference/RTCEngine).
++ Added `minBitrate` to `VideoPublishOptions` to configure the minimum bitrate of a single video stream.
+
+#### Fixed
+
++ Fixed remote users not hearing the voice when the microphone is turned on right upon joining.
++ Fixed turning on the microphone failing after a subscription negotiation answer timed out.
++ Fixed network request errors on poor networks.
++ Fixed the resolution-maintaining policy not being applied to some SFU video tracks.
+
+#### Improved
+
++ Reduced duplicate audio routing updates.
+
+#### Changed
+
++ Adjusted camera preset parameters: capture and high stream publish frame rates are now all 15, the maximum bitrate is raised for some tiers, and every tier has a default minimum bitrate. For the exact values, see [Camera preset](/en/rtc/android/presets/camera).
++ Updated the obfuscation rules shipped with the AAR to keep JNI Zero and WebRTC-related classes.
+
+### [2.0.31] - 2026.08.31
+
+#### Changed
+
++ Merged the `audio-optimization` branch into `master`.
+
+### [2.0.30] - 2026.08.29
+
+#### Fixed
+
++ Fixed the channel session not being removed promptly and media resources not being fully released after the local user was removed from the channel or hit an unrecoverable disconnect, which could cause rejoining the same channel to be misjudged as a duplicate join.
+
+#### Changed
+
++ Restructured some internal directories and refined the AAR obfuscation rules, clarifying the keep boundaries for tracks and public enums; `RemoteStreamStatus`, which is for SDK internal use only, moved to `enumerateLocal`, and the unused `AudioOutputOptions` was deleted.
+
+### [2.0.29] - 2026.08.26
+
+#### Changed
+
++ Merged the `screenCapture` branch into `master`.
+
+### [2.0.28_audioOptimization.2] - 2026.08.26
+
+#### Improved
+
++ Added a hardware-first, software-fallback strategy for AEC and NS on external microphone uplink in the FY and WS media streaming engines: the two capabilities are probed and verified independently, and when the platform effect isn't actually enabled, the SDK automatically falls back to WebRTC software processing to avoid double processing or missing processing.
+
+#### Changed
+
++ The PCM data stage of `RTCLocalAudioFrameEvent` follows this version's AEC/NS strategy: when platform AEC/NS is enabled, the data includes the corresponding platform processing; for effects that fall back to WebRTC software processing, the data returned is before software APM processing.
+
+### [2.0.28_audioOptimization.1] - 2026.08.26
+
+#### Fixed
+
++ Improved the bridging cadence of external microphone audio pushed to the WebRTC ADM in the FY and WS media streaming engines, fixing uplink audio stuttering, dropouts, bubbling sounds, or frame-drop-like artifacts on some devices.
+
+#### Changed
+
++ `RTCLocalAudioFrameEvent` now follows the Engine-level physical microphone capture and is called back serially on the SDK's audio dispatch thread, no longer depending on whether a channel publishes audio; time-consuming app callbacks don't block the uplink, and older app callback frames are dropped when the side queue is full.
+
+### [2.0.27_screenCapture.1] - 2026.08.25
+
+#### Added
+
++ Added native Android screen capture to the FY and WS media streaming engines, supporting continued sharing after the app moves to the background and publishing the same screen capture to multiple channels;
++ Added an Engine-level local screen I420 frame callback, which copies and delivers frame data only after the app registers a listener.
+
+#### Changed
+
++ `LocalScreenTrack.startCapture` is now a single start entry point with an operation result callback; the result callback indicates whether the SDK accepted the start request, and subsequent capture states are reported through `RTCScreenStateEvent.onScreenCaptureStateChanged`;
++ The screen capture state type changed to `ScreenCaptureState`, with three states: `START`, `STOP`, and `ERROR`;
++ FY and WS screen capture no longer depends on WebRTC's `ScreenCapturerAndroid`; the OOK screen capture pipeline stays the same.
+
+#### Fixed
+
++ Fixed the first frame possibly not appearing for a long time when sharing a static page;
++ Improved state notifications and resource release when the system stops sharing, the app stops sharing, the screen rotates, the screen locks, or single-app content is hidden.
+
+### [2.0.28] - 2026.08.22
+
+#### Fixed
+
++ Fixed possible instability caused by the OOK media client being released on a different thread from the one that initialized it.
+
+#### Changed
+
++ Updated `librtc.so` to adapt to the server removing the OOK media streaming configuration.
+
+### [2.0.27] - 2026.08.19
+
+#### Changed
+
++ Merged the `disconnect-reconnect` branch into `master`; the release version incorporates the disconnect and reconnection changes from `2.0.26_disconnectReconnect.1`.
+
+### [2.0.26_disconnectReconnect.1] - 2026.08.18
+
+#### Fixed
+
++ Fixed incomplete release of WebRTC resources during repeated network disconnects and reconnections in multi-channel scenarios, which could crash the app.
+
+#### Improved
+
++ Media streaming reconnection now waits 1, 2, 4, 8, and 16 seconds in increasing steps, then keeps retrying every 16 seconds; it still reconnects automatically after the network recovers, reducing request pressure during network outages in multi-channel scenarios.
+
+### [2.0.26] - 2026.08.12
+
+#### Added
+
++ A single `RTCEngine` can join multiple channels at the same time; `join(...)` returns an independent `RTCChannel` handle, and the default channel remains compatible with the Engine's flat APIs;
++ Microphone capture is decoupled from joining and publishing; `LocalMicTrack` adds explicit `startCapture` / `stopCapture` and input device enumeration and switching;
++ Added Engine-global error, camera device, microphone device, and local PCM frame listeners;
++ Added `102xxx` SDK error codes by domain (common, channel, camera, microphone, media streaming, and HTTP) and the `RtcErrorCatalog` lookup API.
+
+#### Changed
+
++ `RTCEngine.create(...)` now requires an `RTCEngineEvent`;
++ `RTCEngine.join(...)` now takes the channel's `RTCClientEvent` and returns `RTCChannel?`; the join result is reported by `onJoinSucceed` / `onJoinFailed`;
++ The custom message, disconnect, and reconnection callbacks of `RTCClientEvent` gained a `channel` parameter, and the former `onError(...)` moved to `RTCEngineEvent`;
++ All `RTCMediaEvent` callbacks gained a `channel` parameter, and camera device events moved to `RTCCameraDeviceEvent`;
++ `RTCRemoteVideoEvent.onReceiveStreamStatusChange(...)` gained a `channel` parameter;
++ `RTCResultListener2<T>` was renamed `RTCValueResultListener<T>`, and the responsibilities of `StatusCode` and the Android SDK's own error codes were separated.
+
+#### Fixed
+
++ Fixed local capture not stopping after turning off the camera in multi-channel scenarios;
++ Fixed the local audio mute state being lost after reconnection, and callbacks failing too early or getting lost when the same track was published repeatedly.
+
+### [2.0.24_multiChannel.3] - 2026.08.11
+
+#### Fixed
+
++ Fixed the local audio mute state being lost after reconnection; newly created audio tracks keep following the on/off state from before the reconnection;
++ Fixed later request callbacks failing too early or getting lost when the same track was published repeatedly; coalesced requests now return a single result after the actual publish completes.
+
+### [2.0.25] - 2026.08.11
+
+#### Fixed
+
++ Fixed a possible crash in the FY media streaming engine caused by concurrent access to a released media client or `RtpSender` during reconnection, and isolated callbacks from old sessions and coalesced duplicate reconnection requests;
++ Fixed a Kotlin compilation error caused by media callback implementations exposing internal session types.
+
+### [2.0.24_multiChannel.2] - 2026.08.10
+
+#### Added
+
++ A single `RTCEngine` can join multiple channels at the same time; `join(...)` returns an independent `RTCChannel` handle, and the default channel remains compatible with the Engine's flat APIs;
++ Microphone capture is decoupled from joining and publishing; `LocalMicTrack` adds explicit `startCapture` / `stopCapture` and input device enumeration and switching;
++ Added Engine-global error, camera device, microphone device, and local PCM frame listeners;
++ Added `102xxx` SDK error codes by domain (common, channel, camera, microphone, media streaming, and HTTP) and the `RtcErrorCatalog` lookup API.
+
+#### Changed
+
++ `RTCEngine.create(...)` now requires an `RTCEngineEvent`;
++ `RTCEngine.join(...)` now takes the channel's `RTCClientEvent` and returns `RTCChannel?`; the join result is reported by `onJoinSucceed` / `onJoinFailed`;
++ The custom message, disconnect, and reconnection callbacks of `RTCClientEvent` gained a `channel` parameter, and the former `onError(...)` moved to `RTCEngineEvent`;
++ All `RTCMediaEvent` callbacks gained a `channel` parameter, and camera device events moved to `RTCCameraDeviceEvent`;
++ `RTCRemoteVideoEvent.onReceiveStreamStatusChange(...)` gained a `channel` parameter;
++ `RTCResultListener2<T>` was renamed `RTCValueResultListener<T>`, and the responsibilities of `StatusCode` and the Android SDK's own error codes were separated.
+
+### [2.0.23] - 2026.07.27
+#### Improved
++ Introduced `SubscribeReconciler`, a declarative reconciler for remote audio subscriptions, which serializes subscribe and unsubscribe operations on the same track to prevent inconsistent state caused by frequent channel control events;
++ After media streaming reconnects, remote audio subscriptions are restored automatically according to the final subscription intent, with bounded backoff retries of up to 3 times on subscription failure;
++ Subscription reconciliation state is cleaned up automatically when a user leaves the channel or the channel is released.
+
+### [2.0.22] - 2026.07.23
+#### Added
++ Added the ability to dump all remote video frames to disk for troubleshooting;
+#### Improved
++ Added `armeabi-v7a` ABI support and improved the build configuration.
+
+### [2.0.21] - 2026.07.22
+#### Improved
++ Simplified the network quality change callback: every quality report triggers a callback, and a new `STABLE` trend state was added;
++ Added serialization field annotations to signaling data channel messages to prevent parsing failures after obfuscation.
+
+### [2.0.19] - 2026.07.22
+#### Added
++ Added `enableLocalAudio`, an API for temporarily muting local audio.
+
+### [2.0.18] - 2026.07.22
+#### Fixed
++ Corrected the Camera2 frame rotation angle calculation to match WebRTC semantics;
++ Front camera mirroring is enabled by default, improving local preview when the device rotates.
+
+### [2.0.17] - 2026.07.20
+#### Added
++ Added a callback for network quality level changes.
+
+### [2.0.16] - 2026.07.15
+#### Added
++ Supports changing user roles in the channel, including audience promotion and demotion.
+
+### [2.0.15] - 2026.07.04
+#### Fixed
++ Improved the resource release flow and fixed possible crashes in concurrent scenarios.
+
+### [2.0.14] - 2026.07.03
+#### Improved
++ Improved the audio energy callback to be compatible with specific audio track IDs.
+
+### [2.0.13] - 2026.07.03
+#### Fixed
++ Fixed the subscriber's `track.id` freezing and streams being misidentified due to WebRTC m-line reuse;
++ Fixed incorrect video rotation when remote video Views are reused.
+#### Improved
++ Refactored the camera capture and publishing state machine, supporting declarative reconciliation for audio publishing;
++ Improved YUV frame processing and compatibility with Spreadtrum (sprd) encoders.
+
+### [2.0.11] - 2026.06.17
+#### Added
++ Added front camera mirroring control to `LocalCameraTrack`.
+
+### [2.0.10] - 2026.06.15
+#### Added
++ Supports Wangsu generic stream subscription.
+
+### [2.0.9] - 2026.05.20
+#### Added
++ Adapted to SRTC SFU 26.4: supports server-side media quality data, active speakers, subscription candidate layers, and automatic quality downgrade fields;
++ Added camera capability and device list queries, selecting a camera by `cameraId`, camera angle offset, and hot-plug events;
++ Camera capture switched to a native Camera2 implementation, with improved frame conversion performance and memory usage.
+
+### [2.0.8] - 2026.05.09
+#### Added
++ Refactored the Wangsu media streaming engine to support publishing additional streams.
+
+### [2.0.7] - 2026.04.21
+#### Improved
++ Improved the high stream and low stream resolution, frame rate, and bitrate configuration of the OOK media streaming engine.
+
+### [2.0.6-alpha.9] - 2026.03.09
+#### Added
++ Supports custom video stream input and publishing for FyStreamEngine and WsStreamEngine;
++ Custom streams and screen sharing streams support 1080p at 10 fps;
++ Added microphone-type permission support for foreground services on Android 14 and later.
+#### Changed
++ `RTCClientEvent.onChannelNotStarted` was renamed `onError`;
++ `LocalCustomVideoTrack.inputData` now takes basic frame data, and the SDK assembles it.
+
+### [2.0.6-alpha.8] - 2025.11.19
+#### Fixed
++ Fixed being unable to reconnect after the SFU connection dropped, errors handling `ignore` during subscription, and other issues;
++ Upgraded the VCS SDK and removed the underlying MQTT's own reconnection mechanism to avoid crashes.
+
+### [2.0.6-alpha.7] - 2025.11.14
+#### Added
++ Added `sid` and `nickName` fields to the custom message callback.
+#### Fixed
++ Fixed green bars appearing when sending video on some HarmonyOS 3.0 and earlier devices.
+
+### [2.0.6-alpha.5] - 2025.10.24
+#### Fixed
++ Fixed missing `OptionInfo` during media streaming reconnection, being unable to reconnect after a remote device disconnected, and other issues.
+
+### [2.0.6-alpha.2] - 2025.10.13
+#### Changed
++ Subscribing to remote streams now uses `trackId` as the primary identifier; added `getUserTrackInfoByTrackId`;
++ When a remote user leaves, the SDK unsubscribes automatically, so the app doesn't need to handle it.
+#### Fixed
++ Fixed SDP growing continuously during WebRTC publishing, remote audio subscription failures, and incorrect stream operation timing.
+
+### [2.0.6-alpha.1] - 2025.09.26
+#### Added
++ Added audio energy, media quality, and speaker control callbacks;
++ Supports custom encoding parameters, and camera and screen sharing preview outside a channel.
+#### Fixed
++ Fixed errors when the subscription response SDP or offer is empty;
++ Improved YUV frame conversion to support stride.
+
+### [2.0.5] - 2025.09.09
+#### Fixed
++ Fixed the screen recording service not being found, the missing stop-sharing callback, and obfuscation configuration issues.
+
+### [2.0.4] - 2025.09.04
+#### Added
++ Unified the media statistics callbacks of OOK and Wangsu, adding packet loss rate calculation and volume bars.
+
+### [2.0.2-alpha.2] - 2025.08.18
+#### Added
++ `PublishCustomOptions` can control whether to publish the low stream.
+#### Fixed
++ Upgraded the WebRTC SDK to mitigate stuttering caused by encoder errors on HarmonyOS devices;
++ Fixed published and subscribed tracks not recovering after network reconnection, and incorrect video angles when switching between landscape and portrait.
+
+### [2.0.1] - 2025.05.23
+#### Changed
++ Refactored the RTC SDK layer, decoupling media streaming capabilities and supporting switching between media streaming engines;
++ Introduced the WebRTC and SFU media streaming framework, supporting camera capture, publishing, subscription, and resource release.
+
+### [2.0.0-34] - 2025.04.27
+#### Added
++ Supports saving H.264 files; audio and video files are stored in the `audioVideo` directory.
+
+### [2.0.0-33] - 2025.04.23
+#### Added
++ Added built-in 1080P, 720P, 480P, and 180P camera presets.
+
+### [2.0.0-32] - 2025.03.25
+#### Added
++ Added an SDK version parameter to the `onJoinSucceed` callback.
+#### Fixed
++ Updated underlying libraries and fixed issues such as file storage location and log module reinitialization.
+
+### [2.0.0-31] - 2025.01.24
+#### Added
++ Added a switch for the transcription feature.
+#### Fixed
++ Fixed crashes on screen sharing network reconnection, incorrect unsubscription state, IM connection errors, and other issues.
+
+### [2.0.0-30] - 2024.12.22
+#### Changed
++ The user leave callback now provides `UserInfo` directly.
+
+### [2.0.0-29] - 2024.10.24
+#### Changed
++ Track add, update, and remove events no longer filter out the current user.
+
+### [2.0.0-28] - 2024.10.17
+#### Improved
++ Added a clear log message when subscribing to a stream a user hasn't published yet.
+
+### [2.0.0-27] - 2024.10.11
+#### Added
++ Added IM;
+#### Changed
++ The underlying library supports MQTT SSL connections; removed the `netid` and `sgid` settings from `RTCClientOptions`.
+
+### [2.0.0-26] - 2024.09.20
+#### Improved
++ Improved IM disconnect reasons and simple event callbacks.
+
+### [2.0.0-25] - 2024.09.20
+#### Added
++ Added basic IM capabilities and app-level test cases.

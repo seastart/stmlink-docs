@@ -110,7 +110,7 @@ SMeeting is built on SRTC, and the terms of the two layers are **not interchange
 | --- | --- | --- |
 | Space | room / meeting | channel |
 | Entering and leaving | enter / exit | join / leave |
-| Participants | members | channel user uid |
+| People | members | channel user uid |
 | Media | Managed by the meeting layer | track |
 
 In the SMeeting APIs, you only see names with meeting semantics.

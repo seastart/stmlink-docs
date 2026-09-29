@@ -54,7 +54,7 @@ The terms of the two layers **are not interchangeable**. When reading the docs, 
 | --- | --- | --- |
 | Space | Channel `channel` | Room `room` / meeting `meeting` |
 | Entering and leaving | Join / leave | Enter / exit |
-| Participants | User `uid` | Member |
+| People | User `uid` | Member |
 | Media | Track `track` | Managed by the meeting layer |
 
 <Warning>

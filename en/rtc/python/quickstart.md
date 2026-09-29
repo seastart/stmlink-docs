@@ -28,7 +28,7 @@ import srtc
 
 async def main(token: str):
     files: dict[str, wave.Wave_write] = {}
-    fmt = srtc.AudioFormat(sample_rate=16000, channels=1)      # Format of received PCM; 16k mono is the default
+    fmt = srtc.AudioFormat(sample_rate=16000, channels=1)      # Format of received PCM; 16 kHz mono is the default
 
     async with await srtc.Channel.join(token, auto_subscribe_audio=True, audio_format=fmt) as ch:
         print(f"Joined {ch.info.channel}, I am {ch.me.uid}")
@@ -67,7 +67,7 @@ import srtc
 
 async def main(token: str):
     async with await srtc.Channel.join(token) as ch:
-        # Publish an audio track; write() accepts 24k mono PCM (any sample rate works, the SDK resamples internally)
+        # Publish an audio track; write() accepts 24 kHz mono PCM (any sample rate works, the SDK resamples internally)
         tts = await ch.publish_audio(desc="tts", audio_format=srtc.AudioFormat(24000, 1))
 
         # A 3-second 440 Hz sine wave stands in for TTS output here
@@ -85,7 +85,7 @@ Key points:
 
 + **You don't pace it yourself**: TTS generates much faster than real time, so writing several seconds of audio in one `write` is normal usage; the SDK sends it out at real-time pace
 + When the buffer exceeds `max_buffer_seconds` (30 seconds by default), `write` waits, which naturally provides backpressure
-+ When the user barges in, call `tts.clear()` to discard whatever hasn't played yet immediately; see [Voice AI agent guide](/zh/rtc/python/advanced/ai-agent) (Chinese)
++ When the user barges in, call `tts.clear()` to discard whatever hasn't played yet immediately; see [Voice AI agent guide](/en/rtc/python/advanced/ai-agent)
 
 ---
 
@@ -108,12 +108,12 @@ class Printer(srtc.ChannelHandler):
 ch = await srtc.Channel.join(token, handler=Printer())
 ```
 
-Methods can be regular functions or `async` functions. For the full list, see [Event callbacks](/zh/rtc/python/api-reference/events) (Chinese).
+Methods can be regular functions or `async` functions. For the full list, see [Event callbacks](/en/rtc/python/api-reference/events).
 
 ---
 
 ### Next steps
 
-+ [Voice AI agent guide](/zh/rtc/python/advanced/ai-agent) (Chinese): sentence segmentation, barge-in interruption, latency
-+ [Integrating pipecat](/zh/rtc/python/advanced/pipecat) (Chinese)
-+ [API reference](/zh/rtc/python/api-reference/channel) (Chinese)
++ [Voice AI agent guide](/en/rtc/python/advanced/ai-agent): sentence segmentation, barge-in interruption, latency
++ [Integrating pipecat](/en/rtc/python/advanced/pipecat)
++ [API reference](/en/rtc/python/api-reference/channel)

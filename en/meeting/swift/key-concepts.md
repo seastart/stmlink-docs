@@ -154,7 +154,7 @@ When you're responding to the host's invitation to turn on your microphone / cam
 | Remote video in UIKit / AppKit | `startPlayRemoteVideo(view:uid:trackDesc:)` / `stopPlayRemoteVideo(view:uid:trackDesc:)` |
 | Controlling subscription yourself | `subscribeRemoteVideoTrack(uid:trackDesc:)` / `unsubscribeRemoteVideoTrack(uid:trackDesc:)` |
 
-For details, see [Video rendering](/zh/meeting/swift/advanced/video-rendering) (Chinese).
+For details, see [Video rendering](/en/meeting/swift/advanced/video-rendering).
 
 ---
 
@@ -198,15 +198,15 @@ extension MeetingController: SMeetingDelegate {
 }
 ```
 
-Events fall roughly into these groups: connection events, member events, room state events, message events, raise hand and host commands, waiting room, sub-meetings, sign-in and roll call, device events, and out-of-meeting messages (IM). For the full list, see [Events](/zh/meeting/swift/events) (Chinese).
+Events fall roughly into these groups: connection events, member events, room state events, message events, raise hand and host commands, waiting room, sub-meetings, sign-in and roll call, device events, and out-of-meeting messages (IM). For the full list, see [Events](/en/meeting/swift/events).
 
 ---
 
 ### Out-of-meeting messages (IM)
 
-`enableIm()` sets up a notification path independent of the meeting, used to receive notifications such as calls and meeting reminders **when you haven't entered a meeting**. It is separate from in-meeting chat messages: in-meeting chat goes through `sendRoomChatMessage` and works only inside the meeting.
+`enableIm()` sets up a message path independent of the meeting, used to receive notifications such as calls and meeting reminders **when you haven't entered a meeting**. It is separate from in-meeting chat messages: in-meeting chat goes through `sendRoomChatMessage` and works only inside the meeting.
 
-See [Out-of-meeting messages](/zh/meeting/swift/advanced/im) (Chinese).
+See [Out-of-meeting messages](/en/meeting/swift/advanced/im).
 
 ---
 
@@ -224,8 +224,8 @@ meeting.srtc.logLevel = .debug
 
 ### Further reading
 
-+ [Media control](/zh/meeting/swift/advanced/media-control) (Chinese)
-+ [Video rendering](/zh/meeting/swift/advanced/video-rendering) (Chinese)
-+ [Screen sharing](/zh/meeting/swift/advanced/screen-sharing) (Chinese)
-+ [Host controls](/zh/meeting/swift/advanced/host-controls) (Chinese)
-+ [Types](/zh/meeting/swift/types) (Chinese)
++ [Media control](/en/meeting/swift/advanced/media-control)
++ [Video rendering](/en/meeting/swift/advanced/video-rendering)
++ [Screen sharing](/en/meeting/swift/advanced/screen-sharing)
++ [Host controls](/en/meeting/swift/advanced/host-controls)
++ [Types](/en/meeting/swift/types)

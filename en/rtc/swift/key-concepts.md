@@ -46,7 +46,7 @@ Think of it as "an RTC session that has completed authentication and network con
 `joinChannel` can be called multiple times—one engine can join multiple channels at the same time, and each channel's publishing, subscriptions, users, and events
 are independent of each other; `srtc.channels` is the list of currently live channels. **Tracks belong to the engine, not to a channel**: the same capture track
 can be published to multiple channels, capture happens only once, and cleanup is handled by the last releaser. Publishing **audio** to multiple channels at the same time has one
-hard constraint (the set of audio sources must be the same in every channel)—see [Multi-channel](/zh/rtc/swift/advanced/multi-channel) (Chinese).
+hard constraint (the set of audio sources must be the same in every channel)—see [Multi-channel](/en/rtc/swift/advanced/multi-channel).
 
 ---
 
@@ -161,14 +161,14 @@ Track-level events go through `TrackDelegate`:
 + Capture ended
 + Underlying WebRTC track binding completed
 
-For the full event list, see [Events](/zh/rtc/swift/events) (Chinese).
+For the full event list, see [Events](/en/rtc/swift/events).
 
 ---
 
 ### Further reading
 
-+ [Mute vs. unpublish](/zh/rtc/swift/advanced/mute-vs-unpublish) (Chinese)
-+ [Device management](/zh/rtc/swift/advanced/device-management) (Chinese)
-+ [Screen sharing](/zh/rtc/swift/advanced/screen-sharing) (Chinese)
-+ [Multi-channel](/zh/rtc/swift/advanced/multi-channel) (Chinese)
-+ [Custom tracks](/zh/rtc/swift/advanced/custom-track) (Chinese)
++ [Mute vs. unpublish](/en/rtc/swift/advanced/mute-vs-unpublish)
++ [Device management](/en/rtc/swift/advanced/device-management)
++ [Screen sharing](/en/rtc/swift/advanced/screen-sharing)
++ [Multi-channel](/en/rtc/swift/advanced/multi-channel)
++ [Custom tracks](/en/rtc/swift/advanced/custom-track)

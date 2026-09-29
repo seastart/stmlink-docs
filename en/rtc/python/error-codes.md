@@ -21,7 +21,7 @@ except srtc.SdkError as e:
 
 | Value | Source | Description |
 | --- | --- | --- |
-| `180xxx` | The SDK itself | The same set as [C SDK · Error codes](/zh/rtc/capi/error-codes#日志里的-180xxx：sdk-层错误) (Chinese); server-side integrations share the `180` prefix |
+| `180xxx` | The SDK itself | The same set as [C SDK · Error codes](/en/rtc/capi/error-codes#180xxx-in-logs-sdk-errors); server-side integrations share the `180` prefix |
 | `≥1000` (such as `1033`) | Server | The business-level reason for rejection, passed through unchanged by the SDK. For the full list, see [Server API · Error codes](/en/rtc/server-api/error-codes) |
 | `-1` | SDK internal | Failures with no specific error code (such as a malformed token or no network connectivity); check `msg` |
 

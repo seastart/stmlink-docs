@@ -211,7 +211,7 @@ srtc.onNotifyChannelEvent = async (evt: ChannelEvent) => {
 To close the whiteboard, do the reverse: call `white-board/destroy`, set `props.white_board` back to `false`, and broadcast `status: 0`.
 
 <Note>
-You define the value of `action`; `white_board` here is just the Demo's convention. For events and data structures, see [Events](/zh/rtc/web/events) (Chinese); for the broadcast endpoint, see [Server API · Channel](/en/rtc/server-api/channel).
+You define the value of `action`; `white_board` here is just the Demo's convention. For events and data structures, see [Events](/en/rtc/web/events); for the broadcast endpoint, see [Server API · Channel](/en/rtc/server-api/channel).
 </Note>
 
 ---
@@ -257,7 +257,7 @@ The name `AndroidInterface` is historical; iOS and Windows mount under the same 
 
 Mini Programs don't have `iframe`, so use the `<web-view>` component to host the page. It fills the whole page, and the whiteboard domain must first be configured as a business domain in the Mini Program admin console.
 
-For a full Android example (WebView configuration, JS Bridge implementation, and handling `onShowFileChooser` when inserting images), see [Android · Whiteboard integration](/zh/rtc/android/advanced/whiteboard) (Chinese).
+For a full Android example (WebView configuration, JS Bridge implementation, and handling `onShowFileChooser` when inserting images), see [Android · Whiteboard integration](/en/rtc/android/advanced/whiteboard).
 
 ---
 
@@ -290,11 +290,11 @@ Check that both use the same `board`. With path A, `board` always equals the cha
 
 **What image formats can the whiteboard insert?**
 
-JPEG / PNG / GIF / WebP / SVG, **up to 3 MB each**; video isn't supported. SVG is vector, so it stays sharp when zoomed, and works better than bitmaps for icons and drawings. On native platforms, to let users pick images you also need to handle `onShowFileChooser` in the WebView (see [Android · Whiteboard integration](/zh/rtc/android/advanced/whiteboard) (Chinese)); we recommend compressing images to under 1 MB before returning them.
+JPEG / PNG / GIF / WebP / SVG, **up to 3 MB each**; video isn't supported. SVG is vector, so it stays sharp when zoomed, and works better than bitmaps for icons and drawings. On native platforms, to let users pick images you also need to handle `onShowFileChooser` in the WebView (see [Android · Whiteboard integration](/en/rtc/android/advanced/whiteboard)); we recommend compressing images to under 1 MB before returning them.
 
 **Can I stream the whiteboard to clients that can't embed a WebView?**
 
-The whiteboard itself doesn't produce a media stream. If the other side can't host H5, capture the whiteboard on a client that can and publish it as a custom video track; see [Custom tracks](/zh/rtc/web/advanced/custom-track) (Chinese).
+The whiteboard itself doesn't produce a media stream. If the other side can't host H5, capture the whiteboard on a client that can and publish it as a custom video track; see [Custom tracks](/en/rtc/web/advanced/custom-track).
 
 ---
 

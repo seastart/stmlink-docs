@@ -13,7 +13,7 @@ The SMeeting Swift SDK is a conferencing SDK delivered as a `Swift Package`, wit
 <Warning>
 **Starting with `1.3.0`, the minimum OS versions were raised from iOS 13 / macOS 10.15 to iOS 16 / macOS 14.** Projects below these minimums can't resolve 1.3.0 or later (you get a dependency resolution failure, not a compile error); projects that still need to support older systems should stay on `1.2.1`.
 
-The minimums come from the virtual background inference runtime in the audio and video layer—SwiftPM's `platforms:` is package-wide, and a dependent package can only be equal to or higher than its dependency. For details, see [Virtual background](/zh/meeting/swift/advanced/virtual-background) (Chinese).
+The minimums come from the virtual background inference runtime in the audio and video layer—SwiftPM's `platforms:` is package-wide, and a dependent package can only be equal to or higher than its dependency. For details, see [Virtual background](/en/meeting/swift/advanced/virtual-background).
 </Warning>
 
 SMeeting is built on top of SRTC's audio and video capabilities: the meeting layer handles business semantics such as rooms, meetings, members, and host controls, while the underlying audio and video capture, encoding and decoding, and rendering are still provided by SRTC. When you add `SMeeting`, SRTC is resolved along with it as a dependency, so you don't need to add it separately.
@@ -72,10 +72,10 @@ dependencies: [
 <Warning>
 **Add `SRTCBroadcastKit` only to the Broadcast Upload Extension target**, not to the app target as well—`SRTC` on the app side already statically contains the same code, and linking it twice puts two copies of the same types into one process. The reverse doesn't work either: linking `SMeeting` / `SRTC` into the extension pulls WebRTC into an extension process that has a 50 MB memory limit.
 
-For the full integration steps, see [Screen sharing](/zh/meeting/swift/advanced/screen-sharing) (Chinese).
+For the full integration steps, see [Screen sharing](/en/meeting/swift/advanced/screen-sharing).
 </Warning>
 
-Each SMeeting version pins a fixed SRTC version (pinned with `exact:` to guarantee a combination we have tested); you can find the mapping in the [Changelog](/zh/meeting/swift/changelog) (Chinese).
+Each SMeeting version pins a fixed SRTC version (pinned with `exact:` to guarantee a combination we have tested); you can find the mapping in the [Changelog](/en/meeting/swift/changelog).
 
 ---
 
@@ -131,7 +131,7 @@ We recommend also declaring the background audio capability, so the system doesn
 ```
 
 <Note>
-On iOS, **the SDK requests microphone permission when you enter the meeting**, even if the member only intends to listen; the orange microphone indicator also shows in the status bar while in the meeting. This is a prerequisite for controllable audio routing and matches apps such as Zoom and Tencent Meeting; for the reason, see [Audio routing](/zh/meeting/swift/advanced/audio-routing) (Chinese). So `NSMicrophoneUsageDescription` is required—the app crashes without it.
+On iOS, **the SDK requests microphone permission when you enter the meeting**, even if the member only intends to listen; the orange microphone indicator also shows in the status bar while in the meeting. This is a prerequisite for controllable audio routing and matches apps such as Zoom and Tencent Meeting; for the reason, see [Audio routing](/en/meeting/swift/advanced/audio-routing). So `NSMicrophoneUsageDescription` is required—the app crashes without it.
 </Note>
 
 #### macOS
@@ -150,7 +150,7 @@ Add the following to `Info.plist`:
 If you use screen sharing, also note:
 
 + On macOS, sharing a display or an app window requires the user to grant permission in a system prompt
-+ The APIs that specify a sharing source require macOS 12.3 or later; for details, see [Screen sharing](/zh/meeting/swift/advanced/screen-sharing) (Chinese)
++ The APIs that specify a sharing source require macOS 12.3 or later; for details, see [Screen sharing](/en/meeting/swift/advanced/screen-sharing)
 
 ---
 

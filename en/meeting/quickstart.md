@@ -67,11 +67,11 @@ When the user clicks "Enter meeting"
   └─ 302 redirect /stm/ui/outer?token=&room_no=
 ```
 
-See [Server-side low-code integration](/zh/meeting/ui-sdk/server-integration) (Chinese).
+See [Server-side low-code integration](/en/meeting/ui-sdk/server-integration).
 
 ### Low-code integration with UI
 
-The meeting UI uses our frontend source code; you change the styles and deploy it yourself. Your backend still connects accounts with ours, and you don't need to touch the meeting logic. See [Low-code integration with UI](/zh/meeting/ui-sdk/web) (Chinese).
+The meeting UI uses our frontend source code; you change the styles and deploy it yourself. Your backend still connects accounts with ours, and you don't need to touch the meeting logic. See [Low-code integration with UI](/en/meeting/ui-sdk/web).
 
 ### Custom integration
 

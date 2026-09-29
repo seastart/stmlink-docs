@@ -11,6 +11,138 @@
     "zh_blob": "5743e1c71df12a0b6cea57d045271690d599c857",
     "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
   },
+  "en/meeting/android/advanced/audio-routing": {
+    "reviewed": true,
+    "source": "zh/meeting/android/advanced/audio-routing.md",
+    "zh_blob": "a735359d2e16f3c7a17e5cf5ec5c02d2651c16a5",
+    "zh_commit": "6689fa152bccd4b1038f82d20d6e3a3324d4369f"
+  },
+  "en/meeting/android/advanced/whiteboard": {
+    "reviewed": true,
+    "source": "zh/meeting/android/advanced/whiteboard.md",
+    "zh_blob": "0874ad87d3bba1b2bcb73bffdc28f4684657b246",
+    "zh_commit": "6689fa152bccd4b1038f82d20d6e3a3324d4369f"
+  },
+  "en/meeting/android/api-reference/InfosManager": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/InfosManager.md",
+    "zh_blob": "4944f2f01fd54595bbd0a25f43b03640fae1e696",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/api-reference/MeetingCameraDeviceEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingCameraDeviceEvent.md",
+    "zh_blob": "d4ed9c50ba26d7443bea3cced9054194eb42a7b4",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingEngine": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingEngine.md",
+    "zh_blob": "75405219dccb3f77d884f6976e1de16205e354f2",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/api-reference/MeetingEngineEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingEngineEvent.md",
+    "zh_blob": "028dd90262c9b5a11da3da16f655b1e5ad650de7",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingImEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingImEvent.md",
+    "zh_blob": "6856698a12ebfd37eeede16fada14fb7127bde25",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/api-reference/MeetingLocalAudioFrameEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingLocalAudioFrameEvent.md",
+    "zh_blob": "71028bae94916fc41064ece63e4e964daca4db88",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingLocalVideoFrameEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingLocalVideoFrameEvent.md",
+    "zh_blob": "f19f82a0906a0d95e09cbfd270936efdebe8fdf8",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingMediaEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingMediaEvent.md",
+    "zh_blob": "7c1fccb3e5a2df1334fc948849b19e68790c4b88",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/api-reference/MeetingMessageEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingMessageEvent.md",
+    "zh_blob": "780da7161d3f13a693c209693108fced2653ca8f",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingMicDeviceEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingMicDeviceEvent.md",
+    "zh_blob": "14289d218f330d445211819878ac87d45bf6f1d5",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingRemoteVideoEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingRemoteVideoEvent.md",
+    "zh_blob": "05f4d4ec98bd34a75c9a9ad4c09a5170d1b97a8e",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingResultCallback": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingResultCallback.md",
+    "zh_blob": "6ef0e4a3bb840e58c0603411e7bf497d72aebcb0",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingRoomEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingRoomEvent.md",
+    "zh_blob": "27e145c2651b438b12e0366ca273a6a8cfe5592c",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingScreenCaptureEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingScreenCaptureEvent.md",
+    "zh_blob": "9238be451614efce4af68ba37a41054b707bcec7",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/MeetingUserEvent": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/MeetingUserEvent.md",
+    "zh_blob": "10f08f4509673c805c352c9e98929f435a16f09d",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/RollCallManager": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/RollCallManager.md",
+    "zh_blob": "c0fcb22b2199661880dfe373ea092dd14e9a85ba",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/SignInManager": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/SignInManager.md",
+    "zh_blob": "b1a49ebb654502a3108624c7c4792e73d3792c8f",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/api-reference/meeting-events": {
+    "reviewed": true,
+    "source": "zh/meeting/android/api-reference/meeting-events.md",
+    "zh_blob": "22935d40f89c3309cdcb48556c1f5eef8bb75576",
+    "zh_commit": "b63ce5f6591e2a82e1ad045d6d2b6b3a83244a2e"
+  },
+  "en/meeting/android/changelog": {
+    "reviewed": true,
+    "source": "zh/meeting/android/changelog.mdx",
+    "zh_blob": "8f1fb7d337608501d73d6f201bcfd21cbb308373",
+    "zh_commit": "2cec547808f4fc032e3702078eb58a8998bcc29f"
+  },
+  "en/meeting/android/enums": {
+    "reviewed": true,
+    "source": "zh/meeting/android/enums.md",
+    "zh_blob": "5a3b821f22cbe6a80b57834524f215a7f647e06c",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
   "en/meeting/android/error-codes": {
     "reviewed": true,
     "source": "zh/meeting/android/error-codes.md",
@@ -21,13 +153,49 @@
     "reviewed": true,
     "source": "zh/meeting/android/integration.md",
     "zh_blob": "e31561d728d8b5035343b4d0a319258b72d2364d",
-    "zh_commit": "5c62b08f10aae1ec2753f3098d3bbfb3713ef4b9"
+    "zh_commit": "305d17a5c5a680529ff902d07db55700a8ba647a"
+  },
+  "en/meeting/android/media-quality": {
+    "reviewed": true,
+    "source": "zh/meeting/android/media-quality.md",
+    "zh_blob": "ad9cff46d431cf5ca0d32aa0ebe02f478cbca462",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/presets/camera": {
+    "reviewed": true,
+    "source": "zh/meeting/android/presets/camera.md",
+    "zh_blob": "e94c081b95af386c8ef4f77107d151fa982e4df3",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/presets/custom-video": {
+    "reviewed": true,
+    "source": "zh/meeting/android/presets/custom-video.md",
+    "zh_blob": "c73a5876e45b922dcb56369a61989247b9e32e9b",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/presets/microphone": {
+    "reviewed": true,
+    "source": "zh/meeting/android/presets/microphone.md",
+    "zh_blob": "eced27692fb333ef8f93d87f8f7b0922b4164617",
+    "zh_commit": "a3f17dd56cda1906ee01c130e431d84b82ca7339"
+  },
+  "en/meeting/android/presets/screen-sharing": {
+    "reviewed": true,
+    "source": "zh/meeting/android/presets/screen-sharing.md",
+    "zh_blob": "888da2a7ddc444501ca96ef7e8061c4e23dcd658",
+    "zh_commit": "a3f17dd56cda1906ee01c130e431d84b82ca7339"
   },
   "en/meeting/android/quickstart": {
     "reviewed": true,
     "source": "zh/meeting/android/quickstart.md",
-    "zh_blob": "0a90caadc439b3bcae146f89806cff5c8037d5d9",
-    "zh_commit": "5c62b08f10aae1ec2753f3098d3bbfb3713ef4b9"
+    "zh_blob": "5a63225ca15bf6366818e070c0c658ebaf9afbb9",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/android/types": {
+    "reviewed": true,
+    "source": "zh/meeting/android/types.md",
+    "zh_blob": "125cdbbff2e0a2dc9ab5458561b39973684a1cec",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
   "en/meeting/error-codes": {
     "reviewed": true,
@@ -77,11 +245,143 @@
     "zh_blob": "bfa91ac15ccd02bf2845f7a048bd6d64cdae8b45",
     "zh_commit": "9b99ede7abe321161ee7802b01ec21d0ccee17b6"
   },
+  "en/meeting/swift/advanced/audio-routing": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/audio-routing.md",
+    "zh_blob": "11fc597680d3a2e8bf841a35e869aa8502e03392",
+    "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
+  },
+  "en/meeting/swift/advanced/device-management": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/device-management.md",
+    "zh_blob": "0042eb50645695bf1df64bd1b65418bf18b7160f",
+    "zh_commit": "54ccddc2550f64e106d8479467893d54e37e0d3a"
+  },
+  "en/meeting/swift/advanced/handup": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/handup.md",
+    "zh_blob": "2ab6761413f9cfa890a7fc718d7037077286b03e",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/host-controls": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/host-controls.md",
+    "zh_blob": "d20b692e72a54743cd95030dfef110c3b7938008",
+    "zh_commit": "66451c2258418f76c4e3aa050a56a59021437fc9"
+  },
+  "en/meeting/swift/advanced/im": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/im.md",
+    "zh_blob": "e84ec3011d2dae0f541a9cecca7858dcc18cb2d1",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/media-control": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/media-control.md",
+    "zh_blob": "43fa8c2899eba8a6eb03d451116a4e42c6434e2e",
+    "zh_commit": "a763af713ecc9af019d0b38b493de48de8576a44"
+  },
+  "en/meeting/swift/advanced/messaging": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/messaging.md",
+    "zh_blob": "81c4f0600711dae568455c7e16870db3dcea1e4a",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/recording": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/recording.md",
+    "zh_blob": "2fd61acd133d6215cc600948c1c9a9ea2c1c26be",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/resources": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/resources.md",
+    "zh_blob": "e4b2ee12eed7078745e2e727ebf81c0d70b8430e",
+    "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
+  },
+  "en/meeting/swift/advanced/screen-sharing": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/screen-sharing.md",
+    "zh_blob": "0b0f2ad8ace510f2c1b31e7196ab5f0b0e15bcf4",
+    "zh_commit": "f52dec72fd545d6139dc2d01cdfe0a0819ed140c"
+  },
+  "en/meeting/swift/advanced/sign-in": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/sign-in.md",
+    "zh_blob": "961d543d615d65c8a77165eb58ff794316412de0",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/sub-meetings": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/sub-meetings.md",
+    "zh_blob": "a865f98b7c95cacb2bca709a95386e1d22c44de0",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/video-rendering": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/video-rendering.md",
+    "zh_blob": "dbb1a06b44d5765dcf6753abd23a0592ddd35d80",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/advanced/virtual-background": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/virtual-background.md",
+    "zh_blob": "7cb631d3314a5478f59b899eba6c3e6bace9b98b",
+    "zh_commit": "c2d7c3193395a104fa860164a58f4cfb61ff2ba8"
+  },
+  "en/meeting/swift/advanced/waiting-room": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/advanced/waiting-room.md",
+    "zh_blob": "994136d3eab3438defdb9793a3ee81da86162734",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/api-reference/SMeetingEngine": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/api-reference/SMeetingEngine.md",
+    "zh_blob": "bb589fc9cd2f4c31be315351b9e4d885c63d3eff",
+    "zh_commit": "0441a21c8d7d67493b0677d9a0122186ec65059d"
+  },
+  "en/meeting/swift/api-reference/SMeetingRemoteVideoView": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/api-reference/SMeetingRemoteVideoView.md",
+    "zh_blob": "ad7e996ebf9e1b8571058bbe84672c5b40077dc4",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/meeting/swift/api-reference/admin-actions": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/api-reference/admin-actions.md",
+    "zh_blob": "cb6294d85296bed31812f57f3de2008cc0928e49",
+    "zh_commit": "66451c2258418f76c4e3aa050a56a59021437fc9"
+  },
+  "en/meeting/swift/api-reference/devices": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/api-reference/devices.md",
+    "zh_blob": "ffe92d2b2a1c60d0ca639ebbd6e40ff1ff2b8f79",
+    "zh_commit": "54ccddc2550f64e106d8479467893d54e37e0d3a"
+  },
+  "en/meeting/swift/api-reference/media-control": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/api-reference/media-control.md",
+    "zh_blob": "e4f30cbf45a3074b35a7275d038b7b356f55901c",
+    "zh_commit": "ff35ce6ff48c64677958c50cea60fb8639d8329f"
+  },
+  "en/meeting/swift/changelog": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/changelog.mdx",
+    "zh_blob": "77c1a06d73b109c6973c7866551ed5d1e3b5ea6b",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
   "en/meeting/swift/error-codes": {
     "reviewed": true,
     "source": "zh/meeting/swift/error-codes.md",
     "zh_blob": "3a2f7da9499d4ca020f3c3f2951e7ae221956b00",
-    "zh_commit": "5c62b08f10aae1ec2753f3098d3bbfb3713ef4b9"
+    "zh_commit": "305d17a5c5a680529ff902d07db55700a8ba647a"
+  },
+  "en/meeting/swift/events": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/events.md",
+    "zh_blob": "51ddc4340a9fd33a947a71d827d3ab090e35ea2a",
+    "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
   },
   "en/meeting/swift/integration": {
     "reviewed": true,
@@ -93,7 +393,7 @@
     "reviewed": true,
     "source": "zh/meeting/swift/key-concepts.md",
     "zh_blob": "16c9ad32623769d45267da2d56d07302b6fcae33",
-    "zh_commit": "5c62b08f10aae1ec2753f3098d3bbfb3713ef4b9"
+    "zh_commit": "305d17a5c5a680529ff902d07db55700a8ba647a"
   },
   "en/meeting/swift/quickstart": {
     "reviewed": true,
@@ -101,11 +401,59 @@
     "zh_blob": "8c3222bbe018ac7a0e72b7055a0c40062257a016",
     "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
   },
+  "en/meeting/swift/types": {
+    "reviewed": true,
+    "source": "zh/meeting/swift/types.md",
+    "zh_blob": "924d9966df9743ea148a4cd2e0e413e3106f7a93",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
   "en/meeting/token": {
     "reviewed": true,
     "source": "zh/meeting/token.md",
     "zh_blob": "e14d83e7d0d0555cba8f8ad45c826ebaa224a06b",
     "zh_commit": "cb4eafad25598c2fd96eebe8872ce65ca2e319d1"
+  },
+  "en/meeting/ui-sdk/android": {
+    "reviewed": true,
+    "source": "zh/meeting/ui-sdk/android.md",
+    "zh_blob": "d6406d1aaa63685546ca4c8d0c6f89156085aa4b",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/ui-sdk/ios": {
+    "reviewed": true,
+    "source": "zh/meeting/ui-sdk/ios.md",
+    "zh_blob": "58a8a58c02c3365ca04ee39f917285712020c786",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/ui-sdk/server-integration": {
+    "reviewed": true,
+    "source": "zh/meeting/ui-sdk/server-integration.md",
+    "zh_blob": "cfb81f3aeced89f4b7e7bc9f9ac872e5854a8a12",
+    "zh_commit": "54a92b721edc8ac8eee728de5c37b60db3d2f1be"
+  },
+  "en/meeting/ui-sdk/web": {
+    "reviewed": true,
+    "source": "zh/meeting/ui-sdk/web.md",
+    "zh_blob": "78a8c5557373a8f6f083b5283e335e616d423ea2",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/ui-sdk/windows": {
+    "reviewed": true,
+    "source": "zh/meeting/ui-sdk/windows.md",
+    "zh_blob": "430ad225ac89638845544330368ff0d955b264f4",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/web/api-reference/SMeeting": {
+    "reviewed": true,
+    "source": "zh/meeting/web/api-reference/SMeeting.md",
+    "zh_blob": "ed7bc603d8ed14eb25c0ff8dc2ca02759125fec1",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/web/events": {
+    "reviewed": true,
+    "source": "zh/meeting/web/events.md",
+    "zh_blob": "533b1c841d49ac3ca80681c8e911077c85a5b9ec",
+    "zh_commit": "15c1e038190de1c63fef7d94a79430c222e8527d"
   },
   "en/meeting/web/integration": {
     "reviewed": true,
@@ -119,6 +467,156 @@
     "zh_blob": "87deb5de6c1d6a182cae8cd9856cd46082bf68ba",
     "zh_commit": "5210fb8780d5407ce288086724a8313de2d625ac"
   },
+  "en/meeting/web/types": {
+    "reviewed": true,
+    "source": "zh/meeting/web/types.md",
+    "zh_blob": "c0a741934b75d503ede1f2aa39781e69bc2577a3",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/meeting/web/whiteboard": {
+    "reviewed": true,
+    "source": "zh/meeting/web/whiteboard.md",
+    "zh_blob": "eef97c99336fb4c8b2656979ba55ed08852440aa",
+    "zh_commit": "eaea4ef03ef260ed4d1665bdfac7732544206b42"
+  },
+  "en/rtc/android/advanced/audio-routing": {
+    "reviewed": true,
+    "source": "zh/rtc/android/advanced/audio-routing.md",
+    "zh_blob": "ab3677d2b902ac619522a06d76fa94e92a44f15b",
+    "zh_commit": "5680c26e589c24978422536c159fd4787c0eb653"
+  },
+  "en/rtc/android/advanced/custom-track": {
+    "reviewed": true,
+    "source": "zh/rtc/android/advanced/custom-track.md",
+    "zh_blob": "bdffcec60beb229f8307d7aef5a2801b4ee27475",
+    "zh_commit": "57c37f895bb4390de553737f3d8380143491f2cb"
+  },
+  "en/rtc/android/advanced/multi-channel": {
+    "reviewed": true,
+    "source": "zh/rtc/android/advanced/multi-channel.md",
+    "zh_blob": "f0b62b6f4b83fd1878213b231c16ed167e37348a",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/advanced/whiteboard": {
+    "reviewed": true,
+    "source": "zh/rtc/android/advanced/whiteboard.md",
+    "zh_blob": "4310fd0f71bcc423e8fa2da2002423c5ca7f543b",
+    "zh_commit": "aa5541b7622328c317ed7f9632c2f5999f89f276"
+  },
+  "en/rtc/android/api-reference/AudioRouterManager": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/AudioRouterManager.md",
+    "zh_blob": "3c1a020fac8037d209384247c18d7dfaaa78640e",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/android/api-reference/LocalCameraTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/LocalCameraTrack.md",
+    "zh_blob": "19c3a040a7959fb0e81d9dd7b7073c35b01733e4",
+    "zh_commit": "3fef14cff48e7771debb38830ee808ae1d086a55"
+  },
+  "en/rtc/android/api-reference/LocalCustomVideoTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/LocalCustomVideoTrack.md",
+    "zh_blob": "55d58ec0d65f4fffb538d1d69755e604ddbe4c7f",
+    "zh_commit": "5b438072114328c024edb4d7d7a1ed74d5c9b5f9"
+  },
+  "en/rtc/android/api-reference/LocalMicTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/LocalMicTrack.md",
+    "zh_blob": "b748ac730154b691680e6ba239a8b76680aabf4f",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/api-reference/LocalScreenTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/LocalScreenTrack.md",
+    "zh_blob": "5f18a85c96f78c0d1bc4325be35b34aadde79370",
+    "zh_commit": "3fef14cff48e7771debb38830ee808ae1d086a55"
+  },
+  "en/rtc/android/api-reference/LogUtil": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/LogUtil.md",
+    "zh_blob": "ea5cb3f516793df464d410234ee0d7f3660f0755",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/android/api-reference/RTCCameraDeviceEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCCameraDeviceEvent.md",
+    "zh_blob": "30ecaea6483ad349a63c39bc49277a2bebc7a372",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/api-reference/RTCChannel": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCChannel.md",
+    "zh_blob": "8304576db045644829332df6a9ed6c5af8b0a674",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/api-reference/RTCClientEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCClientEvent.md",
+    "zh_blob": "dbd93dbe38ebb113fe8a84314492a2bbe36756ae",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/api-reference/RTCEngine": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCEngine.md",
+    "zh_blob": "04067d134b683e5c2bdec6cb2fc62dcd9d1ef1b4",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/android/api-reference/RTCEngineEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCEngineEvent.md",
+    "zh_blob": "178d82ba90ff7aef0e3d6532207efcb88a0af0e1",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/api-reference/RTCImEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCImEvent.md",
+    "zh_blob": "832da5f1f951ba4b0363bc2bce6c165beea2649e",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/android/api-reference/RTCLocalAudioFrameEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCLocalAudioFrameEvent.md",
+    "zh_blob": "9e9da76e47c34033fad446f61c0c32a84a965473",
+    "zh_commit": "77087e38dfd58e2a219b2b11453a83bbaaefcc75"
+  },
+  "en/rtc/android/api-reference/RTCMediaEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCMediaEvent.md",
+    "zh_blob": "266d9bc86186b0fdc610681e3ae216926329e8c3",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/android/api-reference/RTCMicDeviceEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RTCMicDeviceEvent.md",
+    "zh_blob": "e3eef0f07e8d98aabcc68704d429b7e2ae1ad93a",
+    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+  },
+  "en/rtc/android/api-reference/RemoteAudioMixTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RemoteAudioMixTrack.md",
+    "zh_blob": "73ec19faed9b09d7238c0b76d27598fd5263a157",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/android/api-reference/RemoteVideoTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/android/api-reference/RemoteVideoTrack.md",
+    "zh_blob": "95b9d355f1d0d0d8c23fe2b13952a09ba8281962",
+    "zh_commit": "3fef14cff48e7771debb38830ee808ae1d086a55"
+  },
+  "en/rtc/android/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/android/changelog.mdx",
+    "zh_blob": "d45f97d8f834373b84228e4178fd9cbb8ab665d5",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/android/enums": {
+    "reviewed": true,
+    "source": "zh/rtc/android/enums.md",
+    "zh_blob": "91e9e0e504584a8c62d7f4abdb7e950b7f908425",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
   "en/rtc/android/error-codes": {
     "reviewed": true,
     "source": "zh/rtc/android/error-codes.md",
@@ -129,13 +627,127 @@
     "reviewed": true,
     "source": "zh/rtc/android/integration.md",
     "zh_blob": "cefb983822e72f2f34293a196c990899fa4dd9f6",
-    "zh_commit": "5c62b08f10aae1ec2753f3098d3bbfb3713ef4b9"
+    "zh_commit": "305d17a5c5a680529ff902d07db55700a8ba647a"
+  },
+  "en/rtc/android/media-quality": {
+    "reviewed": true,
+    "source": "zh/rtc/android/media-quality.md",
+    "zh_blob": "856cd817dae3bab69758012c03134666d8c54df6",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/android/network-quality": {
+    "reviewed": true,
+    "source": "zh/rtc/android/network-quality.md",
+    "zh_blob": "bb31021786ed464336d6ddea78ffad6769db2370",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/android/presets/camera": {
+    "reviewed": true,
+    "source": "zh/rtc/android/presets/camera.md",
+    "zh_blob": "a9f61a4839dcb595b6f409be9d32ababf3efa933",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/android/presets/custom-video": {
+    "reviewed": true,
+    "source": "zh/rtc/android/presets/custom-video.md",
+    "zh_blob": "0416b37f96c1706dc2dd7dd35e3ab94301d8a2a9",
+    "zh_commit": "c73c567f215af1a7a2ccf04de868f0097e4ec552"
+  },
+  "en/rtc/android/presets/microphone": {
+    "reviewed": true,
+    "source": "zh/rtc/android/presets/microphone.md",
+    "zh_blob": "64c81ce4bd922ec05265bb1f74f3a503ef75af2d",
+    "zh_commit": "2d4bb3da6bc8b5d6b6de154faeb8e467a5d1875f"
+  },
+  "en/rtc/android/presets/screen-sharing": {
+    "reviewed": true,
+    "source": "zh/rtc/android/presets/screen-sharing.md",
+    "zh_blob": "0e9793c3d4213260215c77118b4f5a5999b2a9b0",
+    "zh_commit": "2e610a0e3d1c8bc58f1fd4be30d9fbbd110df753"
   },
   "en/rtc/android/quickstart": {
     "reviewed": true,
     "source": "zh/rtc/android/quickstart.md",
     "zh_blob": "fe67f7c41e6e485fced0fca49a91d2c8c16bf634",
-    "zh_commit": "5c62b08f10aae1ec2753f3098d3bbfb3713ef4b9"
+    "zh_commit": "305d17a5c5a680529ff902d07db55700a8ba647a"
+  },
+  "en/rtc/android/types": {
+    "reviewed": true,
+    "source": "zh/rtc/android/types.md",
+    "zh_blob": "2223bfe939d650a73ae02c1e0b03f7980a1f4efb",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/capi/advanced/custom-msg": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/advanced/custom-msg.md",
+    "zh_blob": "167ee5029d99ec0684d2ad01b716dafb7bda841c",
+    "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
+  },
+  "en/rtc/capi/advanced/mcu": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/advanced/mcu.md",
+    "zh_blob": "f694b0a5be65df54cc33031d8c81bfb100757a23",
+    "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
+  },
+  "en/rtc/capi/advanced/seastart": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/advanced/seastart.md",
+    "zh_blob": "0ba3d5b6c54e77138ed10ee0dfd73957f060d5e2",
+    "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
+  },
+  "en/rtc/capi/api-reference/engine": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/api-reference/engine.md",
+    "zh_blob": "7ab0937b41d321e5219ae1329b9307558833cc1a",
+    "zh_commit": "141aeb204c831dd68a1d0612c66bf339e3c2e8aa"
+  },
+  "en/rtc/capi/api-reference/publish": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/api-reference/publish.md",
+    "zh_blob": "c5b10bfa4ef3f267f2c5891cf281d5f30396841c",
+    "zh_commit": "141aeb204c831dd68a1d0612c66bf339e3c2e8aa"
+  },
+  "en/rtc/capi/api-reference/subscribe": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/api-reference/subscribe.md",
+    "zh_blob": "a99a35998936849993a09622ec1ad7f71eac8002",
+    "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
+  },
+  "en/rtc/capi/api-reference/users": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/api-reference/users.md",
+    "zh_blob": "34e8f59afbd2ddfb917d3bc7e440455af015d2a3",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/capi/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/changelog.mdx",
+    "zh_blob": "a8e747ad9a27031862bf4d2393e2e38ecb1c1816",
+    "zh_commit": "141aeb204c831dd68a1d0612c66bf339e3c2e8aa"
+  },
+  "en/rtc/capi/error-codes": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/error-codes.md",
+    "zh_blob": "631a8f1261edf0d52d19d308b3638e0d1b7d3208",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/capi/integration": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/integration.md",
+    "zh_blob": "4ecf780961b9749114fc0d72307ca05d709850f8",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/capi/quickstart": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/quickstart.md",
+    "zh_blob": "a6203fc92d1ce6c3bcdf56489e8461ed0c667095",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/capi/types": {
+    "reviewed": true,
+    "source": "zh/rtc/capi/types.md",
+    "zh_blob": "7f86904ba87466d0ab22e921a5ae2a17c045bb2b",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/error-codes": {
     "reviewed": true,
@@ -161,6 +773,42 @@
     "zh_blob": "a31e7ea769ae1ef88cc7029d1d84286717506ddc",
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
+  "en/rtc/python/advanced/ai-agent": {
+    "reviewed": true,
+    "source": "zh/rtc/python/advanced/ai-agent.md",
+    "zh_blob": "51927f03e7a850cb216e990de9c28ff4cdbc2926",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/python/advanced/pipecat": {
+    "reviewed": true,
+    "source": "zh/rtc/python/advanced/pipecat.md",
+    "zh_blob": "5868e9748db60689ea33851a5b070a999dd127ba",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/python/api-reference/audio": {
+    "reviewed": true,
+    "source": "zh/rtc/python/api-reference/audio.md",
+    "zh_blob": "597833c9f6003097fac49c6e41f7e52e0b73fe86",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/python/api-reference/channel": {
+    "reviewed": true,
+    "source": "zh/rtc/python/api-reference/channel.md",
+    "zh_blob": "b3a1aa5aff879ef590d6633ec9786b998c4b4231",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/python/api-reference/events": {
+    "reviewed": true,
+    "source": "zh/rtc/python/api-reference/events.md",
+    "zh_blob": "edee8683eecbc76baf91b17e4750f4cf4539cf45",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/python/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/python/changelog.mdx",
+    "zh_blob": "c64cd38e979761f5ba78340565c2d5362d31b1ea",
+    "zh_commit": "68c9c8a176aeca4cd3abc6c98490432ae953dc3c"
+  },
   "en/rtc/python/error-codes": {
     "reviewed": true,
     "source": "zh/rtc/python/error-codes.md",
@@ -177,6 +825,12 @@
     "reviewed": true,
     "source": "zh/rtc/python/quickstart.md",
     "zh_blob": "c9cd9a934d4625c2625676672a4498e4f19113fb",
+    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+  },
+  "en/rtc/python/types": {
+    "reviewed": true,
+    "source": "zh/rtc/python/types.md",
+    "zh_blob": "83341a0ee27ae4e43bd0923acaf67780ef3c7469",
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/quickstart": {
@@ -215,11 +869,83 @@
     "zh_blob": "d8c88dfbc2388d01da65a0ae1bfbdd7e7b201e9a",
     "zh_commit": "e0bac1e93fd590fba0eac485c451c97b03d6f2ab"
   },
+  "en/rtc/swift/advanced/audio-routing": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/audio-routing.md",
+    "zh_blob": "d95f67c6819e6e99d9ccbdf2e8ec7f3878dd28ca",
+    "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
+  },
+  "en/rtc/swift/advanced/call-quality": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/call-quality.md",
+    "zh_blob": "b899de3a171cb9d1ddff6bc191fff70441137ec8",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/swift/advanced/custom-track": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/custom-track.md",
+    "zh_blob": "cbc1da611eda7d4a69f0f11e90e9b055223e2926",
+    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+  },
+  "en/rtc/swift/advanced/device-management": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/device-management.md",
+    "zh_blob": "a8d8cbd531a9183dea7fc3c47090b9ee9628d630",
+    "zh_commit": "e3f9eab0f13162feb2a9805733962409c1a4c721"
+  },
+  "en/rtc/swift/advanced/multi-channel": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/multi-channel.md",
+    "zh_blob": "dc7051f0fa3305b2fcb20dbc15ae8e5e851db00b",
+    "zh_commit": "6b742ec194a92b4cff403cd7fa5ac04c452669e9"
+  },
+  "en/rtc/swift/advanced/mute-vs-unpublish": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/mute-vs-unpublish.md",
+    "zh_blob": "10b00d0969d0834d4a9de51c849e9aebd4949e72",
+    "zh_commit": "fd6d6da0ce20b289ecb0bb748ca684f0873a528f"
+  },
+  "en/rtc/swift/advanced/screen-sharing": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/screen-sharing.md",
+    "zh_blob": "0f2946ade12630329e17be9d91414be9c509d494",
+    "zh_commit": "44a24929f057e3df120de4a15063ad23d367bdc3"
+  },
+  "en/rtc/swift/advanced/virtual-background": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/advanced/virtual-background.md",
+    "zh_blob": "11521e7c640ebc4143888793b49e1eaf32a53563",
+    "zh_commit": "c2d7c3193395a104fa860164a58f4cfb61ff2ba8"
+  },
+  "en/rtc/swift/api-reference/SRTCEngine": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/api-reference/SRTCEngine.md",
+    "zh_blob": "ddb1bdd8443001361af1f3212a389d4e27f87c85",
+    "zh_commit": "44a24929f057e3df120de4a15063ad23d367bdc3"
+  },
+  "en/rtc/swift/api-reference/media-tracks": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/api-reference/media-tracks.md",
+    "zh_blob": "535948462b106b0ae383ebb6c17b803725465585",
+    "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
+  },
+  "en/rtc/swift/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/changelog.mdx",
+    "zh_blob": "d738c7c37929b88806827d8f01827835c1fc9fc0",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
   "en/rtc/swift/error-codes": {
     "reviewed": true,
     "source": "zh/rtc/swift/error-codes.md",
     "zh_blob": "e8688516f2c8f1f1cc45c8c446bd975d95963a97",
     "zh_commit": "0441a21c8d7d67493b0677d9a0122186ec65059d"
+  },
+  "en/rtc/swift/events": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/events.md",
+    "zh_blob": "af0470fc7c26391703d425ec84ef442298ed5285",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
   "en/rtc/swift/integration": {
     "reviewed": true,
@@ -239,17 +965,119 @@
     "zh_blob": "4bb3a822e4607a10e6720c3f49ab74e9ad1249bd",
     "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
   },
+  "en/rtc/swift/types": {
+    "reviewed": true,
+    "source": "zh/rtc/swift/types.md",
+    "zh_blob": "ba84480e8d38c90959ac8b73536093bdc259e444",
+    "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
+  },
   "en/rtc/token": {
     "reviewed": true,
     "source": "zh/rtc/token.md",
     "zh_blob": "459eec660c9032fdc55dbcce01abe4ab98fffe4a",
     "zh_commit": "cb4eafad25598c2fd96eebe8872ce65ca2e319d1"
   },
+  "en/rtc/web/advanced/audio-processor": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/audio-processor.md",
+    "zh_blob": "d79ca1b37e11e532c3094d5b3e5f5d9e43eaf581",
+    "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/advanced/custom-track": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/custom-track.md",
+    "zh_blob": "459ab50a6c8e9366b8c8d4a680665f84472fcf9c",
+    "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/advanced/deepfilternet": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/deepfilternet.md",
+    "zh_blob": "cb2b6e5cc3f3dbe2201847215ad0f2965f1862c2",
+    "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/advanced/local-recording": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/local-recording.md",
+    "zh_blob": "8a2ad0d50c591ae60aaa77a3bbf6228167da20ca",
+    "zh_commit": "e562b045ee2a49ff90474cbcfe26a3cfd21e3f1d"
+  },
+  "en/rtc/web/advanced/multi-channel": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/multi-channel.md",
+    "zh_blob": "a5d9cca56ce984762e7c620bcff689bdaf8246ea",
+    "zh_commit": "e0a1f6a8c95cca4aa120845f2829ce9e22f9cce9"
+  },
+  "en/rtc/web/advanced/multi-window-video-layout": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/multi-window-video-layout.md",
+    "zh_blob": "03f16011192e8cbc3e9ffdbc1bce1898ab2eb2c3",
+    "zh_commit": "2d63f9b38fdcc9002229b18bfe5d1ea2460f9138"
+  },
+  "en/rtc/web/advanced/mute-vs-unpublish": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/mute-vs-unpublish.md",
+    "zh_blob": "8cd7f66fc969272475a6b6b5b8bc1ab0ff7a639e",
+    "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/advanced/rnnoise": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/rnnoise.md",
+    "zh_blob": "d19d4100daa4830d29daa05ea4c5f26fca80271e",
+    "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/advanced/screen-sharing": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/screen-sharing.md",
+    "zh_blob": "2e381de173a5845ef826349c18eb19b38a9f06f7",
+    "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/advanced/video-stream-layers": {
+    "reviewed": true,
+    "source": "zh/rtc/web/advanced/video-stream-layers.md",
+    "zh_blob": "fcd4c8e758682c37b3e7048443214af31f5305bd",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
+  "en/rtc/web/api-reference/SRTC": {
+    "reviewed": true,
+    "source": "zh/rtc/web/api-reference/SRTC.md",
+    "zh_blob": "2ee4faaead8ac1629690d2e0e96389a7b9a8704d",
+    "zh_commit": "8b85c0191675b109c9a8e70b280729725efc3abf"
+  },
+  "en/rtc/web/api-reference/media-tracks": {
+    "reviewed": true,
+    "source": "zh/rtc/web/api-reference/media-tracks.md",
+    "zh_blob": "133c0b406bc152b6bbb31b5b9c2c863a0101a22d",
+    "zh_commit": "1ded634801507cbf0af33a455507ca48a94df6eb"
+  },
+  "en/rtc/web/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/web/changelog.mdx",
+    "zh_blob": "b7e432c03b775653f62366bc08baae47a767c208",
+    "zh_commit": "1ded634801507cbf0af33a455507ca48a94df6eb"
+  },
+  "en/rtc/web/channel-messages": {
+    "reviewed": true,
+    "source": "zh/rtc/web/channel-messages.md",
+    "zh_blob": "fc9f4cb1f3ed938016705811ca3bd08124803fa2",
+    "zh_commit": "aa714aca92cba52e24b68c7217d8868266b55342"
+  },
   "en/rtc/web/error-codes": {
     "reviewed": true,
     "source": "zh/rtc/web/error-codes.md",
     "zh_blob": "3271c7a99da10cd053676ec07a3403ff3a1c1548",
     "zh_commit": "f7bd646151854c2c6e8c1ec8a6fffa668c4f0677"
+  },
+  "en/rtc/web/events": {
+    "reviewed": true,
+    "source": "zh/rtc/web/events.md",
+    "zh_blob": "c2a247f315a12d8c64485656e4ff99099db292fc",
+    "zh_commit": "ecae85273fed09ef0121dc22c4639a72e37d4640"
+  },
+  "en/rtc/web/faq": {
+    "reviewed": true,
+    "source": "zh/rtc/web/faq.md",
+    "zh_blob": "50a988c4f4d0ae6bf2f0fac931988b8e6ed1bbec",
+    "zh_commit": "e0a1f6a8c95cca4aa120845f2829ce9e22f9cce9"
   },
   "en/rtc/web/integration": {
     "reviewed": true,
@@ -263,11 +1091,23 @@
     "zh_blob": "f44f86e5075e9bf8bab5d49894c6ea0c70a442ca",
     "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
   },
+  "en/rtc/web/network-quality": {
+    "reviewed": true,
+    "source": "zh/rtc/web/network-quality.md",
+    "zh_blob": "a6c28afad31a1572f479333a5b294a7a36509e3e",
+    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+  },
   "en/rtc/web/quickstart": {
     "reviewed": true,
     "source": "zh/rtc/web/quickstart.md",
     "zh_blob": "ba3fcba26388a27d0a5acd87baab05cf1ef4d28e",
     "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
+  },
+  "en/rtc/web/types": {
+    "reviewed": true,
+    "source": "zh/rtc/web/types.md",
+    "zh_blob": "2873a25f13a38081faaf135d993d7a8607411712",
+    "zh_commit": "eaea4ef03ef260ed4d1665bdfac7732544206b42"
   },
   "en/rtc/whiteboard": {
     "reviewed": true,

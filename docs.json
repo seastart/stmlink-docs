@@ -667,7 +667,35 @@
                   "en/rtc/web/integration",
                   "en/rtc/web/quickstart",
                   "en/rtc/web/key-concepts",
-                  "en/rtc/web/error-codes"
+                  "en/rtc/web/channel-messages",
+                  "en/rtc/web/network-quality",
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/rtc/web/advanced/multi-channel",
+                      "en/rtc/web/advanced/mute-vs-unpublish",
+                      "en/rtc/web/advanced/video-stream-layers",
+                      "en/rtc/web/advanced/screen-sharing",
+                      "en/rtc/web/advanced/multi-window-video-layout",
+                      "en/rtc/web/advanced/custom-track",
+                      "en/rtc/web/advanced/local-recording",
+                      "en/rtc/web/advanced/audio-processor",
+                      "en/rtc/web/advanced/rnnoise",
+                      "en/rtc/web/advanced/deepfilternet"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/web/api-reference/SRTC",
+                      "en/rtc/web/api-reference/media-tracks"
+                    ]
+                  },
+                  "en/rtc/web/events",
+                  "en/rtc/web/types",
+                  "en/rtc/web/error-codes",
+                  "en/rtc/web/changelog",
+                  "en/rtc/web/faq"
                 ]
               },
               {
@@ -675,7 +703,52 @@
                 "pages": [
                   "en/rtc/android/integration",
                   "en/rtc/android/quickstart",
-                  "en/rtc/android/error-codes"
+                  "en/rtc/android/network-quality",
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/rtc/android/advanced/multi-channel",
+                      "en/rtc/android/advanced/audio-routing",
+                      "en/rtc/android/advanced/custom-track",
+                      "en/rtc/android/advanced/whiteboard"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/android/api-reference/RTCEngine",
+                      "en/rtc/android/api-reference/RTCChannel",
+                      "en/rtc/android/api-reference/RTCEngineEvent",
+                      "en/rtc/android/api-reference/LocalCameraTrack",
+                      "en/rtc/android/api-reference/LocalScreenTrack",
+                      "en/rtc/android/api-reference/LocalMicTrack",
+                      "en/rtc/android/api-reference/LocalCustomVideoTrack",
+                      "en/rtc/android/api-reference/RemoteVideoTrack",
+                      "en/rtc/android/api-reference/RemoteAudioMixTrack",
+                      "en/rtc/android/api-reference/RTCClientEvent",
+                      "en/rtc/android/api-reference/RTCMediaEvent",
+                      "en/rtc/android/api-reference/RTCCameraDeviceEvent",
+                      "en/rtc/android/api-reference/RTCMicDeviceEvent",
+                      "en/rtc/android/api-reference/RTCLocalAudioFrameEvent",
+                      "en/rtc/android/api-reference/RTCImEvent",
+                      "en/rtc/android/api-reference/AudioRouterManager",
+                      "en/rtc/android/api-reference/LogUtil"
+                    ]
+                  },
+                  {
+                    "group": "Presets",
+                    "pages": [
+                      "en/rtc/android/presets/camera",
+                      "en/rtc/android/presets/microphone",
+                      "en/rtc/android/presets/screen-sharing",
+                      "en/rtc/android/presets/custom-video"
+                    ]
+                  },
+                  "en/rtc/android/types",
+                  "en/rtc/android/enums",
+                  "en/rtc/android/media-quality",
+                  "en/rtc/android/error-codes",
+                  "en/rtc/android/changelog"
                 ]
               },
               {
@@ -684,7 +757,57 @@
                   "en/rtc/swift/integration",
                   "en/rtc/swift/quickstart",
                   "en/rtc/swift/key-concepts",
-                  "en/rtc/swift/error-codes"
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/rtc/swift/advanced/mute-vs-unpublish",
+                      "en/rtc/swift/advanced/device-management",
+                      "en/rtc/swift/advanced/audio-routing",
+                      "en/rtc/swift/advanced/screen-sharing",
+                      "en/rtc/swift/advanced/virtual-background",
+                      "en/rtc/swift/advanced/multi-channel",
+                      "en/rtc/swift/advanced/call-quality",
+                      "en/rtc/swift/advanced/custom-track"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/swift/api-reference/SRTCEngine",
+                      "en/rtc/swift/api-reference/media-tracks"
+                    ]
+                  },
+                  "en/rtc/swift/events",
+                  "en/rtc/swift/types",
+                  "en/rtc/swift/error-codes",
+                  "en/rtc/swift/changelog"
+                ]
+              },
+              {
+                "group": "C SDK (server/embedded)",
+                "pages": [
+                  "en/rtc/capi/integration",
+                  "en/rtc/capi/quickstart",
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/rtc/capi/advanced/mcu",
+                      "en/rtc/capi/advanced/seastart",
+                      "en/rtc/capi/advanced/custom-msg"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/capi/api-reference/engine",
+                      "en/rtc/capi/api-reference/subscribe",
+                      "en/rtc/capi/api-reference/publish",
+                      "en/rtc/capi/api-reference/users"
+                    ]
+                  },
+                  "en/rtc/capi/types",
+                  "en/rtc/capi/error-codes",
+                  "en/rtc/capi/changelog"
                 ]
               },
               {
@@ -692,7 +815,24 @@
                 "pages": [
                   "en/rtc/python/integration",
                   "en/rtc/python/quickstart",
-                  "en/rtc/python/error-codes"
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/rtc/python/advanced/ai-agent",
+                      "en/rtc/python/advanced/pipecat"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/python/api-reference/channel",
+                      "en/rtc/python/api-reference/events",
+                      "en/rtc/python/api-reference/audio"
+                    ]
+                  },
+                  "en/rtc/python/types",
+                  "en/rtc/python/error-codes",
+                  "en/rtc/python/changelog"
                 ]
               },
               {
@@ -741,10 +881,34 @@
                 ]
               },
               {
+                "group": "Low-code integration",
+                "pages": [
+                  "en/meeting/ui-sdk/server-integration",
+                  {
+                    "group": "Low-code integration with UI",
+                    "pages": [
+                      "en/meeting/ui-sdk/web",
+                      "en/meeting/ui-sdk/android",
+                      "en/meeting/ui-sdk/windows",
+                      "en/meeting/ui-sdk/ios"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "Web SDK",
                 "pages": [
                   "en/meeting/web/integration",
-                  "en/meeting/web/quickstart"
+                  "en/meeting/web/quickstart",
+                  "en/meeting/web/whiteboard",
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/meeting/web/api-reference/SMeeting"
+                    ]
+                  },
+                  "en/meeting/web/events",
+                  "en/meeting/web/types"
                 ]
               },
               {
@@ -752,7 +916,50 @@
                 "pages": [
                   "en/meeting/android/integration",
                   "en/meeting/android/quickstart",
-                  "en/meeting/android/error-codes"
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/meeting/android/advanced/audio-routing",
+                      "en/meeting/android/advanced/whiteboard"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/meeting/android/api-reference/MeetingEngine",
+                      "en/meeting/android/api-reference/InfosManager",
+                      "en/meeting/android/api-reference/RollCallManager",
+                      "en/meeting/android/api-reference/SignInManager",
+                      "en/meeting/android/api-reference/MeetingResultCallback",
+                      "en/meeting/android/api-reference/meeting-events",
+                      "en/meeting/android/api-reference/MeetingEngineEvent",
+                      "en/meeting/android/api-reference/MeetingImEvent",
+                      "en/meeting/android/api-reference/MeetingCameraDeviceEvent",
+                      "en/meeting/android/api-reference/MeetingMicDeviceEvent",
+                      "en/meeting/android/api-reference/MeetingScreenCaptureEvent",
+                      "en/meeting/android/api-reference/MeetingRoomEvent",
+                      "en/meeting/android/api-reference/MeetingUserEvent",
+                      "en/meeting/android/api-reference/MeetingMessageEvent",
+                      "en/meeting/android/api-reference/MeetingMediaEvent",
+                      "en/meeting/android/api-reference/MeetingLocalVideoFrameEvent",
+                      "en/meeting/android/api-reference/MeetingLocalAudioFrameEvent",
+                      "en/meeting/android/api-reference/MeetingRemoteVideoEvent"
+                    ]
+                  },
+                  {
+                    "group": "Presets",
+                    "pages": [
+                      "en/meeting/android/presets/camera",
+                      "en/meeting/android/presets/microphone",
+                      "en/meeting/android/presets/screen-sharing",
+                      "en/meeting/android/presets/custom-video"
+                    ]
+                  },
+                  "en/meeting/android/types",
+                  "en/meeting/android/enums",
+                  "en/meeting/android/media-quality",
+                  "en/meeting/android/error-codes",
+                  "en/meeting/android/changelog"
                 ]
               },
               {
@@ -761,7 +968,40 @@
                   "en/meeting/swift/integration",
                   "en/meeting/swift/quickstart",
                   "en/meeting/swift/key-concepts",
-                  "en/meeting/swift/error-codes"
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/meeting/swift/advanced/media-control",
+                      "en/meeting/swift/advanced/video-rendering",
+                      "en/meeting/swift/advanced/screen-sharing",
+                      "en/meeting/swift/advanced/virtual-background",
+                      "en/meeting/swift/advanced/device-management",
+                      "en/meeting/swift/advanced/audio-routing",
+                      "en/meeting/swift/advanced/messaging",
+                      "en/meeting/swift/advanced/handup",
+                      "en/meeting/swift/advanced/host-controls",
+                      "en/meeting/swift/advanced/waiting-room",
+                      "en/meeting/swift/advanced/sub-meetings",
+                      "en/meeting/swift/advanced/recording",
+                      "en/meeting/swift/advanced/resources",
+                      "en/meeting/swift/advanced/sign-in",
+                      "en/meeting/swift/advanced/im"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/meeting/swift/api-reference/SMeetingEngine",
+                      "en/meeting/swift/api-reference/media-control",
+                      "en/meeting/swift/api-reference/devices",
+                      "en/meeting/swift/api-reference/admin-actions",
+                      "en/meeting/swift/api-reference/SMeetingRemoteVideoView"
+                    ]
+                  },
+                  "en/meeting/swift/events",
+                  "en/meeting/swift/types",
+                  "en/meeting/swift/error-codes",
+                  "en/meeting/swift/changelog"
                 ]
               },
               {

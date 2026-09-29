@@ -84,7 +84,7 @@ The benefits of this design:
 | `virtualBackgroundModelNotFound(String)` | The model file doesn't exist | Check `modelPath`; pass `nil` to use the built-in model |
 | `virtualBackgroundSessionFailed(String)` | Failed to create the inference session | A runtime environment issue; investigate with the logs |
 
-For usage, see [Virtual background](/zh/rtc/swift/advanced/virtual-background) (Chinese).
+For usage, see [Virtual background](/en/rtc/swift/advanced/virtual-background).
 
 ---
 

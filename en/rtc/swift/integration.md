@@ -56,7 +56,7 @@ If you use an Xcode project instead of a pure SPM project:
 #### SRTCBroadcastKit (only for full-screen screen sharing on iOS)
 
 The same package also contains an `SRTCBroadcastKit` product. It is used only by the Broadcast Upload Extension for iOS screen sharing;
-regular integrations don't need it. For integration steps, see [Screen sharing](/zh/rtc/swift/advanced/screen-sharing) (Chinese).
+regular integrations don't need it. For integration steps, see [Screen sharing](/en/rtc/swift/advanced/screen-sharing).
 
 <Warning>
 Add `SRTCBroadcastKit` only to the extension target—**don't** add it to the app target; the extension target also must **not**
@@ -104,7 +104,7 @@ If you use screen sharing, also note:
 
 + macOS screen sharing is based on `ScreenCaptureKit`
 + Sharing a window or display requires the user to grant permission in a system prompt
-+ Capturing system audio requires newer system capabilities—see [Screen sharing](/zh/rtc/swift/advanced/screen-sharing) (Chinese)
++ Capturing system audio requires newer system capabilities—see [Screen sharing](/en/rtc/swift/advanced/screen-sharing)
 
 ---
 

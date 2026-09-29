@@ -159,7 +159,7 @@ Cross-channel notifications (messages to people who aren't in this channel), sys
   while `ruids` sends to all of that user's online devices. Channel messages don't have this dimension
 + **Query online devices**: [Get users' online devices](/en/rtc/server-api/im#get-users-online-devices),
   so you can check whether the other party is online before calling
-+ **Force a device offline**: [Force an IM device offline](/en/rtc/server-api/im#force-an-im-device-offline), used when a later login replaces an earlier one
++ **Force a device offline**: [Force an IM device offline](/en/rtc/server-api/im#force-an-im-device-offline), used when a device is replaced by another session with the same uid
 
 Devices coming online and going offline also trigger `im_connect` / `im_disconnect` callbacks to your backend, which you can use to track online status.
 

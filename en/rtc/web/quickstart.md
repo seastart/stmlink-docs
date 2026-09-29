@@ -172,9 +172,9 @@ async function leaveChannel() {
 ### Next steps
 
 + [Key concepts](/en/rtc/web/key-concepts)—the SRTC instance, channels, and the track system
-+ [Mute vs. unpublish](/zh/rtc/web/advanced/mute-vs-unpublish) (Chinese)—two ways to control publishing, compared
-+ [Simulcast and resolution](/zh/rtc/web/advanced/video-stream-layers) (Chinese)—capture resolution, `camera_big`, `camera_small`, and simulcast explained
-+ [Screen sharing](/zh/rtc/web/advanced/screen-sharing) (Chinese)—including system audio capture
-+ [Custom tracks](/zh/rtc/web/advanced/custom-track) (Chinese)—using Canvas or a custom MediaStreamTrack
++ [Mute vs. unpublish](/en/rtc/web/advanced/mute-vs-unpublish)—two ways to control publishing, compared
++ [Simulcast and resolution](/en/rtc/web/advanced/video-stream-layers)—capture resolution, `camera_big`, `camera_small`, and simulcast explained
++ [Screen sharing](/en/rtc/web/advanced/screen-sharing)—including system audio capture
++ [Custom tracks](/en/rtc/web/advanced/custom-track)—using Canvas or a custom MediaStreamTrack
 + [Whiteboard](/en/rtc/whiteboard)—embed a collaborative whiteboard in your call UI
-+ [API reference - SRTC](/zh/rtc/web/api-reference/SRTC) (Chinese)—the complete API reference
++ [API reference - SRTC](/en/rtc/web/api-reference/SRTC)—the complete API reference

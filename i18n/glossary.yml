@@ -61,6 +61,9 @@ do_not_translate:
   - zh: 网宿（wangsucdn）
     en: Wangsu
     note: 流媒体服务商名。代码里的 wangsucdn 取值原样
+  - zh: OOK（网仕）
+    en: OOK
+    note: 已退役的流媒体引擎。只写 OOK，不音译公司名（不写 Wangshi）；zh 里的 Ook 在英文统一写 OOK
   - zh: rtc sdk / rtc-js / rtc-go 等仓库名
     en: 原样
     note: 仓库名、包名（@seastart/srtc-web-sdk、srtc）不改
@@ -116,6 +119,7 @@ doc_structure:
     en: Description
   - zh: 参数 / 返回值 / 异常
     en: Parameters / Returns / Throws
+    note: Python 页（zh/rtc/python/）的「异常」用 **Raises:**（Python 惯例），其余平台用 **Throws:**
   - zh: 必填 / 可选
     en: Required / Optional
   - zh: 示例
@@ -187,7 +191,11 @@ srtc:
     note: RemoteAudioMixTrack 的说明；与服务端「合流」区分
   - zh: 大小流 / 大流 / 小流 / simulcast
     en: simulcast / high stream / low stream
-    note: 大小流统一 simulcast；大流 = high stream，小流 = low stream（用户已确认 2026-09-29）。不写 big/small stream，也不写 high/low layer
+    note: 大小流统一 simulcast；大流 = high stream，小流 = low stream（用户已确认 2026-09-29）。不写 big/small stream，也不写 high/low layer。Android 摄像头的「主流 / 辅流」（TRACK_MAIN / TRACK_SUB，TRACK_SUB 只作为 simulcast 发布）就是大流 / 小流，同样译 high / low stream，首次出现注明 "(`TRACK_MAIN` / `TRACK_SUB`)"；不写 main / sub / secondary / auxiliary stream
+  - zh: 网宿通用流
+    en: Wangsu generic streams
+  - zh: 课程录制
+    en: course recording
   - zh: 流媒体引擎 / 流媒体服务
     en: media streaming engine / media streaming service
   - zh: 麦克风（麦）
@@ -228,11 +236,23 @@ srtc:
     en: reconnect / disconnect / poor network
   - zh: 音频路由
     en: audio routing
+  - zh: 有线耳机
+    en: wired headset
+    note: 对应 Android 的 WIRED_EARPHONE；与 Bluetooth headset 并列。不写 wired headphones / earphones
+  - zh: 会控（SRTC）
+    en: channel control
+    note: SRTC 层 RTCClientEvent 等的会控事件写 channel control events；不写 meeting controls / host controls（那是 SMeeting 的「会控」，见第 4 节）
   - zh: 外设 / 设备管理
     en: devices / device management
     note: 指摄像头麦克风扬声器；与「设备接入」的硬件终端区分
   - zh: 虚拟背景
     en: virtual background
+  - zh: 装载 / 卸载（虚拟背景组件）
+    en: install / uninstall
+    note: 与 API 名 installVirtualBackground / uninstallVirtualBackground / isInstalled 一致；不写 load / unload（「加载模型」仍可译 load the model）
+  - zh: 人像分割
+    en: person segmentation
+    note: 不写 portrait segmentation（portrait 与横竖屏的「竖屏」撞词）
   - zh: 美颜
     en: beauty filter
   - zh: 降噪
@@ -352,6 +372,18 @@ smeeting:
   - zh: 全体禁画 / 全体关视频
     en: camera off for everyone
     note: 如 "the host turns on camera off for everyone"；与「全体静音」mute all 并列时写 "mute all / camera off for everyone"。不写 all cameras off / video off for everyone
+  - zh: 自行解除禁音 / 自行解除禁画
+    en: unmute themselves / turn their cameras back on themselves
+    note: 如 selfUnmuteMicDisabled = "whether members are prevented from unmuting themselves"。不写 lift the mic/camera restriction；也不把 "turn off camera" 当「禁画」的名词用
+  - zh: 正式成员
+    en: full member
+    note: 与观众（audience）相对的已入会成员身份。不写 formal member；也不写 regular member（那是角色「普通成员」MemberRoleType.Normal）。SRTC 层 RTCClientEvent 的观众 / 正式成员切换（isMember）同样写 full member，这是固定身份词，不按「SRTC 用户写 user」改回 regular user
+  - zh: 投屏 / 投屏码 / 大屏
+    en: casting / cast code / large screen
+    note: 投屏码与接口名 registerCastCode 对齐写 cast code，不写 casting code；投屏动作用 casting（casting device）
+  - zh: 涂鸦（白板涂鸦权限）
+    en: whiteboard drawing / drawing permission
+    note: 如 "drawing is disabled"。不写 doodle / graffiti
   - zh: 踢人
     en: remove a member
     note: 不写 kick（接口名里的 kick 原样保留）
@@ -365,10 +397,10 @@ smeeting:
     en: request–approve
   - zh: 等候室
     en: waiting room
-  - zh: 子会议 / 分组讨论 / 分组会议
+  - zh: 子会议 / 分组讨论 / 分组会议 / 讨论组
     en: sub-meeting
-    note: 三种中文写法是同一功能，英文统一 sub-meeting（与 SubMeetingInfo 等 API 一致）。不写 breakout room，避免与「房间 room」冲突（用户已确认 2026-09-29）
-  - zh: 主会议
+    note: 四种中文写法是同一功能，英文统一 sub-meeting（与 SubMeetingInfo 等 API 一致）。不写 breakout room，避免与「房间 room」冲突（用户已确认 2026-09-29）
+  - zh: 主会议 / 主会场
     en: main meeting
   - zh: 签到 / 点名
     en: sign-in / roll call

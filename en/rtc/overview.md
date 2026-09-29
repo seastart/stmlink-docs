@@ -28,7 +28,7 @@ All platforms interoperate, and behavior is aligned across them.
 | Windows | Desktop clients, C++ API | [Integration](/zh/rtc/windows/integration) (Chinese) · [Quickstart](/zh/rtc/windows/quickstart) (Chinese) |
 | Swift | iOS and macOS, `import SRTC` | [Integration](/en/rtc/swift/integration) · [Quickstart](/en/rtc/swift/quickstart) |
 | iOS | Objective-C, `RTCEngineKit` | [Integration](/zh/rtc/ios/integration) (Chinese) · [Quickstart](/zh/rtc/ios/quickstart) (Chinese) |
-| C | Server and embedded, pure C API | [Integration](/zh/rtc/capi/integration) (Chinese) · [Quickstart](/zh/rtc/capi/quickstart) (Chinese) |
+| C | Server and embedded, pure C API | [Integration](/en/rtc/capi/integration) · [Quickstart](/en/rtc/capi/quickstart) |
 | Python | Server-side AI (voice bots, recording, transcription), sends and receives PCM, supports pipecat | [Integration](/en/rtc/python/integration) · [Quickstart](/en/rtc/python/quickstart) |
 | Server | HTTP endpoints and event callbacks | [Server API](/en/rtc/server-api/overview) |
 

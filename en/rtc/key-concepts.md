@@ -83,7 +83,7 @@ Requiring sends to go through your backend is intentional: because messages pass
 
 The same uid can connect to IM on multiple devices at once, and each connection has its own `sid`—so "send to a person" and "send to a device" are two different things.
 
-+ Client usage: [Web channel messages](/zh/rtc/web/channel-messages) (Chinese)
++ Client usage: [Web channel messages](/en/rtc/web/channel-messages)
 + Server API: [Server API · IM messages](/en/rtc/server-api/im)
 
 ---
@@ -99,4 +99,4 @@ For how to choose between them, see [Choosing SRTC or SMeeting](/en/choose).
 ## Next steps
 
 + [Token and authentication](/en/rtc/token)—the step you must understand before integrating
-+ Choose your platform and start integrating: [Web](/en/rtc/web/integration) · [Android](/en/rtc/android/integration) · [Windows](/zh/rtc/windows/integration) (Chinese) · [Swift](/en/rtc/swift/integration) · [iOS](/zh/rtc/ios/integration) (Chinese) · [C](/zh/rtc/capi/integration) (Chinese)
++ Choose your platform and start integrating: [Web](/en/rtc/web/integration) · [Android](/en/rtc/android/integration) · [Windows](/zh/rtc/windows/integration) (Chinese) · [Swift](/en/rtc/swift/integration) · [iOS](/zh/rtc/ios/integration) (Chinese) · [C](/en/rtc/capi/integration)

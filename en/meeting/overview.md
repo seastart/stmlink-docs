@@ -39,7 +39,7 @@ Ordered from least to most effort; choose based on how much customization you ne
 
 Best for: you want to "add a video meeting entry to this review," not build a meeting product.
 
-Start with [Server-side low-code integration](/zh/meeting/ui-sdk/server-integration) (Chinese).
+Start with [Server-side low-code integration](/en/meeting/ui-sdk/server-integration).
 
 ### Low-code integration with UI
 
@@ -47,7 +47,7 @@ Bring in the meeting UI source code we provide, deploy it yourself, and adapt it
 
 Best for: you want to launch quickly, but the UI must match your brand.
 
-See [Web](/zh/meeting/ui-sdk/web) (Chinese) · [iOS](/zh/meeting/ui-sdk/ios) (Chinese) · [Android](/zh/meeting/ui-sdk/android) (Chinese) · [Windows](/zh/meeting/ui-sdk/windows) (Chinese).
+See [Web](/en/meeting/ui-sdk/web) · [iOS](/en/meeting/ui-sdk/ios) · [Android](/en/meeting/ui-sdk/android) · [Windows](/en/meeting/ui-sdk/windows).
 
 ### Custom integration
 

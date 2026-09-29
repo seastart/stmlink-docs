@@ -1,0 +1,220 @@
+---
+title: "Changelog"
+description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
+---
+
+### [1.4.7] - 2026.09.23
+#### Fixed
++ **An unknown `device_type` no longer makes the whole user list fail to parse**: the backend adds new client types on a schedule not controlled by SDK releases, and previously, if even **one** `device_type` in the `users` of `channel/detail` fell outside this version's enum, the whole response failed to decode and joining failed outright (reporting `The data couldn't be read...`)—meaning a single unfamiliar client joining could lock every older client out. `DeviceType` now adds `unknown` and the 80–89 server-side agent range (MCU/SIP/H.323/GB28181/RTSP/RTMP/file playback/stream distribution/speech transcription), and `users` is now parsed entry by entry, skipping any entry that can't be decoded.
++ **Subscriptions rejected individually by the SFU no longer fail silently**: `sfu/subscribe` rejects individual tracks inside an HTTP 200 + `code:0` response body (the `failed` field) rather than raising an error, so the outer retry never triggered, while the caller's `subscribe()` had long since returned success. That subscription could never be rescued afterward: the internal registration was still in place and short-circuited resubscription, and the receive timeout is an edge event—a subscription that was never established produces no edge—so the symptom was **remote video permanently stuck on the last frame or black**. Now each track is retried 5 times with exponential backoff (about 6 seconds); once retries are exhausted, the internal subscription registration is revoked, handing the right to resubscribe back to your app.
+
+#### Changed
++ `UserInfo.deviceType` has a new meaning: `nil` now means "this SDK doesn't recognize this client", not just "the remote side didn't report it". Code that branches on client type should treat `nil` as an unknown client, not as a default client type.
+
+<Note>
+This is a fix-only release with no public API changes and no breaking changes; integration code from 1.4.6 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+`SRTCBroadcastKit` is **1.0.12** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+<Warning>
+The second fix only turns a "silent failure" into one that's "detectable after retries and can be resubscribed"; it **doesn't fix the root cause of the SFU rejecting the subscription**. If the server keeps returning `not found`, the subscription still fails after retries are exhausted; that's a server-side issue, so troubleshoot it on the server side.
+</Warning>
+
+### [1.4.6] - 2026.09.23
+#### Fixed
++ **Camera capture orientation now follows the interface orientation, and lying the device flat no longer falls back to portrait**: previously, when the device lay flat on a desk (`faceUp` / `faceDown`) or the orientation was unknown, it was always treated as portrait, so **in an app locked to landscape, putting the device on a desk suddenly published portrait video**, and the remote side could only see it with black bars at the top and bottom in a landscape window—the "captured video switching between landscape and portrait on its own" reported by customers. Now `UIWindowScene.interfaceOrientation` is resolved first (it's always landscape when the host locks landscape), falling back to the device orientation only when it's unavailable; lying flat and unknown orientations keep the last valid orientation instead of falling back to portrait.
++ **Landscape screen sharing rotated by 180°**: ReplayKit's `RPVideoSampleOrientationKey` gives a `CGImagePropertyOrientation` (describing "how to position this frame so it's upright"), while the SDK's internal `VideoRotation` describes "how many degrees clockwise the receiver should rotate"—the two go in opposite directions. Previously `right` / `left` were mapped as if in the same direction, making **both landscape orientations off by 180°**: when a teacher started screen sharing in landscape, students saw it upside down. The mapping is now corrected.
+
+<Note>
+This is a fix-only release with no public API changes; integration code from 1.4.5 can upgrade directly.
+
+The second fix lives in `SRTCBroadcastKit`, which is version **1.0.11** in this release. If you implement iOS full-screen screen sharing, after upgrading confirm that your Broadcast Upload Extension target links the `SRTCBroadcastKit` from this tag (it's released under the same tag as this package, so you don't need to—and shouldn't—specify its version separately). If the extension side is still on the old package, the orientation mapping is unchanged and shared video is still upside down.
+</Note>
+
+### [1.4.5] - 2026.09.18
+#### Added
++ **Remote video receive timeout / recovery detection**: adds the `ChannelDelegate` callback `channel(_:didChangeReceiveStreamStatus:)` and `ReceiveStreamStatus` (`uid` / `trackId` / `trackDesc` / `timedOut`), plus `RemoteVideoTrack.isReceiveTimedOut` for querying at any time. **Judged per track**: after subscribing, if no frames of that video arrive for a period of time, it's judged as timed out, and as soon as frames resume it reports again—use this to drive a "loading / remote network issue" indicator on the video. When the first frame arrives after subscribing, you first receive a `timedOut == false`, which you can use to hide the initial loading indicator. It corresponds to `engineChannel:onReceiveStreamStatusChange:trackId:status:` in the older `RTCEngineKit`; `timedOut` has the same truth value as the old `status` (`true` means timed out), so there's no need to invert it when migrating.
++ **Audio unit start/stop**: adds `AudioRouteSession.setAudioModuleEnabled(_:)` and `isAudioModuleEnabled` (iOS). For **local-only playback** scenarios such as recorded live classes, you can stop the VoIP voice processing unit so it doesn't lower `AVPlayer` playback volume.
+
+<Warning>
+While `setAudioModuleEnabled(false)` is in effect, **call audio can't be received or sent**. You must set it back to `true` after local playback ends; otherwise the rest of the session is silent. The only case where you don't need to clean up yourself is rejoining: each time the audio path is occupied for the **first** time (joining / starting capture), it's automatically reset to `true`, so a manually disabled state from a previous session doesn't leak across sessions—consistent with the older `RTCEngineKit` setting `enabledAudioModule:YES` on joining.
+</Warning>
+
+<Note>
+Don't use `didChangeConnectionQuality` in place of receive timeout detection. The quality level describes "whether the network is good" for the whole link, not "whether this video has stopped": when a single track stops being published, the sender's camera freezes, or one video fails to decode, the link level can stay excellent the whole time; conversely, when the network jitters and the level drops, several videos may actually still be producing frames normally.
+
+This release only adds public APIs; the protocol methods have default empty implementations, there are no breaking changes, and integration code from 1.4.4 can upgrade directly. `SRTCBroadcastKit` is **1.0.10** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.4.4] - 2026.09.15
+#### Changed
++ Shared video streams from view recording on Wangsu (CDN) now carry microphone-recorded audio, just like standard screen sharing; SRTCBroadcastKit is upgraded to 1.0.9.
++ The audio recording pipeline is kept warmed up to avoid reduced playback volume: audio device initialization and playback path switches no longer interrupt the recording pipeline unexpectedly.
+
+### [1.4.3] - 2026.09.14
+#### Added
++ **Screen-sharing streams in Wangsu (CDN) channels now carry audio, so cloud recordings are no longer silent**: Wangsu's cloud recording pulls whole streams by stream name, and previously screen-sharing streams contained only video, so recorded sharing segments had no sound. Now, when screen sharing is published, an opus audio track (capped at 32 kbps) is added on the same publishing connection, with no changes needed in your code. This audio is **visible only to CDN recording**—it isn't reported in signaling and can't be negotiated on the subscribing side, so remote users don't get an extra audio track, and subscription logic and callbacks are completely unaffected.
+
+<Note>
+This audio comes from the same local mixed output as the microphone and **has no separate switch**: when no microphone track is published, or `LocalMicTrack.mute()` has been called, the hardware microphone is muted at the audio device module level, so the mixed data contains no voice, and neither does the recorded audio—"if the microphone isn't on, you won't be recorded". On macOS, when only screen audio is shared, only the screen sound is recorded.
+
+Wangsu (CDN) engine only; recording in SeaStart (SFU) channels is mixed per track by the server and isn't affected by this change.
+</Note>
+
+#### Fixed
++ **After unpublishing audio failed, the remote side showed the microphone as on but heard nothing**: when turning off the microphone, the SDK has to unpublish the internal mixed audio track, which makes an HTTP request that can fail on network jitter (observed as `NSURLError -1005`). Previously the SDK cleared the track handle before the request was sent and didn't roll back on failure—the track still existed on the server, so the next time the microphone was turned on, **a second** audio track was created, and the remote side often ended up subscribed to the old stream that no longer had any data. Now the handle is released only after unpublishing succeeds, so failures self-heal: the next time the microphone is turned on, the existing track is correctly reused and no second track is created.
+
+<Note>
+`SRTCBroadcastKit` is **1.0.8** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.4.2] - 2026.09.12
+#### Added
++ **Full-display sharing on macOS supports excluding windows**: `createLocalScreenTrack(source:preset:audioPreset:)` adds two parameters with default values, `excludedWindowIds` and `excludesCurrentApplication`, and `ScreenCaptureOptions` adds properties with the same names. The values of `excludedWindowIds` are `UInt32(NSWindow.windowNumber)`, meaningful only when sharing an **entire display** (ignored when capturing a single window); the list is snapshotted once at `startCapture()`, and windows opened afterward all appear in the capture. Both parameters have default values, so existing call sites remain source-compatible.
+
+#### Changed
++ **Full-display sharing on macOS now includes your own app's windows by default**: previously the SDK cut all of the process's windows out of the capture, so "when sharing the full display, the remote side couldn't see your own app windows"—this wasn't a system limitation but something the SDK excluded on its own. It now includes them by default, consistent with Zoom / Tencent Meeting, and you specify windows to cut out one by one with `excludedWindowIds`.
++ The default value of `ScreenCaptureSources.availableWindows(includeCurrentApp:)` changes from `false` to `true`, so your own windows can appear in the list as single-window sharing sources.
+
+<Warning>
+Now that your own windows are included, **any window that's rendering this shared content creates an infinite mirror** (the sharing preview window in your UI, or the in-call window rendering the remote screen share when testing with two instances on one machine). Put these windows' IDs into `excludedWindowIds` to cut them out one by one—don't exclude the entire app for this. If you really need the old behavior, set `excludesCurrentApplication` to `true` (`excludedWindowIds` is then ignored).
+</Warning>
+
+#### Fixed
++ **The microphone was sent along when sharing only screen audio**: in mix mode all audio sources share one capture stream, and whether to mix in the microphone used to be decided by the volume of a mixing node—but that node actually had no input, so changing its volume had no effect on the hardware microphone. As a result, when your app hadn't published a microphone track and was sharing only screen audio, the remote side could still hear local ambient sound. Now the hardware microphone is muted directly at the audio device module level (muted by default, unmuted only when a microphone track is published or `LocalMicTrack.unmute()` is called), and sound from screen audio and custom audio injection is unaffected.
++ With the same root cause, `LocalMicTrack.mute()` on macOS was previously a no-op (the remote side could still hear you after calling it); it now actually takes effect.
+
+<Note>
+`SRTCBroadcastKit` is **1.0.7** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.4.1] - 2026.09.11
+#### Fixed
++ **`ChannelDelegate.didChangeActiveSpeakers` never fired in Wangsu (CDN) channels**: active speaker data used to exist only on the SeaStart (SFU) engine (sent by the server over the signaling channel), and the CDN path has no such channel, so the same public callback never fired in Wangsu channels, and volume bars and speaker indicators your app drew from it failed silently without any error. Now the CDN side samples local WebRTC standard statistics (`audioLevel` of `inbound-rtp`) every 500 ms and produces exactly the same `ActiveSpeakersSnapshot` as the SFU, so both engines behave the same externally, with no changes needed in your code.
+
+<Note>
+The CDN architecture has no server-side control plane, so speakers can only be derived from local statistics, which gives two inherent differences compared with SeaStart: it can only reflect **subscribed** audio streams (users you haven't subscribed to can't be detected), and its accuracy and timeliness are slightly lower than the server's judgment. SeaStart still uses the server-delivered path and isn't affected by this change.
+
+`ActiveSpeakersSnapshot` contains only **remote** speakers, not yourself, on both engines. If you need your own volume, compute it yourself from the captured PCM with `SRTCEngine.audioCaptureProcessor`.
+
+`SRTCBroadcastKit` is **1.0.6** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.4.0] - 2026.09.09
+#### Added
++ **Virtual background**: runs person segmentation in the camera capture pipeline and replaces everything outside the person with a blur or a specified image; installing it doesn't require a license key. `SRTCEngine` adds `installVirtualBackground(modelPath:)`, `uninstallVirtualBackground()`, `enableVirtualBackground(_:)`, `isVirtualBackgroundEnabled`, `setVirtualBackgroundBlur(level:)`, `setVirtualBackgroundImage(_:)`, `setVirtualBackgroundInferenceInterval(_:)`, `setVirtualBackgroundMaskSync(_:)`, and the instance accessor `virtualBackground` (read-only state for diagnostics and `droppedFrameCount`). The accompanying new types are `SRTCVirtualBackground`, `SRTCVirtualBackgroundEffect`, and `SRTCNativeImage`—see [Virtual background](/en/rtc/swift/advanced/virtual-background) for details;
+    - Once enabled, it **automatically applies to all camera tracks** (including those created after enabling), with no need to add anything to `videoProcessors`;
+    - There's a single process-wide state, so you don't need to resend the configuration after switching between the front and back cameras / switching camera devices;
+    - When segmentation fails or the output buffer pool is exhausted, it **drops the frame** rather than sending the unprocessed raw video (to avoid flashing the real background to the remote side); see `virtualBackground.droppedFrameCount` for the dropped-frame count.
++ `SRTCEngine` adds `defaultVideoProcessors`: configure the video processor pipeline once, and camera tracks created afterward pick it up automatically (a camera track is created anew every time the camera is turned on, so setting processors only on the track loses them).
++ `SRTCError` adds four values: `virtualBackgroundAlreadyInstalled`, `virtualBackgroundNotInstalled`, `virtualBackgroundModelNotFound(String)`, and `virtualBackgroundSessionFailed(String)`.
+
+<Warning>
+**The minimum system requirements are raised to iOS 16.0 / macOS 14.0** (previously iOS 13.0 / macOS 10.15). This is a breaking change: projects below these minimums can't resolve this version or later, and what you get is a dependency resolution failure, not a compile error. The minimums are dictated by the inference runtime used for virtual background; SwiftPM's `platforms:` applies to the whole package and has no per-target minimum, so there's no way to apply this requirement to virtual background alone.
+</Warning>
+
+<Note>
+`SRTCError` is a non-frozen public enum; if you've written an exhaustive `switch` over it, add an `@unknown default` branch to compile.
+
+`SRTCBroadcastKit` is **1.0.5** in this release; its code is unchanged, and only the version number is bumped along with the SDK. It **doesn't include** `onnxruntime` (the Broadcast Upload Extension process has a 50 MB memory limit).
+</Note>
+
+### [1.3.3] - 2026.09.07
+#### Fixed
++ `DegradationPreference` now actually takes effect: when publishing video, it's passed down to the underlying encoder, which downgrades resolution or frame rate as configured on a poor network (previously this setting was ignored).
+
+#### Changed
++ Camera and screen-sharing presets are unified to `maintainResolution` (prioritize sharpness, lower the frame rate when necessary); previously the presets used inconsistent values. Text-heavy scenarios such as sharing documents and presentations are noticeably sharper as a result.
+
+#### Added
++ macOS `DeviceManager` adds `setSystemDefaultOutputDevice(_:)`, which switches the system default audio output device directly (aligned with the Windows behavior).
+
+<Note>
+`SRTCBroadcastKit` is **1.0.4** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.3.2] - 2026.09.07
+#### Fixed
++ Fixed a crash caused by `JSONSerialization` throwing an ObjC exception when `content` in an mqtt message was `null` (`NSNull` is now filtered uniformly when reading values).
+
+<Warning>
+**1.3.1 doesn't include this crash fix. If you've integrated 1.3.1, upgrade directly to 1.3.2.**
+</Warning>
+
+<Note>
+`SRTCBroadcastKit` is **1.0.3** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.3.1] - 2026.09.07
+#### Added
++ `DeviceType` adds `harmonyOS` (value `8`), for identifying users who join from HarmonyOS.
+
+<Note>
+`DeviceType` is a non-frozen public enum; if you've written an exhaustive `switch` over it, add an `@unknown default` branch to compile.
+
+`SRTCBroadcastKit` is **1.0.2** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.3.0] - 2026.08.20
+#### Added
++ **iOS audio routing**: adds `AudioRouteSession.shared`, which manages the iOS audio session and output route in one place. The accompanying new types are `AudioRoute` (the current route, read-only with five states, including Bluetooth / wired headphones), `AudioRouteTarget` (switchable target, two states: speaker / receiver), `AudioRouteInfo`, and `AudioCallState`, plus the event protocol `AudioRouteSessionDelegate` (route change / session interruption / interruption recovery / system call state).
+    - **Persistent setting** `defaultAudioRoute`: set before joining whether to use the speaker or the receiver by default; it stays in effect, and fallback after an external device is unplugged follows it;
+    - **Temporary setting** `setAudioRoute(_:)` / `clearAudioRouteOverride()`: switch temporarily during a call, with higher priority than the persistent setting;
+    - External devices (Bluetooth / wired) are taken over by the system; the SDK only reports them and doesn't switch to them actively—iOS has no reliable way to target a specific external device, so when the user needs to choose one, use the system's `AVRoutePickerView`.
++ `DeviceManager` adds `isSpeakerOutputPreferred`, for querying whether speaker output is currently in use.
+
+#### Changed
++ **On iOS, joining a channel sets up the call audio path and keeps it until you leave**; "whether the microphone is on" only decides whether to publish and no longer affects whether underlying audio capture is running. This is the prerequisite for switching between receiver / speaker even without turning on the microphone.
++ The semantics of `DeviceManager.setSpeakerOutputPreferred(_:)` are aligned with mainstream RTC SDKs: `true` switches to the speaker, `false` switches to the receiver (previously `false` meant "drop the override and return to the system default", with unpredictable results). The method signature is unchanged, so callers need no changes.
+
+<Warning>
+**On iOS, joining a channel requests microphone permission**, even if the user only intends to listen. Make sure `Info.plist` contains `NSMicrophoneUsageDescription`; otherwise the app crashes.
+
+**While in a channel, the iOS status bar shows an orange microphone indicator dot.** This is inherent to the `.playAndRecord` session category (consistent with Zoom, Tencent Meeting, and others), not extra recording by the SDK.
+
+If the user denies microphone permission, the SDK degrades to playback only: the user can still hear others, but the receiver route isn't available.
+</Warning>
+
+<Note>
+`SRTCBroadcastKit` is **1.0.1** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.2.0] - 2026.08.19
+#### Breaking changes
++ Signaling-related values in the error enum are renamed from `mqtt*` to `signaling*` (`signalingConnectFailed` / `signalingSubscribeFailed`), so signaling implementation details are no longer exposed. Code that catches the old values needs to be renamed; the meaning of the values is unchanged.
+
+<Warning>
+This is a minor version, so `from: "1.1.0"` resolves to 1.2.0 automatically. If your code catches `mqtt*` values, rename them to `signaling*` after upgrading; otherwise it won't compile.
+</Warning>
+
+#### Added
++ **iOS full-screen screen sharing**: `createLocalScreenTrack(mode:)` adds a capture mode parameter; `.broadcast(appGroup:)` captures the entire system screen based on a ReplayKit Broadcast Upload Extension, while the existing in-app capture is the default `.inApp` with unchanged behavior. Also added:
+    - The `SRTCBroadcastKit` product (used on the extension side, without WebRTC) and the base class `SRTCBroadcastSampleHandler`; your extension only needs `class SampleHandler: SRTCBroadcastSampleHandler {}`;
+    - Wrappers for the system broadcast picker: `SRTCBroadcastPicker` (SwiftUI) / `SRTCBroadcastPickerView` (UIKit);
+    - `TrackDelegate` adds `screenBroadcastDidStart(_:)` and `screenBroadcastDidFinish(_:reason:)`, for detecting when the user starts / stops the broadcast from the system UI;
+    - `LocalScreenTrack` adds `captureMode` and `isBroadcastActive` (`isCapturing` only means listening is ready; to display a "sharing" state, check `isBroadcastActive`).
++ **Multi-channel**: one `SRTCEngine` can join multiple channels at the same time. Adds `channels`, `defaultChannel`, and `leaveChannel(_:)`; tracks are engine-level objects that can be published to multiple channels, and capture release follows "the last releaser is responsible".
+
+#### Changed
++ How publishing audio to multiple channels is validated: changed from the exclusive restriction "only one channel may publish audio at a time" to "every channel publishing audio must hold exactly the same set of audio sources", which allows the most common case of "each channel publishing one microphone". When the sets differ, `publishLocalTrack` throws `invalidState` to prevent cross-channel audio leakage; the subscribing side isn't restricted.
+
+#### Fixed
++ iOS camera capture now uses an `AVCaptureSession` created by the SDK itself, fixing capture failing silently on some real devices so that the remote side couldn't see video.
+
+<Note>
+`SRTCBroadcastKit` has its own version numbering and is **1.0.0** in this release. It's released under the same tag as the SDK and always matches it, so you don't need to specify its version separately when integrating.
+</Note>
+
+### [1.1.0] - 2026.08.02
+#### Added
++ Adds the video frame rotation enum `VideoRotation`, with values `._0`/`._90`/`._180`/`._270`; the raw value is the angle.
+#### Changed
++ The type of the `rotation` parameter of `LocalVideoTrack.pushFrame(_:rotation:timestampNs:)` and of `VideoFrame.rotation` changes from the underlying WebRTC type to `VideoRotation`;
++ `Track.rtcTrack` is no longer public. To detect when a track has finished binding to its underlying media object, use the `trackDidBindRtcTrack` event instead;
++ The public API no longer exposes any underlying WebRTC types, so you don't need to import any WebRTC-related modules.
+
+### [1.0.0] - 2026.08.02
+#### Added
++ First official release, distributed via Swift Package Manager as a prebuilt XCFramework containing slices for three platforms: iOS devices, the iOS Simulator, and macOS;
++ The SDK's main entry class is `SRTCEngine`.

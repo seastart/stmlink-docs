@@ -78,7 +78,7 @@ Has two more fields than `user_enter`:
 ```
 
 + `reason`: `1` exited voluntarily, `2` removed, `3` replaced by the same user entering again, `4` heartbeat timeout, `5` meeting destroyed, `6` switched to audience
-+ `online` is the number of online members in the meeting **after** this user exits; `0` means everyone has left
++ `online` is the number of online members in the meeting **after** this user exits; `0` means everyone has exited
 
 Checking `online == 0` to tell that "the meeting is actually empty" is more reliable than keeping your own count.
 

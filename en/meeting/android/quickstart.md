@@ -1,11 +1,11 @@
 ---
 title: "Quickstart"
-description: "Use SMeeting Android 2.0.39 to initialize MeetingEngine, create a meeting, register in-meeting events, enter and exit the meeting, publish the local camera and mic, and subscribe to remote video. Read this after adding the dependency."
+description: "Use SMeeting Android to initialize MeetingEngine, create a meeting, register in-meeting events, enter and exit the meeting, publish the local camera and mic, and subscribe to remote video. Read this after adding the dependency."
 ---
 
 ## Prerequisites
 
-+ Add `cn.seastart.meeting:meeting:2.0.39` as described in [Integration](/en/meeting/android/integration).
++ Add the SMeeting dependency as described in [Integration](/en/meeting/android/integration).
 + Get a `meetToken` from your backend. Don't store the secret key used to generate tokens in the client.
 + Request the camera and audio recording runtime permissions in your app.
 + Prepare the `streamVendor` agreed for your deployment. The example uses `wangsucdn`; the actual value depends on your backend configuration.
@@ -100,7 +100,7 @@ meetingEngine.userEvent = object : MeetingUserSimpleEvent() {
 }
 ```
 
-For the full list of events, see [Meeting events overview](/zh/meeting/android/api-reference/meeting-events) (Chinese).
+For the full list of events, see [Meeting events overview](/en/meeting/android/api-reference/meeting-events).
 
 ## 4. Enter and exit the meeting
 
@@ -221,8 +221,8 @@ meetingEngine.stopPlayRemoteVideo(targetUid, trackInfo.desc)
 
 ## Next steps
 
-+ [MeetingEngine](/zh/meeting/android/api-reference/MeetingEngine) (Chinese): all public methods, parameters, and return values
-+ [Model types](/zh/meeting/android/types) (Chinese): configuration and result models
++ [MeetingEngine](/en/meeting/android/api-reference/MeetingEngine): all public methods, parameters, and return values
++ [Model types](/en/meeting/android/types): configuration and result models
 + [Error codes](/en/meeting/android/error-codes): handling `202xxx` and passed-through errors
-+ [Camera presets](/zh/meeting/android/presets/camera) (Chinese): choosing resolution and bitrate
-+ [Audio routing](/zh/meeting/android/advanced/audio-routing) (Chinese): speaker, earpiece, Bluetooth, and wired headsets
++ [Camera presets](/en/meeting/android/presets/camera): choosing resolution and bitrate
++ [Audio routing](/en/meeting/android/advanced/audio-routing): speaker, earpiece, Bluetooth, and wired headsets

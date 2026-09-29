@@ -81,10 +81,10 @@ Before you start coding, also confirm the following:
 - **Runtime permissions**: if your app captures audio and video, request the `CAMERA` and `RECORD_AUDIO` permissions in your app.
 - **ABI compatibility**: the SDK currently supports `arm64-v8a` and `armeabi-v7a`; include the ABIs that match your target devices.
 - **Background microphone capture**: capture is decoupled from joining and publishing. If you need to keep calling `LocalMicTrack.startCapture(...)` in the background, configure a microphone-type foreground service and the related permissions as required by your Android version.
-- **Next steps**: after adding the dependency, continue with [Quickstart](/en/rtc/android/quickstart) for `RTCEngine.create(...)`, `initSDK()`, joining a channel, publishing, and subscribing. To manage output devices such as the speaker, earpiece, and Bluetooth headsets, see [Audio routing](/zh/rtc/android/advanced/audio-routing) (Chinese).
+- **Next steps**: after adding the dependency, continue with [Quickstart](/en/rtc/android/quickstart) for `RTCEngine.create(...)`, `initSDK()`, joining a channel, publishing, and subscribing. To manage output devices such as the speaker, earpiece, and Bluetooth headsets, see [Audio routing](/en/rtc/android/advanced/audio-routing).
 
 ## Media streaming and video display
 
 + Supports the FY (Freewind) and Wangsu media streaming services, using the vendor configuration assigned by the server.
-+ For local preview and remote video display, use `VcsPlayerGlTextureView` or `VcsPlayerGlSurfaceView` from the `cn.seastart.rtc.media.original.render` package. Use the same package path in code imports and XML layouts. For usage, see [Video rendering](/zh/rtc/android/api-reference/RemoteVideoTrack) (Chinese).
-+ External video is fed through `LocalCustomVideoTrack` as unencoded I420 frames, and the SDK handles encoding and publishing. For integration, see [Custom tracks](/zh/rtc/android/advanced/custom-track) (Chinese).
++ For local preview and remote video display, use `VcsPlayerGlTextureView` or `VcsPlayerGlSurfaceView` from the `cn.seastart.rtc.media.original.render` package. Use the same package path in code imports and XML layouts. For usage, see [Video rendering](/en/rtc/android/api-reference/RemoteVideoTrack).
++ External video is fed through `LocalCustomVideoTrack` as unencoded I420 frames, and the SDK handles encoding and publishing. For integration, see [Custom tracks](/en/rtc/android/advanced/custom-track).

@@ -10,7 +10,7 @@ Before you start, complete the following:
 + Configure the Maven repository, SDK dependency, and basic environment as described in [Integration](/en/rtc/android/integration).
 + Prepare a channel `token` issued by your server.
 + Request camera and microphone runtime permissions in your app.
-+ To manage output devices such as the speaker, earpiece, or Bluetooth headsets, see [Audio routing](/zh/rtc/android/advanced/audio-routing) (Chinese).
++ To manage output devices such as the speaker, earpiece, or Bluetooth headsets, see [Audio routing](/en/rtc/android/advanced/audio-routing).
 
 Use `cn.seastart.rtc.media.original.render.VcsPlayerGlTextureView` or `VcsPlayerGlSurfaceView` for preview and remote display views, with this package path in both code imports and XML layouts.
 
@@ -37,7 +37,7 @@ fun initRtcSdk(application: Application) {
 }
 ```
 
-For full parameter descriptions, see [RTCEngine](/zh/rtc/android/api-reference/RTCEngine) (Chinese) and [RTCEngineEvent](/zh/rtc/android/api-reference/RTCEngineEvent) (Chinese).
+For full parameter descriptions, see [RTCEngine](/en/rtc/android/api-reference/RTCEngine) and [RTCEngineEvent](/en/rtc/android/api-reference/RTCEngineEvent).
 
 ## Step 2: Prepare channel and media callbacks
 
@@ -90,7 +90,7 @@ rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
 })
 ```
 
-Every channel-level callback explicitly carries `channel`. Even if a listener is bound to only one `RTCChannel`, use this parameter to keep logs and state separated. For more definitions, see [RTCClientEvent](/zh/rtc/android/api-reference/RTCClientEvent) (Chinese) and [RTCMediaEvent](/zh/rtc/android/api-reference/RTCMediaEvent) (Chinese).
+Every channel-level callback explicitly carries `channel`. Even if a listener is bound to only one `RTCChannel`, use this parameter to keep logs and state separated. For more definitions, see [RTCClientEvent](/en/rtc/android/api-reference/RTCClientEvent) and [RTCMediaEvent](/en/rtc/android/api-reference/RTCMediaEvent).
 
 ## Step 3: Join a channel
 
@@ -120,7 +120,7 @@ fun joinChannel(activity: Activity, token: String) {
 }
 ```
 
-The first `join` creates the default channel, and the flat APIs on `RTCEngine`—publish, subscribe, query, `leave()`, and so on—all act on it. The SDK also supports joining multiple channels at the same time; this quickstart covers only the single-channel flow. For details, see [Multi-channel](/zh/rtc/android/advanced/multi-channel) (Chinese).
+The first `join` creates the default channel, and the flat APIs on `RTCEngine`—publish, subscribe, query, `leave()`, and so on—all act on it. The SDK also supports joining multiple channels at the same time; this quickstart covers only the single-channel flow. For details, see [Multi-channel](/en/rtc/android/advanced/multi-channel).
 
 ## Step 4: Start local capture and publish
 
@@ -154,7 +154,7 @@ fun startCamera(previewView: VcsPlayerGlTextureView) {
 }
 ```
 
-For details, see [LocalCameraTrack](/zh/rtc/android/api-reference/LocalCameraTrack) (Chinese).
+For details, see [LocalCameraTrack](/en/rtc/android/api-reference/LocalCameraTrack).
 
 ### 4.2 Microphone capture and publishing
 
@@ -185,7 +185,7 @@ fun startMicrophone() {
 }
 ```
 
-Explicit capture also works outside a channel. Set `setRtcLocalAudioFrameEvent(...)` first, then call `micTrack.startCapture(...)` to receive local PCM data for recording or processing; registering the callback alone doesn't open the microphone. See [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack) (Chinese) and [RTCEngine](/zh/rtc/android/api-reference/RTCEngine#setrtclocalaudioframeevent-e) (Chinese).
+Explicit capture also works outside a channel. Set `setRtcLocalAudioFrameEvent(...)` first, then call `micTrack.startCapture(...)` to receive local PCM data for recording or processing; registering the callback alone doesn't open the microphone. See [LocalMicTrack](/en/rtc/android/api-reference/LocalMicTrack) and [RTCEngine](/en/rtc/android/api-reference/RTCEngine#setrtclocalaudioframeevent-e).
 
 ### 4.3 Screen sharing (optional)
 
@@ -226,7 +226,7 @@ screenTrack.request { granted, intent ->
 }
 ```
 
-For API details, see [LocalScreenTrack](/zh/rtc/android/api-reference/LocalScreenTrack) (Chinese).
+For API details, see [LocalScreenTrack](/en/rtc/android/api-reference/LocalScreenTrack).
 
 ## Step 5: Subscribe to and play remote media
 
@@ -257,7 +257,7 @@ override fun onStreamTrackRemove(uid: String, channel: String, trackInfo: TrackI
 }
 ```
 
-For details, see [RemoteVideoTrack](/zh/rtc/android/api-reference/RemoteVideoTrack) (Chinese).
+For details, see [RemoteVideoTrack](/en/rtc/android/api-reference/RemoteVideoTrack).
 
 ## Step 6: Leave the channel and release resources
 
@@ -281,9 +281,9 @@ rtcEngine.releaseSDK()
 
 ## More capabilities
 
-+ Joining multiple channels concurrently, per-channel publishing and subscription, and resource isolation: [Multi-channel](/zh/rtc/android/advanced/multi-channel) (Chinese)
-+ Microphone input device enumeration, switching, and PCM callbacks: [LocalMicTrack](/zh/rtc/android/api-reference/LocalMicTrack) (Chinese)
-+ Custom video publishing: [Custom tracks](/zh/rtc/android/advanced/custom-track) (Chinese)
++ Joining multiple channels concurrently, per-channel publishing and subscription, and resource isolation: [Multi-channel](/en/rtc/android/advanced/multi-channel)
++ Microphone input device enumeration, switching, and PCM callbacks: [LocalMicTrack](/en/rtc/android/api-reference/LocalMicTrack)
++ Custom video publishing: [Custom tracks](/en/rtc/android/advanced/custom-track)
 + Whiteboard: [Whiteboard](/en/rtc/whiteboard)
-+ Audio output device management: [Audio routing](/zh/rtc/android/advanced/audio-routing) (Chinese)
-+ Full SDK API: [RTCEngine](/zh/rtc/android/api-reference/RTCEngine) (Chinese)
++ Audio output device management: [Audio routing](/en/rtc/android/advanced/audio-routing)
++ Full SDK API: [RTCEngine](/en/rtc/android/api-reference/RTCEngine)

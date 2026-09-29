@@ -74,7 +74,7 @@ While debugging, you can generate a temporary token in the developer console to 
 | Windows | [Integration](/zh/rtc/windows/integration) (Chinese) · [Quickstart](/zh/rtc/windows/quickstart) (Chinese) |
 | Swift (iOS / macOS) | [Integration](/en/rtc/swift/integration) · [Quickstart](/en/rtc/swift/quickstart) |
 | iOS (Objective-C) | [Integration](/zh/rtc/ios/integration) (Chinese) · [Quickstart](/zh/rtc/ios/quickstart) (Chinese) |
-| C (server / embedded) | [Integration](/zh/rtc/capi/integration) (Chinese) · [Quickstart](/zh/rtc/capi/quickstart) (Chinese) |
+| C (server / embedded) | [Integration](/en/rtc/capi/integration) · [Quickstart](/en/rtc/capi/quickstart) |
 | Python (server-side AI) | [Integration](/en/rtc/python/integration) · [Quickstart](/en/rtc/python/quickstart) |
 | Server | [Server API](/en/rtc/server-api/overview) |
 

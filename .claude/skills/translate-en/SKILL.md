@@ -87,6 +87,7 @@ SDK 发版后的增量：`status --batch <批次>` 只看该平台；changelog �
 
 ## 常见坑
 
++ **合并提交（reset --soft）后 lock 的 `zh_commit` 会指向已消失的提交**：push 前对 `zh_commit` 不在历史里的条目重跑 `lock --keep-reviewed`（中文没变，审校状态保留），否则日后增量 diff 找不到基线
 + **锚点**：Mintlify slug 全小写、空格与句点变 `-`、去括号；目标页还没英文时保留中文锚点（链接仍指 /zh）
 + **裸相对链接**（`smeeting-channel`、`./x.md`）：先解析成 `/zh/...` 绝对路径再改写，英文页不留相对链接
 + **(Chinese) 后缀**：markdown 链接由 `links --fix` 增删；组件链接脚本只告警，手工写进 title

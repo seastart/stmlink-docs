@@ -1,0 +1,30 @@
+---
+title: "Changelog"
+description: "Release history of the SRTC Python SDK (PyPI package srtc): what each version added or changed, and whether you can upgrade directly. Read before upgrading."
+---
+
+### [0.1.1] - 2026.09.26
+#### Changed
++ The PyPI project page now has bilingual Chinese and English descriptions
++ Installation notes added: on Linux with glibc below 2.28 (such as CentOS 7), pin the dependency version with `pip install srtc "av>=12,<14"`
+
+<Note>
+No changes to the API or behavior; you can upgrade directly from 0.1.0.
+</Note>
+
+### [0.1.0] - 2026.09.26
+First release, published to PyPI: `pip install srtc`.
+
+#### Added
++ Join / leave a channel, query users, tracks, and channel info, and auto-subscribe or subscribe manually
++ Remote audio decoded to PCM in a specified format, with DTX silence frames filled in based on RTP timestamps for a continuous timeline
++ Audio publishing: write PCM at any sample rate, and the SDK resamples, encodes, and sends it at real-time pace; `clear()` supports barge-in interruption, and `write()` has built-in backpressure
++ Remote video reception, optionally decoded to RGB images, with key frames requested automatically on decoding errors
++ Active speaker, network quality, layer switch, and custom message events; disconnect reasons distinguish being removed from the channel / replaced by another session with the same uid / the channel being destroyed
++ Two usage styles: frame-by-frame consumption with `async for`, and `ChannelHandler` callbacks
++ Built-in pipecat transport (`pip install "srtc[pipecat]"`)
++ Platforms: Linux x86_64 / aarch64, macOS Apple Silicon, Windows x64, Python 3.10+
+
+<Note>
+This version only supports receiving video, not publishing video.
+</Note>

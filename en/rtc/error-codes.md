@@ -56,13 +56,13 @@ So `103002` reads as: SRTC layer + iOS + error number 002.
 | `1xxx` | The server rejected the request | Check the signature, token, and channel state. See [Server API error codes](/en/rtc/server-api/error-codes) |
 | `100xxx` | Common SDK error, the same on every platform | Usually parameters, initialization order, or network issues |
 | `10Nxxx` | Error specific to that platform | See that platform's error code page |
-| `180xxx` | Errors from the C SDK itself (server / embedded integration) | See [C SDK error codes](/zh/rtc/capi/error-codes) (Chinese) |
+| `180xxx` | Errors from the C SDK itself (server / embedded integration) | See [C SDK error codes](/en/rtc/capi/error-codes) |
 
 Full error code tables for each platform:
-[Web](/en/rtc/web/error-codes) · [Android](/en/rtc/android/error-codes) · [Windows](/zh/rtc/windows/error-codes) (Chinese) · [Swift](/en/rtc/swift/error-codes) · [iOS](/zh/rtc/ios/error-codes) (Chinese) · [C](/zh/rtc/capi/error-codes) (Chinese)
+[Web](/en/rtc/web/error-codes) · [Android](/en/rtc/android/error-codes) · [Windows](/zh/rtc/windows/error-codes) (Chinese) · [Swift](/en/rtc/swift/error-codes) · [iOS](/zh/rtc/ios/error-codes) (Chinese) · [C](/en/rtc/capi/error-codes)
 
 <Note>
-**Read the C SDK at two levels.** Its **API return values** are simple status values such as `0 / -1 / -2 / -3 / -4`; they only express the result of the call and carry no reason. The actual reason is written to the log, which contains both the SDK's own `180xxx` codes and `1xxx` codes passed through from the server. See [C SDK error codes](/zh/rtc/capi/error-codes) (Chinese).
+**Read the C SDK at two levels.** Its **API return values** are simple status values such as `0 / -1 / -2 / -3 / -4`; they only express the result of the call and carry no reason. The actual reason is written to the log, which contains both the SDK's own `180xxx` codes and `1xxx` codes passed through from the server. See [C SDK error codes](/en/rtc/capi/error-codes).
 </Note>
 
 <Warning>

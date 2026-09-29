@@ -68,7 +68,7 @@ dependencies {
 }
 ```
 
-> Meeting `2.0.39` transitively depends on RTC `2.0.34`. Read the [compatibility changes](/zh/meeting/android/changelog) (Chinese) before upgrading.
+> Meeting `2.0.39` transitively depends on RTC `2.0.34`. Read the [compatibility changes](/en/meeting/android/changelog) before upgrading.
 
 ## Integration notes
 

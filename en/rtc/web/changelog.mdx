@@ -1,0 +1,79 @@
+---
+title: "Changelog"
+description: "Release history of the SRTC Web SDK (@seastart/srtc-web-sdk), from v0.4.4 to the latest v0.6.x: multi-channel with join returning Channel, processors and noise suppression plugins, local recording, simulcast, and fixes. Read before upgrading."
+---
+
+### Latest version
+
+Check the latest version on npm:
+
+```bash
+npm info @seastart/srtc-web-sdk version
+```
+
+---
+
+### Release history
+
+> The changelog is still being filled in. For details on changes in a specific version, contact technical support.
+
+### Recent updates
+
+### v0.6.3 - 2026-09-23
+
++ fix: local audio mixing now outputs directly through AudioContext, fixing dull received audio on Web
++ fix: the hidden audio elements used internally by mixing to activate remote tracks are now muted and kept referenced, preventing mixing from occasionally going silent after they were garbage-collected
++ feat: RemoteAudioTrack now has setJitterBufferTarget / getJitterBufferTarget (previously only video tracks supported them)
+
+### v0.6.2 - 2026-09-02
+
++ fix(channel): publishing the same desc again now throws directly, preventing ghost tracks that can't be turned off
++ fix: default channel detection no longer relies only on object identity, preventing all events from being lost when the instance is wrapped in a reactive proxy
++ fix: business errors are no longer swallowed as "call canceled", and reconnection can recover on its own when capacity is insufficient
+
+### v0.6.1 - 2026-08-06
+
++ fix: events lost on remote tracks subscribed directly through Channel (muted/ended/pip, etc. not notified); channel.subscribeRemote* now returns platform types (RemoteVideoTrack, etc.), so no type assertions are needed
+
+### v0.6.0 - 2026-08-05
+
++ feat!: engine + multi-channel model: join returns Channel, supports joining multiple channels at once
+
+### v0.5.7 - 2026-07-21
+
++ feat: when the camera is off in local recording, a round avatar is shown in the center of the tile; if the avatar fails to load or cross-origin access is refused, it falls back to a gray circle with the nickname's first letter
+
+### v0.5.6 - 2026-06-16
+
++ feat: video supports front camera mirroring, on by default for the front camera and adjustable by the user
++ feat: DeepFilterNet noise suppression plugin
+
+### v0.5.4 - 2026-06-03
+
++ feat: added the audio/video processor plugin mechanism
++ feat: added the wasm noise suppression plugin
+
+### v0.5.3 - 2026-05-08
+
++ feat: add local composite recorder (47a20b0)
++ chore: optimized default screen sharing configuration (f079eeb)
+
+### v0.5.1 - 2026-04-27
+
++ fix: video freezes (b7a36c2)
++ feat: RemoteVideoTrack supports setting jitterBufferTarget (jitter buffer target delay) (6aed177)
+
+### v0.5.0 - 2026-04-23
+
++ feat: the seastart engine now receives quality reports sent by the server
++ feat: type-safe rework of the channel event system, supporting discriminated unions and automatic type narrowing
++ feat: the seastart engine now supports active speakers (users who are speaking)
++ feat: added adaptive streaming, which switches simulcast layers automatically based on play window state and supports SFU downlink layer switch notifications and active layer switch requests
+
+### v0.4.4 - 2026-04-18
+
++ feat: simulcast support and optimized SFU subscription layer switching (781f520)
+
++ Web video tracks gain picture-in-picture and separate window capabilities: `enterPictureInPicture`, `exitPictureInPicture`, `popOutToWindow`, `closePopOutWindow`
++ New channel events: `TRACK_PIP_ENTER`, `TRACK_PIP_EXIT`, `TRACK_POPOUT_OPEN`, `TRACK_POPOUT_CLOSE`
++ `PipOptions` and `PopOutOptions` gain the `hideOriginView` option, defaulting to `true`

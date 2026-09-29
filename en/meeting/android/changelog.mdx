@@ -1,0 +1,182 @@
+---
+title: "Changelog"
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.39, including the 2.0.35 breaking API changes. Read this before upgrading the SDK."
+---
+
+> This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.39 (2026-09-21)
+
+### Changed
+
++ Merged the `feature/virtual-background` branch into the `master` branch.
+
+## 2.0.38 (2026-09-20)
+
+### Fixed
+
++ Fixed an issue where the receiving side could freeze and exit the meeting when screen sharing was stopped quickly or turned on and off repeatedly.
+
+## 2.0.37 (2026-09-18)
+
+### Added
+
++ Added cast code registration, unregistration, and casting start APIs: `registerCastCode()`, `unregisterCastCode()`, and `startCast()`.
++ Added a camera switch result callback and the historical device query `getCurrentCameraId()`.
++ Added the whiteboard stop result callback `stopShareWhiteBoard(callback)`.
++ Added `forceJoin` to call messages, indicating that the server requires the large screen to enter the meeting directly.
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.33`.
++ A failed camera switch no longer restores the original device automatically; your app can restore precisely as needed. See [Camera APIs](/en/meeting/android/api-reference/MeetingEngine#app-level-exact-recovery-example).
++ When a camera track has been created, switching devices after capture has stopped reopens capture but doesn't publish automatically.
++ Adjusted the camera preset frame rates and bitrates and added a minimum bitrate setting. See [Camera presets](/en/meeting/android/presets/camera).
++ Added the local-device-operation-in-progress error `LOCAL_DEVICE_OPERATION_IN_PROGRESS`.
+
+### Fixed
+
++ Fixed an issue where video couldn't be restored when turning the camera on again after a failed camera switch.
++ Fixed an issue where an old operation interfered with subsequent capture when closing the camera or switching devices.
++ Fixed local state notifications for room device control operations.
++ Fixed some network API errors in obfuscated builds, and preserved binary compatibility of legacy call messages.
+
+## 2.0.35 (2026-08-31)
+
+### Added
+
++ Added `MeetingResultCallback` and `MeetingValueResultCallback<T>` for asynchronous results without and with a business value, respectively; each call returns exactly one final state.
++ Added `MeetingErrorCode`; errors produced by the Meeting SDK itself use `202xxx`, and valid error codes from RTC, the server, and HTTP continue to be passed through as is.
++ Added stable public result models such as `MeetingPage<T>`, `MeetingDownload`, `MeetingEnterInfo`, and `MeetingImConnection`.
++ Added Engine, IM, room, member, message, media, local frame, screen capture, and device event interfaces, each with a `SimpleEvent` empty implementation you can override as needed.
++ Added pre-meeting camera and mic capture with `openCamera()` / `openMic()`; for in-meeting capture and publishing, use `openCameraAndPublish()` / `openMicAndPublish()`.
++ Added camera and mic device list queries, switching to a specified device, local audio and video frame listeners, and screen capture state listeners.
+
+### Changed
+
++ Unified the public result callbacks of `MeetingEngine`; the failure method is named `onFailure(errorCode, message)`, and `message` is for development diagnostics only.
++ Pre-meeting APIs return business models directly and no longer expose network transport wrappers such as `Callback<Data<T>>`, `Data<T>`, and `Data2<T>` to your app.
++ Entering the meeting successfully returns `MeetingEnterInfo`; in-meeting capabilities are still all called on `MeetingEngine`. `MeetingSession` is only used for the SDK's internal layering and isn't part of the public API.
++ `InfosManager`, `RollCallManager`, and `SignInManager` all live in the `cn.seastart.meeting.manager` package and are bound to the current meeting through a stable facade.
++ The old event types such as `RoomEvent`, `UserEvent`, `MediaEvent`, `ImEvent`, `RoomMsgEvent`, `ExtensionMessageEvent`, and `ScreenShareEvent` are replaced by the new `Meeting*Event` interfaces.
++ The Wangsu generic stream is split into video and audio APIs: `subscribeWsVideoStream()` / `subscribeWsAudioStream()` and the corresponding unsubscribe methods.
++ Introduced internal single-meeting Session layering and generation isolation so that late callbacks or asynchronous results from an old meeting don't affect the next meeting, without exposing the Session object to your app.
++ Upgraded the SRTC dependency to `2.0.30`, then `2.0.31`.
+
+### Compatibility notes
+
+This version contains breaking public API changes. After upgrading, replace the old network callbacks and old event interfaces, use `onFailure`, and handle the results of entering the meeting, pagination, downloads, remote subscriptions, and Wangsu streams according to the new signatures. Continue calling in-meeting APIs on `MeetingEngine`; don't reference the SDK's internal `MeetingSession`.
+
+## 2.0.34 (2026-08-26)
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.29`.
++ Adapted to SRTC's channel-based lifecycle and changes to media and device events.
++ Supported the new additional-stream parameter for remote subscriptions and added adaptation for underlying callbacks such as `RTCMediaEvent.onActiveSpeakersChanged`.
+
+## 2.0.33 (2026-08-19)
+
+### Fixed
+
++ Improved the create, publish, and release logic when cloud recording, screen sharing, and course recording share the `TRACK_SHARE` track.
++ Avoided wrongly releasing a track still used by another sharing feature when one type of sharing is stopped.
+
+## 2.0.32 (2026-07-29)
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.24`, with the corresponding compatibility adaptation in the Meeting SDK.
+
+## 2.0.31 (2026-07-23)
+
+### Added
+
++ Added `getMetric()` to actively get the most recent media quality statistics snapshot.
++ Added media quality statistics and network quality change events, so you can listen for poor-network level changes.
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.21`.
++ Changed the default for front camera preview mirroring from off to on.
+
+## 2.0.30 (2026-07-15)
+
+### Added
+
++ Added the `isAudience` parameter to the meeting entry APIs to support entering the meeting as audience.
++ Audience members can receive meeting member and audio/video information but can't open devices, share, or publish media streams.
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.16` and completed the audience-related adaptation.
+
+## 2.0.29 (2026-07-04)
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.15`.
++ Refactored the underlying adaptation of local video preview and media state callbacks.
+
+### Fixed
+
++ Added stable default values for `MeetingProps` fields so that Gson deserialization with missing fields doesn't override the default business behavior.
+
+## 2.0.28-alpha.5 (2026-06-17)
+
+### Added
+
++ Added a front camera preview mirroring switch and a mirroring state query API.
+
+### Changed
+
++ Improved the Maven POM description.
+
+## 2.0.28-alpha.4 (2026-06-15)
+
+### Added
+
++ Added generic stream subscribe, unsubscribe, and video control track retrieval dedicated to the Wangsu media streaming engine.
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.10`, after first adapting to `2.0.7-optimize-publish-flow.1`.
+
+## 2.0.28-alpha.3 (2026-05-09)
+
+### Added
+
++ When publishing a share track, you can carry additional stream information through `props`, which lets you add mic audio to the shared stream.
+
+## 2.0.28-alpha.2 (2026-04-29)
+
+### Added
+
++ Added `Other(6)` to `HandUpType` for raise hand requests that don't fall under camera, mic, chat, sharing, or drawing.
++ Added in-meeting extension message dispatching.
+
+## 2.0.28-alpha.1 (2026-04-14)
+
+### Added
+
++ Added roll call management, including create, end, call, answer, query, and export.
++ Added in-meeting sign-in, including start, end, sign in, statistics, query, and streaming export.
+
+### Fixed
+
++ The screen sharing start event now waits for both the server-side sharing state and the RTC track event, reducing false state reports.
++ Fixed an issue where screen sharing by an existing member couldn't be detected when entering the meeting.
++ Fixed an issue where sharing state was reported incorrectly when other members entered the meeting.
++ Closing the camera no longer sends an unnecessary HTTP request.
+
+## 2.0.27-alpha.7 (2026-03-10)
+
+### Added
+
++ Added a media streaming vendor parameter to the meeting entry APIs for selecting the RTC media streaming engine agreed for your deployment.
++ Added course recording track capability; course recording and screen recording reuse the same shared send track.
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.6-alpha.9`.
++ Upgraded the Android Gradle Plugin to `8.9.1` and Kotlin to `2.0.21`, with the accompanying build adaptation.

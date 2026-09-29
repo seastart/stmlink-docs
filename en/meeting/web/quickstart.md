@@ -142,7 +142,7 @@ let freshDeviceList = async (kind?: MediaDeviceKind) => {
  * @param deviceId Camera device ID
  * @param preset Camera preset
  * @param byAdmin Whether this is a host operation
- * @param adminUid Host ID (which host requested opening)
+ * @param adminUid Host ID (which host made the request)
  */
 await smeeting.requestOpenCamera(container: HTMLElement, deviceId?: string, preset?: CameraPreset, byAdmin?: boolean, adminUid?: string)
 /**
@@ -181,7 +181,7 @@ await smeeting.stopPlayRemoteVideo(container: HTMLElement, uid: string, trackDes
  * Open the mic
  * @param deviceId Mic device ID
  * @param preset Mic preset
-  * @param admin_uid Host ID (which host requested opening)
+  * @param admin_uid Host ID (which host made the request)
  */
 await smeeting.requestOpenMic(deviceId?: string, preset?: MicPreset, byAdmin?: boolean, adminUid?: string)
   /**

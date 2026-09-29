@@ -74,7 +74,7 @@ Callback parameters always use `Int` and keep the original value. Errors returne
 | `CAMERA_RUNTIME_ERROR` | `102236` | Camera runtime system error. |
 | `CAMERA_STATE_INVALID` | `102237` | The operation violates the camera state machine constraints. |
 | `CAMERA_FIRST_FRAME_TIMEOUT` | `102239` | The camera session started, but produced no first frame within the timeout. |
-| `VIRTUAL_BACKGROUND_MODEL_INVALID` | `102240` | The virtual background portrait segmentation model is empty or invalid. |
+| `VIRTUAL_BACKGROUND_MODEL_INVALID` | `102240` | The virtual background person segmentation model is empty or invalid. |
 | `VIRTUAL_BACKGROUND_NOT_INSTALL` | `102241` | The virtual background module isn't installed; call `installVirtualBackground` first. |
 | `CAMERA_FORMAT_UNAVAILABLE` | `102242` | Camera devices exist in scope, but no capture format is available. |
 | `CAMERA_OPEN_TIMEOUT` | `102243` | Opening the camera device timed out; it neither succeeded nor reported an error within the deadline. |

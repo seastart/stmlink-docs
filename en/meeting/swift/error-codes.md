@@ -110,4 +110,4 @@ The following APIs are designed not to throw, so you can call them directly; rep
 ### Related pages
 
 + [Key concepts](/en/meeting/swift/key-concepts)
-+ [API reference - SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine) (Chinese)
++ [API reference - SMeetingEngine](/en/meeting/swift/api-reference/SMeetingEngine)

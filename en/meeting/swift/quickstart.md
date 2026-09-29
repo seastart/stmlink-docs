@@ -151,7 +151,7 @@ In SwiftUI, `requestOpenCamera` doesn't need a `view`; just pass `meeting.camera
 
 Use `SMeetingRemoteVideoView` for remote video. It subscribes by `uid + TrackDesc` when the view appears and unsubscribes when the view disappears, so you don't need to manage the subscription lifecycle yourself.
 
-To render in UIKit / AppKit, or to control subscription timing yourself, see [Video rendering](/zh/meeting/swift/advanced/video-rendering) (Chinese).
+To render in UIKit / AppKit, or to control subscription timing yourself, see [Video rendering](/en/meeting/swift/advanced/video-rendering).
 
 #### 6. Exit
 
@@ -163,8 +163,8 @@ To render in UIKit / AppKit, or to control subscription timing yourself, see [Vi
 ### Next steps
 
 + [Key concepts](/en/meeting/swift/key-concepts)
-+ [Media control](/zh/meeting/swift/advanced/media-control) (Chinese)
-+ [Video rendering](/zh/meeting/swift/advanced/video-rendering) (Chinese)
-+ [Host controls](/zh/meeting/swift/advanced/host-controls) (Chinese)
-+ [API reference - SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine) (Chinese)
-+ [Events](/zh/meeting/swift/events) (Chinese)
++ [Media control](/en/meeting/swift/advanced/media-control)
++ [Video rendering](/en/meeting/swift/advanced/video-rendering)
++ [Host controls](/en/meeting/swift/advanced/host-controls)
++ [API reference - SMeetingEngine](/en/meeting/swift/api-reference/SMeetingEngine)
++ [Events](/en/meeting/swift/events)

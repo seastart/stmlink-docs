@@ -151,9 +151,9 @@ When a remote user publishes, you're notified through the `didAddTrack` callback
 ### Next steps
 
 + [Key concepts](/en/rtc/swift/key-concepts)
-+ [Mute vs. unpublish](/zh/rtc/swift/advanced/mute-vs-unpublish) (Chinese)
-+ [Device management](/zh/rtc/swift/advanced/device-management) (Chinese)
-+ [Screen sharing](/zh/rtc/swift/advanced/screen-sharing) (Chinese)
-+ [Custom tracks](/zh/rtc/swift/advanced/custom-track) (Chinese)
-+ [API reference - SRTCEngine](/zh/rtc/swift/api-reference/SRTCEngine) (Chinese)
-+ [API reference - Channel and Track](/zh/rtc/swift/api-reference/media-tracks) (Chinese)
++ [Mute vs. unpublish](/en/rtc/swift/advanced/mute-vs-unpublish)
++ [Device management](/en/rtc/swift/advanced/device-management)
++ [Screen sharing](/en/rtc/swift/advanced/screen-sharing)
++ [Custom tracks](/en/rtc/swift/advanced/custom-track)
++ [API reference - SRTCEngine](/en/rtc/swift/api-reference/SRTCEngine)
++ [API reference - Channel and Track](/en/rtc/swift/api-reference/media-tracks)

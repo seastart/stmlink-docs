@@ -9,13 +9,13 @@ The SRTC Python SDK (PyPI package `srtc`) targets **server-side AI scenarios**: 
 
 + AI voice assistants / voice bots: connect an ASR → LLM → TTS pipeline to a channel
 + Server-side recording, quality inspection, and real-time transcription
-+ You already have a [pipecat](https://github.com/pipecat-ai/pipecat) voice agent and want to connect it to an SRTC channel (see [Integrating pipecat](/zh/rtc/python/advanced/pipecat) (Chinese))
++ You already have a [pipecat](https://github.com/pipecat-ai/pipecat) voice agent and want to connect it to an SRTC channel (see [Integrating pipecat](/en/rtc/python/advanced/pipecat))
 
 ### Difference from the C SDK
 
 Both share the same native core underneath and behave the same. The difference is the **data format**:
 
-| | Python SDK | [C SDK](/zh/rtc/capi/integration) (Chinese) |
+| | Python SDK | [C SDK](/en/rtc/capi/integration) |
 | --- | --- | --- |
 | Received audio | Decoded **PCM**, with the sample rate / channel count you specify | Opus-encoded packets; you decode them yourself |
 | Published audio | **PCM** at any sample rate; the SDK handles resampling, encoding, and pacing | Encoded Opus packets; you write them at real-time pace yourself |
@@ -93,5 +93,5 @@ Every channel connection needs a **separately issued** token. A token is bound t
 ### Next steps
 
 + [Quickstart](/en/rtc/python/quickstart): get listening and speaking working
-+ [Voice AI agent guide](/zh/rtc/python/advanced/ai-agent) (Chinese): sentence segmentation, barge-in interruption, timeline
-+ [API reference](/zh/rtc/python/api-reference/channel) (Chinese)
++ [Voice AI agent guide](/en/rtc/python/advanced/ai-agent): sentence segmentation, barge-in interruption, timeline
++ [API reference](/en/rtc/python/api-reference/channel)

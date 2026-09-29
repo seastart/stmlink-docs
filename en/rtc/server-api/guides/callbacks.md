@@ -76,7 +76,7 @@ Only `agent_join` and `agent_operate` are synchronous; all others are asynchrono
 { "channel": "fire", "uid": "1001", "reason": 1, "online": 3 }
 ```
 
-+ `reason`: `1` left voluntarily, `2` removed, `3` replaced by a later join with the same `uid`, `4` heartbeat timeout, `5` channel destroyed, `6` switched to audience
++ `reason`: `1` left voluntarily, `2` removed, `3` replaced by another session with the same uid, `4` heartbeat timeout, `5` channel destroyed, `6` switched to audience
 + `online` is the number of online users in the channel **after** this user left; `0` means the channel is now empty
 
 ### `im_connect` / `im_disconnect` — IM device online / offline
