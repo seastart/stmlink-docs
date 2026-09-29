@@ -5,6 +5,28 @@ description: "Windows SMeeting 会议 SDK 版本更新记录"
 
 > 本页记录 Windows SMeeting SDK 各版本的主要变更。可通过 `SMeetingEngine_Version` 获取当前 SDK 版本。
 
+## 1.0.0-alpha.7 - 2026-09-29
+
+**添加**
+
++ **`SMeeting_C` C 接口正式可用**：`SMeeting_C.cpp` / `SMeetingEngineGlobal.cpp` 重新编入
+  `SMeeting.vcxproj`，`SMeeting.dll` 现在真正导出 `SMeetingEngine_*_C` 系列 C 函数
+  （在此之前该 wrapper 被排除在工程外，包里的 dll 并不包含这些符号）。
+
+**修改**
+
++ `SMeeting_C` 内部实现移植到引擎级 / 会议级拆分后的接口，不再沿用拆分前的单会议写法，
+  与 `1.0.0-alpha.5` 起的 `ISMeetingEngine` / `ISMeetingChannel` 结构保持一致
+
+**API 变更**
+
++ C++：无。`SMeeting.h` / `SMeeting_def.h` 没有任何签名改动，`ISMeetingEngine` /
+  `ISMeetingChannel` 的 vtable 未变，不存在 ABI 破坏。
++ C：`SMeeting_C.h` 的**函数声明无改动**（本次只更新了文件顶部注释）。但因 C wrapper
+  这次才真正编入 dll，`SMeeting.lib` 会新增 C 导出符号，使用 C 接口的工程需重新链接。
++ 包内容不变：`meeting_dll/include/` 仍只有 `SMeeting.h` / `SMeeting_def.h`，
+  `SMeeting_C.h` **不在包内**，使用 C 接口仍需另行索取头文件。
+
 ## 1.0.0-alpha.6 - 2026-09-24
 
 **添加**
