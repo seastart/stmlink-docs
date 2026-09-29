@@ -4,6 +4,25 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [9] - 2026.09.29
+版本号：0.2.1-alpha.11
+
+**添加**
+
++ 新增 D3D11 视频渲染：`srtcLive` 增加 `D3D11VideoRender` 及底层 D3D11 渲染模块
+  （设备与交换链、YUV 纹理、着色器、全屏四边形、文字与水印叠加等）
++ `utils` 新增 `D3d11Support()` 探测；视频渲染创建时**在支持 D3D11 的机器上优先使用 D3D11**
+  （`SRTC_RENDER_MODEL_VIDEO_D3D11`），不支持时回退到原有的 D3D 渲染
+
+**修改**
+
++ `srtc` / `srtcLive` 工程补充 d3d11 等相关依赖库，并启用 C++17 标准
++ `RenderModel` 新增 `SRTC_RENDER_MODEL_VIDEO_D3D11`（编译宏 `SRTC_USEING_LIB_D3D` 控制）
+
+**API 变更**
+
+无。`srtc.h` / `srtc_def.h` 本次没有任何改动，vtable 未变，只替换 dll 即可，不需要重新编译。
+
 ### [8] - 2026.09.24
 版本号：0.2.1-alpha.10
 
