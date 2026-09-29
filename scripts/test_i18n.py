@@ -383,7 +383,11 @@ class LockTest(Fixture):
         # 中文变了：--keep-reviewed 也要重置，并更新 zh_blob
         self.write('zh/rtc/overview.md', ZH_OVERVIEW + '\n## 新增\n')
         self.commit('zh 更新')
-        self.run_cli('lock', 'en/rtc/overview', '--keep-reviewed')
+        # 中文变了但没声明 --synced：拒绝登记，保留过期状态（避免只改了链接就把过期页标成最新）
+        rc, _, err = self.run_cli('lock', 'en/rtc/overview', '--keep-reviewed')
+        self.assertEqual(rc, 1)
+        self.assertIn('--synced', err)
+        self.run_cli('lock', 'en/rtc/overview', '--keep-reviewed', '--synced')
         e = self.lock()['en/rtc/overview']
         self.assertIs(e['reviewed'], False)
         self.assertEqual(e['zh_blob'], self.git('hash-object', 'zh/rtc/overview.md'))

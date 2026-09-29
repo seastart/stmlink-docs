@@ -40,7 +40,7 @@ description: "stmlink-docs 英文版（en/）的翻译规程：新译页面、�
 1. `python3 scripts/i18n.py status` → 「过期」一节每行形如
    `en/rtc/overview  zh/rtc/overview.md @ 1a2b3c4d5e6f：1 file changed, 4 insertions(+)`，`@` 后是登记时的 `zh_commit` 前 12 位
 2. `git diff 1a2b3c4d5e6f -- zh/rtc/overview.md`（照抄上一步的 commit 与文件），**只改英文里对应的段落**，别整页重译
-3. 链接有变动时跑 `links --fix`；再 `lock en/<页>`（中文变了，`reviewed` 会被重置为 false，需重新审校）
+3. 链接有变动时跑 `links --fix`；再 `lock --synced en/<页>`（`--synced` 声明英文已按 diff 同步；不带它时中文变过的页会被拒登记。`reviewed` 会被重置为 false，需重新审校）
 4. 标题或 description 变了要重跑 `gen-llms-txt.py`；照新译第 9、10 步校验提交
 
 SDK 发版后的增量：`status --batch <批次>` 只看该平台；changelog 只译客户可感知的条目。
@@ -96,3 +96,4 @@ SDK 发版后的增量：`status --batch <批次>` 只看该平台；changelog �
 + `lock` 在浅克隆或 zh 有未提交改动时会拒绝，先 `git fetch --unshallow` / 提交中文
 + **重跑 `lock` 默认把 `reviewed` 重置为 false**：已审校页只改了链接、错字这类（中文没变）时用 `lock --keep-reviewed`；
   中文变了则 `--keep-reviewed` 也会重置，这是对的 —— 英文需要按增量重新审校
++ **只改了英文（如 `links --fix`）就批量重 lock 时，中文变过的页会被拒**：先对这些页走增量流程，别加 `--synced` 硬过——那会把过期页静默标成最新（2026-09-29 踩过）

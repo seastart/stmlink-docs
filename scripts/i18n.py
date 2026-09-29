@@ -14,7 +14,7 @@
 
 用法：
     python3 scripts/i18n.py nav [--check]
-    python3 scripts/i18n.py lock en/rtc/overview [zh/rtc/token.md ...] [--reviewed | --keep-reviewed]
+    python3 scripts/i18n.py lock en/rtc/overview [zh/rtc/token.md ...] [--reviewed | --keep-reviewed] [--synced]
     python3 scripts/i18n.py status [--batch P1a]
     python3 scripts/i18n.py links [--fix]
     python3 scripts/i18n.py tm-merge [rtc|meeting]
@@ -360,6 +360,12 @@ def cmd_lock(args):
     blobs = hash_objects([ROOT / z for _, z, _ in entries])
     for en_page, zh_rel, commit in entries:
         old = data.get(en_page)
+        # 中文在上次登记后变过：lock 会把新的中文版本记成「英文已同步到这一版」，过期状态随之消失。
+        # 只改了英文链接就顺手重 lock，会把真正过期的页静默标成最新（2026-09-29 批量 --fix 后踩过），
+        # 所以必须显式 --synced 声明「已按 diff 同步过英文」
+        if old and old.get('zh_blob') != blobs[zh_rel] and not args.synced:
+            die(f'{en_page}：中文在上次登记后已变化，先按 git diff {old.get("zh_commit", "")[:12]} -- {zh_rel} '
+                '做增量翻译，确认英文已同步后加 --synced 再登记')
         # 标审校时中文若已在翻译后变过，说明英文已过期，不能直接标成「已审校的最新版」
         if args.reviewed and old and old.get('zh_blob') != blobs[zh_rel]:
             die(f'{en_page}：中文在上次登记后已变化，先按 git diff {old.get("zh_commit", "")[:12]} -- {zh_rel} '
@@ -1198,6 +1204,8 @@ def main(argv=None):
     g.add_argument('--reviewed', action='store_true', help='同时标记为已审校')
     g.add_argument('--keep-reviewed', action='store_true',
                    help='中文未变（zh_blob 相同）时保留原审校状态；默认重 lock 会把 reviewed 重置为 false')
+    p.add_argument('--synced', action='store_true',
+                   help='声明已按 git diff 把中文的变化同步进英文；已登记页的中文变过时必须带上，否则拒绝登记')
     p.set_defaults(func=cmd_lock)
 
     p = sub.add_parser('status', help='缺译 / 过期 / 孤儿 / 未登记 / 未审校 / 未纳入范围')
