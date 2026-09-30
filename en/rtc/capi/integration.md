@@ -19,7 +19,7 @@ This SDK **doesn't include** client-side capabilities such as camera capture, mi
 + **Publishing**: you handle capture and encoding, and hand the encoded H.264 / H.265 / Opus / AAC raw data to the SDK through `rtc_write_sample`
 + **Receiving**: the SDK hands you the remote encoded data through callbacks; decoding and rendering are up to you
 
-If you're building a desktop client, use the [Windows SDK](/zh/rtc/windows/integration) (Chinese) instead. It has a C++ interface and includes capture and rendering.
+If you're building a desktop client, use the [Windows SDK](/en/rtc/windows/integration) instead. It has a C++ interface and includes capture and rendering.
 
 ---
 

@@ -25,9 +25,9 @@ All platforms interoperate, and behavior is aligned across them.
 | --- | --- | --- |
 | Web | Browsers, and also WeChat Mini Program (embedded via `web-view`) | [Integration](/en/rtc/web/integration) · [Quickstart](/en/rtc/web/quickstart) |
 | Android | Phones, set-top boxes, embedded devices | [Integration](/en/rtc/android/integration) · [Quickstart](/en/rtc/android/quickstart) |
-| Windows | Desktop clients, C++ API | [Integration](/zh/rtc/windows/integration) (Chinese) · [Quickstart](/zh/rtc/windows/quickstart) (Chinese) |
+| Windows | Desktop clients, C++ API | [Integration](/en/rtc/windows/integration) · [Quickstart](/en/rtc/windows/quickstart) |
 | Swift | iOS and macOS, `import SRTC` | [Integration](/en/rtc/swift/integration) · [Quickstart](/en/rtc/swift/quickstart) |
-| iOS | Objective-C, `RTCEngineKit` | [Integration](/zh/rtc/ios/integration) (Chinese) · [Quickstart](/zh/rtc/ios/quickstart) (Chinese) |
+| iOS | Objective-C, `RTCEngineKit` | [Integration](/en/rtc/ios/integration) · [Quickstart](/en/rtc/ios/quickstart) |
 | C | Server and embedded, pure C API | [Integration](/en/rtc/capi/integration) · [Quickstart](/en/rtc/capi/quickstart) |
 | Python | Server-side AI (voice bots, recording, transcription), sends and receives PCM, supports pipecat | [Integration](/en/rtc/python/integration) · [Quickstart](/en/rtc/python/quickstart) |
 | Server | HTTP endpoints and event callbacks | [Server API](/en/rtc/server-api/overview) |

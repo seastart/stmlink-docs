@@ -158,7 +158,7 @@ While virtual background is on, the local preview shows the processed video, the
 
 Person segmentation always runs CPU inference, without CoreML: the model is only 256×256, and its operators can't be fully handled by CoreML, so the cost of shuttling data between the CPU and CoreML on every frame exceeds the compute saved—in testing, it's a net slowdown.
 
-The algorithm is implemented from the same source as the Objective-C version (the same person segmentation + mask post-processing). For the order of magnitude of per-frame time, refer to the measured data in [Virtual background in the iOS SDK](/zh/rtc/ios/advanced/virtual-background#性能开销) (Chinese). Run a round of tests on a real device with the default parameters (segmentation every frame) first, and increase the inference interval as in Step 4 only if it exceeds your frame budget.
+The algorithm is implemented from the same source as the Objective-C version (the same person segmentation + mask post-processing). For the order of magnitude of per-frame time, refer to the measured data in [Virtual background in the iOS SDK](/en/rtc/ios/advanced/virtual-background#performance-cost). Run a round of tests on a real device with the default parameters (segmentation every frame) first, and increase the inference interval as in Step 4 only if it exceeds your frame budget.
 
 ---
 

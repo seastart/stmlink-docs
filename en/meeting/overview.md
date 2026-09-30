@@ -65,9 +65,9 @@ Choose your platform from the platform support table below.
 | --- | --- |
 | Web | [Web SDK](/en/meeting/web/integration) |
 | Android | [Android SDK](/en/meeting/android/integration) |
-| Windows | [Windows SDK](/zh/meeting/windows/integration) (Chinese) |
+| Windows | [Windows SDK](/en/meeting/windows/integration) |
 | iOS / macOS (Swift) | [Swift SDK](/en/meeting/swift/integration) |
-| iOS (Objective-C) | [iOS SDK](/zh/meeting/ios/quickstart) (Chinese) |
+| iOS (Objective-C) | [iOS SDK](/en/meeting/ios/quickstart) |
 | Server | [Server API](/en/meeting/server-api/overview) |
 
 <Note>

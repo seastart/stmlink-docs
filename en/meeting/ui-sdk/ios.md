@@ -5,7 +5,7 @@ description: "Low-code integration with UI for iOS (Objective-C): run the open-s
 
 The video conferencing SDK provides an open-source upper-layer UI kit. On iOS it currently supports only Objective-C, and you can bring up the meeting UI with a few simple API calls.
 
-> Note: if you have your own UI design and want to build on the meeting features yourself, we also provide the more flexible and full-featured MeetingKit SDK. See our [MeetingKit API](/zh/meeting/ios/api-reference/MeetingKit) (Chinese) documentation to learn more.
+> Note: if you have your own UI design and want to build on the meeting features yourself, we also provide the more flexible and full-featured MeetingKit SDK. See our [MeetingKit API](/en/meeting/ios/api-reference/MeetingKit) documentation to learn more.
 >
 
 ## Features
@@ -79,7 +79,7 @@ The meeting main screen is `FWRoomViewController`. After creating a room with th
 
 #### Create a room
 ##### Build meeting parameters
-Meeting parameters consist of many fields, but you usually only need a few of them. See [SEAMeetingParam](/zh/meeting/ios/types#seameetingparam) (Chinese) for details.
+Meeting parameters consist of many fields, but you usually only need a few of them. See [SEAMeetingParam](/en/meeting/ios/types#seameetingparam) for details.
 
 ```objectivec
 SEAMeetingParam *meetingParam = [[SEAMeetingParam alloc] init];

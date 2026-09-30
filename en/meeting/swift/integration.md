@@ -19,7 +19,7 @@ The minimums come from the virtual background inference runtime in the audio and
 SMeeting is built on top of SRTC's audio and video capabilities: the meeting layer handles business semantics such as rooms, meetings, members, and host controls, while the underlying audio and video capture, encoding and decoding, and rendering are still provided by SRTC. When you add `SMeeting`, SRTC is resolved along with it as a dependency, so you don't need to add it separately.
 
 <Note>
-**There are two SMeeting SDKs for Apple platforms—first confirm which one you need.** This section covers the native Swift SDK (`import SMeeting`, delivered as a Swift Package, supporting both iOS and macOS); there is also an Objective-C `MeetingKit` (distributed via CocoaPods, iOS only), see [iOS SDK](/zh/meeting/ios/quickstart) (Chinese).
+**There are two SMeeting SDKs for Apple platforms—first confirm which one you need.** This section covers the native Swift SDK (`import SMeeting`, delivered as a Swift Package, supporting both iOS and macOS); there is also an Objective-C `MeetingKit` (distributed via CocoaPods, iOS only), see [iOS SDK](/en/meeting/ios/quickstart).
 
 **For new projects, we recommend the Swift SDK in this section.** The two APIs can't be mixed, and you shouldn't add both to the same project.
 </Note>

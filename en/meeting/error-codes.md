@@ -71,7 +71,7 @@ When troubleshooting, look at the first two digits first: if it starts with `2`,
 
 ## Full error code tables by platform
 
-[Web](/en/meeting/web/types) · [Android](/en/meeting/android/error-codes) · [Windows](/zh/meeting/windows/error-codes) (Chinese) · [Swift](/en/meeting/swift/error-codes) · [iOS](/zh/meeting/ios/error-codes) (Chinese)
+[Web](/en/meeting/web/types) · [Android](/en/meeting/android/error-codes) · [Windows](/en/meeting/windows/error-codes) · [Swift](/en/meeting/swift/error-codes) · [iOS](/en/meeting/ios/error-codes)
 
 <Warning>
 Don't branch on the error **message text**—the text may change between versions, but error codes don't.

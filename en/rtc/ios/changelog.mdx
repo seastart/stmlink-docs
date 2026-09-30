@@ -1,0 +1,541 @@
+---
+title: "Changelog"
+description: "iOS (Objective-C) SRTC SDK (RTCEngineKit) release history: fixes, new features, and breaking changes such as the 3.0.0 multi-channel RTCEngineChannel split, the iOS 16.0 minimum in 3.1.0, virtual background, and callback signature changes. Read before upgrading the iOS SDK."
+---
+
+### [3.1.2] - 2026.09.14
+#### Fixed
++ Fixed the [onRemoteMemberAudioStatus:](/en/rtc/ios/api-reference/RTCEngineChannelDelegate#enginechannelonremotememberaudiostatus) callback attributing the speaking user to the wrong person with Wangsu media streaming: on this path the server doesn't send the connection ID, so `linkId` in [RTCStreamAudioModel](/en/rtc/ios/types#rtcstreamaudiomodel) is always `0`. Looking up the user by it used to hit the first match in the list, so when you did voice activation, the highlighted user was often not the one actually speaking. The SDK now resolves the user ID from the underlying connection and only falls back to the old `linkId` lookup when that fails;
++ Fixed `db` being set to `-60` (silence) instead of the entry being skipped when the statistics lacked a volume item: when the volume statistic was unavailable, `0` was used in the conversion, always yielding `-60` dB, so your app would misread "this statistic is unavailable this time" as "this person isn't speaking";
++ Fixed App Store uploads from your project being rejected with `ITMS-90171` and `ITMS-90166`: `RTCEngineKit.bundle` is a pure resource bundle, but the build output included a useless placeholder executable and the `CFBundleExecutable` key in `Info.plist`, which Apple flagged as "a resource bundle must not contain a standalone executable". Both are now removed at build time. After upgrading to this version, just re-archive and upload; your project needs no changes.
+
+<Note>
+The public APIs, callback signatures, and type definitions of `RTCEngineKit` are unchanged, so existing code needs no rewriting, and the minimum system requirement is still iOS 16.0. If you use Wangsu media streaming for voice activation, or your App Store uploads were previously rejected with the two error codes above, upgrade to this version.
+</Note>
+
+### [3.1.1] - 2026.09.09
+#### Fixed
++ Fixed remote video being completely black after subscribing with SeaStart media streaming: remote video is dispatched by an index key of the form "channel\_userId\_trackId", and channel names and user IDs may themselves contain underscores. Splitting the key on underscores used to yield the channel name, so every frame was dispatched to a nonexistent user;
++ Fixed video from the second and later publishers rendering on the wrong user's view when a channel had multiple publishers with SeaStart media streaming: the server reuses the same media section to forward different publishers' streams in turn, so render bindings are now rebuilt by stream ID after subscription negotiation completes;
++ Fixed misplaced layer declarations for the high and low streams: the primary layer's `variant` and the secondary layer's `fallbackIds` used to be written to each other's [RTCEngineStreamTrackModel](/en/rtc/ios/types#rtcenginestreamtrackmodel), making the layer declarations received by the server unusable;
++ Fixed new media sections getting their own transport when the data channel was negotiated first and media sections were added later with SeaStart media streaming: the subscriber side now explicitly declares the BUNDLE and ICE policies to match the server's ice-lite single-port setup.
+#### Improved
++ Person segmentation for virtual background now always runs on the CPU and no longer uses CoreML. Measured on iPhone XS Max / iOS 18.7.9 (720p@25fps, average over 300 frames): per-frame time dropped from 53.17 ms to 20.61 ms, `installVirtualBackground:` time from 1271 ms to 130 ms, process CPU usage from 172% to 63%, and memory from 83 MB to 58.6 MB. See [Virtual background](/en/rtc/ios/advanced/virtual-background);
++ Background blur now downsamples, applies a Gaussian blur, and then upsamples, cutting the pixels processed to 1/16 of before; image compositing now matches the Web, Android, and HarmonyOS clients;
++ With SeaStart media streaming, the low stream no longer gets its own published track. Instead, the primary and secondary layers are declared as two simulcast encodings on the same connection, and each layer applies its own scaling factor, maximum bitrate, and maximum frame rate.
+#### Changed
++ With SeaStart media streaming, the subscription candidate layers are narrowed to only the layer you subscribe to. When the candidates included both the primary and secondary layers, the server forwarded both RTP streams in turn on the same output SSRC without rewriting sequence numbers, so the receiver kept treating packets as replayed, dropped them, and flickered between the two resolutions. The trade-off is that the server no longer falls back to the secondary layer automatically on a poor network; call `startRemoteView:trackId:view:` yourself to subscribe to the low stream as your scenario requires.
+
+<Note>
+The public APIs, callback signatures, and type definitions of `RTCEngineKit` are unchanged, so existing code needs no rewriting, and the minimum system requirement is still iOS 16.0. Projects using SeaStart media streaming should upgrade to this version directly.
+</Note>
+
+### [3.1.0] - 2026.09.08
+#### Added
++ Added virtual background: `installVirtualBackground:`, `uninstallVirtualBackground`, `enabledVirtualBackground:`, `setVirtualBackgroundBlur:`, `setVirtualBackgroundImage:`, `setVirtualBackgroundInferenceInterval:`, `setVirtualBackgroundMaskSync:`, and `isVirtualBackgroundEnabled`. It blurs or replaces the background after person segmentation, and **installing it doesn't require a license key**;
++ Virtual background and the beauty filter work on the same shared camera capture pipeline. When both are on, the order is fixed: beauty filter first, then virtual background. For usage, see [Virtual background](/en/rtc/ios/advanced/virtual-background);
++ Added `SRTCDeviceTypeHarmonyOS` (`8`) to `SRTCDeviceType` for identifying HarmonyOS users.
+#### Changed
++ The minimum system requirement is raised from iOS 10.0 to **iOS 16.0**;
++ CocoaPods integration adds the `onnxruntime-c` (`~> 1.24.0`) dependency. The SDK keeps only its undefined symbols, which your app resolves at link time; with manual integration, add `onnxruntime.xcframework` yourself.
+#### Fixed
++ Fixed the local preview still showing the raw camera image after the beauty filter or virtual background was turned on, with only the remote side seeing the effect: the local preview now shows the pre-processed image, and returns to the direct system preview when both are off;
++ Fixed frozen video caused by the pre-processing output buffer being released too early, and by the display buffer and the next frame's write conflicting on the GPU;
++ Fixed concurrent access when installing, uninstalling, or toggling the render component and the virtual background component while the capture thread was rendering.
+
+<Warning>
+This is a breaking change: your project's `IPHONEOS_DEPLOYMENT_TARGET` and the `platform :ios` in your `Podfile` must be at least 16.0, or dependency resolution fails. No public APIs or callback signatures were removed or changed, so existing code needs no rewriting.
+</Warning>
+
+### [3.0.2] - 2026.08.28
+#### Fixed
++ Upgraded the `librtc` dependency, fixing a crash caused by a parsing error when the media streaming service response no longer returned the `upload` field.
+
+<Note>
+The public APIs and callback signatures of `RTCEngineKit` are unchanged; no code changes are needed.
+</Note>
+
+### [3.0.1] - 2026.08.14
+#### Fixed
++ Fixed screen sharing failing to publish in `3.0.0`: the capture service now starts and keeps listening as soon as joining the channel succeeds, so the extension can connect when the user starts screen recording from the system panel, instead of missing the connection while waiting for `publishScreenRecord:`;
++ Fixed `-[RTCEngineKit stopScreenRecord]` only unpublishing without actually ending system screen recording; it again disconnects the extension to end the current recording.
+#### Improved
++ Screen sharing is now split internally into a subscription layer and a publishing layer: joining a channel sets up the subscription so the capture service keeps listening, and `publishScreenRecord:` only expresses this channel's intent to publish. The current system recording ends when the last publishing channel unpublishes, and the capture service is released only when the last channel leaves;
++ `RTCScreenRecordStatus` is a process-level state and is reported to every channel the process has joined. To decide whether the local side is sharing, combine it with your own publishing intent rather than relying on this state alone.
+
+<Note>
+The call sequence is unchanged: present `RPSystemBroadcastPickerView` → receive `RTCScreenRecordStatusStart` → call `publishScreenRecord:YES`. Projects on `3.0.0` should upgrade to this version directly.
+</Note>
+
+### [3.0.0] - 2026.08.12
+#### Added
++ Added the channel instance class `RTCEngineChannel`, which carries in-channel capabilities: joining and leaving the channel, user and channel data, publishing and subscribing to streams, sending audio, publishing screen sharing, custom streams, and more;
++ Added the channel event protocol `RTCEngineChannelDelegate`, which carries in-channel connection, user, message, audio, stream, and screen sharing events;
++ Added `createChannelWithDelegate:` and `getChannels` to `RTCEngineKit` for creating channel instances and querying active channels;
++ Added `publishScreenRecord:` to `RTCEngineChannel` to start and stop publishing the screen sharing stream per channel.
+#### Changed
++ `RTCEngineKit` is reduced to a process-level singleton that keeps only initialization and destruction, channel instance management, IM (out-of-channel messaging), camera capture and preview, audio routing, screen capture process access, network speed test, and beauty filter rendering;
++ `joinChannelWithToken:`, `leaveChannel:`, `getMySelf`, `getRemoteUsers`, `publishLocalVideo:`, `startRemoteView:trackId:view:`, `enabledSendAudio:`, `setStreamMediaConfig:`, custom streams, and other in-channel APIs moved from `RTCEngineKit` to `RTCEngineChannel`;
++ `RTCEngineDelegate` keeps only four process-level events: `onAudioRouteChange:previousRoute:`, `onSpeedTestBegined`, `onSpeedTestUploadResult:downResult:connectResult:`, and `onApplicationPerformance:cpuUsage:`;
++ The remaining in-channel callbacks moved to `RTCEngineChannelDelegate`, and all carry the source channel instance as the first parameter. For example, `onJoinSucceed:userId:` became `engineChannel:onJoinSucceed:`, `onRemoteUserLeaveChannel:userId:reason:` became `engineChannel:onRemoteUserLeaveChannel:reason:`, and `onScreenRecordStatus:` became `engineChannel:onScreenRecordStatus:`;
++ `RTCStreamAudioModel.userId` and `RTCStreamReceiveModel.userId` changed from read-only to nullable and writable.
+#### Improved
++ One process can create multiple channel instances and join multiple channels at the same time; user data, stream statistics, and rendering don't interfere between instances;
++ Camera, audio routing, ReplayKit capture, and beauty filter rendering are process-level shared capabilities managed by the engine. Screen capture starts when the first channel publishes and ends when the last channel stops publishing;
++ `-[RTCEngineKit destroy]` first destroys all live channel instances and waits for them to finish leaving, then releases process-level resources.
+
+<Warning>
+This is a breaking change. Hold channel instances through `createChannelWithDelegate:`, rewrite all channel API calls, and move in-channel callbacks to the new signatures in `RTCEngineChannelDelegate`; otherwise the related APIs won't compile and the callbacks won't fire.
+</Warning>
+
+### [2.5.10] - 2026.08.05
+#### Changed
++ The `onReconnecting` callback gains a channel name parameter; the signature becomes `onReconnecting:`;
++ The `onDisconnected:errCode:errMsg:` callback gains a channel name parameter; the signature becomes `onDisconnected:reason:errCode:errMsg:`;
++ The `onCustomMessage:action:userId:sessionId:nickname:` callback gains a channel name parameter; the signature becomes `onCustomMessage:content:action:userId:sessionId:nickname:`.
+#### Improved
++ Disconnect, reconnecting, and custom message events all provide the source channel directly, so you no longer need to infer it yourself with multiple channels.
+
+<Warning>
+This is a breaking change. After upgrading, update your implementations of the three callbacks above, or they will no longer fire.
+</Warning>
+
+### [2.5.9] - 2026.07.24
+#### Added
++ Added `enabledAudioModule:` for starting and stopping the local audio unit.
+#### Improved
++ In purely local playback scenarios where the local side neither captures nor receives RTC audio, such as recorded video or live streams, you can disable the media streaming voice processing unit (VPIO) so the local player's volume isn't lowered;
++ The audio unit is automatically reset to automatic management each time you join, so a manual disable from the previous session no longer leaks into the next.
+
+### [2.5.8] - 2026.07.23
+#### Fixed
++ Fixed audio possibly staying on the speaker or earpiece after the audio session was reconfigured when joining with a Bluetooth headset already connected.
+#### Improved
++ When you haven't explicitly chosen the speaker or earpiece, the SDK actively restores an available external device, preferring a Bluetooth headset;
++ When an external device is restored successfully during audio session reconfiguration, a temporary built-in audio route is no longer reported to your app;
++ Your explicit choice of speaker or earpiece is kept; if restoring the external device fails, the SDK falls back to the default built-in route.
+
+### [2.5.7] - 2026.07.23
+#### Fixed
++ Fixed the local preview showing no video when the requested camera couldn't create an input;
++ Fixed old asynchronous capture tasks possibly interfering with the current preview while the camera was stopping, reopening, or switching.
+#### Improved
++ Added camera input availability checks and automatic fallback: when the requested device is unavailable, the other available camera is used automatically;
++ Added first-frame timeout detection: when the underlying capturer initializes successfully but outputs no video, the SDK automatically tries the other available camera;
++ Improved capture generation isolation and preview container recovery so stale callbacks don't affect the current capture state.
+
+### [2.5.6] - 2026.07.23
+#### Fixed
++ Fixed the camera direction state and local preview mirroring being inconsistent after the target camera was unavailable and the SDK fell back to the actual device;
++ Fixed the rear camera's local preview possibly being mirrored incorrectly;
++ Fixed audio route switching returning success even when the system call failed, and falling back incorrectly when the target external device was absent;
++ Fixed the recovery state being cleared too early when an audio session interruption ended.
+#### Improved
++ Separated the default built-in route, the explicit choice, and the actual system route; connecting external devices and choosing among multiple external devices is left to iOS;
++ Improved the route recovery strategy after an external device is unplugged, media streaming reconnects, or the audio unit is reset;
++ Audio route notification registration is now idempotent, and route switching failure logs are more complete.
+
+### [2.5.5] - 2026.07.15
+#### Changed
++ Upgraded the `librtc` dependency;
++ The user join and leave callbacks no longer filter out the current user.
+
+### [2.5.4] - 2026.07.14
+#### Fixed
++ Fixed the host app's standard output and standard error being exclusively redirected after local logging was enabled, which made logs invisible in the Xcode console.
+#### Improved
++ Local log capture now uses a process-level pipe tee, keeping both the log file and the original console output;
++ Improved starting, stopping, failure rollback, and resource release for log capture so log output backpressure doesn't affect the host app.
+
+### [2.5.3] - 2026.07.13
+#### Fixed
++ Upgraded the `librtc` dependency, fixing joining as audience.
+
+### [2.5.2] - 2026.07.02
+#### Fixed
++ Fixed `setLocalPreviewMirror:` not taking effect for the local preview with `WebRTC` capture (mirroring applies only to the local preview; the published stream isn't mirrored).
+
+### [2.5.1] - 2026.07.02
+#### Fixed
++ Fixed video appearing sideways in portrait with `WebRTC` capture;
++ The capture orientation now follows the UI orientation, supporting fixed portrait, fixed landscape, and auto-rotation.
+
+### [2.5.0] - 2026.06.18
+#### Added
++ Added `setLocalPreviewMirror:` for setting local preview mirroring;
++ Added `currentCameraDirection` for getting the current camera direction;
++ Added the camera direction enum `RTCEngineCameraDirection`.
+
+### [2.4.7] - 2026.06.16
+#### Added
++ Added `startRemoteRetweet:view:` for subscribing to remote re-streamed audio and video (pulled over webrtc; currently only the `wangsu` vendor is supported);
++ Added `stopRemoteRetweet:` for unsubscribing from remote re-streamed audio and video;
++ Added the `onReceiveRetweetStreamStatusChange:status:` callback for re-streamed stream receive status changes.
+
+### [2.4.6] - 2026.04.30
+#### Added
++ Upgraded and refactored to support the `SeaStart SFU 26.4` protocol;
++ Added the media streaming quality level `RTCStreamQualityLevel`;
++ Added the media streaming quality sample data `RTCStreamQualitySampleModel`;
++ Added the `fallbackIds` and `variant` fields to the existing `RTCEngineStreamTrackModel` data structure;
++ Added the server-side uplink quality check callback `onSendQualitySample:`;
++ Added the server-side downlink quality check callback `onReceiveQualitySample:`.
+
+### [2.4.5] - 2026.04.13
+#### Fixed
++ Fixed the audio debounce timer being released by mistake, which broke audio publishing when sending video and audio at the same time.
+
+### [2.4.4] - 2026.03.12
+#### Added
++ The sharing stream connection adds an `Audio Track` that shares the microphone capture track;
++ Added `publishScreenViewCaptureWithPixelBuffer:displayAngle:` for publishing a sharing stream from view recording;
++ Added `enabledViewCaptureShare:` for enabling view capture sharing.
+
+### [2.4.3] - 2026.02.28
+#### Added
++ Added the `forceLandscape` parameter to the media streaming configuration so your app can force landscape;
++ Video capture with third-party media streaming vendors was reimplemented on `AVCaptureSession`, among other changes;
++ Post-capture operations moved to the main thread.
+
+### [2.4.2] - 2025.12.15
+#### Fixed
++ Fixed known issues and made related improvements.
+
+### [2.4.1] - 2025.11.28
+#### Fixed
++ Fixed some known issues and made related improvements.
+
+### [2.4.0] - 2025.11.17
+#### Added
++ The custom message callback adds session ID and user nickname parameters.
+
+### [2.3.1] - 2025.10.23
+#### Improved
++ Changed the log upload data structure;
+
+#### Added
++ Added callbacks for local captured and resampled audio data;
+
+#### Fixed
++ Fixed a crash caused by redirected console logs from the media engine;
++ Adapted screen sharing for `iPad` devices;
++ Fixed several known issues.
+
+### [2.3.0] - 2025.08.30
+#### Added
++ Added the in-house `sfu` media streaming module.
+
+### [2.2.11] - 2025.08.22
+#### Improved
++ Improved the API failure retry logic.
+
+### [2.2.10] - 2025.08.20
+#### Fixed
++ Added a custom video capture session, fixing the capture session not supporting the camera's dynamic formats.
+
+### [2.2.9] - 2025.08.16
+#### Fixed
++ Fixed abnormal callbacks when leaving before media streaming started.
+
+### [2.2.8] - 2025.08.15
+#### Fixed
++ Improved the reconnection logic, fixing stream pulling issues.
+
+### [2.2.7] - 2025.08.13
+#### Fixed
++ Fixed crashes from `cStr` conversion errors;
++ Improved reconnection with the new media streaming;
++ Improved audio route reset, and more.
+
+### [2.2.6] - 2025.08.12
+#### Added
++ Added a wrapper for the Wangsu media streaming module.
+
+### [2.2.5] - 2025.06.24
+#### Improved
++ Added the maximum user count setting and the `libwebrtc` dependency, plus an initial wrapper for the in-house media streaming module.
+
+### [2.2.4] - 2025.05.07
+#### Improved
++ Improved console log redirection.
+
+### [2.2.3] - 2025.04.23
+#### Fixed
++ Fixed toggling the camera invalidating the media capture parameters.
+
+### [2.2.2] - 2025.03.31
+#### Improved
++ Improved the ordering of newly joined users;
++ Improved the handling of the real-time capture log callback to avoid potential crashes;
++ Upgraded the log version and fixed crashes caused by logging.
+
+### [2.2.2-alpha.5+20250318] - 2025.03.18
+#### Fixed
++ Upgraded the `librtc` dependency, fixing crashes caused by logging.
+
+### [2.2.2-alpha.4+20250313] - 2025.03.13
+#### Improved
++ Fixed some crashes, among other improvements.
+
+### [2.2.2-alpha.3+20250226] - 2025.02.26
+#### Improved
++ Upgraded the `mmkv` version used by the `librtc` dependency and fixed some known issues.
+
+### [2.2.2-alpha.2+20250218] - 2025.02.18
+#### Improved
++ Improved the handling of the real-time capture log callback to avoid potential crashes.
+
+### [2.2.2-alpha.1+20250123] - 2025.01.23
+#### Improved
++ Upgraded the underlying library and improved the ordering of newly joined users.
+
+### [2.2.1] - 2025.01.17
+#### Fixed
++ Fixed wired headset names being recognized incorrectly.
+
+#### Improved
++ Improved video angle updates.
+
+### [2.2.0] - 2025.01.10
+#### Added
++ Added IM and other features;
+
+#### Improved
++ Improved the subscription flow and other flows;
+
+#### Fixed
++ Fixed known issues.
+
+### [2.2.0-alpha.13+20250102] - 2025.01.02
+#### Improved
++ Publishing video data with media streaming now checks the publishing state.
+
+### [2.2.0-alpha.12+20250102] - 2025.01.02
+#### Improved
++ Improved the flow for turning on the local camera: start local capture first, then `ChangeStreams`, and finally `enabledPublish`.
+
+### [2.2.0-alpha.11+20241230] - 2024.12.30
+#### Improved
++ Improved the logic for subscribing to remote video streams;
+
+#### Fixed
++ Upgraded the underlying library, fixing crashes.
+
+### [2.2.0-alpha.10+20241226] - 2024.12.26
+#### Improved
++ Fixed some crashes.
+
+### [2.2.0-alpha.9+20241223] - 2024.12.23
+#### Added
++ Improved the join channel event so that it fires only once.
+
+### [2.2.0-alpha.8+20241221] - 2024.12.21
+#### Added
++ Added logic for restarting the audio session after an interruption, and more;
++ Added an API for restarting the audio session;
++ Added timeout detection to `enableImWithToken` and `joinChannelWithToken`;
++ Added some error codes;
+
+#### Improved
++ Changed the default audio encoding format to `OPUS`;
+
+#### Fixed
++ Added the `c-areas` dependency of the `libcurl` library, fixing some related issues.
+
+### [2.2.0-alpha.7+20241106] - 2024.11.06
+#### Improved
++ Adapted the media streaming receive status callback handling to the mixed stream changes.
+
+### [2.2.0-alpha.6+20241106] - 2024.11.06
+#### Added
++ Added mixed stream logic to audio status handling.
+
+### [2.2.0-alpha.5+20241105] - 2024.11.05
+#### Added
++ Mixed streams are now filtered out when the logging component gets downlink data status and remote audio status.
+
+### [2.2.0-alpha.4+20241101] - 2024.11.01
+#### Changed
++ Adjusted the order of `streamUpdate` events so the state doesn't become inconsistent;
++ The `setStreamTracks` logic now runs its follow-up handling only after it succeeds.
+
+### [2.2.0-alpha.3+20241030] - 2024.10.30
+#### Improved
++ Improved the audio and video state change logic.
+
+### [2.2.0-alpha.2+20241026] - 2024.10.26
+#### Added
++ When handling stream data change events, a video removal event now also unsubscribes from the remote user's video stream and fires an extra user data update callback;
++ Local stream changes now fire the local user data update callback;
++ Added error codes for turning on audio and video and related operations.
+
+### [2.2.0-alpha.1+20241024] - 2024.10.24
+#### Changed
++ Stream data change events no longer filter out the current user.
+
+### [2.1.2] - 2024.10.23
+#### Added
++ The remote video data list reported by the logging system now filters out composite stream data.
+
+### [2.1.1] - 2024.10.22
+#### Added
++ Added APIs for subscribing to and unsubscribing from the remote composite video stream: `startRemoteMixture:` and `stopRemoteMixture`.
+
+### [2.1.0] - 2024.10.09
+#### Improved
++ Upgraded the underlying library to support MQTT SSL connections, and removed the original line and group fields from the `RTCEngineConfig` configuration.
+
+### [2.0.0] - 2024.09.14
+#### Improved
++ Reworked the underlying layer.
+
+### [1.0.8-alpha.19+20240913] - 2024.09.13
+#### Added
++ Added IM features and related callbacks. For details, see [IM](https://www.yuque.com/anyconf/rtcengine/rkyba0lbuq9f4re8) (Chinese).
+
+### [1.0.8-alpha.17+20240906] - 2024.09.06
+#### Improved
++ When a user leaves, all of that user's remote streams are unsubscribed, avoiding a failure to release remote canvas resources when your app unsubscribes by `userId` after the underlying data has been cleared.
+
+### [1.0.8-alpha.16+20240903] - 2024.09.03
+#### Changed
++ The media streaming receive status callback parameter is now a list;
+
+#### Improved
++ Improved the media streaming uplink and downlink data callbacks.
+
+### [1.0.8-alpha.15+20240828] - 2024.08.28
+#### Added
++ The remote stream receive status change callback adds a track identifier.
+
+### [1.0.8-alpha.14+20240828] - 2024.08.28
+#### Added
++ Added the `onReceiveStreamStatusChange:status:()` callback, which reports remote stream receive status changes.
+
+### [1.0.8-alpha.13+20240819] - 2024.08.19
+#### Fixed
++ Upgraded the `librtc` dependency, fixing a crash from updating stream data while leaving the channel and a crash caused by the network timeout;
+
+#### Changed
++ Changed the parameters of the reconnection success callback.
+
+### [1.0.8-alpha.12+20240813] - 2024.08.13
+#### Fixed
++ Removed the binary from the bundle, fixing build validation errors.
+
+### [1.0.8-alpha.11+20240813] - 2024.08.13
+#### Improved
++ Improved internal media streaming reconnection, adding speaker state reset and improving audio and video send state handling, among other changes;
+
+#### Fixed
++ Fixed several known issues.
+
+### [1.0.8-alpha.10+20240810] - 2024.08.10
+#### Fixed
++ Improved the underlying logic and fixed some known issues.
+
+### [1.0.8-alpha.9+20240723] - 2024.07.23
+#### Fixed
++ Removed the executable from the `bundle`, fixing the `Asset validation failed` error when submitting the archive.
+
+### [1.0.8-alpha.8+20240719] - 2024.07.19
+#### Fixed
++ Adjusted the order of callbacks and message listeners so that listeners are registered before callbacks fire.
+
+### [1.0.8-alpha.7+20240719] - 2024.07.19
+#### Added
++ Media streaming connection success and reconnection success now restore the audio and video send state.
+
+### [1.0.8-alpha.6+20240718] - 2024.07.18
+#### Added
++ Added `getDrawingHost` for getting the whiteboard address;
+
+#### Changed
++ Removed the `onChannelDestroy:()` callback.
+
+### [1.0.8-alpha.5+20240716] - 2024.07.16
+#### Added
++ Media streaming connection success now calls `resetRemoteStream`, fixing remote stream subscription errors caused by the media streaming connection completing late.
+
+### [1.0.8-alpha.4+20240712] - 2024.07.12
+#### Fixed
++ Adjusted the order of the join success callback, fixing stream pulling errors.
+
+### [1.0.8-alpha.3+20240705] - 2024.07.05
+#### Fixed
++ Fixed standard output not being restored to the console after logs were redirected.
+
+### [1.0.8-alpha.2+20240704] - 2024.07.04
+#### Added
++ Added a default audio route to the media streaming configuration;
++ Added the local user data update callback;
++ Added the reconnection success callback;
+
+#### Changed
++ The leave reason enum changed to `RTCLeaveReason`;
+
+#### Improved
++ Merged the disconnect callback and the passive leave callback into one.
+
+### [1.0.8-alpha.1+20240629] - 2024.06.29
+#### Changed
++ Upgraded and refactored the `RTC` underlying layer. For details, see [Quick integration](https://www.yuque.com/anyconf/rtcengine/am4ult) (Chinese).
+
+### [1.0.7] - 2024.04.22
+#### Fixed
++ Fixed a decryption failure caused by data length.
+
+### [1.0.6] - 2024.04.19
+#### Added
++ Added the decryption API `decrypt:` for parsing tokens externally;
+
+#### Improved
++ Synced the poor-network strategy, improved internal logic, and reduced the package size, among other improvements.
+
+### [1.0.5] - 2024.03.26
+#### Added
++ Added beauty filter and media streaming log redirection components, and refined the media streaming status levels.
+
+### [1.0.4] - 2022.08.30
+#### Improved
++ Improved internal logic.
+
+### [1.0.3] - 2022.08.24
+#### Added
++ Added custom stream publishing and related APIs. For details, see [Custom stream publishing APIs](https://www.yuque.com/anyconf/rtcengine/hxo2k0#m8xNY) (Chinese).
+
+### [1.0.2] - 2022.08.08
+#### Added
++ Added the video beauty filter and related APIs. For details, see [Beauty filter](https://www.yuque.com/anyconf/rtcengine/bzstxg) (Chinese);
+
+#### Changed
++ Revised the error code conventions. For details, see [Error code table](https://www.yuque.com/anyconf/rtcengine/hf08uk) (Chinese).
+
+### [1.0.1] - 2022.08.02
+#### Added
++ Added media streaming and related APIs;
+
+#### Improved
++ Redesigned the internal implementation;
++ Improved the calling logic of existing APIs.
+
+### [1.0.0] - 2022.03.18
+#### Added
++ Added the client type `RTCTerminalType`;
++ Added the stream event name `RTCEngineKitEventNameStreamsEvent`;
++ Added the client type `terminalType` and client description `terminateDesc` properties to the initialization configuration `RTCEngineConfig`;
++ Added `changeWithStreams:changeType:` for changing stream info;
++ Added a class method for initializing the RTC service, which lets you hold and manage the `RTCEngine` object yourself;
++ Added the `userModel` parameter to RTC service initialization;
++ Added the read-only properties `engineConfig` and `userModel`;
+
+#### Changed
++ Removed the `changeType` operation type parameter from the existing user info change method;
++ Added the `delegate` parameter to the existing RTC service initialization method `initializeWithConfig`;
++ In the existing user info `RTCEngineUserModel`, the `sdkno` property changed to `linkid`, and the `sessionId` property changed to `sessionKey`;
++ The ID property in the room info object `RTCEngineRoomMode` changed to the `NSString` type;
++ Removed the `userModel` property from the `RTCEngineConfig` object;
++ The existing `sendMessageWithUserList:message:` method changed to `sendMessageWithUserIds:message:`;
+
+#### Improved
++ Improved internal logic.

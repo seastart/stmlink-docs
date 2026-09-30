@@ -203,6 +203,78 @@
     "zh_blob": "7cf47e770d2b73062daf046c812b761fa1be0bc9",
     "zh_commit": "cb4eafad25598c2fd96eebe8872ce65ca2e319d1"
   },
+  "en/meeting/ios/advanced/screen-recording": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/advanced/screen-recording.md",
+    "zh_blob": "8e043b4322739b2ce1689a3cf3acbea0b1aa7e91",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/advanced/virtual-background": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/advanced/virtual-background.md",
+    "zh_blob": "c8f50b702dcf33e07e37f4248af6a5aa2e876b93",
+    "zh_commit": "1b97b3e765838a247eabbeb6ceb1e76357926007"
+  },
+  "en/meeting/ios/api-reference/MeetingKit": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/api-reference/MeetingKit.md",
+    "zh_blob": "f21614ca8b3adc2adb9b6ece983a3ee6158b7dd4",
+    "zh_commit": "1b97b3e765838a247eabbeb6ceb1e76357926007"
+  },
+  "en/meeting/ios/api-reference/MeetingKitDelegate": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/api-reference/MeetingKitDelegate.md",
+    "zh_blob": "28e7920c0e4b46685b363b0ccdd7c6fd99668ec8",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/api-reference/MeetingKitIMDelegate": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/api-reference/MeetingKitIMDelegate.md",
+    "zh_blob": "abbdf4ec32dccb00a5bbfc80a9e52589ae0d7487",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/api-reference/MeetingKitRoom": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/api-reference/MeetingKitRoom.md",
+    "zh_blob": "541c13bd9c2e60691f52069461aad75cfa707e01",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/api-reference/MeetingKitRoomDelegate": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/api-reference/MeetingKitRoomDelegate.md",
+    "zh_blob": "10620ee09d5dda772233568786b799adfc1c94a5",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/changelog": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/changelog.mdx",
+    "zh_blob": "28909a1e884708186335a7d6f185edc6d9093483",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/error-codes": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/error-codes.md",
+    "zh_blob": "70aee0d5ff200552837744bcf7c86635d408fd51",
+    "zh_commit": "f7bd646151854c2c6e8c1ec8a6fffa668c4f0677"
+  },
+  "en/meeting/ios/faq": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/faq.md",
+    "zh_blob": "1bd7645f4f551766485de0e30d4eb3610af29100",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/quickstart": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/quickstart.md",
+    "zh_blob": "7f5406c80a1b2e192ea3eeda28a71a5f86f08967",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/ios/types": {
+    "reviewed": true,
+    "source": "zh/meeting/ios/types.md",
+    "zh_blob": "656efae9b25318cfc771cfee0f16a78a029871dc",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
   "en/meeting/key-concepts": {
     "reviewed": true,
     "source": "zh/meeting/key-concepts.md",
@@ -479,6 +551,96 @@
     "zh_blob": "eef97c99336fb4c8b2656979ba55ed08852440aa",
     "zh_commit": "eaea4ef03ef260ed4d1665bdfac7732544206b42"
   },
+  "en/meeting/windows/api-reference/smeeting": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting.md",
+    "zh_blob": "4164f90c8002817a209bf610c199c04ad5101e99",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-admin": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-admin.md",
+    "zh_blob": "0b9b8623150bc2a8429ef3b0ab9a82d712cd5499",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-channel": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-channel.md",
+    "zh_blob": "64b9f58683278742d87f18289fd1a71e5ad4b841",
+    "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
+  },
+  "en/meeting/windows/api-reference/smeeting-engine": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-engine.md",
+    "zh_blob": "08a61baaea92a7edbe6d2480345132e9b66caf1f",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-events": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-events.md",
+    "zh_blob": "e813829af78474c36cfec216ba6d7600f6177ea9",
+    "zh_commit": "e30e2b6ff83f246a44576b0d27de72bf1002cb95"
+  },
+  "en/meeting/windows/api-reference/smeeting-mcu": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-mcu.md",
+    "zh_blob": "5e36067e572ce21561dc75af35b5593026748a98",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-media": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-media.md",
+    "zh_blob": "7f79c03101bdfd54496a27be9d0e51190f37f628",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-settings": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-settings.md",
+    "zh_blob": "7d900c3974932049f842607ff25afca15869b54c",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-signin": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-signin.md",
+    "zh_blob": "af7e06936d966ed1c6241453cf8b83ab59cc9e85",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-submeeting": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-submeeting.md",
+    "zh_blob": "d59e2f5068f36709052cf239b212e23bcbdb98ad",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/api-reference/smeeting-types": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/api-reference/smeeting-types.md",
+    "zh_blob": "59b2e48c0534cd70ab141912352ca567f64cb1d2",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/changelog": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/changelog.mdx",
+    "zh_blob": "54967a7e49b07ef826df55eabeae67f14b0c8fa3",
+    "zh_commit": "632f248beccab39d1e081763e918e316ba974e77"
+  },
+  "en/meeting/windows/error-codes": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/error-codes.md",
+    "zh_blob": "2b6e60cf870d7571e426080a7105186eb43a4618",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/meeting/windows/integration": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/integration.md",
+    "zh_blob": "57007cafa720bdc3c3f9d8aaea08a18b39df92aa",
+    "zh_commit": "fdecacd8c08a99a8fe739251eaab421036776665"
+  },
+  "en/meeting/windows/quickstart": {
+    "reviewed": true,
+    "source": "zh/meeting/windows/quickstart.md",
+    "zh_blob": "504c90f20e64863f5f05cbf2538043309226eb69",
+    "zh_commit": "e30e2b6ff83f246a44576b0d27de72bf1002cb95"
+  },
   "en/rtc/android/advanced/audio-routing": {
     "reviewed": true,
     "source": "zh/rtc/android/advanced/audio-routing.md",
@@ -754,6 +916,96 @@
     "source": "zh/rtc/error-codes.md",
     "zh_blob": "6e33dcee627e023371712ced7234529aaeb64dd2",
     "zh_commit": "e30f31ee9ce742025085d8756d4c07574f74777e"
+  },
+  "en/rtc/ios/advanced/beauty": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/advanced/beauty.md",
+    "zh_blob": "fd2222f236eb78cc06ba54ada4568eb14b552f61",
+    "zh_commit": "f691c3db98ff9e66bc8cc7cd1173e60891db63fe"
+  },
+  "en/rtc/ios/advanced/screen-recording": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/advanced/screen-recording.md",
+    "zh_blob": "3b1a5befef0c13411dbc7723080cd0f28477e8b4",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/ios/advanced/virtual-background": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/advanced/virtual-background.md",
+    "zh_blob": "39e4f7179a079c0618d1090dba98bf50d0a5e03c",
+    "zh_commit": "b8b8e7cd80eca74a01cc8a3993b00aa50b144307"
+  },
+  "en/rtc/ios/api-reference/RTCEngineChannel": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/api-reference/RTCEngineChannel.md",
+    "zh_blob": "00f960b01c4fcaf56b6cc5f7624635e22cb76975",
+    "zh_commit": "6f354157bbe22b21a8c90045b11d059ce2b0c90f"
+  },
+  "en/rtc/ios/api-reference/RTCEngineChannelDelegate": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/api-reference/RTCEngineChannelDelegate.md",
+    "zh_blob": "3e56e35a1c8df199b22e3827f5f806976c46919e",
+    "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
+  },
+  "en/rtc/ios/api-reference/RTCEngineDelegate": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/api-reference/RTCEngineDelegate.md",
+    "zh_blob": "32cc38cf15f0bc55c1465d6dbcaaf78a5cbe4436",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/ios/api-reference/RTCEngineIMDelegate": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/api-reference/RTCEngineIMDelegate.md",
+    "zh_blob": "07176e1f71ef1a7026dc85ad8ff29e7ba9bac72c",
+    "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
+  },
+  "en/rtc/ios/api-reference/RTCEngineKit": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/api-reference/RTCEngineKit.md",
+    "zh_blob": "4b12e720f5aed67496b9ddaf2aa5314e72669876",
+    "zh_commit": "d6942391ef6fe801070b1430bc67034b8d726457"
+  },
+  "en/rtc/ios/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/changelog.mdx",
+    "zh_blob": "3b598af0d12f3e4f89841ce60d3c87c5b1cf3971",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/ios/error-codes": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/error-codes.md",
+    "zh_blob": "ffb14361feff540a5e16750e33fb8980e6d7168f",
+    "zh_commit": "f7bd646151854c2c6e8c1ec8a6fffa668c4f0677"
+  },
+  "en/rtc/ios/faq": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/faq.md",
+    "zh_blob": "337d8a58eac41e2ff511b918b62f31b166c5be1b",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/ios/instant-messaging": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/instant-messaging.md",
+    "zh_blob": "2774606e38d25ec94a1afcdc9a79b5ac72a8a65d",
+    "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
+  },
+  "en/rtc/ios/integration": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/integration.md",
+    "zh_blob": "7f216b253f7e98792461da6ff78526fae6e4accf",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/ios/quickstart": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/quickstart.md",
+    "zh_blob": "2d14d6b10d3e47bac48f6dde2b87194bcfb9e472",
+    "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
+  },
+  "en/rtc/ios/types": {
+    "reviewed": true,
+    "source": "zh/rtc/ios/types.md",
+    "zh_blob": "26bed9ef00a09e94c384709f03664323f210defc",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/rtc/key-concepts": {
     "reviewed": true,
@@ -1114,5 +1366,143 @@
     "source": "zh/rtc/whiteboard.md",
     "zh_blob": "02d86b081664d447acca9691fe376e4f4d99d566",
     "zh_commit": "aa5541b7622328c317ed7f9632c2f5999f89f276"
+  },
+  "en/rtc/windows/api-reference/IRTCChannel": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCChannel.md",
+    "zh_blob": "64f0e4a176feb8f654ff511c387fe16316d1aeeb",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/api-reference/IRTCChannelEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCChannelEvent.md",
+    "zh_blob": "4ad87ab26f65f4c6537e3eaf848f298ce63ff983",
+    "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
+  },
+  "en/rtc/windows/api-reference/IRTCChannelSetting": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCChannelSetting.md",
+    "zh_blob": "7c83a7e3cd47a75db168bd2ddbc2aa224a401628",
+    "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
+  },
+  "en/rtc/windows/api-reference/IRTCCustomAudioTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCCustomAudioTrack.md",
+    "zh_blob": "46a81cc5f095e4822c97b5327e2f858e298614b5",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/api-reference/IRTCCustomVideoTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCCustomVideoTrack.md",
+    "zh_blob": "4d0027cd6e9c69ce3ab4bfcb227fac0e2fbaefc0",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/api-reference/IRTCEngine": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCEngine.md",
+    "zh_blob": "ab1ff8755ce9476c5deb403ebb385740d7123266",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/api-reference/IRTCEngineEvent": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCEngineEvent.md",
+    "zh_blob": "05551ae9158cba2edc56abfe979e1b3834f576f6",
+    "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
+  },
+  "en/rtc/windows/api-reference/IRTCLocalAudioTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCLocalAudioTrack.md",
+    "zh_blob": "d31a5df6503014fa2dfb9ba6739f4b60748acdbe",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCLocalCameraTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCLocalCameraTrack.md",
+    "zh_blob": "e002cb1e36ee1680db4fa5bbbb206b1f38bd0426",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCLocalMicTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCLocalMicTrack.md",
+    "zh_blob": "f3da4b1d9d09cca53234c4942e32ab37386933d1",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/api-reference/IRTCLocalScreenTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCLocalScreenTrack.md",
+    "zh_blob": "bb76b53c4a881331dd7440ccdf4ee1289dce8790",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCLocalVideoTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCLocalVideoTrack.md",
+    "zh_blob": "9f704fa2868898138702574634435250d8a41c98",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCRecord": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCRecord.md",
+    "zh_blob": "c0f88e355023a8995498fda6241a74afcc01414e",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCRemoteAudioTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCRemoteAudioTrack.md",
+    "zh_blob": "dba208343502683a30b5b40bdea0461120d3c4ab",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCRemoteVideoTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCRemoteVideoTrack.md",
+    "zh_blob": "6ea243c1598eb216690601a3258b956f4149a1a2",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/api-reference/IRTCTrack": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCTrack.md",
+    "zh_blob": "9309601b91fe3959d3ca94b8bcf5f468ff8b9f1d",
+    "zh_commit": "7ee43c05d39cd630a8978d4715dde7640d536550"
+  },
+  "en/rtc/windows/api-reference/IRTCView": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/api-reference/IRTCView.md",
+    "zh_blob": "08e4b43512ffa00234b1dc5c60ee042414270c3f",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/changelog": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/changelog.mdx",
+    "zh_blob": "8693d9ca6a7f9c459da393fdc6377d4f3e4aebe5",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/enums": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/enums.md",
+    "zh_blob": "91ea5f8cb96d2fce4a3c9c65a455c530794c3407",
+    "zh_commit": "9dfd65dcc27914885722b41cd8033bebc562ff7f"
+  },
+  "en/rtc/windows/error-codes": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/error-codes.md",
+    "zh_blob": "f1f026897cc7728cf1bbb8fbe05237f185249e4d",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+  },
+  "en/rtc/windows/integration": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/integration.md",
+    "zh_blob": "4a9d517b00e7166b6b034379dc265c2b72e84028",
+    "zh_commit": "a884dc97fbf75cb6371ba405c82812cd604f782c"
+  },
+  "en/rtc/windows/quickstart": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/quickstart.md",
+    "zh_blob": "95a0a422184fe8da15728df3ad26945c1f9a576a",
+    "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
+  },
+  "en/rtc/windows/types": {
+    "reviewed": true,
+    "source": "zh/rtc/windows/types.md",
+    "zh_blob": "dca26a2c8a157d830458a31326803cc345b39d4c",
+    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   }
 }

@@ -17,7 +17,7 @@ The minimums are dictated by the inference runtime used for virtual background. 
 </Warning>
 
 <Note>
-**There are two SRTC SDKs for Apple platforms—confirm which one you need first.** This section covers the native Swift SDK (`import SRTC`, distributed as a Swift Package, supporting both iOS and macOS); there is also an Objective-C `RTCEngineKit` (distributed via CocoaPods, iOS only)—see [iOS SDK](/zh/rtc/ios/integration) (Chinese).
+**There are two SRTC SDKs for Apple platforms—confirm which one you need first.** This section covers the native Swift SDK (`import SRTC`, distributed as a Swift Package, supporting both iOS and macOS); there is also an Objective-C `RTCEngineKit` (distributed via CocoaPods, iOS only)—see [iOS SDK](/en/rtc/ios/integration).
 
 **For new projects, we recommend the Swift SDK described here.** The two APIs can't be mixed, and don't include both in the same project.
 </Note>

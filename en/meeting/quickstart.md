@@ -103,9 +103,9 @@ Step 3 of the sequence diagram is **the only server-side code you must write** f
 | --- | --- |
 | Web | [Integration](/en/meeting/web/integration) · [Quickstart](/en/meeting/web/quickstart) |
 | Android | [Integration](/en/meeting/android/integration) · [Quickstart](/en/meeting/android/quickstart) |
-| Windows | [Integration](/zh/meeting/windows/integration) (Chinese) · [Quickstart](/zh/meeting/windows/quickstart) (Chinese) |
+| Windows | [Integration](/en/meeting/windows/integration) · [Quickstart](/en/meeting/windows/quickstart) |
 | Swift (iOS / macOS) | [Integration](/en/meeting/swift/integration) · [Quickstart](/en/meeting/swift/quickstart) |
-| iOS (Objective-C) | [Quickstart](/zh/meeting/ios/quickstart) (Chinese) |
+| iOS (Objective-C) | [Quickstart](/en/meeting/ios/quickstart) |
 | Server | [Server API](/en/meeting/server-api/overview) |
 
 ---

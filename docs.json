@@ -752,6 +752,39 @@
                 ]
               },
               {
+                "group": "Windows SDK",
+                "pages": [
+                  "en/rtc/windows/integration",
+                  "en/rtc/windows/quickstart",
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/windows/api-reference/IRTCEngine",
+                      "en/rtc/windows/api-reference/IRTCEngineEvent",
+                      "en/rtc/windows/api-reference/IRTCChannel",
+                      "en/rtc/windows/api-reference/IRTCChannelEvent",
+                      "en/rtc/windows/api-reference/IRTCRecord",
+                      "en/rtc/windows/api-reference/IRTCLocalScreenTrack",
+                      "en/rtc/windows/api-reference/IRTCLocalCameraTrack",
+                      "en/rtc/windows/api-reference/IRTCLocalMicTrack",
+                      "en/rtc/windows/api-reference/IRTCLocalVideoTrack",
+                      "en/rtc/windows/api-reference/IRTCLocalAudioTrack",
+                      "en/rtc/windows/api-reference/IRTCRemoteVideoTrack",
+                      "en/rtc/windows/api-reference/IRTCRemoteAudioTrack",
+                      "en/rtc/windows/api-reference/IRTCCustomVideoTrack",
+                      "en/rtc/windows/api-reference/IRTCCustomAudioTrack",
+                      "en/rtc/windows/api-reference/IRTCView",
+                      "en/rtc/windows/api-reference/IRTCTrack",
+                      "en/rtc/windows/api-reference/IRTCChannelSetting"
+                    ]
+                  },
+                  "en/rtc/windows/types",
+                  "en/rtc/windows/enums",
+                  "en/rtc/windows/error-codes",
+                  "en/rtc/windows/changelog"
+                ]
+              },
+              {
                 "group": "Swift SDK (iOS/macOS)",
                 "pages": [
                   "en/rtc/swift/integration",
@@ -781,6 +814,36 @@
                   "en/rtc/swift/types",
                   "en/rtc/swift/error-codes",
                   "en/rtc/swift/changelog"
+                ]
+              },
+              {
+                "group": "iOS SDK (Objective-C)",
+                "pages": [
+                  "en/rtc/ios/integration",
+                  "en/rtc/ios/quickstart",
+                  "en/rtc/ios/instant-messaging",
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/rtc/ios/advanced/screen-recording",
+                      "en/rtc/ios/advanced/beauty",
+                      "en/rtc/ios/advanced/virtual-background"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/rtc/ios/api-reference/RTCEngineKit",
+                      "en/rtc/ios/api-reference/RTCEngineChannel",
+                      "en/rtc/ios/api-reference/RTCEngineDelegate",
+                      "en/rtc/ios/api-reference/RTCEngineChannelDelegate",
+                      "en/rtc/ios/api-reference/RTCEngineIMDelegate"
+                    ]
+                  },
+                  "en/rtc/ios/types",
+                  "en/rtc/ios/error-codes",
+                  "en/rtc/ios/changelog",
+                  "en/rtc/ios/faq"
                 ]
               },
               {
@@ -963,6 +1026,31 @@
                 ]
               },
               {
+                "group": "Windows SDK",
+                "pages": [
+                  "en/meeting/windows/integration",
+                  "en/meeting/windows/quickstart",
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/meeting/windows/api-reference/smeeting",
+                      "en/meeting/windows/api-reference/smeeting-engine",
+                      "en/meeting/windows/api-reference/smeeting-channel",
+                      "en/meeting/windows/api-reference/smeeting-admin",
+                      "en/meeting/windows/api-reference/smeeting-submeeting",
+                      "en/meeting/windows/api-reference/smeeting-mcu",
+                      "en/meeting/windows/api-reference/smeeting-signin",
+                      "en/meeting/windows/api-reference/smeeting-media",
+                      "en/meeting/windows/api-reference/smeeting-events",
+                      "en/meeting/windows/api-reference/smeeting-settings",
+                      "en/meeting/windows/api-reference/smeeting-types"
+                    ]
+                  },
+                  "en/meeting/windows/error-codes",
+                  "en/meeting/windows/changelog"
+                ]
+              },
+              {
                 "group": "Swift SDK (iOS/macOS)",
                 "pages": [
                   "en/meeting/swift/integration",
@@ -1002,6 +1090,33 @@
                   "en/meeting/swift/types",
                   "en/meeting/swift/error-codes",
                   "en/meeting/swift/changelog"
+                ]
+              },
+              {
+                "group": "iOS SDK (Objective-C)",
+                "pages": [
+                  "en/meeting/ios/quickstart",
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/meeting/ios/advanced/screen-recording",
+                      "en/meeting/ios/advanced/virtual-background"
+                    ]
+                  },
+                  {
+                    "group": "API reference",
+                    "pages": [
+                      "en/meeting/ios/api-reference/MeetingKit",
+                      "en/meeting/ios/api-reference/MeetingKitRoom",
+                      "en/meeting/ios/api-reference/MeetingKitDelegate",
+                      "en/meeting/ios/api-reference/MeetingKitRoomDelegate",
+                      "en/meeting/ios/api-reference/MeetingKitIMDelegate"
+                    ]
+                  },
+                  "en/meeting/ios/types",
+                  "en/meeting/ios/error-codes",
+                  "en/meeting/ios/changelog",
+                  "en/meeting/ios/faq"
                 ]
               },
               {

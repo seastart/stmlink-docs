@@ -1,0 +1,248 @@
+---
+title: "Changelog"
+description: "Release history of the Windows SRTC C++ SDK, from rtc2.0 to 0.2.1-alpha.11: new features, changes, fixes, and whether each release changes the API (breaking releases require a recompile, not just a DLL swap). Read before upgrading the SDK."
+---
+
+
+### [9] - 2026.09.29
+Version: 0.2.1-alpha.11
+
+**Added**
+
++ Added D3D11 video rendering: `srtcLive` adds `D3D11VideoRender` and the underlying D3D11 rendering module
+  (device and swap chain, YUV textures, shaders, full-screen quad, text and watermark overlays, etc.)
++ `utils` adds `D3d11Support()` detection; when creating video rendering, **D3D11 is preferred on machines that support it**
+  (`SRTC_RENDER_MODEL_VIDEO_D3D11`), falling back to the existing D3D rendering when it isn't supported
+
+**Changed**
+
++ The `srtc` / `srtcLive` projects add d3d11 and other related dependencies, and enable the C++17 standard
++ `RenderModel` adds `SRTC_RENDER_MODEL_VIDEO_D3D11` (controlled by the compile macro `SRTC_USEING_LIB_D3D`)
+
+**API changes**
+
+None. `srtc.h` / `srtc_def.h` are unchanged in this release and the vtable is unchanged, so you only need to replace the DLLs; no recompile is needed.
+
+### [8] - 2026.09.24
+Version: 0.2.1-alpha.10
+
+**Added**
+
++ **Added an x64 (64-bit) package**; delivery is now two packages, x86 + x64:
+  + `rtc-win-sdk-2.1.zip` (x86, 32-bit)—**the package name is exactly the same as before**
+  + `rtc-win-sdk-x64-2.1.zip` (x64, 64-bit)—new; the package name has an extra `-x64` segment **before** the version number
+
+  The two packages have the same internal structure (the root directory is `rtc_dll/` in both), but `srtc.dll`, `srtcLive.dll`, and `srtc.lib`
+  differ in bitness, so **don't mix them or extract them into the same directory**. Choose the package that matches your project's target platform.
+  For download links, see [Integration](/en/rtc/windows/integration).
++ Dependencies are split by architecture into two sets, `lib/<library>/lib/win32` and `lib/<library>/lib/win64`
+
+**Changed**
+
++ Fixed the x64 project configuration of `srtcLive`: the output type changed from `Application` to `DynamicLibrary`,
+  x64 now has its own include and library directories (pointing to `lib/*/lib/win64`), and output goes to `Release_x64`
++ Upgraded third-party dependencies: libfaac switches to the new encoder API (`faac_encoder_open` /
+  `faac_encoder_get_info` / `faac_encoder_encode`), libswresample switches to
+  `swr_alloc_set_opts2`, and the openh264 header path changes from `wels/` to `svc/`;
+  removed the no-longer-used x264, webrtc_aec3, rtpsdk, and pthread dependencies
++ `utils::getPathFile` now uses `std::filesystem` to enumerate directories
++ `operator<<(size_t)` of the log stream `SDebug` changed to `operator<<(unsigned int)`:
+  on 64-bit, `size_t` is `unsigned __int64` and conflicts with the `uint64_t` overload.
+  After the change, 32-bit unsigned values hit this overload and 64-bit values hit `uint64_t`, so both architectures behave the same
++ Added the `RTC_ENABLE_RTP_STREAM` compile switch to custom/rtp stream code
+
+**Fixed**
+
++ Fixed 64-bit build errors: the virtual machine detection in `IsInsideVPC` / `IsInsideVMWare` relies on x86 inline assembly and
+  x86-only `CONTEXT` fields (`Ebx` / `Eip`), and MSVC doesn't support inline assembly on x64—
+  in 64-bit builds these two checks simply return false
++ `FAACEncode`: closing the handle now uses `faac_encoder_close(&hEncoder)`; encoding now checks the returned status code
+  and the number of bytes written, avoiding misjudgments caused by changed return value semantics in the new API
+
+**API changes**
+
+None. `srtc.h` / `srtc_def.h` are unchanged in this release and the vtable is unchanged, so you only need to replace the DLLs; no recompile is needed.
+
+### [7] - 2026.09.22
+Version: 0.2.1-alpha.9
+
+**Changed**
+
++ Refactored webrtc2 reconnection and thread safety: `web_pccontrol2` protects `peer` / `_recv` / `_pc_stat` with locks,
+  statistics and subscription state use value-copy snapshots, and state read and written across threads (`_use` / `_status`, etc.) uses atomic variables
++ After reconnecting, publishing and subscriptions are restored from the subscription snapshot, and the send/receive packet statistics baseline is reset (so rates and packet loss rates don't come out negative after a reconnect)
++ `SetRemoteDescription` failures are propagated upward, so a failed handshake is no longer marked as connected
++ Unified the default encoding of source files (fixes C4819 warnings and potential garbled text from UTF-8 Chinese comments in a GBK environment)
++ Cleaned up the stream initialization object (`SRTCChannel`)
+
+**Fixed**
+
++ Fixed CreateOffer / CreateAnswer waiting forever for the SDP callback, which caused the pubsub thread and
+  `CloseRoom` to deadlock when leaving the channel: they now wait with a timeout
+
+**API changes**
+
+None. `srtc.h` / `srtc_def.h` are unchanged in this release and the vtable is unchanged, so you only need to replace the DLLs; no recompile is needed.
+
+### [6] - 2026.08.21
+Version: 0.2.1-alpha.7
+
+**Changed**
+
++ After `join()` succeeds, `opt` is now parsed separately per media streaming type (`stream_vendor`):
+  `link_id`, `session_key`, `upload.address`, and `upload.port` are required only when `stream_vendor` is `ook`,
+  and `link_id` (the OOK room number) in the channel info is likewise required only under OOK
++ Cleaned up the indentation of `UploadLog::appendLog2Map` (no functional change)
+
+**Fixed**
+
++ Fixed an issue where, with WebRTC media streaming (`stream_vendor` other than `ook`), the absence of `link_id` / `session_key` in `opt`
+  caused an early return in `onJoinSucceed`, so no stream was set up after joining the channel
+
+**API changes**
+
+None. `srtc.h` / `srtc_def.h` are unchanged in this release and the vtable is unchanged, so you only need to replace the DLLs; no recompile is needed.
+
+### [5] - 2026.08.20
+Version: 0.2.1-alpha.6
+
+**Added**
+
++ Added `IRTCChannel`: one object per channel, with all channel-level methods on it
++ Added `IRTCChannelEvent`: channel-level callbacks are now a separate interface, registered per channel
++ Added `IRTCEngine::createChannel(token, IRTCChannel**)`: creates only the channel object without joining the channel,
+  so you can set up the configuration and event handler before `join()` (`onJoinChannel` fires before `join()` returns)
++ Added `IRTCChannel::join()` / `getChannelId()` / `getSetting()` / `setEventHandler()`
++ Added the `RTCEngineOptions` struct as the second parameter of `RTCEngine_Init`, for setting the log switch and log directory
+
+**Changed**
+
++ `IRTCEngine` keeps only engine-level capabilities: creating/leaving channels, device enumeration, network speed tests, log upload, and IM
++ `IRTCEngineEvent` keeps only engine-level callbacks: device changes, network probing, and IM
++ `IRTCSetting` is renamed `IRTCChannelSetting` and moved from the engine to the channel (one per channel;
+  changes to `den_model` / `limit_speed` are applied to that channel immediately)
++ Media streaming objects (`IStreamBase` / `StreamControl` / `WebrtcControl` / `WebrtcControl2`) changed from process-level singletons
+  to one `new` instance per channel, released when the channel is destroyed; OOK's `any_meeting` is still a process-level singleton
++ Local recording has only one recording object per channel (its key is the channelId); the `mid` parameter of `getLocalRecord` is kept only for interface compatibility
++ Adjusted file encoding formats
+
+**Fixed**
+
++ Fixed OOK callbacks (rendering, room events, audio, custom frames) still pointing to a freed object after the media streaming object was released:
+  `StreamControl` now unregisters these callbacks in its destructor
++ Fixed the thread not being reclaimed while the object was destroyed when `OpenRoom` failed midway: the failure path now calls `CloseRoom()`
++ Fixed the `StreamControl` thread flag not being initialized, which could make `CloseRoom()` wait forever if the stream info thread never started
++ Fixed `web_meeting` and `web_meeting2` each registering AEC pre- and post-processing with the shared libwebrtc factory,
+  overwriting each other and leaking: `web_base` now holds a single shared instance
++ Fixed leaks where `web_meeting2` in `WebrtcControl2` and the device stream object in `WebrtcControl` were never released
+
+**API changes (breaking; you must recompile)**
+
+`IRTCEngine` / `IRTCEngineEvent` / `IRTCChannel` / `IRTCChannelEvent` / `IRTCChannelSetting`
+are all pure virtual interfaces, and this release changes their vtables; `RTCEngine_Init` is an exported function and its signature has also changed.
+**Replacing only the DLLs without recompiling crashes.**
+
++ `RTCEngine_Init(IRTCEngine** rtc)` → `RTCEngine_Init(IRTCEngine** rtc, RTCEngineOptions* opt)`.
+  Passing `nullptr` for `opt` means no SDK log is written
++ `IRTCEngine::joinChannel(token, char**, int*)` is **removed**; use `createChannel(token, IRTCChannel**)` + `IRTCChannel::join()` instead
++ `IRTCEngine::getSetting()` is **removed**; use `IRTCChannel::getSetting()` instead
++ The 24 channel-level methods on `IRTCEngine` with a leading `channelId` parameter are **all removed** (no compatibility forwarding is kept)
+  and moved to `IRTCChannel`, with the signature simply dropping `channelId`: `getMe`, `getChannel`, `getMembers`, `getMember`,
+  `getMemberByLinkId`, `getLocalRecord`, `getCameraTrack`, `getScreenTrack`, `getAudioTrack`,
+  `getRemoteAudioTrack`, `getRemoteVideoTrack`, `getMCUVideoTrack`, `getCustomVideoTrack`,
+  `getCustomAudioTrack`, `setCustomRecvBack`, `subscribe`, `unsubscribe`, `publish`, `updatePublish`, `unpublish`
++ `getMCUVideoTrack` now takes no parameters
++ The 21 channel-level callbacks of `IRTCEngineEvent` are **all moved** to `IRTCChannelEvent`, and **their leading `channelId` parameter is removed**:
+  `onJoinChannel`, `onChannelUpdate`, `onUserJoin`, `onUserUpdate`, `onUserLeave`, `onUserStreamAdd`,
+  `onUserStreamUpdate`, `onUserStreamRemove`, `onCustomMessage2`, `onUpLevel`, `onDownLevel`, `onUpStat`,
+  `onDownStat`, `onFrameTimeOut`, `onSpeakers`, `onDeviceStatusChange`, `onShareTargetNotFind`,
+  `onDisconnected`, `onReconnected`, `onReconnecting`, `onRecordStatusChange`
++ `IRTCSetting` → `IRTCChannelSetting`, and `sdk_log_path` / `enable_stream_log` are removed (moved to `RTCEngineOptions`)
+
+**Known limitations**
+
++ `stream_model` / `simple` / `mcu_track` / `enable_audio_record` in `IRTCChannelSetting`
+  are read during `join()`; changing them after `join()` has no effect
++ An `IRTCChannel*` becomes invalid after `leaveChannel` / `leaveAllChannel`, and you need to set it to null yourself;
+  there's no reference counting, so don't hold it on another thread and use it across `leaveChannel`
+
+
+### [4] - 2026.08.19
+Version: 0.2.1-alpha.5
+
+**Added**
+
++ Support for joining multiple channels at the same time; the engine manages multiple channels internally by channelId
++ Added `leaveAllChannel()` to leave all joined channels at once
++ Added `getChannelIds()` to get the list of currently joined channelIds
++ Added a CMake build project and adjusted the directory structure
+
+**Changed**
+
++ Separated channel and client; each channel holds its own independent session / roomno / stream_host / user_id configuration
++ Cleaned up audio sync for screen sharing; cleaned up screen recording; cleaned up synchronous pushing in updateSenderPublish
++ Moved message callbacks to the recording task
++ WebRTC local recording supports writing audio data to the file
++ Removed garbled comments
+
+**Fixed**
+
++ Fixed the audio levels during recording
++ Fixed a crash when ending SeaStart screen sharing with audio
+
+**API changes (breaking; you must recompile)**
+
+`IRTCEngine` / `IRTCEngineEvent` are pure virtual interfaces, and this release changes their vtables, so **replacing only the DLLs without recompiling crashes**.
+
++ `joinChannel` changes to `joinChannel(const char* token, char** channelId, int* channelIdSize)`, returning the channelId through an output parameter
++ `leaveChannel` changes to `leaveChannel(const char* channelId)`
++ All channel-level methods add a leading `channelId` parameter: `getMe`, `getChannel`, `getMembers`, `getMember`, `getMemberByLinkId`, `getLocalRecord`, `getCameraTrack`, `getScreenTrack`, `getAudioTrack`, `getRemoteAudioTrack`, `getRemoteVideoTrack`, `getMCUVideoTrack`, `getCustomVideoTrack`, `getCustomAudioTrack`, `subscribe`, `unsubscribe`, `publish`, `updatePublish`, `unpublish`
++ All channel-level callbacks add a leading `channelId` parameter: `onJoinChannel`, `onCustomMessage2`, `onUpLevel`, `onDownLevel`, `onUpStat`, `onDownStat`, `onFrameTimeOut`, `onSpeakers`, `onDeviceStatusChange`, `onShareTargetNotFind`, `onDisconnected`, `onReconnecting`, `onRecordStatusChange`
++ The first parameter of `onJoinChannel` is now the plain channel ID; the original channel info JSON moves to the second parameter
++ The first parameter of `onReconnected` is renamed from `channel` to `channelId`, with the same meaning
++ The two `publish` overloads drop their default argument (the old `publish(tk)` was itself an ambiguous call and didn't compile), so you must pass `opt` explicitly
++ Device change (`onDeviceChange`, `onDefDeviceChange`), network probing (`onProbeResult`), and the IM callbacks are engine-level, and their signatures are unchanged
++ When `channelId` is `nullptr` or an empty string and only one channel has been joined, that channel is used automatically, to ease migrating old code
+
+### [3] - 2026.03.9
+**Added**
+
++ Added local recording
++ Added cdn-webrtc stream receiving
++ Added stream receiving over in-house WebRTC
++ Added bandwidth limiting
+
+**Changed**
+Converted the documentation to Markdown
+
+
+### [2] - 2025.01.8
+**Added**
+
++ Added logging to the log system
++ Set Opus as the default codec
++ Added retrieval of the composite stream
++ Changed random number generation
+
+
+
+### [1] - 2022.05.30
+**Added**
+
++ System playback and capture volume detection
+
+**Changed**
+
++ Merged the media stream success event and the join-channel event
++ Changed some function names and return value contents
++ Screen sharing supports sharing a window and enumerating window info
+
+
+
+### [0] - 2022.05.15
+**Added**
+
++ Initial release of rtc2.0
+
+
+

@@ -1,0 +1,300 @@
+---
+title: "Changelog"
+description: "Release history of the iOS SMeeting SDK (Objective-C MeetingKit) from 0.0.1-alpha.1 to 2.1.0: new APIs, fixes, and RTCEngineKit dependency upgrades per version, including the 2.0.0 multi-room MeetingKitRoom refactor and the 2.1.0 iOS 16 minimum. Read before upgrading."
+---
+
+### [2.1.0] - 2026.09.08
+#### Added
++ `MeetingKit` adds virtual background: `installVirtualBackground:`, `uninstallVirtualBackground`, `enabledVirtualBackground:`, `setVirtualBackgroundBlur:`, `setVirtualBackgroundImage:`, `setVirtualBackgroundInferenceInterval:`, `setVirtualBackgroundMaskSync:`, and `isVirtualBackgroundEnabled`. It performs person segmentation and then blurs or replaces the background, and **installing it doesn't require a license key**.
++ Virtual background applies to the single shared camera capture pipeline in the process. It's a device-level setting that applies to all rooms at once. After a camera switch during the meeting or a reconnect, the SDK automatically re-applies the current configuration, so your app doesn't need to do it. For usage, see [Virtual background](/en/meeting/ios/advanced/virtual-background).
++ `SEADeviceType` adds `SEADeviceTypeHarmonyOS` (`8`) to identify HarmonyOS members.
+#### Changed
++ The minimum OS requirement is raised from iOS 10.0 to **iOS 16.0**.
++ The `RTCEngineKit` dependency is upgraded to `3.1.0`, and the podspec's minimum dependency is raised from `>= 3.0.0` to `>= 3.1.0`. The virtual background inference engine `onnxruntime-c` is pulled in transitively through the `RTCEngineKit` podspec, so you don't need to declare it explicitly in your `Podfile`.
+#### Fixed
++ Picks up the local preview fix in `RTCEngineKit 3.1.0`: with virtual background on, the local preview now shows the processed video, matching what the other side sees. Previously the local side could only see the raw camera video.
++ Picks up the fix in `RTCEngineKit 3.1.0` for video freezing caused by the pre-processing output buffer being released too early and the display buffer conflicting with writes of the next frame.
+
+<Warning>
+This release contains breaking changes: your project's `IPHONEOS_DEPLOYMENT_TARGET` and the `platform :ios` in your `Podfile` must be at least 16.0; otherwise the dependency can't be resolved. No existing public APIs or callback signatures of `MeetingKit` and `MeetingKitRoom` were removed or changed, so existing code doesn't need to be rewritten.
+</Warning>
+
+### [2.0.2] - 2026.08.28
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `3.0.2`, picking up a fix for parsing media streaming service responses.
+#### Fixed
++ Fixed a crash caused by an underlying parsing error when the media streaming service response no longer returns the `upload` field.
+
+<Note>
+The public APIs and callback signatures of `MeetingKit` and `MeetingKitRoom` are unchanged, so your app doesn't need any code changes.
+</Note>
+
+### [2.0.1] - 2026.08.14
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `3.0.1`, picking up a screen sharing fix.
+#### Fixed
++ Fixed screen sharing failing to publish in `2.0.0`: after the system screen recording started, the extension failed to connect and the system showed "尝试开始无效的直播会话" ("Attempted to start an invalid broadcast session").
++ Fixed `-[MeetingKitRoom stopScreenRecord]` only canceling publishing without actually ending the system screen recording.
+
+<Note>
+The public APIs and callback signatures of `MeetingKit` and `MeetingKitRoom` are unchanged, so your app doesn't need any code changes. Projects on `2.0.0` should upgrade directly to this release.
+</Note>
+
+### [2.0.0] - 2026.08.12
+#### Added
++ Added the meeting room instance class `MeetingKitRoom`, which carries all in-meeting capabilities: entering and exiting rooms, local audio, video, and sharing, chat and raise hand, host management, cloud recording, the waiting room, sub-meetings, sign-in, and room data queries.
++ Added the room event protocol `MeetingKitRoomDelegate`, which carries all in-room events.
++ `MeetingKit` adds `createRoomWithDelegate:` and `getRooms` to create room instances and query the rooms you have entered.
++ `MeetingKitRoom` adds `publishLocalVideo:` and `enabledSendAudio:` to control publishing of local video and audio per room.
++ `MeetingKitRoomDelegate` adds the `meetingRoom:onUserUpdate:` callback for updates to your own data and the `meetingRoom:onReceiveCustomMessage:action:userId:sessionId:nickname:` callback for room custom messages.
+#### Changed
++ `MeetingKit` is narrowed down to a global singleton that keeps only login and logout, IM, meeting queries and scheduling, device lists, local capture preview, audio routing, and screen capture process integration.
++ `enterRoom:onSuccess:onFailed:`, `exitRoom:`, `callUser:onSuccess:onFailed:`, `requestOpenCamera:view:onSuccess:onFailed:`, `requestShare:onSuccess:onFailed:`, `sendRoomChatMessage:messageType:targetId:onSuccess:onFailed:`, `switchSpeaker:`, `enabledAudioModule:`, `startRemoteView:streamType:view:`, the `adminXxx` family, and the cloud recording, waiting room, sub-meeting, sign-in, room data query, and media configuration APIs move from `MeetingKit` to `MeetingKitRoom`.
++ `MeetingKitDelegate` keeps only two global events: `onAudioRouteChange:previousRoute:` and `onApplicationPerformance:cpuUsage:`.
++ The other in-meeting callbacks move to `MeetingKitRoomDelegate` and all carry the source room instance as the first parameter. For example, `onEnterRoom:userId:` becomes `meetingRoom:onEnterRoom:userId:`, `onUserMicStateChanged:micState:reason:` becomes `meetingRoom:onUserMicStateChanged:micState:reason:`, and `onReconnecting` becomes `meetingRoomOnReconnecting:`.
++ The `RTCEngineKit` dependency is upgraded to `3.0.0`, and the podspec's minimum dependency is raised from `>= 2.5.0` to `>= 3.0.0`.
+#### Improved
++ The same account can create multiple room instances at once and enter multiple rooms. Each room's media and business state is independent, and member data for the same userId across rooms is isolated per room.
++ Camera capture and preview, audio routing, and screen capture are managed centrally by `MeetingKit` as shared device capabilities; whether they are pushed to a given room is controlled separately by that room instance.
++ `logout` exits and destroys all room instances before releasing resources, so your app doesn't need to exit each room one by one.
+
+<Warning>
+This release contains breaking changes. Your app must hold room instances through `createRoomWithDelegate:`, rewrite all in-meeting API calls, and migrate in-meeting callbacks to the new `MeetingKitRoomDelegate` signatures; otherwise the related APIs won't compile and the callbacks will no longer fire.
+</Warning>
+
+### [1.3.7] - 2026.08.05
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.10`, adapting to the channel name parameter newly added to the disconnect, reconnection start, and custom message callbacks.
+
+<Note>
+The public APIs of `MeetingKit` and the callback signatures of `MeetingKitDelegate` are unchanged, so your app doesn't need any code changes.
+</Note>
+
+### [1.3.6] - 2026.07.24
+#### Added
++ Added `enabledAudioModule:` to start or stop the local audio unit. In purely local playback scenarios such as recording playback or live streaming, you can stop the underlying audio unit to keep the playback volume from being lowered.
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.9`.
+
+### [1.3.5] - 2026.07.23
+#### Fixed
++ Fixed incorrect mirroring of the rear camera's local preview and an incorrect direction state after falling back from an unavailable target camera.
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.6`.
++ Clarified that `SEAMediaConfig.audioRoute` is the default built-in route when no external device is connected.
++ `switchSpeaker:` controls only remote audio playback; use `switchAudioRoute:` to switch the audio output device.
++ `currentAudioRoute` and `onAudioRouteChange:previousRoute:` reflect the actual system route.
+
+### [1.3.4] - 2026.07.15
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.5`.
++ Member enter and exit callbacks no longer filter out the current user.
+
+### [1.3.3] - 2026.07.14
+#### Fixed
++ Corrected the type declaration of `isAudience` in the meeting entry parameters `SEAMeetingEnterParam` to `BOOL`.
+
+### [1.3.2] - 2026.07.14
+#### Added
++ Added the log configuration object `SEALogConfig`, which supports controlling process-wide local log collection through `enableLocalLog`.
++ Added a login API that takes a `logConfig` parameter. The original login API remains compatible and enables local logging by default.
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.4`. With local logging enabled, both the log file and the host app's console output are kept.
+
+### [1.3.1] - 2026.07.13
+#### Added
++ The meeting entry parameters `SEAMeetingEnterParam` add the `isAudience` property to specify whether to enter the meeting as audience. Default: `NO`.
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.3`.
+
+### [1.3.0] - 2026.06.18
+#### Added
++ Added `setLocalPreviewMirror:` to set local preview mirroring.
++ Added `currentCameraDirection` to get the current camera direction.
++ Added the camera direction enum `SEACameraDirection`.
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `2.5.0`.
+
+### [1.2.7] - 2026.06.16
+#### Added
++ Added `startRemoteRetweet:view:` to subscribe to a remote re-streamed audio and video stream.
++ Added `stopRemoteRetweet:` to stop subscribing to a remote re-streamed audio and video stream.
++ Added the `onReceiveRetweetStreamStatusChange:status:` callback for changes in the receive status of re-streamed video.
+
+### [1.2.6] - 2026.04.30
+#### Added
++ Added the media stream uplink quality data callback `onSendQualityModel:`.
++  Added the media stream downlink quality data callback `onReceiveQualityModel:`.
+
+### [1.2.5] - 2026.04.28
+#### Added
++ Added the extended event callback `onExtendedEvents:content:`.
+
+### [1.2.4] - 2026.04.24
+#### Added
++ Added the `SEAHandupTypeOther` raise-hand type.
+
+### [1.2.3] - 2026.04.15
+#### Changed
++ Removed the host-only restriction from some necessary APIs.
+
+### [1.2.2] - 2026.04.10
+#### Changed
++ The sign-in activity callback and the sign-in end callback add a `userId` field, which is the initiator's ID.
+
+### [1.2.1] - 2026.04.09
+#### Added
++ Added sign-in APIs and their callbacks.
+
+### [1.2.0] - 2026.03.12
+#### Added
++ Refactored the logic of member screen sharing events, which are now resolved by events and the track list together.
++  The recording status `SEARecordStatus` adds the `SEARecordStatuUnknown` enum value.
++ Added `publishScreenViewCaptureWithPixelBuffer:displayAngle:` to publish a sharing stream from view capture.
++ Added `enabledViewCaptureShare:` to enable view capture sharing.
+
+### [1.1.9] - 2026.02.28
+#### Added
++ The media streaming configuration adds a `forceLandscape` parameter that lets your app force landscape orientation.
++ Video capture when using a non-in-house media streaming vendor is refactored onto an `AVCaptureSession`-based implementation, among other changes.
++ Operations after a successful capture are moved to the main thread.
+
+### [1.1.8] - 2026.01.27
+#### Improved
++ Callback fixes and improvements.
+
+### [1.1.7] - 2026.01.26
+#### Added
++ Added the cloud recording alarm callback `onCloudRecordAlarm:taskId:gateway:alarmAt:alarmBrief:`.
+
+### [1.1.6] - 2026.01.21
+#### Added
++ Added a host method to update a user's whiteboard drawing permission.
++ Added a host method to ask a user to start sharing.
++ The raise-hand request type adds the `SEAHandupTypeDraw` enum value.
++ The user extended data adds the `drawDisabled` state.
++ Added a callback for requests to start sharing.
++ Added a callback for changes in a user's drawing-disabled state.
+
+### [1.1.5] - 2025.12.16
+#### Added
++ The invited device object adds a `connectParams` connection parameter field to support inviting `GB28181` devices into the meeting.
+
+### [1.1.4] - 2025.11.28
+#### Fixed
++ Fixed some known issues and made related improvements.
+
+### [1.1.3] - 2025.11.25
+#### Added
++ Added APIs and callbacks for the waiting room, sub-meetings, and more.
+
+### [1.1.2] - 2025.06.17
+#### Added
++ The meeting information object adds a meeting password field.
+
+### [1.1.1] - 2025.06.12
+#### Changed
++ The response data of the create-room API changes to an object structure. For details, see the [SEAMeetingCreateModel](/en/meeting/ios/types#seameetingcreatemodel) object.
+
+### [1.1.1-alpha.1+20250612] - 2025.06.12
+#### Changed
++ The response data of the create-room API changes to an object structure.
+
+### [1.1.0] - 2025.05.19
+#### Added
++ Added the meeting-about-to-start callback `onMeetingRemind:`.
++ Added a host method to update the room's sharing-disabled state and a callback for changes to it; the room extended information also adds a sharing-disabled property.
++ Added media configuration APIs.
++ The raise-hand request type adds the `SEAHandupTypeShare` type.
++ Added a method to approve a request to start sharing in the room.
++ Added a sharing start callback that fires after approving a request to start sharing in the room succeeds.
+
+#### Improved
++ Improved the warning in the exit-reason enum check.
++ Fixed incorrect parameters in the callback for changes in a room member's raise-hand state.
++ Fixed a subscription error that occurred when receiving a `web` sharing stream and the other side started video.
+
+### [1.1.0-alpha.1+20250424] - 2025.04.24
+#### Added
++ Added the meeting-about-to-start callback `onMeetingRemind:`.
++ Added a host method to update the room's sharing-disabled state and a callback for changes to it; the room extended information also adds a sharing-disabled property.
++ Added media configuration APIs.
++ The raise-hand request type adds the `SEAHandupTypeShare` type.
++ Added a method to approve a request to start sharing in the room.
++ Added a sharing start callback that fires after approving a request to start sharing in the room succeeds.
+
+#### Improved
++ Improved the warning in the exit-reason enum check.
++ Fixed incorrect parameters in the callback for changes in a room member's raise-hand state.
++ Fixed a subscription error that occurred when receiving a `web` sharing stream and the other side started video.
+
+### [1.0.0] - 2025.03.14
+#### Added
++ Refined and improved the meeting framework; official release.
+
+### [1.0.0-alpha.8+20241223] - 2024.12.23
+#### Added
++ Added logic for restarting after an audio session interruption, among other things.
++ The APIs enableImWithDelegate:onSuccess:onFailed: and enterRoom:onSuccess:onFailed: add timeout detection.
+
+#### Improved
++ Improved returned error messages, among other things.
+
+### [1.0.0-alpha.7+20241206] - 2024.12.06
+#### Added
++ When the join-channel success callback fires, the cloud recording status callback is now also triggered.
++ The room extended information adds the cloud recording status recordStatus.
++ The meeting parameters and the meeting information object add autoRecord (whether recording is enabled), among other fields.
+
+### [1.0.0-alpha.5+20241108] - 2024.11.08
+#### Added
++ Added cloud recording APIs.
+
+### [1.0.0-alpha.4+20241106] - 2024.11.06
+#### Improved
++ Fixed issues with receiving the composite stream and added some logic improvements.
+
+### [1.0.0-alpha.3+20241023] - 2024.10.23
+#### Added
++ Added APIs to subscribe to and unsubscribe from the composite video stream, and a callback for changes in the receive status of the composite video.
+
+### [1.0.0-alpha.2+20241014] - 2024.10.14
+#### Added
++ Added a host API to update invitees.
+
+### [1.0.0-alpha.1+20241009] - 2024.10.09
+#### Added
++ Added IM APIs and their callbacks.
++ Added out-of-room meeting operation APIs, such as getting the meeting list, the meeting history list, and meeting details.
+
+#### Improved
++ Adapted to MQTT SSL connections.
+
+### [0.0.1-alpha.6+20240819] - 2024.08.19
+#### Fixed
++ Upgraded the **rtcenginekit** dependency, fixing crashes caused by updating stream data on exit and by the network timeout setting, among other issues.
+
+#### Improved
++ Improved the parameters of the reconnection success callback and the signing algorithm.
++ User login adds a **version** parameter.
+
+### [0.0.1-alpha.5+20240731] - 2024.07.31
+#### Added
++ All host operation APIs now enforce host permission.
+
+### [0.0.1-alpha.4+20240730] - 2024.07.30
+#### Added
++ The user camera state change and microphone state change callbacks add a `reason` parameter for the cause of the change.
++ Added APIs to approve a request to turn on the camera and to approve a request to turn on the microphone.
+
+### [0.0.1-alpha.3+20240727] - 2024.07.27
+#### Changed
++ Changed the parameter object data of all media streaming callbacks.
+
+### [0.0.1-alpha.2+20240725] - 2024.07.25
+#### Fixed
++ Fixed a crash during encryption caused by an empty secret key.
+
+### [0.0.1-alpha.1+20240725] - 2024.07.25
+#### Added
++ Refined business features; internal beta release.

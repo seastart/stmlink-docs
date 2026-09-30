@@ -99,4 +99,4 @@ For how to choose between them, see [Choosing SRTC or SMeeting](/en/choose).
 ## Next steps
 
 + [Token and authentication](/en/rtc/token)—the step you must understand before integrating
-+ Choose your platform and start integrating: [Web](/en/rtc/web/integration) · [Android](/en/rtc/android/integration) · [Windows](/zh/rtc/windows/integration) (Chinese) · [Swift](/en/rtc/swift/integration) · [iOS](/zh/rtc/ios/integration) (Chinese) · [C](/en/rtc/capi/integration)
++ Choose your platform and start integrating: [Web](/en/rtc/web/integration) · [Android](/en/rtc/android/integration) · [Windows](/en/rtc/windows/integration) · [Swift](/en/rtc/swift/integration) · [iOS](/en/rtc/ios/integration) · [C](/en/rtc/capi/integration)

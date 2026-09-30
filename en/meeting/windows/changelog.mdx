@@ -1,0 +1,99 @@
+---
+title: "Changelog"
+description: "Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, and the C interface exports in alpha.7. Read this before upgrading."
+---
+
+> This page records the main changes in each version of the SMeeting Windows SDK. You can get the current SDK version with `SMeetingEngine_Version`.
+
+## 1.0.0-alpha.7 - 2026-09-29
+
+**Added**
+
++ **The `SMeeting_C` C interface is now officially available**: `SMeeting_C.cpp` / `SMeetingEngineGlobal.cpp` are compiled into
+  `SMeeting.vcxproj` again, and `SMeeting.dll` now actually exports the `SMeetingEngine_*` family of C functions
+  (the number of x86 exported symbols goes from 3 to 139). Before this, the wrapper was excluded from the project,
+  and the DLL in the package didn't contain these symbols.
+
+**Changed**
+
++ The internal implementation of `SMeeting_C` is ported to the interfaces after the engine-level / meeting-level split and no longer follows the single-meeting approach from before the split,
+  consistent with the `ISMeetingEngine` / `ISMeetingChannel` structure introduced in `1.0.0-alpha.5`
+
+**API changes**
+
++ C++: none. `SMeeting.h` / `SMeeting_def.h` have no signature changes, the vtables of `ISMeetingEngine` /
+  `ISMeetingChannel` are unchanged, and there is no ABI break.
++ C: **no changes to the function declarations** in `SMeeting_C.h` (only the comment at the top of the file was updated). However, because the C wrapper
+  is only now actually compiled into the DLL, `SMeeting.lib` gains C export symbols, and projects that use the C interface need to relink.
++ Package contents are unchanged: `meeting_dll/include/` still contains only `SMeeting.h` / `SMeeting_def.h`;
+  `SMeeting_C.h` is **not in the package**, so you still need to request the header separately to use the C interface.
+
+## 1.0.0-alpha.6 - 2026-09-24
+
+**Added**
+
++ **Added an x64 (64-bit) package**; Windows delivery is now two packages, x86 + x64:
+  + `meeting-win-sdk-2.0.zip` (x86, 32-bit)—**the package name is exactly the same as before**
+  + `meeting-win-sdk-x64-2.0.zip` (x64, 64-bit)—new; the package name has an extra `-x64` segment **before** the version number
+
+  Both packages have the same internal structure (the root directory is `meeting_dll/` in both), but `SMeeting.dll` / `SMeeting.lib`
+  have different bitness, so **don't mix them or unzip them into the same directory**; pick the package that matches your project's target platform.
+  For the download links, see [Integration](/en/meeting/windows/integration).
++ Dependency libraries are split by architecture into two sets, `lib/<library>/lib/win32` and `lib/<library>/lib/win64`
+
+**Changed**
+
++ Fixed the x64 project configuration: the output type changed from `Application` to `DynamicLibrary`, x64 now has its own include
+  and library directories (pointing to `lib/*/lib/win64`), and output goes to `Release_x64`
++ Upgraded the underlying curl: libcurl uses new header files and import libraries, and a zlib dependency (`zlib1.dll`) is added
++ The jsoncpp import library is renamed from `jsoncpp_static.lib` to `jsoncpp.lib` and split into win32 / win64 directories
++ Removed the unused pthread dependency; the underlying audio and video library is refreshed accordingly, and `bin` no longer contains `DenModule.dll`,
+  `rtp.dll`, or `zlib.dll`, using `zlib1.dll` instead
++ Source and header file encoding is unified to UTF-8 with BOM, and a new `.editorconfig` enforces it,
+  which fixes the C4819 warnings and potential garbled Chinese comments in `SMeeting_def.h` and other files under GBK environments
+
+**Fixed**
+
++ Fixed 4 jsoncpp array loops: the index type changed from `size_t` to `Json::Value::ArrayIndex`,
+  avoiding type mismatches in 64-bit builds
+
+**API changes**
+
+None. `SMeeting.h` / `SMeeting_def.h` / `SMeeting_C.h` only changed encoding in this release, with no signature changes;
+the vtables are unchanged, and there is no ABI break. Following the general convention in the [Quickstart](/en/meeting/windows/quickstart),
+we still **recommend** recompiling your project after upgrading the SDK.
+
+## 1.0.0-alpha.5 - 2026-08-21
+
+**Added**
+
++ Added the `ISMeetingChannel` meeting object; each meeting corresponds to one channel object.
++ Added the `ISMeetingChannelEvent` meeting-level event callbacks.
++ Added the `ISMeetingChannelSetting` meeting-level settings object.
++ Internally added `SRTCChannelControl` to wrap each `SRTC::IRTCChannel` and its media objects.
+
+**Changed**
+
++ `ISMeetingEngine` is reduced to engine-level APIs: login, meeting management HTTP APIs, device enumeration, IM, the resource drive, and the channel object lifecycle.
++ Entering a meeting now takes two steps: `createChannel` / `createChannelByMeetingId` only create the object, and `ISMeetingChannel::enter()` actually enters the meeting.
++ `ISMeetingSetting` keeps only `sdk_log_path` / `enable_stream_log`; the other settings moved to `ISMeetingChannelSetting`.
++ When automatically re-entering from the waiting room, `channelId` stays the same, and `leaveChannel` still releases the object by the original key.
+
+**Fixed**
+
++ `adminDestroyRoom` now correctly calls `leaveChannel` to leave the underlying SRTC channel.
++ Calling device enumeration before login now lazily initializes the underlying SRTC engine on demand.
+
+**API changes (breaking; you must recompile)**
+
++ Removed `ISMeetingEngine::enterRoom`, `enterRoomByMeetingId`, and `exitRoom`; use `createChannel` + `ISMeetingChannel::enter()` + `leaveChannel` instead.
++ Removed `ISMeetingEngine::exitWaitRoom(roomno, meeting_id, back)`; use `ISMeetingChannel::exitWaitRoom(back)` instead.
++ The following methods moved from `ISMeetingEngine` to `ISMeetingChannel`:
+  `admin*`, `updateName`, chat / raise hand, `getMe` / `getRoom` / `getMembers` / `getMember` / `getOpt`,
+  `getLocalMic` / `getLocalCamera` / `getLocalScreen` / `getRemoteVideo` / `getRemoteAudio` / `getMcuVideo`,
+  `getCustomVideo` / `getCustomAudio` / `setCustomRecvBack`, the sub-meeting `*SubMeeting` methods,
+  `mcu*`, sign-in `signin*`, and `getLocalRecord`.
++ `getLocalRecord(mid, &rec)` changed to `getLocalRecord(&rec)`; mid uses the channel object's own meeting ID.
++ All meeting-level callbacks drop the `roomno` first parameter; the first parameter of `onAdminConfirmHandup` changed to `uid`.
++ `onDeviceStatusChange` / `onShareTargetNotFind` moved from the engine callbacks to `ISMeetingChannelEvent`.
++ Pure virtual interface signature changes alter the vtable, so **your app crashes if you replace only the DLL without recompiling your project**.
