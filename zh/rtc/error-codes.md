@@ -159,7 +159,7 @@ Swift SDK 同时支持 iOS 和 macOS，按运行平台使用 `103` 或 `105` 前
 | Web | `106` | `@seastart/srtc-web-sdk` 0.7.0 起 |
 | 微信小程序 | `107` | `@seastart/srtc-wx-sdk` 0.3.0 起 |
 | C SDK / Python SDK | `180` | C SDK 0.1.0、Python SDK（`srtc`）0.2.0 起 |
-| Swift（iOS / macOS） | `103` / `105` | 以 Swift SDK [更新日志](/zh/rtc/swift/changelog) 为准 |
+| Swift（iOS / macOS） | `103` / `105` | SRTC Swift SDK 1.5.0 起（[更新日志](/zh/rtc/swift/changelog)） |
 | Android、iOS（Objective-C）、鸿蒙、Windows | `102`、`103`、`108`、`101` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
 
 ---

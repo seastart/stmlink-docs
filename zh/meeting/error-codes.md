@@ -135,7 +135,7 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 | --- | --- | --- |
 | Web | `206` | `@seastart/smeeting-web-sdk` 0.3.0 起 |
 | 微信小程序 | `207` | `@seastart/smeeting-wx-sdk` 0.1.0 起 |
-| Swift（iOS / macOS） | `203` / `205` | 以 Swift SDK [更新日志](/zh/meeting/swift/changelog) 为准 |
+| Swift（iOS / macOS） | `203` / `205` | SMeeting Swift SDK 1.4.0 起（[更新日志](/zh/meeting/swift/changelog)） |
 | Android、iOS（Objective-C）、鸿蒙、Windows | `202`、`203`、`208`、`201` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
 
 ---
