@@ -1,0 +1,47 @@
+---
+title: "更新日志"
+description: "微信小程序 SMeeting 会议 SDK（@seastart/smeeting-wx-sdk）版本更新记录。v0.1.0 由 2024 年的 0.0.2 直接升级，累计了两年的接口变更与错误码重排，从 0.0.x 升级需按文档重新接入。"
+---
+
+### 最新版本
+
+请通过 npm 查看最新版本：
+
+```bash
+npm info @seastart/smeeting-wx-sdk version
+```
+
+---
+
+### v0.1.0 - 2026-09-30
+
+<Warning>
+**本版由 2024-08 的 0.0.2 直接升级到 0.1.0，累计了大量变更，其中包含多项破坏性变更。从 0.0.x 升级的项目请按现行文档[重新接入](/zh/meeting/wechat-miniprogram/integration)，不要只替换包版本。** 下面列出需要重点检查的地方。
+</Warning>
+
+#### 破坏性变更
++ **会议层错误码重排**：按跨端统一码表分配低 3 位码，不再落在 `207000`；`207001`–`207004`（未登录、Token 已过期、不在会议中、无权限）含义不变。请按 `code` 判断，不要按文案判断，码表见 [错误码](/zh/meeting/wechat-miniprogram/error-codes)
++ **报错文案改为英文**：SDK 自身报错的 `message` / `msg` 全部改为英文，只给开发者和日志看；给终端用户的提示请按错误码自行映射
++ 请求会议服务端的网络失败 / HTTP 非 200 统一为 `207007`，HTTP 状态放在 `message` 里；响应无法解析或缺 `code` 字段为 `207356`
++ 依赖的 SRTC 升级到 `@seastart/srtc-wx-sdk` 0.3.0：底层改为引擎 + 多频道模型，透传上来的 `107xxx` 也已重排，见 [SRTC 小程序更新日志](/zh/rtc/wechat-miniprogram/changelog)
++ `McuTaskStatus` 取值与服务端对齐：新增 `WaitStart = 0`、`WaitEnd = 2`，`Exception` 由 2 改为 3、`Normal` 由 3 改为 4。**直接写数字 2 / 3 判断的代码需自查**
++ 自己主动开关摄像头 / 麦克风时不再抛状态变化事件，请以开关接口的成功 / 失败为准
++ 多个接口的命令与字段改为驼峰命名、设备列表改为按 name 查询、`login` 去掉 netid / sgid 参数（改为 net / sg），具体以现行 [接口文档](/zh/meeting/wechat-miniprogram/api-reference/SMeeting) 为准
+
+#### 新增
+以下为 0.0.2 以来累计新增的主要能力，接口细节以现行 [接口文档](/zh/meeting/wechat-miniprogram/api-reference/SMeeting) 为准。
+
++ 初始化参数 **`language`**（如 `zh-CN`、`en`；不传则跟随 `wx.getAppBaseInfo().language`，取不到为 `zh`），会同时设置底层 SRTC：请求会议服务端和 SRTC 服务端时都带 `Accept-Language`，**服务端业务错误（`1000`–`99999`）的文案随之返回中文或英文**。SDK 自身的报错固定为英文，不受它影响
++ 包里导出 `SdkError` 与 `MeetingErrorCode`（会议层低 3 位）
++ 会议管理：会议列表、修改会议、会议模式、参会人员管理、邀请设备入会
++ 云录制 / 合流：MCU 任务与布局、房间 MCU 任务消息事件，`McuRecordDetail` 与服务端两级模型对齐（`mcu_at` / `mcu_dur` 已废弃，改用 `began_at` / `total_duration`）
++ 会中互动：IM、会议外消息与会中呼叫、会议提醒、举手、共享请求、白板、资源与签到、点名、聊天消息列表
++ 等候室、分组讨论、主持人入会前禁入
++ 音柱与「正在说话」、房间加入失败事件、轨道有无数据事件
+
+#### 变更
++ npm 页面说明改为中英双语，许可证改为专有（UNLICENSED）
+
+### v0.0.2 - 2024-08-27
+
++ 0.1.0 之前的上一个公开版本

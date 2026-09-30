@@ -1,0 +1,60 @@
+---
+title: "更新日志"
+description: "微信小程序 SRTC 音视频 SDK（@seastart/srtc-wx-sdk）版本更新记录，含 v0.3.0 错误码全面重排、报错改英文、新增 language 参数（附旧码 → 新码对照）与 v0.2.0 join 返回 Channel 等需要改代码的变更。升级前先读这页。"
+---
+
+### 最新版本
+
+请通过 npm 查看最新版本：
+
+```bash
+npm info @seastart/srtc-wx-sdk version
+```
+
+---
+
+### v0.3.0 - 2026-09-30
+
+<Warning>
+**本版是破坏性变更**：错误码全面重排、SDK 报错文案改为英文，并新增 `language` 参数。凡是按 `code` 的数值（尤其是 `107000`）或按中文报错文案做判断的代码，升级后都需要按下表调整。完整码表见 [错误码](/zh/rtc/wechat-miniprogram/error-codes) 与 [错误码规则与总表](/zh/rtc/error-codes)。
+</Warning>
+
+#### 破坏性变更
++ **错误码全面重排**：SDK 自身的报错按跨端统一码表分配低 3 位码，不再大多落在 `107000`。请按 `code` / `baseCode` 判断，不要按文案判断
++ **报错文案改为英文**：SDK 自身报错的 `message` / `msg` 全部改为英文，只给开发者和日志看；给终端用户的提示请按错误码自行映射（错误码页有「建议给用户的提示」列）
++ `SdkError` 改为继承 `Error`（有 `message`、`name`、`stack`，`msg` 保留兼容）；新增 `baseCode`（低 3 位语义码）；包里导出 `SdkError` 与 `ErrorCode`
++ `wx.request` 非 200 / 请求失败统一抛 `SdkError(107006)`，HTTP 状态放在 `message` 里（原为不带码的 `Error`）；`freshPlayerStyle` 查询不到节点由字符串改为 `SdkError(107037)`
++ 接口 HTTP 200 但响应体没有 `code` 字段时，以前按服务端业务错误处理（心跳直接离开频道），现在视为响应解析失败 `107011`、继续重试；响应体不是 JSON 同为 `107011`
++ 已离开（或正在离开）的频道上调用 `publishLocalTrack`、`subscribeRemote*`、`changePusherOptions` 开麦 / 开摄像头抛 `107001`（`Channel has been left`）；`unpublishLocalTrack` / `unsubscribeRemoteTrack` 离开频道后仍静默成功
+
+#### 新增
++ 初始化参数 **`language`**（如 `zh-CN`、`en`；不传则跟随 `wx.getAppBaseInfo().language`，取不到为 `zh`）：SDK 请求服务端时带 `Accept-Language`，**服务端业务错误（`1000`–`99999`）的文案随之返回中文或英文**。SDK 自身的报错固定为英文，不受它影响
+
+#### 变更
++ `UP_PUSH_FAIL` / `DOWN_PLAY_FAIL` 事件文案改为英文（前面的微信原生错误码保留不变）；轨道 `toString()` 前缀改为类名风格
++ npm 页面说明改为中英双语，许可证改为专有（UNLICENSED）
+
+#### 旧码 → 新码对照
+
+| 场景 | 0.2.x 及以前 | 0.3.0 |
+| --- | --- | --- |
+| 不在频道内 / Token 已过期 / 流轨道不存在 | `107001` / `107002` / `107003` | 不变（文案改英文） |
+| 其它 SDK 自身的报错（参数非法、状态不允许、发布描述冲突、超过发布 / 订阅上限等） | `107000` | 按场景的独立码，见 [错误码](/zh/rtc/wechat-miniprogram/error-codes) |
+| `wx.request` 非 200 / 请求失败 | 不带码的 `Error` | `107006` |
+| 响应不是 JSON / 缺 `code` 字段 | 原始解析异常 / 当作服务端错误 | `107011` |
+| `freshPlayerStyle` 查询不到节点 | 字符串 | `107037` |
+| 服务端业务错误（`1000`–`99999`） | 原样透传 | 原样透传，文案随 `language` 返回中文或英文 |
+
+### v0.2.2 - 2026-09-02
+
++ fix(channel): 同一 desc 重复发布直接抛错，堵住关不掉的幽灵轨
++ fix: 默认频道判定不再只靠对象身份，避免实例被响应式代理时事件全丢
++ fix: 放弃重试时抛出原始业务错误，不再被吞成「调用被取消」
+
+### v0.2.1 - 2026-08-06
+
++ fix: `channel.subscribeRemote*` 返回平台化类型（`RemoteTrack` / `RemoteAudioMixTrack` 等），无需再断言
+
+### v0.2.0 - 2026-08-05
+
++ feat!: 引擎 + 多频道模型：`join` 返回 `Channel` 对象（接口对齐 Web 端；小程序 `live-pusher` 独占，仍为单频道）

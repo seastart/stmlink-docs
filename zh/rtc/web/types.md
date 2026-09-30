@@ -13,6 +13,26 @@ export interface SdkInitParams {
   logLevel?: LogLevel;
   /** 日志打印目标 */
   logTarget?: LogTarget;
+  /**
+   * 语言（如 `zh-CN`、`en`），进程级全局配置（0.7.0 起）。
+   * 影响：请求服务端时的 `Accept-Language` 头（服务端业务错误文案的语言）、自动播放提示框的内置文案。
+   * SDK 自身的报错（106xxx）固定为英文，不受此参数影响。
+   * 不传则跟随 `navigator.language`，取不到时为 `zh`。
+   */
+  language?: string;
+  /**
+   * 自动播放提示框文案覆盖，进程级全局配置（0.7.0 起）。
+   * 未覆盖的字段按 `language` 取内置中 / 英文案；播放参数 `disableAutoPlayDialog: true` 时不弹窗、此项无效。
+   */
+  autoPlayDialogText?: AutoPlayDialogText;
+}
+
+/** 自动播放提示框文案（面向终端用户） */
+export interface AutoPlayDialogText {
+  /** 提示语 */
+  message?: string;
+  /** 确认按钮文字 */
+  confirm?: string;
 }
 ```
 

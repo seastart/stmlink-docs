@@ -17,7 +17,7 @@
 - [Token 与鉴权](https://docs.stmlink.com/zh/rtc/token.md): SRTC 的 AppID / AppKey 职责划分、加入频道 Token 的签发流程与常见错误
 - [多网络线路](https://docs.stmlink.com/zh/rtc/network-line.md): 接入 RTC 服务时的多网络线路（内网/外网）说明：channel/grant 的 net 参数如何决定客户端拿到的服务地址，以及接入方服务端如何判断该填哪个线路
 - [电子白板](https://docs.stmlink.com/zh/rtc/whiteboard.md): 白板是一个内嵌的 H5 页面：会中用户直接用加入频道返回的地址打开，会外用户由业务后端签发授权码；含 URL 参数、共享状态同步、WebView 宿主接口与销毁时机
-- [错误码规则](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则：如何从一个错误码看出它来自哪一层、哪个平台
+- [错误码规则与总表](https://docs.stmlink.com/zh/rtc/error-codes.md): SRTC 错误码的编号规则与跨端统一码表：从一个错误码看出它来自服务端还是哪个平台的 SDK，低 3 位码各端同义；含 language 参数说明、各端按新码发版的进度与旧码 → 新码对照。遇到不认识的错误码或升级 SDK 时读。
 - [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
 ## SRTC 音视频 SDK · Web SDK
@@ -29,8 +29,8 @@
 - [网络质量](https://docs.stmlink.com/zh/rtc/web/network-quality.md): Web SRTC 音视频 SDK 流媒体网络质量监测接口说明
 - [事件参考](https://docs.stmlink.com/zh/rtc/web/events.md): Web SRTC 音视频 SDK 事件列表与触发时机说明
 - [类型定义](https://docs.stmlink.com/zh/rtc/web/types.md): Web SRTC 音视频 SDK 主要类型与结构体定义
-- [错误码](https://docs.stmlink.com/zh/rtc/web/error-codes.md): Web SRTC 音视频 SDK 错误码枚举与处理说明
-- [更新日志](https://docs.stmlink.com/zh/rtc/web/changelog.md): Web SRTC 音视频 SDK 版本更新记录
+- [错误码](https://docs.stmlink.com/zh/rtc/web/error-codes.md): Web SRTC SDK（0.7.0 起）的错误码：SdkError 的 code / baseCode 怎么判断、language 参数如何影响服务端报错语言，以及 106xxx 客户端错误码的含义、常见原因与建议给用户的提示。处理入会、采集、发布订阅失败时读。
+- [更新日志](https://docs.stmlink.com/zh/rtc/web/changelog.md): Web SRTC 音视频 SDK（@seastart/srtc-web-sdk）版本更新记录，含 v0.7.0 错误码全面重排、报错改英文、新增 language 参数（附旧码 → 新码对照）与 v0.6.0 多频道等需要改代码的变更。升级前先读这页。
 - [常见问题](https://docs.stmlink.com/zh/rtc/web/faq.md): Web SRTC 音视频 SDK 集成与使用常见问题解答
 
 ## SRTC 音视频 SDK · Web SDK · 进阶实践
@@ -268,7 +268,7 @@
 - [快速开始](https://docs.stmlink.com/zh/meeting/quickstart.md): 接入 SMeeting 的最短路径：四方分工与数据流转、三种对接方式怎么选、各平台入口
 - [核心概念](https://docs.stmlink.com/zh/meeting/key-concepts.md): SMeeting 的房间、会议、成员与角色模型，以及与底层 RTC 层的术语差异
 - [Token 与鉴权](https://docs.stmlink.com/zh/meeting/token.md): SMeeting 的 AppID / AppKey 职责划分、会议授权 Token 的签发流程与密钥安全
-- [错误码规则](https://docs.stmlink.com/zh/meeting/error-codes.md): SMeeting 错误码的编号规则，以及为什么你会同时看到 2xxxxx 和 1xxxxx 两类错误码
+- [错误码规则与总表](https://docs.stmlink.com/zh/meeting/error-codes.md): SMeeting 错误码的编号规则与会议层跨端统一码表，以及为什么会同时看到 20Nxxx 和 10Nxxx 两类错误码；含 language 参数说明、各端按新码发版的进度与旧码 → 新码对照。遇到不认识的错误码或升级 SDK 时读。
 - [用 AI 辅助接入](https://docs.stmlink.com/zh/ai.md): 把 SRTC / SMeeting 文档接进 Claude Code、Cursor 等 AI 编程工具：一条命令安装能力说明，或接入文档 MCP 服务
 
 ## SMeeting 会议 SDK · 极简对接
@@ -289,6 +289,8 @@
 - [白板共享](https://docs.stmlink.com/zh/meeting/web/whiteboard.md): 会议里怎么开白板：用 getWhiteBoard() 取页面地址内嵌 iframe，用 requestShare(ShareType.WhiteBoard) 广播共享状态，以及中途入会时如何恢复现场
 - [事件参考](https://docs.stmlink.com/zh/meeting/web/events.md): Web SMeeting 会议 SDK 全量事件列表与触发时机说明
 - [类型定义](https://docs.stmlink.com/zh/meeting/web/types.md): Web SMeeting 会议 SDK 完整类型与结构体定义
+- [错误码](https://docs.stmlink.com/zh/meeting/web/error-codes.md): Web SMeeting SDK（0.3.0 起）的错误码：怎么按 code 区分会议层 206xxx、透传的 SRTC 层 106xxx 与服务端业务码，language 参数如何影响服务端报错语言，以及各码的含义、常见原因与建议给用户的提示。
+- [更新日志](https://docs.stmlink.com/zh/meeting/web/changelog.md): Web SMeeting 会议 SDK（@seastart/smeeting-web-sdk）版本更新记录，含 v0.3.0 错误码重排、报错改英文、新增 language 参数（附旧码 → 新码对照）、McuTaskStatus 取值改正等需要改代码的变更。升级前先读这页。
 
 ## SMeeting 会议 SDK · Web SDK · 接口文档
 

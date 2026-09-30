@@ -261,6 +261,18 @@ export interface SdkInitParams {
     logLevel?: LogLevel;
     /** 日志目标 */
     logTarget?: LogTarget;
+    /**
+     * 语言（如 `zh-CN`、`en`），进程级全局配置，会同时设置底层 SRTC（0.3.0 起）。
+     * 影响：请求会议服务端 / SRTC 服务端时的 `Accept-Language` 头（服务端业务错误文案的语言）、自动播放提示框的内置文案。
+     * SDK 自身的报错（206xxx，以及透传的 106xxx）固定为英文，不受此参数影响。
+     * 不传则跟随 `navigator.language`，取不到时为 `zh`。
+     */
+    language?: string;
+    /**
+     * 自动播放提示框文案覆盖，进程级全局配置（0.3.0 起）。
+     * 未覆盖的字段按 `language` 取内置中 / 英文案。类型见 SRTC 的 AutoPlayDialogText。
+     */
+    autoPlayDialogText?: AutoPlayDialogText;
 }
 ```
 
@@ -814,15 +826,21 @@ export enum McuTaskType {
 }
 
 /**
- * mcu任务状态
+ * mcu任务状态，取值与服务端 task_status 一致
+ * 注意：0.2.0 及以前的定义有误（Exception = 2、Normal = 3），0.3.0 起成员名不变、值已改正；
+ * 直接写数字 2 / 3 判断的代码需自查
  */
 export enum McuTaskStatus {
+    /** 待开始（临时过渡状态，已下发指令、底层任务尚未跑起来） */
+    WaitStart = 0,
     /** 进行中 */
     Running = 1,
-    /** 异常结束 */
-    Exception = 2,
+    /** 待结束（临时过渡状态，已下发停止指令、底层尚未确认结束） */
+    WaitEnd = 2,
+    /** 异常结束，原因见 err_desc */
+    Exception = 3,
     /** 正常结束 */
-    Normal = 3
+    Normal = 4,
 }
 ```
 

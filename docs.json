@@ -424,7 +424,9 @@
                     ]
                   },
                   "zh/meeting/web/events",
-                  "zh/meeting/web/types"
+                  "zh/meeting/web/types",
+                  "zh/meeting/web/error-codes",
+                  "zh/meeting/web/changelog"
                 ]
               },
               {
