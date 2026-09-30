@@ -24,9 +24,9 @@ description: "Windows SMeeting SDK 引擎级与会议级配置项 C++ 参考"
 
 | 配置项 | 设置方法 | 获取方法 | 类型 | 生效时机 |
 | --- | --- | --- | --- | --- |
-| 流模式 | set_stream_model | get_stream_model | int | rtc join 时 |
-| MCU 轨道 | set_mcu_track | get_mcu_track | int | rtc join 时 |
-| 启用音频录制 | set_enable_audio_record | get_enable_audio_record | int | rtc join 时 |
+| 流模式 | set_stream_model | get_stream_model | int | enter() 时（enter() 内部 rtc join 时读取） |
+| MCU 轨道 | set_mcu_track | get_mcu_track | int | enter() 时（enter() 内部 rtc join 时读取） |
+| 启用音频录制 | set_enable_audio_record | get_enable_audio_record | int | enter() 时（enter() 内部 rtc join 时读取） |
 | 入会昵称 | set_room_name | get_room_name | std::string | enter() 时 |
 | 入会头像 | set_room_avatar | get_room_avatar | std::string | enter() 时 |
 | 流厂商 | set_stream_vendor | get_stream_vendor | std::string | enter() 时 |

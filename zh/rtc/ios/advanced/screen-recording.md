@@ -4,7 +4,7 @@ description: "iOS SRTC 音视频 SDK 屏幕录制功能配置指南"
 ---
 
 ## 开发环境准备
-Xcode 10及以上的版本，手机也必须升级至 iOS 12 以上，否则无法使用录屏特性。
+Xcode 14.0 及以上的版本，手机也必须升级至 iOS 16.0 及以上，否则无法使用录屏特性。
 
 #### 创建扩展程序
 在现有工程选择【New】->【Target…】，选择【Broadcast Upload Extension】，如图所示：
@@ -14,7 +14,7 @@ Xcode 10及以上的版本，手机也必须升级至 iOS 12 以上，否则无�
 配置好 Product Name。单击【Finish】后可以看到，工程多了所输 Product Name 的目录，目录下有个系统自动生成的 SampleHandler类，这个类负责录屏的相关处理；以及对应的Product Name SetupUI 的目录，目录下有个系统自动生成的 `BroadcastSetupViewController`类，这个类负责录屏的UI相关处理。
 
 #### 为扩展添加SDK依赖
-1. 手动集成方式需要将`RTCEngineKit.frameworknl`导入上述Product Name 的工程目录，并配置依赖的系统库；
+1. 手动集成方式需要将`RTCEngineKit.framework`导入上述Product Name 的工程目录，并配置依赖的系统库；
 2. 自动集成方式需更改`Podfile`文件，并执行`pod install`，如下图所示：
 
 ![](images/431440_1659061024229-9c42a253-7849-4db5-83e6-0302afcaede6.png)

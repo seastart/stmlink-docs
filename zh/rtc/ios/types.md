@@ -34,7 +34,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | NSInteger joinAt | 否 | 加入时间 |
 | NSInteger updatedAt | 否 | 更新时间 |
 | NSInteger leaveAt | 否 | 离开时间 |
-| NSMutableArray &lt;[RTCEngineStreamTrackModel](#o95yb) \*&gt; \*streamTracks | 否 | 码流轨道列表 |
+| NSMutableArray &lt;[RTCEngineStreamTrackModel](#rtcenginestreamtrackmodel) \*&gt; \*streamTracks | 否 | 码流轨道列表 |
 | id props | 否 | 自定义属性 |
 
 
@@ -45,15 +45,15 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | --- | :---: | --- |
 | NSString *streamId | 是 | 码流标识 |
 | NSString *desc | 是 | 码流描述 |
-| [RTCStreamTrackKind](#Ysug3) kind | 是 | 码流种类 |
-| [RTCCodecType](#bolP1) codecType | 是 | 编码类型 |
+| [RTCStreamTrackKind](#rtcstreamtrackkind) kind | 是 | 码流种类 |
+| [RTCCodecType](#rtccodectype) codecType | 是 | 编码类型 |
 | int width | 是 | 分辨率宽 |
 | int height | 是 | 分辨率高 |
 | int fps | 是 | 视频帧率 |
 | int bitrate | 是 | 视频码率，单位kbps |
 | int angle | 是 | 视频角度 |
 | int sampleRate | 否 | 音频采样率 |
-| [RTCTrackIdentifierFlags](#QmrJ5) track | 是 | 轨道号码 |
+| [RTCTrackIdentifierFlags](#rtctrackidentifierflags) track | 是 | 轨道号码 |
 | `NSArray<NSString *> *fallbackIds` | 否 | 当前层可降级到的更低层轨道列表，仅用于支持 seastart 的引擎 |
 | BOOL variant | 否 | 是否为 simulcast 副层，仅用于支持 seastart 的引擎 |
 | id props | 否 | 自定义属性 |
@@ -84,8 +84,8 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | int aec | 否 | 回声消除AEC，默认12 |
 | int agc | 否 | 自动增益控制AGC，默认16000 |
 | int audioSampe | 否 | 音频采样率，默认48000 |
-| [RTCCodecType](#bolP1) audioEncode | 否 | 音频编码格式，默认AAC |
-| [RTCAudioRoute](#fcHdd) audioRoute | 否 | 无外设时的默认内置音频路由，支持扬声器或听筒，默认RTCAudioRouteSpeaker |
+| [RTCCodecType](#rtccodectype) audioEncode | 否 | 音频编码格式，默认AAC |
+| [RTCAudioRoute](#rtcaudioroute) audioRoute | 否 | 无外设时的默认内置音频路由，支持扬声器或听筒，默认RTCAudioRouteSpeaker |
 | int videoWidth | 否 | 分辨率宽，默认480 |
 | int videoHeight | 否 | 分辨率高，默认640 |
 | BOOL videoMirror | 否 | 视频镜像，默认YES |
@@ -104,7 +104,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | BOOL isHardwarede | 否 | 开启硬件解码 YES开启 NO关闭，默认 YES |
 | BOOL isNetworkAdaptive | 否 | 开启网络自适应延迟 YES开启 NO关闭，默认 YES |
 | BOOL isBitrateAdaptive | 否 | 开启码率自适应 YES开启 NO关闭，默认 YES |
-| [RTCNetworkQosShakeLevel](#CVdPk) shakeLevel | 否 | 网络延时抗抖动等级，默认 RTCNetworkQosShakeLevelMedium |
+| [RTCNetworkQosShakeLevel](#rtcnetworkqosshakelevel) shakeLevel | 否 | 网络延时抗抖动等级，默认 RTCNetworkQosShakeLevelMedium |
 
 
 ### RTCEngineDebugParam
@@ -142,7 +142,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | NSInteger speed | 否 | 速率/码率(kbps) |
 | NSInteger delay | 否 | 网络延迟 |
 | float dropRate | 否 | 丢包率 |
-| [RTCNetworkState](#FhNet) state | 否 | 网络状况 |
+| [RTCNetworkState](#rtcnetworkstate) state | 否 | 网络状况 |
 
 
 ### RTCSpeedTestConnectResult
@@ -177,7 +177,7 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | int buffer | 否 | 上传缓冲包数 |
 | int delay | 否 | 上传延迟 |
 | int overflow | 否 | 溢出缓冲包数 |
-| NSString *speed | 否 | 上传速率(单位kps) |
+| NSString *speed | 否 | 上传速率(单位kbps) |
 | NSInteger status | 否 | 上传状态 |
 | float loss_r | 否 | 补偿前丢包率 |
 | float loss_c | 否 | 补偿后丢包率 |
@@ -432,28 +432,14 @@ description: "iOS SRTC 音视频 SDK 完整类型与结构体定义"
 | RTCStreamTrackKindAudio | `audio` | 音频类型 |
 
 
-### RTCLeaveReason
-离开频道原因
-
-| **枚举名** | **枚举值** | **说明** |
-| --- | :---: | --- |
-| RTCLeaveReasonError | `-1` | 发生错误 |
-| RTCLeaveReasonNormal | `1` | 主动离开 |
-| RTCLeaveReasonKickout | `2` | 被踢离开 |
-| RTCLeaveReasonReplaced | `3` | 被顶号 |
-| RTCLeaveReasonTimeout | `4` | 心跳超时离开 |
-| RTCLeaveReasonDestroy | `5` | 频道销毁离开 |
-| RTCLeaveReasonAudience | `6` | 身份变成观众 |
-
-
 ### RTCStreamQualityLevel
 流媒体质量等级
 
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
 | RTCStreamQualityLevelUnknown | `0` | 未知 |
-| RTCStreamQualityLevelExcellent | `1` | 优秀（excellent） |
-| RTCStreamQualityLevelGood | `2` | 良好（good） |
-| RTCStreamQualityLevelPoor | `3` | 较差（poor） |
-| RTCStreamQualityLevelLost | `4` | 已断流（lost） |
+| RTCStreamQualityLevelExcellent | `1` | 优秀（`excellent`） |
+| RTCStreamQualityLevelGood | `2` | 良好（`good`） |
+| RTCStreamQualityLevelPoor | `3` | 较差（`poor`） |
+| RTCStreamQualityLevelLost | `4` | 已断流（`lost`） |
 

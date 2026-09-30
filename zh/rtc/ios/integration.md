@@ -6,7 +6,7 @@ description: "iOS SRTC 音视频 SDK 环境配置与 SDK 安装指南"
 [RTCEngineKit](https://github.com/seastart/RTCEngineKit) 提供两种集成方式：您既可以通过CocoaPods自动集成我们的SDK，也可以通过手动下载SDK, 然后添加到您的项目中。
 
 + 编译语言：Objective-C
-+ 编译环境：Xcode 11.0 及以上版本
++ 编译环境：Xcode 14.0 及以上版本
 + 操作系统支持：iOS 16.0 及以上版本（`3.1.0` 起，此前为 iOS 10.0）
 + SDK暂不支持模拟器编译
 + Enable Bitcode 配置 NO

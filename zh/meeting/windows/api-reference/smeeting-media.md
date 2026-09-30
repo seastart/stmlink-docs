@@ -3,7 +3,7 @@ title: "媒体轨道接口"
 description: "Windows SMeeting SDK 本地 / 远端 / 自定义媒体轨道 C++ 接口参考"
 ---
 
-以下媒体对象均通过 [ISMeetingChannel](smeeting-channel) 获取。
+以下媒体对象均通过 [ISMeetingChannel](/zh/meeting/windows/api-reference/smeeting-channel) 获取。
 
 ---
 
@@ -18,7 +18,7 @@ virtual StatusCode getLocalMic(IMEETLocalMic**) = 0;
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| 返回值 | IMEETLocalMic** | 本地麦克风对象指针 |
+| （输出） | IMEETLocalMic** | 输出的本地麦克风对象指针 |
 
 **返回值**
 
@@ -33,7 +33,7 @@ virtual StatusCode getLocalCamera(IMEETLocalCamera**) = 0;
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| 返回值 | IMEETLocalCamera** | 本地摄像头对象指针 |
+| （输出） | IMEETLocalCamera** | 输出的本地摄像头对象指针 |
 
 **返回值**
 
@@ -48,7 +48,7 @@ virtual StatusCode getLocalScreen(IMEETLocalScreen**) = 0;
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| 返回值 | IMEETLocalScreen** | 本地屏幕共享对象指针 |
+| （输出） | IMEETLocalScreen** | 输出的本地屏幕共享对象指针 |
 
 **返回值**
 
@@ -69,7 +69,7 @@ virtual StatusCode getRemoteVideo(std::string uid, std::string track_desc, IMEET
 | --- | --- | --- |
 | uid | std::string | 用户 ID |
 | track_desc | std::string | 轨道描述 |
-| 返回值 | IMEETRemoteVideo** | 远端视频对象指针 |
+| （输出） | IMEETRemoteVideo** | 输出的远端视频对象指针 |
 
 **返回值**
 
@@ -85,7 +85,7 @@ virtual StatusCode getRemoteAudio(std::string uid, IMEETRemoteAudio**) = 0;
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
 | uid | std::string | 用户 ID |
-| 返回值 | IMEETRemoteAudio** | 远端音频对象指针 |
+| （输出） | IMEETRemoteAudio** | 输出的远端音频对象指针 |
 
 **返回值**
 
@@ -100,7 +100,7 @@ virtual StatusCode getMcuVideo(IMEETRemoteVideo**) = 0;
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| 返回值 | IMEETRemoteVideo** | MCU 视频对象指针 |
+| （输出） | IMEETRemoteVideo** | 输出的 MCU 视频对象指针 |
 
 **返回值**
 
@@ -120,7 +120,7 @@ virtual StatusCode getCustomVideo(CustomPublishTrack* push, IMeetCustomVideoTrac
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
 | push | CustomPublishTrack* | 自定义轨道配置 |
-| 返回值 | IMeetCustomVideoTrack** | 自定义视频轨道对象指针 |
+| （输出） | IMeetCustomVideoTrack** | 输出的自定义视频轨道对象指针 |
 
 **返回值**
 
@@ -136,7 +136,7 @@ virtual StatusCode getCustomAudio(CustomPublishTrack* push, IMeetCustomAudioTrac
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
 | push | CustomPublishTrack* | 自定义轨道配置 |
-| 返回值 | IMeetCustomAudioTrack** | 自定义音频轨道对象指针 |
+| （输出） | IMeetCustomAudioTrack** | 输出的自定义音频轨道对象指针 |
 
 **返回值**
 

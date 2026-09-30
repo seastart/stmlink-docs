@@ -63,4 +63,4 @@ description: "进程级引擎事件回调协议：音频路由变更、网络测
 
 | memory | 内存使用情况 |
 | --- | --- |
-| cpuUsage | CUP使用率 |
+| cpuUsage | CPU使用率 |

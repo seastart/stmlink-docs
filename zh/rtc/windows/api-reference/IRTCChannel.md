@@ -154,9 +154,9 @@ virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** 
 
 **参数**
 
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不通轨道对象，默认推流的desc |
+| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不同轨道对象，默认推流的desc |
 | --- | --- |
-| track | [视频轨道对象](./IRTCLocalScreenTrack.md) |
+| track | [视频轨道对象](./IRTCLocalCameraTrack.md) |
 
 
 
@@ -168,7 +168,7 @@ virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** 
 
 **参数**
 
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不通轨道对象,默认推流的desc |
+| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不同轨道对象,默认推流的desc |
 | --- | --- |
 | track | [屏幕轨道对象](./IRTCLocalScreenTrack.md) |
 
@@ -182,9 +182,9 @@ virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track
 
 **参数**
 
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不通轨道对象,默认推流的desc |
+| track_key | 本地音频轨道对象key，使用者维护此key。用于区分不同轨道对象,默认推流的desc |
 | --- | --- |
-| track | [麦克风轨道对象](./IRTCLocalAudioTrack.md) |
+| track | [麦克风轨道对象](./IRTCLocalMicTrack.md) |
 
 
 
@@ -241,7 +241,7 @@ virtual StatusCode subscribe(IRTCTrack* tk ) = 0;
 
 **参数**
 
-| tk | 流轨道信息[IRTCRemoteVideoTrack](#xvHeQ)，[IRTCRemoteAudioTrack](#mxOa1) |
+| tk | 流轨道信息[IRTCRemoteVideoTrack](./IRTCRemoteVideoTrack.md)，[IRTCRemoteAudioTrack](./IRTCRemoteAudioTrack.md) |
 | --- | --- |
 
 
@@ -252,7 +252,7 @@ virtual StatusCode unsubscribe(IRTCTrack* tk ) = 0;
 
 **参数**
 
-| tk | 流轨道信息[IRTCRemoteVideoTrack](#xvHeQ)，[IRTCRemoteAudioTrack](#mxOa1) |
+| tk | 流轨道信息[IRTCRemoteVideoTrack](./IRTCRemoteVideoTrack.md)，[IRTCRemoteAudioTrack](./IRTCRemoteAudioTrack.md) |
 | --- | --- |
 
 
@@ -263,7 +263,7 @@ virtual StatusCode publish(IRTCTrack* tk, RTCVideoPublishOptions* opt) = 0;
 
 **参数**
 
-| tk | 流轨道信息，[IRTCLocalCameraTrack](#D2C4E)，[IRTCLocalScreenTrack](#WYT3t)， |
+| tk | 流轨道信息，[IRTCLocalCameraTrack](./IRTCLocalCameraTrack.md)，[IRTCLocalScreenTrack](./IRTCLocalScreenTrack.md) |
 | --- | --- |
 | opt | 推流轨道参数，空为，默认推流参数，[RTCVideoPublishOptions](../types.md#视频轨道推流信息（RTCVideoPublishOptions）) |
 
@@ -275,9 +275,9 @@ virtual StatusCode publish(IRTCTrack* tk, RTCAudioPublishOptions* opt) = 0;
 
 **参数**
 
-| tk | 流轨道信息，[IRTCLocalMicTrack](#zLaZA) |
+| tk | 流轨道信息，[IRTCLocalMicTrack](./IRTCLocalMicTrack.md) |
 | --- | --- |
-| opt | 推流轨道参数，空为，默认推流参数，[RTCAudioPublishOptions](../types.md#音频轨道输出信息（RTCAudioOutputOptions）) |
+| opt | 推流轨道参数，空为，默认推流参数，[RTCAudioPublishOptions](/zh/rtc/windows/types#音频轨道推流信息（rtcaudiopublishoptions）) |
 
 
 注：两个 `publish` 重载不再带默认参数（原先 `publish(tk)` 本身就是二义调用、无法编译），调用时必须显式传 `opt`。

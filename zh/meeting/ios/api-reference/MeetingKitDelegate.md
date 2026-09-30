@@ -38,4 +38,4 @@ description: "会议组件全局事件回调协议：音频路由变更与应用
 | 参数 | 描述 |
 | --- | --- |
 | memory | 内存使用情况 |
-| cpuUsage | CUP使用率 |
+| cpuUsage | CPU使用率 |

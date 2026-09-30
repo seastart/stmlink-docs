@@ -178,7 +178,6 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 | 参数 | 描述 |
 | :--- | --- |
-| shareType | 共享类型，参考文档：[SEAShareType](/zh/meeting/ios/types#seasharetype) |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
@@ -245,7 +244,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 | 参数 | 描述 |
 | :--- | --- |
-| handupType | 聊天消息，参考文档：[SEAHandupType](/zh/meeting/ios/types#seahanduptype) |
+| handupType | 举手类型，参考文档：[SEAHandupType](/zh/meeting/ios/types#seahanduptype) |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
@@ -602,7 +601,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 | 参数 | 描述 |
 | :--- | --- |
-| watermarkDisabled | 房间水印状态，YES-开启 NO-关闭 |
+| watermarkDisabled | 房间水印禁用状态，YES-禁用 NO-启用 |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
@@ -887,7 +886,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 请求离开等候室
 
-用户离开等候室后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [onRoomUserEnterWaitingRoom:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理员用户。
+用户离开等候室后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomUserExitWaitingRoom:nickname:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理员用户。
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -1095,7 +1094,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 ### signInCreate:desc:onSuccess:onFailed:()
 `- (void)signInCreate:(NSInteger)dur desc:(nullable NSString *)desc onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
 
-创建签到活动，管理员可通过该接口创建签到活动（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的  [meetingRoom:onSignInActivity:epoch:beginAt:dur:endAt:desc:()]() 回调通知给全体会中成员。
+创建签到活动，管理员可通过该接口创建签到活动（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的  [meetingRoom:onSignInActivity:epoch:beginAt:dur:endAt:desc:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate#meetingroomonsigninactivityepochbeginatdurendatdesc) 回调通知给全体会中成员。
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -1112,7 +1111,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 | 参数 | 描述 |
 | :--- | --- |
-| onSuccess | 成功回调，参考文档：[SEASignInListModel]() |
+| onSuccess | 成功回调，参考文档：[SEASignInListModel](/zh/meeting/ios/types#seasigninlistmodel) |
 | onFailed | 失败回调 |
 
 
@@ -1124,14 +1123,14 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 | 参数 | 描述 |
 | :--- | --- |
 | epoch | 签到轮次，从0开始 |
-| onSuccess | 成功回调，参考文档：[SEASignInCountModel]() |
+| onSuccess | 成功回调，参考文档：[SEASignInCountModel](/zh/meeting/ios/types#seasignincountmodel) |
 | onFailed | 失败回调 |
 
 
 ### signInFinish:onFailed:()
 `- (void)signInFinish:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
 
-结束签到活动，管理员可通过该接口结束签到活动（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的  [meetingRoom:onSignInFinish:epoch:()]() 回调通知给全体会中成员。
+结束签到活动，管理员可通过该接口结束签到活动（只有主持人或联席主持人能够调用），SDK 会通过 `MeetingKitRoomDelegate` 中的  [meetingRoom:onSignInFinish:epoch:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate#meetingroomonsigninfinishepoch) 回调通知给全体会中成员。
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -1147,7 +1146,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 | 参数 | 描述 |
 | :--- | --- |
 | epoch | 签到轮次，从0开始 |
-| onSuccess | 成功回调，参考文档：[SEASignInDetailListModel]() |
+| onSuccess | 成功回调，参考文档：[SEASignInDetailListModel](/zh/meeting/ios/types#seasignindetaillistmodel) |
 | onFailed | 失败回调 |
 
 
@@ -1208,7 +1207,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 返回值说明：
 
-[SEARoomModel](/zh/meeting/ios/types#searoommodel) 用户数据。
+[SEARoomModel](/zh/meeting/ios/types#searoommodel) 房间详情数据。
 
 ### getDrawingHost()
 `- (NSString *)getDrawingHost`

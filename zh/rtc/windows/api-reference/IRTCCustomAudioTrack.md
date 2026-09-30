@@ -36,6 +36,6 @@ virtual StatusCode pushAudioFrame(int stmtype, unsigned char* buf, int buf_len, 
 ```cpp
 // 推送 OPUS 音频帧
 IRTCCustomAudioTrack* track = nullptr;
-engine->getCustomAudioTrack("my_custom_audio", &track);
+channel->getCustomAudioTrack("my_custom_audio", &track);  // channel 为已 join 的 IRTCChannel*
 track->pushAudioFrame(0x5355504F, audioData, audioSize, timestamp);
 ```

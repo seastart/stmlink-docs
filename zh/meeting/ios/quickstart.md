@@ -11,7 +11,7 @@ description: "iOS SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
 
 ### 环境准备
 + iOS 16.0 及以上版本（`2.1.0` 起，此前为 iOS 10.0）
-+ Xcode 10.0 及以上版本
++ Xcode 14.0 及以上版本
 
 <Warning>
 `2.1.0` 起 SDK 内置虚拟背景，最低系统要求由 iOS 10.0 提升到 **iOS 16.0**，接入工程的 `IPHONEOS_DEPLOYMENT_TARGET` 与 `Podfile` 的 `platform :ios` 都需要不低于 16.0，否则依赖无法参与解析。
@@ -338,9 +338,9 @@ self.room = nil;
 
 | **枚举类型** | **枚举值** | **描述** |
 | --- | :---: | --- |
-| SEAVideoStreamTypeBig | `0` | 高清大画面，一般用来传输摄像头的视频数据 |
-| SEAVideoStreamTypeSmall | `1` | 低清小画面，小画面和大画面的内容相同，但是分辨率和码率都比大画面低，因此清晰度也更低 |
-| SEAVideoStreamTypeScreen | `2` | 屏幕共享流 |
+| SEAVideoStreamTypeBig | `1` | 高清大画面，一般用来传输摄像头的视频数据 |
+| SEAVideoStreamTypeSmall | `2` | 低清小画面，小画面和大画面的内容相同，但是分辨率和码率都比大画面低，因此清晰度也更低 |
+| SEAVideoStreamTypeScreen | `3` | 屏幕共享流 |
 
 
 #### 取消订阅远端用户画面

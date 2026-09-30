@@ -5,7 +5,7 @@ description: "Windows SMeeting SDK 引擎级 C++ 接口参考"
 
 `ISMeetingEngine` 是 SDK 引擎对象，负责登录会话、会议管理 HTTP 接口、频道生命周期、设备枚举、IM、资源盘等引擎级能力。
 
-所有会中操作和媒体对象都在 [ISMeetingChannel](smeeting-channel) 中。
+所有会中操作和媒体对象都在 [ISMeetingChannel](/zh/meeting/windows/api-reference/smeeting-channel) 中。
 
 ---
 

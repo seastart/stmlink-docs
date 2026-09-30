@@ -38,7 +38,7 @@ virtual void* getHwnd() = 0;
 | --- | --- |
 
 
-注：仅再ViewType() 返回HWND 生效
+注：仅在 ViewType() 返回HWND 生效
 
 
 
@@ -57,7 +57,7 @@ virtual void updatePlanes(const unsigned char* buf, int w, int h, int fourcc, in
 | label | int | 数据角度 |
 
 
-注：仅再ViewType() 返回CallBack 生效
+注：仅在 ViewType() 返回CallBack 生效
 
 
 
@@ -74,5 +74,5 @@ virtual void updateFull(int r, int g, int b) = 0;
 | b | int | 蓝颜色（0-255） |
 
 
-注：仅再ViewType() 返回CallBack 生效
+注：仅在 ViewType() 返回CallBack 生效
 

@@ -3,7 +3,7 @@ title: "主持人管理接口"
 description: "Windows SMeeting SDK 主持人 / 管理员 C++ 接口参考"
 ---
 
-以下接口均在 [ISMeetingChannel](smeeting-channel) 上调用，仅主持人或具有相应权限的用户可执行。
+以下接口均在 [ISMeetingChannel](/zh/meeting/windows/api-reference/smeeting-channel) 上调用，仅主持人或具有相应权限的用户可执行。
 
 ---
 

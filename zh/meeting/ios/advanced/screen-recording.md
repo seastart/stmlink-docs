@@ -4,7 +4,7 @@ description: "iOS SMeeting 会议 SDK 屏幕录制功能配置指南"
 ---
 
 ## 开发环境准备
-Xcode 12及以上的版本，手机也必须升级至 iOS 12 以上，否则无法使用录屏特性。
+Xcode 14.0 及以上的版本；手机需为 iOS 16.0 及以上（SDK 自 `2.1.0` 起的最低系统要求；`2.1.0` 之前的版本需 iOS 12 以上才能使用录屏特性）。
 
 #### 创建扩展程序
 在现有工程选择【New】->【Target…】，选择【Broadcast Upload Extension】，如图所示：

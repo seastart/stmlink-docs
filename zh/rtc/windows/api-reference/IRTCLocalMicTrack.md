@@ -44,7 +44,7 @@ virtual StatusCode startCapture(RTCMicCaptureOptions* cap = nullptr) = 0;
 
 **参数**
 
-| cap | 视频轨道采集对象[查看](../types.md#音频轨道采集信息（RTCMicCaptureOptions）) |
+| cap | 音频轨道采集对象[查看](../types.md#音频轨道采集信息（RTCMicCaptureOptions）) |
 | --- | --- |
 
 

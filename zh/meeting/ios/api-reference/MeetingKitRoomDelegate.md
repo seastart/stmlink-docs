@@ -182,8 +182,8 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 | 参数 | 描述 |
 | --- | --- |
 | room | 事件来源房间实例 |
-| cameraDisabled | 房间音频禁用状态，YES-禁用 NO-不禁用 |
-| selfUnmuteCameraDisabled | 是否禁止自我解除音频状态，YES-禁止 NO-不禁止 |
+| micDisabled | 房间音频禁用状态，YES-禁用 NO-不禁用 |
+| selfUnmuteMicDisabled | 是否禁止自我解除音频状态，YES-禁止 NO-不禁止 |
 | userId | 操作者标识 |
 
 
@@ -309,7 +309,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 
 当参会成员调用 `MeetingKitRoom` 中的 `stopShare:onFailed:()` 接口执行关闭共享操作后，SDK 会抛出该事件通知您。
 
-> 特别说明：如果共享成员在未结束共享情况直接执行离开房间操作，此时其他成员会先收到 `stopShare:onFailed:()` 事件通知再收到 `onUserExit:`事件通知。
+> 特别说明：如果共享成员在未结束共享情况直接执行离开房间操作，此时其他成员会先收到 `meetingRoom:onRoomShareStop:shareType:()` 事件通知再收到 `meetingRoom:onUserExit:()` 事件通知。
 >
 
 | 参数 | 描述 |
@@ -345,7 +345,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 | room | 事件来源房间实例 |
 | userId | 成员标识 |
 | enable | 举手状态，YES-申请举手 NO-取消举手 |
-| shareType | 举手申请类型，参考文档：[SEAHandupType](/zh/meeting/ios/types#seahanduptype) |
+| handupType | 举手申请类型，参考文档：[SEAHandupType](/zh/meeting/ios/types#seahanduptype) |
 
 
 ### meetingRoom:onRoomSubMeetingStart:title:conferee:()
@@ -353,7 +353,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 
 房间讨论组开始回调
 
-当成员调用 `MeetingKitRoom` 中的 `adminStartSubMeeting:onSuccess:onFailed:()` 接口执行开始小组会议操作后，SDK 会抛出该事件通知您。
+当主持人或联席主持人调用 `MeetingKitRoom` 中的 `adminStartSubMeeting:onSuccess:onFailed:()` 接口执行开始小组会议操作后，SDK 会抛出该事件通知您。
 
 | 参数 | 描述 |
 | --- | --- |
@@ -368,7 +368,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 
 房间讨论组结束回调
 
-当成员调用 `MeetingKitRoom` 中的 `adminStopSubMeeting:onSuccess:onFailed:()` 接口执行结束小组会议操作后，SDK 会抛出该事件通知您。
+当主持人或联席主持人调用 `MeetingKitRoom` 中的 `adminStopSubMeeting:onSuccess:onFailed:()` 接口执行结束小组会议操作后，SDK 会抛出该事件通知您。
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -541,7 +541,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 
 远端用户离开等候室回调
 
-用户通过 `MeetingKitRoom` 中的 `exitWaitingRoom:onSuccess:onFailed:()` 接口执行离开等候室操作，房间内管理员会接收到 SDK 抛出的该事件通知。
+用户通过 `MeetingKitRoom` 中的 `exitWaitingRoom:onSuccess:()` 接口执行离开等候室操作，房间内管理员会接收到 SDK 抛出的该事件通知。
 
 | 参数 | 描述 |
 | :--- | --- |
@@ -739,7 +739,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 | 参数 | 描述 |
 | --- | --- |
 | room | 事件来源房间实例 |
-| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel]() |
+| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel](/zh/meeting/ios/types#seastreamqualitymodel) |
 
 
 ### meetingRoom:onReceiveQualityModel:()
@@ -752,7 +752,7 @@ description: "会议房间事件回调协议：进出房间、房间设置与主
 | 参数 | 描述 |
 | --- | --- |
 | room | 事件来源房间实例 |
-| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel]() |
+| qualityModel | 流媒体质量数据，参考文档：[SEAStreamQualityModel](/zh/meeting/ios/types#seastreamqualitymodel) |
 
 
 ### meetingRoom:onReceiveStreamStatusChange:streamType:status:()

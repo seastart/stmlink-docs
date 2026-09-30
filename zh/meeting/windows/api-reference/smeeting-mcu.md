@@ -3,7 +3,7 @@ title: "MCU 接口"
 description: "Windows SMeeting SDK MCU 合成视频 C++ 接口参考"
 ---
 
-以下接口均在 [ISMeetingChannel](smeeting-channel) 上调用。
+以下接口均在 [ISMeetingChannel](/zh/meeting/windows/api-reference/smeeting-channel) 上调用。
 
 ---
 

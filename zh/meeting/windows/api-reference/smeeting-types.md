@@ -38,9 +38,9 @@ description: "Windows SMeeting SDK C++ 枚举类型与数据结构参考"
 | 101202 | VideoCapturerError | 视频采集器错误 |
 | 101203 | NotFindStreamTrack | 未找到流轨道 |
 | 101204 | ExceedingSpecifiedQuantity | 超出指定数量 |
-| 201000 | SDKMeetingFail | SDK 会议失败 |
-| 201001 | MeetingStatusReject | 会议状态拒绝 |
-| 201002 | MeetingHostFail | 主持人失败 |
+| 201000 | SDKMeetingFail | sdk 内部错误 |
+| 201001 | MeetingStatusReject | 房间权限拒绝 |
+| 201002 | MeetingHostFail | host 异常或未设置 |
 
 ### DisconnectReason
 
@@ -148,7 +148,7 @@ description: "Windows SMeeting SDK C++ 枚举类型与数据结构参考"
 | content | std::string | 会议内容 | - |
 | password | std::string | 密码 | - |
 | meeting_type | int | 会议类型 (1:临时 2:预约) | 1 |
-| meeting_mode | int | 会议模式 (1:普通 2:合成 3:培训 4:培训 5:小组) | 1 |
+| meeting_mode | int | 会议模式 (1:普通 2:合成 3:语音 4:培训 5:小组) | 1 |
 | plan_time | long long | 计划时间 (Unix 时间戳) | 0 |
 | plan_dur | int | 计划时长 | 0 |
 | conferee | `std::vector<std::string>` | 与会者列表 | - |
@@ -160,7 +160,7 @@ description: "Windows SMeeting SDK C++ 枚举类型与数据结构参考"
 | screenshot_disabled | bool | 是否禁用截屏 | false |
 | chat_disabled | bool | 是否禁用聊天 | false |
 | auto_record | bool | 是否自动录制 | true |
-| attend_type | int | 参会类型 (1:允许 3:禁止) | 1 |
+| attend_type | int | 参会限制 (1:不限制 3:仅受邀人员) | 1 |
 | waiting_room_disabled | bool | 是否禁用等候室 | true |
 | enter_before_host_disabled | bool | 是否禁止主持人前进入 | false |
 | parent | std::string | 父会议 ID | - |

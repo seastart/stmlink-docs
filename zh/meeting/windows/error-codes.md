@@ -28,7 +28,7 @@ description: "Windows SMeeting 会议 SDK 错误码枚举与处理说明"
 | NotSupport | 101006 | SDK暂时不支持 |
 | DealBeQuick | 101007 | 执行操作过快 |
 | MoudelNotSupport | 101008 | 当前流媒体模式不支持 |
-| BeforeSetting | 101009 | 再入会前进行设置 |
+| BeforeSetting | 101009 | 在入会前进行设置 |
 | ChannelJoinError | 101100 | 频道加入错误 |
 | ChannelJoinTimeOut | 101101 | 频道加入超时 |
 | StreamJoinError | 101200 | 流媒体加入异常 |
@@ -36,7 +36,7 @@ description: "Windows SMeeting 会议 SDK 错误码枚举与处理说明"
 | VideoCapturerError | 101202 | 摄像头异常 |
 | NotFindStreamTrack | 101203 | 没有指定流id |
 | ExceedingSpecifiedQuantity | 101204 | 超过规定数量 |
-| **windows错误码（SMEET）****** | | |
+| **windows错误码（SMEET）** | | |
 | SDKMeetingFail | 201000 | sdk 内部错误 |
 | MeetingStatusReject | 201001 | 房间权限拒绝 |
 | MeetingHostFail | 201002 | host 异常或未设置 |

@@ -3,7 +3,7 @@ title: "签到接口"
 description: "Windows SMeeting SDK 签到 C++ 接口参考"
 ---
 
-以下接口均在 [ISMeetingChannel](smeeting-channel) 上调用。
+以下接口均在 [ISMeetingChannel](/zh/meeting/windows/api-reference/smeeting-channel) 上调用。
 
 ---
 

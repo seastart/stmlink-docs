@@ -1,6 +1,6 @@
 ---
 title: "IRTCEngine"
-description: "Windows 音视频 SDK 的核心接口：创建与释放实例、频道进出、成员信息查询、媒体控制"
+description: "Windows 音视频 SDK 的核心接口：创建与释放实例、频道创建与退出、网络测速、设备枚举、日志上传"
 ---
 
 
@@ -48,7 +48,6 @@ RTCENGINE_API StatusCode RTCENGINE_CALL RTCEngine_Version(const char*v1);
 
 注：需要传入的时候需要外面分配内存，至少100长度
 
-### 
 ### 获取错误码描述
 ```cpp
 RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetStatusMsg(StatusCode code, char* msg);
@@ -148,7 +147,7 @@ virtual StatusCode getChannelIds(char** s, int* c) = 0;
 | downindex | 测速下行（单位KB），0 为不进行此项测速 |
 
 
-注：测速结果将在[回调](./IRTCEngineEvent.md#上行统计回调)内返回
+注：测速结果将在[回调](./IRTCEngineEvent.md#网络探测结果回调)内返回
 
 
 

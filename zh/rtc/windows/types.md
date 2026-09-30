@@ -79,7 +79,7 @@ struct RTCEngineOptions {
 | noiseSuppression | int | ans，噪声抑制 |
 | autoGainControl | int | agc，自动增益 |
 | channelCount | int | 声道数 |
-| sampleRate | int | 采样波特率 |
+| sampleRate | int | 采样率 |
 | sampleSize | int | 采样位深 |
 
 
@@ -141,12 +141,11 @@ stream_track
 | height | int | 高度 |
 | id | string | 流id |
 | kind | string | 流类型 |
-| sample_rate | int | 音频波特率 |
+| sample_rate | int | 音频采样率 |
 | track | int | 轨道号 |
 | width | int | 宽度 |
 
 
-### 
 ### 摄像头枚举信息
 ```json
 {
@@ -246,7 +245,7 @@ av_frame_s
 
 
 ### 上行回调
-| delay | int | 延迟,delay = -1 表示流媒体短线 |
+| delay | int | 延迟,delay = -1 表示流媒体断线 |
 | --- | --- | --- |
 | rate | int | 速率 |
 | first_lost | double | 丢包 |
@@ -270,7 +269,7 @@ av_frame_s
 | comp | int | 补偿包数 |
 | losf | int | 总丢包 |
 | lr1 | double | 端到端丢包 |
-| lr2 | double | 服务到段丢包 |
+| lr2 | double | 服务端到本端丢包 |
 | recv | int | 总包 |
 | userid | std::string | userid |
 
@@ -317,7 +316,7 @@ av_frame_s
 | stream | int | 流媒体是否正常 |
 | network | int | 网络 |
 | delay | int | 延迟 |
-| up_data | | 上行数据集合 |
+| up_data | obj | 上行数据集合 |
 | up_data.delay | int | 延迟 |
 | up_data.recv | int | 接收包数 |
 | up_data.miss | int | 错续包数 |
@@ -326,7 +325,7 @@ av_frame_s
 | up_data.losf2 | double | 丢包率 |
 | up_data.status | int | 综合状态值，0 好，1不佳，2 较差，3极差 |
 | up_data.test_data | int | 测试速率 |
-| down_data | int | 下行数据集合 |
+| down_data | obj | 下行数据集合 |
 | down_data.delay | int | 延迟 |
 | down_data.recv | int | 接收包数 |
 | down_data.miss | int | 错续包数 |

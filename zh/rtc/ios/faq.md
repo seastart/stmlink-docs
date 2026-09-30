@@ -4,10 +4,9 @@ description: "iOS SRTC 音视频 SDK 集成与使用常见问题解答"
 ---
 
 #### 1、集成SDK，Build失败问题
-> 目前SDK最低版本支持10.0及以上Xcode 12.0以上。请确保配置达到要求。另外Bitcode编译需要改为NO。
+> 目前SDK最低支持 iOS 16.0 及以上（`3.1.0` 起，此前为 iOS 10.0），Xcode 14.0 及以上。请确保配置达到要求。另外Bitcode编译需要改为NO。
 >
 
-#### 
 #### 2、网络授权后网络请求失败可能原因
 > 需要在info.plist中加入如下配置：
 >
@@ -27,7 +26,7 @@ description: "iOS SRTC 音视频 SDK 集成与使用常见问题解答"
 
 
 #### 4、手动集成时出现启动异常崩溃：dyld: Library not loaded: @rpath/xxxxx.framework/xxxxx
-> 解决方案：需要在General->Framworks，Libraries,and Embedded Content 中添加依赖关系，并将对应动态库Embed设置为Embed&Sign
+> 解决方案：需要在General -> Frameworks, Libraries, and Embedded Content 中添加依赖关系，并将对应动态库 Embed 设置为 Embed & Sign
 >
 
 ![](images/162287_1646648601308-e47d7e73-d5c2-499d-baf0-7c46925be1bb.png)

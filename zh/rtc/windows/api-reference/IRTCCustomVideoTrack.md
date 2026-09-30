@@ -37,6 +37,6 @@ virtual StatusCode pushVideoFrame(int stmtype, unsigned char* buf, int buf_len, 
 ```cpp
 // 推送 H264 关键帧
 IRTCCustomVideoTrack* track = nullptr;
-engine->getCustomVideoTrack("my_custom_track", &track);
+channel->getCustomVideoTrack("my_custom_track", &track);  // channel 为已 join 的 IRTCChannel*
 track->pushVideoFrame(0x1b, frameData, frameSize, 1, timestamp);
 ```

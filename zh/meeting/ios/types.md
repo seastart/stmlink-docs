@@ -20,14 +20,14 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | **属性名称** | **描述** |
 | --- | --- |
 | roomId | 【字段含义】房间标识<br/>【推荐取值】云端生成<br/>【特别说明】创建房间时无需设置该字段，更新房间信息时，该字段为必传项。 |
-| roomNo | 【字段含义】房间号码<br/>【推荐取值】云端生成<br/>【特别说明】创建和更新房间信息时无需设置改字段。 |
+| roomNo | 【字段含义】房间号码<br/>【推荐取值】云端生成<br/>【特别说明】创建和更新房间信息时无需设置该字段。 |
 | title | 【字段含义】会议标题<br/>【推荐取值】创建房间时，该字段为必传项。<br/>【特别说明】可用于列表等会议显示标题使用，使用 UTF-8 编码。 |
 | content | 【字段含义】会议说明<br/>【特别说明】可用于列表等会议显示说明使用，使用 UTF-8 编码。 |
 | password | 【字段含义】会议密码<br/>【特别说明】创建房间时，如果设置了参会密码，用户加入会议时同样需要匹配密码才可以正确加入会议。 |
-| meetingType | 【字段含义】会议类型<br/>【推荐取值】默认值：[SEAMeetingTypeInitiate](#WHxwQ) |
+| meetingType | 【字段含义】会议类型<br/>【推荐取值】默认值：[SEAMeetingTypeInitiate](#seameetingtype) |
 | beginTime | 【字段含义】会议开始时间<br/>【推荐取值】当会议类型为`预约会议`时，为必传项。<br/>【特别说明】开始时间 unix 时间戳 |
 | endTime | 【字段含义】会议结束时间<br/>【推荐取值】当会议类型为`预约会议`时，为必传项。<br/>【特别说明】结束时间 unix 时间戳 |
-| entryMutePolicy | 【字段含义】入会静音状态<br/>【推荐取值】默认值：[SEAMeetingMuteState3](#TRTMj) |
+| entryMutePolicy | 【字段含义】入会静音状态<br/>【推荐取值】默认值：[SEAMeetingMuteState3](#seameetingmutestate) |
 | watermarkDisabled | 【字段含义】房间水印禁用状态<br/>【推荐取值】默认值：YES |
 | screenshotDisabled | 【字段含义】房间截屏禁用状态<br/>【推荐取值】默认值：NO |
 | chatDisabled | 【字段含义】房间聊天禁用状态<br/>【推荐取值】默认值：NO |
@@ -38,7 +38,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 ### SEAMeetingEnterParam
 加入会议参数
 
-该参数是创建房间与更新房间时的必传参数。
+该参数是调用 `MeetingKitRoom` 的 `enterRoom:onSuccess:onFailed:()` 加入会议时的必传参数。
 
 | **属性名称** | **描述** |
 | --- | --- |
@@ -59,10 +59,10 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | userId | 【字段含义】用户标识<br/>【特别说明】此字段为用户的全局唯一标识。 |
 | name | 【字段含义】用户名称<br/>【特别说明】作为用户昵称使用，使用 UTF-8 编码。 |
 | meetingRoom | 【字段含义】成员所属会议房间，请参见 [MeetingKitRoom](/zh/meeting/ios/api-reference/MeetingKitRoom)<br/>【特别说明】自 `2.0.0` 起新增，用于解析该成员在所属房间内的共享状态；同一 userId 出现在多个房间时据此区分。 |
-| micState | 【字段含义】麦克风状态，请参见 [SEADeviceState](#kiwuX) 中的相关说明。 |
-| cameraState | 【字段含义】摄像头状态，请参见 [SEADeviceState](#kiwuX) 中的相关说明。 |
-| shareType | 【字段含义】共享状态，请参见 [SEAShareType](#Ww9uW) 中的相关说明。 |
-| extend | 【字段含义】扩展属性<br/>【特别说明】用户的扩展数据属性，请参见 [SEAUserExtend](#o3005) 中的相关说明。 |
+| micState | 【字段含义】麦克风状态，请参见 [SEADeviceState](#seadevicestate) 中的相关说明。 |
+| cameraState | 【字段含义】摄像头状态，请参见 [SEADeviceState](#seadevicestate) 中的相关说明。 |
+| shareType | 【字段含义】共享状态，请参见 [SEAShareType](#seasharetype) 中的相关说明。 |
+| extend | 【字段含义】扩展属性<br/>【特别说明】用户的扩展数据属性，请参见 [SEAUserExtend](#seauserextend) 中的相关说明。 |
 
 
 ### SEAUserExtend
@@ -70,7 +70,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| role | 【字段含义】参会角色<br/>【特别说明】标识着用户的会中角色，请参见 [SEAUserRole](#QsCHa) 中的相关说明。 |
+| role | 【字段含义】参会角色<br/>【特别说明】标识着用户的会中角色，请参见 [SEAUserRole](#seauserrole) 中的相关说明。 |
 | avatar | 【字段含义】参会头像<br/>【特别说明】该参数由用户在加入房间接口中设置，使用 UTF-8 编码。 |
 | isKickout | 【字段含义】是否被踢出 |
 | chatDisabled | 【字段含义】聊天能力禁用状态，YES-禁用 NO-不禁用 |
@@ -83,7 +83,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| extend | 【字段含义】扩展属性<br/>【特别说明】房间的扩展数据属性，请参见 [SEARoomExtend](#DG1TX) 中的相关说明。 |
+| extend | 【字段含义】扩展属性<br/>【特别说明】房间的扩展数据属性，请参见 [SEARoomExtend](#searoomextend) 中的相关说明。 |
 
 
 ### SEARoomExtend
@@ -95,10 +95,10 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | roomNo | 【字段含义】房间号码 |
 | title | 【字段含义】会议标题 |
 | content | 【字段含义】会议说明 |
-| meetingType | 【字段含义】会议类型<br/>【特别说明】标识会议类型，请参见 [SEAMeetingType](#WHxwQ) 中的相关说明。 |
+| meetingType | 【字段含义】会议类型<br/>【特别说明】标识会议类型，请参见 [SEAMeetingType](#seameetingtype) 中的相关说明。 |
 | beginTime | 【字段含义】开始时间 |
 | endTime | 【字段含义】结束时间 |
-| entryMutePolicy | 【字段含义】入会静音状态<br/>【特别说明】当前会议参会静音状态，请参见 [SEAMeetingMuteState](#TRTMj) 中的相关说明。 |
+| entryMutePolicy | 【字段含义】入会静音状态<br/>【特别说明】当前会议参会静音状态，请参见 [SEAMeetingMuteState](#seameetingmutestate) 中的相关说明。 |
 | watermarkDisabled | 【字段含义】房间水印禁用状态，YES-禁用 NO-不禁用 |
 | screenshotDisabled | 【字段含义】房间截屏禁用状态，YES-禁用 NO-不禁用 |
 | chatDisabled | 【字段含义】聊天能力禁用状态，YES-禁用 NO-不禁用 |
@@ -111,12 +111,12 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | parentMid | 【字段含义】上级会议标识 |
 | enterBeforeHostDisabled | 【字段含义】是否禁止在主持人之前入会，YES-禁止 NO-不禁止 |
 | locked | 【字段含义】会议锁定状态，YES-开启 NO-关闭 |
-| shareType | 【字段含义】共享类型<br/>【特别说明】标识当前会议共享类型，请参见 [SEAShareType](#Ww9uW) 中的相关说明。 |
+| shareType | 【字段含义】共享类型<br/>【特别说明】标识当前会议共享类型，请参见 [SEAShareType](#seasharetype) 中的相关说明。 |
 | shareUid | 【字段含义】共享者标识<br/>【特别说明】标识当前会议正在共享者的用户标识 |
 | creator | 【字段含义】创建者的用户标识 |
 | hostUid | 【字段含义】主持人的用户标识 |
 | unionHosts | 【字段含义】会议联席主持人用户标识列表 |
-| signInActivityLists | 【字段含义】房间签到活动列表，详情参考：[SEASignInActivityModel]() |
+| signInActivityLists | 【字段含义】房间签到活动列表，详情参考：[SEASignInActivityModel](#seasigninactivitymodel) |
 | hasSignInActivity | 【字段含义】房间是否存在进行中的签到活动 |
 | extend | 【字段含义】扩展信息 |
 
@@ -128,7 +128,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | --- |
 | userId | 【字段含义】用户标识 |
 | deviceId | 【字段含义】设备标识 |
-| deviceType | 【字段含义】设备类型<br/>【特别说明】标识当前设备类型，请参见 [SEADeviceType](#xpfl9) 中的相关说明。 |
+| deviceType | 【字段含义】设备类型<br/>【特别说明】标识当前设备类型，请参见 [SEADeviceType](#seadevicetype) 中的相关说明。 |
 | expAt | 【字段含义】过期时间 |
 
 
@@ -160,7 +160,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | messageId | 【字段含义】消息标识 |
 | meetingId | 【字段含义】会议标识 |
 | message | 【字段含义】消息内容 |
-| messageType | 【字段含义】消息类型，详情参考：[SEAMessageType](#xlxGu) |
+| messageType | 【字段含义】消息类型，详情参考：[SEAMessageType](#seamessagetype) |
 | senderId | 【字段含义】发送者标识 |
 | senderName | 【字段含义】发送者昵称 |
 | createdAt | 【字段含义】创建时间 |
@@ -171,8 +171,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
-| listData | 【字段含义】聊天消息对象列表，详情参考：[SEAChatModel](#dseM1) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#seasectionmodel) |
+| listData | 【字段含义】聊天消息对象列表，详情参考：[SEAChatModel](#seachatmodel) |
 
 
 ### SEAMeetingModel
@@ -193,8 +193,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
-| listData | 【字段含义】会议信息对象列表，详情参考：[SEAMeetingModel](#NwAZR) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#seasectionmodel) |
+| listData | 【字段含义】会议信息对象列表，详情参考：[SEAMeetingModel](#seameetingmodel) |
 
 
 ### SEAMemberModel
@@ -214,8 +214,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
-| listData | 【字段含义】参会成员对象列表，详情参考：[SEAMemberModel](#LfPnO) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#seasectionmodel) |
+| listData | 【字段含义】参会成员对象列表，详情参考：[SEAMemberModel](#seamembermodel) |
 
 
 ### SEAStreamAudioModel
@@ -236,7 +236,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | buffer | 【字段含义】上传缓冲包数 |
 | delay | 【字段含义】上传延迟 |
 | overflow | 【字段含义】溢出缓冲包数 |
-| speed | 【字段含义】上传速率<br/>【特别说明】单位为 kps |
+| speed | 【字段含义】上传速率<br/>【特别说明】单位为 kbps |
 | status | 【字段含义】上传状态 |
 | loss_r | 【字段含义】补偿前丢包率 |
 | loss_c | 【字段含义】补偿后丢包率 |
@@ -280,8 +280,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | --- |
 | deviceId | 【字段含义】设备ID |
 | name | 【字段含义】设备名称 |
-| type | 【字段含义】设备类型，请参见 [SEAAgentType](#rv0G4) 中的相关说明。 |
-| status | 【字段含义】设备状态，请参见 [SEAAgentStatus](#rW3P0) 中的相关说明。 |
+| type | 【字段含义】设备类型，请参见 [SEAAgentType](#seaagenttype) 中的相关说明。 |
+| status | 【字段含义】设备状态，请参见 [SEAAgentStatus](#seaagentstatus) 中的相关说明。 |
 | contact | 【字段含义】设备标识 |
 | remark | 【字段含义】设备备注 |
 | connectParams | 【字段含义】连接参数 |
@@ -292,8 +292,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#aObbp) |
-| listData | 【字段含义】设备对象列表，详情参考：[SEAAgentModel](#YRsDA) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#seasectionmodel) |
+| listData | 【字段含义】设备对象列表，详情参考：[SEAAgentModel](#seaagentmodel) |
 
 
 ### SEAInviteModel
@@ -302,7 +302,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | **属性名称** | **描述** |
 | --- | --- |
 | contact | 【字段含义】设备标识 |
-| type | 【字段含义】设备类型，详情参考：[SEAAgentType](#rv0G4) |
+| type | 【字段含义】设备类型，详情参考：[SEAAgentType](#seaagenttype) |
 
 
 ### SEAConfereeModel
@@ -321,9 +321,9 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | --- |
 | layout | 【字段含义】布局类型，默认 auto |
 | isPolling | 【字段含义】是否轮询，默认 NO |
-| watermark | 【字段含义】布局水印，详情参考：[SEALayoutWatermarkModel](#ktKP5) |
-| label | 【字段含义】布局标签，详情参考：[SEALayoutLabelModel](#PfK8y) |
-| viewLists | 【字段含义】布局视图列表，即：逻辑块, 包含宫格与用户<br/>【特别说明】布局视图列表，请参见 [SEALayoutViewListModel](#Ww9uW) 中的相关说明。 |
+| watermark | 【字段含义】布局水印，详情参考：[SEALayoutWatermarkModel](#sealayoutwatermarkmodel) |
+| label | 【字段含义】布局标签，详情参考：[SEALayoutLabelModel](#sealayoutlabelmodel) |
+| viewLists | 【字段含义】布局视图列表，即：逻辑块, 包含宫格与用户<br/>【特别说明】布局视图列表，请参见 [SEALayoutViewListModel](#sealayoutviewlistmodel) 中的相关说明。 |
 
 
 ### SEALayoutWatermarkModel
@@ -354,7 +354,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| itemLists | 【字段含义】视图列表单元格<br/>【特别说明】单元格列表，请参见 [SEALayoutViewListCellModel](#NpDKM) 中的相关说明。 |
+| itemLists | 【字段含义】视图列表单元格<br/>【特别说明】单元格列表，请参见 [SEALayoutViewListCellModel](#sealayoutviewlistcellmodel) 中的相关说明。 |
 | userIds | 【字段含义】成员标识列表 |
 
 
@@ -365,7 +365,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | --- |
 | index | 【字段含义】格子序号<br/>【特别说明】排序规则按HTML中标签的顺序，默认 0 |
 | bindShare | 【字段含义】是否优先绑定会议内的共享流，默认 NO |
-| label | 【字段含义】单元格标签，详情参考：[SEALayoutLabelModel](#PfK8y) |
+| label | 【字段含义】单元格标签，详情参考：[SEALayoutLabelModel](#sealayoutlabelmodel) |
 
 
 ### SEACloudRecordParam
@@ -375,9 +375,9 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| recordType | 【字段含义】录制类型<br/>【推荐取值】默认：[SEARecordTypeVideo](#QYWNw) |
+| recordType | 【字段含义】录制类型<br/>【推荐取值】默认：[SEARecordTypeVideo](#searecordtype) |
 | title | 【字段含义】录制文件标题 |
-| layoutData | 【字段含义】录制布局<br/>【推荐取值】详情可参考：[SEALayoutDataModel](#SobrR) |
+| layoutData | 【字段含义】录制布局<br/>【推荐取值】详情可参考：[SEALayoutDataModel](#sealayoutdatamodel) |
 
 
 ### SEACloudRecordDetailsModel
@@ -391,7 +391,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | title | 【字段含义】录制文件标题 |
 | opUid | 【字段含义】操作人标识 |
 | opName | 【字段含义】操作人名称 |
-| recordStatus | 【字段含义】云录制状态，详情参考：[SEARecordStatus](#XOsJa) |
+| recordStatus | 【字段含义】云录制状态，详情参考：[SEARecordStatus](#searecordstatus) |
 | videoKey | 【字段含义】视频地址 |
 | videoSize | 【字段含义】视频大小 |
 | tags | 【字段含义】录制标签 |
@@ -433,8 +433,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | int aec | 否 | 回声消除AEC，默认 12 |
 | int agc | 否 | 自动增益控制AGC，默认 16000 |
 | int audioSampe | 否 | 音频采样率，默认 48000 |
-| [SEACodecType](#bolP1) audioEncode | 否 | 音频编码格式，默认 AAC |
-| [SEAAudioRoute](#HhTLs) audioRoute | 否 | 无外设时的默认内置音频路由，支持扬声器或听筒，默认 SEAAudioRouteReceiver |
+| [SEACodecType](#seacodectype) audioEncode | 否 | 音频编码格式，默认 AAC |
+| [SEAAudioRoute](#seaaudioroute) audioRoute | 否 | 无外设时的默认内置音频路由，支持扬声器或听筒，默认 SEAAudioRouteReceiver |
 | int videoWidth | 否 | 分辨率宽，默认 480 |
 | int videoHeight | 否 | 分辨率高，默认 640 |
 | BOOL videoMirror | 否 | 视频镜像，默认 YES |
@@ -453,7 +453,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | BOOL isHardwarede | 否 | 开启硬件解码 YES开启 NO关闭，默认 YES |
 | BOOL isNetworkAdaptive | 否 | 开启网络自适应延迟 YES开启 NO关闭，默认 YES |
 | BOOL isBitrateAdaptive | 否 | 开启码率自适应 YES开启 NO关闭，默认 YES |
-| [SEANetworkQosShakeLevel](#CVdPk) shakeLevel | 否 | 网络延时抗抖动等级，默认 SEANetworkQosShakeLevelMedium |
+| [SEANetworkQosShakeLevel](#seanetworkqosshakelevel) shakeLevel | 否 | 网络延时抗抖动等级，默认 SEANetworkQosShakeLevelMedium |
 
 
 ### SEADebugParam
@@ -482,7 +482,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| listData | 【字段含义】等候室成员对象列表，详情参考：[SEAWaitingRoomMemberModel](#BomRa) |
+| listData | 【字段含义】等候室成员对象列表，详情参考：[SEAWaitingRoomMemberModel](#seawaitingroommembermodel) |
 
 
 ### SEARoomSubMeetingModel
@@ -494,8 +494,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | meetingId | 【字段含义】小组会议标识 |
 | parentMid | 【字段含义】主会议标识 |
 | title | 【字段含义】小组会议名称 |
-| meetingStatus | 【字段含义】小组会议状态，详情参考：[SEAMeetingStatus](#YzZHH) |
-| conferee | 【字段含义】小组会议参会成员列表，详情参考：[SEAConfereeModel](#ipu1S) |
+| meetingStatus | 【字段含义】小组会议状态，详情参考：[SEAMeetingStatus](#seameetingstatus) |
+| conferee | 【字段含义】小组会议参会成员列表，详情参考：[SEAConfereeModel](#seaconfereemodel) |
 
 
 ### SEARoomSubMeetingListModel
@@ -503,7 +503,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| listData | 【字段含义】小组会议对象列表，详情参考：[SEARoomSubMeetingModel](#n9tEd) |
+| listData | 【字段含义】小组会议对象列表，详情参考：[SEARoomSubMeetingModel](#searoomsubmeetingmodel) |
 
 
 ### SEAOnlineMemberModel
@@ -513,7 +513,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | --- |
 | userId | 【字段含义】用户标识 |
 | nickname | 【字段含义】用户昵称 |
-| deviceType | 【字段含义】设备类型，详情参考：[SEADeviceType](#xpfl9) |
+| deviceType | 【字段含义】设备类型，详情参考：[SEADeviceType](#seadevicetype) |
 | joinAt | 【字段含义】加入时间 |
 
 
@@ -522,8 +522,8 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](https://www.yuque.com/anyconf/smeeting/gkeau9oyh5vms80z#aObbp) |
-| listData | 【字段含义】在线成员对象列表，详情参考：[SEAOnlineMemberModel](#DpBFV) |
+| meta | 【字段含义】数据分页对象，详情参考：[SEASectionModel](#seasectionmodel) |
+| listData | 【字段含义】在线成员对象列表，详情参考：[SEAOnlineMemberModel](#seaonlinemembermodel) |
 
 
 ### SEASignInActivityModel
@@ -536,7 +536,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | beginAt | 【字段含义】开始时间 |
 | dur | 【字段含义】签到时长，单位：分钟，0为不限时 |
 | endAt | 【字段含义】结束时间 |
-| status | 【字段含义】活动状态，，详情参考：[SEASignInActivityState]() |
+| status | 【字段含义】活动状态，详情参考：[SEASignInActivityState](#seasigninactivitystate) |
 | desc | 【字段含义】签到描述 |
 | nums | 【字段含义】签到人数 |
 
@@ -546,7 +546,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| listData | 【字段含义】签到活动列表，详情参考：[SEASignInActivityModel](#DpBFV) |
+| listData | 【字段含义】签到活动列表，详情参考：[SEASignInActivityModel](#seasigninactivitymodel) |
 | now | 【字段含义】当前服务器时间 |
 
 
@@ -566,7 +566,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | detailId | 【字段含义】记录标识 |
 | userId | 【字段含义】用户标识 |
 | nickname | 【字段含义】用户昵称 |
-| role | 【字段含义】用户角色，请参见 [SEAUserRole](#QsCHa) 中的相关说明。 |
+| role | 【字段含义】用户角色，请参见 [SEAUserRole](#seauserrole) 中的相关说明。 |
 | epoch | 【字段含义】签到轮次 |
 | createdAt | 【字段含义】签到时间 |
 
@@ -576,7 +576,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **属性名称** | **描述** |
 | --- | --- |
-| listData | 【字段含义】签到详情列表，详情参考：[SEASignInDetailModel](#DpBFV) |
+| listData | 【字段含义】签到详情列表，详情参考：[SEASignInDetailModel](#seasignindetailmodel) |
 
 
 ## 枚举类型
@@ -601,7 +601,7 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
-| SEACodecTypeH264 | `0` | 未知类型 |
+| SEACodecTypeUnknown | `0` | 未知类型 |
 | SEACodecTypeH264 | `0x1b` | H264 |
 | SEACodecTypeH265 | `0x24` | H265 |
 | SEACodecTypeAAC | `0x0f` | AAC |
