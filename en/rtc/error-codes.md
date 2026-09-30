@@ -159,7 +159,7 @@ This table is version 2, finalized on 2026-09-30. **Each platform follows the ve
 | Web | `106` | `@seastart/srtc-web-sdk` 0.7.0 |
 | WeChat Mini Program | `107` | `@seastart/srtc-wx-sdk` 0.3.0 |
 | C SDK / Python SDK | `180` | C SDK 0.1.0, Python SDK (`srtc`) 0.2.0 |
-| Swift (iOS / macOS) | `103` / `105` | See the Swift SDK [changelog](/en/rtc/swift/changelog) |
+| Swift (iOS / macOS) | `103` / `105` | SRTC Swift SDK 1.5.0 and later ([changelog](/en/rtc/swift/changelog)) |
 | Android, iOS (Objective-C), HarmonyOS, Windows | `102`, `103`, `108`, `101` | **Not shipped yet**; follows each platform's release. Until then, use that platform's error code page |
 
 ---

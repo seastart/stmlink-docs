@@ -135,7 +135,7 @@ This table is version 2, finalized on 2026-09-30. **Each platform follows the ve
 | --- | --- | --- |
 | Web | `206` | `@seastart/smeeting-web-sdk` 0.3.0 |
 | WeChat Mini Program | `207` | `@seastart/smeeting-wx-sdk` 0.1.0 |
-| Swift (iOS / macOS) | `203` / `205` | See the Swift SDK [changelog](/en/meeting/swift/changelog) |
+| Swift (iOS / macOS) | `203` / `205` | SMeeting Swift SDK 1.4.0 and later ([changelog](/en/meeting/swift/changelog)) |
 | Android, iOS (Objective-C), HarmonyOS, Windows | `202`, `203`, `208`, `201` | **Not shipped yet**; follows each platform's release. Until then, use that platform's error code page |
 
 ---
