@@ -102,7 +102,7 @@ class SampleHandler: SRTCBroadcastSampleHandler {}
 `SRTCBroadcastKit` 是音视频层 `srtc-swift-sdk` 的产物，而 SwiftPM 不允许使用传递依赖的产品，所以要在工程里**再加一条依赖**，版本与 SMeeting 内部锁定的 SRTC 版本保持一致（见 [集成方式](/zh/meeting/swift/integration)）：
 
 ```swift
-.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.7"),
+.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.5.0"),
 ```
 
 <Warning>
@@ -237,7 +237,7 @@ func meeting(_ meeting: SMeetingEngine, roomShareDidStop data: RoomShareStopEven
 | 情况 | 结果 |
 | --- | --- |
 | 主持人开启了「房间禁共享」，且你不是主持人 / 联席主持人 | 抛出 `SMeetingError.unauthorized` |
-| 本端已经在共享 | 抛出 `SMeetingError.internalError` |
+| 本端已经在共享 | 抛出 `SMeetingError.invalidState` |
 | 用户在系统弹窗中拒绝了屏幕录制授权 | 采集失败，SDK 会自动回滚共享状态并把错误抛给你 |
 
 ---

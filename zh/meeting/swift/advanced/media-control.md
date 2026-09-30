@@ -93,7 +93,7 @@ try await meeting.switchCamera()
 try await meeting.switchCamera(deviceId: deviceId)
 ```
 
-摄像头未打开时调用会抛出 `SMeetingError.deviceError`。
+摄像头未打开时调用会抛出 `SMeetingError.invalidState`。
 
 ---
 

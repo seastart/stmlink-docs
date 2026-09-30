@@ -62,7 +62,7 @@ try await meeting.switchCamera(deviceId: deviceId)   // 切到指定设备
 
 **返回值：** 无
 
-**可能抛出：** `SMeetingError.deviceError(_:)` —— 摄像头尚未开启
+**可能抛出：** `SMeetingError.invalidState(_:)` —— 摄像头尚未开启（1.3.10 及以前为 `deviceError`）
 
 ---
 
@@ -124,7 +124,7 @@ try await meeting.requestShare()
 **可能抛出：**
 
 + `SMeetingError.unauthorized` —— 房间禁共享且你不是主持人 / 联席主持人
-+ `SMeetingError.internalError(_:)` —— 本端已在共享
++ `SMeetingError.invalidState(_:)` —— 本端已在共享
 + `SMeetingError.apiError(code:message:)`
 + 采集失败（例如用户拒绝屏幕录制授权）时的底层错误
 
@@ -194,7 +194,7 @@ public func startViewCaptureShare() async throws -> LocalVideoTrack
 **可能抛出：**
 
 + `SMeetingError.notInMeeting` —— 尚未加入会议。
-+ `SMeetingError.internalError(_:)` —— 屏幕共享轨道已存在，包括已准备但尚未发布的广播监听轨道。
++ `SMeetingError.invalidState(_:)` —— 屏幕共享轨道已存在，包括已准备但尚未发布的广播监听轨道。
 + 底层轨道发布错误。
 
 该接口直接发布媒体轨道，不执行 `requestShare()` 的会议后端申请及共享状态通知流程。调用方应按自己的业务管理共享状态，并保证视图录制与屏幕共享互斥；需要切换到屏幕共享时，先停止视图录制。
@@ -254,7 +254,7 @@ try await meeting.publishBroadcastShare()
 
 **可能抛出：**
 
-+ `SMeetingError.internalError(_:)` —— 尚未调用 `prepareBroadcastShare`
++ `SMeetingError.invalidState(_:)` —— 尚未调用 `prepareBroadcastShare`
 + `SMeetingError.unauthorized` —— 房间禁共享且你不是主持人 / 联席主持人
 + `SMeetingError.apiError(code:message:)`
 
@@ -320,7 +320,7 @@ let track = try await meeting.subscribeRemoteVideoTrack(uid: uid, trackDesc: .ca
 **可能抛出：**
 
 + `SMeetingError.notInMeeting`
-+ `SMeetingError.internalError(_:)` —— 该成员没有这一路轨道
++ `SMeetingError.remoteTrackUnavailable(uid:desc:)` —— 该成员没有这一路轨道
 
 ---
 
@@ -384,7 +384,7 @@ let track = try await meeting.subscribeRemoteVideoTrack(uid: uid, trackDesc: .ca
 
 **返回值：** 无
 
-**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.internalError(_:)`
+**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.remoteTrackUnavailable(uid:desc:)`（该成员没有这一路轨道）
 
 #### `unsubscribeRemoteAudioTrack(uid:trackDesc:)`
 
@@ -419,7 +419,7 @@ meeting.toggleRemoteAudioMute(true)   // 静音
 
 **返回值：** `RemoteVideoTrack`
 
-**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.internalError(_:)`（未找到合成画面轨道）
+**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.remoteTrackUnavailable(uid:desc:)`（未找到合成画面轨道）
 
 #### `stopPlayRemoteVideoMcu(view:)`
 

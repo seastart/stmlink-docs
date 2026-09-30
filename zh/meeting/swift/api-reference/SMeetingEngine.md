@@ -45,6 +45,22 @@ meeting.srtc.logLevel = .debug
 
 > 请始终使用这个实例，不要自行创建第二个 SRTCEngine —— 会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
 
+#### `language`
+
+SDK 语言，类型 `String?`（如 `"en"`、`"zh-CN"`），默认 `nil` = 跟随系统语言。自 1.4.0 起提供。
+
+与 `meeting.srtc.language` 是同一个进程级设置：会议层和 RTC 层请求后端都带 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案**随之返回中文或英文；SDK 自身的报错（`SMeetingError.message` / `SRTCError.message`）一律英文，不受影响。建议在 `login` 之前设置，之后修改对后续请求即时生效。
+
+```swift
+meeting.language = "en"
+```
+
+#### `currentLanguage`
+
+当前实际生效的语言，类型 `String`，只读：`language` 已设置则为它，否则为系统首选语言，取不到时为 `"zh"`。自 1.4.0 起提供。
+
+错误码与处理方式见 [错误处理](/zh/meeting/swift/error-codes)。
+
 #### `delegates`
 
 事件委托集合，类型 `MulticastDelegate<SMeetingDelegate>`。弱引用多播，支持多个观察者。
@@ -294,7 +310,7 @@ let user = try meeting.getUserInfo(uid)
 
 **返回值：** `MeetingUserInfo`
 
-**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.internalError(_:)`（会议中没有这个成员）
+**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.userNotFound(_:)`（会议中没有这个成员）
 
 #### `getUsersInfo()`
 

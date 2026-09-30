@@ -35,6 +35,22 @@ let srtc = SRTCEngine()
 srtc.logLevel = .debug
 ```
 
+#### `language`
+
+SDK 语言，类型 `String?`（BCP 47 语言标签，如 `"en"`、`"zh-CN"`），默认 `nil` = 跟随系统语言。自 1.5.0 起提供。
+
+只影响请求后端时的 `Accept-Language` 头，即**后端业务错误（码 1000–99999）文案的语言**；SDK 自身的报错（`SRTCError.message`）一律英文，不随它变化。与 `logLevel` 一样是进程级全局设置，建议在 `joinChannel` / `enableIm` 之前设置。
+
+```swift
+srtc.language = "en"
+```
+
+#### `currentLanguage`
+
+当前实际生效的语言，类型 `String`，只读：`language` 已设置则为它，否则为系统首选语言，取不到时为 `"zh"`。自 1.5.0 起提供。
+
+错误码与处理方式见 [错误码](/zh/rtc/swift/error-codes)。
+
 #### `audioCaptureProcessor`
 
 麦克风采集后的音频处理器，可用于变声、降噪等处理。

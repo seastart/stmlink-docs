@@ -49,7 +49,7 @@ try await meeting.switchCamera(deviceId: deviceId)
 try await meeting.switchCamera()
 ```
 
-摄像头未打开时调用会抛出 `SMeetingError.deviceError`。如果用户是在**未开摄像头**时先在下拉框里选好设备，建议把选择先记在业务状态里，等 `requestOpenCamera(deviceId:)` 时一起传进去。
+摄像头未打开时调用会抛出 `SMeetingError.invalidState`。如果用户是在**未开摄像头**时先在下拉框里选好设备，建议把选择先记在业务状态里，等 `requestOpenCamera(deviceId:)` 时一起传进去。
 
 ---
 

@@ -1,50 +1,80 @@
 ---
 title: "错误处理"
-description: "SMeeting Swift SDK 错误类型 SMeetingError 的分类、错误码规则与处理建议"
+description: "SMeeting Swift SDK 的错误类型 SMeetingError：完整错误码规则（iOS 203xxx / macOS 205xxx）、各 case 的低位码与处理建议、language 与后端错误文案"
 ---
 
-SDK 对外抛出的错误类型是 `SMeetingError`，一个带语义的 Swift 枚举，同时提供整数错误码。
+SDK 对外抛出的错误类型是 `SMeetingError`，一个带语义的 Swift 枚举，同时提供跨端统一的整数错误码。
 
 + 用 `switch` 按语义分支处理
-+ 用 `error.code` 拿到整数错误码，方便日志与工单排查
-+ 用 `error.message` 拿到纯文本描述
-+ `error.localizedDescription` 输出 `"<code>: <message>"`
++ 用 `error.code` 拿到完整错误码，`error.baseCode` 拿到低 3 位语义码，方便日志、工单与跨端对照
++ 用 `error.message` 拿到英文描述；`error.localizedDescription` 输出 `"<code>: <message>"`
++ RTC 层（采集、权限、推拉流）的错误以 `SRTCError` **原样透传**，见 [SRTC 错误码](/zh/rtc/swift/error-codes)
+
+<Note>
+自 **1.4.0** 起错误码按跨端统一码表调整、报错文案改为英文。1.3.10 及以前的旧码与新码的对照见 [更新日志](/zh/meeting/swift/changelog)。
+</Note>
 
 ---
 
 ### 错误清单
 
-| 错误 | 客户端码 | 描述 | 建议处理 |
+| 错误 | 低位码 | 描述（`message`） | 建议处理 |
 | --- | :---: | --- | --- |
-| `notLoggedIn` | `1` | `您尚未登录meeting sdk` | 先调用 `login(token:)` |
-| `tokenExpired` | `2` | `token已过期` | 向业务后端重新获取 token |
-| `notInMeeting` | `3` | `您不在会议中` | 检查调用时机，会中接口需要先 `enterRoom` |
-| `unauthorized` | `4` | `您没有权限进行此操作` | 检查房间策略与自己的角色，见下文 |
-| `tokenInvalid` | `5` | `Token 格式无效` | 检查后端签发逻辑与传输过程中是否被截断 |
-| `alreadyInMeeting` | `6` | `已在会议中，请先退出` | 先 `exitRoom()` 再进入新会议 |
-| `networkError(String)` | `7` | `网络错误: <detail>` | 提示用户检查网络后重试 |
-| `deviceError(String)` | `8` | `设备错误: <detail>` | 检查设备是否已开启、是否被占用 |
-| `internalError(String)` | `9` | `内部错误: <detail>` | 结合关联字符串与日志排查 |
-| `apiError(code:message:)` | 服务端码 | 服务端返回的业务错误 | 按服务端错误码处理，`message` 可直接用于提示 |
+| `notLoggedIn` | `001` | `Not logged in to the meeting SDK` | 先调用 `login(token:)` |
+| `tokenExpired` | `002` | `Token has expired` | 向业务后端重新获取 token |
+| `notInMeeting` | `003` | `Not in a meeting` | 检查调用时机，会中接口需要先 `enterRoom` |
+| `unauthorized` | `004` | `You don't have permission for this operation` | 检查房间策略与自己的角色，见下文 |
+| `tokenInvalid` | `005` | `Invalid token format` | 检查后端签发逻辑与传输过程中是否被截断 |
+| `alreadyInMeeting` | `006` | `Already in a meeting; exit first` | 先 `exitRoom()` 再进入新会议 |
+| `networkError(String)` | `007` | `Network error: <detail>` | 连不上、非 HTTP 响应等，提示用户检查网络后重试 |
+| `httpError(status:message:)` | `007` | `Network error: HTTP <status>: <detail>` | HTTP 非 200，`httpStatus` 为状态码；提示重试并记录状态码 |
+| `deviceError(String)` | `008` | `Device error: <detail>` | 保留；采集 / 权限失败以 `SRTCError` 透传 |
+| `internalError(String)` | `009` | `Internal error: <detail>` | 结合关联字符串与日志排查 |
+| `userNotFound(String)` | `010` | `User not found in the meeting: <uid>` | 以最新的成员列表为准 |
+| `invalidState(String)` | `011` | `Invalid state: <detail>` | 当前状态不允许该操作（如尚未开启摄像头、已开启共享），检查调用顺序 |
+| `invalidArgument(String)` | `012` | `Invalid argument: <detail>` | 检查传参 |
+| `remoteTrackUnavailable(uid:desc:)` | `209` | `Remote track not found: uid=<uid> desc=<desc>` | 成员在、但这路轨道不存在（对方未开启或已关闭），等待轨道事件后再订阅 |
+| `requestTimeout(String)` | `353` | `Request timeout: <detail>` | 提示网络较慢并重试 |
+| `requestCancelled` | `354` | `Request cancelled` | 调用方取消了任务，通常可忽略 |
+| `responseParseFailed(String)` | `356` | `Response parse failed: <detail>` | 响应不是 JSON、缺 `code` 字段或结构不符，检查服务端与 SDK 版本 |
+| `apiError(code:message:)` | 服务端码 | 服务端返回的业务错误文案 | 按服务端错误码处理，文案语言随 `language` |
+
+`message` 是给开发者和日志看的英文描述，**给终端用户的提示请按 `code` / `baseCode` 自行映射**，不要直接展示 `message`。
 
 ---
 
 ### 错误码规则
 
-`SMeetingError.code` 返回的是拼接后的完整错误码：
+`SMeetingError.code` 返回的是完整错误码：
 
-+ **客户端错误**（上表中客户端码小于 1000 的那些）会加上平台前缀，拼成 6 位数：iOS 前缀 `203`，macOS 前缀 `205`
++ **客户端错误**：平台前缀 + 3 位低位码。iOS 前缀 `203`，macOS 前缀 `205`
 + **服务端透传错误**（`apiError` 且服务端码不小于 1000）原样保留，不加前缀
++ **HTTP 状态码不会拼进错误码**：HTTP 非 200 一律为 `007`（`httpError`），状态在 `httpStatus` 里
+
+`baseCode` 是低 3 位语义码，与 Web / Android / 鸿蒙等端同义；服务端码的 `baseCode` 返回自身。
 
 举例：
 
-| 场景 | iOS | macOS |
-| --- | --- | --- |
-| `notLoggedIn` | `203001` | `205001` |
-| `unauthorized` | `203004` | `205004` |
-| 服务端返回 `2001` | `2001` | `2001` |
+| 场景 | iOS | macOS | `baseCode` |
+| --- | --- | --- | --- |
+| `notLoggedIn` | `203001` | `205001` | `1` |
+| `unauthorized` | `203004` | `205004` | `4` |
+| HTTP 500 | `203007` | `205007` | `7` |
+| 服务端返回 `2001` | `2001` | `2001` | `2001` |
 
 这样一眼就能区分「客户端自己拦下来的」和「服务端返回的」。
+
+`SMeetingError` 实现了 `CustomNSError`：桥接成 `NSError` 后 `domain = "cn.seastart.smeeting"`、`code` 为完整码，ObjC / uni-app / Flutter 等走 `NSError` 的集成方可直接按码判断。
+
+---
+
+### 报错语言
+
+`meeting.language`（如 `"en"`、`"zh-CN"`，`nil` 跟随系统语言）与 `meeting.srtc.language` 是同一个进程级设置。会议层和 RTC 层请求后端时都带上 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案**随之返回中文或英文；SDK 自身的报错一律英文，不受影响。
+
+```swift
+meeting.language = "en"   // 建议在 login 之前设置
+```
 
 ---
 
@@ -74,23 +104,26 @@ do {
     case .unauthorized:
         showToast("主持人已开启全体静音")
     case .apiError(let code, let message):
-        showToast(message)
+        showToast(message)   // 服务端文案，语言随 language
         log("meeting api error \(code)")
     default:
-        showToast(error.message)
+        showToast(myHint(for: error.baseCode))
         log(error.localizedDescription)
     }
+} catch let error as SRTCError {
+    // RTC 层透传的错误，如 103231 无摄像头权限、103251 无麦克风权限、103039 屏幕共享被拒
+    showToast(myHint(for: error.baseCode))
+    log(error.localizedDescription)
 } catch {
-    // 底层音视频层抛出的错误
     log("\(error)")
 }
 ```
 
 要点：
 
-+ 除了 `SMeetingError`，底层音视频层也可能抛出自己的错误类型（例如采集失败、连接失败），所以 `catch` 兜底分支不要省
-+ 面向最终用户提示时优先用 `error.message`；写日志时用 `error.localizedDescription`，它带错误码
-+ `SMeetingError` 遵循 `Equatable`，可以直接和具体 case 比较
++ 除了 `SMeetingError`，RTC 层的 `SRTCError` 也会原样抛出，两类都要处理
++ 面向最终用户的提示请按 `baseCode` 映射成自己的文案；写日志时用 `error.localizedDescription`，它带错误码
++ `SMeetingError` 遵循 `Equatable`，可以直接和具体 case 比较；它以库演进模式分发，后续版本可能新增 case，`switch` 里请保留 `default` 分支
 
 ---
 

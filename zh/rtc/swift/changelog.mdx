@@ -3,6 +3,62 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.5.0] - 2026.09.30
+<Warning>
+**本版是破坏性变更**：错误码按跨端统一码表（第 2 版）全面重排，报错文案改为英文。凡是按 `SRTCError.code` 的数值、或按 `message` / `localizedDescription` 的中文文字做判断的代码，升级后都需要调整；按 `SRTCError` 的 case 做 `switch` 的代码不受数值变化影响，但下表中「改抛了另一个 case」的场景要改分支。版本号只升 minor，按 `from: "1.4.x"` 接入的工程会**自动**解析到本版，升级前请先看完下表。
+</Warning>
+
+#### 新增
++ **`SRTCEngine.language`**（`String?`，BCP 47 语言标签，如 `"en"`、`"zh-CN"`；`nil` = 跟随系统语言）与只读的 **`currentLanguage`**（实际生效的语言：已设置取设置值，否则取系统首选语言，取不到为 `"zh"`）。SDK 请求后端时带上 `Accept-Language`，**后端返回的业务错误（码 1000–99999）文案随之中 / 英**；SDK 自身的报错一律英文，不受它影响。与 `logLevel` 一样是进程级全局设置，建议在 `joinChannel` / `enableIm` 之前设置。
++ **`SRTCError.baseCode`**：低 3 位语义码，跨端统一（如 `231` = 无摄像头权限），便于与 Web / Android / 鸿蒙端对照；后端业务码返回自身。
++ **`SRTCError` 实现 `CustomNSError`**：桥接成 `NSError` 后 `domain = "cn.seastart.srtc"`、`code` 为完整码（如 `103231`），ObjC / uni-app / Flutter 等走 `NSError` 的集成方可直接按码判断。
++ 新增错误 case：`cameraPermissionDenied`（231）、`microphonePermissionDenied`（251）、`screenShareDenied(_:underlying:)`（039，`underlying` 为系统原始错误，桥接后放在 `NSUnderlyingErrorKey`）、`invalidArgument`（031）、`userNotFound`（204）、`featureNotSupported`（032）、`cameraFormatUnavailable`（242）、`publishFailed`（300）、`subscribeFailed`（301）。
++ `SRTCBroadcastKit`（本次 **1.0.13**）：结束广播时的系统弹窗文案按系统语言出中文或英文；子类可重写 `SRTCBroadcastSampleHandler.finishMessage(for:)` 自定义文案（参数为新增的结束原因枚举 `SRTCBroadcastFinishReason`），内置中英文案可通过 `builtinFinishMessage(for:language:)` 取用。
+
+#### 变更
++ **报错文案全部改为英文**：`SRTCError.message` / `localizedDescription`（格式仍为 `"<code>: <message>"`）以及拼进报错里的参数说明、`BroadcastError` 描述、`screenBroadcastDidFinish` 的 `reason` 均改为英文。它们是给开发者和日志看的，**给终端用户的提示请按 `code` / `baseCode` 自行映射**，不要直接展示 `message`。
++ **HTTP 状态码不再拼进错误码**：此前 HTTP 非 200 会报成 `103<HTTP 状态>`（如 `103502`），与其它低位码撞号；现在一律报 `apiRequestFailed` → **`103006`**，HTTP 状态只放在关联值 `statusCode` 和描述里。
++ **麦克风无权限开麦会抛错**：此前采集「成功」但发出去的是静音，现在抛 `microphonePermissionDenied`（`103251`）。
++ **心跳遇到 HTTP 非 200 / 网络失败不再离会**：只有后端业务错误（码 1000–99999，如被踢出、会话失效）才离会，网关 502 / 504 之类的临时错误改为继续等待重连。
++ `SRTCUniBridge` 回调的错误码不再出现 `-1`：非 `SRTCError` 的错误归一为 006（网络）/ 026（取消）/ 025（内部错误）。
+
+#### 旧码 → 新码对照
+iOS 前缀为 `103`、macOS 为 `105`，下表以 iOS 为例（macOS 把前缀换成 `105`）。
+
+| 场景 | 1.4.7 及以前 | 1.5.0 |
+| --- | --- | --- |
+| HTTP 非 200 | `103<HTTP 状态>`（如 `103502`） | `103006` `apiRequestFailed` |
+| 响应不是 JSON | `103200` | `103011` `messageDecodeFailed` |
+| 响应缺 `code` 字段 | `102999` | `103011` `messageDecodeFailed` |
+| 响应 `data` 结构与预期不符 | 原样抛出 `DecodingError` | `103011` `messageDecodeFailed` |
+| URLSession 网络错误 / 请求被取消 | 原样抛出系统错误 | `103006` / `103026` `cancelled` |
+| 无摄像头权限 | `103018` `captureError` | `103231` `cameraPermissionDenied` |
+| 无麦克风权限 | 不报错（发静音） | `103251` `microphonePermissionDenied` |
+| macOS 无屏幕录制权限 | `105018` `captureError` | `105039` `screenShareDenied` |
+| iOS 用户在 ReplayKit 弹窗点「不允许」/ 录屏被系统禁用 | 原样抛出 ReplayKit 系统错误 | `103039` `screenShareDenied`（系统错误放在 `underlying`） |
+| 订阅的用户不在频道内 | `103003` `trackNotFound` | `103204` `userNotFound` |
+| 轨道类型不符 / 发布配置或 desc 为空 | `103024` `invalidState` | `103031` `invalidArgument` |
+| 没有可用摄像头 / 显示器 | `103018` `captureError` | `103021` `deviceNotFound` |
+| 摄像头没有可用采集格式 | `103018` `captureError` | `103242` `cameraFormatUnavailable` |
+| 屏幕共享 options 未设置 | `103018` `captureError` | `103024` `invalidState` |
+| macOS 12.3 以下屏幕共享 / ReplayKit 不可用 | `103018` `captureError` | `103032` `featureNotSupported` |
+| 多频道共享轨道开 simulcast | `103024` `invalidState` | `103032` `featureNotSupported` |
+| 频道重连中发起操作 | `103024` `invalidState` | `103014` `transportNotReady` |
+| 已离开频道后发起操作 | `103024` `invalidState` | `103001` `notConnected` |
+| 重复 `enableIm` | `103024` `invalidState` | `103005` `alreadyJoined`（与重复入会同码） |
+| seastart 引擎未连接时发布 / 订阅 | `103024` `invalidState` | 重连中 `103014`；其它状态发布 `103300` `publishFailed`、订阅 `103301` `subscribeFailed` |
+| PeerConnection 进入 failed / closed | `103006` | `103015` `peerConnectionFailed` |
+| 网宿(CDN) SDP 响应非 JSON | `103013` `sdpNegotiationFailed` | `103011` `messageDecodeFailed` |
+| 网宿(CDN) 协商网络失败 / 中途取消 | 原样抛出系统错误 | `103006` / `103026` |
+
+后端业务码（1000–99999）仍原样透传，不加前缀，数值不变；其文案现在随 `language` 返回中文或英文。
+
+<Note>
+已有的 `SRTCError` case 一个没删、签名没改（新增 case 二进制兼容），编译层面 1.4.7 的接入代码可直接升级；需要检查的是**按数值 / 中文文案判断错误、以及 `switch` 里依赖上表旧 case 的分支**。平台下限不变（iOS 16 / macOS 14）。
+
+`SRTCBroadcastKit` 本次为 **1.0.13**。做 iOS 全屏屏幕共享的接入方，Broadcast Upload Extension target 链接的也要是本 tag 的 `SRTCBroadcastKit`，否则结束弹窗仍是旧文案。
+</Note>
+
 ### [1.4.7] - 2026.09.23
 #### 修复
 + **未知 `device_type` 不再让整份成员列表解析失败**：后端新增端侧类型的节奏不受 SDK 发版控制，而此前 `channel/detail` 的 `users` 里只要有**一条** `device_type` 超出本版本的枚举，整个响应就解不出来、入会直接失败（报 `The data couldn't be read...`）——等于一个陌生端进会就能把所有老版本客户端挡在门外。现在 `DeviceType` 补齐了 `unknown` 与 80–89 服务端代理号段（MCU/SIP/H.323/GB28181/RTSP/RTMP/文件播放/流分发/语音转写），`users` 改为逐条解析、跳过解不出的那条。

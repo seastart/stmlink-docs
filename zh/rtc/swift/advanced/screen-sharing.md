@@ -162,6 +162,20 @@ class SampleHandler: SRTCBroadcastSampleHandler {}
 
 采集、缩放、跨进程传输都在基类里，正常情况下不需要重写任何方法。
 
+扩展结束广播时（如用户没在 App 内先开启共享、App 主动结束共享），系统会弹窗提示终端用户。
+自 1.5.0 起弹窗文案按系统语言出中文或英文；要改文案或支持更多语言，重写 `finishMessage(for:)`：
+
+```swift
+class SampleHandler: SRTCBroadcastSampleHandler {
+    override func finishMessage(for reason: SRTCBroadcastFinishReason) -> String {
+        switch reason {
+        case .hostUnavailable: return "请先在 App 内点击「共享屏幕」"
+        default: return Self.builtinFinishMessage(for: reason, language: Locale.preferredLanguages.first)
+        }
+    }
+}
+```
+
 <Warning>
 扩展 target 只能链接 `SRTCBroadcastKit`。扩展进程的内存上限是 **50MB**，链上包含 WebRTC 的
 `SRTC` 会让系统在采集过程中把扩展杀掉。反过来，`SRTCBroadcastKit` 也不要加到 App target
