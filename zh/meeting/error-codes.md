@@ -39,7 +39,7 @@ description: "SMeeting 错误码的编号规则，以及为什么你会同时看
 | 5 | macOS | `205` |
 | 6 | Web | `206` |
 | 7 | 小程序 | `207` |
-| 8 | Android 盒子 | `208` |
+| 8 | 鸿蒙（HarmonyOS NEXT） | `208` |
 | 9 | Android 嵌入式 | `209` |
 
 <Note>

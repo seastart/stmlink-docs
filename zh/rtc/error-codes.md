@@ -41,7 +41,7 @@ description: "SRTC 错误码的编号规则：如何从一个错误码看出它�
 | 5 | macOS | `105` |
 | 6 | Web（WebRTC） | `106` |
 | 7 | 小程序 | `107` |
-| 8 | Android 盒子 | `108` |
+| 8 | 鸿蒙（HarmonyOS NEXT） | `108` |
 | 9 | Android 嵌入式 | `109` |
 | 80 | 服务端 / 嵌入式接入（C SDK） | `180` |
 
