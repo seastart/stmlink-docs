@@ -1,0 +1,60 @@
+---
+title: "Changelog"
+description: "Release history of the SMeeting Web SDK (@seastart/smeeting-web-sdk), including changes that require code updates: v0.3.0 error code renumbering, English error messages, the new language parameter (with an old-to-new code mapping), and corrected McuTaskStatus values. Read before upgrading."
+---
+
+### Latest version
+
+Check the latest version on npm:
+
+```bash
+npm info @seastart/smeeting-web-sdk version
+```
+
+---
+
+### v0.3.0 - 2026-09-30
+
+<Warning>
+**This release contains breaking changes**: meeting-layer error codes are renumbered, the SDK's error messages are now in English, and a `language` parameter is added. Any code that branches on the numeric `code` (especially `206000`) or on Chinese error text needs to be updated according to the table below. For the full tables, see [Error codes](/en/meeting/web/error-codes) and [Error code format and unified table](/en/meeting/error-codes). The underlying SRTC is upgraded to Web 0.7.0 as well, and the `106xxx` codes it passes through are also renumbered; see the [SRTC Web changelog · v0.7.0](/en/rtc/web/changelog).
+</Warning>
+
+#### Breaking changes
++ **Meeting-layer error codes renumbered**: low 3-digit codes are assigned from the cross-platform unified table instead of falling into `206000`. Check `code`, not the message text
++ **Error messages in English**: the `message` / `msg` of the SDK's own errors are now all in English and meant for developers and logs; map codes to your own end-user messages (the error code page has a "Suggested user message" column)
++ Network failures / HTTP non-200 responses when calling the meeting server are now always `206007`, with the HTTP status in `message`; unparsable responses or responses missing the `code` field are `206356`
++ Capture / permission errors pass through the SRTC-layer codes unchanged (such as `106231` camera permission denied, `106251` microphone permission denied, and `106039` screen sharing denied), and the cleanup after a failed turn-on no longer overwrites the original error
++ `McuTaskStatus` values now match the server: `WaitStart = 0` and `WaitEnd = 2` are added, `Exception` changes from 2 to 3, and `Normal` from 3 to 4. Code that compares by member name gets the correct meaning after upgrading; **check any code that compares against the literal numbers 2 / 3**
+
+#### New
++ **`language`** init parameter (for example `zh-CN` or `en`; if omitted, follows `navigator.language`, falling back to `zh`), which also applies to the underlying SRTC: requests to both the meeting server and the SRTC server carry `Accept-Language`, and **the messages of server business errors (`1000`–`99999`) come back in Chinese or English accordingly**. The SDK's own errors are always in English and aren't affected. See [Types](/en/meeting/web/types)
++ `autoPlayDialogText` init parameter: overrides the text of the autoplay prompt (by default Chinese or English according to `language`)
++ The package exports `SdkError` and `MeetingErrorCode` (meeting-layer low 3 digits). The SRTC package also exports an `SdkError` with the same name; alias one of them when importing both packages
+
+#### Fixes
++ The `McuRecordDetail` type now matches what the server actually returns: fields such as `began_at` / `total_duration` / `records` are added, and `mcu_at` / `mcu_dur` are deprecated (the server still fills them in; new integrations should use `began_at` / `total_duration`)
+
+#### Changes
++ The SRTC dependency is upgraded to `@seastart/srtc-web-sdk` 0.7.0
++ The npm page description is now bilingual (Chinese and English), and the license is now proprietary (UNLICENSED)
+
+#### Old code → new code mapping
+
+| Scenario | 0.2.0 and earlier | 0.3.0 |
+| --- | --- | --- |
+| Not logged in / token expired / not in a meeting / no permission (host operations) | `206001` / `206002` / `206003` / `206004` | Unchanged (message now in English) |
+| The room has disabled turning on the camera / mic / screen sharing | `206000` | `206004` |
+| The token can't be parsed | Raw parse exception | `206005` |
+| Already in a meeting, entering again | `206000` | `206006` |
+| Network failure / HTTP non-200 when calling the meeting server | `Error` with no code | `206007` |
+| No such member in the meeting | `206000` | `206010` |
+| Turning on the camera / mic / screen sharing when it's already on, switching devices before it's on, and so on | `206000` | `206011` |
+| Unparsable response / missing the `code` field | Raw parse exception / treated as a server error | `206356` |
+| Capture / permission / publish and subscribe failures (passed through from SRTC) | Old SRTC codes or the browser's raw exception | New SRTC codes such as `106231`, `106251`, `106039`; see the [SRTC Web changelog](/en/rtc/web/changelog) |
+| Server business errors (`1000`–`99999`) | Passed through | Passed through; messages come back in Chinese or English according to `language` |
+
+### v0.2.0 - 2026-09-02
+
++ feat: the SRTC dependency is upgraded to Web 0.6.x and adapted to the multi-channel API
++ feat: audio level meters and "speaking" indication
++ fix: turning the mic / camera / screen sharing on and off is serialized per slot, eliminating duplicate tracks published by concurrent operations

@@ -198,10 +198,10 @@
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
   "en/meeting/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/error-codes.md",
-    "zh_blob": "2bbf9b4e3012aa62562f9c15deef148885fb1ec2",
-    "zh_commit": "f9425aba4a0f3ee217719288bb460679c5064ed2"
+    "zh_blob": "e0dc03b8f7154389faaef1d516f06d663e9759f1",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/meeting/ios/advanced/screen-recording": {
     "reviewed": true,
@@ -521,6 +521,18 @@
     "zh_blob": "ed7bc603d8ed14eb25c0ff8dc2ca02759125fec1",
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
+  "en/meeting/web/changelog": {
+    "reviewed": false,
+    "source": "zh/meeting/web/changelog.mdx",
+    "zh_blob": "4275e2abd65a717991642649bf66fdbd7153b3e6",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
+  },
+  "en/meeting/web/error-codes": {
+    "reviewed": false,
+    "source": "zh/meeting/web/error-codes.md",
+    "zh_blob": "430426b839e7e5fa217da8b3a62480e215580594",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
+  },
   "en/meeting/web/events": {
     "reviewed": true,
     "source": "zh/meeting/web/events.md",
@@ -540,10 +552,10 @@
     "zh_commit": "5210fb8780d5407ce288086724a8313de2d625ac"
   },
   "en/meeting/web/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/web/types.md",
-    "zh_blob": "c0a741934b75d503ede1f2aa39781e69bc2577a3",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "14b093f6e214a607a0e66b70f26c9b2de2417b06",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/meeting/web/whiteboard": {
     "reviewed": true,
@@ -912,10 +924,10 @@
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/error-codes.md",
-    "zh_blob": "00fbaa9bec52749a631f7499d81cbb34837c322d",
-    "zh_commit": "f9425aba4a0f3ee217719288bb460679c5064ed2"
+    "zh_blob": "14337cda861815bff7d3c04f77476239b31f3cbc",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/rtc/ios/advanced/beauty": {
     "reviewed": true,
@@ -1302,10 +1314,10 @@
     "zh_commit": "1ded634801507cbf0af33a455507ca48a94df6eb"
   },
   "en/rtc/web/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/web/changelog.mdx",
-    "zh_blob": "b7e432c03b775653f62366bc08baae47a767c208",
-    "zh_commit": "1ded634801507cbf0af33a455507ca48a94df6eb"
+    "zh_blob": "268a71b9f8c042bde81c46e086ae033c268319f6",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/rtc/web/channel-messages": {
     "reviewed": true,
@@ -1314,10 +1326,10 @@
     "zh_commit": "aa714aca92cba52e24b68c7217d8868266b55342"
   },
   "en/rtc/web/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/web/error-codes.md",
-    "zh_blob": "3271c7a99da10cd053676ec07a3403ff3a1c1548",
-    "zh_commit": "f7bd646151854c2c6e8c1ec8a6fffa668c4f0677"
+    "zh_blob": "ba65caf67e46fb50a4b3adb6e79b0ffaa657f92f",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/rtc/web/events": {
     "reviewed": true,
@@ -1356,10 +1368,10 @@
     "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
   },
   "en/rtc/web/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/web/types.md",
-    "zh_blob": "2873a25f13a38081faaf135d993d7a8607411712",
-    "zh_commit": "eaea4ef03ef260ed4d1665bdfac7732544206b42"
+    "zh_blob": "b58bcfeae3a825ddc90f7cbbb4150ab0c12c8d8d",
+    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/rtc/whiteboard": {
     "reviewed": true,

@@ -973,7 +973,9 @@
                     ]
                   },
                   "en/meeting/web/events",
-                  "en/meeting/web/types"
+                  "en/meeting/web/types",
+                  "en/meeting/web/error-codes",
+                  "en/meeting/web/changelog"
                 ]
               },
               {

@@ -261,6 +261,18 @@ export interface SdkInitParams {
     logLevel?: LogLevel;
     /** Log target */
     logTarget?: LogTarget;
+    /**
+     * Language (for example `zh-CN` or `en`). A process-wide global setting that also applies to the underlying SRTC (since 0.3.0).
+     * Affects the `Accept-Language` header sent to the SMeeting and SRTC servers (the language of server business error messages) and the built-in text of the autoplay prompt.
+     * The SDK's own errors (206xxx, and passed-through 106xxx) are always in English and aren't affected by this parameter.
+     * If omitted, follows `navigator.language`; falls back to `zh` if that isn't available.
+     */
+    language?: string;
+    /**
+     * Overrides the autoplay prompt text. A process-wide global setting (since 0.3.0).
+     * Fields you don't override use the built-in Chinese / English text chosen by `language`. See SRTC's AutoPlayDialogText for the type.
+     */
+    autoPlayDialogText?: AutoPlayDialogText;
 }
 ```
 
@@ -814,15 +826,21 @@ export enum McuTaskType {
 }
 
 /**
- * MCU task status
+ * MCU task status; values match the server's task_status
+ * Note: the definition in 0.2.0 and earlier was wrong (Exception = 2, Normal = 3). Since 0.3.0 the member names are unchanged and the values are corrected;
+ * check any code that compares against the literal numbers 2 / 3
  */
 export enum McuTaskStatus {
+    /** Waiting to start (transitional: the command was sent but the underlying task isn't running yet) */
+    WaitStart = 0,
     /** In progress */
     Running = 1,
-    /** Ended abnormally */
-    Exception = 2,
+    /** Waiting to end (transitional: the stop command was sent but the end isn't confirmed yet) */
+    WaitEnd = 2,
+    /** Ended abnormally; see err_desc for the reason */
+    Exception = 3,
     /** Ended normally */
-    Normal = 3
+    Normal = 4,
 }
 ```
 

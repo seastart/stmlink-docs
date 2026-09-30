@@ -13,6 +13,26 @@ export interface SdkInitParams {
   logLevel?: LogLevel;
   /** Log output target */
   logTarget?: LogTarget;
+  /**
+   * Language (for example `zh-CN` or `en`). A process-wide global setting (since 0.7.0).
+   * Affects the `Accept-Language` header sent to the server (the language of server business error messages) and the built-in text of the autoplay prompt.
+   * The SDK's own errors (106xxx) are always in English and aren't affected by this parameter.
+   * If omitted, follows `navigator.language`; falls back to `zh` if that isn't available.
+   */
+  language?: string;
+  /**
+   * Overrides the autoplay prompt text. A process-wide global setting (since 0.7.0).
+   * Fields you don't override use the built-in Chinese / English text chosen by `language`; has no effect when the play option `disableAutoPlayDialog: true` is set.
+   */
+  autoPlayDialogText?: AutoPlayDialogText;
+}
+
+/** Autoplay prompt text (shown to end users) */
+export interface AutoPlayDialogText {
+  /** Prompt message */
+  message?: string;
+  /** Confirm button text */
+  confirm?: string;
 }
 ```
 

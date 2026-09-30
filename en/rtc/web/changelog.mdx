@@ -1,6 +1,6 @@
 ---
 title: "Changelog"
-description: "Release history of the SRTC Web SDK (@seastart/srtc-web-sdk), from v0.4.4 to the latest v0.6.x: multi-channel with join returning Channel, processors and noise suppression plugins, local recording, simulcast, and fixes. Read before upgrading."
+description: "Release history of the SRTC Web SDK (@seastart/srtc-web-sdk), including changes that require code updates: v0.7.0 error code renumbering, English error messages, and the new language parameter (with an old-to-new code mapping), and v0.6.0 multi-channel. Read before upgrading."
 ---
 
 ### Latest version
@@ -18,6 +18,51 @@ npm info @seastart/srtc-web-sdk version
 > The changelog is still being filled in. For details on changes in a specific version, contact technical support.
 
 ### Recent updates
+
+### v0.7.0 - 2026-09-30
+
+<Warning>
+**This release contains breaking changes**: error codes are renumbered across the board, the SDK's error messages are now in English, and a `language` parameter is added. Any code that branches on the numeric `code` (especially `106000`), on Chinese error text, or on the browser's raw exceptions needs to be updated according to the table below. For the full tables, see [Error codes](/en/rtc/web/error-codes) and [Error code format and unified table](/en/rtc/error-codes).
+</Warning>
+
+#### Breaking changes
++ **Error codes renumbered**: the SDK's own errors get low 3-digit codes from the cross-platform unified table instead of mostly falling into `106000`. Check `code` / `baseCode`, not the message text
++ **Error messages in English**: the `message` / `msg` of the SDK's own errors are now all in English and meant for developers and logs; map codes to your own end-user messages (the error code page has a "Suggested user message" column)
++ `SdkError` now extends `Error` (it has `message`, `name`, and `stack`, `e instanceof Error` holds, and `msg` is kept for compatibility); `baseCode` (the low 3-digit code) is added; the package exports `SdkError` and `ErrorCode`
++ HTTP non-200 responses / failed network requests now always throw `SdkError(106006)`, with the HTTP status in `message` (previously an `Error` with no code, such as `"500:..."`)
++ Capture failures (`startCapture`, requesting device permissions) now throw a coded `SdkError` instead of the browser's raw exception: `name` and `message` keep the browser's original values (such as `NotAllowedError`) and the original exception is in `cause`, so existing code that checks `e.name` keeps working
++ When an API returns HTTP 200 but the body has no `code` field, it used to be treated as a server business error (heartbeat left the channel immediately); it's now a response parse failure `106011` and is retried. A body that isn't JSON is also `106011`
++ Calling `publishLocalTrack` or `subscribeRemote*` on a channel that has been left (or is being left) throws `106001` (`Channel has been left`); `unpublishLocalTrack` / `unsubscribeRemoteTrack` still succeed silently after leaving the channel
+
+#### New
++ **`language`** init parameter (for example `zh-CN` or `en`; if omitted, follows `navigator.language`, falling back to `zh`): the SDK sends `Accept-Language` with its server requests, and **the messages of server business errors (`1000`–`99999`) come back in Chinese or English accordingly**. The SDK's own errors are always in English and aren't affected. See [Types · SdkInitParams](/en/rtc/web/types#sdkinitparams)
++ The prompt shown when autoplay is blocked has built-in Chinese / English text (chosen by `language`), which you can override with the `autoPlayDialogText` init parameter; `disableAutoPlayDialog` behaves as before
+
+#### Fixes
++ The autoplay prompt no longer includes the track desc and is built as plain text, fixing HTML injection through a remote desc
+
+#### Changes
++ The track `toString()` prefix now uses class-name style (such as `LocalCameraTrack[...]`), so track names in the logs are now in English; `QualityEvaluation.reasons` of connection quality evaluation is now in English (for diagnostics, not a contract)
++ The npm page description is now bilingual (Chinese and English), and the license is now proprietary (UNLICENSED)
+
+#### Old code → new code mapping
+
+| Scenario | 0.6.x and earlier | 0.7.0 |
+| --- | --- | --- |
+| Not in the channel / token expired / track doesn't exist | `106001` / `106002` / `106003` | Unchanged (message now in English) |
+| Other SDK errors (invalid argument, invalid state, publish description conflict, publishing before capture, publish / subscribe limit exceeded, browser not supported, and so on) | `106000` | Scenario-specific codes; see [Error codes](/en/rtc/web/error-codes) |
+| HTTP non-200 / failed network request | `Error` with no code | `106006` |
+| Response isn't JSON / missing the `code` field | Raw parse exception / treated as a server error | `106011` |
+| Camera / microphone permission denied | Browser `NotAllowedError` | `106231` / `106251` (`name` is still `NotAllowedError`) |
+| Screen sharing canceled or not allowed | Browser `NotAllowedError` | `106039` |
+| Device doesn't exist or was unplugged | Browser `NotFoundError` / `OverconstrainedError` | `106021` |
+| Device in use / hardware error | Browser `NotReadableError` and similar | `106018` |
+| Publishing while the media streaming engine is reconnecting | `106014` | `106014` (unchanged) |
+| Publishing / subscribing while the media streaming engine isn't connected / is disconnected (not reconnecting) | `106014` | `106300` / `106301` |
+| The publish / subscribe media connection entered failed / closed | The strings "发布失败" / "订阅失败" | `106015` |
+| CDN engine publish / subscribe negotiation timed out | The strings "发布超时" / "订阅超时" | `106302` / `106303` |
+| Media connection timed out when joining the channel | `Error` with no code | `106007` |
+| Server business errors (`1000`–`99999`) | Passed through | Passed through; messages come back in Chinese or English according to `language` |
 
 ### v0.6.3 - 2026-09-23
 
