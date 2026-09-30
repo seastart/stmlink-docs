@@ -33,7 +33,7 @@ The SDK is distributed as a prebuilt XCFramework containing slices for three pla
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.5.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.5.1")
 ],
 targets: [
     .target(

@@ -3,6 +3,16 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.5.1] - 2026.10.01
+#### Fixed
++ **`AudioRoute.displayName` / `AudioRouteTarget.displayName` now return Chinese or English based on the system language**: previously they always returned Chinese (扬声器, 听筒, and so on), so an app on an English system that displayed them directly showed Chinese text in an English UI. Now they return Chinese when the system's preferred language starts with `zh` (`zh-Hans` / `zh-Hant` / `zh-HK`, and so on) and English otherwise (`Speaker`, `Earpiece`, `Bluetooth headset`, `Wired headset`, `Unknown route`). This text is meant for end users, so it follows only the **system language** and isn't affected by `SRTCEngine.language`.
+
+<Note>
+This is a fix-only release with no public API changes; integration code from 1.5.0 can upgrade directly. On English systems the value returned by `displayName` changes from Chinese to English; if your code compares it as a string (rather than checking the `AudioRoute` value), switch to checking the enum value. The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+`SRTCBroadcastKit` is **1.0.14** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
 ### [1.5.0] - 2026.09.30
 <Warning>
 **This release contains breaking changes**: error codes are renumbered across the board according to the cross-platform unified table (version 2), and error messages are now in English. Any code that branches on the numeric value of `SRTCError.code`, or on the Chinese text of `message` / `localizedDescription`, needs to be updated after upgrading; code that `switch`es on `SRTCError` cases isn't affected by the numeric changes, but the scenarios in the table below that "now throw a different case" need their branches updated. Only the minor version is bumped, so projects integrated with `from: "1.4.x"` resolve to this release **automatically**; read the table below before upgrading.

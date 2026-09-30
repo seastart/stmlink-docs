@@ -269,7 +269,8 @@ Sign-in activities and sign-in details.
 | Type | Fields |
 | --- | --- |
 | `McuRecordConfig` | `appId`, `layout`, `watermarkType`, `windowTagType`, `createdAt`, `updatedAt` |
-| `McuRecordDetail` | `id`, `opUid`, `opName`, `channel`, `title`, `roomNo`, `taskStatus`, `errDesc`, `vodKey`, `vodSize`, `mcuAt`, `mcuDur`, `tags`, `createdAt`, `updatedAt` |
+| `McuRecordDetail` | `id`, `opUid`, `opName`, `channel`, `title`, `roomNo`, `taskType`, `taskStatus`, `errDesc`, `beganAt`, `endedAt`, `recordCount`, `totalDuration`, `totalSize`, `records`, `tags`, `createdAt`, `updatedAt`, `now`; deprecated: `vodKey`, `vodSize`, `mcuAt`, `mcuDur` (optional, no longer returned by the new server) |
+| `McuRecordFile` | `recordId`, `taskId`, `channel`, `seq`, `vodSize`, `duration`, `beganAt`, `endedAt`, `offsetMs`, `reason`, `addr` (presigned playback URL, valid for 2 hours), `createdAt` |
 
 #### MeetingToken
 
@@ -341,7 +342,7 @@ result.meta      // MetaRes
 | `RoomShareStopEventData` | `uid`, `shareType`, `byAdmin`, `opUid` |
 | `ShareBroadcastStartEventData` | `uid` (iOS full-screen sharing only, the sharer's own side) |
 | `ShareBroadcastStopEventData` | `uid`, `reason` (the reason it ended, from the extension or the system) |
-| `RoomMcuTaskEventData` | `taskType: McuTaskType`, `taskStatus: McuTaskStatus`, `errDesc` |
+| `RoomMcuTaskEventData` | `taskType: McuTaskType`, `taskStatus: McuTaskStatus`, `errDesc`, `taskTypeRaw`, `taskStatusRaw` (the server's raw values, for when the enum is `.unknown`) |
 | `RoomJoinFailedEventData` | `uid`, `name`, `errDesc`, `failedType` |
 
 #### Messages
@@ -531,14 +532,22 @@ If you're not sure which one to use, don't pass it, and let the server decide ba
 | `record` | `1` | Recording mode |
 | `mix` | `2` | Stream mixing mode |
 | `mixAndRecord` | `3` | Stream mixing and recording |
+| `audio` | `4` | Audio recording mode |
+| `live` | `8` | Live stream mode |
+| `unknown` | `-1` | A value this SDK version doesn't recognize (only for decoding; don't use it in requests) |
 
 #### McuTaskStatus
 
 | Enum value | Raw value | Description |
 | --- | --- | --- |
+| `waitStart` | `0` | Waiting to start (command sent, task not running yet) |
 | `running` | `1` | In progress |
-| `exception` | `2` | Ended abnormally |
-| `normal` | `3` | Ended normally |
+| `waitEnd` | `2` | Waiting to end (stop command sent, end not confirmed yet) |
+| `exception` | `3` | Ended abnormally; see `errDesc` for the reason |
+| `normal` | `4` | Ended normally |
+| `unknown` | `-1` | A value this SDK version doesn't recognize (only for decoding) |
+
+The values match the server's `task_status`. The raw values in 1.4.0 and earlier were wrong (`exception = 2`, `normal = 3`) and are corrected as of 1.4.1; see the [changelog](/en/meeting/swift/changelog).
 
 #### LayoutType
 

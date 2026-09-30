@@ -12,6 +12,8 @@ Recording and compositing are both done on the server; the client only sends com
 | `.record` | Video recording, producing a recording file |
 | `.mix` | Stream mixing, compositing multiple videos into one stream for viewers to pull |
 | `.mixAndRecord` | Stream mixing plus recording |
+| `.audio` | Audio recording |
+| `.live` | Live stream |
 
 You can also use `MeetingCreateReq.autoRecord` when creating the meeting so that recording starts automatically once the meeting begins.
 
@@ -147,11 +149,13 @@ Frequently used fields in `McuRecordDetail`:
 
 | Field | Description |
 | --- | --- |
-| `taskStatus` | `McuTaskStatus`: `.running` in progress / `.normal` ended normally / `.exception` ended abnormally |
+| `taskStatus` | `McuTaskStatus`: `.waitStart` waiting to start / `.running` in progress / `.waitEnd` waiting to end / `.normal` ended normally / `.exception` ended abnormally |
 | `errDesc` | The reason when it ended abnormally |
-| `vodKey` | Storage key of the recording file; use it with `presignedGetObject(resKey:)` to get a download URL |
-| `vodSize` | File size |
-| `mcuAt` / `mcuDur` | Recording start time and duration |
+| `beganAt` / `endedAt` | Recording start / end time (Unix timestamp in seconds; 0 means not started / not ended yet) |
+| `totalDuration` / `totalSize` | Total duration (seconds) and total bytes of all recording files |
+| `records` | List of recording files (`[McuRecordFile]?`): one recording can produce multiple files when split by duration or resumed after an interruption; sort by `seq` for playback order, and `addr` is a presigned playback URL valid for 2 hours |
+
+`vodKey` / `vodSize` / `mcuAt` / `mcuDur` are deprecated as of 1.4.1 (the new server no longer returns `vodKey` / `vodSize`); use `records`, `totalSize`, `beganAt`, and `totalDuration` instead.
 
 ---
 
@@ -164,6 +168,7 @@ func meeting(_ meeting: SMeetingEngine, roomMcuTask data: RoomMcuTaskEventData) 
     // data.taskType   task type
     // data.taskStatus task status
     // data.errDesc    error description
+    // when an enum is .unknown, data.taskTypeRaw / data.taskStatusRaw hold the server's raw values
 }
 ```
 

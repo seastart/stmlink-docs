@@ -251,7 +251,7 @@ Helper properties:
 
 | Member | Type | Description |
 | --- | --- | --- |
-| `displayName` | `String` | Chinese display name (such as 扬声器), usable directly in the UI |
+| `displayName` | `String` | Route name, usable directly in the UI; follows the system language—Chinese on Chinese systems, English otherwise (since 1.5.1; always Chinese before) |
 | `isBuiltIn` | `Bool` | Whether it's a built-in route (speaker / receiver) |
 | `isExternal` | `Bool` | Whether it's an external route (Bluetooth / wired) |
 

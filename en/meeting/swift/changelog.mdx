@@ -3,6 +3,30 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.4.1] - 2026.10.01
+<Warning>
+**The raw values of `McuTaskStatus` have been corrected**: the old definition was misaligned with the `task_status` the server sends (the old version had `exception = 2` and `normal = 3`, while on the server 2 means "waiting to end", 3 means "ended abnormally", and 4 means "ended normally"). As a result, the server's "ended abnormally" was recognized as `.normal`, "waiting to end" was recognized as `.exception`, and the real "ended normally" and "waiting to start" events were dropped outright, so `meeting(_:roomMcuTask:)` never received them. Case names are unchanged and the raw values are now correct, so code that checks case names (`.normal` / `.exception`) gets the correct meaning after upgrading; **code that compares `rawValue` against numbers needs to be reviewed**.
+</Warning>
+
+#### Fixed
++ **`McuTaskStatus` is aligned with the server's values**: `waitStart = 0` (waiting to start), `running = 1`, `waitEnd = 2` (waiting to end), `exception = 3`, `normal = 4`; `waitStart` / `waitEnd` are transitional states in which the command has been sent but the underlying task hasn't confirmed it yet.
++ **`mcu_task` events with unrecognized values are no longer dropped**: previously, when the server sent a `task_type` / `task_status` this SDK version didn't recognize, `meeting(_:roomMcuTask:)` was never called. It's now called as usual, the enum falls back to the new `.unknown`, and the raw values are in the new `taskTypeRaw` / `taskStatusRaw` of `RoomMcuTaskEventData`.
++ **`mcuRecordDetail(meetingId:)` adapts to the server's new two-level "task + recording files" response**: the server renamed the task ID key to `task_id` and moved recording file information down into a list of segments, so the old version failed to decode against the new server and threw. Responses from both new and old servers now decode, with missing fields set to zero values.
+
+#### Added
++ `McuTaskType` adds `audio = 4` (audio recording), `live = 8` (live stream), and the fallback `unknown = -1`; `McuTaskStatus` adds `waitStart`, `waitEnd`, and `unknown`. `unknown` is only for decoding; don't use it in requests.
++ `McuRecordDetail` adds `taskType`, `beganAt`, `endedAt`, `recordCount`, `totalDuration`, `totalSize`, `records`, and `now`; a new recording file type `McuRecordFile` (`recordId`, `seq`, `vodSize`, `duration`, `beganAt`, `endedAt`, `offsetMs`, `reason`, `addr`, and more; `addr` is a presigned playback URL valid for 2 hours).
+
+#### Changed
++ `vodKey`, `vodSize`, `mcuAt`, and `mcuDur` of `McuRecordDetail` are deprecated and now optional (the new server no longer returns `vodKey` / `vodSize`): use `records` for recording files, `vodSize` → `totalSize`, `mcuAt` → `beganAt`, `mcuDur` → `totalDuration`.
++ The SRTC dependency is upgraded to **1.5.1** (`AudioRoute.displayName` returns Chinese or English based on the system language; see the audio/video SDK [changelog](/en/rtc/swift/changelog)).
+
+<Note>
+Watch for two compile-level changes when upgrading: code that uses the four fields such as `McuRecordDetail.vodKey` gets deprecation warnings, and since they're now optional, places that use them as non-optional need updating (switching to the new fields above is recommended); code that `switch`es on `McuTaskStatus` / `McuTaskType` should include an `@unknown default` branch. The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+If you implement iOS full-screen screen sharing, change the extension target's `srtc-swift-sdk` dependency to `exact: "1.5.1"` as well, matching the SRTC version pinned in this release's manifest; otherwise dependency resolution fails.
+</Note>
+
 ### [1.4.0] - 2026.09.30
 <Warning>
 **This release contains breaking changes**: error codes are adjusted according to the cross-platform unified table (version 2), and error messages are now in English. Any code that branches on the numeric value of `SMeetingError.code`, or on the Chinese text of `message` / `localizedDescription`, needs to be updated after upgrading; for the scenarios in the table below that "now throw a different case", `switch` branches need updating too. Only the minor version is bumped, so projects integrated with `from: "1.3.x"` resolve to this release **automatically**; read the table below before upgrading.
