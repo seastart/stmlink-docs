@@ -39,7 +39,7 @@ There are three cases:
 | 5 | macOS | `205` |
 | 6 | Web | `206` |
 | 7 | Mini Program | `207` |
-| 8 | Android set-top box | `208` |
+| 8 | HarmonyOS NEXT | `208` |
 | 9 | Android embedded | `209` |
 
 <Note>

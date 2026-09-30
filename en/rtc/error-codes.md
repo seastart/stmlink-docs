@@ -41,7 +41,7 @@ The 3rd digit of a 6-digit error code indicates the platform:
 | 5 | macOS | `105` |
 | 6 | Web (WebRTC) | `106` |
 | 7 | Mini Program | `107` |
-| 8 | Android set-top box | `108` |
+| 8 | HarmonyOS NEXT | `108` |
 | 9 | Android embedded | `109` |
 | 80 | Server / embedded integration (C SDK) | `180` |
 

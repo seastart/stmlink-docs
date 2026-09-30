@@ -200,8 +200,8 @@
   "en/meeting/error-codes": {
     "reviewed": true,
     "source": "zh/meeting/error-codes.md",
-    "zh_blob": "7cf47e770d2b73062daf046c812b761fa1be0bc9",
-    "zh_commit": "cb4eafad25598c2fd96eebe8872ce65ca2e319d1"
+    "zh_blob": "2bbf9b4e3012aa62562f9c15deef148885fb1ec2",
+    "zh_commit": "f9425aba4a0f3ee217719288bb460679c5064ed2"
   },
   "en/meeting/ios/advanced/screen-recording": {
     "reviewed": true,
@@ -914,8 +914,8 @@
   "en/rtc/error-codes": {
     "reviewed": true,
     "source": "zh/rtc/error-codes.md",
-    "zh_blob": "6e33dcee627e023371712ced7234529aaeb64dd2",
-    "zh_commit": "e30f31ee9ce742025085d8756d4c07574f74777e"
+    "zh_blob": "00fbaa9bec52749a631f7499d81cbb34837c322d",
+    "zh_commit": "f9425aba4a0f3ee217719288bb460679c5064ed2"
   },
   "en/rtc/ios/advanced/beauty": {
     "reviewed": true,
