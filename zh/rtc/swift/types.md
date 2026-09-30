@@ -251,7 +251,7 @@ iOS 上 `getDevices(kind: .audioOutput)` 返回空数组——系统不暴露输
 
 | 成员 | 类型 | 说明 |
 | --- | --- | --- |
-| `displayName` | `String` | 中文名称，可直接用于 UI |
+| `displayName` | `String` | 路由名称，可直接用于 UI；跟随系统语言，中文系统返回中文，其余返回英文（1.5.1 起，此前恒为中文） |
 | `isBuiltIn` | `Bool` | 是否内置路由（扬声器 / 听筒） |
 | `isExternal` | `Bool` | 是否外接路由（蓝牙 / 有线） |
 

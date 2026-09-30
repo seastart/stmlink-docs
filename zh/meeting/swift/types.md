@@ -269,7 +269,8 @@ req.resKey = key
 | 类型 | 字段 |
 | --- | --- |
 | `McuRecordConfig` | `appId`、`layout`、`watermarkType`、`windowTagType`、`createdAt`、`updatedAt` |
-| `McuRecordDetail` | `id`、`opUid`、`opName`、`channel`、`title`、`roomNo`、`taskStatus`、`errDesc`、`vodKey`、`vodSize`、`mcuAt`、`mcuDur`、`tags`、`createdAt`、`updatedAt` |
+| `McuRecordDetail` | `id`、`opUid`、`opName`、`channel`、`title`、`roomNo`、`taskType`、`taskStatus`、`errDesc`、`beganAt`、`endedAt`、`recordCount`、`totalDuration`、`totalSize`、`records`、`tags`、`createdAt`、`updatedAt`、`now`；已废弃：`vodKey`、`vodSize`、`mcuAt`、`mcuDur`（可选，新服务端不再返回） |
+| `McuRecordFile` | `recordId`、`taskId`、`channel`、`seq`、`vodSize`、`duration`、`beganAt`、`endedAt`、`offsetMs`、`reason`、`addr`（预签名播放地址，有效期 2 小时）、`createdAt` |
 
 #### MeetingToken
 
@@ -341,7 +342,7 @@ result.meta      // MetaRes
 | `RoomShareStopEventData` | `uid`、`shareType`、`byAdmin`、`opUid` |
 | `ShareBroadcastStartEventData` | `uid`（仅 iOS 全屏共享，共享方自己） |
 | `ShareBroadcastStopEventData` | `uid`、`reason`（结束原因，来自扩展侧或系统） |
-| `RoomMcuTaskEventData` | `taskType: McuTaskType`、`taskStatus: McuTaskStatus`、`errDesc` |
+| `RoomMcuTaskEventData` | `taskType: McuTaskType`、`taskStatus: McuTaskStatus`、`errDesc`、`taskTypeRaw`、`taskStatusRaw`（服务端原始值，枚举为 `.unknown` 时用） |
 | `RoomJoinFailedEventData` | `uid`、`name`、`errDesc`、`failedType` |
 
 #### 消息
@@ -531,14 +532,22 @@ result.meta      // MetaRes
 | `record` | `1` | 录像模式 |
 | `mix` | `2` | 合流模式 |
 | `mixAndRecord` | `3` | 合流并录制 |
+| `audio` | `4` | 录音模式 |
+| `live` | `8` | 直播流模式 |
+| `unknown` | `-1` | 本版本 SDK 不认识的取值（仅用于解码，不要拿来发请求） |
 
 #### McuTaskStatus
 
 | 枚举值 | 原始值 | 说明 |
 | --- | --- | --- |
+| `waitStart` | `0` | 待开始（指令已下发，任务尚未跑起来） |
 | `running` | `1` | 进行中 |
-| `exception` | `2` | 异常结束 |
-| `normal` | `3` | 正常结束 |
+| `waitEnd` | `2` | 待结束（已下发停止指令，尚未确认结束） |
+| `exception` | `3` | 异常结束，原因见 `errDesc` |
+| `normal` | `4` | 正常结束 |
+| `unknown` | `-1` | 本版本 SDK 不认识的取值（仅用于解码） |
+
+取值与服务端 `task_status` 一致。1.4.0 及以前的原始值有误（`exception = 2`、`normal = 3`），1.4.1 起改正，见 [更新日志](/zh/meeting/swift/changelog)。
 
 #### LayoutType
 

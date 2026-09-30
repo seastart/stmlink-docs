@@ -3,6 +3,16 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.5.1] - 2026.10.01
+#### 修复
++ **`AudioRoute.displayName` / `AudioRouteTarget.displayName` 按系统语言返回中文或英文**：此前一律返回中文（「扬声器」「听筒」等），英文系统的 App 直接拿来显示就会在英文界面里夹着中文。现在系统首选语言以 `zh` 开头（`zh-Hans` / `zh-Hant` / `zh-HK` 等）时返回中文，其余返回英文（`Speaker`、`Earpiece`、`Bluetooth headset`、`Wired headset`、`Unknown route`）。它是给终端用户看的文案，只跟随**系统语言**，不受 `SRTCEngine.language` 影响。
+
+<Note>
+本版为纯修复，没有公开 API 变动，1.5.0 的接入代码可直接升级。英文系统下 `displayName` 的返回值从中文变为英文，若业务代码拿它做字符串比较（而不是按 `AudioRoute` 取值判断），请改为按枚举值判断。平台下限不变（iOS 16 / macOS 14）。
+
+`SRTCBroadcastKit` 本次为 **1.0.14**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.5.0] - 2026.09.30
 <Warning>
 **本版是破坏性变更**：错误码按跨端统一码表（第 2 版）全面重排，报错文案改为英文。凡是按 `SRTCError.code` 的数值、或按 `message` / `localizedDescription` 的中文文字做判断的代码，升级后都需要调整；按 `SRTCError` 的 case 做 `switch` 的代码不受数值变化影响，但下表中「改抛了另一个 case」的场景要改分支。版本号只升 minor，按 `from: "1.4.x"` 接入的工程会**自动**解析到本版，升级前请先看完下表。

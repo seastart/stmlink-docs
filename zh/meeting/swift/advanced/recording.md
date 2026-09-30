@@ -12,6 +12,8 @@ description: "SMeeting Swift SDK 的服务端录制、合流任务控制、布�
 | `.record` | 录像，产出录制文件 |
 | `.mix` | 合流，把多路画面合成一路供拉流观看 |
 | `.mixAndRecord` | 合流并录制 |
+| `.audio` | 录音 |
+| `.live` | 直播流 |
 
 创建会议时也可以通过 `MeetingCreateReq.autoRecord` 让会议开始后自动录制。
 
@@ -147,11 +149,13 @@ let detail = try await meeting.mcuRecordDetail(meetingId: meetingId)
 
 | 字段 | 说明 |
 | --- | --- |
-| `taskStatus` | `McuTaskStatus`：`.running` 进行中 / `.normal` 正常结束 / `.exception` 异常结束 |
+| `taskStatus` | `McuTaskStatus`：`.waitStart` 待开始 / `.running` 进行中 / `.waitEnd` 待结束 / `.normal` 正常结束 / `.exception` 异常结束 |
 | `errDesc` | 异常结束时的原因 |
-| `vodKey` | 录制文件的存储键，配合 `presignedGetObject(resKey:)` 换取下载地址 |
-| `vodSize` | 文件大小 |
-| `mcuAt` / `mcuDur` | 录制开始时间与时长 |
+| `beganAt` / `endedAt` | 录制开始 / 结束时间（秒级时间戳，0 表示尚未开始 / 尚未结束） |
+| `totalDuration` / `totalSize` | 全部录制文件的总时长（秒）与总字节 |
+| `records` | 录制文件列表（`[McuRecordFile]?`）：一次录制会按时长切段或中断续录产出多个文件，按 `seq` 排序即播放顺序，`addr` 为有效期 2 小时的预签名播放地址 |
+
+`vodKey` / `vodSize` / `mcuAt` / `mcuDur` 自 1.4.1 起废弃（新服务端不再返回 `vodKey` / `vodSize`），分别改用 `records`、`totalSize`、`beganAt`、`totalDuration`。
 
 ---
 
@@ -164,6 +168,7 @@ func meeting(_ meeting: SMeetingEngine, roomMcuTask data: RoomMcuTaskEventData) 
     // data.taskType   任务类型
     // data.taskStatus 任务状态
     // data.errDesc    异常描述
+    // 枚举为 .unknown 时，data.taskTypeRaw / data.taskStatusRaw 是服务端原始值
 }
 ```
 

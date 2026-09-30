@@ -3,6 +3,30 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.4.1] - 2026.10.01
+<Warning>
+**`McuTaskStatus` 的原始值已改正**：旧版的定义与服务端下发的 `task_status` 错位（旧版 `exception = 2`、`normal = 3`，而服务端的 2 是「待结束」、3 才是「异常结束」、4 才是「正常结束」），导致服务端的「异常结束」被识别成 `.normal`、「待结束」被识别成 `.exception`，而真正的「正常结束」与「待开始」事件被直接丢弃、`meeting(_:roomMcuTask:)` 收不到。成员名不变、原始值已改正，按成员名（`.normal` / `.exception`）判断的代码升级后即得到正确语义；**直接拿 `rawValue` 与数字比较的代码需要自查**。
+</Warning>
+
+#### 修复
++ **`McuTaskStatus` 与服务端取值对齐**：`waitStart = 0`（待开始）、`running = 1`、`waitEnd = 2`（待结束）、`exception = 3`、`normal = 4`；`waitStart` / `waitEnd` 是指令已下发、底层任务尚未确认的临时过渡状态。
++ **`mcu_task` 事件遇到不认识的取值不再整条丢弃**：此前服务端下发本版本 SDK 不认识的 `task_type` / `task_status` 时，`meeting(_:roomMcuTask:)` 根本不会回调。现在照常回调，枚举落到新增的 `.unknown`，原始值见 `RoomMcuTaskEventData` 新增的 `taskTypeRaw` / `taskStatusRaw`。
++ **`mcuRecordDetail(meetingId:)` 适配服务端新的「任务 + 录制文件」两级返回**：服务端已把任务 ID 的键名改为 `task_id`，并把录像文件信息下沉到分片列表，旧版在新服务端上解码失败、直接抛错。现在新老服务端的返回都能解出来，缺失的字段取零值。
+
+#### 新增
++ `McuTaskType` 新增 `audio = 4`（录音）、`live = 8`（直播流）与兜底的 `unknown = -1`；`McuTaskStatus` 新增 `waitStart`、`waitEnd` 与 `unknown`。`unknown` 只用于解码，不要拿来发请求。
++ `McuRecordDetail` 新增 `taskType`、`beganAt`、`endedAt`、`recordCount`、`totalDuration`、`totalSize`、`records`、`now`；新增录制文件类型 `McuRecordFile`（`recordId`、`seq`、`vodSize`、`duration`、`beganAt`、`endedAt`、`offsetMs`、`reason`、`addr` 等，`addr` 为有效期 2 小时的预签名播放地址）。
+
+#### 变更
++ `McuRecordDetail` 的 `vodKey`、`vodSize`、`mcuAt`、`mcuDur` 标为废弃，类型改为可选（新服务端不再返回 `vodKey` / `vodSize`）：录像文件改看 `records`，`vodSize` → `totalSize`，`mcuAt` → `beganAt`，`mcuDur` → `totalDuration`。
++ SRTC 依赖升至 **1.5.1**（`AudioRoute.displayName` 按系统语言返回中 / 英文，见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)）。
+
+<Note>
+升级时需要留意两处编译层面的变化：用到 `McuRecordDetail.vodKey` 等四个字段的代码会出现废弃告警，且它们变成了可选类型，按非可选使用的地方要改（建议直接换成上面的新字段）；对 `McuTaskStatus` / `McuTaskType` 做 `switch` 的代码，请带上 `@unknown default` 分支。平台下限不变（iOS 16 / macOS 14）。
+
+做 iOS 全屏屏幕共享的接入方，扩展 target 那条 `srtc-swift-sdk` 依赖要一并改为 `exact: "1.5.1"`，与本版清单里 pin 的 SRTC 版本一致，否则依赖解析失败。
+</Note>
+
 ### [1.4.0] - 2026.09.30
 <Warning>
 **本版是破坏性变更**：错误码按跨端统一码表（第 2 版）调整，报错文案改为英文。凡是按 `SMeetingError.code` 的数值、或按 `message` / `localizedDescription` 的中文文字做判断的代码，升级后都需要调整；下表中「改抛了另一个 case」的场景，`switch` 分支也要改。版本号只升 minor，按 `from: "1.3.x"` 接入的工程会**自动**解析到本版，升级前请先看完下表。
