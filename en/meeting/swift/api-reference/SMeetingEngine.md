@@ -45,6 +45,22 @@ meeting.srtc.logLevel = .debug
 
 > Always use this instance; don't create a second SRTCEngine yourself—the meeting and the underlying layer share the same instance, and creating another one leads to split state, duplicate message connections, and devices being taken over.
 
+#### `language`
+
+SDK language, of type `String?` (such as `"en"` or `"zh-CN"`). Defaults to `nil`, which follows the system language. Available since 1.4.0.
+
+This is the same process-wide setting as `meeting.srtc.language`: requests from both the meeting layer and the RTC layer to the backend carry `Accept-Language`, and **the messages of backend business errors (codes ≥ 1000)** come back in Chinese or English accordingly. The SDK's own errors (`SMeetingError.message` / `SRTCError.message`) are always in English and aren't affected. Set it before `login`; changing it later takes effect immediately for subsequent requests.
+
+```swift
+meeting.language = "en"
+```
+
+#### `currentLanguage`
+
+The language actually in effect, of type `String`, read-only: `language` if it's set, otherwise the system's preferred language, or `"zh"` if that can't be determined. Available since 1.4.0.
+
+For error codes and how to handle them, see [Error handling](/en/meeting/swift/error-codes).
+
 #### `delegates`
 
 The collection of event delegates, of type `MulticastDelegate<SMeetingDelegate>`. A weak-reference multicast that supports multiple observers.
@@ -294,7 +310,7 @@ let user = try meeting.getUserInfo(uid)
 
 **Returns:** `MeetingUserInfo`
 
-**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.internalError(_:)` (no such member in the meeting)
+**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.userNotFound(_:)` (no such member in the meeting)
 
 #### `getUsersInfo()`
 

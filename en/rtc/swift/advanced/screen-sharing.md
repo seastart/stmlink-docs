@@ -162,6 +162,20 @@ class SampleHandler: SRTCBroadcastSampleHandler {}
 
 Capture, scaling, and cross-process transport are all in the base class; normally you don't need to override any method.
 
+When the extension ends the broadcast (for example, the user didn't start sharing in the app first, or the app ends sharing itself), the system shows an alert to the end user.
+Since 1.5.0 the alert text is in Chinese or English based on the system language; to change the text or support more languages, override `finishMessage(for:)`:
+
+```swift
+class SampleHandler: SRTCBroadcastSampleHandler {
+    override func finishMessage(for reason: SRTCBroadcastFinishReason) -> String {
+        switch reason {
+        case .hostUnavailable: return "Tap \"Share Screen\" in the app first"
+        default: return Self.builtinFinishMessage(for: reason, language: Locale.preferredLanguages.first)
+        }
+    }
+}
+```
+
 <Warning>
 The extension target can link only `SRTCBroadcastKit`. The extension process has a memory limit of **50 MB**, and linking `SRTC`, which
 includes WebRTC, gets the extension killed by the system during capture. Conversely, don't add `SRTCBroadcastKit` to the app target

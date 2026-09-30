@@ -35,6 +35,22 @@ Example:
 srtc.logLevel = .debug
 ```
 
+#### `language`
+
+SDK language, of type `String?` (a BCP 47 language tag such as `"en"` or `"zh-CN"`). Defaults to `nil`, which follows the system language. Available since 1.5.0.
+
+It only affects the `Accept-Language` header on requests to the backend, that is, **the language of backend business error messages (codes 1000–99999)**. The SDK's own errors (`SRTCError.message`) are always in English and don't change with it. Like `logLevel`, it's a process-wide global setting; set it before `joinChannel` / `enableIm`.
+
+```swift
+srtc.language = "en"
+```
+
+#### `currentLanguage`
+
+The language actually in effect, of type `String`, read-only: `language` if it's set, otherwise the system's preferred language, or `"zh"` if that can't be determined. Available since 1.5.0.
+
+For error codes and how to handle them, see [Error codes](/en/rtc/swift/error-codes).
+
 #### `audioCaptureProcessor`
 
 Audio processor applied after microphone capture, usable for voice changing, noise suppression, and similar processing.

@@ -49,7 +49,7 @@ try await meeting.switchCamera(deviceId: deviceId)
 try await meeting.switchCamera()
 ```
 
-Calling it while the camera is off throws `SMeetingError.deviceError`. If the user picks a device in a dropdown **before turning on the camera**, we recommend storing the choice in your app state first and passing it in when you call `requestOpenCamera(deviceId:)`.
+Calling it while the camera is off throws `SMeetingError.invalidState`. If the user picks a device in a dropdown **before turning on the camera**, we recommend storing the choice in your app state first and passing it in when you call `requestOpenCamera(deviceId:)`.
 
 ---
 

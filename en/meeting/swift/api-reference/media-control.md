@@ -62,7 +62,7 @@ try await meeting.switchCamera(deviceId: deviceId)   // Switch to a specified de
 
 **Returns:** None
 
-**Throws:** `SMeetingError.deviceError(_:)`—the camera isn't on yet
+**Throws:** `SMeetingError.invalidState(_:)`—the camera isn't on yet (`deviceError` in 1.3.10 and earlier)
 
 ---
 
@@ -124,7 +124,7 @@ try await meeting.requestShare()
 **Throws:**
 
 + `SMeetingError.unauthorized`—the room has sharing disabled, and you're not the host / a co-host
-+ `SMeetingError.internalError(_:)`—you're already sharing
++ `SMeetingError.invalidState(_:)`—you're already sharing
 + `SMeetingError.apiError(code:message:)`
 + Underlying errors when capture fails (for example, the user denied screen recording permission)
 
@@ -194,7 +194,7 @@ public func startViewCaptureShare() async throws -> LocalVideoTrack
 **Throws:**
 
 + `SMeetingError.notInMeeting`—you haven't entered a meeting yet.
-+ `SMeetingError.internalError(_:)`—a screen sharing track already exists, including a broadcast listening track that's been prepared but not yet published.
++ `SMeetingError.invalidState(_:)`—a screen sharing track already exists, including a broadcast listening track that's been prepared but not yet published.
 + Underlying track publishing errors.
 
 This API publishes the media track directly, without going through `requestShare()`'s flow of asking the meeting backend and notifying the sharing status. The caller should manage the sharing status according to its own business logic and make sure view capture and screen sharing are mutually exclusive; to switch to screen sharing, stop view capture first.
@@ -254,7 +254,7 @@ Publishes the full-screen capture that's already producing frames to the meeting
 
 **Throws:**
 
-+ `SMeetingError.internalError(_:)`—`prepareBroadcastShare` hasn't been called yet
++ `SMeetingError.invalidState(_:)`—`prepareBroadcastShare` hasn't been called yet
 + `SMeetingError.unauthorized`—the room has sharing disabled, and you're not the host / a co-host
 + `SMeetingError.apiError(code:message:)`
 
@@ -320,7 +320,7 @@ let track = try await meeting.subscribeRemoteVideoTrack(uid: uid, trackDesc: .ca
 **Throws:**
 
 + `SMeetingError.notInMeeting`
-+ `SMeetingError.internalError(_:)`—the member doesn't have this track
++ `SMeetingError.remoteTrackUnavailable(uid:desc:)`—the member doesn't have this track
 
 ---
 
@@ -384,7 +384,7 @@ Remote audio is already subscribed automatically when you enter the meeting; the
 
 **Returns:** None
 
-**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.internalError(_:)`
+**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.remoteTrackUnavailable(uid:desc:)` (the member doesn't have this track)
 
 #### `unsubscribeRemoteAudioTrack(uid:trackDesc:)`
 
@@ -419,7 +419,7 @@ Subscribes to and plays the server-side composite video. Requires the server to 
 
 **Returns:** `RemoteVideoTrack`
 
-**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.internalError(_:)` (composite video track not found)
+**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.remoteTrackUnavailable(uid:desc:)` (composite video track not found)
 
 #### `stopPlayRemoteVideoMcu(view:)`
 

@@ -93,7 +93,7 @@ try await meeting.switchCamera()
 try await meeting.switchCamera(deviceId: deviceId)
 ```
 
-Calling it while the camera is off throws `SMeetingError.deviceError`.
+Calling it while the camera is off throws `SMeetingError.invalidState`.
 
 ---
 

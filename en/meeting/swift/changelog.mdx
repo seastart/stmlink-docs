@@ -3,6 +3,48 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.4.0] - 2026.09.30
+<Warning>
+**This release contains breaking changes**: error codes are adjusted according to the cross-platform unified table (version 2), and error messages are now in English. Any code that branches on the numeric value of `SMeetingError.code`, or on the Chinese text of `message` / `localizedDescription`, needs to be updated after upgrading; for the scenarios in the table below that "now throw a different case", `switch` branches need updating too. Only the minor version is bumped, so projects integrated with `from: "1.3.x"` resolve to this release **automatically**; read the table below before upgrading.
+</Warning>
+
+#### Added
++ **`SMeetingEngine.language`** (`String?`, such as `"en"` or `"zh-CN"`; `nil` follows the system language) and the read-only **`currentLanguage`**. It's the **same process-wide setting** as `meeting.srtc.language`: requests from both the meeting layer and the RTC layer to the backend carry `Accept-Language`, and **the messages of backend business errors (codes ≥ 1000) come back in Chinese or English accordingly**; the SDK's own errors are always in English and aren't affected. Set it before `login`.
++ **`SMeetingError.baseCode`** (the low 3-digit semantic code, unified across platforms) and **`httpStatus`** (the status code of a non-200 HTTP response; only `httpError` has a value).
++ **`SMeetingError` implements `CustomNSError`**: once bridged to `NSError`, `domain = "cn.seastart.smeeting"` and `code` is the full code (for example `203003`).
++ New error cases: `httpError(status:message:)` (007), `userNotFound` (010), `invalidState` (011), `invalidArgument` (012), `remoteTrackUnavailable(uid:desc:)` (209), `requestTimeout` (353), `requestCancelled` (354), and `responseParseFailed` (356).
+
+#### Changed
++ **All error messages are now in English** (for example, `notLoggedIn` changed from `您尚未登录meeting sdk` to `Not logged in to the meeting SDK`). `message` is meant for developers and logs; **for messages shown to end users, map `code` / `baseCode` yourself**—don't show `message` directly.
++ **HTTP status codes are no longer folded into error codes**: previously HTTP 500 was reported as `203500`, and response parse failures produced codes like `202999`; now non-200 HTTP responses report `httpError` (`203007`, with the status in `httpStatus`), and response parse failures report `responseParseFailed` (`203356`).
++ Capture / permission errors are passed through unchanged as the RTC layer's `SRTCError` (for example `103231` no camera permission, `103251` no microphone permission, `103039` screen sharing denied); handle both types in `catch`.
++ The SRTC dependency is bumped to **1.5.0** (likewise error code renumbering + English messages; see the audio and video SDK's [Changelog](/en/rtc/swift/changelog)).
+
+#### Old code → new code mapping
+The iOS prefix is `203` and the macOS prefix is `205`. The table below uses iOS as the example (for macOS, replace the prefix with `205`).
+
+| Scenario | 1.3.10 and earlier | 1.4.0 |
+| --- | --- | --- |
+| Non-200 HTTP response | `203<HTTP status>` (for example `203500`), `apiError` | `203007` `httpError` (`httpStatus` is the HTTP status) |
+| Response isn't JSON / lacks the `code` field | `202999` `apiError` | `203356` `responseParseFailed` |
+| Response `data` structure doesn't match | `DecodingError` thrown as-is | `203356` `responseParseFailed` |
+| Network request failure (URLSession) | System error thrown as-is | `203007` `networkError` |
+| Request timeout | System error thrown as-is | `203353` `requestTimeout` |
+| Request canceled | System error thrown as-is | `203354` `requestCancelled` |
+| No such user in the room | `203009` `internalError` | `203010` `userNotFound` |
+| Remote user's track / MCU composite video track not found | `203009` `internalError` | `203209` `remoteTrackUnavailable` |
+| Camera isn't on yet | `203008` `deviceError` | `203011` `invalidState` |
+| Full-screen capture without `prepareBroadcastShare` / sharing already on / starting view recording while sharing | `203009` `internalError` | `203011` `invalidState` |
+| RTC layer errors (capture, permissions, publishing and subscribing) | `SRTCError` old codes | `SRTCError` new codes (see the SRTC 1.5.0 mapping table) |
+
+Unchanged codes: `notLoggedIn` 001, `tokenExpired` 002, `notInMeeting` 003, `unauthorized` 004, `tokenInvalid` 005, `alreadyInMeeting` 006, `deviceError` 008, and `internalError` 009 (only the messages changed to English). Backend business codes (≥ 1000) are still passed through unchanged, and their messages now come back in Chinese or English according to `language`.
+
+<Note>
+No existing `SMeetingError` case was removed and no signature changed, so integration code for 1.3.10 compiles against this release as-is; what you need to check is **code that branches on numeric values / Chinese message text, and `switch` branches that rely on the old cases in the table above**. The minimum OS versions are unchanged (iOS 16 / macOS 14).
+
+For projects that implement iOS full-screen sharing, the extra `srtc-swift-sdk` dependency for the extension target must also be changed to `exact: "1.5.0"` to match the version pinned in this package's manifest; otherwise dependency resolution fails outright.
+</Note>
+
 ### [1.3.10] - 2026.09.23
 #### Changed
 + The SRTC dependency is bumped from 1.4.6 to **1.4.7**. That release contains only fixes: an unknown `device_type` no longer makes the entire member list fail to parse, and subscriptions rejected one by one by the SFU no longer fail silently (retries and registration rollback were added). For details, see the SRTC changelog.

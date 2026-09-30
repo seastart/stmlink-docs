@@ -3,6 +3,62 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.5.0] - 2026.09.30
+<Warning>
+**This release contains breaking changes**: error codes are renumbered across the board according to the cross-platform unified table (version 2), and error messages are now in English. Any code that branches on the numeric value of `SRTCError.code`, or on the Chinese text of `message` / `localizedDescription`, needs to be updated after upgrading; code that `switch`es on `SRTCError` cases isn't affected by the numeric changes, but the scenarios in the table below that "now throw a different case" need their branches updated. Only the minor version is bumped, so projects integrated with `from: "1.4.x"` resolve to this release **automatically**; read the table below before upgrading.
+</Warning>
+
+#### Added
++ **`SRTCEngine.language`** (`String?`, a BCP 47 language tag such as `"en"` or `"zh-CN"`; `nil` follows the system language) and the read-only **`currentLanguage`** (the language actually in effect: the set value if there is one, otherwise the system's preferred language, or `"zh"` if that can't be determined). The SDK sends `Accept-Language` with its backend requests, and **the messages of business errors returned by the backend (codes 1000–99999) come back in Chinese or English accordingly**; the SDK's own errors are always in English and aren't affected. Like `logLevel`, it's a process-wide global setting; set it before `joinChannel` / `enableIm`.
++ **`SRTCError.baseCode`**: the low 3-digit semantic code, unified across platforms (for example, `231` = no camera permission), which makes it easy to compare with Web / Android / HarmonyOS; for backend business codes it returns the code itself.
++ **`SRTCError` implements `CustomNSError`**: once bridged to `NSError`, `domain = "cn.seastart.srtc"` and `code` is the full code (for example `103231`), so integrations that go through `NSError`, such as ObjC, uni-app, or Flutter, can check the code directly.
++ New error cases: `cameraPermissionDenied` (231), `microphonePermissionDenied` (251), `screenShareDenied(_:underlying:)` (039; `underlying` is the original system error, placed in `NSUnderlyingErrorKey` after bridging), `invalidArgument` (031), `userNotFound` (204), `featureNotSupported` (032), `cameraFormatUnavailable` (242), `publishFailed` (300), and `subscribeFailed` (301).
++ `SRTCBroadcastKit` (**1.0.13** in this release): the system alert shown when the broadcast ends is now in Chinese or English based on the system language; subclasses can override `SRTCBroadcastSampleHandler.finishMessage(for:)` to customize the text (its parameter is the new end-reason enum `SRTCBroadcastFinishReason`), and the built-in Chinese and English texts are available through `builtinFinishMessage(for:language:)`.
+
+#### Changed
++ **All error messages are now in English**: `SRTCError.message` / `localizedDescription` (still in the format `"<code>: <message>"`), the parameter descriptions included in errors, the `BroadcastError` descriptions, and the `reason` of `screenBroadcastDidFinish` are all in English. They're meant for developers and logs; **for messages shown to end users, map `code` / `baseCode` yourself**—don't show `message` directly.
++ **HTTP status codes are no longer folded into error codes**: previously a non-200 HTTP response was reported as `103<HTTP status>` (for example `103502`), colliding with other low codes; now it's always `apiRequestFailed` → **`103006`**, and the HTTP status is only in the associated value `statusCode` and in the description.
++ **Turning on the microphone without microphone permission now throws**: previously capture "succeeded" but sent silence; now it throws `microphonePermissionDenied` (`103251`).
++ **Heartbeats no longer leave the channel on non-200 HTTP responses / network failures**: only backend business errors (codes 1000–99999, such as being removed or the session becoming invalid) leave the channel; temporary errors such as gateway 502 / 504 now keep waiting for reconnection.
++ Error codes in `SRTCUniBridge` callbacks are no longer `-1`: errors that aren't `SRTCError` are normalized to 006 (network) / 026 (canceled) / 025 (internal error).
+
+#### Old code → new code mapping
+The iOS prefix is `103` and the macOS prefix is `105`. The table below uses iOS as the example (for macOS, replace the prefix with `105`).
+
+| Scenario | 1.4.7 and earlier | 1.5.0 |
+| --- | --- | --- |
+| Non-200 HTTP response | `103<HTTP status>` (for example `103502`) | `103006` `apiRequestFailed` |
+| Response isn't JSON | `103200` | `103011` `messageDecodeFailed` |
+| Response lacks the `code` field | `102999` | `103011` `messageDecodeFailed` |
+| Response `data` structure doesn't match | `DecodingError` thrown as-is | `103011` `messageDecodeFailed` |
+| URLSession network error / request canceled | System error thrown as-is | `103006` / `103026` `cancelled` |
+| No camera permission | `103018` `captureError` | `103231` `cameraPermissionDenied` |
+| No microphone permission | No error (sends silence) | `103251` `microphonePermissionDenied` |
+| No screen recording permission on macOS | `105018` `captureError` | `105039` `screenShareDenied` |
+| On iOS, the user taps **Don't Allow** in the ReplayKit dialog / screen recording is disabled by the system | ReplayKit system error thrown as-is | `103039` `screenShareDenied` (system error in `underlying`) |
+| Subscribed user isn't in the channel | `103003` `trackNotFound` | `103204` `userNotFound` |
+| Track type mismatch / publish config or desc is empty | `103024` `invalidState` | `103031` `invalidArgument` |
+| No camera / display available | `103018` `captureError` | `103021` `deviceNotFound` |
+| Camera has no usable capture format | `103018` `captureError` | `103242` `cameraFormatUnavailable` |
+| Screen sharing options not set | `103018` `captureError` | `103024` `invalidState` |
+| Screen sharing below macOS 12.3 / ReplayKit unavailable | `103018` `captureError` | `103032` `featureNotSupported` |
+| Simulcast on a track shared across multiple channels | `103024` `invalidState` | `103032` `featureNotSupported` |
+| Operation while the channel is reconnecting | `103024` `invalidState` | `103014` `transportNotReady` |
+| Operation after leaving the channel | `103024` `invalidState` | `103001` `notConnected` |
+| `enableIm` called twice | `103024` `invalidState` | `103005` `alreadyJoined` (same code as joining twice) |
+| Publishing / subscribing while the seastart engine isn't connected | `103024` `invalidState` | `103014` while reconnecting; otherwise `103300` `publishFailed` for publishing and `103301` `subscribeFailed` for subscribing |
+| PeerConnection enters failed / closed | `103006` | `103015` `peerConnectionFailed` |
+| Wangsu (CDN) SDP response isn't JSON | `103013` `sdpNegotiationFailed` | `103011` `messageDecodeFailed` |
+| Wangsu (CDN) negotiation network failure / canceled midway | System error thrown as-is | `103006` / `103026` |
+
+Backend business codes (1000–99999) are still passed through unchanged, with no prefix and the same values; their messages now come back in Chinese or English according to `language`.
+
+<Note>
+No existing `SRTCError` case was removed and no signature changed (the new cases are binary compatible), so integration code for 1.4.7 compiles against this release as-is; what you need to check is **code that branches on numeric values / Chinese message text, and `switch` branches that rely on the old cases in the table above**. The minimum OS versions are unchanged (iOS 16 / macOS 14).
+
+`SRTCBroadcastKit` is **1.0.13** in this release. If you implement iOS full-screen screen sharing, the Broadcast Upload Extension target must also link `SRTCBroadcastKit` from this tag; otherwise the end-of-broadcast alert keeps the old text.
+</Note>
+
 ### [1.4.7] - 2026.09.23
 #### Fixed
 + **An unknown `device_type` no longer makes the whole user list fail to parse**: the backend adds new client types on a schedule not controlled by SDK releases, and previously, if even **one** `device_type` in the `users` of `channel/detail` fell outside this version's enum, the whole response failed to decode and joining failed outright (reporting `The data couldn't be read...`)—meaning a single unfamiliar client joining could lock every older client out. `DeviceType` now adds `unknown` and the 80–89 server-side agent range (MCU/SIP/H.323/GB28181/RTSP/RTMP/file playback/stream distribution/speech transcription), and `users` is now parsed entry by entry, skipping any entry that can't be decoded.

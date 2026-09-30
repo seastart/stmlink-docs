@@ -102,7 +102,7 @@ class SampleHandler: SRTCBroadcastSampleHandler {}
 `SRTCBroadcastKit` is a product of the audio and video layer's `srtc-swift-sdk`, and SwiftPM doesn't allow using products of transitive dependencies, so you must **add one more dependency** to your project, with a version matching the SRTC version pinned inside SMeeting (see [Integration](/en/meeting/swift/integration)):
 
 ```swift
-.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.4.7"),
+.package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.5.0"),
 ```
 
 <Warning>
@@ -237,7 +237,7 @@ For screen sharing, `roomShareDidStart` **is driven by the RTC media track**: it
 | Situation | Result |
 | --- | --- |
 | The host turned on "sharing disabled for the room," and you're not the host / a co-host | Throws `SMeetingError.unauthorized` |
-| You're already sharing | Throws `SMeetingError.internalError` |
+| You're already sharing | Throws `SMeetingError.invalidState` |
 | The user denied screen recording permission in the system dialog | Capture fails; the SDK rolls back the sharing status automatically and throws the error to you |
 
 ---
