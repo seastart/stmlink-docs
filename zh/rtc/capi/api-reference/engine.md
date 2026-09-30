@@ -1,6 +1,6 @@
 ---
 title: "实例与频道"
-description: "SRTC C SDK 实例生命周期、加入/离开频道、日志级别与各类回调的注册接口"
+description: "SRTC C SDK 实例生命周期、加入/离开频道、日志级别、语言与各类回调的注册接口"
 ---
 
 本页覆盖 SDK 实例的创建销毁、频道进出，以及全部回调的注册接口。
@@ -22,6 +22,30 @@ void rtc_set_log_level(int level);
 | 参数 | 说明 |
 | --- | --- |
 | `level` | `RTC_LOG_DEBUG`(0) / `RTC_LOG_INFO`(1) / `RTC_LOG_WARN`(2) / `RTC_LOG_ERROR`(3)，传入其它值按 `INFO` 处理 |
+
+---
+
+## 语言
+
+### rtc_set_language
+
+```c
+void rtc_set_language(const char* lang);
+```
+
+设置语言（0.1.0 起），进程级生效，随时可调，调用后发出的请求即按新语言。
+
+它决定**服务端业务错误**（错误码 ≥1000）原因文案的语言，即 `rtc_get_last_error` 取到服务端错误时 `msg_buf` 里的内容。SDK 自身错误（`180xxx`）的原因始终是英文，不受影响。
+
+| 参数 | 说明 |
+| --- | --- |
+| `lang` | 语言标签，如 `"en"`、`"zh-CN"`；也接受 `"zh_CN.UTF-8"` 这类系统 locale 写法。传 `NULL` 或空串恢复为跟随系统语言 |
+
+不调用时跟随系统语言：依次取环境变量 `LC_ALL`、`LC_MESSAGES`、`LANG` 中第一个非空的值。系统语言为 `C` / `POSIX` 或都未设置时，服务端按中文返回。
+
+```c
+rtc_set_language("en");    // 服务端错误原因改为英文
+```
 
 ---
 
@@ -108,13 +132,21 @@ int rtc_join_channel_sync(void* handle, const char* token, int timeout_ms);
 int rtc_get_last_error(void* handle, char* msg_buf, int buf_len);
 ```
 
-取该实例**最近一次失败调用**的错误详情（0.0.9 起）。入会、订阅、发布等接口返回 `RTC_ERROR` / `RTC_TIMEOUT` 后调用。
+取该实例**最近一次失败调用**的错误详情（0.0.9 起）。入会、订阅、发布等接口返回非 `RTC_OK` 后调用。0.1.0 起，返回 `RTC_INVALID_PARAM` / `RTC_NOT_CONNECTED` 时也会记录（`180031` / `180001`）。
 
 | 参数 | 说明 |
 | --- | --- |
 | `msg_buf` / `buf_len` | 可选，传入则写入错误原因（超长截断，保证以 `\0` 结尾）；不需要原因可传 `NULL, 0` |
 
-**返回值**：错误码。`180xxx` 为 SDK 自身错误，`≥1000` 为服务端错误码，`-1` 为没有具体错误码的内部错误，`0` 表示没有记录。
+**返回值**：错误码，`0` 表示没有记录。
+
+| 取值 | 说明 |
+| --- | --- |
+| `180xxx` | SDK 自身错误，后三位是各端 SDK 统一的错误码（如 `180031` 参数非法），见 [错误码](/zh/rtc/capi/error-codes)。原因为英文 |
+| `≥1000`（如 `1033`） | 服务端业务错误码，原样透传。原因文案的语言由 [`rtc_set_language`](#rtc_set_language) 决定 |
+| `-1` | 没有具体错误码的内部错误，正常不应出现 |
+
+句柄本身无效时没有实例可记录，返回 `0`；`rtc_write_sample` 等只带轨道句柄的接口不记录。
 
 ```c
 if (rtc_join_channel_sync(rtc, token, 10000) != RTC_OK) {

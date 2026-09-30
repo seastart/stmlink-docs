@@ -53,7 +53,7 @@ int rtc_publish_mcu_audio_track(void* handle, void* track_handle, rtc_publish_op
 | `RTC_OK` | 发布成功 |
 | `RTC_INVALID_PARAM` | 句柄无效、轨道句柄无效，或 `options` 为 `NULL` |
 | `RTC_NOT_CONNECTED` | 尚未加入频道 |
-| `RTC_ERROR` | 发布失败，最常见的原因是**当前身份不是 `__mcu__`** |
+| `RTC_ERROR` | 发布失败，最常见的原因是**当前身份不是 `__mcu__`**（此时 `rtc_get_last_error` 返回 `180040`，0.0.11 及更早版本为 `180004`） |
 
 ### 示例
 
