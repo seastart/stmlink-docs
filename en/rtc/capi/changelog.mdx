@@ -1,7 +1,46 @@
 ---
 title: "Changelog"
-description: "Release history of the C SDK (librtc), including the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
+description: "Release history of the C SDK (librtc), including the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
 ---
+
+### [0.1.0] - 2026.09.30
+This release unifies error codes across all SDKs and is a **breaking change**, so the version jumps from 0.0.11 straight to 0.1.0.
+
+#### Breaking changes
++ **Error codes renumbered**: SDK error codes returned by `rtc_get_last_error` are now `180` + a 3-digit code shared across platforms, so the same kind of error has the same last three digits in every SRTC SDK. See [Error code format](/en/rtc/error-codes) and [C SDK · Error codes](/en/rtc/capi/error-codes). Failures that used to fall under `180000` (general error) or `-1` (no error code) now have specific codes. **If your code branches on error codes, update it according to the table below**:
+
+| Scenario | Old code | New code |
+| --- | --- | --- |
+| Not allowed to publish composite streams (identity is not `__mcu__`) | `180004` | `180040` |
+| Invalid token (fails to parse, missing fields) | `-1` | `180004` |
+| Network request failed, HTTP status other than 200 | `-1` | `180006` |
+| `rtc_join_channel_sync` join timeout | `-1` | `180007` |
+| Server response can't be parsed / has no `code` field | `-1` (treated as success when `code` was missing) | `180011` |
+| Signaling connection failed / signaling subscription failed | `180000` | `180009` / `180010` |
+| Invalid argument (empty `desc`, width/height/frame rate not set, wrong track kind, etc.) | `180000` | `180031` |
+| Channel is reconnecting / media streaming engine not connected | `180000` | `180014` (just retry later) |
+| In-channel function called after leaving the channel | `180000` | `180001` |
+| Calls out of order, such as engine not initialized or track not ready | `180000` | `180024` |
+| Publish limit exceeded / subscription limit exceeded | `180000` | `180020` / `180034` |
+| User is not in the channel | `180000` | `180204` |
+| The user has no track with the given id / desc | `180000` | `180003` |
+| Capability not supported by the current engine (such as layer switching) | `180000` | `180032` |
+| Unsupported codec | `-1` | `180019` |
+| Internal SDK errors such as a failure to create a track | `-1` | `180025` |
+| Publish / subscribe rejected by the server (such as `1033` concurrency limit reached, `1035` node overloaded) | `180300` / `180301` | The server code (`1033` / `1035`, etc.) is returned as-is |
+
++ **Error reasons are now in English**: the SDK error reason that `rtc_get_last_error` writes to `msg_buf` is now in English (such as `Not in channel`). Branch on the error code, not on the message text
++ When a function returns `RTC_INVALID_PARAM` / `RTC_NOT_CONNECTED`, the error is now recorded too (`180031` / `180001`), so `rtc_get_last_error` no longer returns a stale error left over from an earlier failure
+
+#### Added
++ `rtc_set_language(const char* lang)`: sets the language (such as `"en"` or `"zh-CN"`). It applies process-wide and can be called at any time. It determines the language of the reason text for server business errors (error code ≥1000); SDK errors are always in English. When it isn't called, or `NULL` / an empty string is passed, the system language is used (environment variables `LC_ALL` → `LC_MESSAGES` → `LANG`). When the system language is `C` / `POSIX` or none of them is set, the server replies in Chinese, the same as earlier versions
+
+#### Fixed
++ **Brief network outages made the SDK leave the channel**: failed network requests were mistaken for server rejections, so heartbeat / reconnect gave up and left the channel without retrying. Network errors are now retried, and the SDK leaves only when the server explicitly rejects
+
+<Note>
+Struct layouts are the same as 0.0.11 and the signatures of existing functions are unchanged. Replacing the library files is enough to run; to call `rtc_set_language` you need to recompile with the new `librtc.h`. **If you wrote logic that branches on error codes, update it according to the table above before upgrading.**
+</Note>
 
 ### [0.0.11] - 2026.09.26
 #### Fixed

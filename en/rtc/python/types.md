@@ -130,6 +130,14 @@ An in-channel custom message, sent by your backend through [Server API · Send a
 | `DESTROY`(5) | The channel was destroyed | No |
 | `ERROR`(-1) | Left due to an error; see `error` in `on_disconnected` for details | Depends on the error |
 
+### ErrorCode
+
+Since 0.2.0. The last three digits of SDK error codes (an `IntEnum` shared across SDKs), for comparing with `SdkError.base_code`, such as `e.base_code == srtc.ErrorCode.INVALID_ARGUMENT`. The full error code is `180` + the value zero-padded to 3 digits; for example, `INVALID_ARGUMENT`(31) is `180031`.
+
+`UNKNOWN`(0), `NOT_IN_CHANNEL`(1), `TOKEN_EXPIRED`(2), `TRACK_NOT_FOUND`(3), `TOKEN_INVALID`(4), `CONNECTION_FAILED`(6), `CONNECTION_TIMEOUT`(7), `SIGNALING_CONNECT_FAILED`(9), `SIGNALING_SUBSCRIBE_FAILED`(10), `MESSAGE_DECODE_FAILED`(11), `WEBRTC_ERROR`(12), `SDP_NEGOTIATION_FAILED`(13), `TRANSPORT_NOT_READY`(14), `PEER_CONNECTION_FAILED`(15), `CODEC_NOT_SUPPORTED`(19), `MAX_PUBLISH_LIMIT_REACHED`(20), `ENGINE_DISCONNECTED`(23), `INVALID_STATE`(24), `INTERNAL_ERROR`(25), `CANCELLED`(26), `INVALID_ARGUMENT`(31), `FEATURE_NOT_SUPPORTED`(32), `MAX_SUBSCRIBE_LIMIT_REACHED`(34), `PUBLISH_DESC_CONFLICT`(35), `NOT_MCU_PUBLISHER`(40), `USER_NOT_FOUND`(204), `PUBLISH_FAILED`(300), `SUBSCRIBE_FAILED`(301), `PUBLISH_TIMEOUT`(302), `SUBSCRIBE_TIMEOUT`(303), `SUBSCRIBE_TRACK_NOT_FOUND`(304).
+
+For what each code means, see [Error codes](/en/rtc/python/error-codes).
+
 ---
 
 ## Constants

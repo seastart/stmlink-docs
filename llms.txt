@@ -641,7 +641,7 @@
 - [Quickstart](https://docs.stmlink.com/en/rtc/capi/quickstart.md): Get started with the SRTC C SDK: two minimal runnable C programs that join a channel and write remote audio and video to disk, and publish encoded H.264 / Opus data, plus logging and common join and publish problems.
 - [Types](https://docs.stmlink.com/en/rtc/capi/types.md): Reference for everything librtc.h exposes: the rtc_track_info_t, rtc_user_info_t, rtc_channel_info_t, and rtc_publish_options_t structs, codec and log level constants, reserved composite stream identifiers, int enums in callback parameters, and all callback signatures.
 - [Error codes](https://docs.stmlink.com/en/rtc/capi/error-codes.md): C SDK return values (RTC_OK, RTC_ERROR, RTC_INVALID_PARAM, RTC_NOT_CONNECTED, RTC_TIMEOUT) and their causes, the SDK's own 180xxx codes and server 1xxx codes you get from rtc_get_last_error or the logs, and how to check return values and clean up on failure.
-- [Changelog](https://docs.stmlink.com/en/rtc/capi/changelog.md): Release history of the C SDK (librtc), including the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK.
+- [Changelog](https://docs.stmlink.com/en/rtc/capi/changelog.md): Release history of the C SDK (librtc), including the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK.
 
 ## [EN] SRTC Audio & Video SDK · C SDK (server/embedded) · Advanced
 
@@ -651,7 +651,7 @@
 
 ## [EN] SRTC Audio & Video SDK · C SDK (server/embedded) · API reference
 
-- [Instance and channel](https://docs.stmlink.com/en/rtc/capi/api-reference/engine.md): C SDK instance lifecycle (rtc_create / rtc_destroy and when it is safe to free callback context), joining and leaving channels, rtc_get_last_error, auto-subscribe, log level, and every callback registration function with its threading rules.
+- [Instance and channel](https://docs.stmlink.com/en/rtc/capi/api-reference/engine.md): C SDK instance lifecycle (rtc_create / rtc_destroy and when it is safe to free callback context), joining and leaving channels, rtc_get_last_error, auto-subscribe, log level, language, and every callback registration function with its threading rules.
 - [Subscribing and receiving](https://docs.stmlink.com/en/rtc/capi/api-reference/subscribe.md): C SDK functions for subscribing to remote audio and video tracks (auto-subscribe vs. manual subscription in the track event callback), unsubscribing, and rtc_request_key_frame, including when you should and shouldn't request a keyframe.
 - [Publishing](https://docs.stmlink.com/en/rtc/capi/api-reference/publish.md): C SDK functions for creating and publishing local tracks, rtc_publish_options_t fields, pushing encoded frames with rtc_write_sample (RTP timestamp increments and pacing), and responding to keyframe requests from the SFU.
 - [User info queries](https://docs.stmlink.com/en/rtc/capi/api-reference/users.md): C SDK functions for querying the channel's user list, a single user, the local user, and channel info, and the matching free functions you must call to avoid leaking the SDK-allocated props and stream_tracks memory.
@@ -661,7 +661,7 @@
 - [Integration](https://docs.stmlink.com/en/rtc/python/integration.md): What the SRTC Python SDK is for, how to install it, and which platforms it supports, plus the asyncio threading model and deployment caveats around fork and capacity. Read this page before integrating the Python SDK.
 - [Quickstart](https://docs.stmlink.com/en/rtc/python/quickstart.md): Get started with the SRTC Python SDK: join a channel, receive each user's PCM audio frame by frame, and push TTS audio back into the channel, with minimal runnable examples.
 - [Types](https://docs.stmlink.com/en/rtc/python/types.md): Data types and enums of the SRTC Python SDK: every field of UserInfo, TrackInfo, ChannelInfo, ConnectionQuality, ActiveSpeaker, LayerSwitched, and CustomMsg, plus TrackKind, Codec, DeviceType, ConnectionState, DisconnectReason, and the composite stream constants.
-- [Error codes](https://docs.stmlink.com/en/rtc/python/error-codes.md): The Python SDK's SdkError: the three kinds of code values (the SDK's own 180xxx, server 1xxx passed through unchanged, and -1 internal errors), causes and troubleshooting for common errors, and how to handle join failures.
+- [Error codes](https://docs.stmlink.com/en/rtc/python/error-codes.md): The Python SDK's SdkError: the three kinds of code values (the SDK's own 180xxx, server 1xxx passed through unchanged, and -1 internal errors) and base_code / ErrorCode, causes and troubleshooting for common errors, how to handle join failures, and setting the language of server error messages with set_language.
 - [Changelog](https://docs.stmlink.com/en/rtc/python/changelog.md): Release history of the SRTC Python SDK (PyPI package srtc): what each version added or changed, and whether you can upgrade directly. Read before upgrading.
 
 ## [EN] SRTC Audio & Video SDK · Python SDK (server-side AI) · Advanced

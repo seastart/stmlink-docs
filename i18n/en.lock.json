@@ -846,10 +846,10 @@
     "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
   },
   "en/rtc/capi/advanced/mcu": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/advanced/mcu.md",
-    "zh_blob": "f694b0a5be65df54cc33031d8c81bfb100757a23",
-    "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
+    "zh_blob": "5a5646a7c66bae8371e18f5faeaed5ed497d9eba",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/capi/advanced/seastart": {
     "reviewed": true,
@@ -858,10 +858,10 @@
     "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
   },
   "en/rtc/capi/api-reference/engine": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/api-reference/engine.md",
-    "zh_blob": "7ab0937b41d321e5219ae1329b9307558833cc1a",
-    "zh_commit": "141aeb204c831dd68a1d0612c66bf339e3c2e8aa"
+    "zh_blob": "7d2ac7d9678ce6b93a0b542b39b24746754a7e7a",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/capi/api-reference/publish": {
     "reviewed": true,
@@ -882,16 +882,16 @@
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/capi/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/changelog.mdx",
-    "zh_blob": "a8e747ad9a27031862bf4d2393e2e38ecb1c1816",
-    "zh_commit": "141aeb204c831dd68a1d0612c66bf339e3c2e8aa"
+    "zh_blob": "ff5cf8b1907bb28b4fd8d8aebbae78379fcb25b1",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/capi/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/error-codes.md",
-    "zh_blob": "631a8f1261edf0d52d19d308b3638e0d1b7d3208",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "6e055f16517b9e1a1371ed9a7f94cd3136baf079",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/capi/integration": {
     "reviewed": true,
@@ -1056,16 +1056,16 @@
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/python/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/python/changelog.mdx",
-    "zh_blob": "c64cd38e979761f5ba78340565c2d5362d31b1ea",
-    "zh_commit": "68c9c8a176aeca4cd3abc6c98490432ae953dc3c"
+    "zh_blob": "c278648bef79975987bb21a12f359f2a8ac72d80",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/python/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/python/error-codes.md",
-    "zh_blob": "814316cc6d2ff002dfa9fc8d8a6b8e5ceefb03fd",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "d030d7aa01e0db065857fd547c1b552b7097b338",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/python/integration": {
     "reviewed": true,
@@ -1080,10 +1080,10 @@
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/python/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/python/types.md",
-    "zh_blob": "83341a0ee27ae4e43bd0923acaf67780ef3c7469",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "041864c58caa2972feef41e8935a6a884d657fd8",
+    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/quickstart": {
     "reviewed": true,

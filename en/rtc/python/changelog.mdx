@@ -3,6 +3,42 @@ title: "Changelog"
 description: "Release history of the SRTC Python SDK (PyPI package srtc): what each version added or changed, and whether you can upgrade directly. Read before upgrading."
 ---
 
+### [0.2.0] - 2026.09.30
+This release unifies error codes across all SDKs and is a **breaking change**. The bundled C library is upgraded to 0.1.0.
+
+#### Breaking changes
++ **Error codes renumbered**: the SDK's own error codes in `SdkError.code` are now `180` + a 3-digit code shared across platforms, so the same kind of error has the same last three digits in every SRTC SDK; see [Error codes](/en/rtc/python/error-codes). Failures that used to fall under `180000` (general error) or `-1` (no error code) now have specific codes. **If your code branches on error codes, update it according to the table below**:
+
+| Scenario | Old code | New code |
+| --- | --- | --- |
+| Invalid argument (checked in the Python layer) | `180900` | `180031` |
+| Failed to create a local audio track | `-1` | `180025` |
+| Not allowed to publish composite streams (identity is not `__mcu__`) | `180004` | `180040` |
+| Invalid token (fails to parse, missing fields) | `-1` | `180004` |
+| Network request failed, HTTP status other than 200 | `-1` | `180006` |
+| Join timeout | `-1` | `180007` |
+| Server response can't be parsed / has no `code` field | `-1` (treated as success when `code` was missing) | `180011` |
+| Signaling connection failed / signaling subscription failed | `180000` | `180009` / `180010` |
+| Invalid argument (wrong track kind, etc., checked in the C library) | `180000` | `180031` |
+| Channel is reconnecting / media streaming engine not connected | `180000` | `180014` (just retry later) |
+| In-channel API called after leaving the channel | `180000` | `180001` |
+| Calls out of order (engine not initialized, track not ready, etc.) | `180000` | `180024` |
+| Publish limit exceeded / subscription limit exceeded | `180000` | `180020` / `180034` |
+| User is not in the channel | `180000` | `180204` |
+| The user has no track with the given track_id | `180000` | `180003` |
+| Capability not supported by the current engine (such as `switch_layer`) | `180000` | `180032` |
+| Publish / subscribe rejected by the server (such as `1033` concurrency limit reached, `1035` node overloaded) | `180300` / `180301` | The server code (`1033` / `1035`, etc.) is raised as-is |
+
++ **Error messages are now in English**: `SdkError.msg` raised by the SDK itself, and the text of exceptions such as `ImportError` / `RuntimeError`, are now in English. Branch on `code` / `base_code`, not on the message text
+
+#### Added
++ `srtc.set_language(lang)`: sets the language (such as `"en"` or `"zh-CN"`). It applies process-wide and can be called at any time. It determines the language of `msg` for server business errors (`code` ≥1000); SDK errors are always in English. When it isn't called, or `None` / an empty string is passed, the system language is used (environment variables `LC_ALL` → `LC_MESSAGES` → `LANG`). When the system language is `C` / `POSIX` or none of them is set, the server replies in Chinese, the same as earlier versions
++ `srtc.ErrorCode`: an enum of the 3-digit error codes shared across SDKs (such as `ErrorCode.INVALID_ARGUMENT` = 31)
++ `SdkError.base_code`: the last three digits of an SDK error code, for comparing with `ErrorCode`; server error codes return themselves
+
+#### Fixed
++ **Brief network outages made the SDK leave the channel**: failed network requests were mistaken for server rejections, so heartbeat / reconnect gave up and left the channel without retrying. Network errors are now retried, and the SDK leaves only when the server explicitly rejects
+
 ### [0.1.1] - 2026.09.26
 #### Changed
 + The PyPI project page now has bilingual Chinese and English descriptions

@@ -53,7 +53,7 @@ Publishes the audio composite stream (the mixed audio stream), with the same sem
 | `RTC_OK` | Published successfully |
 | `RTC_INVALID_PARAM` | Invalid handle, invalid track handle, or `options` is `NULL` |
 | `RTC_NOT_CONNECTED` | Not yet joined to the channel |
-| `RTC_ERROR` | Publish failed; the most common cause is that **the current identity is not `__mcu__`** |
+| `RTC_ERROR` | Publish failed; the most common cause is that **the current identity is not `__mcu__`** (in that case `rtc_get_last_error` returns `180040`; `180004` in 0.0.11 and earlier) |
 
 ### Example
 

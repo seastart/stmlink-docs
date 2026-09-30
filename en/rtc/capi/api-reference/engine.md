@@ -1,6 +1,6 @@
 ---
 title: "Instance and channel"
-description: "C SDK instance lifecycle (rtc_create / rtc_destroy and when it is safe to free callback context), joining and leaving channels, rtc_get_last_error, auto-subscribe, log level, and every callback registration function with its threading rules."
+description: "C SDK instance lifecycle (rtc_create / rtc_destroy and when it is safe to free callback context), joining and leaving channels, rtc_get_last_error, auto-subscribe, log level, language, and every callback registration function with its threading rules."
 ---
 
 This page covers creating and destroying SDK instances, joining and leaving channels, and every callback registration function.
@@ -22,6 +22,30 @@ Sets the global log level. It applies to the whole process; we recommend calling
 | Parameter | Description |
 | --- | --- |
 | `level` | `RTC_LOG_DEBUG`(0) / `RTC_LOG_INFO`(1) / `RTC_LOG_WARN`(2) / `RTC_LOG_ERROR`(3); any other value is treated as `INFO` |
+
+---
+
+## Language
+
+### rtc_set_language
+
+```c
+void rtc_set_language(const char* lang);
+```
+
+Sets the language (since 0.1.0). It applies to the whole process and can be called at any time; requests sent after the call use the new language.
+
+It determines the language of the reason text for **server business errors** (error code ≥1000), that is, what ends up in `msg_buf` when `rtc_get_last_error` returns a server error. Reasons for SDK errors (`180xxx`) are always in English and are not affected.
+
+| Parameter | Description |
+| --- | --- |
+| `lang` | Language tag, such as `"en"` or `"zh-CN"`; system locale forms like `"zh_CN.UTF-8"` are also accepted. Pass `NULL` or an empty string to go back to following the system language |
+
+When it isn't called, the system language is used: the first non-empty value among the environment variables `LC_ALL`, `LC_MESSAGES`, and `LANG`. When the system language is `C` / `POSIX` or none of them is set, the server replies in Chinese.
+
+```c
+rtc_set_language("en");    // server error reasons in English
+```
 
 ---
 
@@ -108,13 +132,21 @@ Joins a channel synchronously, blocking until the connection succeeds, fails, or
 int rtc_get_last_error(void* handle, char* msg_buf, int buf_len);
 ```
 
-Gets the error details of this instance's **most recent failed call** (since 0.0.9). Call it after join, subscribe, publish, or similar functions return `RTC_ERROR` / `RTC_TIMEOUT`.
+Gets the error details of this instance's **most recent failed call** (since 0.0.9). Call it after join, subscribe, publish, or similar functions return anything other than `RTC_OK`. Since 0.1.0, returning `RTC_INVALID_PARAM` / `RTC_NOT_CONNECTED` also records an error (`180031` / `180001`).
 
 | Parameter | Description |
 | --- | --- |
 | `msg_buf` / `buf_len` | Optional. If provided, the error reason is written into it (truncated if too long, always `\0`-terminated); pass `NULL, 0` if you don't need the reason |
 
-**Returns:** The error code. `180xxx` is an SDK error, `≥1000` is a server error code, `-1` is an internal error with no specific code, and `0` means nothing was recorded.
+**Returns:** The error code; `0` means nothing was recorded.
+
+| Value | Description |
+| --- | --- |
+| `180xxx` | SDK error. The last three digits are the error code shared by all SDKs (such as `180031` invalid argument); see [Error codes](/en/rtc/capi/error-codes). The reason is in English |
+| `≥1000` (such as `1033`) | Server business error code, passed through as-is. The language of the reason text is set by [`rtc_set_language`](#rtc_set_language) |
+| `-1` | Internal error with no specific code; should not occur normally |
+
+If the handle itself is invalid there is no instance to record on, so `0` is returned; functions that take only a track handle, such as `rtc_write_sample`, don't record errors.
 
 ```c
 if (rtc_join_channel_sync(rtc, token, 10000) != RTC_OK) {
