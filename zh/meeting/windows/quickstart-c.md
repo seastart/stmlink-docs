@@ -3,7 +3,7 @@ title: "C 快速开始"
 description: "Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能"
 ---
 
-> 注意：自 `1.0.0-alpha.7` 起，`SMeeting_C.h` / `SMeetingEngineGlobal` 已移植到引擎级 / 会议级的拆分接口，与新版 `ISMeetingEngine` / `ISMeetingChannel` 结构一致，可以正常使用。但当前发布包（`meeting_dll/include/`）**仍不包含** `SMeeting_C.h`，如需使用 C 接口请另行索取头文件，或直接使用 C++ 接口。
+> 注意：自 `1.0.0-alpha.7` 起，`SMeeting_C.h` / `SMeetingEngineGlobal` 已移植到引擎级 / 会议级的拆分接口，与新版 `ISMeetingEngine` / `ISMeetingChannel` 结构一致，可以正常使用。自 `1.0.0-alpha.8` 起，发布包（`meeting_dll/include/`）**已包含** `SMeeting_C.h`，直接 `#include "SMeeting_C.h"` 即可。
 
 本文档介绍如何在 Windows 平台使用 C 语言集成 SMeeting SDK。
 
@@ -60,6 +60,16 @@ int RoomEvent(int iEvent, void* pEventData, int iDataSize, void* pContext)
     }
     return 0;
 }
+```
+
+---
+
+## 设置语言
+
+```c
+// BCP 47 语言代码，如 "zh-CN"、"en"；影响 SDK 错误文案与后端请求语言
+// 进程级，任意时刻可调用，未调用时为英文
+StatusCodeC ret = SMeetingEngine_SetLanguage_C("zh-CN");
 ```
 
 ---

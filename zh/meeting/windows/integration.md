@@ -45,7 +45,8 @@ https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-x64-<版�
 meeting_dll/
 ├── include/              # 头文件
 │   ├── SMeeting.h
-│   └── SMeeting_def.h
+│   ├── SMeeting_def.h
+│   └── SMeeting_C.h
 ├── lib/
 │   └── SMeeting.lib      # 导入库，链接时用
 └── bin/                  # 运行时依赖，全部需要随程序分发

@@ -45,7 +45,8 @@ After unzipping you get the following (both packages have exactly the same layou
 meeting_dll/
 ├── include/              # Header files
 │   ├── SMeeting.h
-│   └── SMeeting_def.h
+│   ├── SMeeting_def.h
+│   └── SMeeting_C.h
 ├── lib/
 │   └── SMeeting.lib      # Import library, used at link time
 └── bin/                  # Runtime dependencies; ship all of them with your app

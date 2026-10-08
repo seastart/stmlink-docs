@@ -1,9 +1,29 @@
 ---
 title: "Changelog"
-description: "Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, and the C interface exports in alpha.7. Read this before upgrading."
+description: "Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, the C interface exports in alpha.7, and the language setting API plus the bundled C header in alpha.8. Read this before upgrading."
 ---
 
 > This page records the main changes in each version of the SMeeting Windows SDK. You can get the current SDK version with `SMeetingEngine_Version`.
+
+## 1.0.0-alpha.8 - 2026-10-08
+
+**Added**
+
++ **Language setting API**: the C++ `SMeetingEngine_SetLanguage(const char* lang)` and the C
+  `SMeetingEngine_SetLanguage_C(const char* lang)` take a BCP 47 language code (e.g. `"zh-CN"`, `"en"`),
+  which affects the SDK's error texts and the language of backend requests. It is a process-wide setting,
+  can be called at any time, and defaults to English when never called.
++ The package `meeting_dll/include/` now also ships `SMeeting_C.h`, so C interface users no longer need
+  to request the header separately.
+
+**API changes**
+
++ C++: only a new free function `SMeetingEngine_SetLanguage` is added; the vtables of `ISMeetingEngine` /
+  `ISMeetingChannel` are unchanged, so there is no ABI break.
++ C: `SMeetingEngine_SetLanguage_C` is added, `SMeeting.lib` gains the corresponding export symbol, and
+  projects that use the C interface need to relink.
++ Package contents: `include/` grows from `SMeeting.h` + `SMeeting_def.h` to three headers, adding
+  `SMeeting_C.h`.
 
 ## 1.0.0-alpha.7 - 2026-09-29
 

@@ -5,6 +5,22 @@ description: "Windows SMeeting 会议 SDK 版本更新记录"
 
 > 本页记录 Windows SMeeting SDK 各版本的主要变更。可通过 `SMeetingEngine_Version` 获取当前 SDK 版本。
 
+## 1.0.0-alpha.8 - 2026-10-08
+
+**添加**
+
++ 新增语言设置接口：C++ 的 `SMeetingEngine_SetLanguage(const char* lang)` 与 C 的
+  `SMeetingEngine_SetLanguage_C(const char* lang)`，传入 BCP 47 语言代码（如 `"zh-CN"`、`"en"`），
+  影响 SDK 的错误文案与后端请求语言。进程级设置，任意时刻可调用，未调用时为英文。
++ 发布包 `meeting_dll/include/` 起补入 `SMeeting_C.h`，C 接口使用方无需再另行索取头文件。
+
+**API 变更**
+
++ C++：仅新增一个自由函数 `SMeetingEngine_SetLanguage`，`ISMeetingEngine` / `ISMeetingChannel` 的
+  vtable 未变，不存在 ABI 破坏。
++ C：新增 `SMeetingEngine_SetLanguage_C`，`SMeeting.lib` 新增对应导出符号，使用 C 接口的工程需重新链接。
++ 包内容变化：`include/` 由 `SMeeting.h` + `SMeeting_def.h` 增加 `SMeeting_C.h`，变为三个头文件。
+
 ## 1.0.0-alpha.7 - 2026-09-29
 
 **添加**

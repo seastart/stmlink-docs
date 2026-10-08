@@ -160,6 +160,103 @@ virtual StatusCode setCustomRecvBack(RTC_Custom_FrameEvent e, void* ext) = 0;
 
 ---
 
+## IMeetCustomVideoTrack methods
+
+Returned by `getCustomVideo`.
+
+### Get the custom track info
+```cpp
+virtual StatusCode getTrackInfo(CustomPublishTrack**) = 0;
+```
+
+**Parameters**
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| (output) | CustomPublishTrack** | Output custom track configuration |
+
+**Returns**
+
+`StatusCode` - Error code
+
+### Push a video frame
+```cpp
+virtual StatusCode pushVideoFrame(int stmtype, unsigned char* buf, int buf_len, int frmtype, long ts) = 0;
+```
+
+**Parameters**
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| stmtype | int | Stream type |
+| buf | unsigned char* | Video frame data |
+| buf_len | int | Data length |
+| frmtype | int | Frame type |
+| ts | long | Timestamp |
+
+**Returns**
+
+`StatusCode` - Error code
+
+### Unpublish
+```cpp
+virtual StatusCode unpublish() = 0;
+```
+
+**Returns**
+
+`StatusCode` - Error code
+
+---
+
+## IMeetCustomAudioTrack methods
+
+Returned by `getCustomAudio`.
+
+### Get the custom track info
+```cpp
+virtual StatusCode getTrackInfo(CustomPublishTrack**) = 0;
+```
+
+**Parameters**
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| (output) | CustomPublishTrack** | Output custom track configuration |
+
+**Returns**
+
+`StatusCode` - Error code
+
+### Push an audio frame
+```cpp
+virtual StatusCode pushAudioFrame(int stmtype, unsigned char* buf, int buf_len, long ts) = 0;
+```
+
+**Parameters**
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| stmtype | int | Stream type |
+| buf | unsigned char* | Audio frame data |
+| buf_len | int | Data length |
+| ts | long | Timestamp |
+
+**Returns**
+
+`StatusCode` - Error code
+
+### Unpublish
+```cpp
+virtual StatusCode unpublish() = 0;
+```
+
+**Returns**
+
+`StatusCode` - Error code
+
+---
+
 ## Local recording APIs
 
 ### Get the local recording object
