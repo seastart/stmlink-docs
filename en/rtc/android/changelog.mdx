@@ -212,7 +212,7 @@ description: "Android SRTC SDK release history by version: new features, fixes, 
 #### Fixed
 
 + Fixed the local audio mute state being lost after reconnection; newly created audio tracks keep following the on/off state from before the reconnection;
-+ Fixed later request callbacks failing too early or getting lost when the same track was published repeatedly; coalesced requests now return a single result after the actual publish completes.
++ Fixed later request callbacks failing too early or getting lost when the same track was published repeatedly; callbacks for coalesced requests are notified after the actual publish completes.
 
 ### [2.0.25] - 2026.08.11
 

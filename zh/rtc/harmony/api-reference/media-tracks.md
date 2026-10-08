@@ -69,7 +69,13 @@ Track
 | `restartCapture()` | `Promise<void>` | 重启采集 |
 | `changeDeviceId(deviceId)` | `Promise<void>` | 切换麦克风 |
 
-**抛出**：`captureError`（权限未授予、设备被占用等）
+**抛出**（`startCapture` / `restartCapture` / `changeDeviceId`）：
+
++ `micPermissionDenied`（`108251`）：麦克风未授权。采集前只读预检，SDK **不弹授权框**，权限由宿主申请
++ `deviceNotFound`（`108021`）：没有麦克风，或指定的 `deviceId` 不在枚举结果里
++ `captureError`（`108018`）：其它采集失败（设备被占用等）
+
+以上 1.1.0 起都是 `SRTCError`，系统原码在 `systemCode`、原异常在 `cause`；1.0.1 及以前会直接抛系统异常。
 
 <Warning>
 **`changeDeviceId` / `restartCapture` 会换一条底层轨道。**
@@ -134,6 +140,9 @@ await camera.startCapture();
 await channel.publishLocalVideoTrack(camera);
 ```
 
+**抛出**（`startCapture` / `restartCapture`）：`cameraPermissionDenied`（`108231`，摄像头未授权，采集前只读预检、不弹授权框）/
+`deviceNotFound`（`108021`）/ `captureError`（`108018`）。规则同 `LocalAudioTrack`，1.1.0 起。
+
 #### 变焦
 
 ```typescript
@@ -184,6 +193,8 @@ if (sysAudio !== undefined) {
   await channel.publishLocalAudioTrack(sysAudio);      // 系统音频要单独发布
 }
 ```
+
+**抛出**（`startCapture` / `restartCapture`）：`screenShareDenied`（`108039`，系统授权未通过）/ `captureError`（`108018`），1.1.0 起；系统原码在 `systemCode`。用户点「取消」时实际落到哪个码尚待确认。
 
 详见[屏幕共享](/zh/rtc/harmony/advanced/screen-sharing)。
 

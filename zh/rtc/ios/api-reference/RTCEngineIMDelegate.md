@@ -45,8 +45,8 @@ description: "频道外消息通道（IM）的回调协议：连接状态变化�
 
 | reason | 断开原因 |
 | --- | --- |
-| errCode | 错误码 |
-| errMsg | 错误信息 |
+| errCode | 错误码：SDK 本地错误为 `103xxx`，后端业务码（`1000`–`99999`）原样透传，详见 [错误码表](/zh/rtc/ios/error-codes) |
+| errMsg | 错误信息，来自后端，仅供日志，请按 `errCode` 判断 |
 
 
 ## 消息相关回调

@@ -50,6 +50,10 @@ const meeting: SMeetingEngine = new SMeetingEngine(LogLevel.info);
 await meeting.login(token);
 ```
 
+<Warning>
+**已知限制（1.1.0）**：会议后端目前拒绝鸿蒙终端类型，登录（`login`）时会收到后端错误 `10070`（「终端类型必须小于或等于7」），需等后端放开后才能跑通本流程。见[更新日志](/zh/meeting/harmony/changelog)。
+</Warning>
+
 ---
 
 ### 第二步：监听会议事件

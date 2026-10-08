@@ -112,6 +112,10 @@ aboutToDisappear(): void {
 
 ### 第四步：推送本地音视频
 
+<Note>
+`startCapture()` 之前宿主必须已经拿到摄像头 / 麦克风权限（见[集成方式](/zh/rtc/harmony/integration)）。SDK 不会弹授权框，未授权时直接抛 `SRTCError`：摄像头 `108231`、麦克风 `108251`（1.1.0 起）。
+</Note>
+
 #### 开麦
 
 ```typescript

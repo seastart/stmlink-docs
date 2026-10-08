@@ -3,6 +3,60 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.1.0] - 2026.10.08
+<Warning>
+**本版含不兼容变更**：错误码按 SMeeting 统一码表调整、报错文案改为英文，`McuTaskStatus` 的取值与服务端对齐。凡是按 `SMeetingError.code` 的数值、按 `detail` 的中文文字、或拿 `McuTaskStatus` 的数字做判断的代码，升级后都需要调整，请先对照下方的旧码 → 新码表。
+
+**必须与 SRTC 1.1.0 搭配使用**：本版用到 SRTC 1.1.0 才有的 `SRTC.setLanguage` 与 `CaptureDevice`，搭配 SRTC 1.0.x 无法编译。
+</Warning>
+
+#### 新增
++ **`SMeetingEngine.setLanguage(lang?)` / `SMeetingEngine.language`**（静态）：直接透传 SRTC 的 `SRTC.setLanguage` / `SRTC.language`，会议层与 RTC 层共用这一个进程级设置。所有会议请求都带 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案随之中 / 英**；SDK 自身的报错一律英文，不受影响。传空恢复为跟随系统语言。
++ **`SMeetingError.baseCode`**（低 3 位语义码，跨端统一；后端业务码返回自身）与 **`httpStatus`**（HTTP 非 200 时的状态码）。
++ 新增错误种类：`userNotFound`（`208010`）、`invalidState`（`208011`）、`invalidArgument`（`208012`）、`remoteTrackUnavailable`（`208209`）、`requestTimeout`（`208353`）、`responseParseFailed`（`208356`）。
++ `smeeting` 转出 SRTC 的 `SRTCError` / `SRTCErrorKind` / `CaptureDevice`，只依赖 `smeeting` 的业务代码也能直接 `instanceof SRTCError`。
++ `McuTaskType` 新增 `audio = 4`（录音）、`live = 8`（直播流）与兜底的 `unknown = -1`；`McuTaskStatus` 新增 `waitStart = 0`（待开始）、`waitEnd = 2`（待结束）与兜底的 `unknown = -1`。`unknown` 只用于解码，不要拿来发请求。
++ `RoomMcuTaskEventData` 新增 `taskTypeRaw` / `taskStatusRaw`（服务端下发的原始值，枚举为 `unknown` 时用它判断）。
++ `McuRecordDetail` 新增 `taskType`、`beganAt`、`endedAt`、`recordCount`、`totalDuration`、`totalSize`、`records`、`now`；新增录制文件类型 `McuRecordFile`（`recordId`、`seq`、`vodSize`、`duration`、`beganAt`、`endedAt`、`offsetMs`、`reason`、`addr` 等，`addr` 为有效期 2 小时的预签名播放地址）。
+
+#### 修复
++ **`McuTaskStatus` 与服务端取值对齐**：旧版定义为 `running = 1`、`exception = 2`、`normal = 3`，与服务端下发的 `task_status` 错位——服务端的 2 是「待结束」、3 才是「异常结束」、4 才是「正常结束」，导致「待结束」被报成 `exception`、「异常结束」被报成 `normal`，真正的「正常结束」被整条丢弃。现在为 `waitStart = 0` / `running = 1` / `waitEnd = 2` / `exception = 3` / `normal = 4`。
++ **`mcu_task` 事件遇到不认识的取值不再整条丢弃**：此前 `task_type` / `task_status` 不认识时 `onRoomMcuTask` 根本不回调，现在照常回调，枚举落到 `unknown`，原始值见 `taskTypeRaw` / `taskStatusRaw`。事件里缺 `task_status` 字段时按 `0`（`waitStart`）处理，与 Swift 一致。
++ **`mcuRecordDetail` 适配服务端「任务 + 录制文件」两级返回**：任务 ID 兼容新的 `task_id` 与老的 `id`，新老服务端的返回都能解出来，缺失的字段取零值；任务状态缺失或不认识时为 `unknown`（以前默认成 `running`）。
+
+#### 变更
++ **报错文案全部改为英文**（如 `notLoggedIn` 由「您尚未登录meeting sdk」改为 `Not logged in to the meeting SDK`）。`detail` 是给开发者和日志看的，**给终端用户的提示请按 `code` / `baseCode` 自行映射**。
++ **会议层错误码按「`208` + 统一码表低 3 位」出码**，与 Swift 等端同号；HTTP 状态码不再拼进错误码。
++ `McuRecordDetail` 的 `vodKey` / `vodSize` / `mcuAt` / `mcuDur` 标为废弃并**改为可选**（新服务端不再返回 `vodKey` / `vodSize`）：录像文件改看 `records`，`vodSize` → `totalSize`，`mcuAt` → `beganAt`，`mcuDur` → `totalDuration`。
++ 依赖的 SRTC 升级至 **1.1.0**（`peerDependencies`）。升级 SMeeting 时必须同步替换 SRTC 的 HAR。
+
+#### 旧码 → 新码对照
+
+| 场景 | 1.0.0 | 1.1.0 |
+| --- | --- | --- |
+| `switchCamera` 时尚未开启摄像头 | `208008` `deviceError` | `208011` `invalidState` |
+| 屏幕共享已开启时再次 `requestShare` | `208009` `internalError` | `208011` `invalidState` |
+| 订阅时找不到远端用户的轨道 | `208009` `internalError` | `208209` `remoteTrackUnavailable` |
+| 房间内没有该用户 | `208009` `internalError` | `208010` `userNotFound` |
+| HTTP 非 200 | `208<HTTP 状态>`（如 `208404`），`apiError` | `208007` `networkError`（状态在 `httpStatus`） |
+| 响应不是 JSON / 缺 `code` 字段 / 缺必需字段 | `208200` / `207999` `apiError` | `208356` `responseParseFailed` |
+| 会议详情解析失败 | `208009` `internalError` | `208356` `responseParseFailed` |
+| 下载的文件写入本地失败 | `208200` `apiError` | `208009` `internalError` |
+| 请求超时 | `208007` `networkError` | `208353` `requestTimeout` |
+| 后端返回 < 1000 的异常码（如 `-1`） | 拼成 `207999` 这类码 | `208007` |
+
+未变化的码：`notLoggedIn` 001、`tokenExpired` 002、`notInMeeting` 003、`unauthorized` 004、`tokenInvalid` 005、`alreadyInMeeting` 006、`networkError` 007（连不上等传输层失败）、`deviceError` 008、`internalError` 009（仅文案改英文）。后端业务码（≥ 1000）仍原样透传，文案随 `setLanguage` 返回中文或英文。
+
+#### 已知限制
++ **会议后端目前拒绝鸿蒙终端类型**：登录（`login`）时会收到后端错误 `10070`（「终端类型必须小于或等于7」，鸿蒙的 `device_type` 为 8），需等后端放开后才能入会。
++ 其余限制同 SRTC 1.1.0。
+
+<Note>
+升级步骤：替换 `libs/` 下**两个** HAR，并把 `oh-package.json5` 里 `smeeting` 与 `srtc` 的版本号都改为 `1.1.0`，见[集成方式](/zh/meeting/harmony/integration)。
+
+编译层面需要留意：用到 `McuRecordDetail.vodKey` 等四个字段的地方要按可选类型处理（建议直接换成新字段）；对 `McuTaskStatus` / `McuTaskType` 做 `switch` 的代码请补上 `unknown` 或 `default` 分支。
+</Note>
+
 ### [1.0.0] - 2026.09.07
 #### 新增
 

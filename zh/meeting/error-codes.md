@@ -78,6 +78,7 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 + 取值为语言标签，如 `zh-CN`、`en`。不设置时跟随系统语言，取不到时为中文
 + SDK 请求会议服务端和 SRTC 服务端时都带上 `Accept-Language`，**服务端业务错误（1000–99999）的文案随之返回中文或英文**
 + **SDK 自身的报错（`20Nxxx`，以及透传的 `10Nxxx`）固定为英文，不受 `language` 影响**
++ iOS（Objective-C）自 MeetingKit 2.2.1 起 `language` 同时设置 SRTC 层（2.2.0 只作用于会议服务端请求）
 
 ---
 
@@ -136,7 +137,9 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 | Web | `206` | `@seastart/smeeting-web-sdk` 0.3.0 起 |
 | 微信小程序 | `207` | `@seastart/smeeting-wx-sdk` 0.1.0 起 |
 | Swift（iOS / macOS） | `203` / `205` | SMeeting Swift SDK 1.4.0 起（[更新日志](/zh/meeting/swift/changelog)） |
-| Android、iOS（Objective-C）、鸿蒙、Windows | `202`、`203`、`208`、`201` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
+| iOS（Objective-C） | `203` | MeetingKit 2.2.0 起（[更新日志](/zh/meeting/ios/changelog)） |
+| 鸿蒙 | `208` | SMeeting 鸿蒙 SDK 1.1.0 起（[更新日志](/zh/meeting/harmony/changelog)） |
+| Android、Windows | `202`、`201` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
 
 ---
 
@@ -146,8 +149,10 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 | --- | --- | --- |
 | Web / 微信小程序 | 以前除 `206001`–`206004`（`207001`–`207004`）外都落在兜底码 `206000` / `207000`，现在按场景拆成独立码；请求会议服务端的网络 / HTTP 失败改为 `206007` / `207007`，响应无法解析改为 `206356` / `207356`；采集与权限失败透传 SRTC 层的 `106231` 等。`001`–`004` 含义不变 | [Web 更新日志](/zh/meeting/web/changelog) · [Web 错误码](/zh/meeting/web/error-codes) |
 | Swift | 见其更新日志中的对照表 | [Swift 更新日志](/zh/meeting/swift/changelog) |
+| iOS（Objective-C） | 会议层网络失败不再返回 `100009`，改为 `203007` / `203353`–`203356`；后端业务失败由统一的 `100009` 改为透传后端业务码；Token 解析失败 `10042` → `203005`；重复进房 / 实例已销毁 `10003` → `203006` / `203011`；远端轨道不存在 `103004` → `203209`；透传的 RTC 层码随 RTCEngineKit 3.2.0 重排 | [iOS 更新日志](/zh/meeting/ios/changelog) · [iOS 错误码](/zh/meeting/ios/error-codes) |
+| 鸿蒙 | switchCamera 失败 `208008` → `208011`；共享已开启 `208009` → `208011`；远端轨道不存在 `208009` → `208209`；HTTP 非 200 由 `208404` / `208200` 改为 `208007`；响应无法解析改为 `208356` | [鸿蒙更新日志](/zh/meeting/harmony/changelog) · [鸿蒙错误码](/zh/meeting/harmony/error-codes) |
 
-其它端（Android、iOS Objective-C、鸿蒙、Windows）的旧码对照，随该端按新码发版时在其更新日志中给出。透传的 SRTC 层旧码（如 `100xxx` 通用码）见 [SRTC 旧码 → 新码对照](/zh/rtc/error-codes)。
+其它端（Android、Windows）的旧码对照，随该端按新码发版时在其更新日志中给出。透传的 SRTC 层旧码（如 `100xxx` 通用码）见 [SRTC 旧码 → 新码对照](/zh/rtc/error-codes)。
 
 ---
 

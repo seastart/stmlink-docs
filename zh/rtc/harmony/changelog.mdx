@@ -3,6 +3,72 @@ title: "更新日志"
 description: "HarmonyOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.1.0] - 2026.10.08
+
+本版按跨端[统一错误码表](/zh/rtc/error-codes)（第 2 版）重排错误码，**含不兼容变更**，升级前请对照下方「变更」与旧码 → 新码对照表检查按 `code` / `kind` 分支的代码。
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.1.0.har`（172KB，SHA-256 `a3dc38ba248f9fdbfb28e1675fc7bd764b89fc0e3d298805549f4a4b1a5180fe`）。
+
+#### 新增
+
++ **`SRTC.setLanguage(lang?)` / `SRTC.language`**：设置 / 读取 SDK 语言（BCP 47，如 `'zh-CN'`、`'en'`），传空恢复缺省（跟随系统语言，取不到时为 `'zh'`）。影响两处：请求后端时带 `Accept-Language`，后端业务错误（码 ≥ 1000）的文案随之返回中 / 英；`audioRouteName` / `audioRouteTargetName` / `audioCallStateName` 的显示名按语言返回中 / 英（`zh` 开头出中文，其余英文）。**SDK 自身报错不受影响**。
++ **新错误码**：`108031` 参数非法、`108032` 能力不支持、`108033` 轨道未采集、`108039` 屏幕共享被拒、`108204` 用户不存在、`108231` 无摄像头权限、`108251` 无麦克风权限、`108300` 发布失败、`108301` 订阅失败，配套新增 `SRTCErrorKind` 成员。`108001`–`108026` 取值不变。
++ **`SRTCError` 新字段**：`baseCode`（低 3 位语义码，跨端比较用）、`httpStatus`（请求失败时的 HTTP 状态，连不上 / 超时为 `0`）、`systemCode`（被包装的系统 `BusinessError.code`）、`cause`（原始异常）；静态方法 `SRTCError.isServerError(e)` 判断是否后端业务错误。
++ **导出 `CaptureDevice`** 枚举（`camera` / `mic` / `screen`）。
++ **采集前权限预检**：摄像头 / 麦克风 `startCapture()` 前只读检查一次授权状态，未授权直接抛 `108231` / `108251`，**不弹授权框**——权限仍由宿主申请。
+
+#### 变更
+
++ **报错英文化**：`SRTCError.detail` 一律英文，不随语言变化。请按 `kind` / `code` 判断，不要按文案判断。
++ **不兼容：请求失败不再把 HTTP 状态拼进错误码。** 网络失败 / HTTP 非 200 统一为 `108006`（HTTP 状态见 `httpStatus`）；响应不是 JSON、缺 `code` 字段统一为 `108011`；后端返回小于 1000 的异常码一律 `108006`。以上 `kind` 仍是 `apiRequestFailed`。
++ **不兼容：采集异常不再直接抛系统 `BusinessError`**，统一包成 `SRTCError`：无权限 `108231` / `108251`、屏幕共享被拒 `108039`、设备不存在 `108021`、其它 `108018`。原 `BusinessError.code` 在 `systemCode`，原异常在 `cause`。**以前按 `e.code === 201` 判断的代码要改成判断 `kind` 或读 `systemCode`。**
++ **不兼容：多处 `kind` 由 `invalidState` 改为更具体的原因**，见下表。
++ SeaStart 引擎 SDP 协商中底层抛出的裸 `Error` 包成 `108013`（`sdpNegotiationFailed`），原异常在 `cause`。
+
+旧码 → 新码对照（`108xxx` 均为完整码）：
+
+| 场景 | 1.0.1 | 1.1.0 |
+| --- | --- | --- |
+| 请求连不上 / 超时 | `108000` | `108006`，`httpStatus = 0` |
+| HTTP 非 200（如 404 / 500） | `108404` / `108500` 等 | `108006`，`httpStatus` 为实际状态 |
+| 后端返回小于 1000 的码 | `108` + 该码 | `108006` |
+| 响应不是 JSON | `108200` | `108011` |
+| 响应缺 `code` 字段 | `107999` | `108011` |
+| 网宿 CDN 响应不是 JSON | `108013` | `108011`（`messageDecodeFailed`） |
+| 网宿 CDN 网络失败 / HTTP 非 200 | `108000` / `108` + HTTP 状态 | `108006` |
+| PeerConnection 进入 failed / closed | `108006`（`connectionFailed`） | `108015`（`peerConnectionFailed`） |
+| 频道重连中调用发布 / 订阅等 | `108024` | `108014`（`transportNotReady`，稍后可重试） |
+| 已离开频道后调用 | `108024` | `108001`（`notConnected`） |
+| 重复 `enableIm` | `108024` | `108005`（`alreadyJoined`） |
+| SeaStart 引擎未连接 / 已断开时发布 | `108024` | `108300`（`publishFailed`）；重连中为 `108014` |
+| SeaStart 引擎未连接 / 已断开时订阅 | `108014` | `108301`（`subscribeFailed`）；重连中为 `108014` |
+| 订阅时频道内没有该用户 | `108003`（`trackNotFound`） | `108204`（`userNotFound`） |
+| 订阅时轨道类型不符、发布描述 / 发布配置为空 | `108024` | `108031`（`invalidArgument`） |
+| 同一视频轨发布到多个频道时开 Simulcast、`setOutputDevice()` | `108024` | `108032`（`featureNotSupported`） |
+| 未 `startCapture()` 就发布 | `108024` | `108033`（`trackNotCaptured`） |
+| 摄像头 / 麦克风无权限 | 系统 `BusinessError` 或空 `Error` | `108231` / `108251` |
+| 屏幕共享授权被拒 | 系统 `BusinessError` | `108039`（`screenShareDenied`） |
+| 采集设备不存在 / 其它采集失败 | 系统 `BusinessError` 或空 `Error` | `108021` / `108018` |
+
+#### 修复
+
++ 频道 / IM 心跳只在后端返回业务错误（Token 失效、被踢等）时才退出；一次网络抖动或响应解码失败（`108006` / `108011`）不再触发 `onDisconnected` / `onImDisconnected`，等下一次心跳重试。
+
+<Warning>
+**已知限制**
+
++ 屏幕共享被拒：目前只有系统码 `201` 映射到 `108039`。用户在授权窗点「取消」时的实际系统码尚待确认，可能落到 `108018`，原码见 `systemCode`。
++ 语言取的是系统语言，宿主用 `setAppPreferredLanguage` 单独设置的应用语言暂不跟随，需要时请显式调用 `SRTC.setLanguage`。
++ 仅支持 arm64-v8a；H264 / H265 纯硬编、无软编兜底，机型不支持时静默退回 VP8。
++ 与 iOS / Android / Web 互通、推 CDN、多芯片平台编解码覆盖尚未验证。
+</Warning>
+
+<Note>
+升级需替换 `libs/` 下的 HAR 文件，并把 `oh-package.json5` 中的依赖改为 `"srtc": "file:./libs/srtc-1.1.0.har"`，见[集成方式](/zh/rtc/harmony/integration)。
+</Note>
+
+---
+
 ### [1.0.1] - 2026.09.11
 #### 修复
 

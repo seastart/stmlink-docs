@@ -100,6 +100,10 @@ AudioRouteSession.shared.delegates.remove(observer);
 
 `isObserving` 可以回读监听状态，`refreshCurrentRoute()` 主动刷一次当前路由。
 
+<Note>
+`audioRouteName` / `audioRouteTargetName` / `audioCallStateName` 返回的是给终端用户看的显示名，自 1.1.0 起按 SDK 语言出中 / 英：`SRTC.language` 以 `zh` 开头时为「扬声器 / 听筒 / 蓝牙 / 有线耳机 / 其它设备」，否则为 `Speaker` / `Earpiece` / `Bluetooth` / `Wired headset` / `Other device`。缺省跟随系统语言，可用 `SRTC.setLanguage()` 固定。1.0.1 及以前恒为中文。**不要拿显示名做逻辑判断**，判断请用枚举值。
+</Note>
+
 <Warning>
 **`delegates` 是强引用，而 `AudioRouteSession.shared` 是全局单例。**
 

@@ -71,6 +71,42 @@ RTC 的所有用户都需要初始化 RTCEngineKit 服务之后才可以使用�
 
 获取 RTCEngineKit 版本号。
 
+### language
+`@property (class, nonatomic, copy, nullable) NSString *language`
+
+SDK 语言（`3.2.1` 起，类属性）
+
+取值为 BCP 47 语言标签，如 `@"zh-CN"`、`@"en"`（`zh_CN` 这类写法会被规范化为 `zh-CN`）。传 `nil` 或空串表示跟随系统语言（`[NSLocale preferredLanguages].firstObject`）。
+
++ 只影响请求后端时的 `Accept-Language` 请求头：后端据此返回对应语言的业务错误文案，见 [lastServerErrorMessage](#lastservererrormessage)
++ SDK 自身产生的错误码与日志不随语言变化
++ 进程级生效，随时可设，对之后的请求生效；建议在加入频道、启用即时通讯之前设置
+
+```objectivec
+RTCEngineKit.language = @"en";
+```
+
+### currentLanguage
+`@property (class, nonatomic, copy, readonly) NSString *currentLanguage`
+
+当前实际生效的语言（`3.2.1` 起，只读类属性）
+
+优先级为：`language` 已设置则为它，否则为系统首选语言，取不到时为 `@"zh"`。
+
+### lastServerErrorMessage
+`@property (class, nonatomic, copy, readonly, nullable) NSString *lastServerErrorMessage`
+
+最近一次后端业务错误的服务端文案（`3.2.1` 起，只读类属性）
+
+`joinChannelWithToken:`、`enableImWithToken:delegate:` 等接口只返回错误码。当返回值是 `1000`–`99999` 的后端业务码时，**立即**读取本属性即可拿到服务端返回的文案，语言随 [language](#language)；最近一次调用不是后端业务错误时为 `nil`。
+
+```objectivec
+RTCEngineError code = [channel joinChannelWithToken:token];
+if (code >= 1000 && code <= 99999) {
+    NSString *message = RTCEngineKit.lastServerErrorMessage; // 如「该会话不在线」/「Session is not online」
+}
+```
+
 ### decrypt:()
 `+ (nullable NSString *)decrypt:(nullable NSString *)value`
 
@@ -150,16 +186,24 @@ RTC 的所有用户如需使用即时通讯业务，首先调后台接口获取�
 | --- | --- |
 | view | 承载视频画面的控件 |
 
+**返回值**
+
+无摄像头权限时返回`RTCEngineErrorCameraNoAuthorized`（`3.2.0` 起，此前为`RTCEngineErrorDeviceNoAuthorized`）。
+
 
 ### updateLocalView:()
 `- (RTCEngineError)updateLocalView:(VIEW_CLASS *)view`
 
 更新本地摄像头的预览画面
 
+无摄像头权限时返回`RTCEngineErrorCameraNoAuthorized`（`3.2.0` 起，此前为`RTCEngineErrorDeviceNoAuthorized`）。
+
 ### stopLocalPreview()
 `- (RTCEngineError)stopLocalPreview`
 
 停止摄像头预览
+
+无摄像头权限时返回`RTCEngineErrorCameraNoAuthorized`（`3.2.0` 起，此前为`RTCEngineErrorDeviceNoAuthorized`）。
 
 ### switchCamera()
 `- (RTCEngineError)switchCamera`
@@ -167,6 +211,8 @@ RTC 的所有用户如需使用即时通讯业务，首先调后台接口获取�
 切换摄像头
 
 SDK 仅在目标摄像头能够创建输入时执行切换。目标摄像头不可用时保持当前实际采集设备，不会切换到无效输入。
+
+未开启摄像头采集时调用返回`RTCEngineErrorNotInitialized`（`3.2.0` 起，此前为`RTCEngineErrorForbidden`）。
 
 ### setLocalPreviewMirror:()
 `- (RTCEngineError)setLocalPreviewMirror:(BOOL)mirror`
@@ -495,9 +541,9 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 | RTCEngineErrorOK | 装载成功 |
 | --- | --- |
-| RTCEngineErrorConflict | 组件已装载，本次指令被丢弃 |
-| RTCEngineErrorNotFound | 模型文件不存在 |
-| RTCEngineErrorSystemError | 推理会话创建失败 |
+| RTCEngineErrorVirtualBackgroundAlreadyInstalled | 组件已装载，本次指令被丢弃（`3.2.0` 起，此前为`RTCEngineErrorConflict`） |
+| RTCEngineErrorVirtualBackgroundModelNotFound | 模型文件不存在或无效（`3.2.0` 起，此前为`RTCEngineErrorNotFound`） |
+| RTCEngineErrorVirtualBackgroundSessionFailed | 推理会话创建失败（`3.2.0` 起，此前为`RTCEngineErrorSystemError`） |
 
 
 ### uninstallVirtualBackground()
@@ -512,7 +558,7 @@ RTC 所有用户在使用 SDK 提供的美颜、滤镜等视频处理功能时�
 
 虚拟背景功能开关
 
-组件未装载时调用返回`RTCEngineErrorConflict`。关闭后为零开销直通，不再进行推理，并清除帧间状态，下次开启从首帧重新收敛。
+组件未装载时调用返回`RTCEngineErrorVirtualBackgroundNotInstalled`（`3.2.0` 起，此前为`RTCEngineErrorConflict`）。关闭后为零开销直通，不再进行推理，并清除帧间状态，下次开启从首帧重新收敛。
 
 **参数**
 

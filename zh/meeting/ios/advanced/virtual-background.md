@@ -30,9 +30,9 @@ SEAError error = [[MeetingKit sharedInstance] installVirtualBackground:nil];
 | **返回值** | **说明** |
 | --- | --- |
 | SEAErrorOK | 装载成功 |
-| SEAErrorConflict | 组件已装载，本次指令被丢弃 |
-| SEAErrorNotFound | 模型文件不存在，检查 `modelPath` |
-| SEAErrorSystemError | 推理会话创建失败，属于运行环境问题 |
+| SEAErrorVirtualBackgroundAlreadyInstalled | 组件已装载，本次指令被丢弃（`103027`；`2.2.0` 之前为 `SEAErrorConflict`） |
+| SEAErrorVirtualBackgroundModelNotFound | 模型文件不存在或无效，检查 `modelPath`（`103029`；`2.2.0` 之前为 `SEAErrorNotFound`） |
+| SEAErrorVirtualBackgroundSessionFailed | 推理会话创建失败，属于运行环境问题（`103030`；`2.2.0` 之前为 `SEAErrorSystemError`） |
 
 ### step 2：**设置背景效果**
 
@@ -61,7 +61,7 @@ SEAError error = [[MeetingKit sharedInstance] installVirtualBackground:nil];
 BOOL enabled = [[MeetingKit sharedInstance] isVirtualBackgroundEnabled];
 ```
 
-组件未装载时调用开关会返回 `SEAErrorConflict`。关闭时会清掉帧间状态，下次开启从首帧重新收敛，不会闪出过期蒙版。
+组件未装载时调用开关会返回 `SEAErrorVirtualBackgroundNotInstalled`（`103028`；`2.2.0` 之前为 `SEAErrorConflict`）。关闭时会清掉帧间状态，下次开启从首帧重新收敛，不会闪出过期蒙版。
 
 ### step 4：**低端机保帧率（可选）**
 

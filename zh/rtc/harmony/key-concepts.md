@@ -12,7 +12,7 @@ description: "理解 SRTC HarmonyOS SDK 中 SRTCEngine、Channel、Track、渲�
 + `Track`：音频或视频流的抽象对象
 + `ChannelDelegate` / `TrackDelegate`：事件回调入口
 + `SRTCVideoView` / `SRTCVideoRenderer`：视频渲染层
-+ `SRTC`：只做一件事 —— 把宿主的 Context 交给 SDK（见下方「为什么需要 `SRTC.init`」）
++ `SRTC`：进程级全局配置 —— 把宿主的 Context 交给 SDK（见下方「为什么需要 `SRTC.init`」），以及用 `SRTC.setLanguage()` 设置 SDK 语言（1.1.0 起，影响后端错误文案与音频路由显示名）
 
 从第一性原理看，RTC 系统本质上是在同步三类状态：
 
@@ -185,6 +185,9 @@ Array 之外**会丢失类型** —— `Track` 拷过来会变成一个没有方
 
 枚举出来的 `deviceId` 可以直接喂回采集参数（`CameraCaptureOptions.deviceId`），
 这条回路是设备切换能力的地基。
+
+摄像头 / 麦克风权限**由宿主申请**，SDK 不弹授权框。1.1.0 起 `startCapture()` 会在采集前只读预检授权状态，
+未授权直接抛 `108231`（摄像头）/ `108251`（麦克风），而不是等到"采集成功却没有画面"才发现。
 
 音频**输出路由**是另一套：`AudioRouteSession`，负责扬声器 / 听筒的持久设置与通话中临时
 切换。外接设备（蓝牙 / 有线）由系统接管，SDK 只上报不主动切换。

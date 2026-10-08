@@ -56,8 +56,8 @@ description: "频道级会话事件回调协议：连接与重连、成员进出
 | channel | 事件来源频道实例 |
 | --- | --- |
 | reason | 离开原因 |
-| errCode | 错误码 |
-| errMsg | 错误信息 |
+| errCode | 错误码：SDK 本地错误为 `103xxx`，后端业务码（`1000`–`99999`）原样透传，详见 [错误码表](/zh/rtc/ios/error-codes) |
+| errMsg | 错误信息，来自后端，仅供日志，请按 `errCode` 判断 |
 
 
 ## 我的相关回调
