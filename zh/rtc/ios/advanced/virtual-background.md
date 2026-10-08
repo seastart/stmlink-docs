@@ -30,9 +30,13 @@ RTCEngineError error = [[RTCEngineKit sharedEngine] installVirtualBackground:nil
 | **返回值** | **说明** |
 | --- | --- |
 | RTCEngineErrorOK | 装载成功 |
-| RTCEngineErrorConflict | 组件已装载，本次指令被丢弃 |
-| RTCEngineErrorNotFound | 模型文件不存在，检查 `modelPath` |
-| RTCEngineErrorSystemError | 推理会话创建失败，属于运行环境问题 |
+| RTCEngineErrorVirtualBackgroundAlreadyInstalled（`103027`） | 组件已装载，本次指令被丢弃 |
+| RTCEngineErrorVirtualBackgroundModelNotFound（`103029`） | 模型文件不存在或无效，检查 `modelPath` |
+| RTCEngineErrorVirtualBackgroundSessionFailed（`103030`） | 推理会话创建失败，属于运行环境问题 |
+
+<Note>
+以上专用错误码自 `3.2.0` 起返回；`3.1.x` 中这三种情况分别返回 `RTCEngineErrorConflict`、`RTCEngineErrorNotFound`、`RTCEngineErrorSystemError`，升级时需改写对应分支，详见[更新日志](/zh/rtc/ios/changelog)。
+</Note>
 
 ### step 2：**设置背景效果**
 
@@ -61,7 +65,7 @@ RTCEngineError error = [[RTCEngineKit sharedEngine] installVirtualBackground:nil
 BOOL enabled = [[RTCEngineKit sharedEngine] isVirtualBackgroundEnabled];
 ```
 
-组件未装载时调用开关会返回 `RTCEngineErrorConflict`。关闭时会清掉帧间状态，下次开启从首帧重新收敛，不会闪出过期蒙版。
+组件未装载时调用开关会返回 `RTCEngineErrorVirtualBackgroundNotInstalled`（`103028`，`3.1.x` 中为 `RTCEngineErrorConflict`）。关闭时会清掉帧间状态，下次开启从首帧重新收敛，不会闪出过期蒙版。
 
 ### step 4：**低端机保帧率（可选）**
 

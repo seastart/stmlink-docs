@@ -8,7 +8,7 @@ description: "启动录制与混流、布局配置、任务状态监听与异常
 
 ---
 
-### 三种任务类型
+### 任务类型
 
 `McuTaskType` 决定服务端做什么：
 
@@ -17,6 +17,10 @@ description: "启动录制与混流、布局配置、任务状态监听与异常
 | `record = 1` | 纯录制 |
 | `mix = 2` | 纯混流（合成一路给客户端订阅） |
 | `mixAndRecord = 3` | 混流 + 录制 |
+| `audio = 4` | 录音（1.1.0 起） |
+| `live = 8` | 直播流（1.1.0 起） |
+
+`McuTaskType.unknown`（`-1`）是 1.1.0 新增的解码兜底，只出现在事件和详情里，**不要拿来发请求**。
 
 ---
 
@@ -81,6 +85,7 @@ onRoomMcuTask: (m, data) => {
   // data.taskType: McuTaskType
   // data.taskStatus: McuTaskStatus
   // data.errDesc: string
+  // data.taskTypeRaw / data.taskStatusRaw: 服务端原始值，枚举为 unknown 时用
   switch (data.taskStatus) {
     case McuTaskStatus.running:
       this.recordingBadge = true;
@@ -92,9 +97,29 @@ onRoomMcuTask: (m, data) => {
       this.recordingBadge = false;
       toast(`录制异常：${data.errDesc}`);
       break;
+    default:
+      // waitStart / waitEnd 是过渡状态；unknown 是本版本 SDK 不认识的取值
+      break;
   }
 }
 ```
+
+`McuTaskStatus` 的完整取值：
+
+| 值 | 说明 |
+| --- | --- |
+| `waitStart = 0` | 待开始：指令已下发，底层任务尚未跑起来 |
+| `running = 1` | 进行中 |
+| `waitEnd = 2` | 待结束：已下发停止指令，底层尚未确认结束 |
+| `exception = 3` | 异常结束，原因见 `errDesc` |
+| `normal = 4` | 正常结束 |
+| `unknown = -1` | 兜底：服务端下发了本版本 SDK 不认识的取值，原始值看 `taskStatusRaw` |
+
+<Warning>
+**1.1.0 起 `McuTaskStatus` 的数值与服务端对齐**：1.0.0 及以前是 `exception = 2`、`normal = 3`，与服务端错位，
+会把「待结束」报成 `exception`、把「异常结束」报成 `normal`，真正的「正常结束」则整条丢弃。
+按成员名比较的代码升级后即得正确语义；**直接拿数字比较的代码需要自查**。
+</Warning>
 
 <Warning>
 **`exception` 必须提示给用户。**
@@ -115,7 +140,19 @@ const detail: McuRecordDetail = await meeting.mcuRecordDetail(meetingId);
 | 接口 | 用途 |
 | --- | --- |
 | `mcuRecordConfig()` | 应用级录制配置（默认布局、水印类型等） |
-| `mcuRecordDetail(meetingId)` | 某场会议的录制明细（15 个字段） |
+| `mcuRecordDetail(meetingId)` | 某场会议的录制明细 |
+
+`McuRecordDetail` 中比较常用的字段：
+
+| 字段 | 说明 |
+| --- | --- |
+| `taskStatus` | `McuTaskStatus`，缺失或不认识时为 `unknown` |
+| `errDesc` | 异常结束时的原因 |
+| `beganAt` / `endedAt` | 录制开始 / 结束时间（秒级时间戳，0 表示尚未开始 / 尚未结束） |
+| `totalDuration` / `totalSize` | 全部录制文件的总时长（秒）与总字节 |
+| `records` | 录制文件列表（`McuRecordFile[]`，服务端不返回时为 `undefined`）：一次录制会按时长切段或中断续录产出多个文件，按 `seq` 排序即播放顺序，`addr` 为有效期 2 小时的预签名播放地址 |
+
+`vodKey` / `vodSize` / `mcuAt` / `mcuDur` 自 1.1.0 起废弃并**改为可选**（新服务端不再返回 `vodKey` / `vodSize`），分别改用 `records`、`totalSize`、`beganAt`、`totalDuration`。完整字段见[类型定义](/zh/meeting/harmony/types)。
 
 `RoomInfo.recordStatus` 也能读到当前录制状态，进会时用它初始化 UI。
 
@@ -155,6 +192,8 @@ if (this.meeting.mcuTrack !== undefined) {
 
 录制产物走**资源**体系，用 `resourcesList` 查、`presignedGetObject` 换下载地址。
 见[资源与附件](/zh/meeting/harmony/advanced/resources)。
+
+另外，1.1.0 起 `mcuRecordDetail` 返回的 `records[].addr` 是录制文件分片的预签名播放地址（有效期 2 小时，过期后重新查询详情）。
 
 ---
 

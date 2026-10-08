@@ -277,6 +277,10 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 | enabled | YES-开启音频 NO-关闭音频 |
 | --- | --- |
 
+**返回值**
+
+无麦克风权限时返回`RTCEngineErrorMicNoAuthorized`（`3.2.0` 起，此前为`RTCEngineErrorDeviceNoAuthorized`）。
+
 
 ### setAudioPriorityWithUserId:enabled:()
 `- (RTCEngineError)setAudioPriorityWithUserId:(NSString *)userId enabled:(BOOL)enabled`
@@ -395,6 +399,8 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 
 该接口需要指明发布的轨道、分辨率、码流等基础码流信息。只有调用该接口申明的轨道才可以通过`publishCustomStreamWithStreamData:`进行自定义推流，当程序结束自定义推流后需要调用`stopCustomStreamWithTrackId:`关闭对应轨道。
 
+`0`~`2` 号轨道不支持自定义流，传入时返回`RTCEngineErrorInvalidArgs`（`3.2.0` 起，此前为`RTCEngineErrorForbidden`）。
+
 **参数**
 
 | streamTrackModel | 码流信息，详情请参考 [RTCEngineStreamTrackModel](/zh/rtc/ios/types#rtcenginestreamtrackmodel) |
@@ -405,6 +411,8 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 `- (RTCEngineError)stopCustomStreamWithTrackId:(RTCTrackIdentifierFlags)trackId`
 
 关闭自定义流
+
+`0`~`2` 号轨道不支持自定义流，传入时返回`RTCEngineErrorInvalidArgs`（`3.2.0` 起，此前为`RTCEngineErrorForbidden`）。
 
 **参数**
 
@@ -418,6 +426,8 @@ RTC 的所有用户都需要加入频道才能“发布”或“订阅”音视�
 发布自定义码流
 
 可以通过该接口向`startCustomStreamWithStreamTrackModel:`中声明的轨道 ID 推送自定义码流数据。
+
+`0`~`2` 号轨道不支持自定义流，传入时返回`RTCEngineErrorInvalidArgs`（`3.2.0` 起，此前为`RTCEngineErrorForbidden`）。
 
 **参数**
 

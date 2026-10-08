@@ -3,6 +3,59 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [3.2.0] - 2026.10.08
+<Warning>
+**本版是不兼容变更，升级前请读完本节**：`RTCEngineError` 按[跨端统一码表](/zh/rtc/error-codes)（第 2 版）重排为「iOS 前缀 `103` + 低 3 位」。**枚举名全部保留、取值改变**，接入工程必须用 3.2.0 的头文件**重新编译**；凡是写死错误码数值（如 `100008`、`103001`）、或把错误码存库 / 上报后按数值比对的代码都需要调整。按枚举名判断的代码重新编译即可，但下文「改报另一个枚举」的场景要改分支。
+</Warning>
+
+#### 变更
++ **错误码全部重排**：完整码 = `103` + 统一码表低 3 位，如 `RTCEngineErrorNetError` 由 `100009` 变为 `103006`（`006` = 连接失败）。`0` 仍为成功；`103000`–`103999` 为 SDK 本地错误；`1000`–`99999` 为后端业务码，原样透传、数值不变。完整对照见下方「旧码 → 新码对照」；
++ **无权限拆为摄像头 / 麦克风两个码**：`startLocalPreview:view:`、`updateLocalView:`、`stopLocalPreview` 无摄像头权限时返回新增的 `RTCEngineErrorCameraNoAuthorized`（`103231`），`enabledSendAudio:` 无麦克风权限时返回新增的 `RTCEngineErrorMicNoAuthorized`（`103251`）。`RTCEngineErrorDeviceNoAuthorized` 保留定义（取值改为 `103042`），但 **SDK 不再返回它**——按 `RTCEngineErrorDeviceNoAuthorized` 判断无权限的代码重新编译后仍能通过，却**永远不会再命中**，请改为判断上述两个新枚举；
++ **虚拟背景按具体原因返回**：新增 `RTCEngineErrorVirtualBackgroundAlreadyInstalled`（`103027`，重复装载）、`RTCEngineErrorVirtualBackgroundNotInstalled`（`103028`，未装载就调用 `enabledVirtualBackground:`）、`RTCEngineErrorVirtualBackgroundModelNotFound`（`103029`，模型文件不存在或无效）、`RTCEngineErrorVirtualBackgroundSessionFailed`（`103030`，推理会话创建失败）。此前这四种情况分别返回 `RTCEngineErrorConflict`、`RTCEngineErrorConflict`、`RTCEngineErrorNotFound`、`RTCEngineErrorSystemError`，按旧枚举判断的分支需改写，详见[虚拟背景](/zh/rtc/ios/advanced/virtual-background)；
++ **自定义流传入 `0`~`2` 号轨道**（`startCustomStreamWithStreamTrackModel:`、`stopCustomStreamWithTrackId:`、`publishCustomStreamWithStreamData:…`）由 `RTCEngineErrorForbidden` 改为 `RTCEngineErrorInvalidArgs`（`103031`）；
++ **未开启摄像头采集时调用 `switchCamera`** 由 `RTCEngineErrorForbidden` 改为 `RTCEngineErrorNotInitialized`（`103024`）。`RTCEngineErrorForbidden`（`103043`）此后只表示当前身份 / 角色不允许该操作；
++ **底层状态码统一转换**：SDK 内部 librtc 返回的状态码，`1`–`999` 统一加 `103` 前缀后对外，`1000`–`99999` 的后端业务码原样透传；返回值、block 回调与代理回调口径一致，`engineChannel:onDisconnected:errCode:errMsg:` 与 `onImDisconnected:errCode:errMsg:` 的 `errCode` 同样经过转换。`errMsg` 来自后端、仅供日志，请按 `errCode` 判断；
++ **`RTCEngineErrorMediaNotInitialized` 标记为 deprecated**，与 `RTCEngineErrorNotInitialized` 同值 `103024`。`switch` 里同时写两者会因重复 `case` 编译失败；工程开启 `-Werror`（或把 `-Wdeprecated-declarations` 视为错误）时，任何对它的引用都会因 deprecated 警告编译失败，请统一改用 `RTCEngineErrorNotInitialized`；
++ SDK 内部音频路由模型的扬声器名称改为按系统首选语言返回「扬声器」或「Speaker」，用于日志与调试输出；当前没有对外接口返回路由列表，接入方无需调整。
+
+#### 旧码 → 新码对照
+
+| 枚举 | 3.1.2 及以前 | 3.2.0 | 统一码表名称 |
+| --- | :---: | :---: | --- |
+| RTCEngineErrorOK | `0` | `0` | |
+| RTCEngineErrorNotJoinedChannel | `103002` | `103001` | NotInChannel |
+| RTCEngineErrorStreamNotFound | `103004` | `103003` | TrackNotFound |
+| RTCEngineErrorSdkTokenInvalid | `100008` | `103004` | TokenInvalid |
+| RTCEngineErrorConflict | `100007` | `103005` | AlreadyJoined |
+| RTCEngineErrorNetError | `100009` | `103006` | ConnectionFailed |
+| RTCEngineErrorTimeout | `100005` | `103007` | ConnectionTimeout |
+| RTCEngineErrorProtocolParsingError | `100004` | `103011` | MessageDecodeFailed |
+| RTCEngineErrorMediaNetError | `100010` | `103012` | WebrtcError |
+| RTCEngineErrorNotInitialized | `100002` | `103024` | InvalidState |
+| RTCEngineErrorMediaNotInitialized（deprecated） | `100003` | `103024` | InvalidState |
+| RTCEngineErrorSystemError | `100001` | `103025` | InternalError |
+| RTCEngineErrorUserCancelled | `100012` | `103026` | Cancelled |
+| RTCEngineErrorVirtualBackgroundAlreadyInstalled（新增） | 原返回 `100007` | `103027` | VirtualBackgroundAlreadyInstalled |
+| RTCEngineErrorVirtualBackgroundNotInstalled（新增） | 原返回 `100007` | `103028` | VirtualBackgroundNotInstalled |
+| RTCEngineErrorVirtualBackgroundModelNotFound（新增） | 原返回 `100011` | `103029` | VirtualBackgroundModelNotFound |
+| RTCEngineErrorVirtualBackgroundSessionFailed（新增） | 原返回 `100001` | `103030` | VirtualBackgroundSessionFailed |
+| RTCEngineErrorInvalidArgs | `100006` | `103031` | InvalidArgument |
+| RTCEngineErrorDeviceNoAuthorized（SDK 不再返回） | `103001` | `103042` | PermissionDenied |
+| RTCEngineErrorForbidden | `103003` | `103043` | Forbidden |
+| RTCEngineErrorSwitchAudioRouteFail | `103005` | `103044` | AudioRouteSwitchFailed |
+| RTCEngineErrorNotFound | `100011` | `103204` | UserNotFound |
+| RTCEngineErrorCameraNoAuthorized（新增） | 原返回 `103001` | `103231` | CameraPermissionDenied |
+| RTCEngineErrorMicNoAuthorized（新增） | 原返回 `103001` | `103251` | MicPermissionDenied |
+
+后端业务码（`1000`–`99999`）不加前缀、数值不变。各码的含义与处理建议见[错误码](/zh/rtc/ios/error-codes)。
+
+#### 已知限制
++ RTC 层暂不支持 `language` 设置，请求后端时不携带 `Accept-Language`，后端业务错误的 `errMsg` 语言跟随后端默认。该能力待底层库升级后提供。
+
+<Note>
+除 `RTCEngineError` 的取值与上述新增枚举外，公开接口与回调签名均未变化，最低系统要求仍为 iOS 16.0。升级步骤：更新 Pod 到 `3.2.0` 并重新编译 → 全局搜索写死的 `100001`–`100012`、`103001`–`103005` 数值并改为枚举 → 把 `RTCEngineErrorDeviceNoAuthorized` 的判断改为 `RTCEngineErrorCameraNoAuthorized` / `RTCEngineErrorMicNoAuthorized` → 改写虚拟背景、自定义流、`switchCamera` 的返回值分支 → 去掉对 `RTCEngineErrorMediaNotInitialized` 的引用。
+</Note>
+
 ### [3.1.2] - 2026.09.14
 #### 修复
 + 修复 wangsu 流媒体下 [onRemoteMemberAudioStatus:](/zh/rtc/ios/api-reference/RTCEngineChannelDelegate#enginechannelonremotememberaudiostatus) 回调把讲话成员归属到错误用户的问题：该链路的服务端不下发连接标识，[RTCStreamAudioModel](/zh/rtc/ios/types#rtcstreamaudiomodel) 的 `linkId` 恒为 `0`，原先据此反查成员会命中列表里第一个匹配到的人，业务层做语音激励时高亮的往往不是真正在说话的那个人；现在改为按底层连接解析用户标识，解析不出时才回退到原有的 `linkId` 反查；

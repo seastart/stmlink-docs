@@ -61,6 +61,7 @@ Swift SDK 同时支持 iOS 和 macOS，按运行平台使用 `103` 或 `105` 前
 + 取值为语言标签，如 `zh-CN`、`en`。不设置时跟随系统语言，取不到时为中文
 + SDK 请求服务端时带上 `Accept-Language`，**服务端业务错误（1000–99999）的文案随之返回中文或英文**
 + **SDK 自身的报错（6 位码）固定为英文，不受 `language` 影响**
++ 例外：iOS（Objective-C）RTCEngineKit 3.2.0 暂未提供 `language`，RTC 层请求不带 `Accept-Language`，服务端文案按服务端默认语言返回
 
 所以同一个应用里同时看到中文和英文的报错是正常的：前者来自服务端，后者来自 SDK。
 
@@ -160,7 +161,9 @@ Swift SDK 同时支持 iOS 和 macOS，按运行平台使用 `103` 或 `105` 前
 | 微信小程序 | `107` | `@seastart/srtc-wx-sdk` 0.3.0 起 |
 | C SDK / Python SDK | `180` | C SDK 0.1.0、Python SDK（`srtc`）0.2.0 起 |
 | Swift（iOS / macOS） | `103` / `105` | SRTC Swift SDK 1.5.0 起（[更新日志](/zh/rtc/swift/changelog)） |
-| Android、iOS（Objective-C）、鸿蒙、Windows | `102`、`103`、`108`、`101` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
+| iOS（Objective-C） | `103` | RTCEngineKit 3.2.0 起（[更新日志](/zh/rtc/ios/changelog)） |
+| 鸿蒙 | `108` | SRTC 鸿蒙 SDK 1.1.0 起（[更新日志](/zh/rtc/harmony/changelog)） |
+| Android、Windows | `102`、`101` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
 
 ---
 
@@ -192,8 +195,10 @@ Swift SDK 同时支持 iOS 和 macOS，按运行平台使用 `103` 或 `105` 前
 | Web / 微信小程序 | 以前大多落在兜底码 `106000` / `107000`，现在按场景拆成独立码；HTTP 失败由不带码的 `Error` 改为 `106006` / `107006`；采集与权限失败由浏览器原始异常改为 `106231` / `106251` / `106039` / `106021` / `106018`。`106001`–`106003` 含义不变 | [Web 更新日志](/zh/rtc/web/changelog) · [Web 错误码](/zh/rtc/web/error-codes) |
 | C SDK / Python SDK | 以前落在 `180000` 或没有错误码的失败，现在都有具体的码；「无权发布合成流」由 `180004` 改为 `180040`，`180004` 改为表示 Token 不合法 | [C SDK 更新日志](/zh/rtc/capi/changelog) · [Python SDK 更新日志](/zh/rtc/python/changelog) |
 | Swift | 见其更新日志中的对照表 | [Swift 更新日志](/zh/rtc/swift/changelog) |
+| iOS（Objective-C） | `RTCEngineError` 枚举名保留、取值改为 `103` + 低 3 位，需重新编译；`100001`–`100012` 按上表映射；无权限由 `103001` 拆为 `103231`（摄像头）/ `103251`（麦克风）；新增虚拟背景 `103027`–`103030` | [iOS 更新日志](/zh/rtc/ios/changelog) · [iOS 错误码](/zh/rtc/ios/error-codes) |
+| 鸿蒙 | 网络失败 / HTTP 非 200 由 `108404`、`108500` 等统一为 `108006`（HTTP 状态见 `httpStatus`）；采集异常由系统 `BusinessError` 改为 `SRTCError`（原码在 `systemCode`）；`001`–`026` 不变 | [鸿蒙更新日志](/zh/rtc/harmony/changelog) · [鸿蒙错误码](/zh/rtc/harmony/error-codes) |
 
-其它端（Android、iOS Objective-C、鸿蒙、Windows）的旧码对照，随该端按新码发版时在其更新日志中给出。
+其它端（Android、Windows）的旧码对照，随该端按新码发版时在其更新日志中给出。
 
 ---
 

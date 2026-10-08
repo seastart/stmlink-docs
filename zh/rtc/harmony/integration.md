@@ -25,16 +25,22 @@ SDK 的视频预设统一使用 H264，底层的 H264 / H265 编解码只走设�
 SDK 以预编译 HAR 分发，从制品仓下载：
 
 ```bash
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.0.1.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.1.0.har
 ```
 
-把下载到的文件放进模块的 `libs/` 目录，并重命名为 `srtc-1.0.1.har`：
+下载后可以核对 SHA-256，应为 `a3dc38ba248f9fdbfb28e1675fc7bd764b89fc0e3d298805549f4a4b1a5180fe`：
+
+```bash
+shasum -a 256 srtc-harmony-1.1.0.har
+```
+
+把下载到的文件放进模块的 `libs/` 目录，并重命名为 `srtc-1.1.0.har`：
 
 ```
 your-project/
 └── entry/
     ├── libs/
-    │   └── srtc-1.0.1.har
+    │   └── srtc-1.1.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
@@ -52,7 +58,7 @@ HarmonyOS 的 ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 
 ```json5
 {
   "dependencies": {
-    "srtc": "file:./libs/srtc-1.0.1.har"
+    "srtc": "file:./libs/srtc-1.1.0.har"
   }
 }
 ```
@@ -111,6 +117,12 @@ await mgr.requestPermissionsFromUser(
 );
 ```
 
+<Note>
+**权限由宿主申请，SDK 不弹授权框。**
+
+自 1.1.0 起，`startCapture()` 在采集前会**只读预检**一次授权状态：摄像头未授权直接抛 `SRTCError` `108231`，麦克风未授权抛 `108251`，可以据此引导用户去系统设置里打开权限。预检本身查询失败时会放行、照常采集。屏幕共享没有可预检的权限，走系统授权窗，见[屏幕共享](/zh/rtc/harmony/advanced/screen-sharing)。
+</Note>
+
 ---
 
 ### 初始化
@@ -134,6 +146,12 @@ export default class EntryAbility extends UIAbility {
 不调用 `SRTC.init` 也能跑通，但摄像头分辨率会退化为"由底层自行吸附档位"，实际分辨率因机型而异，你在 `CameraPreset` 里设定的值不再生效。
 </Warning>
 
+如需固定 SDK 语言（影响后端业务错误文案与音频路由显示名，缺省跟随系统语言），可在同一处调用 `SRTC.setLanguage`，见 [SRTCEngine 接口](/zh/rtc/harmony/api-reference/SRTCEngine)：
+
+```typescript
+SRTC.setLanguage('en');
+```
+
 ---
 
 ### 导入 SDK
@@ -148,7 +166,7 @@ import { SRTCEngine, SRTCVideoView, Channel, Track } from 'srtc';
 
 + `libs/` 下已放入 HAR，`oh-package.json5` 已声明依赖，`ohpm install` 已执行
 + `module.json5` 已声明 INTERNET / CAMERA / MICROPHONE
-+ 运行时已申请摄像头与麦克风权限
++ 运行时已申请摄像头与麦克风权限（SDK 不会代为弹窗，未授权时 `startCapture()` 抛 `108231` / `108251`）
 + `UIAbility.onCreate` 中已调用 `SRTC.init(this.context)`
 + 业务后端已能签发加入频道所需的 Token
 + 手上有一台 arm64-v8a 真机（视频功能无法在模拟器上验证）

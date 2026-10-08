@@ -60,6 +60,8 @@ opts.deviceId = cameras[0].deviceId;
 await camera.startCapture(opts);
 ```
 
+采集失败时，若该类设备一个都没有、或指定的 `deviceId` 已不在枚举结果里（例如外设已拔出），1.1.0 起抛 `deviceNotFound`（`108021`），其它原因抛 `captureError`（`108018`），见[错误码](/zh/rtc/harmony/error-codes)。
+
 ---
 
 ### 切换麦克风
@@ -88,10 +90,13 @@ DeviceManager.shared.clearAudioInputDevice();     // 回到系统默认
 ### 输出设备
 
 ```typescript
-DeviceManager.shared.setOutputDevice(deviceId);
 DeviceManager.shared.setSpeakerOutputPreferred(true);          // true=扬声器，false=听筒
 const onSpeaker = DeviceManager.shared.isSpeakerOutputPreferred;
 ```
+
+<Warning>
+**`setOutputDevice(deviceId)` 在鸿蒙上恒抛错。** 系统不支持指定任意音频输出设备（`CommunicationDeviceType` 只有 `SPEAKER`），调用即抛 `featureNotSupported`（`108032`；1.0.1 及以前为 `invalidState` `108024`）。切外放请用 `setSpeakerOutputPreferred()`，外接设备请引导用户到系统音频面板选择。
+</Warning>
 
 <Note>
 `setSpeakerOutputPreferred(true/false)` 与 `AudioRouteSession` 的

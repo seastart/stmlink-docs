@@ -29,8 +29,8 @@ HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDep
 两个包都从制品仓下载：
 
 ```bash
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.0.0.har
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.0.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.1.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.1.0.har
 ```
 
 放进模块的 `libs/` 目录，去掉文件名里的 `-harmony`：
@@ -39,15 +39,21 @@ curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1
 your-project/
 └── entry/
     ├── libs/
-    │   ├── srtc-1.0.0.har
-    │   └── smeeting-1.0.0.har
+    │   ├── srtc-1.1.0.har
+    │   └── smeeting-1.1.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
 
 <Note>
-两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.0.0 依赖 SRTC 1.0.0。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
+两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.1.0 依赖 SRTC 1.1.0，**不能搭配 SRTC 1.0.x**（本版用到了 SRTC 1.1.0 才有的接口，搭旧版编不过）。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
+
+SMeeting 1.1.0 的 HAR 校验值（sha256）：`86b920808ab250fb1210093d3186a0673aa579616a94f3a19d98bb63efc0e56c`，可用 `shasum -a 256 smeeting-harmony-1.1.0.har` 核对。
 </Note>
+
+<Warning>
+**已知限制**：会议后端目前拒绝鸿蒙终端类型，登录（`login`）时会收到后端错误 `10070`（「终端类型必须小于或等于7」），需等后端放开后才能入会。见[更新日志](/zh/meeting/harmony/changelog)。
+</Warning>
 
 ---
 
@@ -58,8 +64,8 @@ your-project/
 ```json5
 {
   "dependencies": {
-    "smeeting": "file:./libs/smeeting-1.0.0.har",
-    "srtc": "file:./libs/srtc-1.0.0.har"
+    "smeeting": "file:./libs/smeeting-1.1.0.har",
+    "srtc": "file:./libs/srtc-1.1.0.har"
   }
 }
 ```

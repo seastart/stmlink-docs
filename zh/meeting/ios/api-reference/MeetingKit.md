@@ -22,6 +22,29 @@ description: "会议组件全局入口单例：登录登出、即时通讯、会
 
 获取 MeetingKit 版本号。
 
+### language
+`@property (nonatomic, copy, nullable) NSString *language`
+
+SDK 语言（`2.2.0` 起）
+
+取值为 BCP 47 语言标签，如 `@"zh-CN"`、`@"en"`（`zh_CN` 这类写法会被规范化为 `zh-CN`）。传 `nil` 或空串表示跟随系统语言（`[NSLocale preferredLanguages].firstObject`）。
+
++ 只影响请求会议后端时的 `Accept-Language` 请求头：后端据此返回对应语言的业务错误文案（`1000`–`99999` 后端码的 `message`）
++ SDK 自身产生的报错 `message` 一律英文，不随语言变化
++ 进程级生效，不随登录 / 登出重置，建议在登录前设置
++ RTC 层（`RTCEngineKit`）自身的请求暂不带语言
+
+```objectivec
+[MeetingKit sharedInstance].language = @"en";
+```
+
+### currentLanguage
+`@property (nonatomic, copy, readonly) NSString *currentLanguage`
+
+当前实际生效的语言（`2.2.0` 起，只读）
+
+优先级为：`language` 已设置则为它，否则为系统首选语言，取不到时为 `@"zh"`。
+
 ### addDelegate:()
 `- (void)addDelegate:(id <MeetingKitDelegate>)delegate`
 
@@ -351,9 +374,9 @@ description: "会议组件全局入口单例：登录登出、即时通讯、会
 | 返回值 | 描述 |
 | :--- | --- |
 | SEAErrorOK | 装载成功 |
-| SEAErrorConflict | 组件已装载，本次指令被丢弃 |
-| SEAErrorNotFound | 模型文件不存在，检查 `modelPath` |
-| SEAErrorSystemError | 推理会话创建失败，属于运行环境问题 |
+| SEAErrorVirtualBackgroundAlreadyInstalled | 组件已装载，本次指令被丢弃（`103027`；`2.2.0` 之前为 `SEAErrorConflict`） |
+| SEAErrorVirtualBackgroundModelNotFound | 模型文件不存在或无效，检查 `modelPath`（`103029`；`2.2.0` 之前为 `SEAErrorNotFound`） |
+| SEAErrorVirtualBackgroundSessionFailed | 推理会话创建失败，属于运行环境问题（`103030`；`2.2.0` 之前为 `SEAErrorSystemError`） |
 
 
 ### uninstallVirtualBackground()
@@ -368,7 +391,7 @@ description: "会议组件全局入口单例：登录登出、即时通讯、会
 
 虚拟背景功能开关
 
-装载后默认不开启，需要显式打开。关闭后是零开销直通，不再跑推理。组件未装载时调用返回 `SEAErrorConflict`。
+装载后默认不开启，需要显式打开。关闭后是零开销直通，不再跑推理。组件未装载时调用返回 `SEAErrorVirtualBackgroundNotInstalled`（`103028`；`2.2.0` 之前为 `SEAErrorConflict`）。
 
 | 参数 | 描述 |
 | :--- | --- |

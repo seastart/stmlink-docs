@@ -145,8 +145,16 @@ MCU 合流布局，共 20 种：
 
 | 枚举 | 成员 |
 | --- | --- |
-| `McuTaskType` | `record = 1`（纯录制）/ `mix = 2`（纯混流）/ `mixAndRecord = 3` |
-| `McuTaskStatus` | `running = 1` / `exception = 2` / `normal = 3` |
+| `McuTaskType` | `record = 1`（纯录制）/ `mix = 2`（纯混流）/ `mixAndRecord = 3`（混流 + 录制）/ `audio = 4`（录音）/ `live = 8`（直播流）/ `unknown = -1` |
+| `McuTaskStatus` | `waitStart = 0`（待开始）/ `running = 1`（进行中）/ `waitEnd = 2`（待结束）/ `exception = 3`（异常结束，原因见 `errDesc`）/ `normal = 4`（正常结束）/ `unknown = -1` |
+
+取值与服务端下发的 `task_type` / `task_status` 一致。`task_type` 由服务端按位组合，组合出的其它值（如 5、9）解码为 `unknown`。
+`unknown` 是兜底：服务端下发了本版本 SDK 不认识的取值时用它，**只用于解码，不要拿来发请求**；需要原始值时看 `RoomMcuTaskEventData.taskTypeRaw` / `taskStatusRaw`。
+`waitStart` / `waitEnd` 是指令已下发、底层任务尚未确认的临时过渡状态。
+
+<Warning>
+**1.1.0 起 `McuTaskStatus` 的数值改了**：1.0.0 及以前是 `exception = 2`、`normal = 3`，与服务端错位。成员名没变，按成员名比较的代码升级后即得正确语义；**直接拿数字比较的代码需要自查**。
+</Warning>
 
 ### `AgentType` / `AgentStatus`
 
@@ -318,8 +326,12 @@ MCU 合流布局，共 20 种：
 | `ResourceInfo` | `id`、`userId`、`meetingId`、`parentId`、`isFolder`、`resType`、`resKey`、`resName`、`resSize`、`createdAt`、`updatedAt` |
 | `Attachment` | `name`、`key` |
 | `PresignedPutObjectResult` | `url`、`key`、`ext` |
+| `McuRecordDetail` | `id`（任务 ID）、`opUid`、`opName`、`channel`、`title`、`roomNo`、`taskType?: McuTaskType`、`taskStatus: McuTaskStatus`、`errDesc`、`beganAt`、`endedAt`、`recordCount`、`totalDuration`、`totalSize`、`records?: McuRecordFile[]`、`tags`、`createdAt`、`updatedAt`、`now`；已废弃：`vodKey?`、`vodSize?`、`mcuAt?`、`mcuDur?` |
+| `McuRecordFile` | `recordId`、`taskId`、`channel`、`seq`、`vodSize`、`duration`、`beganAt`、`endedAt`、`offsetMs`、`reason`、`addr`（预签名播放地址，有效期 2 小时）、`createdAt` |
 
-`McuRecordDetail` 有 15 个字段，是录制任务的完整明细。
+`McuRecordDetail` 是某场会议录制任务的明细，`McuRecordFile` 是任务产出的一个录制文件分片（按 `seq` 排序即播放顺序）。
+`vodKey` / `vodSize` / `mcuAt` / `mcuDur` 自 1.1.0 起废弃并改为可选（新服务端不再返回 `vodKey` / `vodSize`），分别改用 `records`、`totalSize`、`beganAt`、`totalDuration`。
+任务状态缺失或不认识时 `taskStatus` 为 `unknown`；老服务端不返回 `task_type` 时 `taskType` 为 `undefined`。
 
 ---
 

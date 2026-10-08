@@ -3,6 +3,88 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.2.0] - 2026.10.08
+<Warning>
+**本版是破坏性变更，升级前请先看完本节**：会议层自身产生的错误改用 `203` 段错误码（与 Swift SDK 同号同义），透传的 RTC 层错误码随`RTCEngineKit 3.2.0`重排，报错文案改为英文。凡是按`SEAError`的**数值**、按`SEAErrorNetError`等旧常量、或按`message`的中文文字做判断的代码，升级后都需要调整。最需要自查的一处：**会议层的网络失败不再返回`SEAErrorNetError`**，写成`code == SEAErrorNetError`的「网络异常」提示升级后会全部失效。
+</Warning>
+
+#### 升级必读
++ **会议层错误改用 203 段**：会议层自身产生的错误改为 iOS 前缀`203`+ 统一码表低 3 位（`203001`–`203012`、`203209`、`203353`–`203356`），与 Swift SDK 同号同义，各码含义见[错误码](/zh/meeting/ios/error-codes)与[错误码规则与总表](/zh/meeting/error-codes)。
++ **会议层网络失败不再返回`SEAErrorNetError`（`100009`）**：请求失败 / HTTP 非 200 改为`SEAErrorMeetingNetworkError`（`203007`），超时`203353`，取消`203354`，响应体为空`203355`，响应不是 JSON 或缺`code`字段`203356`。`SEAErrorNetError`这个常量的值也变成了`103006`，只表示 RTC 层网络错误。
++ **后端业务失败透传后端业务码**：此前接口被后端拒绝时统一回调`100009`，现在原样回调后端的业务码（如`2101`会议不存在、`2115`密码错误），`message`为后端返回的`msg`，语言随`language`。
++ **会议令牌解析失败**：`loginWithToken:...`传入的令牌解不开时，由`SEAErrorApiTokenDisabled`（`10042`）改为`SEAErrorMeetingTokenInvalid`（`203005`）。
++ **重复进房 / 实例已销毁**：`enterRoom:onSuccess:onFailed:`在正在加入或已加入时调用，由`SEAErrorApiRepeatFound`（`10003`）改为`SEAErrorMeetingAlreadyInMeeting`（`203006`）；房间实例已销毁时改为`SEAErrorMeetingInvalidState`（`203011`）。
++ **仅主持人 / 联席主持人可调用的接口**：非管理员调用时由`SEAErrorNotAuthorized`（`103005`）改为`SEAErrorMeetingUnauthorized`（`203004`）。
++ **设备权限**：`SEAErrorDeviceNoAuthorized`不再出现，无摄像头权限改为`SEAErrorCameraNoAuthorized`（`103231`），无麦克风权限改为`SEAErrorMicNoAuthorized`（`103251`）。
++ **RTC 层透传码重排**：透传的 RTC 层错误码（原`100001`–`100012`、`103001`–`103005`）随`RTCEngineKit 3.2.0`改为`103`+ 统一码表低 3 位，与`RTCEngineError`同值，枚举名不变、取值改变，需重新编译。注意旧的数值在新表里被**挪作他用**（如`103005`现在是`SEAErrorConflict`、`103001`现在是`SEAErrorNotJoinedChannel`），用数字字面量写死的判断语义会整体错位。`onError`、`onImDisconnected`的`errCode`同样受影响。
++ **`startRemoteView:streamType:view:`/`stopRemoteView:streamType:`**：成员在会议中但没有要订阅的这路视频时，返回值由 RTC 层的`RTCEngineErrorStreamNotFound`（`103004`）改为`SEAErrorMeetingRemoteTrackUnavailable`（`203209`）。
++ **虚拟背景返回值**：`installVirtualBackground:`重复装载由`SEAErrorConflict`改为`SEAErrorVirtualBackgroundAlreadyInstalled`（`103027`），模型文件不存在由`SEAErrorNotFound`改为`SEAErrorVirtualBackgroundModelNotFound`（`103029`），推理会话创建失败由`SEAErrorSystemError`改为`SEAErrorVirtualBackgroundSessionFailed`（`103030`）；`enabledVirtualBackground:`未装载就调用由`SEAErrorConflict`改为`SEAErrorVirtualBackgroundNotInstalled`（`103028`）。
++ **报错文案改为英文**：SDK 自身产生的`message`一律英文（RTC 层透传的会在文案中带上 RTC 码），只给开发者和日志看；给终端用户的提示请按`code`自行映射，不要直接展示`message`。
+
+#### 新增
++ `MeetingKit`新增`language`属性（BCP 47 语言标签，如`@"zh-CN"`、`@"en"`；`nil`或空串表示跟随系统）与只读的`currentLanguage`。生效优先级为**开发者设置 > 系统首选语言 > `zh`**。会议层请求后端时带上`Accept-Language`，后端业务错误（`1000`–`99999`）的文案随之返回中文或英文；SDK 自身的报错一律英文，不受影响。进程级生效，不随登录 / 登出重置，建议在登录前设置。
++ `SEAError`新增会议层错误码`SEAErrorMeetingXxx`（`203xxx`）与 RTC 层新增码`SEAErrorUserCancelled`、`SEAErrorVirtualBackgroundXxx`、`SEAErrorSwitchAudioRouteFail`、`SEAErrorCameraNoAuthorized`、`SEAErrorMicNoAuthorized`。
+
+#### 变更
++ `SEAErrorNotAuthorized`标为废弃，现为`SEAErrorMeetingUnauthorized`（`203004`）的同值别名；`SEAErrorMediaNotInitialized`标为废弃，现为`SEAErrorNotInitialized`（`103024`）的同值别名。**`switch`中同时写一对同值常量会报重复`case`**；引用废弃常量会产生废弃告警，开启`-Werror`（或`Treat Warnings as Errors`）的工程会直接编译失败，请改用新名字。
++ `language`暂不作用于 RTC 层：`RTCEngineKit 3.2.0`尚未提供语言设置，RTC 层自身的请求不带`Accept-Language`。
++ 依赖`RTCEngineKit`升级至`3.2.0`，podspec 最低依赖由`>= 3.1.0`提升为`>= 3.2.0`。
+
+#### 修复
++ 修复后端响应的`code`字段为`null`（或对象、数组）时崩溃的问题，现在按响应解析失败回调`203356`。
+
+#### 旧码 → 新码对照
+会议层自身产生的错误：
+
+| 场景 | 2.1.0 及以前 | 2.2.0 |
+| --- | --- | --- |
+| 会议请求失败（连不上、HTTP 非 200 等） | `100009` `SEAErrorNetError` | `203007` `SEAErrorMeetingNetworkError` |
+| 会议请求超时 | `100009` | `203353` `SEAErrorMeetingRequestTimeout` |
+| 会议请求被取消 | `100009` | `203354` `SEAErrorMeetingRequestCancelled` |
+| 响应体为空 | `100009` | `203355` `SEAErrorMeetingEmptyResponseBody` |
+| 响应不是 JSON / 缺`code`字段 / `code`为`null` | `100009`（`code`为`null`时崩溃） | `203356` `SEAErrorMeetingResponseParseFailed` |
+| 后端业务失败 | `100009` | 后端原始业务码（如`2101`、`2115`） |
+| 会议令牌解不开 | `10042` `SEAErrorApiTokenDisabled` | `203005` `SEAErrorMeetingTokenInvalid` |
+| 重复调用`enterRoom:`（正在加入 / 已加入） | `10003` `SEAErrorApiRepeatFound` | `203006` `SEAErrorMeetingAlreadyInMeeting` |
+| 房间实例已销毁后调用`enterRoom:` | `10003` `SEAErrorApiRepeatFound` | `203011` `SEAErrorMeetingInvalidState` |
+| 非主持人 / 联席主持人调用管理接口 | `103005` `SEAErrorNotAuthorized` | `203004` `SEAErrorMeetingUnauthorized` |
+| `signInExportDetail:`下载失败 | `100011` `SEAErrorNotFound` | 按原因`203007` / `203353` / `203354` / `203009`，后端拒绝时为后端码 |
+| `startRemoteView:`/`stopRemoteView:`成员无该路视频 | `103004` `RTCEngineErrorStreamNotFound` | `203209` `SEAErrorMeetingRemoteTrackUnavailable` |
+
+透传的 RTC 层错误（枚举名不变，取值与`RTCEngineKit 3.2.0`的`RTCEngineError`一致）：
+
+| 枚举 | 2.1.0 及以前 | 2.2.0 |
+| --- | --- | --- |
+| SEAErrorNotJoinedChannel | `103002` | `103001` |
+| SEAErrorStreamNotFound | `103004` | `103003` |
+| SEAErrorSdkTokenInvalid | `100008` | `103004` |
+| SEAErrorConflict | `100007` | `103005` |
+| SEAErrorNetError | `100009` | `103006` |
+| SEAErrorTimeout | `100005` | `103007` |
+| SEAErrorProtocolParsingError | `100004` | `103011` |
+| SEAErrorMediaNetError | `100010` | `103012` |
+| SEAErrorNotInitialized | `100002` | `103024` |
+| SEAErrorMediaNotInitialized（已废弃） | `100003` | `103024` |
+| SEAErrorSystemError | `100001` | `103025` |
+| SEAErrorUserCancelled（新增） | `100012` | `103026` |
+| SEAErrorVirtualBackgroundAlreadyInstalled（新增） | `100007` | `103027` |
+| SEAErrorVirtualBackgroundNotInstalled（新增） | `100007` | `103028` |
+| SEAErrorVirtualBackgroundModelNotFound（新增） | `100011` | `103029` |
+| SEAErrorVirtualBackgroundSessionFailed（新增） | `100001` | `103030` |
+| SEAErrorInvalidArgs | `100006` | `103031` |
+| SEAErrorDeviceNoAuthorized | `103001` | `103042`（当前不再返回） |
+| SEAErrorForbidden | `103003` | `103043` |
+| SEAErrorSwitchAudioRouteFail（新增） | `103005` | `103044` |
+| SEAErrorNotFound | `100011` | `103204` |
+| SEAErrorCameraNoAuthorized（新增） | `103001` | `103231` |
+| SEAErrorMicNoAuthorized（新增） | `103001` | `103251` |
+
+后端业务码（`1000`–`99999`，含`SEAErrorApiXxx`、`SEAErrorMeetingApiXxx`、`SEAErrorRtcApiXxx`）取值不变，仍原样透传，文案现在随`language`返回中文或英文。
+
+<Note>
+`MeetingKit`与`MeetingKitRoom`的已有公开接口和回调签名均未删除或变更，平台下限不变（iOS 16.0）；需要检查的是**按数值、按旧常量语义或按中文文案判断错误的代码**，以及同时写了一对同值常量的`switch`。
+</Note>
+
 ### [2.1.0] - 2026.09.08
 #### 新增
 + `MeetingKit`新增虚拟背景能力：`installVirtualBackground:`、`uninstallVirtualBackground`、`enabledVirtualBackground:`、`setVirtualBackgroundBlur:`、`setVirtualBackgroundImage:`、`setVirtualBackgroundInferenceInterval:`、`setVirtualBackgroundMaskSync:`、`isVirtualBackgroundEnabled`，支持人像分割后做背景虚化或背景替换，且**装载不需要授权密钥**；

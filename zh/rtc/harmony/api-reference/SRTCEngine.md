@@ -5,7 +5,7 @@ description: "SRTC HarmonyOS SDK 主入口 SRTCEngine 与频道对象 Channel �
 
 ## `SRTC`
 
-只做一件事：把宿主的 Context 交给 SDK。
+进程级的全局配置入口：把宿主的 Context 交给 SDK，以及设置 SDK 语言（1.1.0 起）。
 
 ### `SRTC.init(context)`
 
@@ -31,6 +31,39 @@ static get context(): common.Context | undefined
 ```
 
 返回 `undefined` 表示没有调用过 `init()`。
+
+### `SRTC.setLanguage(lang?)`
+
+> 1.1.0 起
+
+```typescript
+static setLanguage(lang?: string): void
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `lang` | `string` | 否 | BCP 47 语言标签，如 `'zh-CN'`、`'en'`；`zh_CN` 会被规范化为 `zh-CN`。传空（不传或空串）恢复缺省：跟随系统语言 |
+
+影响两件事：
+
++ 请求后端时的 `Accept-Language` 头 —— 后端业务错误（码 ≥ 1000）的文案随之返回中 / 英
++ `audioRouteName` / `audioRouteTargetName` / `audioCallStateName` 的显示名：语言以 `zh` 开头出中文，其余一律英文
+
+**不影响** SDK 自身报错：`SRTCError.detail` 一律英文，见[错误码](/zh/rtc/harmony/error-codes)。进程级全局设置，随时可改，下次请求 / 下次取显示名时生效；SMeeting 鸿蒙版读的也是这一个值。
+
+<Note>
+缺省取的是**系统语言**。宿主用 `setAppPreferredLanguage` 单独设置的应用语言暂不跟随，需要与应用内语言一致时请显式调用 `SRTC.setLanguage`。
+</Note>
+
+### `SRTC.language`
+
+> 1.1.0 起
+
+```typescript
+static get language(): string
+```
+
+当前生效的 SDK 语言。优先级：`setLanguage()` 设置的值 > 系统语言 > `'zh'`。
 
 ---
 
@@ -75,7 +108,9 @@ joinChannel(tokenString: string, options?: JoinOptions): Promise<Channel>
 **返回**：`Promise<Channel>`
 
 **抛出**：`tokenExpired` / `tokenInvalid` / `alreadyJoined` / `apiRequestFailed` /
-`signalingConnectFailed`
+`signalingConnectFailed` / `peerConnectionFailed`
+
+`apiRequestFailed` 的 `code` 为后端业务码、`108006`（网络 / HTTP 失败，见 `httpStatus`）或 `108011`（响应解码失败），见[错误码](/zh/rtc/harmony/error-codes)。
 
 可以调用多次加入多个频道，各频道互不干扰。
 
@@ -147,6 +182,8 @@ disableIm(): Promise<void>
 
 开启 / 关闭频道 IM 通道。`Im` 对象上注册 `ImDelegate` 收消息。
 
+重复调用 `enableIm` 抛 `alreadyJoined`（`108005`；1.0.1 及以前是 `invalidState`）。
+
 <Note>
 IM 是**只收不发**的：SDK 提供 `onImMessage` 回调，但没有发送接口 ——
 发消息由业务后端负责。频道内自定义消息（`onCustomMessage`）同理。
@@ -188,7 +225,17 @@ publishedTracks(): Track[]
 不传 `options` 时用轨道的 `defaultPublishOptions`（预设里带的那份）。
 
 **抛出**：`trackAlreadyPublished` / `trackNotPublished` / `transportNotReady` /
-`maxPublishLimitReached`
+`maxPublishLimitReached`，以及 1.1.0 起：
+
+| 情形 | `kind` | `code` |
+| --- | --- | --- |
+| 轨道还没 `startCapture()` | `trackNotCaptured` | `108033` |
+| 发布描述为空、未传 `options` 且轨道没有预设 | `invalidArgument` | `108031` |
+| 同一视频轨已发布到其它频道，又要开 Simulcast | `featureNotSupported` | `108032` |
+| 频道或引擎正在重连 | `transportNotReady` | `108014` |
+| 已离开频道 | `notConnected` | `108001` |
+| SeaStart 引擎未连接 / 已断开（非重连中） | `publishFailed` | `108300` |
+| PeerConnection 进入 failed / closed | `peerConnectionFailed` | `108015` |
 
 <Note>
 **轨道属于引擎而不是频道** —— 同一条采集轨道可以发布给多个频道，采集只做一次。
@@ -205,6 +252,10 @@ getRemoteTrackByDesc(uid: string, desc: string): Track | undefined
 ```
 
 `uid` + `trackId` 来自 `onTrackAdded` 回调里的 `UserInfo` 与 `TrackInfo`。
+
+**抛出**（订阅）：`userNotFound`（`108204`，频道内没有该 `uid`）/ `trackNotFound`（`108003`）/
+`invalidArgument`（`108031`，轨道类型与方法不符）/ `transportNotReady`（`108014`，重连中）/
+`subscribeFailed`（`108301`，SeaStart 引擎未连接 / 已断开）。其中 `108204` / `108031` / `108301` 为 1.1.0 起；此前 `uid` 不存在报 `108003`。
 
 `unsubscribeRemoteTrack` 的 `debounceMs` 用来抑制"快速滑动列表导致的反复订阅/退订"——
 传 0 表示立即退订。

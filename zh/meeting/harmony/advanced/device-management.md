@@ -156,8 +156,9 @@ await abilityAccessCtrl.createAtManager()
   .requestPermissionsFromUser(getContext(this) as common.UIAbilityContext, perms);
 ```
 
-权限没给时 `requestOpenMic` / `requestOpenCamera` 会失败，
-底层抛的是 `SRTCError` 的 `captureError`（`108018`）。
+权限没给时 `requestOpenMic` / `requestOpenCamera` 会失败，底层的 `SRTCError` 原样透传：
+1.1.0 起（搭配 SRTC 1.1.0）为 `micPermissionDenied`（`108251`）/ `cameraPermissionDenied`（`108231`）；
+1.0.0 是 `captureError`（`108018`）。
 
 ---
 
