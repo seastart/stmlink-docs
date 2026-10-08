@@ -60,7 +60,39 @@ RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetStatusMsg(StatusCode code, char* 
 | msg | 错误码描述信息 |
 
 
-注：msg需要传入的时候需要外面分配内存，至少100长度，中文编码gbk
+注：`msg` 需要传参时由外部分配内存，至少 100 长度。内容为 **UTF-8**，语言由
+[`RTCEngine_SetLanguage()`](#设置语言) 决定，**默认英文**（不要用文案做分支判断，用错误码）。
+
+### 设置语言
+```cpp
+RTCENGINE_API void RTCENGINE_CALL RTCEngine_SetLanguage(const char* lang);
+```
+
+**参数**
+
+| lang | 语言标签（BCP 47），如 `zh-CN`、`en`。传 `nullptr` 或非 `zh*` 的值等于英文 |
+| --- | --- |
+
+
+注：进程级设置，随时可调。影响 srtc 自己的错误文案，并转发给底层 `RTC_SetLanguage`
+（后续后端请求会带上 `Accept-Language`）。**不调用时为英文**；旧版本固定返回中文，
+依赖中文文案的调用方升级后需显式设置。
+
+### 获取最后一次错误信息
+```cpp
+RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetLastErrorMessage(char* msg);
+```
+
+**参数**
+
+| msg | 出参，错误信息。需要传参时由外部分配内存，至少 100 长度 |
+| --- | --- |
+
+
+注：把**上一次 srtc 接口**返回的错误码对应的文案写入缓冲区（UTF-8，语言同
+[`RTCEngine_SetLanguage()`](#设置语言)，默认英文）。该错误码由 srtc 自己维护、不取自底层库，
+在任一接口返回非 `OK` 时更新，建议在同步调用失败后立即读取；无错误时为空。
+多线程下读的是进程内最后一次错误码，可能被其它线程覆盖。
 
 
 

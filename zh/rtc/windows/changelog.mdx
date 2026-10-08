@@ -4,6 +4,37 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [10] - 2026.10.08
+版本号：0.2.1-alpha.12
+
+**添加**
+
++ 新增 `RTCEngine_SetLanguage(const char* lang)`：设置 SDK 语言（BCP 47，如 `zh-CN`、`en`）。
+  srtc 自己的错误文案按它切换，并转发给底层 `RTC_SetLanguage`（后续后端请求会带 `Accept-Language`）。
+  进程级、随时可调；**不调用或传 `nullptr` / 非 `zh*` 时为英文**
++ 新增 `RTCEngine_GetLastErrorMessage(char* msg)`：把**上一次 srtc 接口**返回的错误码对应的文案写入调用方缓冲区
+  （UTF-8，语言同上）。该错误码由 srtc 自己维护、不取自底层库，在任一接口返回非 `OK` 时更新，
+  建议在同步调用失败后立即读取；无错误时为空
++ 新增内部模块 `srtc/SRTCStatus.h`：进程级记录最后一次错误码，并提供按当前语言取文案的 `status_msg()`
+
+**修改**
+
++ `RTCEngine_GetStatusMsg()` 的文案改为**中英双语**，且**默认英文**（旧版本固定返回中文）—— 这是本次唯一的行为变化
++ srtc 所有公开接口的返回值统一经内部 `pass()` 写出，供 `RTCEngine_GetLastErrorMessage()` 读取；返回值本身不变
+
+**API 变更**
+
+无破坏性变更。`srtc.h` 只**新增**两个导出函数（`RTCEngine_SetLanguage`、`RTCEngine_GetLastErrorMessage`），
+`IRTCEngine` / `IRTCEngineEvent` 等纯虚接口的 vtable **未变**，`srtc_def.h` 也未改。
+只替换 dll 不需要重编；但要用这两个新函数，需要同时更新 `srtc.h` 与 `srtc.lib`。
+
+**已知限制**
+
++ `RTCEngine_GetStatusMsg()` 在 0.2.1-alpha.12 之前固定返回中文。升级后若未先调用
+  `RTCEngine_SetLanguage("zh-CN")`，它返回的是**英文** —— 依赖中文文案做展示的调用方请注意。
++ `RTCEngine_GetLastErrorMessage()` 读的是进程内最后一次错误码，多线程下可能被其它线程的调用覆盖，
+  应在关心的调用返回后就近读取。
+
 ### [9] - 2026.09.29
 版本号：0.2.1-alpha.11
 
