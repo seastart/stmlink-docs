@@ -4,6 +4,47 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [11] - 2026.10.08
+版本号：0.2.1-alpha.13
+
+**添加**
+
++ `srtc_def.h` 的 `StatusCode` 新增 `UserCancelled = 100013`（操作被取消）
++ 内部模块 `srtc/SRTCStatus.h` 新增 `from_rtc()`：把底层 RTC 库的错误码映射为 srtc 自己的错误码
++ `RTCEngine_GetStatusMsg()` 补齐 `OK`、`SyncDeal`、`UserCancelled`、`MoudelNotSupport`、
+  `BeforeSetting`、`NotFindStreamTrack`、`ExceedingSpecifiedQuantity` 的中英文案（此前落到 "not msg"）
+
+**修改**
+
++ srtc 公开接口（`join`、`getMember`、`getMemberByLinkId`、`update_self_stream_info`、`Decrypt`、
+  `init`、`enableIm` 等）返回的底层 RTC 错误码改经 `from_rtc()` 映射；`onDisconnected` /
+  `onImDisconnected` 回调上报的错误码同样先映射再交给上层
++ 映射覆盖底层 RTC 的 `OK`、`SdkTokenInvalid`、`Conflict`、`NetError`、`Timeout`、
+  `ProtocolParsingError`、`MediaNetError`、`NotInitialized`、`SystemError`、`UserCancelled`、
+  `InvalidArgs`、`NotFound`；没有对应项的码（含后端直接透传的 `>= 1000` 业务码）保持原值
+
+**修复**
+
++ 修复错误码「串号」：底层 RTC 用的是紧凑错误码（`4`/`5`/`6`/`24`/`26` …），而 srtc 对外暴露的是
+  `100001+` 表。此前公开接口直接把 RTC 码强转成 `StatusCode` 返回，数值对不上，
+  `RTCEngine_GetStatusMsg()` 与 `RTCEngine_GetLastErrorMessage()` 拿到后落到兜底文案
+  （形如 `!!!!!!!!!!code:6!!!!!!!!! not msg`）。现在返回的是 srtc 自己的错误码
+
+**API 变更**
+
++ `srtc_def.h` 仅**新增**枚举值 `UserCancelled = 100013`，既有值不变；`srtc.h` 未改动，
+  `IRTCEngine` / `IRTCEngineEvent` 的 vtable **未变**，只替换 dll **不需要**重新编译
++ 但**错误码数值语义有变化**：同一失败场景下公开接口返回的 `StatusCode` 数值会与旧版不同
+  （旧版是底层 RTC 的紧凑码，新版是 srtc 的 `100001+` 码）。使用方若直接按数字比较错误码，
+  请改用 `StatusCode` 枚举名判断，并同步更新 `srtc_def.h`
+
+**已知限制**
+
++ 底层 RTC 的 `UserCancelled` 映射到 srtc 的 `100013`，与其它端 `UserCancelled = 100012` 的编号不同，
+  跨端对齐错误码时需注意；`SyncDeal` 在 srtc 里仍占 `100012`
++ 没有 srtc 对应项的底层码原样返回，可能落在 srtc 错误码表的空隙里，
+  `RTCEngine_GetStatusMsg()` 对这类码仍返回兜底文案
+
 ### [10] - 2026.10.08
 版本号：0.2.1-alpha.12
 
