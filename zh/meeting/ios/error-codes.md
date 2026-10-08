@@ -19,7 +19,7 @@ description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
 
 + **判断错误类型只看 `code`**，不要按 `message` 做分支，也不要把 `message` 直接展示给终端用户；需要给用户看的提示请按 `code` 自行映射
 + 会议层与 RTC 层的低 3 位是两套独立的表，`203004`（无权限）与 `103004`（令牌不合法）含义不同，请比较完整的 6 位码
-+ `language` 只影响会议层请求后端时的 `Accept-Language`，即后端业务码的文案语言，见 [MeetingKit.language](/zh/meeting/ios/api-reference/MeetingKit#language)；RTC 层自身的请求暂不带语言
++ `language` 只影响会议层请求后端时的 `Accept-Language`，即后端业务码的文案语言，见 [MeetingKit.language](/zh/meeting/ios/api-reference/MeetingKit#language)；`2.2.1` 起同时作用于 RTC 层，RTC 层透传的后端业务码 `message` 也为服务端文案
 
 ### SEAError
 

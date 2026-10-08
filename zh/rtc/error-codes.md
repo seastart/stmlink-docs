@@ -61,7 +61,7 @@ Swift SDK 同时支持 iOS 和 macOS，按运行平台使用 `103` 或 `105` 前
 + 取值为语言标签，如 `zh-CN`、`en`。不设置时跟随系统语言，取不到时为中文
 + SDK 请求服务端时带上 `Accept-Language`，**服务端业务错误（1000–99999）的文案随之返回中文或英文**
 + **SDK 自身的报错（6 位码）固定为英文，不受 `language` 影响**
-+ 例外：iOS（Objective-C）RTCEngineKit 3.2.0 暂未提供 `language`，RTC 层请求不带 `Accept-Language`，服务端文案按服务端默认语言返回
++ iOS（Objective-C）自 RTCEngineKit 3.2.1 起提供 `RTCEngineKit.language`（3.2.0 中 RTC 层请求不带 `Accept-Language`）
 
 所以同一个应用里同时看到中文和英文的报错是正常的：前者来自服务端，后者来自 SDK。
 

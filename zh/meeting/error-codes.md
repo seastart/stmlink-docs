@@ -78,7 +78,7 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 + 取值为语言标签，如 `zh-CN`、`en`。不设置时跟随系统语言，取不到时为中文
 + SDK 请求会议服务端和 SRTC 服务端时都带上 `Accept-Language`，**服务端业务错误（1000–99999）的文案随之返回中文或英文**
 + **SDK 自身的报错（`20Nxxx`，以及透传的 `10Nxxx`）固定为英文，不受 `language` 影响**
-+ 例外：iOS（Objective-C）MeetingKit 2.2.0 的 `language` 只作用于会议服务端请求，底层 RTCEngineKit 3.2.0 暂未提供 `language`，SRTC 层请求不带 `Accept-Language`
++ iOS（Objective-C）自 MeetingKit 2.2.1 起 `language` 同时设置 SRTC 层（2.2.0 只作用于会议服务端请求）
 
 ---
 

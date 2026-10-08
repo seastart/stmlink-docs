@@ -71,6 +71,42 @@ RTC 的所有用户都需要初始化 RTCEngineKit 服务之后才可以使用�
 
 获取 RTCEngineKit 版本号。
 
+### language
+`@property (class, nonatomic, copy, nullable) NSString *language`
+
+SDK 语言（`3.2.1` 起，类属性）
+
+取值为 BCP 47 语言标签，如 `@"zh-CN"`、`@"en"`（`zh_CN` 这类写法会被规范化为 `zh-CN`）。传 `nil` 或空串表示跟随系统语言（`[NSLocale preferredLanguages].firstObject`）。
+
++ 只影响请求后端时的 `Accept-Language` 请求头：后端据此返回对应语言的业务错误文案，见 [lastServerErrorMessage](#lastservererrormessage)
++ SDK 自身产生的错误码与日志不随语言变化
++ 进程级生效，随时可设，对之后的请求生效；建议在加入频道、启用即时通讯之前设置
+
+```objectivec
+RTCEngineKit.language = @"en";
+```
+
+### currentLanguage
+`@property (class, nonatomic, copy, readonly) NSString *currentLanguage`
+
+当前实际生效的语言（`3.2.1` 起，只读类属性）
+
+优先级为：`language` 已设置则为它，否则为系统首选语言，取不到时为 `@"zh"`。
+
+### lastServerErrorMessage
+`@property (class, nonatomic, copy, readonly, nullable) NSString *lastServerErrorMessage`
+
+最近一次后端业务错误的服务端文案（`3.2.1` 起，只读类属性）
+
+`joinChannelWithToken:`、`enableImWithToken:delegate:` 等接口只返回错误码。当返回值是 `1000`–`99999` 的后端业务码时，**立即**读取本属性即可拿到服务端返回的文案，语言随 [language](#language)；最近一次调用不是后端业务错误时为 `nil`。
+
+```objectivec
+RTCEngineError code = [channel joinChannelWithToken:token];
+if (code >= 1000 && code <= 99999) {
+    NSString *message = RTCEngineKit.lastServerErrorMessage; // 如「该会话不在线」/「Session is not online」
+}
+```
+
 ### decrypt:()
 `+ (nullable NSString *)decrypt:(nullable NSString *)value`
 

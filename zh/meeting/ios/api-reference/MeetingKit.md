@@ -29,10 +29,10 @@ SDK 语言（`2.2.0` 起）
 
 取值为 BCP 47 语言标签，如 `@"zh-CN"`、`@"en"`（`zh_CN` 这类写法会被规范化为 `zh-CN`）。传 `nil` 或空串表示跟随系统语言（`[NSLocale preferredLanguages].firstObject`）。
 
-+ 只影响请求会议后端时的 `Accept-Language` 请求头：后端据此返回对应语言的业务错误文案（`1000`–`99999` 后端码的 `message`）
++ 只影响请求后端时的 `Accept-Language` 请求头：后端据此返回对应语言的业务错误文案（`1000`–`99999` 后端码的 `message`）
 + SDK 自身产生的报错 `message` 一律英文，不随语言变化
 + 进程级生效，不随登录 / 登出重置，建议在登录前设置
-+ RTC 层（`RTCEngineKit`）自身的请求暂不带语言
++ `2.2.1` 起同时设置底层 [RTCEngineKit.language](/zh/rtc/ios/api-reference/RTCEngineKit#language)，会议层与 RTC 层用同一语言；`2.2.0` 中 RTC 层请求不带语言
 
 ```objectivec
 [MeetingKit sharedInstance].language = @"en";

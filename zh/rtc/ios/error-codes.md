@@ -13,7 +13,7 @@ description: "iOS SRTC 音视频 SDK 错误码枚举与处理说明"
 + `103000`–`103999`：SDK 本地错误，完整码 = `103` + 统一码表低 3 位，如 `103006` = `103` + `006`（连接失败）。低 3 位与其它端同义
 + `1000`–`99999`：后端业务码，SDK 原样透传，不加前缀，含义见[服务端 API 错误码](/zh/rtc/server-api/error-codes)
 
-`engineChannel:onDisconnected:errCode:errMsg:` 与 `onImDisconnected:errCode:errMsg:` 的 `errCode` 同样遵循以上规则。**请按错误码判断，不要依赖错误文案**：`errMsg` 来自后端，仅供日志。
+`engineChannel:onDisconnected:errCode:errMsg:` 与 `onImDisconnected:errCode:errMsg:` 的 `errCode` 同样遵循以上规则。只返回错误码的接口遇到后端业务码时，可立即读取 [RTCEngineKit.lastServerErrorMessage](/zh/rtc/ios/api-reference/RTCEngineKit#lastservererrormessage) 拿到服务端文案（`3.2.1` 起，语言随 [RTCEngineKit.language](/zh/rtc/ios/api-reference/RTCEngineKit#language)）。**请按错误码判断，不要依赖错误文案**：`errMsg` 来自后端，仅供日志。
 
 ### RTCEngineError
 错误码

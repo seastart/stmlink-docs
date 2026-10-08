@@ -3,6 +3,17 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.2.1] - 2026.10.08
+
+#### 变更
++ **`language` 同时设置 RTC 层**：设置 `MeetingKit.language` 时会同时设置 `RTCEngineKit.language`，会议层与 RTC 层请求后端使用同一 `Accept-Language`。2.2.0 中「RTC 层请求暂不带语言」的限制已解除。
++ **RTC 层透传的后端业务码带上服务端文案**：RTC 层返回 `1000`–`99999` 的后端业务码时，错误描述改用服务端返回的文案（语言随 `language`），此前为通用的 `Server rejected the request`。
++ 依赖 `RTCEngineKit` 升级至 `3.2.1`，podspec 最低依赖由 `>= 3.2.0` 提升为 `>= 3.2.1`。
+
+<Note>
+公开接口无删改，2.2.0 接入方无需改代码。若工程显式锁定了 `RTCEngineKit 3.2.0`，MeetingKit 仍可运行，只是 RTC 层请求不带语言；建议一并升级到 `3.2.1`。
+</Note>
+
 ### [2.2.0] - 2026.10.08
 <Warning>
 **本版是破坏性变更，升级前请先看完本节**：会议层自身产生的错误改用 `203` 段错误码（与 Swift SDK 同号同义），透传的 RTC 层错误码随`RTCEngineKit 3.2.0`重排，报错文案改为英文。凡是按`SEAError`的**数值**、按`SEAErrorNetError`等旧常量、或按`message`的中文文字做判断的代码，升级后都需要调整。最需要自查的一处：**会议层的网络失败不再返回`SEAErrorNetError`**，写成`code == SEAErrorNetError`的「网络异常」提示升级后会全部失效。
