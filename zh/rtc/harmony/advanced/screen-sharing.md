@@ -50,6 +50,12 @@ await screen.stopCapture();
 `restartCapture()` —— 用户会看到弹窗反复出现。
 </Warning>
 
+自 1.1.0 起，授权未通过时 `startCapture()` 抛 `SRTCError` `108039`（`screenShareDenied`），其它采集失败抛 `108018`（`captureError`），系统原码在 `systemCode`、原异常在 `cause`。
+
+<Note>
+目前只有系统码 `201` 会映射到 `108039`。用户在授权窗点「取消」时系统实际抛什么码尚待确认，可能落到 `108018`；需要区分时请结合 `systemCode` 判断。
+</Note>
+
 ---
 
 ### 三种采集模式
@@ -76,10 +82,11 @@ await screen.startCapture(opts);
 
 这两个模式下 SDK 才会把对应的底层约束挂上去。如果模式选了但 `targetId` 是
 `undefined`，底层约束解析会失败，抛出来的是一个**既没有 message 也没有 code 的裸
-`Error`** —— 上层只看到"共享屏幕失败: "，而且系统的屏幕采集服务根本没被调到。
+`Error`**，而且系统的屏幕采集服务根本没被调到。1.1.0 起 SDK 会把它包成 `108018`，
+`detail` 为 `Capture error: screen: no error detail from system`、`systemCode` 为空（1.0.1 及以前上层只看到空的错误信息）。
 
 这个报错**很容易被误判成缺 `ohos.permission.CAPTURE_SCREEN`**（实测补上权限也没用）。
-遇到空错误信息时先回头检查 `targetId`。
+遇到上面这种「系统没给任何详情」的报错时先回头检查 `targetId`。
 </Warning>
 
 ---
@@ -146,7 +153,8 @@ SDK 内部开了 `ohosScreenCaptureAutoRotation`，旋转屏幕时采集会自�
 
 | 现象 | 先查什么 |
 | --- | --- |
-| 报错信息为空 | `specifiedScreen` / `specifiedWindow` 模式下 `targetId` 是不是 `undefined` |
+| 报 `108018` 且 `detail` 为 `Capture error: screen: no error detail from system`（1.0.1 及以前为空错误信息） | `specifiedScreen` / `specifiedWindow` 模式下 `targetId` 是不是 `undefined` |
+| 报 `108039` | 用户没有在系统授权窗点同意 |
 | 一直不出帧 | 用户是不是没点授权窗；`startCapture` 返回 ≠ 已出帧 |
 | 授权窗反复弹 | 是不是在循环里调了 `restartCapture()` |
 | 对端画面躺着 | 正常情况下 SDK 已处理，若仍有问题查是不是自己另接了渲染层 |

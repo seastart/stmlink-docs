@@ -155,6 +155,8 @@ SDK 能上报你现在走的是它们，但**不能主动切到某个具体外�
 配套函数：`audioRouteName`、`audioRouteTargetName`、`audioRouteTargetAsRoute`、
 `audioRouteIsExternal`、`audioRouteIsBuiltIn`、`audioCallStateName`。
 
+其中 `audioRouteName` / `audioRouteTargetName` / `audioCallStateName` 返回显示名，1.1.0 起按 `SRTC.language` 出中 / 英（`zh` 开头出中文，其余英文），1.0.1 及以前恒为中文。
+
 ### `ConnectionQuality`
 
 | 成员 | 值 |
@@ -181,6 +183,18 @@ SDK 能上报你现在走的是它们，但**不能主动切到某个具体外�
 `SRTCLogger` 的级别。设置方式是 `srtc.logLevel = LogLevel.info`。
 配套函数：`logVerbose` / `logDebug` / `logInfo` / `logWarning` / `logError`，
 以及可替换的 `LogHandler`。
+
+### `CaptureDevice`
+
+> 1.1.0 起导出
+
+| 成员 | 值 | 说明 |
+| --- | --- | --- |
+| `camera` | `'camera'` | 摄像头 |
+| `mic` | `'mic'` | 麦克风 |
+| `screen` | `'screen'` | 屏幕共享 |
+
+采集失败时 SDK 按它区分出码：权限被拒时摄像头 `108231`、麦克风 `108251`、屏幕共享 `108039`，见[错误码](/zh/rtc/harmony/error-codes)。
 
 ---
 
@@ -572,6 +586,27 @@ Token 由**业务后端**签发，SDK 只负责解析与过期判断。
 
 解析函数：`mqttServerFromJson`、`webrtcServerFromJson`、`channelJoinResponseFromJson`、
 `channelJoinResponseAsChannelInfo`。
+
+---
+
+## 错误类型
+
+### `SRTCError`
+
+SDK 抛出的所有错误。完整字段、`SRTCErrorKind` 成员与码表见[错误码](/zh/rtc/harmony/error-codes)。
+
+| 成员 | 类型 | 说明 |
+| --- | --- | --- |
+| `kind` | `SRTCErrorKind` | 错误种类 |
+| `code` | `number` | 完整错误码（`108xxx`，或后端业务码原样） |
+| `detail` | `string` | 描述，1.1.0 起一律英文 |
+| `baseCode` | `number`（只读） | 低 3 位语义码，跨端比较用。1.1.0 起 |
+| `httpStatus?` | `number` | 请求失败时的 HTTP 状态，连不上 / 超时为 `0`。1.1.0 起 |
+| `systemCode?` | `number` | 被包装的系统 `BusinessError.code`。1.1.0 起 |
+| `cause?` | `Object` | 原始异常。1.1.0 起 |
+| `isServerError(e)` | `static (e: Object) => boolean` | 是否后端业务错误（码 1000–99999）。1.1.0 起 |
+
+相关导出：`SRTCErrorKind`、`SRTC_PLATFORM_PREFIX`（`108`）、`CaptureDevice`。
 
 ---
 

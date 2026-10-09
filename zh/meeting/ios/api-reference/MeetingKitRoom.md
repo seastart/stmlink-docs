@@ -363,7 +363,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 
 ### startRemoteView:streamType:view:()
-`- (void)startRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType view:(VIEW_CLASS *)view`
+`- (RTCEngineError)startRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType view:(VIEW_CLASS *)view`
 
 开始播放远端用户视频
 
@@ -375,9 +375,17 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 | streamType | 视频流类型，参考文档：[SEAVideoStreamType](/zh/meeting/ios/types#seavideostreamtype) |
 | view | 视频渲染视图 |
 
+| 返回值 | 描述 |
+| :--- | --- |
+| RTCEngineErrorOK | 调用成功 |
+| SEAErrorMeetingRemoteTrackUnavailable | 该成员在会议中，但没有这路视频（`203209`；`2.2.0` 之前为 RTC 层的 `RTCEngineErrorStreamNotFound`），可等成员视频状态变化后再订阅 |
+| 其它 | RTC 层透传的错误码，见 [错误码](/zh/meeting/ios/error-codes) |
+
+返回值类型为 `RTCEngineError`，`203209` 不在该枚举内，判断时可转换为 `SEAError` 比较：`(SEAError)ret == SEAErrorMeetingRemoteTrackUnavailable`。
+
 
 ### stopRemoteView:streamType:()
-`- (void)stopRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType`
+`- (RTCEngineError)stopRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType`
 
 停止播放远端用户视频
 
@@ -387,6 +395,12 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 | :--- | --- |
 | userId | 远端用户标识 |
 | streamType | 视频流类型，参考文档：[SEAVideoStreamType](/zh/meeting/ios/types#seavideostreamtype) |
+
+| 返回值 | 描述 |
+| :--- | --- |
+| RTCEngineErrorOK | 调用成功 |
+| SEAErrorMeetingRemoteTrackUnavailable | 该成员没有这路视频（`203209`；`2.2.0` 之前为 RTC 层的 `RTCEngineErrorStreamNotFound`），此时底层已在轨道移除时取消订阅 |
+| 其它 | RTC 层透传的错误码，见 [错误码](/zh/meeting/ios/error-codes) |
 
 
 ### stopAllRemoteViewWithUserId:()

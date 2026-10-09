@@ -156,10 +156,14 @@ UI 上"开麦"按钮的可用性要同时看这两个字段。摄像头同理。
 
 | 事件 | 数据字段 | 触发时机 |
 | --- | --- | --- |
-| `onRoomMcuTask` | `taskType: McuTaskType`, `taskStatus: McuTaskStatus`, `errDesc` | MCU 录制 / 混流任务状态变化 |
+| `onRoomMcuTask` | `taskType: McuTaskType`, `taskStatus: McuTaskStatus`, `errDesc`, `taskTypeRaw`, `taskStatusRaw` | MCU 录制 / 混流任务状态变化 |
 | `onRollCallNamed` | `id`, `sid`, `time` | 自己被点名 |
 
 `McuTaskStatus` 为 `exception` 时 `errDesc` 有原因，UI 上要提示（录制出问题用户需要知道）。
+
+自 1.1.0 起，服务端下发本版本 SDK 不认识的 `task_type` / `task_status` 时事件**照常回调**，枚举落到 `unknown`，
+服务端原始值在 `taskTypeRaw` / `taskStatusRaw`（1.0.0 及以前会整条丢弃、收不到回调）。事件里缺 `task_status` 时按 `0`（`waitStart`）处理。
+`switch (data.taskStatus)` 请带上 `default` 分支；`McuTaskStatus` 各取值见[类型定义](/zh/meeting/harmony/types)。
 
 ---
 

@@ -1410,10 +1410,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/rtc/windows/api-reference/IRTCEngine": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/windows/api-reference/IRTCEngine.md",
-    "zh_blob": "ab1ff8755ce9476c5deb403ebb385740d7123266",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "e8495341497107b48c00943042990df1d31154e8",
+    "zh_commit": "6e50248ffa2cd18c9f9f4d76fc615419d3eeda6b"
   },
   "en/rtc/windows/api-reference/IRTCEngineEvent": {
     "reviewed": true,
@@ -1482,10 +1482,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/rtc/windows/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/windows/changelog.mdx",
-    "zh_blob": "8693d9ca6a7f9c459da393fdc6377d4f3e4aebe5",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "4aca97724cdd059093eb41536e11e522eb0a1656",
+    "zh_commit": "6e50248ffa2cd18c9f9f4d76fc615419d3eeda6b"
   },
   "en/rtc/windows/enums": {
     "reviewed": true,

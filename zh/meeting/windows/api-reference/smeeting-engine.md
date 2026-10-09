@@ -53,6 +53,19 @@ SMEETING_API void SMEETING_CALL SMeetingEngine_GetStatusMsg(StatusCode code, cha
 | code | StatusCode | 错误码 |
 | msg | char* | 输出错误描述缓冲区 |
 
+### 设置语言
+```cpp
+SMEETING_API void SMEETING_CALL SMeetingEngine_SetLanguage(const char* lang);
+```
+
+**参数**
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| lang | const char* | 语言代码（BCP 47，如 `"zh-CN"`、`"en"`） |
+
+进程级设置，影响 SDK 的错误文案与后端请求语言，任意时刻可调用；未调用时为英文。
+
 ---
 
 ## 引擎配置与回调

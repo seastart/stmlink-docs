@@ -1,8 +1,46 @@
 ---
 title: "Changelog"
-description: "Release history of the Windows SRTC C++ SDK, from rtc2.0 to 0.2.1-alpha.11: new features, changes, fixes, and whether each release changes the API (breaking releases require a recompile, not just a DLL swap). Read before upgrading the SDK."
+description: "Release history of the Windows SRTC C++ SDK, from rtc2.0 to 0.2.1-alpha.12: new features, changes, fixes, and whether each release changes the API (breaking releases require a recompile, not just a DLL swap). Read before upgrading the SDK."
 ---
 
+
+### [10] - 2026.10.08
+Version: 0.2.1-alpha.12
+
+**Added**
+
++ Added `RTCEngine_SetLanguage(const char* lang)`: sets the SDK language (BCP 47, e.g. `zh-CN`, `en`).
+  srtc switches its own error texts on it, and forwards it to the underlying `RTC_SetLanguage`
+  (subsequent backend requests then carry `Accept-Language`). Process-wide, can be called at any time;
+  **English when never called or when `lang` is `nullptr` / not `zh*`**
++ Added `RTCEngine_GetLastErrorMessage(char* msg)`: writes the text of the error code returned by the
+  **last srtc API call** into the caller-provided buffer (UTF-8, same language as above). That error code
+  is maintained by srtc itself, not taken from the underlying library, and is updated whenever an API
+  returns non-`OK`; call it right after a failing synchronous call. Empty when there is no error
++ Added the internal module `srtc/SRTCStatus.h`: tracks the last error code process-wide and renders its
+  text through `status_msg()` in the current language
+
+**Changed**
+
++ The texts of `RTCEngine_GetStatusMsg()` are now **bilingual (Chinese and English) and English by default**
+  (older versions always returned Chinese)—the only behavior change in this release
++ All public srtc APIs now write their return value through the internal `pass()` so that
+  `RTCEngine_GetLastErrorMessage()` can read it; the return values themselves are unchanged
+
+**API changes**
+
+No breaking change. `srtc.h` only **adds** two exported functions (`RTCEngine_SetLanguage`,
+`RTCEngine_GetLastErrorMessage`); the vtable of the pure virtual interfaces (`IRTCEngine` /
+`IRTCEngineEvent`, etc.) is **unchanged**, and `srtc_def.h` is unchanged.
+Replacing the DLLs does not require a recompile; using the two new functions does require updating
+`srtc.h` and `srtc.lib` together.
+
+**Known limitations**
+
++ Before 0.2.1-alpha.12, `RTCEngine_GetStatusMsg()` always returned Chinese. After upgrading, if you don't
+  call `RTCEngine_SetLanguage("zh-CN")` first, it returns **English**—mind this if you display the text.
++ `RTCEngine_GetLastErrorMessage()` reads the last error code within the process; with multiple threads it
+  may be overwritten by a call from another thread, so read it right after the call you care about.
 
 ### [9] - 2026.09.29
 Version: 0.2.1-alpha.11

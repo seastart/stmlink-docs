@@ -60,7 +60,33 @@ RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetStatusMsg(StatusCode code, char* 
 | msg | Error code description |
 
 
-Note: the caller must allocate the memory for msg before passing it in, at least 100 bytes. The text is GBK-encoded Chinese.
+Note: the caller must allocate the memory for msg before passing it in, at least 100 bytes. The text is **UTF-8**, and the language is determined by [`RTCEngine_SetLanguage()`](#set-the-language); **English by default** (don't branch on the text—use the error code).
+
+### Set the language
+```cpp
+RTCENGINE_API void RTCENGINE_CALL RTCEngine_SetLanguage(const char* lang);
+```
+
+**Parameters**
+
+| lang | Language tag (BCP 47), e.g. `zh-CN`, `en`. Passing `nullptr` or any non-`zh*` value means English |
+| --- | --- |
+
+
+Note: process-wide and can be called at any time. It affects srtc's own error texts and is forwarded to the underlying `RTC_SetLanguage` (subsequent backend requests then carry `Accept-Language`). **English when never called**; older versions always returned Chinese, so callers that display Chinese must set it explicitly after upgrading.
+
+### Get the last error message
+```cpp
+RTCENGINE_API void RTCENGINE_CALL RTCEngine_GetLastErrorMessage(char* msg);
+```
+
+**Parameters**
+
+| msg | Output, the error message. The caller must allocate at least 100 bytes before passing it in |
+| --- | --- |
+
+
+Note: writes the text of the error code returned by the **last srtc API call** into the buffer (UTF-8, same language as [`RTCEngine_SetLanguage()`](#set-the-language), English by default). That error code is maintained by srtc itself, not taken from the underlying library, and is updated whenever an API returns non-`OK`; call it right after a failing synchronous call. Empty when there is no error. With multiple threads, it reads the last error code within the process, which may be overwritten by another thread.
 
 
 

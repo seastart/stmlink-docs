@@ -41,6 +41,30 @@ const meeting: SMeetingEngine = new SMeetingEngine(LogLevel.info);
 
 ---
 
+### 语言
+
+```typescript
+static setLanguage(lang?: string): void
+static get language(): string
+```
+
+1.1.0 起提供。
+
+| 成员 | 说明 |
+| --- | --- |
+| `SMeetingEngine.setLanguage(lang?)` | 设置 SDK 语言（BCP 47，如 `'zh-CN'`、`'en'`）；不传或传空恢复为跟随系统语言（缺省） |
+| `SMeetingEngine.language` | 当前生效的语言：`setLanguage()` 的值 > 系统语言 > `'zh'` |
+
+```typescript
+SMeetingEngine.setLanguage('en');   // 建议在 login 之前设置
+```
+
+它直接透传给 SRTC 的 `SRTC.setLanguage` / `SRTC.language`，**会议层与 RTC 层共用这一个进程级设置**：
+两层请求后端都带 `Accept-Language`，后端业务错误（码 ≥ 1000）的文案随之返回中文或英文，
+音频路由显示名等也随之切换。SDK 自身的报错（`SMeetingError` / `SRTCError` 的 `detail`）一律英文，不受影响。
+
+---
+
 ### 登录
 
 ```typescript

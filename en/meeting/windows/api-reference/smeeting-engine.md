@@ -53,6 +53,19 @@ SMEETING_API void SMEETING_CALL SMeetingEngine_GetStatusMsg(StatusCode code, cha
 | code | StatusCode | Error code |
 | msg | char* | Output buffer for the error description |
 
+### Set the language
+```cpp
+SMEETING_API void SMEETING_CALL SMeetingEngine_SetLanguage(const char* lang);
+```
+
+**Parameters**
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| lang | const char* | Language code (BCP 47, e.g. `"zh-CN"`, `"en"`) |
+
+A process-wide setting that affects the SDK's error texts and the language of backend requests. It can be called at any time; English is used when it is never called.
+
 ---
 
 ## Engine settings and callbacks

@@ -17,6 +17,8 @@ description: "iOS SMeeting 会议 SDK 快速集成，10 分钟跑通基础功能
 `2.1.0` 起 SDK 内置虚拟背景，最低系统要求由 iOS 10.0 提升到 **iOS 16.0**，接入工程的 `IPHONEOS_DEPLOYMENT_TARGET` 与 `Podfile` 的 `platform :ios` 都需要不低于 16.0，否则依赖无法参与解析。
 
 虚拟背景的推理引擎 `onnxruntime-c` 由 `RTCEngineKit` 的 podspec 传递引入，`Podfile` 中不需要显式声明。
+
+`2.2.1` 起 `MeetingKit` 依赖 `RTCEngineKit >= 3.2.1`（`2.2.0` 为 `>= 3.2.0`），由 CocoaPods 自动解析；如果 `Podfile` 里显式锁定了更低版本的 `RTCEngineKit`，需要一并放开，否则依赖无法解析。
 </Warning>
 
 <Note>

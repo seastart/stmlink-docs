@@ -18,6 +18,7 @@ description: "Windows SRTC 音视频 SDK 错误码枚举与处理说明"
 | NetError | 100009 | 网络错误 |
 | MediaNetError | 100010 | 媒体网络错误 |
 | NotFound | 100011 | 未找到 |
+| UserCancelled | 100013 | 操作被取消 |
 | **windows错误码** | | |
 | SDKFail | 101000 | sdk 内部错误 |
 | DeviceFail | 101001 | 设备使用异常 |

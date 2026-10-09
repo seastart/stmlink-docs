@@ -4,6 +4,78 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [11] - 2026.10.08
+版本号：0.2.1-alpha.13
+
+**添加**
+
++ `srtc_def.h` 的 `StatusCode` 新增 `UserCancelled = 100013`（操作被取消）
++ 内部模块 `srtc/SRTCStatus.h` 新增 `from_rtc()`：把底层 RTC 库的错误码映射为 srtc 自己的错误码
++ `RTCEngine_GetStatusMsg()` 补齐 `OK`、`SyncDeal`、`UserCancelled`、`MoudelNotSupport`、
+  `BeforeSetting`、`NotFindStreamTrack`、`ExceedingSpecifiedQuantity` 的中英文案（此前落到 "not msg"）
+
+**修改**
+
++ srtc 公开接口（`join`、`getMember`、`getMemberByLinkId`、`update_self_stream_info`、`Decrypt`、
+  `init`、`enableIm` 等）返回的底层 RTC 错误码改经 `from_rtc()` 映射；`onDisconnected` /
+  `onImDisconnected` 回调上报的错误码同样先映射再交给上层
++ 映射覆盖底层 RTC 的 `OK`、`SdkTokenInvalid`、`Conflict`、`NetError`、`Timeout`、
+  `ProtocolParsingError`、`MediaNetError`、`NotInitialized`、`SystemError`、`UserCancelled`、
+  `InvalidArgs`、`NotFound`；没有对应项的码（含后端直接透传的 `>= 1000` 业务码）保持原值
+
+**修复**
+
++ 修复错误码「串号」：底层 RTC 用的是紧凑错误码（`4`/`5`/`6`/`24`/`26` …），而 srtc 对外暴露的是
+  `100001+` 表。此前公开接口直接把 RTC 码强转成 `StatusCode` 返回，数值对不上，
+  `RTCEngine_GetStatusMsg()` 与 `RTCEngine_GetLastErrorMessage()` 拿到后落到兜底文案
+  （形如 `!!!!!!!!!!code:6!!!!!!!!! not msg`）。现在返回的是 srtc 自己的错误码
+
+**API 变更**
+
++ `srtc_def.h` 仅**新增**枚举值 `UserCancelled = 100013`，既有值不变；`srtc.h` 未改动，
+  `IRTCEngine` / `IRTCEngineEvent` 的 vtable **未变**，只替换 dll **不需要**重新编译
++ 但**错误码数值语义有变化**：同一失败场景下公开接口返回的 `StatusCode` 数值会与旧版不同
+  （旧版是底层 RTC 的紧凑码，新版是 srtc 的 `100001+` 码）。使用方若直接按数字比较错误码，
+  请改用 `StatusCode` 枚举名判断，并同步更新 `srtc_def.h`
+
+**已知限制**
+
++ 底层 RTC 的 `UserCancelled` 映射到 srtc 的 `100013`，与其它端 `UserCancelled = 100012` 的编号不同，
+  跨端对齐错误码时需注意；`SyncDeal` 在 srtc 里仍占 `100012`
++ 没有 srtc 对应项的底层码原样返回，可能落在 srtc 错误码表的空隙里，
+  `RTCEngine_GetStatusMsg()` 对这类码仍返回兜底文案
+
+### [10] - 2026.10.08
+版本号：0.2.1-alpha.12
+
+**添加**
+
++ 新增 `RTCEngine_SetLanguage(const char* lang)`：设置 SDK 语言（BCP 47，如 `zh-CN`、`en`）。
+  srtc 自己的错误文案按它切换，并转发给底层 `RTC_SetLanguage`（后续后端请求会带 `Accept-Language`）。
+  进程级、随时可调；**不调用或传 `nullptr` / 非 `zh*` 时为英文**
++ 新增 `RTCEngine_GetLastErrorMessage(char* msg)`：把**上一次 srtc 接口**返回的错误码对应的文案写入调用方缓冲区
+  （UTF-8，语言同上）。该错误码由 srtc 自己维护、不取自底层库，在任一接口返回非 `OK` 时更新，
+  建议在同步调用失败后立即读取；无错误时为空
++ 新增内部模块 `srtc/SRTCStatus.h`：进程级记录最后一次错误码，并提供按当前语言取文案的 `status_msg()`
+
+**修改**
+
++ `RTCEngine_GetStatusMsg()` 的文案改为**中英双语**，且**默认英文**（旧版本固定返回中文）—— 这是本次唯一的行为变化
++ srtc 所有公开接口的返回值统一经内部 `pass()` 写出，供 `RTCEngine_GetLastErrorMessage()` 读取；返回值本身不变
+
+**API 变更**
+
+无破坏性变更。`srtc.h` 只**新增**两个导出函数（`RTCEngine_SetLanguage`、`RTCEngine_GetLastErrorMessage`），
+`IRTCEngine` / `IRTCEngineEvent` 等纯虚接口的 vtable **未变**，`srtc_def.h` 也未改。
+只替换 dll 不需要重编；但要用这两个新函数，需要同时更新 `srtc.h` 与 `srtc.lib`。
+
+**已知限制**
+
++ `RTCEngine_GetStatusMsg()` 在 0.2.1-alpha.12 之前固定返回中文。升级后若未先调用
+  `RTCEngine_SetLanguage("zh-CN")`，它返回的是**英文** —— 依赖中文文案做展示的调用方请注意。
++ `RTCEngine_GetLastErrorMessage()` 读的是进程内最后一次错误码，多线程下可能被其它线程的调用覆盖，
+  应在关心的调用返回后就近读取。
+
 ### [9] - 2026.09.29
 版本号：0.2.1-alpha.11
 

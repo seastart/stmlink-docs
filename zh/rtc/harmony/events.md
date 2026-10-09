@@ -53,6 +53,10 @@ aboutToDisappear(): void {
 更新 UI 上的连接指示。收到 `onDisconnected` 才需要走「退出会议」的业务流程。
 </Note>
 
+<Note>
+**心跳失败何时触发 `onDisconnected`（1.1.0 起）：** 只有后端返回业务错误（Token 失效、被踢等，`SRTCError.isServerError(error)` 为 `true`）才退出频道，`reason` 为 `error`、`error` 带后端码；网络抖动或响应解码失败（`108006` / `108011`）不再退会，等下一次心跳重试。1.0.1 及以前一次心跳网络失败就会触发 `onDisconnected`。IM 心跳与 `onImDisconnected` 同理。
+</Note>
+
 <Warning>
 **`onMediaStateChange` 与上面几个不是同一条线。**
 

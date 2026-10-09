@@ -160,6 +160,103 @@ virtual StatusCode setCustomRecvBack(RTC_Custom_FrameEvent e, void* ext) = 0;
 
 ---
 
+## IMeetCustomVideoTrack 接口
+
+由 `getCustomVideo` 返回。
+
+### 获取自定义轨道信息
+```cpp
+virtual StatusCode getTrackInfo(CustomPublishTrack**) = 0;
+```
+
+**参数**
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| （输出） | CustomPublishTrack** | 输出的自定义轨道配置 |
+
+**返回值**
+
+`StatusCode` - 错误码
+
+### 推送视频帧
+```cpp
+virtual StatusCode pushVideoFrame(int stmtype, unsigned char* buf, int buf_len, int frmtype, long ts) = 0;
+```
+
+**参数**
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| stmtype | int | 流类型 |
+| buf | unsigned char* | 视频帧数据 |
+| buf_len | int | 数据长度 |
+| frmtype | int | 帧类型 |
+| ts | long | 时间戳 |
+
+**返回值**
+
+`StatusCode` - 错误码
+
+### 取消发布
+```cpp
+virtual StatusCode unpublish() = 0;
+```
+
+**返回值**
+
+`StatusCode` - 错误码
+
+---
+
+## IMeetCustomAudioTrack 接口
+
+由 `getCustomAudio` 返回。
+
+### 获取自定义轨道信息
+```cpp
+virtual StatusCode getTrackInfo(CustomPublishTrack**) = 0;
+```
+
+**参数**
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| （输出） | CustomPublishTrack** | 输出的自定义轨道配置 |
+
+**返回值**
+
+`StatusCode` - 错误码
+
+### 推送音频帧
+```cpp
+virtual StatusCode pushAudioFrame(int stmtype, unsigned char* buf, int buf_len, long ts) = 0;
+```
+
+**参数**
+
+| 参数 | 类型 | 说明 |
+| --- | --- | --- |
+| stmtype | int | 流类型 |
+| buf | unsigned char* | 音频帧数据 |
+| buf_len | int | 数据长度 |
+| ts | long | 时间戳 |
+
+**返回值**
+
+`StatusCode` - 错误码
+
+### 取消发布
+```cpp
+virtual StatusCode unpublish() = 0;
+```
+
+**返回值**
+
+`StatusCode` - 错误码
+
+---
+
 ## 本地录制接口
 
 ### 获取本地录制对象
