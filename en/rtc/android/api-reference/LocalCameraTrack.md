@@ -29,7 +29,7 @@ Description: Starts camera capture. Camera permission is required before calling
 `deviceId` and `position` in `capture` are both **suggestions** here: if the suggested device isn't available, the SDK tries devices in the same position first and then all available devices, rather than failing just because the suggestion is invalid. The automatically selected result isn't written back to the configuration; query it with `getCurrentCameraId()`.  
 If capture is already running, this call returns success immediately, and **none of the new `capture` takes effect** (including resolution, frame rate, and device intent); to change parameters, call `stopCapture()` first and then start again.  
 Parameters:
-- `listener`: `RTCResultListener?`, the start result callback. Without permission, it calls back `onFail(RtcCameraErrorCode.CAMERA_PERMISSION_DENIED)` (`102231`); if all available devices have been tried and there's still no video, it calls back `onFail(RtcCameraErrorCode.CAMERA_FIRST_FRAME_TIMEOUT)` (`102239`). For failure codes, see [Error codes](/en/rtc/android/error-codes).
+- `listener`: `RTCResultListener?`, the start result callback. Without permission, it calls back `onFail(RtcCameraErrorCode.CAMERA_PERMISSION_DENIED, "")` (`102231`); if all available devices have been tried and there's still no video, it calls back `onFail(RtcCameraErrorCode.CAMERA_FIRST_FRAME_TIMEOUT, "")` (`102239`). For failure codes, see [Error codes](/en/rtc/android/error-codes).
 
 Returns: None (`Unit`).
 

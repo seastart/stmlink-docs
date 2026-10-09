@@ -31,9 +31,9 @@ unPublishLocalVideo(track, ...)      Stop publishing
 
 Three ordering constraints you must follow:
 
-1. Publish only **after joining** (before joining, `publishLocalVideo` calls back `onFail(102202)`: channel not started).
+1. Publish only **after joining** (before joining, `publishLocalVideo` calls back `onFail(102202, "")`: channel not started).
 2. Feed frames only **after publishing succeeds**. While the track isn't published, `inputData` is silently dropped without any notice—this is the most common reason "remote users can't see the video".
-3. **Audience users can't publish** (`onFail(102207)`). Check with `rtcEngine.isAudience()` first.
+3. **Audience users can't publish** (`onFail(102207, "")`). Check with `rtcEngine.isAudience()` first.
 
 ## 2. Choose a preset
 
@@ -96,7 +96,7 @@ private fun startCustomPush() {
             startFrameLoop(track)
         }
 
-        override fun onFail(code: Int) {
+        override fun onFail(code: Int, message: String) {
             // 102202: channel not started (not joined yet)
             // 102207: audience users can't publish
             // For other error codes, see the error codes page
@@ -302,7 +302,7 @@ class CustomVideoPusher(
 
         rtcEngine.publishLocalVideo(customTrack, null, object : RTCResultListener {
             override fun onSuccess() = startLoop()
-            override fun onFail(code: Int) {
+            override fun onFail(code: Int, message: String) {
                 // 102202 not joined / 102207 audience / others
             }
         })

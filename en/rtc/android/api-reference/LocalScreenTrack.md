@@ -48,7 +48,7 @@ Description: Submits a request to start screen capture. `onSuccess()` only means
 
 Parameters:
 - `intent`: `Intent`, the screen capture authorization data returned by the `request` success callback.
-- `resultListener`: `RTCResultListener?`, whether the start request was accepted; `onFail(code)` means the request wasn't accepted, and no screen lifecycle event is produced for it. Can be `null`.
+- `resultListener`: `RTCResultListener?`, whether the start request was accepted; `onFail(code, message)` means the request wasn't accepted, and no screen lifecycle event is produced for it. Can be `null`.
 Returns: None (`Unit`).
 
 ### stopCapture()

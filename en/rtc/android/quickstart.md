@@ -49,7 +49,7 @@ private val clientEvent = object : RTCClientSimpleEvent() {
         // Actually joined the channel; update the UI or start publishing here
     }
 
-    override fun onJoinFailed(channel: String?, statusCode: Int) {
+    override fun onJoinFailed(channel: String?, statusCode: Int, message: String) {
         // Failed to join; see the error codes page for statusCode
     }
 
@@ -103,9 +103,8 @@ Every channel-level callback explicitly carries `channel`. Even if a listener is
 ```kotlin
 private var defaultChannel: RTCChannel? = null
 
-fun joinChannel(activity: Activity, token: String) {
+fun joinChannel(token: String) {
     defaultChannel = rtcEngine.join(
-        activity = activity,
         token = token,
         clientEvent = clientEvent,
         options = JoinOptions(
@@ -147,7 +146,7 @@ fun startCamera(previewView: VcsPlayerGlTextureView) {
             )
         }
 
-        override fun onFail(code: Int) {
+        override fun onFail(code: Int, message: String) {
             // For example, the CAMERA permission wasn't granted
         }
     })
@@ -178,7 +177,7 @@ fun startMicrophone() {
             )
         }
 
-        override fun onFail(code: Int) {
+        override fun onFail(code: Int, message: String) {
             // For example, the RECORD_AUDIO permission wasn't granted or the microphone failed to open
         }
     })
@@ -218,7 +217,7 @@ screenTrack.request { granted, intent ->
                 )
             }
 
-            override fun onFail(code: Int) {
+            override fun onFail(code: Int, message: String) {
                 // For example, a duplicate start or the current lifecycle state doesn't allow starting
             }
         })
@@ -243,7 +242,7 @@ private fun subscribeRemoteVideo(uid: String, trackId: String, trackDesc: String
         preferTrackIds = null,
         result = object : RTCResultListener {
             override fun onSuccess() = Unit
-            override fun onFail(code: Int) {
+            override fun onFail(code: Int, message: String) {
                 // Subscription failed
             }
         }

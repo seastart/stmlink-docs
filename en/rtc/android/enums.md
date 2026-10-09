@@ -1,7 +1,17 @@
 ---
 title: "Enums"
-description: "Android SRTC SDK enum values: CodecType, DeviceType, LeaveReason, TrackKind, TrackDesc, QualityDirection, QualityTrend, StreamVendor, AudioOutputDeviceType, ScreenCaptureState, and CamraPosition. Read when you need the values and meaning of an Android SDK enum."
+description: "Android SRTC SDK enum values, including RtcLanguage, codec, device, track, quality, vendor, audio output, and screen capture enums. Read when you need the values and meanings of Android SDK enums."
 ---
+
+### RtcLanguage
+
+Used by `RTCEngine.setLanguage(...)` to set the language for subsequent channel and IM backend requests.
+
+| Enum name | Language tag | Description |
+| --- | --- | --- |
+| `SYSTEM` | `null` | Follow the system language. |
+| `ZH_CN` | `zh-CN` | Simplified Chinese. |
+| `EN` | `en` | English. |
 
 ### CodecType
 

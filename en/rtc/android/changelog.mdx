@@ -5,6 +5,18 @@ description: "Android SRTC SDK release history by version: new features, fixes, 
 
 > This page is compiled from the version configuration and commit history of the `rtc-android` repository. Call `RTCEngine.version()` to get the actual SDK version at runtime.
 
+### [2.0.36] - 2026.10.09
+
+#### Added
+
++ Added `RTCEngine.setLanguage(...)` to set the language for backend requests. See [RTCEngine](/en/rtc/android/api-reference/RTCEngine).
+
+#### Changed
+
++ `RTCEngine.join(...)` no longer requires an `Activity`. See [RTCEngine](/en/rtc/android/api-reference/RTCEngine).
++ Join and asynchronous operation failure callbacks now include a `message` parameter that can carry backend error text. See [RTCClientEvent](/en/rtc/android/api-reference/RTCClientEvent) and [RTCEngine](/en/rtc/android/api-reference/RTCEngine).
++ `StatusCode` numeric values changed starting with 2.0.36. See the old-to-new mapping in [Error codes](/en/rtc/android/error-codes).
+
 ### [2.0.35] - 2026.09.24
 
 #### Fixed

@@ -7,6 +7,16 @@ description: "API reference for RTCEngine, the Android SRTC SDK entry point: lif
 
 ## Static methods
 
+### setLanguage(language)
+```kotlin
+fun setLanguage(language: RtcLanguage)
+```
+Description: Sets the language for subsequent channel and IM backend requests. You can call it before `initSDK()`; the setting applies to the current process. For the language of backend error messages and handling of empty messages, see [Error codes](/en/rtc/android/error-codes).
+Parameters:
+- `language`: `RtcLanguage`; `SYSTEM` follows the system language, `ZH_CN` selects Simplified Chinese, and `EN` selects English. See [Enums](/en/rtc/android/enums).
+
+Returns: None (`Unit`).
+
 ### version()
 ```kotlin
 fun version(): String
@@ -110,18 +120,16 @@ Returns: `Boolean`, `true` if it's on.
 
 ## Channels
 
-### join(activity, token, clientEvent, options)
+### join(token, clientEvent, options)
 ```kotlin
 fun join(
-    activity: Activity,
     token: String,
     clientEvent: RTCClientEvent,
     options: JoinOptions? = null
 ): RTCChannel?
 ```
-Description: Joins a channel and returns an operation handle for it. The first channel also becomes the default channel, and the flat channel APIs on `RTCEngine` delegate to it; subsequent channels use their own returned [`RTCChannel`](/en/rtc/android/api-reference/RTCChannel).
+Description: Joins a channel and returns an operation handle for it. Joining uses the application context passed when creating the SDK; no `Activity` argument is needed. The first channel also becomes the default channel, and the flat channel APIs on `RTCEngine` delegate to it; subsequent channels use their own returned [`RTCChannel`](/en/rtc/android/api-reference/RTCChannel).
 Parameters:
-- `activity`: `Activity`, the current screen context.
 - `token`: `String`, the token containing the information required to join.
 - `clientEvent`: `RTCClientEvent`, the initial channel control listener for this channel; the join result is returned through `onJoinSucceed` / `onJoinFailed`.
 - `options`: `JoinOptions?`, auto-subscribe configuration; you can set `autoSubscribeAudio` and `autoSubscribeVideo`.
@@ -684,11 +692,11 @@ Most asynchronous APIs return their results through `RTCResultListener`.
 ```java
 public interface RTCResultListener {
     void onSuccess();
-    void onFail(int code);
+    void onFail(int code, String message);
 }
 ```
 - `onSuccess()`: the call succeeded.
-- `onFail(int code)`: the call failed; `code` is the error code. See [Error codes](/en/rtc/android/error-codes).
+- `onFail(int code, String message)`: the call failed; `code` is the error code. `message` may contain backend error text or be an empty string. See [Error codes](/en/rtc/android/error-codes) for its source, language, and empty-message handling.
 
 ### RTCValueResultListener\<T\>
 ```kotlin

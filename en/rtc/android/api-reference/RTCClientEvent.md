@@ -17,13 +17,13 @@ fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?)
 
 You joined the channel successfully. `channel` is the channel ID, `uid` is the current user ID, and `whiteBoard` is the nullable whiteboard URL or info. Treat this callback as the signal that the join actually succeeded.
 
-### onJoinFailed(channel, statusCode)
+### onJoinFailed(channel, statusCode, message)
 
 ```kotlin
-fun onJoinFailed(channel: String?, statusCode: Int)
+fun onJoinFailed(channel: String?, statusCode: Int, message: String)
 ```
 
-You failed to join the channel. `channel` has a value when the channel ID can be parsed from the token, otherwise it's `null`; for `statusCode`, see [Error codes](/en/rtc/android/error-codes).
+You failed to join the channel. `channel` has a value when the channel ID can be parsed from the token, otherwise it's `null`. For `statusCode`, see [Error codes](/en/rtc/android/error-codes). When the backend has error text available, `message` may contain the text it returns; the actual language depends on the backend response. It is an empty string for SDK and local librtc errors. See [Error codes](/en/rtc/android/error-codes) for details.
 
 ## User events
 

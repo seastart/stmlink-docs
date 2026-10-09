@@ -51,7 +51,7 @@ cameraTrack.startCapture(object : RTCResultListener {
     override fun onSuccess() {
         // Record that the camera is ready
     }
-    override fun onFail(code: Int) {
+    override fun onFail(code: Int, message: String) {
         // Handle camera start failure
     }
 })
@@ -59,7 +59,7 @@ micTrack.startCapture(object : RTCResultListener {
     override fun onSuccess() {
         // Record that the microphone is ready
     }
-    override fun onFail(code: Int) {
+    override fun onFail(code: Int, message: String) {
         // Handle microphone start failure
     }
 })
@@ -74,7 +74,7 @@ The initial `RTCClientEvent` must be passed in through this `join(...)` call, be
 ```kotlin
 private val channels = mutableMapOf<String, RTCChannel>()
 
-private fun joinOneChannel(key: String, activity: Activity, token: String) {
+private fun joinOneChannel(key: String, token: String) {
     val clientEvent = object : RTCClientSimpleEvent() {
         override fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?) {
             val rtcChannel = channels[key] ?: return
@@ -92,7 +92,7 @@ private fun joinOneChannel(key: String, activity: Activity, token: String) {
             )
         }
 
-        override fun onJoinFailed(channel: String?, statusCode: Int) {
+        override fun onJoinFailed(channel: String?, statusCode: Int, message: String) {
             channels.remove(key)
         }
 
@@ -116,7 +116,6 @@ private fun joinOneChannel(key: String, activity: Activity, token: String) {
     }
 
     val rtcChannel = rtcEngine.join(
-        activity = activity,
         token = token,
         clientEvent = clientEvent,
         options = JoinOptions(autoSubscribeAudio = true, autoSubscribeVideo = false)
@@ -198,9 +197,9 @@ rtcEngine.releaseSDK()
 ## Failures and error handling
 
 + `join(...)` returns `null`: the request was rejected before the channel session was created; the status code from this call's `onJoinFailed(...)` is still authoritative.
-+ Joining the same channel twice: `onJoinFailed(channel, RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS)` (`102208`); the existing channel and listener are unaffected.
++ Joining the same channel twice: `onJoinFailed(channel, RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS, "")` (`102208`); the existing channel and listener are unaffected.
 + SDK not initialized or already released: `join(...)` synchronously throws `SdkNotInitializedException`.
-+ Asynchronous operations that fail after joining: reported through each operation's `RTCResultListener.onFail(code)`.
++ Asynchronous operations that fail after joining: reported through each operation's `RTCResultListener.onFail(code, message)`.
 + Operations blocked by the Engine or global errors: reported through `RTCEngineEvent.onError(channelId, errorCode, message)`.
 + Channel disconnects and reconnects: distinguished by `onDisconnected`, `onReconnecting`, and `onReconnected`, which carry the `channel` parameter.
 

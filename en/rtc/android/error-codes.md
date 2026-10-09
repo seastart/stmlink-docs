@@ -1,34 +1,44 @@
 ---
 title: "Error codes"
-description: "Android SRTC error codes: librtc StatusCode values (100xxx), the SDK's own 102xxx codes by domain (channel, camera, microphone, screen, stream, HTTP), the RtcErrorCatalog lookup API, pass-through rules, and which callbacks to handle. Read when handling or logging Android SDK errors."
+description: "Android SRTC error codes: mapped librtc StatusCode values, SDK error domains, callback messages, the 2.0.35-to-2.0.36 code mapping, and RtcErrorCatalog. Read when handling Android SDK errors or upgrading."
 ---
 
-Android SRTC error codes fall into two categories:
+Error codes defined by the Android SRTC SDK fall into two categories:
 
-+ `StatusCode`: a mirror of the native status codes defined by librtc, mainly in the `100xxx` range.
++ `StatusCode`: Android error codes mapped from local librtc status codes.
 + `cn.seastart.rtc.error`: domain-specific `102xxx` error codes produced by the Android SDK itself.
 
-Callback parameters always use `Int` and keep the original value. Errors returned by native code, the backend, the HTTP library, or media streaming vendors are not remapped, so callers must keep a fallback for unknown error codes.
+Callback error codes use `Int`. Local librtc errors are mapped to Android `102xxx` codes; backend business codes retain their original values. HTTP library and media streaming vendor errors may still have other values, so handle unknown error codes as a fallback.
+
+## Error message `message`
+
+Starting with 2.0.36, `RTCClientEvent.onJoinFailed(...)` and `RTCResultListener.onFail(...)` include a `message: String` parameter. When a backend error has a message available, `message` may contain the text returned by the backend. Use [`RTCEngine.setLanguage(...)`](/en/rtc/android/api-reference/RTCEngine) to set the request language; the actual message depends on the backend response. With `RtcLanguage.SYSTEM`, requests follow the system language.
+
+For errors produced by the SDK, local librtc errors, and failures to subscribe to remote tracks or Wangsu general streams, `message` is an empty string in these callbacks. Handle failures by error code; if you need to display a reason, provide a localized message for that code.
+
+The `message` parameter of `RTCEngineEvent.onError(...)` is nullable. See [RTCEngineEvent](/en/rtc/android/api-reference/RTCEngineEvent).
 
 ## librtc status codes `StatusCode`
 
-| Enum name | Value | Description |
-| --- | ---: | --- |
-| `OK` | `0` | Success. |
-| `SystemError` | `100001` | Internal system error. |
-| `NotInitialized` | `100002` | The native client isn't initialized. |
-| `MediaNotInitialized` | `100003` | The media module isn't initialized yet. |
-| `ProtocolParsingError` | `100004` | Protocol parsing error. |
-| `Timeout` | `100005` | The operation timed out. |
-| `InvalidArgs` | `100006` | Invalid arguments. |
-| `Conflict` | `100007` | Conflicting operation, such as joining the same channel twice. |
-| `SdkTokenInvalid` | `100008` | The SDK token is invalid or has expired. |
-| `NetError` | `100009` | Signaling network error. |
-| `MediaNetError` | `100010` | Media network error. |
-| `NotFound` | `100011` | The target resource doesn't exist. |
-| `UserCancelled` | `100012` | The user canceled the operation. |
+The table compares public enum values in 2.0.35 and 2.0.36. The new values apply starting with 2.0.36. If your app uses hard-coded old values, update them; prefer referencing enum constants.
 
-`DeviceNotfound` from older docs has been removed; the current enum name for `100011` is `NotFound`. `LibRtcStatusCode` has also been removed, and librtc constants are exposed only through `StatusCode`.
+| Enum name | 2.0.35 | 2.0.36 onward | Description |
+| --- | ---: | ---: | --- |
+| `OK` | `0` | `0` | Success. |
+| `SystemError` | `100001` | `102025` | Internal system error. |
+| `NotInitialized` | `100002` | `102024` | The native client isn't initialized. |
+| `MediaNotInitialized` | `100003` | `102024` | The media module isn't initialized yet. |
+| `ProtocolParsingError` | `100004` | `102011` | Protocol parsing error. |
+| `Timeout` | `100005` | `102007` | The operation timed out. |
+| `InvalidArgs` | `100006` | `102031` | Invalid arguments. |
+| `Conflict` | `100007` | `102005` | Conflicting operation. |
+| `SdkTokenInvalid` | `100008` | `102004` | The SDK token is invalid or has expired. |
+| `NetError` | `100009` | `102006` | Signaling network error. |
+| `MediaNetError` | `100010` | `102012` | Media network error. |
+| `NotFound` | `100011` | `102204` | The target resource doesn't exist. |
+| `UserCancelled` | `100012` | `102026` | The user canceled the operation. |
+
+`NotInitialized` and `MediaNotInitialized` share `102024`; `NotFound` and `RtcChannelErrorCode.USER_NOT_FOUND` share `102204`.
 
 ## SDK common and channel errors
 
@@ -120,7 +130,7 @@ Callback parameters always use `Int` and keep the original value. Errors returne
 
 ## Error catalog lookup
 
-`RtcErrorCatalog` only looks up the SDK's own `102xxx` errors. It returns `null` for librtc, backend, and vendor pass-through codes.
+`RtcErrorCatalog.find(code)` looks up SDK-defined error descriptions by numeric value alone; it cannot identify an error's source. It returns `null` for unknown codes. `StatusCode.NotFound` and the SDK's `USER_NOT_FOUND` both have value `102204`, so looking up that value returns `USER_NOT_FOUND`.
 
 ```kotlin
 val descriptor: RtcErrorDescriptor? = RtcErrorCatalog.find(errorCode)
@@ -162,8 +172,8 @@ Call `RtcErrorModule.owns(code)` to check whether an SDK-produced error falls wi
 
 ## Callback handling recommendations
 
-+ `RTCClientEvent.onJoinFailed(channel, statusCode)`: handle join failures.
-+ `RTCResultListener.onFail(code)`: handle failures of specific asynchronous operations.
++ `RTCClientEvent.onJoinFailed(channel, statusCode, message)`: handle join failures.
++ `RTCResultListener.onFail(code, message)`: handle failures of specific asynchronous operations.
 + `RTCEngineEvent.onError(channelId, errorCode, message)`: handle blocking errors from Engine operations, and global errors.
 + `RTCClientEvent.onDisconnected(channel, leaveReason, statusCode, message)`: handle unrecoverable channel disconnects.
 
