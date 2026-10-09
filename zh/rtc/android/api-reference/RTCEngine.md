@@ -7,6 +7,16 @@ description: "Android 音视频 SDK 的核心入口：生命周期、频道进�
 
 ## 静态方法
 
+### setLanguage(language)
+```kotlin
+fun setLanguage(language: RtcLanguage)
+```
+方法说明：设置后续频道与 IM 后端请求使用的语言；可在 `initSDK()` 前调用，作用于当前进程。后端错误文案的语言及空字符串处理见 [错误码](/zh/rtc/android/error-codes)。
+参数说明：
+- `language`：`RtcLanguage`，`SYSTEM` 跟随系统语言，`ZH_CN` 使用简体中文，`EN` 使用英文；见 [枚举类型](/zh/rtc/android/enums)。
+
+返回值说明：无（`Unit`）。
+
 ### version()
 ```kotlin
 fun version(): String
@@ -110,18 +120,16 @@ fun isStartAsr(): Boolean
 
 ## 频道相关
 
-### join(activity, token, clientEvent, options)
+### join(token, clientEvent, options)
 ```kotlin
 fun join(
-    activity: Activity,
     token: String,
     clientEvent: RTCClientEvent,
     options: JoinOptions? = null
 ): RTCChannel?
 ```
-方法说明：加入一条频道并返回该频道的操作句柄。第一条频道同时成为默认频道，`RTCEngine` 上的扁平频道接口会委托给它；后续频道使用各自返回的 [`RTCChannel`](/zh/rtc/android/api-reference/RTCChannel)。
+方法说明：加入一条频道并返回该频道的操作句柄。入会使用创建 SDK 时传入的应用上下文，无需传入 `Activity`。第一条频道同时成为默认频道，`RTCEngine` 上的扁平频道接口会委托给它；后续频道使用各自返回的 [`RTCChannel`](/zh/rtc/android/api-reference/RTCChannel)。
 参数说明：
-- `activity`：`Activity`，当前页面上下文。
 - `token`：`String`，包含入会必要信息的令牌。
 - `clientEvent`：`RTCClientEvent`，本频道的首次会控监听器；入会结果通过 `onJoinSucceed` / `onJoinFailed` 返回。
 - `options`：`JoinOptions?`，自动订阅配置，可设置 `autoSubscribeAudio` 与 `autoSubscribeVideo`。
@@ -684,11 +692,11 @@ fun getTrackInfoByTrackId(uid: String, trackId: String): TrackInfo?
 ```java
 public interface RTCResultListener {
     void onSuccess();
-    void onFail(int code);
+    void onFail(int code, String message);
 }
 ```
 - `onSuccess()`：调用成功。
-- `onFail(int code)`：调用失败，`code` 为错误码，参见 [错误码](/zh/rtc/android/error-codes)。
+- `onFail(int code, String message)`：调用失败，`code` 为错误码；`message` 可能携带后端错误文案，也可能为空字符串。来源、语言与空值处理见 [错误码](/zh/rtc/android/error-codes)。
 
 ### RTCValueResultListener\<T\>
 ```kotlin

@@ -29,7 +29,7 @@ fun startCapture(listener: RTCResultListener?)
 `capture` 中的 `deviceId` 与 `position` 在这里都是**建议值**：建议的设备不可用时，SDK 会依次尝试同方向、再到全部可用设备，不会因为建议无效直接失败；自动选中的结果不会写回配置，需通过 `getCurrentCameraId()` 查询。  
 已经在采集时本次调用直接返回成功，且**新的 `capture` 整份都不生效**（含分辨率、帧率与设备意图）；要换参数需先 `stopCapture()` 再启动。  
 参数说明：
-- `listener`：`RTCResultListener?`，启动结果回调；无权限时回调 `onFail(RtcCameraErrorCode.CAMERA_PERMISSION_DENIED)`（`102231`），可用设备全部试过仍无画面时回调 `onFail(RtcCameraErrorCode.CAMERA_FIRST_FRAME_TIMEOUT)`（`102239`）。失败码含义见 [错误码](/zh/rtc/android/error-codes)。
+- `listener`：`RTCResultListener?`，启动结果回调；无权限时回调 `onFail(RtcCameraErrorCode.CAMERA_PERMISSION_DENIED, "")`（`102231`），可用设备全部试过仍无画面时回调 `onFail(RtcCameraErrorCode.CAMERA_FIRST_FRAME_TIMEOUT, "")`（`102239`）。失败码含义见 [错误码](/zh/rtc/android/error-codes)。
 
 返回值说明：无（`Unit`）。
 

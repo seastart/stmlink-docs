@@ -243,7 +243,7 @@ localCameraTrack.stopCapture()
 // 网络恢复后：重新开启采集
 localCameraTrack.startCapture(object : RTCResultListener {
     override fun onSuccess() {}
-    override fun onFail(code: Int) {}
+    override fun onFail(code: Int, message: String) {}
 })
 ```
 
@@ -252,7 +252,7 @@ localCameraTrack.startCapture(object : RTCResultListener {
 ```kotlin
 rtcEngine.unPublishLocalVideo(localVideoTrack, object : RTCResultListener {
     override fun onSuccess() {}
-    override fun onFail(code: Int) {}
+    override fun onFail(code: Int, message: String) {}
 })
 ```
 
@@ -316,7 +316,7 @@ val clientEvent = object : RTCClientSimpleEvent() {
     }
 }
 
-val rtcChannel = rtcEngine.join(this, token, clientEvent, null)
+val rtcChannel = rtcEngine.join(token, clientEvent, null)
 ```
 
 ### 5.5 速查表

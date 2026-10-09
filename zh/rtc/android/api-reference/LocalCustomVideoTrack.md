@@ -85,7 +85,7 @@ rtcEngine.publishLocalVideo(customTrack, null, object : RTCResultListener {
         )
     }
 
-    override fun onFail(code: Int) {
+    override fun onFail(code: Int, message: String) {
         // 错误码参见错误码文档
     }
 })

@@ -3,6 +3,16 @@ title: "枚举类型"
 description: "Android SRTC 音视频 SDK 枚举值定义"
 ---
 
+### RtcLanguage
+
+用于 `RTCEngine.setLanguage(...)`，设置后续频道和 IM 后端请求的语言。
+
+| 枚举名 | 语言标记 | 说明 |
+| --- | --- | --- |
+| `SYSTEM` | `null` | 跟随系统语言。 |
+| `ZH_CN` | `zh-CN` | 简体中文。 |
+| `EN` | `en` | 英文。 |
+
 ### CodecType
 
 | 枚举名 | 值 | 说明 |

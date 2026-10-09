@@ -31,9 +31,9 @@ unPublishLocalVideo(track, ...)      停止推流
 
 三个必须遵守的顺序约束：
 
-1. **入会之后**才能发布（未入会 `publishLocalVideo` 回调 `onFail(102202)`，频道未启动）。
+1. **入会之后**才能发布（未入会 `publishLocalVideo` 回调 `onFail(102202, "")`，频道未启动）。
 2. **发布成功之后**才能送帧。轨道未发布时 `inputData` 会被静默丢弃，没有任何提示 —— 这是最常见的“远端看不到画面”的原因。
-3. **观众身份不能发布**（`onFail(102207)`）。可先用 `rtcEngine.isAudience()` 判断。
+3. **观众身份不能发布**（`onFail(102207, "")`）。可先用 `rtcEngine.isAudience()` 判断。
 
 ## 2. 选择预设
 
@@ -96,7 +96,7 @@ private fun startCustomPush() {
             startFrameLoop(track)
         }
 
-        override fun onFail(code: Int) {
+        override fun onFail(code: Int, message: String) {
             // 102202：频道未启动（尚未入会）
             // 102207：观众禁止发流
             // 其他错误码参见错误码文档
@@ -302,7 +302,7 @@ class CustomVideoPusher(
 
         rtcEngine.publishLocalVideo(customTrack, null, object : RTCResultListener {
             override fun onSuccess() = startLoop()
-            override fun onFail(code: Int) {
+            override fun onFail(code: Int, message: String) {
                 // 102202 未入会 / 102207 观众身份 / 其他
             }
         })

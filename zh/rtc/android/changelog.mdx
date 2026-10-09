@@ -5,6 +5,18 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.36] - 2026.10.09
+
+#### 新增
+
++ 新增 `RTCEngine.setLanguage(...)`，可设置后端请求语言，见 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)。
+
+#### 变更
+
++ `RTCEngine.join(...)` 不再需要传入 `Activity`，见 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)。
++ 入会和异步操作的失败回调新增 `message` 参数，可返回后端错误文案，见 [RTCClientEvent](/zh/rtc/android/api-reference/RTCClientEvent) 和 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine)。
++ 自 2.0.36 起调整 `StatusCode` 的错误码数值，新旧对照见 [错误码](/zh/rtc/android/error-codes)。
+
 ### [2.0.35] - 2026.09.24
 
 #### 修复

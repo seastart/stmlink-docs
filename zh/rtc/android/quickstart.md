@@ -49,7 +49,7 @@ private val clientEvent = object : RTCClientSimpleEvent() {
         // 真正入会成功；可在这里更新 UI 或开始发布
     }
 
-    override fun onJoinFailed(channel: String?, statusCode: Int) {
+    override fun onJoinFailed(channel: String?, statusCode: Int, message: String) {
         // 入会失败；statusCode 见错误码文档
     }
 
@@ -103,9 +103,8 @@ rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
 ```kotlin
 private var defaultChannel: RTCChannel? = null
 
-fun joinChannel(activity: Activity, token: String) {
+fun joinChannel(token: String) {
     defaultChannel = rtcEngine.join(
-        activity = activity,
         token = token,
         clientEvent = clientEvent,
         options = JoinOptions(
@@ -147,7 +146,7 @@ fun startCamera(previewView: VcsPlayerGlTextureView) {
             )
         }
 
-        override fun onFail(code: Int) {
+        override fun onFail(code: Int, message: String) {
             // 例如未授予 CAMERA 权限
         }
     })
@@ -178,7 +177,7 @@ fun startMicrophone() {
             )
         }
 
-        override fun onFail(code: Int) {
+        override fun onFail(code: Int, message: String) {
             // 例如未授予 RECORD_AUDIO 权限或麦克风打开失败
         }
     })
@@ -218,7 +217,7 @@ screenTrack.request { granted, intent ->
                 )
             }
 
-            override fun onFail(code: Int) {
+            override fun onFail(code: Int, message: String) {
                 // 例如重复启动或当前生命周期状态不允许启动
             }
         })
@@ -243,7 +242,7 @@ private fun subscribeRemoteVideo(uid: String, trackId: String, trackDesc: String
         preferTrackIds = null,
         result = object : RTCResultListener {
             override fun onSuccess() = Unit
-            override fun onFail(code: Int) {
+            override fun onFail(code: Int, message: String) {
                 // 订阅失败
             }
         }

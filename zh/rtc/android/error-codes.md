@@ -3,32 +3,42 @@ title: "错误码"
 description: "Android SRTC 的 librtc 状态码、SDK 自产 102xxx 分域错误码、查询 API 与透传规则"
 ---
 
-Android SRTC 的错误码分为两类：
+Android SRTC SDK 自身定义的错误码分为两类：
 
-+ `StatusCode`：librtc 已定义的 native 状态码镜像，范围主要为 `100xxx`。
++ `StatusCode`：librtc 本地状态码映射后的 Android 错误码。
 + `cn.seastart.rtc.error`：Android SDK 主动产生的 `102xxx` 分域错误码。
 
-回调参数统一使用 `Int` 并保留原值。native、后端、HTTP 库或流媒体厂商返回的错误不会被重新映射，因此调用方必须保留未知错误码的兜底处理。
+回调参数统一使用 `Int`。librtc 本地错误映射为 Android `102xxx` 错误码；后端业务码保留原值。HTTP 库和流媒体厂商错误仍可能返回其他数值，调用方应保留未知错误码的兜底处理。
+
+## 错误文案 `message`
+
+从 2.0.36 起，`RTCClientEvent.onJoinFailed(...)` 与 `RTCResultListener.onFail(...)` 增加 `message: String` 参数。后端错误有可用文案时，`message` 可提供后端返回的内容。可通过 [`RTCEngine.setLanguage(...)`](/zh/rtc/android/api-reference/RTCEngine) 设置请求语言；实际文案以后端返回为准。设置为 `RtcLanguage.SYSTEM` 时，请求跟随系统语言。
+
+SDK 自产错误、librtc 本地错误，以及远端轨道和网宿通用流的订阅失败，在上述回调中的 `message` 均为空字符串。应用应根据错误码处理失败；需要展示原因时，可按错误码提供本地化提示。
+
+`RTCEngineEvent.onError(...)` 的 `message` 为可空类型，参见 [RTCEngineEvent](/zh/rtc/android/api-reference/RTCEngineEvent)。
 
 ## librtc 状态码 `StatusCode`
 
-| 枚举名 | 值 | 说明 |
-| --- | ---: | --- |
-| `OK` | `0` | 成功。 |
-| `SystemError` | `100001` | 系统内部错误。 |
-| `NotInitialized` | `100002` | native 客户端未初始化。 |
-| `MediaNotInitialized` | `100003` | 媒体模块尚未初始化。 |
-| `ProtocolParsingError` | `100004` | 协议解析错误。 |
-| `Timeout` | `100005` | 操作超时。 |
-| `InvalidArgs` | `100006` | 参数非法。 |
-| `Conflict` | `100007` | 操作冲突，例如重复加入同一频道。 |
-| `SdkTokenInvalid` | `100008` | SDK Token 无效或已过期。 |
-| `NetError` | `100009` | 信令网络错误。 |
-| `MediaNetError` | `100010` | 媒体网络错误。 |
-| `NotFound` | `100011` | 目标资源不存在。 |
-| `UserCancelled` | `100012` | 用户取消操作。 |
+下表对照 2.0.35 与 2.0.36 的公开枚举值；新值自 2.0.36 起生效。升级时若应用写死了旧数值，应改用新值，优先引用枚举常量。
 
-旧文档中的 `DeviceNotfound` 已删除，`100011` 的当前枚举名是 `NotFound`。`LibRtcStatusCode` 也已删除，librtc 常量只由 `StatusCode` 公开。
+| 枚举名 | 2.0.35 | 2.0.36 起 | 说明 |
+| --- | ---: | ---: | --- |
+| `OK` | `0` | `0` | 成功。 |
+| `SystemError` | `100001` | `102025` | 系统内部错误。 |
+| `NotInitialized` | `100002` | `102024` | native 客户端未初始化。 |
+| `MediaNotInitialized` | `100003` | `102024` | 媒体模块尚未初始化。 |
+| `ProtocolParsingError` | `100004` | `102011` | 协议解析错误。 |
+| `Timeout` | `100005` | `102007` | 操作超时。 |
+| `InvalidArgs` | `100006` | `102031` | 参数非法。 |
+| `Conflict` | `100007` | `102005` | 操作冲突。 |
+| `SdkTokenInvalid` | `100008` | `102004` | SDK Token 无效或已过期。 |
+| `NetError` | `100009` | `102006` | 信令网络错误。 |
+| `MediaNetError` | `100010` | `102012` | 媒体网络错误。 |
+| `NotFound` | `100011` | `102204` | 目标资源不存在。 |
+| `UserCancelled` | `100012` | `102026` | 用户取消操作。 |
+
+`NotInitialized` 与 `MediaNotInitialized` 共用 `102024`；`NotFound` 与 `RtcChannelErrorCode.USER_NOT_FOUND` 共用 `102204`。
 
 ## SDK 公共与频道错误
 
@@ -120,7 +130,7 @@ Android SRTC 的错误码分为两类：
 
 ## 错误目录查询
 
-`RtcErrorCatalog` 只查询 SDK 自产的 `102xxx` 错误。对 librtc、后端和厂商透传码返回 `null`。
+`RtcErrorCatalog.find(code)` 只按数值查询 SDK 已定义的错误描述，不能据此判断错误来源。未收录的错误码返回 `null`；`StatusCode.NotFound` 与 SDK 的 `USER_NOT_FOUND` 同为 `102204`，查询该值会命中 `USER_NOT_FOUND`。
 
 ```kotlin
 val descriptor: RtcErrorDescriptor? = RtcErrorCatalog.find(errorCode)
@@ -162,8 +172,8 @@ descriptor?.let {
 
 ## 回调处理建议
 
-+ `RTCClientEvent.onJoinFailed(channel, statusCode)`：处理入会失败。
-+ `RTCResultListener.onFail(code)`：处理具体异步操作失败。
++ `RTCClientEvent.onJoinFailed(channel, statusCode, message)`：处理入会失败。
++ `RTCResultListener.onFail(code, message)`：处理具体异步操作失败。
 + `RTCEngineEvent.onError(channelId, errorCode, message)`：处理 Engine 阻断操作和全局错误。
 + `RTCClientEvent.onDisconnected(channel, leaveReason, statusCode, message)`：处理频道不可恢复断连。
 

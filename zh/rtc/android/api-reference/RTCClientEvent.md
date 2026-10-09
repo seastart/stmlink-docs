@@ -17,13 +17,13 @@ fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?)
 
 自己加入频道成功。`channel` 为频道 ID，`uid` 为当前用户 ID，`whiteBoard` 为可空的白板地址或信息。应以本回调作为真正入会成功的依据。
 
-### onJoinFailed(channel, statusCode)
+### onJoinFailed(channel, statusCode, message)
 
 ```kotlin
-fun onJoinFailed(channel: String?, statusCode: Int)
+fun onJoinFailed(channel: String?, statusCode: Int, message: String)
 ```
 
-自己加入频道失败。能够从 token 解出频道 ID 时 `channel` 有值，否则为 `null`；`statusCode` 见 [错误码](/zh/rtc/android/error-codes)。
+自己加入频道失败。能够从 token 解出频道 ID 时 `channel` 有值，否则为 `null`；`statusCode` 见 [错误码](/zh/rtc/android/error-codes)。后端提供可用文案时，`message` 可能包含后端返回的内容，实际语言以后端响应为准；SDK 与 librtc 本地错误传空字符串。详见 [错误码](/zh/rtc/android/error-codes)。
 
 ## 成员事件
 

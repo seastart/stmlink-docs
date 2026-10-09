@@ -51,7 +51,7 @@ cameraTrack.startCapture(object : RTCResultListener {
     override fun onSuccess() {
         // 记录摄像头就绪
     }
-    override fun onFail(code: Int) {
+    override fun onFail(code: Int, message: String) {
         // 处理摄像头启动失败
     }
 })
@@ -59,7 +59,7 @@ micTrack.startCapture(object : RTCResultListener {
     override fun onSuccess() {
         // 记录麦克风就绪
     }
-    override fun onFail(code: Int) {
+    override fun onFail(code: Int, message: String) {
         // 处理麦克风启动失败
     }
 })
@@ -74,7 +74,7 @@ micTrack.startCapture(object : RTCResultListener {
 ```kotlin
 private val channels = mutableMapOf<String, RTCChannel>()
 
-private fun joinOneChannel(key: String, activity: Activity, token: String) {
+private fun joinOneChannel(key: String, token: String) {
     val clientEvent = object : RTCClientSimpleEvent() {
         override fun onJoinSucceed(channel: String, uid: String, whiteBoard: String?) {
             val rtcChannel = channels[key] ?: return
@@ -92,7 +92,7 @@ private fun joinOneChannel(key: String, activity: Activity, token: String) {
             )
         }
 
-        override fun onJoinFailed(channel: String?, statusCode: Int) {
+        override fun onJoinFailed(channel: String?, statusCode: Int, message: String) {
             channels.remove(key)
         }
 
@@ -116,7 +116,6 @@ private fun joinOneChannel(key: String, activity: Activity, token: String) {
     }
 
     val rtcChannel = rtcEngine.join(
-        activity = activity,
         token = token,
         clientEvent = clientEvent,
         options = JoinOptions(autoSubscribeAudio = true, autoSubscribeVideo = false)
@@ -198,9 +197,9 @@ rtcEngine.releaseSDK()
 ## 失败与错误处理
 
 + `join(...)` 返回 `null`：请求在频道 Session 创建前被拒绝，仍以本次 `onJoinFailed(...)` 的状态码为准。
-+ 重复加入同一频道：`onJoinFailed(channel, RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS)`（`102208`），已有频道和监听器不受影响。
++ 重复加入同一频道：`onJoinFailed(channel, RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS, "")`（`102208`），已有频道和监听器不受影响。
 + SDK 未初始化或已释放：`join(...)` 同步抛出 `SdkNotInitializedException`。
-+ 入会后的异步操作失败：通过各操作的 `RTCResultListener.onFail(code)` 返回。
++ 入会后的异步操作失败：通过各操作的 `RTCResultListener.onFail(code, message)` 返回。
 + Engine 阻断操作或全局错误：通过 `RTCEngineEvent.onError(channelId, errorCode, message)` 返回。
 + 频道断开与重连：通过带 `channel` 参数的 `onDisconnected`、`onReconnecting`、`onReconnected` 区分。
 

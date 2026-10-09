@@ -48,7 +48,7 @@ fun startCapture(intent: Intent, resultListener: RTCResultListener?)
 
 参数说明：
 - `intent`：`Intent`，由 `request` 授权成功回调返回的录屏授权数据。
-- `resultListener`：`RTCResultListener?`，启动操作受理结果；`onFail(code)` 表示本次操作未被接纳，且不会产生本次请求对应的屏幕生命周期事件。可为 `null`。
+- `resultListener`：`RTCResultListener?`，启动操作受理结果；`onFail(code, message)` 表示本次操作未被接纳，且不会产生本次请求对应的屏幕生命周期事件。可为 `null`。
 返回值说明：无（`Unit`）。
 
 ### stopCapture()
