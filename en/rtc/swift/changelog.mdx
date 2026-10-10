@@ -3,6 +3,17 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.5.2] - 2026.10.10
+#### Fixed
++ **The iOS call audio session now recovers after being changed externally**: while the SDK holds the call audio session, if the host app changes the session category itself (typically to `.playback` for background keep-alive or for playing a notification sound), the recording path stops immediately, the orange microphone indicator disappears, and turning the mic on again doesn't bring it back, so the microphone stays silent for the rest of the call. Now, when the mic is turned on again or a channel is joined again, the SDK checks whether the category was taken over and, if so, reapplies the call configuration and restarts recording.
++ **Audio route changes are no longer reported after leaving**: when leaving, the SDK hands the audio session back to the system, and the system switches output from the earpiece back to the speaker; previous versions still delivered one more route-change callback, so the host showed a prompt such as "switched to speaker". Route changes are no longer reported while the SDK isn't holding the audio channel; the fallback after `.oldDeviceUnavailable` (such as unplugging headphones) still runs as before.
+
+<Note>
+This is a fix-only release with no public API changes; integration code from 1.5.1 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14). Host apps should avoid changing the session category while the SDK holds the audio session (`AudioRouteSession.isEngaged` is `true`); the recovery is only a safety net.
+
+`SRTCBroadcastKit` is **1.0.15** in this release; its code is unchanged, and only the version number is bumped along with the SDK.
+</Note>
+
 ### [1.5.1] - 2026.10.01
 #### Fixed
 + **`AudioRoute.displayName` / `AudioRouteTarget.displayName` now return Chinese or English based on the system language**: previously they always returned Chinese (扬声器, 听筒, and so on), so an app on an English system that displayed them directly showed Chinese text in an English UI. Now they return Chinese when the system's preferred language starts with `zh` (`zh-Hans` / `zh-Hant` / `zh-HK`, and so on) and English otherwise (`Speaker`, `Earpiece`, `Bluetooth headset`, `Wired headset`, `Unknown route`). This text is meant for end users, so it follows only the **system language** and isn't affected by `SRTCEngine.language`.

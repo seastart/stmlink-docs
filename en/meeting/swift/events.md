@@ -60,11 +60,14 @@ The `reason` of `DisconnectEventData` is a `DisconnectReason`, which tells you w
 | `meeting(_:userMicStateDidChange:)` | Any member (including you) turns the microphone on / off | `UserMicStateChangeEventData` |
 | `meeting(_:userNameDidChange:)` | A member's in-meeting display name changes | `UserNameChangeEventData` |
 | `meeting(_:userRoleDidChange:)` | A member's role changes, including host transfer | `UserRoleChangeEventData` |
+| `meeting(_:roomHostDidMove:)` | Host transfer (since 1.5.0) | `RoomHostMoveEventData` |
 | `meeting(_:userChatDisabledDidChange:)` | Chat is disabled / re-enabled for a member individually | `UserChatDisabledChangeEventData` |
 | `meeting(_:userDrawDisabledDidChange:)` | A member is prevented from drawing / allowed again | `UserDrawDisabledChangeEventData` |
 | `meeting(_:userDidHandup:)` | A member raises or lowers their hand, or responds to the host's turn-on request | `UserHandupEventData` |
 
 When `byAdmin` in a media state event is `true`, the change was caused by a host action, and `opUid` is the operator. You can use this to show the user a hint such as "The host turned off your microphone."
+
+On a host transfer, the SDK first promotes the new host to `.host` and demotes the former host to `.member` locally, emitting `userRoleDidChange` once for each, then emits `roomHostDidMove` (carrying the new host's `uid` and the former host's `sourceUid`). If you only care about refreshing roles, you don't need to implement `roomHostDidMove`. If the former host isn't `.host` in the local snapshot, the demotion `userRoleDidChange` isn't emitted.
 
 `UserHandupEventData.step` tells you which step it is: `.request` raise hand, `.cancel` lower hand, `.confirmOpen` accept the request, `.rejectOpen` decline the request.
 
@@ -107,6 +110,8 @@ The payload of `roomTitleDidChange` carries `title` and `previousTitle`, and bot
 | `meeting(_:didReceiveCustomMessage:)` | A custom business message is received | `RoomCustomMsgEventData` |
 
 Both have an `isPrivate` flag indicating whether it's a private message, and `uid` is the sender.
+
+System messages the host sends from the backend also arrive via `didReceiveChatMessage`. Since 1.5.0, `RoomChatMsgEventData` carries `action` (the raw broadcast action: `user_send_room_chat_message` for member chat, `admin_send_room_chat_message` for system messages) and `isSystem`. To display system messages differently or filter them out, just check `isSystem`.
 
 ---
 
@@ -229,15 +234,22 @@ You need to call `enableIm()` first; see [Out-of-meeting messages](/en/meeting/s
 
 | Method | When it fires | Data type |
 | --- | --- | --- |
+| `meeting(_:imDidConnect:)` | Fires once after `enableIm()` succeeds (since 1.5.0) | `ImConnectEventData` |
+| `meeting(_:imDidReceiveMessage:)` | Any out-of-meeting message arrives, passed through as is (since 1.5.0) | `ImMessageEventData` |
 | `meeting(_:imCallCalling:)` | Someone in a meeting is calling you | `ImCallCallingEventData` |
 | `meeting(_:imMeetingRemind:)` | Meeting start reminder | `ImMeetingRemindEventData` |
 | `meeting(_:imAdminMoveOutWaitingRoom:)` | You were admitted from the waiting room | `ImAdminMoveOutWaitingRoomEventData` |
 | `meeting(_:imUserHelpSubMeeting:)` | A sub-meeting is asking for help | `ImUserHelpSubMeetingEventData` |
 | `meetingImIsReconnecting(_:)` | The out-of-meeting message path starts reconnecting | None |
 | `meetingImDidReconnect(_:)` | The out-of-meeting message path reconnected successfully | None |
-| `meeting(_:imDidDisconnect:)` | The out-of-meeting message path disconnected | `ImDisconnectEventData` |
+| `meeting(_:imDidDisconnect:)` | The out-of-meeting message path disconnected passively: kicked, heartbeat timeout, or backend error | `ImDisconnectEventData` |
 
 These connection events and the meeting connection events above belong to two independent paths; don't mix them up.
+
++ In 1.4.1 and earlier, `enableIm()` only established the path without dispatching messages, so call / reminder / release from the waiting room / sub-meeting help events and the reconnect and disconnect callbacks were never actually received. They are dispatched since 1.5.0
++ Each message first fires `imDidReceiveMessage` in raw form; actions the SDK recognizes are additionally dispatched to the corresponding named event. Business-defined actions only go through the raw passthrough
++ A successful reconnect goes through `meetingImDidReconnect` and doesn't fire `imDidConnect` again
++ Calling `disableIm()` yourself doesn't fire `imDidDisconnect`; on a passive disconnect, `ImDisconnectEventData` carries `disconnectReason` (SRTC `ImDisconnectReason`), `errorCode`, and `errorMessage`
 
 ---
 
@@ -245,8 +257,8 @@ These connection events and the meeting connection events above belong to two in
 
 The SDK also exposes two enums that list the string identifier of each event:
 
-+ `RoomEventType`—in-meeting event identifiers, such as `user_enter` and `room_share_start`
-+ `ImEventType`—out-of-meeting message event identifiers, such as `call_calling`
++ `RoomEventType`—in-meeting event identifiers, such as `user_enter` and `room_share_start`; since 1.5.0 there is also `roomHostMoved` (`room_host_moved`), corresponding to `roomHostDidMove`
++ `ImEventType`—out-of-meeting message event identifiers, such as `call_calling`; since 1.5.0 there are also `connected` and `message`, corresponding to `imDidConnect` and `imDidReceiveMessage`
 
 On the Swift side, events are dispatched through the `SMeetingDelegate` methods above. You don't need these two enums in a normal integration; they're useful only when you need logging instrumentation or want to align event naming with other platforms.
 

@@ -3,6 +3,34 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.5.0] - 2026.10.10
+<Warning>
+**`AgentStatus` (the online status of invitable devices) now uses the server's values**: previous versions defined `idle = 1` / `busy = 2` / `offline = 3`, which didn't match the server. The server sends `status = 0`, and older versions failed to decode the whole SIP / H323 / RTSP / GB28181 device list when they got it. The new definition is `unknown = 0` / `online = 1` / `offline = 2`, and any other value from the server decodes to `.unknown`. The old names `idle` / `busy` remain as deprecated aliases (equal to `.online` / `.offline`), so source code still compiles; **but code that compares `rawValue` with numbers (such as `== 3` for offline) behaves differently after upgrading and needs to be checked**. Only the minor version is bumped, so projects integrated with `from: "1.4.x"` resolve to this release **automatically**.
+</Warning>
+
+#### Added
++ **IM events are now actually dispatched**: after `enableIm`, the incoming call (`meeting(_:imCallCalling:)`), meeting reminder (`imMeetingRemind`), admitted from waiting room (`imAdminMoveOutWaitingRoom`), and breakout help request (`imUserHelpSubMeeting`) callbacks, as well as the IM reconnecting / reconnected / disconnected callbacks, now fire (previous versions never dispatched them). Added `meeting(_:imDidConnect:)` (`ImConnectEventData`) and `meeting(_:imDidReceiveMessage:)` (`ImMessageEventData`, a raw passthrough for messages of every action). `ImMeetingRemindContent` adds `creatorId`; `ImDisconnectEventData` adds `disconnectReason`, `errorCode`, and `errorMessage`. Calling `disableIm` no longer reports a disconnect.
++ **Sign-in export**: `signInExportDetail(epoch:destination:)` downloads the sign-in details to disk and returns the local file URL.
++ **Main-room online members from a breakout room**: new overload `adminListOnlineMember(meetingId:page:perPage:)`; the original method is unchanged.
++ **Host transfer now carries the previous host**: new `meeting(_:roomHostDidMove:)` (`RoomHostMoveEventData`, including the previous host's `sourceUid`); the previous host is demoted to a regular member locally and `userRoleDidChange` is emitted.
++ **System messages separated from regular chat**: `RoomChatMsgEventData` adds `action` and `isSystem`, so system messages sent by the host can be told apart from regular chat.
++ `MeetingInfo` adds `entryMutePolicy` and `content`, both optional and `nil` when missing or unrecognized.
++ `AgentInfo` adds `connParams` (connection parameters), `connSubjects` (the GB28181 channel table), and a public initializer. GB28181 devices are invited as "device ID:channel ID"; expanding channels is up to the caller.
+
+#### Fixed
++ **`detailRoom` (meeting details) always failed**: the server's meeting-details response doesn't include `created_at`, so previous versions threw `responseParseFailed` every time, breaking meeting details, joining by room number, and joining from an incoming call / reminder / help request. A missing value now decodes as 0.
++ **Lenient decoding for several lists**: an empty breakout room's `users` being `null`, the waiting-room list lacking `avatar`, and online members' `device_type` / `join_at` being integers each used to make the whole list fail to decode.
+
+#### Changed
++ The SRTC dependency is bumped to **1.5.2** (two iOS audio session fixes; see the audio/video SDK [changelog](/en/rtc/swift/changelog)).
++ `ImEventType` adds `connected` and `message`; `RoomEventType` adds `roomHostMoved`.
+
+<Note>
+The new `SMeetingDelegate` callbacks all have default implementations, so not implementing them doesn't affect compilation; code that `switch`es on `ImEventType` / `RoomEventType` should include an `@unknown default` branch. The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+If you implement iOS full-screen sharing, also change the `srtc-swift-sdk` dependency of the extension target to `exact: "1.5.2"` to match the SRTC version pinned in this release's manifest; otherwise dependency resolution fails.
+</Note>
+
 ### [1.4.1] - 2026.10.01
 <Warning>
 **The raw values of `McuTaskStatus` have been corrected**: the old definition was misaligned with the `task_status` the server sends (the old version had `exception = 2` and `normal = 3`, while on the server 2 means "waiting to end", 3 means "ended abnormally", and 4 means "ended normally"). As a result, the server's "ended abnormally" was recognized as `.normal`, "waiting to end" was recognized as `.exception`, and the real "ended normally" and "waiting to start" events were dropped outright, so `meeting(_:roomMcuTask:)` never received them. Case names are unchanged and the raw values are now correct, so code that checks case names (`.normal` / `.exception`) gets the correct meaning after upgrading; **code that compares `rawValue` against numbers needs to be reviewed**.

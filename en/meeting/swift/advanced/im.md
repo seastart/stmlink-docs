@@ -31,6 +31,12 @@ Key points:
 + You must call `login(token:)` first; calling it before logging in throws `SMeetingError.notLoggedIn`
 + `logout()` disables this path internally, so you don't need to call it again in your logout flow
 + Once set up, the path stays up regardless of whether you're in a meeting
++ After `enableIm()` succeeds, `meeting(_:imDidConnect:)` fires once with the local `uid` and IM session `sid` (since 1.5.0)
++ Calling `disableIm()` yourself doesn't fire `imDidDisconnect`
+
+<Note>
+In 1.4.1 and earlier, `enableIm()` only established the path; the call, reminder, waiting room admission, and sub-meeting help events below, as well as the reconnect / disconnect callbacks, were never actually dispatched. Integrations that rely on these events need to upgrade to 1.5.0.
+</Note>
 
 The typical place to enable it is right after a successful login:
 
@@ -44,7 +50,7 @@ try await meeting.enableIm()
 
 ### Events
 
-Every out-of-meeting message event carries a `base` (`ImBaseEventData`) and a `content`:
+The four business events below each carry a `base` (`ImBaseEventData`) and a `content`:
 
 | `ImBaseEventData` field | Description |
 | --- | --- |
@@ -68,8 +74,11 @@ func meeting(_ meeting: SMeetingEngine, imCallCalling data: ImCallCallingEventDa
 ```swift
 func meeting(_ meeting: SMeetingEngine, imMeetingRemind data: ImMeetingRemindEventData) {
     // data.content.title / creatorName / planTime / planDur
+    // data.content.creatorId creator's user ID (since 1.5.0)
 }
 ```
+
+`planTime` is a Unix timestamp in seconds, and `planDur` is in minutes.
 
 #### Admitted from the waiting room
 
@@ -88,6 +97,20 @@ func meeting(_ meeting: SMeetingEngine, imUserHelpSubMeeting data: ImUserHelpSub
 }
 ```
 
+#### Raw messages
+
+Every out-of-meeting message first fires `imDidReceiveMessage` as is; actions the SDK recognizes are additionally dispatched to the named events above (since 1.5.0). Business-defined actions are only available here:
+
+```swift
+func meeting(_ meeting: SMeetingEngine, imDidReceiveMessage data: ImMessageEventData) {
+    // data.action  message command, such as call_calling
+    // data.content message content, usually a JSON string you parse yourself
+    // data.sid / data.uid / data.name sender
+}
+```
+
+A known message triggers both the raw and the named callback, so don't handle it in both places.
+
 ---
 
 ### Connection state
@@ -96,9 +119,21 @@ This path has its own connection state events; don't confuse them with the meeti
 
 | Event | Description |
 | --- | --- |
+| `meeting(_:imDidConnect:)` | Fires once after `enableIm()` succeeds; `data.uid` / `data.sid` are the local user ID and IM session ID (since 1.5.0) |
 | `meetingImIsReconnecting(_:)` | The message path starts reconnecting |
-| `meetingImDidReconnect(_:)` | The message path reconnected successfully |
-| `meeting(_:imDidDisconnect:)` | The message path is disconnected; `data.reason` describes the reason |
+| `meetingImDidReconnect(_:)` | The message path reconnected successfully (doesn't fire `imDidConnect` again) |
+| `meeting(_:imDidDisconnect:)` | The message path is disconnected passively (kicked, heartbeat timeout, backend error); `data.reason` describes the reason |
+
+Since 1.5.0, `ImDisconnectEventData` also carries a structured reason:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `reason` | `String?` | Text description: the error description if there is an error, otherwise the name of `disconnectReason` |
+| `disconnectReason` | `ImDisconnectReason` | Disconnect reason (defined in SRTC; requires `import SRTC`) |
+| `errorCode` | `Int?` | Code of the error that caused the disconnect; `nil` if there is none |
+| `errorMessage` | `String?` | Description of the error that caused the disconnect; `nil` if there is none |
+
+After a passive disconnect the path is no longer usable; call `enableIm()` again if needed.
 
 The corresponding connection events for the meeting itself are `meetingIsReconnecting(_:)` / `meetingDidReconnect(_:)` / `meeting(_:didDisconnect:)`.
 

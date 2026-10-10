@@ -132,6 +132,8 @@ Transfers the host role.
 | --- | --- | :---: | --- |
 | `targetId` | `String` | Yes | ID of the new host |
 
+All members first receive `meeting(_:userRoleDidChange:)` once each for the new and former host (`.host` / `.member`), then `meeting(_:roomHostDidMove:)` (`RoomHostMoveEventData`, available since 1.5.0).
+
 #### `adminRequestUserOpenMic(targetId:)` / `adminRequestUserOpenCamera(targetId:)`
 
 Asks a member to turn on their microphone / camera.
@@ -209,10 +211,24 @@ Reminds people to enter the meeting. **Requires being in a meeting.**
 
 #### `adminListOnlineMember(page:perPage:)`
 
-Lists online members. **Requires being in a meeting.**
+Lists online members of the meeting you're currently in. **Requires being in a meeting.**
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
+| `page` | `Int` | No | Page number; defaults to `1` |
+| `perPage` | `Int` | No | Items per page; defaults to `20` |
+
+**Returns:** `PageResult<OnlineMemberInfo>`
+
+#### `adminListOnlineMember(meetingId:page:perPage:)`
+
+Lists online members of the specified meeting. **Requires being logged in.** Available since 1.5.0.
+
+When the host is inside a sub-meeting, editing sub-meeting members needs the main meeting's online members: pass `RoomInfo.parent` as `meetingId`.
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `meetingId` | `String` | Yes | Meeting ID |
 | `page` | `Int` | No | Page number; defaults to `1` |
 | `perPage` | `Int` | No | Items per page; defaults to `20` |
 
@@ -231,13 +247,15 @@ Lists the devices that can be invited. **Requires being logged in.**
 
 **Returns:** `PageResult<AgentInfo>`
 
+Since 1.5.0, `AgentInfo.status` values are `0` unknown / `1` online / `2` offline; see [AgentStatus](/en/meeting/swift/types#agentstatus). The channel table of a GB28181 device is in `AgentInfo.connSubjects`.
+
 #### `adminInviteAgent(agents:no:)`
 
 Invites devices to the meeting. **Requires being logged in.**
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
-| `agents` | `[(type: AgentType, contact: String)]` | Yes | Device types and contact addresses |
+| `agents` | `[(type: AgentType, contact: String)]` | Yes | Device types and contact addresses; for GB28181 devices pass "device number:channel number", with the channel number taken from `AgentInfo.connSubjects` |
 | `no` | `String` | Yes | Room number of the meeting |
 
 **Returns:** None
@@ -516,6 +534,23 @@ The member signs in.
 | `nickname` | `String?` | No | Filter by nickname |
 
 **Returns:** `[SignDetailInfo]`
+
+#### `signInExportDetail(epoch:destination:)`
+
+Exports the sign-in details of a round (Excel file) and writes it locally. Available since 1.5.0.
+
+```swift
+let fileURL = try await meeting.signInExportDetail(epoch: epoch)
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `epoch` | `Int` | Yes | Sign-in round |
+| `destination` | `URL?` | No | Where to write the file; when `nil` (default), writes `<UUID>.xlsx` to the temporary directory (which the system may clean up; move it yourself to keep it) |
+
+**Returns:** `URL`, the URL of the file actually written (`@discardableResult`)
+
+**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.apiError(code:message:)`, `SMeetingError.httpError(status:message:)`, `SMeetingError.responseParseFailed(_:)` (the backend returned no file), `SMeetingError.internalError(_:)` (failed to write the file)
 
 ---
 

@@ -197,10 +197,14 @@ Meeting details, returned by `detailRoom(...)`, `attendeeRoom(...)`, and `attend
 | `layoutData` | `LayoutData?` | Composite layout |
 | `watermarkDisabled` / `screenshotDisabled` / `chatDisabled` | `Bool` | The corresponding switches |
 | `waitingRoomDisabled` / `enterBeforeHostDisabled` | `Bool` | The corresponding switches |
-| `planTime` / `planDur` | `Int` | Scheduled start time / duration |
+| `planTime` / `planDur` | `Int` | Scheduled start time (Unix timestamp in seconds) / duration (minutes) |
 | `beginTime` / `endTime` | `Int` | Actual start / end time |
-| `createdAt` | `Int` | Creation time |
+| `createdAt` | `Int` | Creation time; `0` when the response omits it (the `detailRoom(...)` response has no such field) |
+| `entryMutePolicy` | `EntryMutePolicy?` | Mute-on-entry policy; `nil` when the response omits it or the value is unrecognized |
+| `content` | `String?` | Meeting description; `nil` for meetings without one |
 | `extendInfo` | `String` | Business extension field |
+
+`entryMutePolicy` and `content` are available since 1.5.0. `nil` means the backend didn't return the field; when updating the meeting, don't backfill it with a default value, or you'll overwrite the backend's existing setting.
 
 #### ParticipantInfo
 
@@ -240,7 +244,31 @@ Sub-meeting info, returned by `adminSubMeetingList(...)`.
 
 #### AgentInfo
 
-A device that can be invited, returned by `agentList(...)`: `id`, `name`, `type` (`AgentType`), `status` (`AgentStatus`), `contact`, `remark`.
+A device that can be invited, returned by `agentList(...)`.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `String` | Device ID |
+| `name` | `String` | Device name |
+| `type` | `AgentType` | Device type |
+| `status` | `AgentStatus` | Device status; see [AgentStatus](#agentstatus) for values |
+| `contact` | `String` | Device identifier, passed to `adminInviteAgent(...)` when inviting |
+| `remark` | `String` | Remark |
+| `connParams` | `[String: AnyCodable]?` | Connection parameters (backend `conn_params`), passed through as is; `nil` when absent |
+| `connSubjects` | `[String: String]` | GB28181 channel table (`conn_params.subjects`, `{channel number: channel name}`); empty when absent |
+
+`connParams`, `connSubjects`, and the public initializer `AgentInfo(id:name:type:status:contact:remark:connParams:)` (`remark` and `connParams` have default values) are available since 1.5.0.
+
+GB28181 devices must be invited as "device number:channel number"; passing `contact` directly is rejected by the backend. The SDK only parses the channel table and doesn't expand it for you. Typically, list one row per GB28181 channel:
+
+```swift
+for (channelNo, channelName) in agent.connSubjects {
+    let contact = "\(agent.contact):\(channelNo)"   // use this when inviting
+    let title = "\(agent.name)(\(channelName))"
+}
+```
+
+Except for `type`, missing fields decode to empty values, so bad data from one device no longer makes the whole device list fail to decode.
 
 #### ResourceInfo
 
@@ -322,6 +350,7 @@ result.meta      // MetaRes
 | `UserMicStateChangeEventData` | `uid`, `micState`, `byAdmin`, `opUid` |
 | `UserNameChangeEventData` | `uid`, `nickname`, `byAdmin`, `opUid` |
 | `UserRoleChangeEventData` | `uid`, `role`, `opUid` |
+| `RoomHostMoveEventData` | `uid` (new host), `sourceUid` (former host), `opUid` (since 1.5.0) |
 | `UserChatDisabledChangeEventData` | `uid`, `chatDisabled`, `opUid` |
 | `UserDrawDisabledChangeEventData` | `uid`, `drawDisabled`, `opUid` |
 | `UserHandupEventData` | `uid`, `type: HandupType`, `step: UserHandupStep` |
@@ -349,7 +378,7 @@ result.meta      // MetaRes
 
 | Type | Fields |
 | --- | --- |
-| `RoomChatMsgEventData` | `msgType: ChatMsgType`, `msg`, `uid: String?`, `isPrivate` |
+| `RoomChatMsgEventData` | `msgType: ChatMsgType`, `msg`, `uid: String?`, `isPrivate`, `action` (raw broadcast action, since 1.5.0), `isSystem` (whether it's a host system message, since 1.5.0) |
 | `RoomCustomMsgEventData` | `msg`, `uid: String?`, `isPrivate` |
 
 #### Host commands and raise hand
@@ -383,16 +412,18 @@ result.meta      // MetaRes
 
 #### Out-of-meeting messages
 
-All out-of-meeting message event data consists of two parts: `base` and `content`.
+Data for the business events (call, reminder, release from the waiting room, sub-meeting help request) consists of two parts: `base` and `content`. The connection and raw message events carry their fields directly.
 
 | Type | Fields |
 | --- | --- |
 | `ImBaseEventData` | `sid`, `uid`, `name`, `avatar: String?` |
 | `ImCallCallingEventData` | `base`, `content: ImCallContent` (`roomNo`, `meetingId`, `title`) |
-| `ImMeetingRemindEventData` | `base`, `content: ImMeetingRemindContent` (`roomNo`, `meetingId`, `title`, `creatorName`, `planDur`, `planTime`) |
+| `ImMeetingRemindEventData` | `base`, `content: ImMeetingRemindContent` (`roomNo`, `meetingId`, `title`, `creatorName`, `planDur` (minutes), `planTime` (Unix timestamp in seconds), `creatorId` (creator's user ID, since 1.5.0)) |
 | `ImAdminMoveOutWaitingRoomEventData` | `base`, `content: ImMoveOutWaitingRoomContent` (`parent`, `meetingId`, `title`) |
 | `ImUserHelpSubMeetingEventData` | `base`, `content: ImHelpSubMeetingContent` (`parent`, `meetingId`, `title`) |
-| `ImDisconnectEventData` | `reason: String?` |
+| `ImDisconnectEventData` | `reason: String?` (text description), `disconnectReason: ImDisconnectReason`, `errorCode: Int?`, `errorMessage: String?` (the last three since 1.5.0) |
+| `ImConnectEventData` | `uid` (local user ID), `sid` (local IM session ID) (since 1.5.0) |
+| `ImMessageEventData` | `action`, `content` (usually a JSON string), `sid`, `uid`, `name: String?` (since 1.5.0) |
 
 ---
 
@@ -590,9 +621,14 @@ The values match the server's `task_status`. The raw values in 1.4.0 and earlier
 
 | Enum value | Raw value | Description |
 | --- | --- | --- |
-| `idle` | `1` | Idle |
-| `busy` | `2` | Busy |
-| `offline` | `3` | Offline |
+| `unknown` | `0` | Unknown |
+| `online` | `1` | Online |
+| `offline` | `2` | Offline |
+
+Values match the server; any other value from the backend decodes to `.unknown`. The definition in 1.4.1 and earlier was wrong (`idle = 1` idle, `busy = 2` busy, `offline = 3` offline), and the whole device list failed to decode when the backend sent `status = 0`. Fixed in 1.5.0:
+
++ `idle` and `busy` remain as deprecated aliases for `.online` and `.offline` respectively, so existing code still compiles
++ **The raw value of `offline` changed from `3` to `2`**: check any code that compares `rawValue` numerically or has persisted raw values
 
 #### PresignedPutObjectType
 
@@ -606,7 +642,7 @@ The values match the server's `task_status`. The raw values in 1.4.0 and earlier
 
 ### Types from SRTC
 
-The following types are defined in the underlying SRTC module and require `import SRTC` to use: `LogLevel`, `CameraPreset`, `MicPreset`, `ScreenPreset`, `DeviceInfo`, `DisconnectReason`, `SRTCVideoView`, `SRTCVideoRenderer`, `ScreenCaptureSources`, `DisplaySource`, `WindowSource`, `LocalCameraTrack`, `LocalScreenTrack`, `RemoteVideoTrack`, `Track`, `SRTCBroadcastPicker`.
+The following types are defined in the underlying SRTC module and require `import SRTC` to use: `LogLevel`, `CameraPreset`, `MicPreset`, `ScreenPreset`, `DeviceInfo`, `DisconnectReason`, `ImDisconnectReason`, `AnyCodable`, `SRTCVideoView`, `SRTCVideoRenderer`, `ScreenCaptureSources`, `DisplaySource`, `WindowSource`, `LocalCameraTrack`, `LocalScreenTrack`, `RemoteVideoTrack`, `Track`, `SRTCBroadcastPicker`.
 
 `NativeVideoView` is an alias SMeeting defines for the render view; its actual type is `SRTCVideoRenderer`.
 

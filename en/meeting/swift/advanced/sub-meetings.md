@@ -37,6 +37,14 @@ try await meeting.adminDeleteSubMeeting(ids: [groups[1].id])
 
 In each `SubMeetingInfo` returned by `adminSubMeetingList`, `users` are the assigned members, and `status` is the group's meeting status (`MeetingStatus`).
 
+Candidates for assignment come from the online members of the main meeting. If the host is currently inside a sub-meeting, `adminListOnlineMember(page:perPage:)` returns that sub-meeting's own members; use the overload with `meetingId` and pass the main meeting ID instead (since 1.5.0):
+
+```swift
+guard let room = meeting.getRoomInfo() else { return }
+let mainId = room.parent.isEmpty ? room.id : room.parent
+let online = try await meeting.adminListOnlineMember(meetingId: mainId, page: 1, perPage: 100)
+```
+
 ---
 
 ### Start and stop

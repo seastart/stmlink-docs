@@ -83,6 +83,18 @@ try await meeting.adminKickUserOut(targetId: uid, joinDisabled: true)
 
 The corresponding member state events: `userNameDidChange`, `userRoleDidChange`, `userChatDisabledDidChange`, `userDrawDisabledDidChange` (since 1.3.6). A removed member learns about it through `didDisconnect`.
 
+On a host transfer, all members first receive two `userRoleDidChange` events (new host `.host`, former host `.member`) and then `roomHostDidMove` (since 1.5.0). The SDK demotes the former host locally, so `getUsersInfoList()` already reflects the new roles when the events fire:
+
+```swift
+func meeting(_ meeting: SMeetingEngine, roomHostDidMove data: RoomHostMoveEventData) {
+    // data.uid       new host
+    // data.sourceUid former host
+    // data.opUid     operator
+}
+```
+
+If you only need to refresh the role display, handling `userRoleDidChange` is enough.
+
 Read the current drawing permission from `MeetingUserInfo.drawDisabled`; when it changes, you receive:
 
 ```swift
@@ -140,8 +152,14 @@ If the called users have enabled out-of-meeting messages, they receive the `imCa
 #### Online member list
 
 ```swift
+// The meeting you're currently in
 let page = try await meeting.adminListOnlineMember(page: 1, perPage: 20)
+
+// A specific meeting (since 1.5.0)
+let mainPage = try await meeting.adminListOnlineMember(meetingId: mainMeetingId, page: 1, perPage: 20)
 ```
+
+When the host is inside a sub-meeting, editing sub-meeting members needs the online members of the **main meeting**: use the overload with `meetingId` and pass `RoomInfo.parent`. See [Sub-meetings](/en/meeting/swift/advanced/sub-meetings).
 
 ---
 
@@ -164,7 +182,24 @@ try await meeting.adminInviteAgent(
 )
 ```
 
-For `AgentType` values, see [Types](/en/meeting/swift/types#agenttype). Read a device's current busy / idle status from `AgentInfo.status`.
+For `AgentType` values, see [Types](/en/meeting/swift/types#agenttype). Read a device's current online status from `AgentInfo.status` (`.unknown` / `.online` / `.offline`; see [AgentStatus](/en/meeting/swift/types#agentstatus)).
+
+<Warning>
+Since 1.5.0, `AgentStatus` values match the server: `0` unknown, `1` online, `2` offline (previously `1` idle, `2` busy, `3` offline). `idle` / `busy` still compile but are deprecated, equal to `.online` / `.offline` respectively. Check any code that compares `rawValue` numerically.
+</Warning>
+
+#### Invite GB28181 devices
+
+GB28181 devices must be invited per GB28181 channel as "device number:channel number"; passing `contact` directly is rejected by the server. The channel table is in `AgentInfo.connSubjects` (`{channel number: channel name}`, since 1.5.0):
+
+```swift
+let agents = agent.connSubjects.keys.map { channelNo in
+    (type: AgentType.gb28181, contact: "\(agent.contact):\(channelNo)")
+}
+try await meeting.adminInviteAgent(agents: agents, no: roomNo)
+```
+
+The full connection parameters from the backend are in `AgentInfo.connParams` (`[String: AnyCodable]?`), passed through as is by the SDK.
 
 ---
 
