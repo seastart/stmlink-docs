@@ -11,7 +11,7 @@ description: "在 SwiftUI 与 UIKit / AppKit 中渲染 SMeeting 的本端画面�
 | --- | --- | --- |
 | 本端摄像头 / 共享 | `SRTCVideoView(track:)` | 打开时传入 `SRTCVideoRenderer` |
 | 远端摄像头 / 共享 | `SMeetingRemoteVideoView` | `startPlayRemoteVideo(view:uid:trackDesc:)` |
-| 服务端合屏（MCU） | 取 `meeting.mcuTrack` 后交给 `SRTCVideoView` | `startPlayRemoteVideoMcu(view:uid:)` |
+| 服务端合屏（MCU） | `subscribeRemoteVideoMcu()` 拿到轨道后交给 `SRTCVideoView` | `startPlayRemoteVideoMcu(view:)` |
 
 本端画面**不需要订阅**，直接拿轨道渲染即可；远端画面**必须先订阅**才有数据。
 
@@ -166,13 +166,17 @@ let track = meeting.getRemoteVideoTrack(uid: remoteUid, desc: .cameraBig)
 会议开启了服务端合屏任务时，可以只拉一路合成画面而不是逐个订阅：
 
 ```swift
-let track = try await meeting.startPlayRemoteVideoMcu(view: renderer, uid: mcuUid)
-// 也可以随时通过 meeting.mcuTrack 取到这一路轨道
-
+// UIKit / AppKit
+let track = try await meeting.startPlayRemoteVideoMcu(view: renderer)
 try await meeting.stopPlayRemoteVideoMcu(view: renderer)
+
+// SwiftUI：订阅后把轨道交给 SRTCVideoView(track:)，也可以随时通过 meeting.mcuTrack 取到
+let mcu = try await meeting.subscribeRemoteVideoMcu()
+try await meeting.unsubscribeRemoteVideoMcu()
 ```
 
-合屏画面需要服务端先配置好合屏任务，布局由 `adminUpdateLayout(_:)` 控制，见 [录制与合屏布局](/zh/meeting/swift/advanced/recording)。
+合成画面不属于任何成员（发布者是保留身份 `__mcu__`），不需要 uid。合成任务（`McuTaskType.mix`）要先跑起来——
+任务比订阅晚开始时，在 `roomMcuTask` 报 `running` 后再订一次（调用幂等），否则不会出画面。合屏画面需要服务端先配置好合屏任务，布局由 `adminUpdateLayout(_:)` 控制，见 [录制与合屏布局](/zh/meeting/swift/advanced/recording)。
 
 ---
 

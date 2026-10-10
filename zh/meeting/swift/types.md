@@ -289,7 +289,7 @@ for (channelNo, channelName) in agent.connSubjects {
 
 | 类型 | 字段 |
 | --- | --- |
-| `SignInfo` | `uid`、`beginAt`、`dur`、`endAt`、`desc`、`nums` |
+| `SignInfo` | `uid`、`beginAt`、`dur`、`endAt`、`desc`、`nums`、`hostName`（可选，发起人昵称；服务端暂未返回，取不到时按 `uid` 找会中成员） |
 | `SignDetailInfo` | `id`、`epoch`、`nickname`、`role`、`userId`、`createdAt` |
 
 #### McuRecordConfig / McuRecordDetail

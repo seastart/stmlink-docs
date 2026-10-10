@@ -3,6 +3,24 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.5.1] - 2026.10.10
+#### 新增
++ **服务端合成画面可以订阅了**：`subscribeRemoteVideoMcu()` / `unsubscribeRemoteVideoMcu()` / `startPlayRemoteVideoMcu(view:)`。合成画面由服务端以保留身份 `__mcu__` 发布、不属于任何会中成员，所以不再需要 uid。合成任务（`McuTaskType.mix`）比订阅晚开始时，在 `roomMcuTask` 报 `running` 后再订一次（调用幂等）。
++ `SignInfo` 新增可选的 `hostName`（发起人昵称）。服务端的签到列表目前不返回该字段，一般为 `nil`，取不到时按 `uid` 找会中成员，或使用 `signInActivity` 事件里的 `hostName`。
+
+#### 修复
++ **授予 / 撤销联席主持人后，按 `RoomInfo.coHosts` 判断的角色慢一拍**：房间的联席名单比角色变更广播晚到，旧版在 `userRoleDidChange` 发出时 `coHosts` 还是旧的 —— 授予后仍算普通成员、撤销后仍算联席。现在事件发出前 SDK 已按新角色同步好 `coHosts`，随后到达的房间属性仍以服务端为准。
+
+#### 变更
++ `startPlayRemoteVideoMcu(view:uid:)` 标为废弃，`uid` 不再使用，等同 `startPlayRemoteVideoMcu(view:)`。旧实现按「合成画面是某个成员的摄像头轨道」查找，在当前链路下必抛 `remoteTrackUnavailable`。
++ SRTC 依赖升至 **1.5.3**（新增频道级合成视频订阅，见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)）。iOS 全屏共享的扩展 target 那条 `srtc-swift-sdk` 依赖请同步改为 `exact: "1.5.3"`。
+
+<Note>
+只新增接口与修复，1.5.0 的接入代码可直接升级（用到旧的 `startPlayRemoteVideoMcu(view:uid:)` 会有废弃警告）。平台下限不变（iOS 16 / macOS 14）。
+
+已验证：屏幕共享扩展进程被系统杀掉或崩溃（人还在会里）时，SDK 会自动结束共享并通知会议后端，其它端 1 秒内收到停止事件，无需业务处理。
+</Note>
+
 ### [1.5.0] - 2026.10.10
 <Warning>
 **`AgentStatus`（可邀请设备的在线状态）取值已改为与服务端一致**：旧版定义是 `idle = 1`（空闲）/ `busy = 2`（忙碌）/ `offline = 3`（离线），与服务端不符 —— 服务端会下发 `status = 0`，旧版遇到它整页 SIP / H323 / RTSP / GB28181 设备列表解码失败。新定义为 `unknown = 0`（未知）/ `online = 1`（在线）/ `offline = 2`（离线），服务端出现其它取值时解成 `.unknown`。旧名 `idle` / `busy` 保留为废弃别名（分别等于 `.online` / `.offline`），源码照常编译；**但按 `rawValue` 与数字比较（如 `== 3` 判离线）的代码升级后行为会变，需要自查**。版本号只升 minor，按 `from: "1.4.x"` 接入的工程会**自动**解析到本版。

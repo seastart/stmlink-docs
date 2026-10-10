@@ -52,7 +52,12 @@ try await meeting.signInExportDetail(epoch: epoch, destination: docs.appendingPa
 
 `epoch` 与 `signInCount` / `signInDetail` 是同一个值。不传 `destination` 时写到临时目录下的 `<UUID>.xlsx`，临时目录会被系统清理，需要长期保留请自行移走，或直接传 Documents 下的路径。自 1.5.0 起提供。
 
-`SignInfo` 字段：`uid`（发起人）、`beginAt`、`dur`、`endAt`、`desc`、`nums`（已签到人数）。
+`SignInfo` 字段：`uid`（发起人）、`beginAt`、`dur`、`endAt`、`desc`、`nums`（已签到人数）、`hostName`（可选，发起人昵称，1.5.1 起）。
+
+<Note>
+服务端的签到列表目前**不返回**发起人昵称，`hostName` 一般为 `nil`。发起人还在会中时按 `uid` 找成员即可；
+发起人离会后成员表里查不到人，建议把 `signInActivity` 事件里的 `hostName` 存一份，按发起人与开始时间对上同一轮再用。
+</Note>
 `SignDetailInfo` 字段：`id`、`epoch`、`nickname`、`role`、`userId`、`createdAt`。
 
 #### 签到事件
