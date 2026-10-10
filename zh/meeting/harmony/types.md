@@ -161,7 +161,11 @@ MCU 合流布局，共 20 种：
 | 枚举 | 成员 |
 | --- | --- |
 | `AgentType` | `sip = 2` / `h323 = 3` / `gb28181 = 4` / `rtsp = 5` / `rtmp = 6` / `filePlay = 7` / `tencentMeet = 8` / `ai = 9` |
-| `AgentStatus` | `idle = 1` / `busy = 2` / `offline = 3` |
+| `AgentStatus` | `unknown = 0` / `online = 1` / `offline = 2`（废弃别名 `idle = 1`、`busy = 2`） |
+
+<Warning>
+**1.2.0 起 `AgentStatus` 的取值改了**：1.1.0 及以前是 `idle = 1` / `busy = 2` / `offline = 3`，与服务端不符。服务端下发其它取值或缺失时为 `unknown`。**按数字比较的代码需要自查**（`offline` 从 `3` 变为 `2`）。
+</Warning>
 
 ### `MeetingStreamVendor`
 
@@ -349,7 +353,7 @@ MCU 合流布局，共 20 种：
 
 | 接口 | 字段 |
 | --- | --- |
-| `AgentInfo` | `id`、`name`、`type: AgentType`、`status: AgentStatus`、`contact`、`remark` |
+| `AgentInfo` | `id`、`name`、`type: AgentType`、`status: AgentStatus`、`contact`、`remark`、`connParams?: JsonObject`（服务端 `conn_params`，1.2.0 起）、`connSubjects: Map<string, string>`（GB28181 通道表，国标设备按「设备编号:通道编号」邀请，1.2.0 起） |
 | `AgentInvite` | `type: AgentType`、`contact` |
 
 ---

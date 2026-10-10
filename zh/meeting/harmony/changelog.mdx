@@ -3,6 +3,20 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.2.0] - 2026.10.10
+<Warning>
+**`AgentStatus`（可邀请设备的在线状态）取值已改为与服务端一致，属不兼容变更**：旧版定义是 `idle = 1`（空闲）/ `busy = 2`（忙碌）/ `offline = 3`（离线），与服务端不符 —— 服务端会下发 `status = 0`，且 `2` 实际表示离线。新定义为 `unknown = 0`（未知）/ `online = 1`（在线）/ `offline = 2`（离线），服务端下发其它取值或缺失时为 `unknown`。旧名 `idle` / `busy` 保留为废弃别名（取值分别为 `1` / `2`）；**按数字比较（如 `=== 3` 判离线）的代码升级后行为会变，需要自查**。
+
+依赖不变，仍搭配 **SRTC 1.1.0**。
+</Warning>
+
+#### 新增
++ `AgentInfo` 新增 `connParams`（服务端 `conn_params`，原样透传）与 `connSubjects`（GB28181 通道表，`Map<通道编号, 通道名>`，没有时为空表）。国标设备要按「设备编号:通道编号」邀请，直接用 `contact` 会被服务端拒绝；通道展开由调用方完成。
+
+#### 修复
++ **集成方开启属性混淆后拿不到 GB28181 通道**：`consumer-rules.txt` 补了 `conn_params`、`subjects` 两个字段的 keep。
++ `AgentInfo.id` 在服务端下发数字 ID 时不再为空字符串。
+
 ### [1.1.0] - 2026.10.08
 <Warning>
 **本版含不兼容变更**：错误码按 SMeeting 统一码表调整、报错文案改为英文，`McuTaskStatus` 的取值与服务端对齐。凡是按 `SMeetingError.code` 的数值、按 `detail` 的中文文字、或拿 `McuTaskStatus` 的数字做判断的代码，升级后都需要调整，请先对照下方的旧码 → 新码表。
