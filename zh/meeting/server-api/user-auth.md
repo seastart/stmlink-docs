@@ -85,7 +85,7 @@ description: "把业务系统的用户换成会议 Token，以及把已授权的
 </ParamField>
 
 <ParamField body="device_type" type="integer">
-  只下线该端的登录态 0未知设备 1Windows 2Android 3iOS 4Linux 5MacOS 6WebRTC 7微信小程序；不传则该用户所有端一起下线
+  只下线该端的登录态 0未知设备 1Windows 2Android 3iOS 4Linux 5MacOS 6WebRTC 7微信小程序 8鸿蒙；不传则该用户所有端一起下线
   示例：`3`
 </ParamField>
 

@@ -85,7 +85,7 @@ To remove someone from the meeting immediately, use "Remove a member" in [In-mee
 </ParamField>
 
 <ParamField body="device_type" type="integer">
-  Log out only this device type. 0: unknown, 1: Windows, 2: Android, 3: iOS, 4: Linux, 5: macOS, 6: WebRTC, 7: WeChat Mini Program. If omitted, the user is logged out on all devices
+  Log out only this device type. 0: unknown, 1: Windows, 2: Android, 3: iOS, 4: Linux, 5: macOS, 6: WebRTC, 7: WeChat Mini Program, 8: HarmonyOS. If omitted, the user is logged out on all devices
   Example: `3`
 </ParamField>
 

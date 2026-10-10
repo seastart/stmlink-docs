@@ -470,7 +470,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="device_type" type="integer">
-  Device type. 0: unknown, 1: Windows, 2: Android, 3: iOS, 4: Linux, 5: macOS, 6: WebRTC, 7: Mini Program; 80 and above: devices connected via device integration
+  Device type. 0: unknown, 1: Windows, 2: Android, 3: iOS, 4: Linux, 5: macOS, 6: WebRTC, 7: Mini Program, 8: HarmonyOS; 80 and above: devices connected via device integration
 </ResponseField>
 
 <ResponseField name="extend_info" type="string">
@@ -711,7 +711,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="device_type" type="integer">
-  Device type. 0: unknown, 1: Windows, 2: Android, 3: iOS, 4: Linux, 5: macOS, 6: WebRTC, 7: Mini Program; 80 and above: devices connected via device integration
+  Device type. 0: unknown, 1: Windows, 2: Android, 3: iOS, 4: Linux, 5: macOS, 6: WebRTC, 7: Mini Program, 8: HarmonyOS; 80 and above: devices connected via device integration
 </ResponseField>
 
 <ResponseField name="extend_info" type="string">
@@ -1136,7 +1136,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 </ParamField>
 
 <ParamField body="room_no" type="string">
-  Room number (max length 50)
+  Room number (meeting number). If omitted, a random one is generated. If provided, it becomes a fixed room number of this app that can be reused, with a different host for each meeting. A room number can have only one unfinished meeting at a time (including scheduled meetings that have not started). A number not yet registered is rejected if any meeting used it within the last 90 days (max length 50)
 </ParamField>
 
 <ParamField body="title" type="string" required>

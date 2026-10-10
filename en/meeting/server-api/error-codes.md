@@ -58,10 +58,10 @@ Any API can return these. The most common is `10070`, returned when a parameter 
 | `10001` | CodeDatabaseException | Database error |
 | `10002` | CodeDataRecordNotFound | Record not found |
 | `10003` | CodeDataRecordExists | Record already exists |
-| `10040` | CodeUnAuthorized | Insufficient permissions |
+| `10040` | CodeUnAuthorized | Permission denied |
 | `10041` | CodeAuthFailed | Not logged in |
 | `10042` | CodeTokenInvalid | Invalid token |
-| `10043` | CodeTokenExpired | Token expired |
+| `10043` | CodeTokenExpired | Token has expired |
 | `10051` | CodeNetError | Network error |
 | `10055` | CodeRequestTimeout | Request timed out |
 | `10070` | CodeInvalidParams | Invalid request parameters |

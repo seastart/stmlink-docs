@@ -470,7 +470,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ResponseField>
 
 <ResponseField name="device_type" type="integer">
-  设备类型 0未知 1Windows 2Android 3iOS 4Linux 5MacOS 6webrtc 7小程序，80及以上为接入设备
+  设备类型 0未知 1Windows 2Android 3iOS 4Linux 5MacOS 6webrtc 7小程序 8鸿蒙，80及以上为接入设备
 </ResponseField>
 
 <ResponseField name="extend_info" type="string">
@@ -711,7 +711,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ResponseField>
 
 <ResponseField name="device_type" type="integer">
-  设备类型 0未知 1Windows 2Android 3iOS 4Linux 5MacOS 6webrtc 7小程序，80及以上为接入设备
+  设备类型 0未知 1Windows 2Android 3iOS 4Linux 5MacOS 6webrtc 7小程序 8鸿蒙，80及以上为接入设备
 </ResponseField>
 
 <ResponseField name="extend_info" type="string">
@@ -1136,7 +1136,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="room_no" type="string">
-  房间号（最大长度 50）
+  房间号（会议号）。不传则随机生成；传入则作为本应用的固定会议号，可反复使用、每场主持人可不同。同一会议号同时只能有一场未结束的会议（含未开始的预约）；未登记过的号在近 90 天内被会议用过则拒绝（最大长度 50）
 </ParamField>
 
 <ParamField body="title" type="string" required>
