@@ -336,16 +336,16 @@
     "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
   },
   "en/meeting/swift/advanced/host-controls": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/advanced/host-controls.md",
-    "zh_blob": "d20b692e72a54743cd95030dfef110c3b7938008",
-    "zh_commit": "66451c2258418f76c4e3aa050a56a59021437fc9"
+    "zh_blob": "f4a3d4484fefdb884e1fb7565b6b59dcc96181b6",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/advanced/im": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/advanced/im.md",
-    "zh_blob": "e84ec3011d2dae0f541a9cecca7858dcc18cb2d1",
-    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+    "zh_blob": "5a4b48891ec6fea801b83dd97881ef0c288157b3",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/advanced/media-control": {
     "reviewed": false,
@@ -374,20 +374,20 @@
   "en/meeting/swift/advanced/screen-sharing": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/screen-sharing.md",
-    "zh_blob": "2d86be73a8d69631e17ad897b2dbb23846990d63",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "b96d2ac761eb1d0f1f0f72516ddb633e8ae782ad",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/advanced/sign-in": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/advanced/sign-in.md",
-    "zh_blob": "961d543d615d65c8a77165eb58ff794316412de0",
-    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+    "zh_blob": "ff326c78e2a490a72a35ac50a9c38397f296740f",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/advanced/sub-meetings": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/advanced/sub-meetings.md",
-    "zh_blob": "a865f98b7c95cacb2bca709a95386e1d22c44de0",
-    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+    "zh_blob": "38183ee60e469ad13c67f7ca5bb6ce43d76ee023",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/advanced/video-rendering": {
     "reviewed": true,
@@ -410,8 +410,8 @@
   "en/meeting/swift/api-reference/SMeetingEngine": {
     "reviewed": false,
     "source": "zh/meeting/swift/api-reference/SMeetingEngine.md",
-    "zh_blob": "8573063674133da5d615406481d9db347fab27b2",
-    "zh_commit": "f3c41c3d08d8e5309e0b68a287c461b2bea14304"
+    "zh_blob": "198f394dd78884e8c54b3451b8bf34eb2d8b298a",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/api-reference/SMeetingRemoteVideoView": {
     "reviewed": true,
@@ -420,10 +420,10 @@
     "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
   },
   "en/meeting/swift/api-reference/admin-actions": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/api-reference/admin-actions.md",
-    "zh_blob": "cb6294d85296bed31812f57f3de2008cc0928e49",
-    "zh_commit": "66451c2258418f76c4e3aa050a56a59021437fc9"
+    "zh_blob": "3a7a4c85fcce394c44ce411f869d4da4edac8a43",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/api-reference/devices": {
     "reviewed": true,
@@ -440,8 +440,8 @@
   "en/meeting/swift/changelog": {
     "reviewed": false,
     "source": "zh/meeting/swift/changelog.mdx",
-    "zh_blob": "298ad612e45765093f3b899a4f122f0248441583",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "25e1fd72401f3e0fb7a3e3746aa28dfb4e1ebe2d",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/error-codes": {
     "reviewed": false,
@@ -450,16 +450,16 @@
     "zh_commit": "f3c41c3d08d8e5309e0b68a287c461b2bea14304"
   },
   "en/meeting/swift/events": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/events.md",
-    "zh_blob": "51ddc4340a9fd33a947a71d827d3ab090e35ea2a",
-    "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
+    "zh_blob": "a53e5343dabdcf3bc45b4157e98c29bb1953c6ee",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/integration": {
     "reviewed": false,
     "source": "zh/meeting/swift/integration.md",
-    "zh_blob": "d90586325d49b54a8108d9cfd2db6fd4c37c845c",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "82074345de830a40d52a681034970e30d51fb8d5",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/swift/key-concepts": {
     "reviewed": true,
@@ -476,8 +476,8 @@
   "en/meeting/swift/types": {
     "reviewed": false,
     "source": "zh/meeting/swift/types.md",
-    "zh_blob": "cfc81507eb107f7f7569adf94ce7112c107c5218",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "477bb4866f2a41f86146b69326aaf3aba4f2e276",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/meeting/token": {
     "reviewed": true,
@@ -1196,8 +1196,8 @@
   "en/rtc/swift/changelog": {
     "reviewed": false,
     "source": "zh/rtc/swift/changelog.mdx",
-    "zh_blob": "d2585de773edc0ae285227504b594ba066a20076",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "c3788b2837b2cd94b2e29544a788bd4885e4b85d",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/rtc/swift/error-codes": {
     "reviewed": false,
@@ -1214,8 +1214,8 @@
   "en/rtc/swift/integration": {
     "reviewed": false,
     "source": "zh/rtc/swift/integration.md",
-    "zh_blob": "8ea71e5e39f0fb70910b4ae8afd4380581355009",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "07e19128edc4585e32118f27b628a9d68ce64136",
+    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
   },
   "en/rtc/swift/key-concepts": {
     "reviewed": true,
