@@ -3,6 +3,34 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.5.0] - 2026.10.10
+<Warning>
+**`AgentStatus`（可邀请设备的在线状态）取值已改为与服务端一致**：旧版定义是 `idle = 1`（空闲）/ `busy = 2`（忙碌）/ `offline = 3`（离线），与服务端不符 —— 服务端会下发 `status = 0`，旧版遇到它整页 SIP / H323 / RTSP / GB28181 设备列表解码失败。新定义为 `unknown = 0`（未知）/ `online = 1`（在线）/ `offline = 2`（离线），服务端出现其它取值时解成 `.unknown`。旧名 `idle` / `busy` 保留为废弃别名（分别等于 `.online` / `.offline`），源码照常编译；**但按 `rawValue` 与数字比较（如 `== 3` 判离线）的代码升级后行为会变，需要自查**。版本号只升 minor，按 `from: "1.4.x"` 接入的工程会**自动**解析到本版。
+</Warning>
+
+#### 新增
++ **IM 事件真正派发**：`enableIm` 之后，被叫（`meeting(_:imCallCalling:)`）、会议提醒（`imMeetingRemind`）、等候室放行（`imAdminMoveOutWaitingRoom`）、小组求助（`imUserHelpSubMeeting`）以及 IM 重连中 / 已重连 / 被动断开这几个回调现在都会触发（旧版这些回调没有派发点，永远收不到）。新增 `meeting(_:imDidConnect:)`（`ImConnectEventData`）与 `meeting(_:imDidReceiveMessage:)`（`ImMessageEventData`，任何 action 的原始消息透传）。`ImMeetingRemindContent` 新增 `creatorId`；`ImDisconnectEventData` 新增 `disconnectReason`、`errorCode`、`errorMessage`。主动 `disableIm` 不再上抛断开回调。
++ **签到导出**：`signInExportDetail(epoch:destination:)`，下载签到明细落盘并返回本地文件地址。
++ **小组里拉主会场在线成员**：新增重载 `adminListOnlineMember(meetingId:page:perPage:)`，原方法不变。
++ **转移主持人带出原主持人**：新增 `meeting(_:roomHostDidMove:)`（`RoomHostMoveEventData`，含原主持人 `sourceUid`），原主持人本地降为普通成员并补发 `userRoleDidChange`。
++ **系统消息与普通聊天分离**：`RoomChatMsgEventData` 新增 `action` 与 `isSystem`，主持人发出的系统消息可以与普通聊天区分。
++ `MeetingInfo` 新增 `entryMutePolicy`（入会静音策略）与 `content`，均为可选，缺失或取值不认识时为 `nil`。
++ `AgentInfo` 新增 `connParams`（连接参数）与 `connSubjects`（GB28181 通道表）及公开构造器。国标设备要按「设备编号:通道编号」邀请，通道展开由调用方完成。
+
+#### 修复
++ **`detailRoom`（会议详情）必失败**：服务端的会议详情回包不带 `created_at`，旧版每次抛 `responseParseFailed`，会议详情、按房间号加入、从被叫 / 提醒 / 求助入会都走不通。现在缺失时按 0 解码。
++ **几处列表的宽松解码**：空小组的 `users` 为 `null`、等候室列表不带 `avatar`、在线成员的 `device_type` / `join_at` 为整数，此前都会让整张列表解码失败。
+
+#### 变更
++ SRTC 依赖升至 **1.5.2**（iOS 音频会话两处修复，见音视频 SDK 的[更新日志](/zh/rtc/swift/changelog)）。
++ `ImEventType` 新增 `connected`、`message`，`RoomEventType` 新增 `roomHostMoved`。
+
+<Note>
+`SMeetingDelegate` 新增的回调都有默认实现，不实现不影响编译；对 `ImEventType` / `RoomEventType` 做 `switch` 的代码请带上 `@unknown default` 分支。平台下限不变（iOS 16 / macOS 14）。
+
+做 iOS 全屏屏幕共享的接入方，扩展 target 那条 `srtc-swift-sdk` 依赖要一并改为 `exact: "1.5.2"`，与本版清单里 pin 的 SRTC 版本一致，否则依赖解析失败。
+</Note>
+
 ### [1.4.1] - 2026.10.01
 <Warning>
 **`McuTaskStatus` 的原始值已改正**：旧版的定义与服务端下发的 `task_status` 错位（旧版 `exception = 2`、`normal = 3`，而服务端的 2 是「待结束」、3 才是「异常结束」、4 才是「正常结束」），导致服务端的「异常结束」被识别成 `.normal`、「待结束」被识别成 `.exception`，而真正的「正常结束」与「待开始」事件被直接丢弃、`meeting(_:roomMcuTask:)` 收不到。成员名不变、原始值已改正，按成员名（`.normal` / `.exception`）判断的代码升级后即得到正确语义；**直接拿 `rawValue` 与数字比较的代码需要自查**。

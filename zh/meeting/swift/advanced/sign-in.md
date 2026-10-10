@@ -39,6 +39,19 @@ let count = try await meeting.signInCount(epoch: epoch)
 let details = try await meeting.signInDetail(epoch: epoch, nickname: nil)
 ```
 
+#### 导出签到名单
+
+```swift
+// 导出某一轮的签到详情（Excel），返回实际写入的文件地址
+let fileURL = try await meeting.signInExportDetail(epoch: epoch)
+
+// 也可以指定写到哪
+let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+try await meeting.signInExportDetail(epoch: epoch, destination: docs.appendingPathComponent("签到.xlsx"))
+```
+
+`epoch` 与 `signInCount` / `signInDetail` 是同一个值。不传 `destination` 时写到临时目录下的 `<UUID>.xlsx`，临时目录会被系统清理，需要长期保留请自行移走，或直接传 Documents 下的路径。自 1.5.0 起提供。
+
 `SignInfo` 字段：`uid`（发起人）、`beginAt`、`dur`、`endAt`、`desc`、`nums`（已签到人数）。
 `SignDetailInfo` 字段：`id`、`epoch`、`nickname`、`role`、`userId`、`createdAt`。
 

@@ -60,11 +60,14 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:userMicStateDidChange:)` | 任一成员（含自己）麦克风开 / 关 | `UserMicStateChangeEventData` |
 | `meeting(_:userNameDidChange:)` | 成员会中昵称变化 | `UserNameChangeEventData` |
 | `meeting(_:userRoleDidChange:)` | 成员角色变化，含主持人转移 | `UserRoleChangeEventData` |
+| `meeting(_:roomHostDidMove:)` | 主持人转移（1.5.0 起） | `RoomHostMoveEventData` |
 | `meeting(_:userChatDisabledDidChange:)` | 成员被单独禁言 / 解除 | `UserChatDisabledChangeEventData` |
 | `meeting(_:userDrawDisabledDidChange:)` | 成员被禁止涂鸦 / 解除 | `UserDrawDisabledChangeEventData` |
 | `meeting(_:userDidHandup:)` | 成员举手、取消举手，或响应了主持人的开启邀请 | `UserHandupEventData` |
 
 媒体状态事件里的 `byAdmin` 为 `true` 时表示这次变化是主持人操作导致的，`opUid` 是操作者。你可以据此给用户一个「已被主持人关闭麦克风」这类提示。
+
+主持人转移时，SDK 先把新主持人本地升为 `.host`、原主持人降为 `.member`，各发一次 `userRoleDidChange`，再发 `roomHostDidMove`（带新主持人 `uid` 与原主持人 `sourceUid`）。只关心角色刷新的话不必实现 `roomHostDidMove`。原主持人在本地快照里不是 `.host` 时不补发降级那次 `userRoleDidChange`。
 
 `UserHandupEventData.step` 区分是哪一步：`.request` 举手、`.cancel` 取消、`.confirmOpen` 同意邀请、`.rejectOpen` 拒绝邀请。
 
@@ -107,6 +110,8 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:didReceiveCustomMessage:)` | 收到业务自定义消息 | `RoomCustomMsgEventData` |
 
 两者都有 `isPrivate` 标记是否为私聊，`uid` 是发送者。
+
+主持人从后台下发的系统消息也走 `didReceiveChatMessage`。1.5.0 起 `RoomChatMsgEventData` 带 `action`（原始广播 action：成员聊天为 `user_send_room_chat_message`，系统消息为 `admin_send_room_chat_message`）和 `isSystem`，需要区分展示或过滤系统消息时判断 `isSystem` 即可。
 
 ---
 
@@ -229,15 +234,22 @@ extension MeetingController: SMeetingDelegate {
 
 | 方法 | 触发时机 | 数据类型 |
 | --- | --- | --- |
+| `meeting(_:imDidConnect:)` | `enableIm()` 成功后触发一次（1.5.0 起） | `ImConnectEventData` |
+| `meeting(_:imDidReceiveMessage:)` | 收到任意一条会议外消息，原样透传（1.5.0 起） | `ImMessageEventData` |
 | `meeting(_:imCallCalling:)` | 有人在会议里呼叫你 | `ImCallCallingEventData` |
 | `meeting(_:imMeetingRemind:)` | 会议开始提醒 | `ImMeetingRemindEventData` |
 | `meeting(_:imAdminMoveOutWaitingRoom:)` | 你被放行出等候室 | `ImAdminMoveOutWaitingRoomEventData` |
 | `meeting(_:imUserHelpSubMeeting:)` | 有小组请求协助 | `ImUserHelpSubMeetingEventData` |
 | `meetingImIsReconnecting(_:)` | 会议外消息通道开始重连 | 无 |
 | `meetingImDidReconnect(_:)` | 会议外消息通道重连成功 | 无 |
-| `meeting(_:imDidDisconnect:)` | 会议外消息通道断开 | `ImDisconnectEventData` |
+| `meeting(_:imDidDisconnect:)` | 会议外消息通道被动断开：被踢、心跳超时、后端报错 | `ImDisconnectEventData` |
 
 这几个连接事件与前面的会议连接事件是两条独立通道，不要混用。
+
++ 1.4.1 及以前，`enableIm()` 只建立通道、没有把消息派发出来，呼叫 / 提醒 / 等候室放行 / 小组求助和重连、断开回调实际都收不到；1.5.0 起才真正派发
++ 每条消息先以原始形态触发一次 `imDidReceiveMessage`，SDK 认识的 action 再额外派发到对应的具名事件；业务自定义的 action 只走原始透传
++ 重连成功走 `meetingImDidReconnect`，不会再触发 `imDidConnect`
++ 主动调用 `disableIm()` 不会触发 `imDidDisconnect`；被动断开时 `ImDisconnectEventData` 带 `disconnectReason`（SRTC `ImDisconnectReason`）、`errorCode`、`errorMessage`
 
 ---
 
@@ -245,8 +257,8 @@ extension MeetingController: SMeetingDelegate {
 
 SDK 另外公开了两个枚举，列出各事件的字符串标识：
 
-+ `RoomEventType` —— 会议内事件标识，例如 `user_enter`、`room_share_start`
-+ `ImEventType` —— 会议外消息事件标识，例如 `call_calling`
++ `RoomEventType` —— 会议内事件标识，例如 `user_enter`、`room_share_start`；1.5.0 起新增 `roomHostMoved`（`room_host_moved`），对应 `roomHostDidMove`
++ `ImEventType` —— 会议外消息事件标识，例如 `call_calling`；1.5.0 起另有 `connected`、`message`，对应 `imDidConnect`、`imDidReceiveMessage`
 
 Swift 侧的事件分发走上面的 `SMeetingDelegate` 方法，这两个枚举在正常接入中用不到，只在你需要做日志埋点或与其它端对齐事件命名时才有用。
 

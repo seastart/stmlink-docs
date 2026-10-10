@@ -197,7 +197,7 @@ let info = try await meeting.detailRoom(roomNo: "10000001")
 | `meetingId` | `String?` | 否 | 会议 ID |
 | `roomNo` | `String?` | 否 | 房间号 |
 
-**返回值：** `MeetingInfo`
+**返回值：** `MeetingInfo`。详情回包不带创建时间，`createdAt` 为 `0`；1.5.0 起另带 `entryMutePolicy`、`content`（后端没给时为 `nil`），字段见 [类型定义](/zh/meeting/swift/types#meetinginfo)
 
 **可能抛出：** `SMeetingError.notLoggedIn`、`SMeetingError.apiError(code:message:)`
 
@@ -426,6 +426,8 @@ try await meeting.cancelHandup(.mic)
 try await meeting.enableIm()
 ```
 
+成功后触发一次 `meeting(_:imDidConnect:)`，此后收到的会议外消息按 action 派发到 `imCallCalling` / `imMeetingRemind` / `imAdminMoveOutWaitingRoom` / `imUserHelpSubMeeting`，每条消息另外原样触发 `imDidReceiveMessage`，见 [会议外消息](/zh/meeting/swift/advanced/im)。1.4.1 及以前这些事件实际不会派发，1.5.0 起修正。
+
 **返回值：** 无
 
 **可能抛出：** `SMeetingError.notLoggedIn`、`SMeetingError.apiError(code:message:)`、连接建立失败时的底层错误
@@ -438,7 +440,7 @@ try await meeting.enableIm()
 await meeting.disableIm()
 ```
 
-**返回值：** 无，不抛错。`logout()` 内部会自动调用。
+**返回值：** 无，不抛错。`logout()` 内部会自动调用。主动停用不会触发 `meeting(_:imDidDisconnect:)`。
 
 ---
 

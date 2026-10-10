@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.5.2] - 2026.10.10
+#### 修复
++ **iOS 通话音频会话被外部改掉后可以自愈**：SDK 占用通话音频会话期间，如果宿主 App 自己把会话类别改成了别的（常见于后台保活、播放提示音时设成 `.playback`），录音链路会当场停掉、状态栏橙色麦克风指示点消失，而且之后再开麦也救不回来，这一场的麦克风一直无声。现在再次开麦或再次入会时，SDK 会检查类别是否被外部顶走，是则重新下发通话配置并拉起录音。
++ **离会后不再上报音频路由变化**：离会时 SDK 把音频会话还给系统，系统随即把输出从听筒切回扬声器，旧版仍会补发一次路由变化回调，宿主据此弹出「已切换为扬声器模式」之类的提示。现在未占用音频通道时不再回调；`.oldDeviceUnavailable`（如拔耳机）后的回落重设照常执行。
+
+<Note>
+本版为纯修复，没有公开 API 变动，1.5.1 的接入代码可直接升级。平台下限不变（iOS 16 / macOS 14）。建议宿主 App 在 SDK 占用音频会话期间（`AudioRouteSession.isEngaged` 为 `true`）不要改会话类别，自愈只是兜底。
+
+`SRTCBroadcastKit` 本次为 **1.0.15**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.5.1] - 2026.10.01
 #### 修复
 + **`AudioRoute.displayName` / `AudioRouteTarget.displayName` 按系统语言返回中文或英文**：此前一律返回中文（「扬声器」「听筒」等），英文系统的 App 直接拿来显示就会在英文界面里夹着中文。现在系统首选语言以 `zh` 开头（`zh-Hans` / `zh-Hant` / `zh-HK` 等）时返回中文，其余返回英文（`Speaker`、`Earpiece`、`Bluetooth headset`、`Wired headset`、`Unknown route`）。它是给终端用户看的文案，只跟随**系统语言**，不受 `SRTCEngine.language` 影响。

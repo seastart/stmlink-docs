@@ -197,10 +197,14 @@ req.resKey = key
 | `layoutData` | `LayoutData?` | 合成布局 |
 | `watermarkDisabled` / `screenshotDisabled` / `chatDisabled` | `Bool` | 对应开关 |
 | `waitingRoomDisabled` / `enterBeforeHostDisabled` | `Bool` | 对应开关 |
-| `planTime` / `planDur` | `Int` | 计划开始时间 / 时长 |
+| `planTime` / `planDur` | `Int` | 计划开始时间（秒级时间戳）/ 时长（分钟） |
 | `beginTime` / `endTime` | `Int` | 实际开始 / 结束时间 |
-| `createdAt` | `Int` | 创建时间 |
+| `createdAt` | `Int` | 创建时间；回包不带时为 `0`（`detailRoom(...)` 的回包就没有这个字段） |
+| `entryMutePolicy` | `EntryMutePolicy?` | 入会静音策略；回包没有或取值不认识时为 `nil` |
+| `content` | `String?` | 会议说明；未设置说明的会议为 `nil` |
 | `extendInfo` | `String` | 业务扩展字段 |
+
+`entryMutePolicy`、`content` 自 1.5.0 起提供。为 `nil` 表示后端没给，修改会议时不要拿默认值回填，以免冲掉后端已有的设置。
 
 #### ParticipantInfo
 
@@ -240,7 +244,31 @@ req.resKey = key
 
 #### AgentInfo
 
-可邀请设备，由 `agentList(...)` 返回：`id`、`name`、`type`（`AgentType`）、`status`（`AgentStatus`）、`contact`、`remark`。
+可邀请设备，由 `agentList(...)` 返回。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `String` | 设备 ID |
+| `name` | `String` | 设备名称 |
+| `type` | `AgentType` | 设备类型 |
+| `status` | `AgentStatus` | 设备状态，取值见 [AgentStatus](#agentstatus) |
+| `contact` | `String` | 设备标识，邀请时传给 `adminInviteAgent(...)` |
+| `remark` | `String` | 备注 |
+| `connParams` | `[String: AnyCodable]?` | 连接参数（后端 `conn_params`），原样透传，没有时为 `nil` |
+| `connSubjects` | `[String: String]` | GB28181 通道表（`conn_params.subjects`，`{通道编号: 通道名}`），没有时为空字典 |
+
+`connParams`、`connSubjects` 与公开构造器 `AgentInfo(id:name:type:status:contact:remark:connParams:)`（`remark`、`connParams` 有默认值）自 1.5.0 起提供。
+
+GB28181 设备要按「设备编号:通道编号」邀请，直接传 `contact` 会被后端拒绝。SDK 只解析通道表、不替你展开，通常每个通道列一行：
+
+```swift
+for (channelNo, channelName) in agent.connSubjects {
+    let contact = "\(agent.contact):\(channelNo)"   // 邀请时用它
+    let title = "\(agent.name)(\(channelName))"
+}
+```
+
+除 `type` 外，其余字段缺失时按空值解码，单台设备的脏数据不会让整页列表解码失败。
 
 #### ResourceInfo
 
@@ -322,6 +350,7 @@ result.meta      // MetaRes
 | `UserMicStateChangeEventData` | `uid`、`micState`、`byAdmin`、`opUid` |
 | `UserNameChangeEventData` | `uid`、`nickname`、`byAdmin`、`opUid` |
 | `UserRoleChangeEventData` | `uid`、`role`、`opUid` |
+| `RoomHostMoveEventData` | `uid`（新主持人）、`sourceUid`（原主持人）、`opUid`（1.5.0 起） |
 | `UserChatDisabledChangeEventData` | `uid`、`chatDisabled`、`opUid` |
 | `UserDrawDisabledChangeEventData` | `uid`、`drawDisabled`、`opUid` |
 | `UserHandupEventData` | `uid`、`type: HandupType`、`step: UserHandupStep` |
@@ -349,7 +378,7 @@ result.meta      // MetaRes
 
 | 类型 | 字段 |
 | --- | --- |
-| `RoomChatMsgEventData` | `msgType: ChatMsgType`、`msg`、`uid: String?`、`isPrivate` |
+| `RoomChatMsgEventData` | `msgType: ChatMsgType`、`msg`、`uid: String?`、`isPrivate`、`action`（原始广播 action，1.5.0 起）、`isSystem`（是否主持人系统消息，1.5.0 起） |
 | `RoomCustomMsgEventData` | `msg`、`uid: String?`、`isPrivate` |
 
 #### 主持人指令与举手
@@ -383,16 +412,18 @@ result.meta      // MetaRes
 
 #### 会议外消息
 
-所有会议外消息事件数据都由 `base` 和 `content` 两部分组成。
+业务事件（呼叫、提醒、等候室放行、小组求助）的数据都由 `base` 和 `content` 两部分组成；连接与原始消息事件直接带字段。
 
 | 类型 | 字段 |
 | --- | --- |
 | `ImBaseEventData` | `sid`、`uid`、`name`、`avatar: String?` |
 | `ImCallCallingEventData` | `base`、`content: ImCallContent`（`roomNo`、`meetingId`、`title`） |
-| `ImMeetingRemindEventData` | `base`、`content: ImMeetingRemindContent`（`roomNo`、`meetingId`、`title`、`creatorName`、`planDur`、`planTime`） |
+| `ImMeetingRemindEventData` | `base`、`content: ImMeetingRemindContent`（`roomNo`、`meetingId`、`title`、`creatorName`、`planDur`（分钟）、`planTime`（秒级时间戳）、`creatorId`（创建者用户 ID，1.5.0 起）） |
 | `ImAdminMoveOutWaitingRoomEventData` | `base`、`content: ImMoveOutWaitingRoomContent`（`parent`、`meetingId`、`title`） |
 | `ImUserHelpSubMeetingEventData` | `base`、`content: ImHelpSubMeetingContent`（`parent`、`meetingId`、`title`） |
-| `ImDisconnectEventData` | `reason: String?` |
+| `ImDisconnectEventData` | `reason: String?`（文字描述）、`disconnectReason: ImDisconnectReason`、`errorCode: Int?`、`errorMessage: String?`（后三项 1.5.0 起） |
+| `ImConnectEventData` | `uid`（本端用户 ID）、`sid`（本端 IM 会话 ID）（1.5.0 起） |
+| `ImMessageEventData` | `action`、`content`（通常是 JSON 字符串）、`sid`、`uid`、`name: String?`（1.5.0 起） |
 
 ---
 
@@ -590,9 +621,14 @@ result.meta      // MetaRes
 
 | 枚举值 | 原始值 | 说明 |
 | --- | --- | --- |
-| `idle` | `1` | 空闲 |
-| `busy` | `2` | 忙碌 |
-| `offline` | `3` | 离线 |
+| `unknown` | `0` | 未知 |
+| `online` | `1` | 在线 |
+| `offline` | `2` | 离线 |
+
+取值与服务端一致，后端下发其它取值时解码为 `.unknown`。1.4.1 及以前的定义有误（`idle = 1` 空闲、`busy = 2` 忙碌、`offline = 3` 离线），后端下发 `status = 0` 时整页设备列表解码失败，1.5.0 起改正：
+
++ `idle`、`busy` 保留为已废弃的别名，分别等于 `.online`、`.offline`，旧代码仍能编译
++ **`offline` 的原始值从 `3` 变为 `2`**：按 `rawValue` 做数值比较或持久化过原始值的代码需要检查
 
 #### PresignedPutObjectType
 
@@ -606,7 +642,7 @@ result.meta      // MetaRes
 
 ### 来自 SRTC 的类型
 
-以下类型定义在底层 SRTC 模块，使用时需要 `import SRTC`：`LogLevel`、`CameraPreset`、`MicPreset`、`ScreenPreset`、`DeviceInfo`、`DisconnectReason`、`SRTCVideoView`、`SRTCVideoRenderer`、`ScreenCaptureSources`、`DisplaySource`、`WindowSource`、`LocalCameraTrack`、`LocalScreenTrack`、`RemoteVideoTrack`、`Track`、`SRTCBroadcastPicker`。
+以下类型定义在底层 SRTC 模块，使用时需要 `import SRTC`：`LogLevel`、`CameraPreset`、`MicPreset`、`ScreenPreset`、`DeviceInfo`、`DisconnectReason`、`ImDisconnectReason`、`AnyCodable`、`SRTCVideoView`、`SRTCVideoRenderer`、`ScreenCaptureSources`、`DisplaySource`、`WindowSource`、`LocalCameraTrack`、`LocalScreenTrack`、`RemoteVideoTrack`、`Track`、`SRTCBroadcastPicker`。
 
 `NativeVideoView` 是 SMeeting 为渲染视图定义的别名，实际类型是 `SRTCVideoRenderer`。
 
