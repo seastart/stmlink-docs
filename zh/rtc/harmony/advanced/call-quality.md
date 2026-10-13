@@ -81,8 +81,12 @@ onActiveSpeakersChange: (channel, snapshot: ActiveSpeakersSnapshot) => {
 `level` 是音量级别，可以用来做"说话时头像发光"的强弱效果，而不只是二值状态。
 
 <Note>
-这是**服务端**算出来的集合，不是客户端逐路分析音量 —— 所以在云端混音
+SeaStart 引擎下这是**服务端**算出来的集合，不是客户端逐路分析音量 —— 所以在云端混音
 （`RemoteAudioMixTrack`）模式下依然可用，那种模式下客户端根本拿不到分路音频。
+
+网宿引擎没有控制面，1.2.0 起由 SDK 每 500ms 轮询**已订阅**音频的接收音量在本地算出（未订阅的流不在其中，CDN 链路约有 10 秒延迟）；1.1.0 及以前网宿引擎下不触发。
+
+两者都**只含远端**，自己的音量用 `channel.getLocalAudioLevel(track)` 读（1.2.0 起）。
 </Note>
 
 ---

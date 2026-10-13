@@ -29,8 +29,8 @@ HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDep
 两个包都从制品仓下载：
 
 ```bash
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.1.0.har
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.2.1.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.2.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.3.0.har
 ```
 
 放进模块的 `libs/` 目录，去掉文件名里的 `-harmony`：
@@ -39,16 +39,16 @@ curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1
 your-project/
 └── entry/
     ├── libs/
-    │   ├── srtc-1.1.0.har
-    │   └── smeeting-1.2.1.har
+    │   ├── srtc-1.2.0.har
+    │   └── smeeting-1.3.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
 
 <Note>
-两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.2.1 依赖 SRTC 1.1.0，**不能搭配 SRTC 1.0.x**（本版用到了 SRTC 1.1.0 才有的接口，搭旧版编不过）。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
+两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.3.0 依赖 SRTC 1.2.0，**不能搭配 SRTC 1.1.x 及以前**（本版用到了 SRTC 1.2.0 才有的收流状态事件，HAR 里也以 `peerDependencies` 钉住 `srtc@1.2.0`）。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
 
-SMeeting 1.2.1 的 HAR 校验值（sha256）：`7daf69451a4843a004bfb84699b1ef216faa93122752a7a9ea7b6260e065a093`，可用 `shasum -a 256 smeeting-harmony-1.2.1.har` 核对。
+SMeeting 1.3.0 的 HAR 校验值（sha256）：`59875d18da958c23033e3920f40ff4e461094bd82339cd1b56b3ff16ee116bf4`，可用 `shasum -a 256 smeeting-harmony-1.3.0.har` 核对。
 </Note>
 
 <Warning>
@@ -64,8 +64,8 @@ SMeeting 1.2.1 的 HAR 校验值（sha256）：`7daf69451a4843a004bfb84699b1ef21
 ```json5
 {
   "dependencies": {
-    "smeeting": "file:./libs/smeeting-1.2.1.har",
-    "srtc": "file:./libs/srtc-1.1.0.har"
+    "smeeting": "file:./libs/smeeting-1.3.0.har",
+    "srtc": "file:./libs/srtc-1.2.0.har"
   }
 }
 ```

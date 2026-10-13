@@ -85,12 +85,19 @@ UI 上的「网络异常」提示应当同时接这两条线：只接信令那�
 | `onTrackAdded` | `user: UserInfo`, `track: TrackInfo` | 远端有新流可订阅 |
 | `onTrackUpdated` | `user: UserInfo`, `track: TrackInfo` | 远端流信息变化（分辨率、静音态等） |
 | `onTrackRemoved` | `user: UserInfo`, `track: TrackInfo` | 远端流已移除 |
+| `onReceiveStreamStatusChange` | `status: ReceiveStreamStatus` | 某一路已订阅的远端视频收流超时 / 恢复（1.2.0 起） |
 
 <Note>
 `onTrackAdded` 只表示「可以订阅了」，**不会自动订阅**（除非入会时开了
 `autoSubscribeAudio` / `autoSubscribeVideo`）。要看到画面还需要显式调用
 `channel.subscribeRemoteVideoTrack(uid, trackId)`。
 </Note>
+
+**`onReceiveStreamStatusChange`（1.2.0 起）**：订阅后约 3 秒收不到该路视频帧报一次 `timedOut = true`，帧恢复后报一次 `false`；首帧到达时会先收到一次 `false`，可据此关掉初始 loading。按**轨道**判定，用来开关某一格画面上的「加载中 / 对方网络异常」指示，覆盖所有已订阅的远端视频（含 MCU 合成轨，`uid` 为 `__mcu__`）。判定纯在本端，两条引擎都触发。
+
+<Warning>
+**只报跳变**：已出过帧的轨道退订后再订阅，不会再报一次恢复。初始状态请按 `RemoteVideoTrack.isReceiveTimedOut` 现判。不要用 `onConnectionQualityChange` 代替——那是整条链路的档位，单路画面停了档位也可能是 excellent。
+</Warning>
 
 #### 频道与消息
 
@@ -105,7 +112,7 @@ UI 上的「网络异常」提示应当同时接这两条线：只接信令那�
 | --- | --- | --- |
 | `onQualityReport` | `report: QualityReport` | 周期性上报的原始质量采样 |
 | `onConnectionQualityChange` | `change: ConnectionQualityChange` | 连接质量**等级**发生变化 |
-| `onActiveSpeakersChange` | `snapshot: ActiveSpeakersSnapshot` | 活跃说话人集合变化 |
+| `onActiveSpeakersChange` | `snapshot: ActiveSpeakersSnapshot` | 活跃说话人集合变化（只含远端；1.2.0 起网宿引擎也触发） |
 | `onLayerSwitched` | `info: LayerSwitchedInfo` | Simulcast 大小流发生切换 |
 
 <Note>
@@ -125,9 +132,10 @@ UI 上的「网络异常」提示应当同时接这两条线：只接信令那�
 | `onTrackInfoUpdate` | `info: TrackInfo` | 轨道信息变化 |
 | `onTrackMute` | — | 轨道被静音 |
 | `onTrackUnmute` | — | 轨道取消静音 |
-| `onTrackEnd` | — | 采集结束 / 轨道失效 |
+| `onTrackEnd` | — | 采集结束 / 轨道失效。1.2.0 起屏幕共享被系统侧结束时也会触发 |
 | `onTrackBindRtcTrack` | — | 底层 WebRTC 轨道绑定完成 |
 | `onTrackMirrorUpdate` | — | 镜像状态变化 |
+| `onTrackCameraSwitching` | `switching: boolean` | 摄像头切换开始（`true`）/ 完成（`false`），切换完成后再读 `isFrontCamera` |
 
 <Note>
 `onTrackBindRtcTrack` 是渲染的关键时机：远端轨道是信令先建对象、订阅协商完成后才绑定

@@ -25,6 +25,16 @@ await channel.unpublishLocalVideoTrack(screen);
 await screen.stopCapture();
 ```
 
+用户也可能从系统侧结束共享（点状态栏录屏胶囊等）。1.2.0 起 SDK 会自己 `stopCapture()` 并触发 `TrackDelegate.onTrackEnd`，但**只停采集、不撤发布**——请在 `onTrackEnd` 里撤发布并更新业务状态：
+
+```typescript
+onTrackEnd: (track: Track) => {
+  if (track === screen) {
+    channel.unpublishLocalVideoTrack(screen);   // 撤发布、通知其他人由业务层做
+  }
+}
+```
+
 ---
 
 ### 权限与授权窗

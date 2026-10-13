@@ -253,6 +253,7 @@ await meeting.requestShare(shareType, preset, /* byAdmin */ true, /* adminUid */
 | `onConnectionQualityChange` | `ConnectionQualityChange` | 连接质量**等级**变化 |
 | `onQualityReport` | `QualityReport` | 周期性原始采样 |
 | `onActiveSpeakersChange` | `ActiveSpeakersSnapshot` | 活跃说话人变化 |
+| `onReceiveStreamStatusChange` | `ReceiveStreamStatus` | 某一路远端视频收流超时 / 恢复（1.3.0 起） |
 | `onLayerSwitched` | `LayerSwitchedInfo` | Simulcast 层切换 |
 
 这几个的参数类型来自 SRTC，字段说明见
@@ -260,6 +261,8 @@ await meeting.requestShare(shareType, preset, /* byAdmin */ true, /* adminUid */
 
 做 UI 指示器用 `onConnectionQualityChange`（已做等级判定与抖动抑制），
 `onQualityReport` 是原始采样、适合上报监控。
+
+`onReceiveStreamStatusChange`（1.3.0 起，透传 SRTC 1.2.0 的同名事件）按**轨道**判定，用来开关某一格画面上的「加载中」指示：订阅后首帧到达会先收到一次 `timedOut = false`，之后约 3 秒收不到帧报超时、恢复再报一次。**只报跳变**，初始状态按 SRTC `RemoteVideoTrack.isReceiveTimedOut` 现判。不要用 `onConnectionQualityChange` 代替——那是整条链路的档位，不是这一路画面的卡顿。
 
 ---
 

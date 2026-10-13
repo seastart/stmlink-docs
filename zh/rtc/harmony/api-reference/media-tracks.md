@@ -107,7 +107,7 @@ await channel.publishLocalAudioTrack(mic);
 | `defaultPublishOptions` | `VideoPublishOptions \| undefined` | 发布默认参数 |
 | `captureWidth` / `captureHeight` | `number \| undefined` | **实际**采集尺寸（可能被档位吸附过） |
 | `isMirrored` | `boolean`（只读） | 是否镜像 |
-| `setMirrored(mirrored)` | `void` | 设置镜像 |
+| `setMirrored(mirrored)` | `void` | 设置镜像。1.2.0 起摄像头轨道在**后置**时调用无效（与 Swift 一致），`isMirrored` 读回真实生效值 |
 | `addRenderer(r)` | `void` | 挂一个自定义渲染器 |
 | `removeRenderer(r)` / `removeAllRenderers()` | `void` | 摘除渲染器 |
 | `hasRenderers` / `rendererCount` | 只读 | 渲染器状态 |
@@ -127,6 +127,7 @@ await channel.publishLocalAudioTrack(mic);
 | --- | --- | --- |
 | `captureOptions` | `CameraCaptureOptions` | 当前采集参数 |
 | `startCapture(options?)` | `Promise<void>` | 开始采集 |
+| `isFrontCamera` | `boolean`（只读） | 是否前置摄像头，1.2.0 起。`switchCamera()` 同步发起、约 600ms 后才切完，切换完成前读到的仍是旧值，需要准确值请在 `onTrackCameraSwitching(track, false)` 之后读；传 `cameraId` 的切换保持原值 |
 | `switchCamera(cameraId?)` | `void` | 前后置切换；传 ID 可切到指定摄像头 |
 | `changeDeviceId(deviceId)` | `void` | 切换摄像头 |
 | `restartCapture()` | `Promise<void>` | 重启采集 |
@@ -196,6 +197,8 @@ if (sysAudio !== undefined) {
 
 **抛出**（`startCapture` / `restartCapture`）：`screenShareDenied`（`108039`，系统授权未通过）/ `captureError`（`108018`），1.1.0 起；系统原码在 `systemCode`。用户点「取消」时实际落到哪个码尚待确认。
 
+**系统侧结束共享**（1.2.0 起）：用户点状态栏录屏胶囊等系统入口结束共享时，SDK 会自己走一遍 `stopCapture()` 并触发 `TrackDelegate.onTrackEnd`。SDK **只停采集**，撤发布和通知其他人由业务层在 `onTrackEnd` 里做。
+
 详见[屏幕共享](/zh/rtc/harmony/advanced/screen-sharing)。
 
 ---
@@ -235,6 +238,7 @@ if (sysAudio !== undefined) {
 | `addRenderer(r)` | `void` | 挂渲染器 |
 | `removeRenderer(r)` / `removeAllRenderers()` | `void` | 摘除渲染器 |
 | `hasRenderers` / `rendererCount` | 只读 | 渲染器状态 |
+| `isReceiveTimedOut` | `boolean`（只读） | 当前是否处于接收超时，1.2.0 起。首帧到达前也算超时（初值 `true`）；判定周期约 1 秒、阈值约 3 秒，刚订阅的一两秒读到 `true` 是正常的 |
 
 用 `SRTCVideoView` 时不需要自己管：
 
@@ -246,6 +250,23 @@ ForEach(this.tiles, (tile: Tile) => {
   })
 }, (tile: Tile) => tile.trackId)
 ```
+
+<Note>
+`onReceiveStreamStatusChange` **只报跳变**：已出过帧的轨道退订后再订阅，不会再报一次「恢复」。所以画面上的初始加载指示要按 `isReceiveTimedOut` 现判，后续变化再跟事件走。
+</Note>
+
+### `RemoteVideoMcuTrack`
+
+> 1.2.0 起
+
+频道级 MCU 合成视频轨道，继承 `RemoteVideoTrack`，由 `channel.subscribeRemoteVideoMcuTrack()` 返回，不要自己构造。
+
+| 成员 | 签名 | 说明 |
+| --- | --- | --- |
+| `publisherUid` | `static readonly string` | 合成流发布者，固定为 `__mcu__`，不在成员列表里 |
+| `mcuTrackId` | `static readonly string` | 合成视频的 trackId |
+
+渲染、收流状态与普通远端视频一致，见 [`Channel` 接口](/zh/rtc/harmony/api-reference/SRTCEngine)「MCU 合成画面」一节。
 
 ---
 

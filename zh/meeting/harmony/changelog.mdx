@@ -3,6 +3,19 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.3.0] - 2026.10.14
+#### 新增
++ **`SMeetingDelegate.onReceiveStreamStatusChange(meeting, status: ReceiveStreamStatus)`**：某一路远端视频收流超时 / 恢复，对应 Swift 版 `meeting(_:didChangeReceiveStreamStatus:)`。透传 SRTC 1.2.0 的同名事件，按轨道判定，用来开关画面上的「加载中」指示。**只报跳变**，初始状态按 SRTC `RemoteVideoTrack.isReceiveTimedOut` 现判。
+
+#### 变更
++ 依赖升到 **SRTC 1.2.0**（HAR 的 `peerDependencies` 为 `srtc@1.2.0`），SRTC 本版的新增能力见 [SRTC 鸿蒙版更新日志](/zh/rtc/harmony/changelog)。
+
+<Note>
+无不兼容变更，1.2.1 的接入代码可直接升级，但**必须同时把 SRTC 换成 1.2.0**（两个 HAR 都要替换并改 `oh-package.json5` 里的文件名），见[集成方式](/zh/meeting/harmony/integration)。
+
+已知限制不变：会议后端仍拒绝鸿蒙终端类型（`10070`）；`subscribeRemoteVideoMcu` 尚未改用 SRTC 1.2.0 的频道级合成流订阅，服务端合成画面仍订阅不到，待后续版本。
+</Note>
+
 ### [1.2.1] - 2026.10.10
 #### 新增
 + `SignInfo` 新增可选的 `hostName`（发起人昵称）。服务端的签到列表目前不返回该字段，一般为 `undefined`，取不到时按 `uid` 找会中成员，或使用 `onSignInActivity` 里的 `hostName`。
