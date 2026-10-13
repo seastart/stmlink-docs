@@ -71,7 +71,7 @@ virtual void onImEnabled(const char* uid, const char* sid) = 0;
 
 ### IM disconnected callback
 ```cpp
-virtual void onImDisconnected(int reason, StatusCode code, const char* message, size_t message_size) = 0;
+virtual void onImDisconnected(int reason, StatusCode code, const char* message, size_t messageSize) = 0;
 ```
 
 **Parameters**
@@ -81,7 +81,7 @@ virtual void onImDisconnected(int reason, StatusCode code, const char* message, 
 | reason | int | Disconnect reason |
 | code | StatusCode | Error code |
 | message | const char* | Error description |
-| message_size | size_t | Length of the error description |
+| messageSize | size_t | Length of the error description |
 
 ### IM reconnected callback
 ```cpp
@@ -95,7 +95,7 @@ virtual void onImReconnecting() = 0;
 
 ### IM message callback
 ```cpp
-virtual void onImMessage2(const char* uid, const char* sid, const char* name, int name_size, const char* action, const char* content, size_t content_size) = 0;
+virtual void onImMessage2(const char* uid, const char* sid, const char* name, int nameSize, const char* action, const char* content, size_t contentSize) = 0;
 ```
 
 **Parameters**
@@ -105,7 +105,7 @@ virtual void onImMessage2(const char* uid, const char* sid, const char* name, in
 | uid | const char* | Sender's user ID |
 | sid | const char* | Session ID |
 | name | const char* | Sender's display name |
-| name_size | int | Length of the display name |
+| nameSize | int | Length of the display name |
 | action | const char* | Message type / action |
 | content | const char* | Message content |
-| content_size | size_t | Length of the message content |
+| contentSize | size_t | Length of the message content |

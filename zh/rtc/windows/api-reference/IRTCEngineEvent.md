@@ -71,7 +71,7 @@ virtual void onImEnabled(const char* uid, const char* sid) = 0;
 
 ### IM 断开连接回调
 ```cpp
-virtual void onImDisconnected(int reason, StatusCode code, const char* message, size_t message_size) = 0;
+virtual void onImDisconnected(int reason, StatusCode code, const char* message, size_t messageSize) = 0;
 ```
 
 **参数**
@@ -81,7 +81,7 @@ virtual void onImDisconnected(int reason, StatusCode code, const char* message, 
 | reason | int | 断开原因 |
 | code | StatusCode | 错误码 |
 | message | const char* | 错误描述信息 |
-| message_size | size_t | 错误描述长度 |
+| messageSize | size_t | 错误描述长度 |
 
 ### IM 重连成功回调
 ```cpp
@@ -95,7 +95,7 @@ virtual void onImReconnecting() = 0;
 
 ### IM 消息回调
 ```cpp
-virtual void onImMessage2(const char* uid, const char* sid, const char* name, int name_size, const char* action, const char* content, size_t content_size) = 0;
+virtual void onImMessage2(const char* uid, const char* sid, const char* name, int nameSize, const char* action, const char* content, size_t contentSize) = 0;
 ```
 
 **参数**
@@ -105,8 +105,8 @@ virtual void onImMessage2(const char* uid, const char* sid, const char* name, in
 | uid | const char* | 发送者用户 ID |
 | sid | const char* | 会话 ID |
 | name | const char* | 发送者昵称 |
-| name_size | int | 昵称长度 |
+| nameSize | int | 昵称长度 |
 | action | const char* | 消息类型/动作 |
 | content | const char* | 消息内容 |
-| content_size | size_t | 消息内容长度 |
+| contentSize | size_t | 消息内容长度 |
 
