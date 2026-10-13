@@ -39,11 +39,13 @@ After extracting you get the following (both packages have exactly the same stru
 
 ```text
 rtc_dll/
-├── include/          # Header files
+├── include/          # Header files (C++)
 │   ├── srtc.h
 │   └── srtc_def.h
 ├── lib/
-│   └── srtc.lib      # Import library, used at link time
+│   └── srtc.lib      # Import library, used at link time (C++)
+├── net/
+│   └── srtcNet.dll   # C# wrapper assembly (C#; see "C# Integration")
 └── bin/              # Runtime dependencies, all of which must ship with your program
     ├── srtc.dll      # SDK core
     ├── srtcLive.dll  # Capture / encoding and decoding / rendering
@@ -125,5 +127,6 @@ makes it easy to miss newly added dependencies when you upgrade the SDK.
 ### Next steps
 
 + [Quickstart](/en/rtc/windows/quickstart): initialize, join a channel, and send and receive audio and video
++ [C# integration](/en/rtc/windows/net/integration): call the same SDK from C# (`rtc_dll/net/srtcNet.dll`)
 + [Key concepts](/en/rtc/key-concepts): the channel, user, and track model
 + [Token and authentication](/en/rtc/token): the token for joining a channel is issued by your backend

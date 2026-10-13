@@ -180,6 +180,13 @@
                   "zh/rtc/windows/integration",
                   "zh/rtc/windows/quickstart",
                   {
+                    "group": "C# 封装",
+                    "pages": [
+                      "zh/rtc/windows/net/integration",
+                      "zh/rtc/windows/net/quickstart"
+                    ]
+                  },
+                  {
                     "group": "接口文档",
                     "pages": [
                       "zh/rtc/windows/api-reference/IRTCEngine",
@@ -797,6 +804,13 @@
                 "pages": [
                   "en/rtc/windows/integration",
                   "en/rtc/windows/quickstart",
+                  {
+                    "group": "C# wrapper",
+                    "pages": [
+                      "en/rtc/windows/net/integration",
+                      "en/rtc/windows/net/quickstart"
+                    ]
+                  },
                   {
                     "group": "API reference",
                     "pages": [

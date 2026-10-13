@@ -56,7 +56,7 @@ Tokens must be issued by your backend via `/server/v1/channel/grant`; `app_key` 
 | --- | --- | --- |
 | Web | `npm i @seastart/srtc-web-sdk` | `new SRTC({...})` |
 | Android | `implementation 'cn.seastart.rtc:rtc:<version>'` | `RTCEngine.create(...)` |
-| Windows | 下载 [rtc-win-sdk-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-2.1.zip)（x86 32 位）或 [rtc-win-sdk-x64-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-x64-2.1.zip)（x64 64 位），必须与工程目标平台一致 | `IRTCEngine`（C++） |
+| Windows | 下载 [rtc-win-sdk-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-2.1.zip)（x86 32 位）或 [rtc-win-sdk-x64-2.1.zip](https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-x64-2.1.zip)（x64 64 位），必须与工程目标平台一致；C# 用包内 `rtc_dll/net/srtcNet.dll`（与原生包位数一致） | `IRTCEngine`（C++）/ `SrtcEngine`（C#） |
 | Swift（iOS/macOS） | Swift Package `srtc-swift-sdk` | `import SRTC` → `SRTCEngine()` |
 | Objective-C（iOS） | CocoaPods | `RTCEngineKit` |
 | C（服务端/嵌入式） | 向我们获取 SDK 包 | `rtc_create()` |

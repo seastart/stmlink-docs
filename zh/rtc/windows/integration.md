@@ -39,11 +39,13 @@ https://repo.open.seastart.cn/repository/vcs-releases/rtc-win-sdk-x64-<版本号
 
 ```text
 rtc_dll/
-├── include/          # 头文件
+├── include/          # 头文件（C++）
 │   ├── srtc.h
 │   └── srtc_def.h
 ├── lib/
-│   └── srtc.lib      # 导入库，链接时用
+│   └── srtc.lib      # 导入库，链接时用（C++）
+├── net/
+│   └── srtcNet.dll   # C# 封装程序集（C# 用，见「C# 集成」）
 └── bin/              # 运行时依赖，全部需要随程序分发
     ├── srtc.dll      # SDK 主体
     ├── srtcLive.dll  # 采集/编解码/渲染
@@ -125,5 +127,6 @@ SDK 时很容易漏掉新增的依赖库。
 ### 下一步
 
 + [快速开始](/zh/rtc/windows/quickstart) —— 初始化、加入频道、收发音视频
++ [C# 集成](/zh/rtc/windows/net/integration) —— 用 C# 调用同一套 SDK（`rtc_dll/net/srtcNet.dll`）
 + [核心概念](/zh/rtc/key-concepts) —— 频道、用户、流轨道模型
 + [Token 与鉴权](/zh/rtc/token) —— 加入频道 token 由你的后端签发
