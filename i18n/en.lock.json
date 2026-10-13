@@ -1032,10 +1032,10 @@
     "zh_commit": "068c54e314f6db627af8aece74141f3396d74593"
   },
   "en/rtc/overview": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/overview.md",
-    "zh_blob": "a31e7ea769ae1ef88cc7029d1d84286717506ddc",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "2e7250ca61a610dad83e85f80fb306a7e313700f",
+    "zh_commit": "32b93e7c10e1bd84a4c5e9a8ab9ae3dd7e0ca503"
   },
   "en/rtc/python/advanced/ai-agent": {
     "reviewed": true,
@@ -1098,10 +1098,10 @@
     "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
   },
   "en/rtc/quickstart": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/quickstart.md",
-    "zh_blob": "d672b384c4f58c48c4bc39a8965cd79f7491da21",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "a6c46c65720929e5bf9c5868671d4f2a8b30b631",
+    "zh_commit": "32b93e7c10e1bd84a4c5e9a8ab9ae3dd7e0ca503"
   },
   "en/rtc/server-api/guides/agents": {
     "reviewed": true,
@@ -1500,10 +1500,22 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/rtc/windows/integration": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/windows/integration.md",
-    "zh_blob": "4a9d517b00e7166b6b034379dc265c2b72e84028",
-    "zh_commit": "a884dc97fbf75cb6371ba405c82812cd604f782c"
+    "zh_blob": "9a1f2c5b76fb5416625d2265627b06c59d6ecfcb",
+    "zh_commit": "32b93e7c10e1bd84a4c5e9a8ab9ae3dd7e0ca503"
+  },
+  "en/rtc/windows/quickstart-cpp": {
+    "reviewed": false,
+    "source": "zh/rtc/windows/quickstart-cpp.md",
+    "zh_blob": "0f774922c74389426244b4a405747a2cc5a9d436",
+    "zh_commit": "32b93e7c10e1bd84a4c5e9a8ab9ae3dd7e0ca503"
+  },
+  "en/rtc/windows/quickstart-csharp": {
+    "reviewed": false,
+    "source": "zh/rtc/windows/quickstart-csharp.md",
+    "zh_blob": "f050b70c9d481a98f7df9d5d4d2753d26a04e2a4",
+    "zh_commit": "32b93e7c10e1bd84a4c5e9a8ab9ae3dd7e0ca503"
   },
   "en/rtc/windows/types": {
     "reviewed": true,
