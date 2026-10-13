@@ -640,6 +640,45 @@
                 ]
               }
             ]
+          },
+          {
+            "tab": "产品与部署",
+            "groups": [
+              {
+                "group": "概览",
+                "pages": [
+                  "zh/product/overview",
+                  "zh/product/admin-console",
+                  "zh/product/demos"
+                ]
+              },
+              {
+                "group": "设备接入（会议室连接器）",
+                "pages": [
+                  "zh/product/device-access/overview",
+                  "zh/product/device-access/sip-h323",
+                  "zh/product/device-access/gb28181",
+                  "zh/product/device-access/rtsp",
+                  "zh/product/device-access/faq"
+                ]
+              },
+              {
+                "group": "终端产品",
+                "pages": [
+                  "zh/product/terminals/softsip",
+                  "zh/product/terminals/tv"
+                ]
+              },
+              {
+                "group": "私有化部署",
+                "pages": [
+                  "zh/product/deploy/architecture",
+                  "zh/product/deploy/ports",
+                  "zh/product/deploy/networks",
+                  "zh/product/deploy/optical-gap"
+                ]
+              }
+            ]
           }
         ]
       },

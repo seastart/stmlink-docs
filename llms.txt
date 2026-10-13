@@ -470,6 +470,32 @@
 - [会中控制](https://docs.stmlink.com/zh/meeting/server-api/meet-admin.md): 会议进行中主持人可做的操作：全体音视频管控、成员角色与踢人、举手处理、呼叫入会
 - [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播推流
 
+## 产品与部署 · 概览
+
+- [产品全景](https://docs.stmlink.com/zh/product/overview.md): 一页看懂我们能提供什么：SRTC 音视频 SDK、SMeeting 会议 SDK、会议室连接器（硬件设备接入）、云录制与语音录制、语音识别、管理后台、终端产品、私有化与光闸部署。不写代码的同学从这里开始
+- [管理后台功能一览](https://docs.stmlink.com/zh/product/admin-console.md): 平台自带的管理后台能做什么：用量统计、频道与会议管理、会中管控、录制布局与录像、设备接入、通讯录、视频点播、授权、账号权限、媒体节点与网关运维。按菜单逐项说明并附截图，评估产品和交付培训时读
+- [在线体验](https://docs.stmlink.com/zh/product/demos.md): 想先上手试一试：会议演示（预约、即时会议、会控、成员权限、邀请成员与设备、聊天、布局、历史会议）和 RTC 演示（一对一呼叫、多人会议、语音对讲、多频道、远程监控）各能体验什么，附界面截图，以及如何获取体验地址与账号
+
+## 产品与部署 · 设备接入（会议室连接器）
+
+- [设备接入概览](https://docs.stmlink.com/zh/product/device-access/overview.md): 会议室连接器能把哪些硬件拉进会议：SIP / H.323 会议终端、GB28181 国标摄像头、RTSP 视频流。讲清工作原理、各协议能做什么、三种入会方式和部署前提，选型和售前沟通先读这页
+- [SIP / H.323 终端](https://docs.stmlink.com/zh/product/device-access/sip-h323.md): 手把手把会议室视频终端（华为、科达等 SIP / H.323 硬终端）接进会议：后台登记账号或 IP、终端侧怎么填、终端拨号呼入、平台邀请终端入会，附管理后台与终端配置截图
+- [GB28181 摄像头](https://docs.stmlink.com/zh/product/device-access/gb28181.md): 把国标监控摄像头、NVR 接进会议：在管理后台查平台信息、登记设备和通道，在摄像头（以海康为例）上配置平台接入，再把通道邀请进会，附两端配置截图和字段对照
+- [RTSP 视频流](https://docs.stmlink.com/zh/product/device-access/rtsp.md): 把任意能输出 RTSP 地址的网络摄像头、编码器、NVR、流媒体服务器接进会议：后台登记流地址、UDP/TCP 怎么选、常见品牌的地址格式，以及邀请进会的方法
+- [设备接入常见问题](https://docs.stmlink.com/zh/product/device-access/faq.md): 设备接入的排障清单：终端注册不上、拨号呼不进、进会后黑屏或单向无声、国标摄像头离线或邀请失败、RTSP 没画面、设备入会被拒。按现象查原因和处理办法
+
+## 产品与部署 · 终端产品
+
+- [软 SIP / H.323 终端](https://docs.stmlink.com/zh/product/terminals/softsip.md): 装在安卓大屏、一体机、盒子上的 SIP / H.323 软终端 App：把普通安卓设备变成标准视频会议终端，与硬件终端点对点呼叫、注册到 SIP 服务器或网守、接入我们的会议，支持屏幕共享与电子白板。介绍功能、使用流程与获取方式
+- [STM Link Rooms（安卓 TV 大屏版）](https://docs.stmlink.com/zh/product/terminals/tv.md): 装在会议室电视、大屏上的会议终端 App：遥控器操作，会议室账号登录后一键加入或发起会议，手机输投屏码无线投屏，会中支持主持人管控、白板、云录制、多种布局。介绍功能、典型使用流程与获取方式
+
+## 产品与部署 · 私有化部署
+
+- [组件与架构](https://docs.stmlink.com/zh/product/deploy/architecture.md): 私有化部署一套 SRTC / SMeeting 由哪些服务组成、哪些必装哪些按需装、装的顺序、支持的操作系统和数据库（含人大金仓、达梦）、单机与多机部署方式。做部署规划和准备服务器前先读这页
+- [网络与端口要求](https://docs.stmlink.com/zh/product/deploy/ports.md): 私有化部署要开放哪些端口：客户端必开的 443/TCP、18883/TCP、39001/UDP，设备网关的 SIP / H.323 / GB28181 端口与 RTP 端口段，多节点与 MCU 直播端口，哪些端口严禁对外，附防火墙命令。给客户网络、安全部门提开墙申请时直接用
+- [内外网与多线路](https://docs.stmlink.com/zh/product/deploy/networks.md): 一套私有化平台同时服务内网用户和外网用户怎么部署：什么是网络线路（内网/外网）、每条线路要准备的入口地址和媒体地址、入口与出口 IP 不同的机房要注意什么，以及业务系统如何让用户走对线路
+- [光闸跨网接入](https://docs.stmlink.com/zh/product/deploy/optical-gap.md): 平台部署在内网、内外网之间用光闸（网闸）隔离时，外网用户如何入会：RTSP 隧道穿透方案的原理、部署架构、光闸需要放行什么、外网只需 3 条通道、部署条件与使用限制。公检法、政务等强隔离网络的方案沟通用
+
 ## [EN] SRTC Audio & Video SDK · Overview
 
 - [Overview](https://docs.stmlink.com/en/rtc/overview.md): What SRTC is, its architecture, and which platforms it supports, with links to each platform's integration and quickstart pages. Read this first when evaluating SRTC or picking your platform SDK.

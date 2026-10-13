@@ -8,6 +8,8 @@ description: "SIP / H323 话机、国标监控、RTSP 流怎么登记进来，�
 
 单个接口的参数与返回结构见[设备接入](/zh/rtc/server-api/agent)。
 
+不写代码、只想在管理后台和设备上完成配置（终端怎么注册、拨什么号、国标摄像头怎么填），看[设备接入使用说明](/zh/product/device-access/overview)。
+
 ## 三步接入
 
 ```text
