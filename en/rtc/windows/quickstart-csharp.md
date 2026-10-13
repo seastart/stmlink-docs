@@ -1,6 +1,7 @@
 ---
 title: "C# Quickstart"
-description: "Get started with the Windows SRTC C# wrapper (srtcNet): initialize the engine, join a channel, publish local audio and video, subscribe to and render remote video, and share the screen."
+sidebarTitle: "C#"
+description: "The minimal Windows SRTC C# flow with the srtcNet wrapper in about 10 minutes: initialize SrtcEngine, subscribe events and join an SrtcChannel, publish local audio and video with typed tracks, subscribe to and render remote video, share the screen, and leave."
 ---
 
 `srtcNet` follows the same call order as C++, just in idiomatic C#: events are `event`s, tracks are

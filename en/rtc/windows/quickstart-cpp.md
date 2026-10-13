@@ -1,6 +1,7 @@
 ---
-title: "Quickstart"
-description: "The minimal Windows SRTC C++ flow: initialize IRTCEngine with log options, create an IRTCChannel, configure it and register callbacks before join(), publish camera/microphone/screen tracks, play remote audio, render remote video, record locally, and leave. Read after completing integration."
+title: "C++ Quickstart"
+sidebarTitle: "C++"
+description: "The minimal Windows SRTC C++ flow in about 10 minutes: initialize IRTCEngine with log options, create and configure an IRTCChannel, register callbacks before join(), publish camera/microphone/screen tracks, play remote audio, render remote video, record locally, and leave."
 ---
 
 There are two layers of objects in the call sequence; tell them apart first:

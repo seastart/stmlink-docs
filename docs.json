@@ -178,12 +178,11 @@
                 "group": "Windows SDK",
                 "pages": [
                   "zh/rtc/windows/integration",
-                  "zh/rtc/windows/quickstart",
                   {
-                    "group": "C# 封装",
+                    "group": "快速开始",
                     "pages": [
-                      "zh/rtc/windows/net/integration",
-                      "zh/rtc/windows/net/quickstart"
+                      "zh/rtc/windows/quickstart-cpp",
+                      "zh/rtc/windows/quickstart-csharp"
                     ]
                   },
                   {
@@ -803,12 +802,11 @@
                 "group": "Windows SDK",
                 "pages": [
                   "en/rtc/windows/integration",
-                  "en/rtc/windows/quickstart",
                   {
-                    "group": "C# wrapper",
+                    "group": "Quickstart",
                     "pages": [
-                      "en/rtc/windows/net/integration",
-                      "en/rtc/windows/net/quickstart"
+                      "en/rtc/windows/quickstart-cpp",
+                      "en/rtc/windows/quickstart-csharp"
                     ]
                   },
                   {
@@ -1259,6 +1257,30 @@
     {
       "source": "/zh/meeting/web/api-reference",
       "destination": "/zh/meeting/web/api-reference/SMeeting"
+    },
+    {
+      "source": "/zh/rtc/windows/net/integration",
+      "destination": "/zh/rtc/windows/integration"
+    },
+    {
+      "source": "/zh/rtc/windows/net/quickstart",
+      "destination": "/zh/rtc/windows/quickstart-csharp"
+    },
+    {
+      "source": "/en/rtc/windows/net/integration",
+      "destination": "/en/rtc/windows/integration"
+    },
+    {
+      "source": "/en/rtc/windows/net/quickstart",
+      "destination": "/en/rtc/windows/quickstart-csharp"
+    },
+    {
+      "source": "/zh/rtc/windows/quickstart",
+      "destination": "/zh/rtc/windows/quickstart-cpp"
+    },
+    {
+      "source": "/en/rtc/windows/quickstart",
+      "destination": "/en/rtc/windows/quickstart-cpp"
     }
   ]
 }

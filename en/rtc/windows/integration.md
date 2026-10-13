@@ -1,9 +1,14 @@
 ---
 title: "Integration"
-description: "Download links for the Windows SRTC C++ SDK (x86 and x64 packages), environment requirements, package layout, Visual Studio project configuration, and which runtime DLLs and plugins to ship. Read before adding the SDK to a Windows desktop project."
+description: "Download links, environment requirements, project configuration, and runtime deployment for the Windows SRTC SDK, covering both the C++ native API and the C# (srtcNet) wrapper."
 ---
 
+The Windows SDK offers two ways in that share **the same package and the same runtime dependencies**: call the native API from C++, or use the bundled `srtcNet` wrapper from C# — it exposes the srtc C++ interfaces ([IRTCEngine](/en/rtc/windows/api-reference/IRTCEngine) / [IRTCChannel](/en/rtc/windows/api-reference/IRTCChannel) / tracks / views) as an idiomatic .NET API (`class` / `event` / `IDisposable`) under the `Srtc` namespace, so you never write a callback vtable. Pick your language:
+
 ### Environment requirements
+
+<Tabs>
+<Tab title="C++">
 
 <Warning>
 **The SDK comes in two packages, x86 (Win32 / 32-bit) and x64 (64-bit), and the one you use must match your project's target platform.**
@@ -15,9 +20,29 @@ Linking the x86 package into a 64-bit project (or the other way around) fails at
 + Language: C++
 + Runtime: the SDK package already ships the required VC++ runtime DLLs, so you **don't need** to install a runtime redistributable on the target machine
 
+</Tab>
+<Tab title="C#">
+
+<Warning>
+**`srtcNet.dll` is a C++/CLI mixed-mode assembly, not a pure managed DLL**: it links the native
+`srtc.dll` directly, so **its bitness must match the native package you use**. A mismatch fails at
+runtime with `BadImageFormatException`, not at compile time.
+</Warning>
+
++ Target framework: **.NET Framework 4.7.2 or later** (the assembly targets 4.7.2 and runs on the 4.8 runtime)
++ Target platform: **must match the native package**—an x86 program uses `rtc_dll/net/srtcNet.dll` + `rtc_dll/bin`
+  from the x86 package; an x64 program uses the same files from the x64 package
++ Language: C# (other .NET languages work too)
++ Runtime: the package already ships the required VC++ runtime DLLs; no separate install needed
+
+</Tab>
+</Tabs>
+
 ---
 
 ### Download the SDK
+
+The C++ SDK and the C# wrapper ship in the **same package**, so the download is the same:
 
 | Version | Architecture | Download |
 | --- | --- | --- |
@@ -45,7 +70,7 @@ rtc_dll/
 ├── lib/
 │   └── srtc.lib      # Import library, used at link time (C++)
 ├── net/
-│   └── srtcNet.dll   # C# wrapper assembly (C#; see "C# Integration")
+│   └── srtcNet.dll   # C# wrapper assembly (for C#; see "Project configuration" below)
 └── bin/              # Runtime dependencies, all of which must ship with your program
     ├── srtc.dll      # SDK core
     ├── srtcLive.dll  # Capture / encoding and decoding / rendering
@@ -66,6 +91,9 @@ The AnyLive/OOK runtime isn't in the package; see the note under "Deploy runtime
 ---
 
 ### Project configuration
+
+<Tabs>
+<Tab title="C++">
 
 <Steps>
 <Step title="Add the include directory">
@@ -122,11 +150,58 @@ The contents of the `bin` directory change between versions, so we recommend **c
 makes it easy to miss newly added dependencies when you upgrade the SDK.
 </Note>
 
+</Tab>
+<Tab title="C#">
+
+<Steps>
+<Step title="Reference srtcNet.dll">
+Add an assembly reference to `rtc_dll\net\srtcNet.dll`:
+
+```xml
+<Reference Include="srtcNet">
+  <HintPath>...\rtc_dll\net\srtcNet.dll</HintPath>
+  <SpecificVersion>false</SpecificVersion>
+  <Private>true</Private>
+</Reference>
+```
+
+With `Private` (Copy Local) set to `true`, `srtcNet.dll` lands next to your exe.
+</Step>
+
+<Step title="Deploy the native runtime dependencies">
+Copy `rtc_dll/net/srtcNet.dll` **and everything** under `rtc_dll/bin` into the directory that
+contains your executable:
+
+```text
+YourAppDir/
+├── YourApp.exe
+├── srtcNet.dll      ← the wrapper from rtc_dll/net
+├── srtc.dll         ← the native core from rtc_dll/bin
+├── ...              ← the other DLLs under bin
+└── plugin/          ← keep the subdirectory structure unchanged
+```
+
+<Warning>
+`net` and `bin` are **two separate directories** and the program needs both next to the exe. Missing
+native DLLs from `bin` fail at load time or when joining a channel
+(`DllNotFoundException` or a load failure).
+</Warning>
+</Step>
+</Steps>
+
+<Note>
+The `plugin/` subdirectory and the `.xml` configuration files under it must be kept as-is—otherwise
+features such as screen sharing don't work. The native dependency deployment is the same as for C++;
+see "Deploy runtime dependencies" in the C++ tab above.
+</Note>
+
+</Tab>
+</Tabs>
+
 ---
 
 ### Next steps
 
-+ [Quickstart](/en/rtc/windows/quickstart): initialize, join a channel, and send and receive audio and video
-+ [C# integration](/en/rtc/windows/net/integration): call the same SDK from C# (`rtc_dll/net/srtcNet.dll`)
++ [C++ quickstart](/en/rtc/windows/quickstart-cpp) · [C# quickstart](/en/rtc/windows/quickstart-csharp): initialize, join a channel, and send and receive audio and video
 + [Key concepts](/en/rtc/key-concepts): the channel, user, and track model
 + [Token and authentication](/en/rtc/token): the token for joining a channel is issued by your backend

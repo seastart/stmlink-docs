@@ -25,7 +25,7 @@ All platforms interoperate, and behavior is aligned across them.
 | --- | --- | --- |
 | Web | Browsers, and also WeChat Mini Program (embedded via `web-view`) | [Integration](/en/rtc/web/integration) · [Quickstart](/en/rtc/web/quickstart) |
 | Android | Phones, set-top boxes, embedded devices | [Integration](/en/rtc/android/integration) · [Quickstart](/en/rtc/android/quickstart) |
-| Windows | Desktop clients, C++ API | [Integration](/en/rtc/windows/integration) · [Quickstart](/en/rtc/windows/quickstart) |
+| Windows | Desktop clients, C++ API | [Integration](/en/rtc/windows/integration) · [Quickstart](/en/rtc/windows/quickstart-cpp) |
 | Swift | iOS and macOS, `import SRTC` | [Integration](/en/rtc/swift/integration) · [Quickstart](/en/rtc/swift/quickstart) |
 | iOS | Objective-C, `RTCEngineKit` | [Integration](/en/rtc/ios/integration) · [Quickstart](/en/rtc/ios/quickstart) |
 | C | Server and embedded, pure C API | [Integration](/en/rtc/capi/integration) · [Quickstart](/en/rtc/capi/quickstart) |

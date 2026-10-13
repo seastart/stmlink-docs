@@ -1,6 +1,7 @@
 ---
 title: "C# 快速开始"
-description: "Windows SRTC C# 封装（srtcNet）快速集成：初始化引擎、加入频道、发布本地音视频、订阅并渲染远端画面、屏幕共享。"
+sidebarTitle: "C#"
+description: "Windows SRTC C# 封装（srtcNet）的 10 分钟最小可跑流程：初始化 SrtcEngine、订阅事件后加入 SrtcChannel、用强类型轨道发布本地音视频、显式订阅并渲染远端画面、屏幕共享与退出。"
 ---
 
 `srtcNet` 的调用顺序和 C++ 一致，只是换成了惯用的 C# 写法：事件是 `event`，

@@ -1505,12 +1505,6 @@
     "zh_blob": "4a9d517b00e7166b6b034379dc265c2b72e84028",
     "zh_commit": "a884dc97fbf75cb6371ba405c82812cd604f782c"
   },
-  "en/rtc/windows/quickstart": {
-    "reviewed": true,
-    "source": "zh/rtc/windows/quickstart.md",
-    "zh_blob": "95a0a422184fe8da15728df3ad26945c1f9a576a",
-    "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
-  },
   "en/rtc/windows/types": {
     "reviewed": true,
     "source": "zh/rtc/windows/types.md",
