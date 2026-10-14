@@ -43,6 +43,9 @@ await meeting.mcuStop(meetingId, McuTaskType.mixAndRecord);
 <Note>
 `mcuStop` 要传**同一个 `taskType`** —— 服务端按类型区分任务。
 启的是 `mixAndRecord` 就不能用 `record` 去停。
+
+服务端的 `task_type` 是按位组合的（1 录像、2 合流、4 录音、8 直播流），自动录制起的任务可能是 9 这类组合值。
+1.4.0 起 `mcuStop` 接受原始数字，停这类任务直接传 `onRoomMcuTask` 里的 `taskTypeRaw`；不传 `taskType` 则停掉全部。
 </Note>
 
 需要会议开始时自动录制的，在创建会议时设 `MeetingCreateReq.autoRecord = true`。
@@ -163,7 +166,7 @@ const detail: McuRecordDetail = await meeting.mcuRecordDetail(meetingId);
 大型会议不要 N 路各自订阅，改订 MCU 合成的那一路：
 
 ```typescript
-const mcu = await meeting.subscribeRemoteVideoMcu(hostUid);
+const mcu = await meeting.subscribeRemoteVideoMcu();
 // 渲染 meeting.mcuTrack
 await meeting.unsubscribeRemoteVideoMcu();
 ```

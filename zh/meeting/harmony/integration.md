@@ -30,7 +30,7 @@ HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDep
 
 ```bash
 curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.2.0.har
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.3.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.4.0.har
 ```
 
 放进模块的 `libs/` 目录，去掉文件名里的 `-harmony`：
@@ -40,20 +40,16 @@ your-project/
 └── entry/
     ├── libs/
     │   ├── srtc-1.2.0.har
-    │   └── smeeting-1.3.0.har
+    │   └── smeeting-1.4.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
 
 <Note>
-两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.3.0 依赖 SRTC 1.2.0，**不能搭配 SRTC 1.1.x 及以前**（本版用到了 SRTC 1.2.0 才有的收流状态事件，HAR 里也以 `peerDependencies` 钉住 `srtc@1.2.0`）。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
+两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.4.0 依赖 SRTC 1.2.0，**不能搭配 SRTC 1.1.x 及以前**（用到了 SRTC 1.2.0 才有的收流状态事件与频道级合成流订阅，HAR 里也以 `peerDependencies` 钉住 `srtc@1.2.0`）。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
 
-SMeeting 1.3.0 的 HAR 校验值（sha256）：`59875d18da958c23033e3920f40ff4e461094bd82339cd1b56b3ff16ee116bf4`，可用 `shasum -a 256 smeeting-harmony-1.3.0.har` 核对。
+SMeeting 1.4.0 的 HAR 校验值（sha256）：`e290753171e2e5834dbb933ab27e30d9e5b9800381f7fe5a97e57aa97d3288c1`，可用 `shasum -a 256 smeeting-harmony-1.4.0.har` 核对。
 </Note>
-
-<Warning>
-**已知限制**：会议后端目前拒绝鸿蒙终端类型，登录（`login`）时会收到后端错误 `10070`（「终端类型必须小于或等于7」），需等后端放开后才能入会。见[更新日志](/zh/meeting/harmony/changelog)。
-</Warning>
 
 ---
 
@@ -64,11 +60,25 @@ SMeeting 1.3.0 的 HAR 校验值（sha256）：`59875d18da958c23033e3920f40ff4e4
 ```json5
 {
   "dependencies": {
-    "smeeting": "file:./libs/smeeting-1.3.0.har",
+    "smeeting": "file:./libs/smeeting-1.4.0.har",
     "srtc": "file:./libs/srtc-1.2.0.har"
   }
 }
 ```
+
+再在**工程级**（工程根目录）的 `oh-package.json5` 里声明一次 `srtc`，路径相对工程根：
+
+```json5
+{
+  "dependencies": {
+    "srtc": "file:./entry/libs/srtc-1.2.0.har"
+  }
+}
+```
+
+<Warning>
+**工程级这一行不能省。** ohpm 不会把 `peerDependencies` 链接到 smeeting 自己的依赖目录下，只在模块级声明 `srtc` 时，smeeting 声明文件里引用的 SRTC 类型全部解析不到：`meeting.cameraTrack` 等返回值变成 `any`，ArkTS 编译直接报错（`Use explicit types instead of "any"`），从 `smeeting` 导入的 `SRTCError` 也无法用 `instanceof` 收窄。SMeeting 1.3.0 及以前同样需要这一行。
+</Warning>
 
 然后执行：
 
@@ -163,7 +173,7 @@ import { SRTCVideoView, Track } from 'srtc';
 
 ### 最小接入检查清单
 
-+ `libs/` 下已放入**两个** HAR，`oh-package.json5` 已同时声明 `smeeting` 与 `srtc`
++ `libs/` 下已放入**两个** HAR，模块级 `oh-package.json5` 已同时声明 `smeeting` 与 `srtc`，工程级 `oh-package.json5` 也已声明 `srtc`
 + `ohpm install` 已执行且无报错
 + `module.json5` 已声明 INTERNET / CAMERA / MICROPHONE
 + 运行时已申请摄像头与麦克风权限

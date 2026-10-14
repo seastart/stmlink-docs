@@ -117,6 +117,7 @@ aboutToDisappear(): void {
 | `onRoomScreenshotDisabledChange` | `screenshotDisabled`, `opUid?` | 禁止截图 |
 | `onRoomWatermarkDisabledChange` | `watermarkDisabled`, `opUid?` | 水印开关 |
 | `onRoomLockedChange` | `locked`, `opUid?` | 会议锁定 |
+| `onRoomTitleChange` | `title`, `previousTitle` | 会议改名（1.4.0 起，含小组会议）。来自频道属性比对或 `admin_update_title` 广播，没有操作者 |
 
 <Note>
 **`micDisabled` 与 `selfUnmuteMicDisabled` 是两件事：**
@@ -143,10 +144,11 @@ UI 上"开麦"按钮的可用性要同时看这两个字段。摄像头同理。
 
 | 事件 | 数据字段 | 触发时机 |
 | --- | --- | --- |
-| `onChatMessage` | `msgType: ChatMsgType`, `msg`, `uid?`, `isPrivate` | 收到聊天消息 |
+| `onChatMessage` | `msgType: ChatMsgType`, `msg`, `uid?`, `isPrivate`, `action`, `isSystem` | 收到聊天消息 |
 | `onCustomMessage` | `msg`, `uid?`, `isPrivate` | 收到自定义消息 |
 
 `ChatMsgType`：`text` / `file` / `pic` / `sound`。`isPrivate` 为 `true` 表示私聊。
+`action` 是原始广播名（1.4.0 起）：成员消息为 `user_send_room_chat_message`，主持人后台下发的系统消息为 `admin_send_room_chat_message`，后者 `isSystem` 为 `true`。
 
 `msg` 统一是**字符串** —— 结构化内容（文件、图片元信息）需要自己 `JSON.parse`。
 

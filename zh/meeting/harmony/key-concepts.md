@@ -197,7 +197,7 @@ const track: Track | undefined = meeting.getRemoteVideoTrack(uid);
 大型会议可以订阅**服务端合成的一路画面**，而不是 N 路各自订阅：
 
 ```typescript
-const mcu = await meeting.subscribeRemoteVideoMcu(uid);
+const mcu = await meeting.subscribeRemoteVideoMcu();
 await meeting.unsubscribeRemoteVideoMcu();
 ```
 

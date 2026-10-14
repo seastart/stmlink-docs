@@ -170,7 +170,7 @@ this.users.push(newUser);
 人多时不要 N 路各自订阅，改订服务端合成的一路：
 
 ```typescript
-const mcu = await meeting.subscribeRemoteVideoMcu(hostUid);
+const mcu = await meeting.subscribeRemoteVideoMcu();
 // 渲染 meeting.mcuTrack
 ```
 

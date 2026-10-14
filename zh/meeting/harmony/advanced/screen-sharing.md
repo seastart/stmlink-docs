@@ -113,6 +113,9 @@ const url: string | undefined = meeting.getWhiteBoard();
 
 <Note>
 白板与屏幕共享**互斥**（同一时刻只能有一个共享）。切换前要先 `stopShare()`。
+
+结束自己发起的白板也是 `stopShare()`。⚠️ **1.3.0 及以前停不掉白板**（没有屏幕轨道时直接返回、不通知服务端），
+请升级到 1.4.0。停止后本端与远端都会收到 `onRoomShareStop`（`shareType` 为 `whiteBoard`），收起白板界面以它为准。
 </Note>
 
 ---

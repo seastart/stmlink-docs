@@ -269,6 +269,8 @@ MCU 合流布局，共 20 种：
 | `planTime` / `planDur` / `beginTime` / `endTime` / `createdAt` | `number` |
 | `creator` / `extendInfo` | `string` |
 | `watermarkDisabled` / `screenshotDisabled` / `chatDisabled` / `waitingRoomDisabled` / `enterBeforeHostDisabled` | `boolean` |
+| `entryMutePolicy?` | `EntryMutePolicy`（1.4.0 起）。后端缺字段或取值不认识时为 `undefined`，改会时据此决定要不要回传，别拿默认值冲掉后端设置 |
+| `content?` | `string`（1.4.0 起）。会议说明，没设说明的会议为 `undefined` |
 
 ### `ParticipantInfo` / `OnlineMemberInfo` / `NoEnterUserInfo`
 
