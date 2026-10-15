@@ -630,10 +630,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/windows/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/windows/changelog.mdx",
-    "zh_blob": "54967a7e49b07ef826df55eabeae67f14b0c8fa3",
-    "zh_commit": "632f248beccab39d1e081763e918e316ba974e77"
+    "zh_blob": "224e4d63db446f8afac7a17bbb46d1204c1dbbbf",
+    "zh_commit": "ab84e5ce53bf4a2348492aceb264590c804afeec"
   },
   "en/meeting/windows/error-codes": {
     "reviewed": true,
@@ -642,16 +642,28 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/windows/integration": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/windows/integration.md",
-    "zh_blob": "57007cafa720bdc3c3f9d8aaea08a18b39df92aa",
-    "zh_commit": "fdecacd8c08a99a8fe739251eaab421036776665"
+    "zh_blob": "3c351a0b6ff6f84d6ee9aa4919e0af8176a1afc4",
+    "zh_commit": "ab84e5ce53bf4a2348492aceb264590c804afeec"
   },
   "en/meeting/windows/quickstart": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/windows/quickstart.md",
-    "zh_blob": "504c90f20e64863f5f05cbf2538043309226eb69",
-    "zh_commit": "e30e2b6ff83f246a44576b0d27de72bf1002cb95"
+    "zh_blob": "e92909e47893a367c7617ef7a9e285e06978f162",
+    "zh_commit": "ab84e5ce53bf4a2348492aceb264590c804afeec"
+  },
+  "en/meeting/windows/quickstart-c": {
+    "reviewed": false,
+    "source": "zh/meeting/windows/quickstart-c.md",
+    "zh_blob": "83f7696ce63d4c737ebbebc947a34bd27de1b303",
+    "zh_commit": "ab84e5ce53bf4a2348492aceb264590c804afeec"
+  },
+  "en/meeting/windows/quickstart-csharp": {
+    "reviewed": false,
+    "source": "zh/meeting/windows/quickstart-csharp.md",
+    "zh_blob": "0f0a442c5125e4e16e2c87591b01f1a0894c4ac8",
+    "zh_commit": "ab84e5ce53bf4a2348492aceb264590c804afeec"
   },
   "en/rtc/android/advanced/audio-routing": {
     "reviewed": true,
