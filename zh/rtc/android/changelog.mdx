@@ -5,6 +5,17 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.37] - 2026.10.15
+
+#### 新增
+
++ 新增 `onLocalQualitySnapshot`，按频道提供本地上下行网络质量及逐轨音视频播放体验，见 [网络质量](/zh/rtc/android/network-quality)。
+
+#### 变更
+
++ 移除 `onMediaMetric`；详细媒体统计改为通过 `RTCEngine.getMetric()` 或 `RTCChannel.getMetric()` 按需查询。
++ `getMetric()` 返回顶层 `MediaMetric?`；质量监测模型迁移至 `cn.seastart.rtc.monitoring.api`，旧包名和嵌套类型需按 [媒体质量](/zh/rtc/android/media-quality) 迁移。
+
 ### [2.0.36] - 2026.10.09
 
 #### 新增

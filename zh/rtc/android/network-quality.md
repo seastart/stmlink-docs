@@ -1,403 +1,74 @@
 ---
 title: "网络质量"
-description: "Android SRTC 音视频 SDK 流媒体网络质量监测与弱网处理指南"
+description: "区分 FY 服务端质量报告、本地网络与播放体验快照，以及按需查询的逐轨详细统计。"
 ---
 
-SDK 提供三种获取网络质量的方式，从"被动感知变化"到"主动查询"，按需选择：
+SDK 提供三种相互独立的质量信息。所有回调都带 `channel`，多频道应用应按频道保存结果。公开监测类型位于 `cn.seastart.rtc.monitoring.api`。
 
-| 方式 | 接口 | 使用场景 |
-|---|---|---|
-| 订阅质量等级变化（推荐） | `RTCMediaEvent.onNetworkQualityChanged` | 网络状态灯、弱网提示；**每收到一份服务端质量报告就为上、下行各回调一次**，不做去抖 |
-| 周期性质量快照 | `RTCMediaEvent.onMediaMetric` | 详细诊断面板；每约 5 秒下发一份完整 `MediaMetric.Metric` |
-| 主动查询快照 | `RTCEngine.getMetric()` | 任意时刻主动拉取最近一次完整质量快照 |
+| 信息 | 入口 | 用途 |
+| --- | --- | --- |
+| FY 服务端网络质量 | `RTCMediaEvent.onNetworkQualityChanged(channel, change)` | FY 服务端每份报告分别交付上、下行事件；WS 不提供该服务端报告。 |
+| 本地网络与播放体验 | `RTCMediaEvent.onLocalQualitySnapshot(channel, snapshot)` | 每频道在采样完成后约 2 秒交付一次本地上下行网络质量和逐轨下行播放体验。 |
+| 详细媒体统计 | `RTCEngine.getMetric()` / `RTCChannel.getMetric()` | 按需查询默认频道或指定频道最近一次完成采样的原始统计。 |
 
-`onNetworkQualityChanged` 与 `onMediaMetric` 通过 `RTCMediaEvent` 被动下发，业务层订阅即可、无需轮询；`getMetric()` 用于主动按需拉取。
+本地快照与 FY 服务端报告有不同的数据来源和等级，不应混用。详细模型及数值单位见 [媒体质量](/zh/rtc/android/media-quality)。
 
-`Metric` 各字段的完整数据字典见[媒体质量](/zh/rtc/android/media-quality)。
-
-## 一、订阅质量等级变化（推荐）
-
-大多数业务只需要"网络状态灯 + 弱网提示"，推荐优先使用 `onNetworkQualityChanged`。它由服务端质量报告驱动（约 5 秒一份），**每份报告都会回调**，等级没变也会回调：
-
-- **不做去抖**：SDK 不做跨档判定，也没有迟滞确认，等级在边界附近抖动时回调结果会随之来回变化。状态灯直接显示 `currentLevel` 即可；弱网提示、自动降级这类会打扰用户或改变通话形态的动作，请自行去抖（见 5.1）。
-- **`trend` 只与上一次回调比较**：首次为 `INITIAL`，变差为 `DEGRADED`，变好为 `RECOVERED`，不变（或本次等级无法识别）为 `STABLE`。
-- **分方向**：上行、下行各自独立判断与回调，一次回调只表示**一个方向**（`direction`）的变化。
-
-继承 `RTCMediaSimpleEvent` 只重写关心的回调，再通过 `setRtcMediaEvent` 注册：
+## 监听本地周期快照
 
 ```kotlin
 import cn.seastart.rtc.impl.RTCMediaSimpleEvent
-import cn.seastart.rtc.info.NetworkQualityChange
-import cn.seastart.rtc.info.QualityDirection
-import cn.seastart.rtc.info.QualityTrend
+import cn.seastart.rtc.monitoring.api.LocalQualitySnapshot
 
 rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-    override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-        // change.direction     : UPLINK / DOWNLINK，本次变化的方向
-        // change.previousLevel : 上一次回调的等级
-        // change.currentLevel  : 本次等级（excellent / good / poor / lost）
-        // change.trend         : INITIAL(首次) / DEGRADED(变差) / RECOVERED(变好) / STABLE(不变)
-        // change.report        : 触发本次回调的完整 QualityReport
-
-        // 回调可能在非主线程，更新 UI 请切主线程
-        runOnUiThread {
-            when (change.direction) {
-                QualityDirection.UPLINK -> updateUplinkIndicator(change.currentLevel)
-                QualityDirection.DOWNLINK -> updateDownlinkIndicator(change.currentLevel)
-            }
-        }
+    override fun onLocalQualitySnapshot(channel: String, snapshot: LocalQualitySnapshot) {
+        val uplink = snapshot.networkQuality.uplink.level
+        val downlink = snapshot.networkQuality.downlink.level
+        val affectedTracks = snapshot.networkQuality.remoteTracks
+        val videoPlayback = snapshot.mediaPlaybackExperience.videoTracks
+        // 根据 channel 分发到对应页面；更新 UI 前切换到主线程。
     }
 })
 ```
 
-:::note
-`onNetworkQualityChanged` 在信令通道的后台线程回调，更新 UI 前请切换到主线程（如 `runOnUiThread` / `View.post`）。
-:::
+`snapshot.timestamp`、`snapshot.networkQuality.timestamp` 与 `snapshot.mediaPlaybackExperience.timestamp` 相同，单位为毫秒。间隔从采集及交付完成后开始计算，因此不是严格每 2 秒一次。没有有效样本时，网络或播放等级可能为 `UNKNOWN`，可空指标为 `null`。`NetworkQuality` 分别提供方向概览和逐轨结果；播放体验只评估本地接收的音视频连续性。网络差不必然等于播放卡顿，播放平滑也不表示画质清晰。
 
-`NetworkQualityChange` 结构：
+网络等级为 `UNKNOWN`、`EXCELLENT`、`GOOD`、`POOR`、`BAD`、`LOST`。`LOST` 只表示预期传输轨道的 ICE 进入 `FAILED`；主动关闭返回 `UNKNOWN`。视频播放等级为 `UNKNOWN`、`SMOOTH`、`DEGRADED`、`FROZEN`；音频为 `UNKNOWN`、`CLEAR`、`DEGRADED`、`INTERRUPTED`。逐轨网络分数 `score` 为 0～100，无法评分时为 `null`，不代表播放体验分。
 
-```kotlin
-/** 变化方向 */
-enum class QualityDirection {
-    /** 上行：本端到服务端 */
-    UPLINK,
-    /** 下行：服务端到本端 */
-    DOWNLINK
-}
-
-/** 变化趋势 */
-enum class QualityTrend {
-    /** 首次观测到该方向的等级（无历史可比） */
-    INITIAL,
-    /** 等级下降，网络变差 */
-    DEGRADED,
-    /** 等级回升，网络变好 */
-    RECOVERED,
-    /** 等级与上次相同，或本次等级无法识别 */
-    STABLE
-}
-
-data class NetworkQualityChange(
-    /** 本次回调的方向 */
-    var direction: QualityDirection,
-    /** 上一次回调的等级；首次(INITIAL)时为空串 */
-    var previousLevel: String,
-    /** 本次等级：excellent / good / poor / lost */
-    var currentLevel: String,
-    /** 变化趋势 */
-    var trend: QualityTrend,
-    /** 触发本次回调的完整质量报告，含上下行明细 */
-    var report: MediaMetric.QualityReport
-)
-```
-
-## 二、周期性质量快照 `onMediaMetric`
-
-需要详细诊断面板（每条轨道的码率、丢包、帧率等）时，订阅 `onMediaMetric`。SDK 入会后每约 **5 秒**下发一份完整的 `MediaMetric.Metric`：
+## 按需查询详细统计
 
 ```kotlin
-import cn.seastart.rtc.impl.RTCMediaSimpleEvent
-import cn.seastart.rtc.statistics.MediaMetric
+import cn.seastart.rtc.monitoring.api.MediaMetric
 
-rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-    override fun onMediaMetric(channel: String, metric: MediaMetric.Metric) {
-        // 连接质量评估（同 onNetworkQualityChanged 的数据源）
-        metric.qualityReport?.let { report ->
-            val up = report.uplink.level     // excellent / good / poor / lost
-            val down = report.downlink.level
-            renderDashboard(up, down)
-        }
-        // 网络总体统计
-        val net = metric.networkStats
-        // 轨道级统计
-        val localVideos = metric.localVideos
-        val remoteVideos = metric.remoteVideos
-    }
-})
-```
-
-:::note
-`qualityReport` 由服务端计算并下发，首次入会后需等待服务端首个质量报告到达，在此之前可能为 `null`，示例中已用可空写法处理。
-:::
-
-## 三、主动查询 `getMetric`
-
-在任意时刻主动拉取最近一次采集到的完整质量快照（含 `qualityReport`），适合"点开详情才计算"的诊断面板等按需场景：
-
-```kotlin
-val metric = rtcEngine.getMetric()
-metric?.qualityReport?.let { report ->
-    // report.uplink.level / report.downlink.level ...
+val metric: MediaMetric? = rtcEngine.getMetric() // 默认频道
+val otherMetric: MediaMetric? = rtcChannel.getMetric() // 指定频道
+metric?.let { sample ->
+    val channel = sample.channel
+    val sampledAtMs = sample.sampleTimestampMs
+    val localVideos = sample.localVideos
+    val remoteVideos = sample.remoteVideos
+    val serverReport = sample.qualityReport // FY 可用；WS 为 null
 }
 ```
 
-:::note
-返回线程安全副本，不会触发底层 `getStats`；采样周期约 5 秒，起播初期可能为 `null`。
-:::
+查询返回最近一次**完成**的采样，不会额外触发 WebRTC `getStats()`，也不会推进网络或播放评估窗口。尚无可用采样或监测失效时返回 `null`；同一帧重复查询会得到独立副本。`sampleTimestampMs` 是采样完成时间；若快照回调后已有新采样，随后查询到的时间戳可能不同。组合两类结果时先核对 `channel` 和时间戳。逐轨 `timestamp` 来自 RTCStats，与顶层墙钟时间不同。
 
-## 四、连接质量评估 `qualityReport`
+详细码率单位是 bps，RTT 和 jitter 为 ms，丢包率为 0～1；包数、字节数和帧数是累计量。`null` 表示不可得，真实测到的零保留为 `0`。无轨道时部分方向合计为 `0`，不能据此推断某条轨道有零值。
 
-三种方式拿到的连接质量都是同一份 `qualityReport`：服务端已综合丢包、RTT、抖动、码率等多维指标计算出等级与 MOS，业务层直接用即可，无需自己算。它区分**上行**(本端到服务端)与**下行**(服务端到本端)两个方向。
+## FY 服务端报告
 
 ```kotlin
-data class QualityReport(
-    /** 服务端生成该质量报告的时间戳 */
-    var timestamp: Long = 0L,
-    /** 本端到服务端的上行质量 */
-    var uplink: QualityStats = QualityStats(),
-    /** 服务端到本端的下行质量 */
-    var downlink: QualityStats = QualityStats()
-)
-
-data class QualityStats(
-    /** 综合质量分数，0 ~ 100，越高越好 */
-    var score: Double = 0.0,
-    /** 质量等级：excellent / good / poor / lost */
-    var level: String = "",
-    /** 语音主观质量分估算，1.0 ~ 4.5，越高越好 */
-    var mos: Double = 0.0,
-    /** 丢包率，0 ~ 1 */
-    var loss: Double = 0.0,
-    /** 往返时延，单位毫秒 */
-    var rtt: Double = 0.0,
-    /** 抖动，单位毫秒 */
-    var jitter: Double = 0.0,
-    /** 本轮统计参与计算的包数 */
-    var packets: Long = 0L,
-    /** 平均码率，单位 kbps */
-    var bitrate: Double = 0.0,
-    /** 本窗口字节数 */
-    var bytes: Long = 0L
-)
-```
-
-`level` 取值说明：
-
-| level | 含义 |
-|---|---|
-| `excellent` | 优秀，几乎无损 |
-| `good` | 良好，轻微丢包或延迟 |
-| `poor` | 较差，明显卡顿、丢包 |
-| `lost` | 连接已丢失，媒体无法传输 |
-
-> `onNetworkQualityChanged`、`onMediaMetric.qualityReport`、`getMetric().qualityReport` 三者数据源一致，均来自服务端下发的同一份质量报告；区别只在下发方式（逐份报告回调 / 周期 / 主动拉取）。
-
-除 `qualityReport` 外，`Metric` 还包含网络总体统计 `networkStats`、上下行聚合 `localUploadStats` / `remoteDownloadStats`、以及轨道级统计 `localAudios` / `localVideos` / `remoteAudios` / `remoteVideos`，完整字段见[媒体质量](/zh/rtc/android/media-quality)。
-
-## 五、弱网处理
-
-处理弱网先分清两件事：**方向**和**处置**。
-
-+ 上行差是你发不出去，可以主动降级(关摄像头、取消发布视频)；下行差是你收不进来，多数由服务端自动优化，必要时可退订视频。所以要看 `uplink` / `downlink` 两个方向，而不是只看一侧。
-+ `onNetworkQualityChanged` 每份质量报告都会回调，SDK 不做去抖。状态灯直接跟随 `currentLevel` 即可；弱网提示、降级这类动作要自行去抖，持续变差一段时间再处理（见 5.1）。用 `onMediaMetric` 周期读取时同理。
-
-### 5.1 展示网络状态
-
-用质量等级映射一个状态灯即可，不要把丢包率、RTT 这类原始数据直接展示给终端用户：
-
-| level | 状态灯 |
-|---|---|
-| `excellent` / `good` | 正常 |
-| `poor` | 较差，画质可能下降 |
-| `lost` | 连接中断，重连中 |
-
-上行差和下行差的提示文案不同，需要区分。回调不做去抖，等级在 `good` / `poor` 边界抖动时会反复出现变差，建议持续变差超过阈值才提示，并且同一次弱网只提示一次：
-
-```kotlin
-// 各方向进入 poor / lost 的起始时间；没有记录表示当前不差
-private val badSince = mutableMapOf<QualityDirection, Long>()
-// 本次弱网已提示过的方向，避免反复打扰
-private val tipped = mutableSetOf<QualityDirection>()
+import cn.seastart.rtc.monitoring.api.NetworkQualityChange
 
 override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-    val dir = change.direction
-    if (!isBad(change.currentLevel)) {
-        // 恢复后清空，下次变差重新计时
-        badSince.remove(dir)
-        tipped.remove(dir)
-        return
-    }
-    val since = badSince.getOrPut(dir) { System.currentTimeMillis() }
-    // 持续变差超过 10 秒才提示
-    if (System.currentTimeMillis() - since >= 10_000 && tipped.add(dir)) {
-        when (dir) {
-            QualityDirection.UPLINK -> showTip("您的网络不佳，对方可能看不清您")
-            QualityDirection.DOWNLINK -> showTip("网络不佳，正在优化画质")
-        }
-    }
-}
-
-private fun isBad(level: String) = level == "poor" || level == "lost"
-```
-
-### 5.2 上行变差
-
-当上行等级持续为 `poor` / `lost`，按从轻到重逐级降级：
-
-**1. 关闭摄像头、只保留音频。** 音频码率低，弱网下几乎总能保住。停止摄像头采集即可显著降低上行占用，且保留发布通道，网络恢复后可随时重新采集：
-
-```kotlin
-// 弱网时：关闭摄像头采集，音频不受影响
-localCameraTrack.stopCapture()
-
-// 网络恢复后：重新开启采集
-localCameraTrack.startCapture(object : RTCResultListener {
-    override fun onSuccess() {}
-    override fun onFail(code: Int, message: String) {}
-})
-```
-
-**2. 彻底取消发布视频。** 比关摄像头更彻底，释放上行编码与发送资源：
-
-```kotlin
-rtcEngine.unPublishLocalVideo(localVideoTrack, object : RTCResultListener {
-    override fun onSuccess() {}
-    override fun onFail(code: Int, message: String) {}
-})
-```
-
-关摄像头会改变通话形态，建议提示用户后再执行，不要静默操作——应急指挥、执法记录等场景尤其如此。
-
-如需进一步定位上行受限的原因，可读取本地视频轨道的 `qualityLimitationReason`：
-
-```kotlin
-rtcEngine.getMetric()?.localVideos?.values?.forEach { stats ->
-    when (stats.qualityLimitationReason) {
-        "bandwidth" -> { /* 上行带宽不足：优先降码率 / 关摄像头 */ }
-        "cpu"       -> { /* 设备编码跟不上：建议降分辨率 / 帧率 */ }
-    }
+    val direction = change.direction // UPLINK 或 DOWNLINK
+    val level = change.currentLevel // excellent / good / poor / lost
+    val trend = change.trend // INITIAL / DEGRADED / RECOVERED / STABLE
+    val report = change.report // ServerQualityReport
 }
 ```
 
-### 5.3 下行变差
+每份 FY 报告会为上、下行各回调一次，即使等级未变也会以 `STABLE` 交付；SDK 不做业务去抖。`report` 同时包含两个方向的服务端统计。`getMetric().qualityReport` 也是 FY 的最近服务端报告，但它在该采样帧首次组装详细统计时读取，不能假设与某次服务端回调严格同步。WS 的 `qualityReport` 为 `null`。回调在 SDK 后台线程执行，更新 UI 前切到主线程。
 
-当下行等级持续为 `poor`：
+## 处理弱网
 
-**1. 先确认是不是对端的问题。** 本端有下行丢包(`downlink.loss` 明显 > 0)，才是你的接收链路差；若本端几乎无丢包、只是某人画面卡顿，通常是对方上行差，此时退订也无济于事，提示"对方网络不佳"即可。
-
-**2. 发布方发大小流时，服务端自动切层。** 服务端会依据每个订阅者自身的下行带宽和丢包，自动把它切到合适的大 / 小流，订阅端无需手动切换（订阅时通过候选层列表告知服务端可切的层）。只发单流则无法自动降。
-
-**3. 退订视频、只收音频。**
-
-```kotlin
-rtcEngine.unSubscribeRemoteTrack(uid, trackId)
-```
-
-**4. 多路会议**：只订阅当前说话人的视频，其余成员只收音频。当前说话人可通过 `onActiveSpeakersChanged` 获取：
-
-```kotlin
-override fun onActiveSpeakersChanged(channel: String, speakers: List<ActiveSpeakerInfo>) {
-    // speakers 为当前正在说话的用户列表，可据此决定订阅哪些人的视频
-    speakers.forEach { it.uid; it.level }
-}
-```
-
-### 5.4 连接断开与重连
-
-连接状态相关的通知在 `RTCClientEvent` 中。首次监听器通过 `join(..., clientEvent, ...)` 传入；SDK 会在网络中断时自动重连，业务层据此更新 UI 即可：
-
-```kotlin
-import cn.seastart.rtc.impl.RTCClientSimpleEvent
-
-val clientEvent = object : RTCClientSimpleEvent() {
-    override fun onReconnecting(channel: String) {
-        showReconnecting()   // 显示"正在重连"
-    }
-    override fun onReconnected(channel: String) {
-        hideReconnecting()   // 重连成功，恢复状态灯与此前主动关闭的摄像头 / 订阅
-    }
-    override fun onDisconnected(
-        channel: String,
-        leaveReason: LeaveReason,
-        statusCode: Int,
-        message: String
-    ) {
-        // 连接已断开
-    }
-}
-
-val rtcChannel = rtcEngine.join(token, clientEvent, null)
-```
-
-### 5.5 速查表
-
-| 信号 | 处置 |
-|---|---|
-| `uplink = poor / lost` | 关摄像头保音频 → 取消发布视频；提示"您的网络" |
-| `uplink` 受限原因 `bandwidth` | 关摄像头 / 降码率 |
-| `uplink` 受限原因 `cpu` | 降分辨率 / 帧率 |
-| `downlink = poor`（本端有丢包） | 退订视频保音频 / 多路只留主讲 |
-| `downlink = poor`（本端无丢包） | 提示"对方网络不佳" |
-| `onReconnecting` | 显示"正在重连"，恢复后刷新状态 |
-
-## 六、完整示例
-
-把上面的做法串起来：用 `onNetworkQualityChanged` 驱动状态灯与分方向提示（只在 `DEGRADED` 时提示，`STABLE` 不会重复提示；等级在边界抖动时仍可能重复，需要时按 5.1 去抖），按需降级与恢复，并处理断线重连。
-
-```kotlin
-import cn.seastart.rtc.impl.RTCMediaSimpleEvent
-import cn.seastart.rtc.impl.RTCClientSimpleEvent
-import cn.seastart.rtc.info.NetworkQualityChange
-import cn.seastart.rtc.info.QualityDirection
-import cn.seastart.rtc.info.QualityTrend
-import cn.seastart.rtc.track.LocalCameraTrack
-
-class NetworkQualityHandler(
-    private val rtcEngine: RTCEngine,
-    private val cameraTrack: LocalCameraTrack,
-    private val localVideoTrack: LocalVideoTrack
-) {
-    // 标记是否因弱网主动关了摄像头，用于网络恢复后自动开回
-    private var cameraOffByNetwork = false
-
-    // 创建者必须把此监听器传给 RTCEngine.join(...)
-    val clientEvent = object : RTCClientSimpleEvent() {
-        override fun onReconnecting(channel: String) {
-            showReconnecting()
-        }
-
-        override fun onReconnected(channel: String) {
-            hideReconnecting()
-            if (cameraOffByNetwork) {
-                cameraTrack.startCapture(null)
-                cameraOffByNetwork = false
-            }
-        }
-    }
-
-    fun attach() {
-        rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-            override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-                runOnUiThread {
-                    // 状态灯：按方向更新（一次回调只表示一个方向）
-                    when (change.direction) {
-                        QualityDirection.UPLINK -> updateUplinkIndicator(change.currentLevel)
-                        QualityDirection.DOWNLINK -> updateDownlinkIndicator(change.currentLevel)
-                    }
-
-                    // 仅在"变差"时提示，分方向文案
-                    if (change.trend == QualityTrend.DEGRADED && isBad(change.currentLevel)) {
-                        when (change.direction) {
-                            QualityDirection.UPLINK ->
-                                showTip("您的网络不佳，可关闭摄像头以保证语音通话")
-                            QualityDirection.DOWNLINK ->
-                                showTip("网络不佳，正在优化画质")
-                        }
-                    }
-                }
-            }
-        })
-
-    }
-
-    // 用户确认后：关摄像头保音频
-    fun downgradeToAudioOnly() {
-        cameraTrack.stopCapture()
-        cameraOffByNetwork = true
-    }
-
-    private fun isBad(level: String) = level == "poor" || level == "lost"
-}
-```
-
-> 创建 `NetworkQualityHandler` 后先调用 `attach()`，再把 `handler.clientEvent` 传给 `RTCEngine.join(...)`。示例中的 `stopCapture` 等降级操作建议通过按钮交给用户确认，不要静默改变通话形态。
+先按频道、方向及轨道判断影响范围。可以用方向等级驱动状态展示，再用 `remoteTracks`、`localTracks` 和播放列表定位受影响的轨道。提示或自动降级应由应用按业务场景设置持续时间与恢复条件；不要把一次 `POOR` 或 `BAD` 直接当作必须停止视频的信号。连接状态变化另见 [`RTCClientEvent`](/zh/rtc/android/api-reference/RTCClientEvent)。

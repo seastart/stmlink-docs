@@ -127,8 +127,8 @@ private fun joinOneChannel(key: String, token: String) {
             // 当前频道媒体连接成功
         }
 
-        override fun onMediaMetric(channel: String, metric: MediaMetric.Metric) {
-            // 每个频道拥有独立统计快照
+        override fun onLocalQualitySnapshot(channel: String, snapshot: LocalQualitySnapshot) {
+            // 每个频道拥有独立的本地网络与播放体验快照
         }
     })
 }

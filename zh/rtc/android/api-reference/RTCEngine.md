@@ -270,11 +270,11 @@ fun setRtcMicDeviceEvent(e: RTCMicDeviceEvent?)
 
 ### getMetric()
 ```kotlin
-fun getMetric(): MediaMetric.Metric?
+fun getMetric(): MediaMetric?
 ```
-方法说明：主动获取默认频道最近一次采集到的媒体质量快照（含 `qualityReport`）。返回线程安全副本，不触发底层 `getStats`；采样周期约 5 秒，起播初期可能为 `null`。额外频道使用 `RTCChannel.getMetric()`；弱网档位变化请优先监听 [`RTCMediaEvent.onNetworkQualityChanged`](/zh/rtc/android/api-reference/RTCMediaEvent)。
+方法说明：按需组装默认频道最近完成采样的详细统计副本（含可选的 FY 服务端 `qualityReport`），不触发底层 `getStats()`。尚无有效采样或监测失效时可能返回 `null`。额外频道使用 `RTCChannel.getMetric()`；本地周期网络与播放体验请监听 [`RTCMediaEvent.onLocalQualitySnapshot`](/zh/rtc/android/api-reference/RTCMediaEvent)。
 参数说明：无。  
-返回值说明：`MediaMetric.Metric?`，最近一次质量快照；尚无数据时为 `null`。字段参见 [媒体质量](/zh/rtc/android/media-quality)，获取方式与弱网处理见 [网络质量](/zh/rtc/android/network-quality)。
+返回值说明：`MediaMetric?`，最近一次详细统计；无可用采样时为 `null`。字段参见 [媒体质量](/zh/rtc/android/media-quality)，获取方式见 [网络质量](/zh/rtc/android/network-quality)。
 
 ## 音频路由
 

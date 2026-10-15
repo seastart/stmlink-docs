@@ -72,7 +72,7 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 
 ### QualityDirection
 
-网络质量变化方向，用于 [`NetworkQualityChange`](/zh/rtc/android/types)。
+网络质量方向，用于服务端 [`NetworkQualityChange`](/zh/rtc/android/types) 和本地质量快照。
 
 | 枚举名 | 值 | 说明 |
 | --- | --- | --- |
@@ -89,6 +89,22 @@ description: "Android SRTC 音视频 SDK 枚举值定义"
 | DEGRADED | 无显式值 | 相较上次档位变差。 |
 | RECOVERED | 无显式值 | 相较上次档位变好。 |
 | STABLE | 无显式值 | 相较上次档位不变，或本次等级无法识别。 |
+
+### QualityLevel
+
+本地网络质量档位，按从好到差为 `EXCELLENT`、`GOOD`、`POOR`、`BAD`、`LOST`；`UNKNOWN` 表示无可靠判定。`LOST` 仅表示预期传输轨道的 ICE 进入 `FAILED`，主动关闭为 `UNKNOWN`。
+
+### QualityConstraint
+
+本地上行视频受限原因：`NONE`（不适用或无受限）、`CPU`（编码设备受限）、`BANDWIDTH`（带宽受限）。应有原因但不可得时对应字段为 `null`。
+
+### VideoPlaybackLevel
+
+本地下行视频连续性档位：`UNKNOWN`、`SMOOTH`、`DEGRADED`、`FROZEN`。
+
+### AudioPlaybackLevel
+
+本地下行音频连续性档位：`UNKNOWN`、`CLEAR`、`DEGRADED`、`INTERRUPTED`。
 
 ### StreamVendor
 

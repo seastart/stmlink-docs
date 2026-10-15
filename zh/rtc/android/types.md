@@ -106,7 +106,7 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | previousLevel | String | 上一次回调的等级；首次（`INITIAL`）时为空串。 |
 | currentLevel | String | 本次等级（`excellent` / `good` / `poor` / `lost`）。 |
 | trend | QualityTrend | 与上一次相比的趋势（`INITIAL` / `DEGRADED` / `RECOVERED` / `STABLE`）。枚举见 [枚举类型](/zh/rtc/android/enums)。 |
-| report | MediaMetric.QualityReport | 触发本次事件时的完整质量报告快照。字段见 [媒体质量](/zh/rtc/android/media-quality)。 |
+| report | ServerQualityReport | 触发本次事件时的 FY 服务端质量报告。字段见 [媒体质量](/zh/rtc/android/media-quality)。 |
 
 ## CameraDeviceCapability
 

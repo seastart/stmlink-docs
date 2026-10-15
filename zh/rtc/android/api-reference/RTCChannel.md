@@ -119,12 +119,12 @@ fun unSubscribeRemoteMixture()
 ## 统计与 ASR
 
 ```kotlin
-fun getMetric(): MediaMetric.Metric?
+fun getMetric(): MediaMetric?
 fun startAsr()
 fun stopAsr()
 fun isStartAsr(): Boolean
 ```
 
-每个频道拥有独立的媒体统计与 ASR 状态。`getMetric()` 返回最近一次线程安全快照，不主动触发底层统计采集。
+每个频道拥有独立的媒体统计与 ASR 状态。`getMetric()` 按需组装最近完成采样的详细统计副本，不触发底层 `getStats()`；尚无有效采样时返回 `null`。
 
 完整多频道接入流程见 [多频道](/zh/rtc/android/advanced/multi-channel)。
