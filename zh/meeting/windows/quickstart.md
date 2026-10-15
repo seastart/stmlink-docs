@@ -1,5 +1,6 @@
 ---
 title: "C++ 快速开始"
+sidebarTitle: "C++"
 description: "Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能"
 ---
 

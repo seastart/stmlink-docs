@@ -1,9 +1,42 @@
 ---
 title: "Changelog"
-description: "Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, the C interface exports in alpha.7, and the language setting API plus the bundled C header in alpha.8. Read this before upgrading."
+description: "Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, the C interface exports in alpha.7, the language setting API plus the bundled C header in alpha.8, and the new C# wrapper in alpha.9. Read this before upgrading."
 ---
 
 > This page records the main changes in each version of the SMeeting Windows SDK. You can get the current SDK version with `SMeetingEngine_Version`.
+
+## 1.0.0-alpha.9 - 2026-10-15
+
+**Added**
+
++ **New C# wrapper `SMeetingNet`**: the package now ships `meeting_dll/net/SMeetingNet.dll`.
+  It is a C++/CLI managed wrapper (target framework .NET Framework 4.7.2), so C# / .NET projects
+  can reference `SMeetingNet.dll` directly to call the conferencing API instead of writing their own
+  P/Invoke layer. Each architecture has its own copy, and its **bitness must match your project's
+  target platform and the `bin/` directory**.
+
+**Fixed**
+
++ `EnumScreenDev` returned the speaker list instead of the screen list—it called `getEnumSpeaker`
+  internally by mistake; it now calls `getEnumScreen`.
++ `SMeetingEngine_GetStatusMsg_C` now reuses the C++ `SMeetingEngine_GetStatusMsg` implementation, so
+  both interfaces return exactly the same texts and behave identically (the C side used to be a
+  separate duplicate implementation).
+
+**Changed**
+
++ The three status texts that SMeeting renders itself (`内部异常`, `房间权限拒绝`,
+  `host 异常或未设置`) used to be hardcoded Chinese; they now follow `SMeetingEngine_SetLanguage` and
+  switch between Chinese and English: a BCP 47 language tag starting with `zh` selects Chinese,
+  anything else English, and English is the default when the call is never made (the same rule the
+  underlying srtc uses).
+
+**API changes**
+
++ C++: `SMeeting.h` / `SMeeting_def.h` have no signature changes; the vtables of `ISMeetingEngine` /
+  `ISMeetingChannel` are unchanged, so there is no ABI break.
++ C: `SMeeting_C.h` has no declaration changes, and `SMeeting.lib` gains no new export symbols.
++ Package contents: both packages add `meeting_dll/net/SMeetingNet.dll`.
 
 ## 1.0.0-alpha.8 - 2026-10-08
 

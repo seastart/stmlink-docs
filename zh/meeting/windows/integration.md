@@ -1,9 +1,19 @@
 ---
 title: "集成"
-description: "Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署"
+description: "Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署，含 C++ / C / C#（SMeetingNet 封装）三种接入方式。"
 ---
 
+Windows 端三种接入方式共用**同一个包、同一套运行时依赖**：C++ 直接调用原生接口；C 用 `SMeeting_C.h`
+里的 `SMeetingEngine_*` 函数；C# 走包内的 `SMeetingNet` 封装，它把 `SMeeting.h` 的 C++ 接口
+（[ISMeetingEngine](/zh/meeting/windows/api-reference/smeeting-engine) /
+[ISMeetingChannel](/zh/meeting/windows/api-reference/smeeting-channel) / 媒体对象）暴露为
+`SMeetingNet` 命名空间下惯用的 `class` / `event` / `IDisposable`，不需要自己写回调 vtable。
+按语言选对应标签：
+
 ### 环境要求
+
+<Tabs>
+<Tab title="C++">
 
 <Warning>
 **SDK 提供 x86（Win32 / 32 位）与 x64（64 位）两个包，必须与你的工程目标平台一致。**
@@ -12,12 +22,31 @@ description: "Windows SMeeting 会议 SDK 的下载地址、环境要求、工�
 </Warning>
 
 + 目标平台：Windows x86（Win32 / 32 位）或 x64（64 位）—— **按工程的目标平台选对应的包**
-+ 语言：C++
++ 语言：C++；C 接口改用 `SMeeting_C.h` 里的 `SMeetingEngine_*` 函数，头文件 / 导入库 / 部署方式与 C++ 完全相同，见 [C 快速开始](/zh/meeting/windows/quickstart-c)
 + 运行时：SDK 包内已附带所需的 VC++ 运行库 DLL，**无需**在目标机器上单独安装运行库分发包
+
+</Tab>
+<Tab title="C#">
+
+<Warning>
+**`SMeetingNet.dll` 是 C++/CLI 混合模式程序集，不是纯托管 DLL**：它内部直接链接原生 `SMeeting.dll`，
+**位数必须与所用原生包一致**。位数不匹配会在运行期抛 `BadImageFormatException`，而不是编译报错。
+</Warning>
+
++ 目标框架：**.NET Framework 4.7.2 及以上**（封装程序集以 4.7.2 为目标，可直接运行在 4.8 运行时上）
++ 目标平台：**与原生包一致** —— x86 程序用 x86 包的 `meeting_dll/net/SMeetingNet.dll` + `meeting_dll/bin`；
+  x64 程序用 x64 包的同名文件。工程请**显式把平台设为 x86 / x64，不要用 `Any CPU`**
++ 语言：C#（其他 .NET 语言亦可）
++ 运行时：包内已附带所需 VC++ 运行库 DLL，无需单独安装
+
+</Tab>
+</Tabs>
 
 ---
 
 ### 下载 SDK
+
+三种接入方式在**同一个包**里，下载地址一致：
 
 | 版本 | 架构 | 下载地址 |
 | --- | --- | --- |
@@ -43,12 +72,14 @@ https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-x64-<版�
 
 ```text
 meeting_dll/
-├── include/              # 头文件
+├── include/              # 头文件（C++ / C）
 │   ├── SMeeting.h
 │   ├── SMeeting_def.h
 │   └── SMeeting_C.h
 ├── lib/
-│   └── SMeeting.lib      # 导入库，链接时用
+│   └── SMeeting.lib      # 导入库，链接时用（C++ / C）
+├── net/
+│   └── SMeetingNet.dll   # C# 封装程序集（C# 用，见下方「工程配置」）
 └── bin/                  # 运行时依赖，全部需要随程序分发
     ├── SMeeting.dll      # 会议 SDK 主体
     ├── srtc.dll          # 底层音视频库
@@ -57,13 +88,20 @@ meeting_dll/
 ```
 
 <Warning>
-两个包解压后目录名相同，**不要解压到同一个目录互相覆盖**，也不要跨架构混用 `lib` 与 `bin`
-（x86 的 `SMeeting.lib` / `SMeeting.dll` 与 x64 的不是同一套二进制）。
+两个包解压后目录名相同，**不要解压到同一个目录互相覆盖**，也不要跨架构混用 `lib` / `bin` / `net`
+（x86 的 `SMeeting.lib` / `SMeeting.dll` / `SMeetingNet.dll` 与 x64 的不是同一套二进制）。
 </Warning>
+
+<Note>
+包内的文件清单（数量和名称）会随版本调整，不要按文件名逐个挑选。
+</Note>
 
 ---
 
 ### 工程配置
+
+<Tabs>
+<Tab title="C++">
 
 <Steps>
 <Step title="添加头文件目录">
@@ -73,6 +111,8 @@ meeting_dll/
 #include <SMeeting.h>
 #include <SMeeting_def.h>
 ```
+
+用 C 接口时再额外引入 `SMeeting_C.h`。
 </Step>
 
 <Step title="链接导入库">
@@ -114,10 +154,63 @@ meeting_dll/
 SDK 时很容易漏掉新增的依赖库。
 </Note>
 
+</Tab>
+<Tab title="C#">
+
+<Steps>
+<Step title="引用 SMeetingNet.dll">
+在 C# 工程里添加对 `meeting_dll\net\SMeetingNet.dll` 的程序集引用：
+
+```xml
+<Reference Include="SMeetingNet">
+  <HintPath>...\meeting_dll\net\SMeetingNet.dll</HintPath>
+  <SpecificVersion>false</SpecificVersion>
+  <Private>true</Private>
+</Reference>
+```
+
+`Private`（复制本地）设为 `true`，生成的 exe 目录里就会带上 `SMeetingNet.dll`。
+
+<Warning>
+把工程的「目标平台」显式设为 `x86` 或 `x64`，**不要用 `Any CPU`** —— `SMeetingNet.dll` 是混合模式
+程序集，位数是固定的。
+</Warning>
+</Step>
+
+<Step title="部署原生运行时依赖">
+把 `meeting_dll/net/SMeetingNet.dll` **以及** `meeting_dll/bin` 下的**全部内容**一起拷到可执行文件所在目录：
+
+```text
+你的程序目录/
+├── YourApp.exe
+├── SMeetingNet.dll  ← meeting_dll/net 下的封装
+├── SMeeting.dll     ← meeting_dll/bin 下的原生主体
+├── srtc.dll
+├── ...              ← bin 下其余 DLL
+└── plugin/          ← 保持子目录结构不变
+```
+
+<Warning>
+`net` 与 `bin` 是**两层目录**，程序运行需要两者都在 exe 目录下。缺 `bin` 里的原生 DLL 会在
+加载 / 入会时报错（`DllNotFoundException` 或加载失败）。
+</Warning>
+</Step>
+</Steps>
+
+<Note>
+`SMeetingNet.dll` 只是薄封装，真正的实现仍在 `SMeeting.dll` 里；原生依赖的部署要点与 C++ 一致，
+参见上方 C++ 标签的「部署运行时依赖」。
+</Note>
+
+</Tab>
+</Tabs>
+
 ---
 
 ### 下一步
 
-+ [快速开始](/zh/meeting/windows/quickstart) —— 登录、创建会议、进入会议
++ [C++ 快速开始](/zh/meeting/windows/quickstart) —— 登录、创建会议、进入会议
++ [C# 快速开始](/zh/meeting/windows/quickstart-csharp) —— 用 SMeetingNet 走一遍同样的流程
++ [C 快速开始](/zh/meeting/windows/quickstart-c) —— C 接口（`SMeetingEngine_*`）集成
 + [核心概念](/zh/meeting/key-concepts) —— 房间、会议、成员与角色
 + [Token 与鉴权](/zh/meeting/token) —— token 由你的后端签发

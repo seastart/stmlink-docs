@@ -106,7 +106,7 @@ SMeeting has rooms and meetings that members enter and exit; SRTC has channels t
 | --- | --- | --- |
 | Web | `npm i @seastart/smeeting-web-sdk` | `new SMeeting({...})` |
 | Android | `implementation 'cn.seastart.meeting:meeting:<version>'` | `MeetingEngine.create()` |
-| Windows | 下载 [meeting-win-sdk-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-2.0.zip)（x86 32 位）或 [meeting-win-sdk-x64-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-x64-2.0.zip)（x64 64 位），必须与工程目标平台一致 | C++ 接口 |
+| Windows | 下载 [meeting-win-sdk-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-2.0.zip)（x86 32 位）或 [meeting-win-sdk-x64-2.0.zip](https://repo.open.seastart.cn/repository/vcs-releases/meeting-win-sdk-x64-2.0.zip)（x64 64 位），必须与工程目标平台一致 | C++ / C 接口；C# 引用包内 `net/SMeetingNet.dll`（C++/CLI，需 .NET Framework 4.7.2） |
 | Swift（iOS/macOS） | Swift Package `smeeting-swift-sdk` | `import SMeeting` → `SMeetingEngine()` |
 | Objective-C（iOS） | CocoaPods | `MeetingKit`（单例） |
 

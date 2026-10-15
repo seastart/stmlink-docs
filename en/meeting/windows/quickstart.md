@@ -1,5 +1,6 @@
 ---
-title: "C++ quickstart"
+title: "C++ Quickstart"
+sidebarTitle: "C++"
 description: "Step-by-step C++ code for the SMeeting Windows SDK: initialize the engine, log in, create a meeting, create an ISMeetingChannel and enter, control the camera, microphone, speaker, and screen sharing, host actions, MCU playback, and cleanup. Read this after integration to get a first meeting running."
 ---
 

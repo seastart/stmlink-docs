@@ -5,6 +5,35 @@ description: "Windows SMeeting 会议 SDK 版本更新记录"
 
 > 本页记录 Windows SMeeting SDK 各版本的主要变更。可通过 `SMeetingEngine_Version` 获取当前 SDK 版本。
 
+## 1.0.0-alpha.9 - 2026-10-15
+
+**添加**
+
++ **新增 C# 封装 `SMeetingNet`**：发布包新增 `meeting_dll/net/SMeetingNet.dll`。
+  它是基于 C++/CLI 的托管封装（目标框架 .NET Framework 4.7.2），C# / .NET 工程可以直接引用
+  `SMeetingNet.dll` 调用会议接口，不必自己写 P/Invoke。x86 与 x64 包各带一份，
+  **位数必须与你的工程目标平台及 `bin/` 一致**。
+
+**修复**
+
++ `EnumScreenDev` 枚举屏幕设备返回的却是扬声器列表 —— 内部误调用了 `getEnumSpeaker`，
+  已改为 `getEnumScreen`。
++ `SMeetingEngine_GetStatusMsg_C` 改为复用 C++ 侧 `SMeetingEngine_GetStatusMsg` 的实现，
+  两套接口的文案与行为完全一致（此前 C 侧是另一份重复实现）。
+
+**修改**
+
++ SMeeting 自身的三条状态文案（`内部异常`、`房间权限拒绝`、`host 异常或未设置`）此前固定为中文，
+  现在跟随 `SMeetingEngine_SetLanguage` 在中 / 英之间切换：BCP 47 语言标签以 `zh` 开头为中文，
+  其余为英文，未调用时为英文（与底层 srtc 规则一致）。
+
+**API 变更**
+
++ C++：`SMeeting.h` / `SMeeting_def.h` 无签名改动，`ISMeetingEngine` / `ISMeetingChannel`
+  的 vtable 未变，不存在 ABI 破坏。
++ C：`SMeeting_C.h` 的函数声明无改动，`SMeeting.lib` 无新增导出符号。
++ 包内容变化：两个包都新增 `meeting_dll/net/SMeetingNet.dll`。
+
 ## 1.0.0-alpha.8 - 2026-10-08
 
 **添加**

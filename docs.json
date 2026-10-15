@@ -490,7 +490,14 @@
                 "group": "Windows SDK",
                 "pages": [
                   "zh/meeting/windows/integration",
-                  "zh/meeting/windows/quickstart",
+                  {
+                    "group": "快速开始",
+                    "pages": [
+                      "zh/meeting/windows/quickstart",
+                      "zh/meeting/windows/quickstart-csharp",
+                      "zh/meeting/windows/quickstart-c"
+                    ]
+                  },
                   {
                     "group": "接口文档",
                     "pages": [
@@ -1084,7 +1091,14 @@
                 "group": "Windows SDK",
                 "pages": [
                   "en/meeting/windows/integration",
-                  "en/meeting/windows/quickstart",
+                  {
+                    "group": "Quickstart",
+                    "pages": [
+                      "en/meeting/windows/quickstart",
+                      "en/meeting/windows/quickstart-csharp",
+                      "en/meeting/windows/quickstart-c"
+                    ]
+                  },
                   {
                     "group": "API reference",
                     "pages": [
