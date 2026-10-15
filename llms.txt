@@ -345,10 +345,15 @@
 
 ## SMeeting 会议 SDK · Windows SDK
 
-- [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署
-- [C++ 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart.md): Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能
+- [集成](https://docs.stmlink.com/zh/meeting/windows/integration.md): Windows SMeeting 会议 SDK 的下载地址、环境要求、工程配置与运行时依赖部署，含 C++ / C / C#（SMeetingNet 封装）三种接入方式。
 - [错误码](https://docs.stmlink.com/zh/meeting/windows/error-codes.md): Windows SMeeting 会议 SDK 错误码枚举与处理说明
 - [更新日志](https://docs.stmlink.com/zh/meeting/windows/changelog.md): Windows SMeeting 会议 SDK 版本更新记录
+
+## SMeeting 会议 SDK · Windows SDK · 快速开始
+
+- [C++ 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart.md): Windows SMeeting 会议 SDK C++ 快速集成，10 分钟跑通基础功能
+- [C# 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart-csharp.md): Windows SMeeting C# 封装（SMeetingNet）的 10 分钟最小可跑流程：初始化 SMeetingEngine、登录、创建与进入会议、开关摄像头与麦克风、播放频道混音、渲染远端画面、屏幕共享、聊天与退出。
+- [C 快速开始](https://docs.stmlink.com/zh/meeting/windows/quickstart-c.md): Windows SMeeting 会议 SDK C 快速集成，10 分钟跑通基础功能
 
 ## SMeeting 会议 SDK · Windows SDK · 接口文档
 
@@ -813,10 +818,15 @@
 
 ## [EN] SMeeting Conferencing SDK · Windows SDK
 
-- [Integration](https://docs.stmlink.com/en/meeting/windows/integration.md): Download links for the x86 and x64 packages of the SMeeting Windows SDK, environment requirements, package layout, Visual Studio project setup, and how to deploy the runtime DLLs. Read this before writing any code, and again when upgrading the SDK.
-- [C++ quickstart](https://docs.stmlink.com/en/meeting/windows/quickstart.md): Step-by-step C++ code for the SMeeting Windows SDK: initialize the engine, log in, create a meeting, create an ISMeetingChannel and enter, control the camera, microphone, speaker, and screen sharing, host actions, MCU playback, and cleanup. Read this after integration to get a first meeting running.
+- [Integration](https://docs.stmlink.com/en/meeting/windows/integration.md): Download links for the x86 and x64 packages of the SMeeting Windows SDK, environment requirements, package layout, project setup, and how to deploy the runtime DLLs—for C++, C, and C# (the SMeetingNet wrapper). Read this before writing any code, and again when upgrading the SDK.
 - [Error codes](https://docs.stmlink.com/en/meeting/windows/error-codes.md): StatusCode error values of the SMeeting Windows SDK: common codes (100xxx), Windows SDK codes (101xxx, devices, channel and stream join), and meeting-layer codes (201xxx). Read this when a call or callback returns a non-OK StatusCode.
-- [Changelog](https://docs.stmlink.com/en/meeting/windows/changelog.md): Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, the C interface exports in alpha.7, and the language setting API plus the bundled C header in alpha.8. Read this before upgrading.
+- [Changelog](https://docs.stmlink.com/en/meeting/windows/changelog.md): Release history of the SMeeting Windows SDK from 1.0.0-alpha.5, including the breaking engine / meeting API split that requires recompiling, the new x64 package and bin file changes in alpha.6, the C interface exports in alpha.7, the language setting API plus the bundled C header in alpha.8, and the new C# wrapper in alpha.9. Read this before upgrading.
+
+## [EN] SMeeting Conferencing SDK · Windows SDK · Quickstart
+
+- [C++ Quickstart](https://docs.stmlink.com/en/meeting/windows/quickstart.md): Step-by-step C++ code for the SMeeting Windows SDK: initialize the engine, log in, create a meeting, create an ISMeetingChannel and enter, control the camera, microphone, speaker, and screen sharing, host actions, MCU playback, and cleanup. Read this after integration to get a first meeting running.
+- [C# Quickstart](https://docs.stmlink.com/en/meeting/windows/quickstart-csharp.md): The minimal Windows SMeeting C# flow with the SMeetingNet wrapper in about 10 minutes: initialize SMeetingEngine, log in, create and enter a meeting, control the camera and microphone, play the channel audio mix, render remote video, share the screen, chat, and leave.
+- [C Quickstart](https://docs.stmlink.com/en/meeting/windows/quickstart-c.md): Windows SMeeting C SDK quick integration: get the basic flow running in 10 minutes.
 
 ## [EN] SMeeting Conferencing SDK · Windows SDK · API reference
 
