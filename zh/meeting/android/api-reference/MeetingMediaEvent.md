@@ -10,7 +10,7 @@ description: "接收当前会议的媒体连接、远端原始帧、媒体统计
 + 该接口同时包含连接状态、原始远端帧和聚合质量统计；单条远端视频的接收状态应使用 `MeetingRemoteVideoEvent`。
 
 + `onRemoteVideoFrame()` 在 SRTC 媒体线程回调，不得阻塞。
-+ 媒体统计通常约每 5 秒产生一次；弱网档位变化优先使用 `onNetworkQualityChanged()`。
++ 本地网络和播放体验通过 `onLocalQualitySnapshot()` 周期返回；FY 服务端质量档位变化另由 `onNetworkQualityChanged()` 返回。详细逐轨统计按需调用 `MeetingEngine.getMetric()`。
 + 该监听在离会时清除，下一场会议需要重新赋值。
 
 ## 接口方法
@@ -61,19 +61,19 @@ fun onRemoteVideoFrame(
 
 返回值说明：无（`Unit`）。
 
-### onMediaMetric(metric)
+### onLocalQualitySnapshot(snapshot)
 
 ```kotlin
-fun onMediaMetric(metric: MediaMetric.Metric)
+fun onLocalQualitySnapshot(snapshot: LocalQualitySnapshot)
 ```
 
-方法说明：返回当前会议的媒体性能指标快照。
+方法说明：返回当前会议同次采样的本地上下行网络质量和远端音视频播放体验，保持 RTC 统计线程回调。
 
 参数说明：
 
 | 参数 | 说明 |
 | --- | --- |
-| `metric` | 发送、接收、网络与服务端质量统计，字段见[媒体质量](/zh/meeting/android/media-quality)。 |
+| `snapshot` | `LocalQualitySnapshot`，包含网络质量和逐轨播放体验；字段见[媒体质量](/zh/meeting/android/media-quality)。 |
 
 返回值说明：无（`Unit`）。
 
@@ -115,7 +115,7 @@ fun onActiveSpeakersChanged(speakers: List<ActiveSpeakerInfo>)
 fun onNetworkQualityChanged(change: NetworkQualityChange)
 ```
 
-方法说明：当前会议收到服务端质量报告时，为上行、下行各回调一次，不做去抖；等级未变化时 `trend` 为 `STABLE`。
+方法说明：当前会议收到 FY 服务端质量报告时，为上行、下行各回调一次，不做去抖；等级未变化时 `trend` 为 `STABLE`。它与本地质量快照独立。
 
 参数说明：
 

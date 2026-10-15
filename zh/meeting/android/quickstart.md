@@ -21,7 +21,6 @@ fun initMeeting(application: Application, meetToken: String) {
     meetingEngine = MeetingEngine.create(application)
     meetingEngine.initSdk(
         meetToken,
-        null,
         object : MeetingResultCallback {
             override fun onSuccess() {
                 // SDK 已就绪
@@ -108,7 +107,6 @@ meetingEngine.userEvent = object : MeetingUserSimpleEvent() {
 
 ```kotlin
 meetingEngine.enterMeeting(
-    activity = this,
     roomNo = "10000001",
     password = null,
     nick = "张三",
@@ -176,7 +174,7 @@ meetingEngine.closeCamera()
 meetingEngine.closeMic()
 ```
 
-远端视频渲染控件必须使用 `VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`；普通 Android `TextureView` / `SurfaceView` 不生效。
+远端视频渲染控件必须使用 `cn.seastart.rtc.media.original.render` 包中的 `VcsPlayerGlTextureView` 或 `VcsPlayerGlSurfaceView`；普通 Android `TextureView` / `SurfaceView` 不生效。
 
 ## 6. 订阅远端视频
 

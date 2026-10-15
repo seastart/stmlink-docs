@@ -1,214 +1,48 @@
 ---
 title: "媒体质量"
-description: "通过 MeetingEngine 主动查询或监听 Android SMeeting 的媒体统计、服务端质量报告和网络质量变化"
+description: "通过 SMeeting Android 的本地质量快照、按需详细统计和 FY 服务端报告观察当前会议的音视频质量"
 ---
 
-## 说明
+SMeeting 2.0.40 使用 SRTC 2.0.37 的 `cn.seastart.rtc.monitoring.api` 监测模型。旧版 `cn.seastart.rtc.statistics.MediaMetric` 的嵌套类型和 `onMediaMetric()` 已移除；完整字段与数值单位见 [SRTC 媒体质量](/zh/rtc/android/media-quality)。
 
-SMeeting 直接复用传递依赖 SRTC 的 `MediaMetric`、`NetworkQualityChange` 与相关统计类型，字段以所依赖的 SRTC 版本为准，见 SRTC [媒体质量](/zh/rtc/android/media-quality)。
+## 获取质量数据
 
-可通过两种方式获取质量数据：
-
-+ `MeetingEngine.getMetric()`：主动读取当前会议最近一次采样的线程安全副本；不会触发即时采样，入会初期可能为 `null`。
-+ `MeetingEngine.mediaEvent`：监听 `MeetingMediaEvent.onMediaMetric()` 与 `onNetworkQualityChanged()`。统计通常约每 5 秒回调一次；回调保持 SRTC 来源线程。
-
-`onNetworkQualityChanged()` 原样透传 SRTC 回调：每收到一份服务端质量报告就为上、下行各回调一次，不做去抖，等级没变也会回调（`trend` 为 `STABLE`）；弱网提示等动作请自行去抖。等级、方向与趋势枚举见 [SRTC 枚举类型](/zh/rtc/android/enums)，完整弱网策略见 [SRTC 网络质量](/zh/rtc/android/network-quality)。下方字段字典与 [SRTC 媒体质量](/zh/rtc/android/media-quality) 保持一致。
-
-## MediaMetric.Metric
-
-综合媒体质量统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
+| 入口 | 数据 | 使用时机 |
 | --- | --- | --- |
-| localAudios | `MutableMap<UserTrackDesc, AudioSenderStats>` | 本地音频统计（按用户轨道）。 |
-| localVideos | `MutableMap<UserTrackDesc, VideoSenderStats>` | 本地视频统计（按用户轨道）。 |
-| remoteAudios | `MutableMap<UserTrackDesc, AudioReceiverStats>` | 远端音频统计（按用户轨道）。 |
-| remoteVideos | `MutableMap<UserTrackDesc, VideoReceiverStats>` | 远端视频统计（按用户轨道）。 |
-| localUploadStats | LocalUploadStats | 本地上传总览统计。 |
-| remoteDownloadStats | `MutableMap<String, RemoteDownloadStats>` | 远端下载统计（按 `uid`）。 |
-| networkStats | NetworkStats | 网络状态统计。 |
-| qualityReport | QualityReport? | 服务端补充下发的上下行质量报告；首个报告到达前为 `null`。 |
+| `MeetingMediaEvent.onLocalQualitySnapshot(snapshot)` | `LocalQualitySnapshot`，同次采样的本地上下行网络质量和远端音视频播放体验 | 周期展示网络与播放质量；回调保持 RTC 统计线程，更新 UI 前应切换线程 |
+| `MeetingEngine.getMetric()` | 当前会议频道最近一次完成采样的 `MediaMetric?` 详细统计副本 | 按需读取轨道码率、帧率、丢包与网络数据；不会即时触发底层统计采集 |
+| `MeetingMediaEvent.onNetworkQualityChanged(change)` | FY 服务端的 `NetworkQualityChange` | 处理服务端上、下行质量档位；与本地快照独立，WS 不产生此类 FY 报告 |
 
-## MediaMetric.QualityReport
+`getMetric()` 在无活动会议、尚未完成采样或媒体连接失效时返回 `null`。`onLocalQualitySnapshot()` 在采样完成后约每 2 秒交付一次；详细统计只在需要时查询。
 
-服务端计算并下发的上下行连接质量报告，区分上行（本端到服务端）与下行（服务端到本端）。
+```kotlin
+import cn.seastart.meeting.event.MeetingMediaSimpleEvent
+import cn.seastart.rtc.monitoring.api.LocalQualitySnapshot
+import cn.seastart.rtc.monitoring.api.MediaMetric
+import cn.seastart.rtc.monitoring.api.NetworkQualityChange
 
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| timestamp | Long | 服务端生成该质量报告的时间戳（ms）。 |
-| uplink | QualityStats | 本端到服务端的上行质量。 |
-| downlink | QualityStats | 服务端到本端的下行质量。 |
+meetingEngine.mediaEvent = object : MeetingMediaSimpleEvent() {
+    override fun onLocalQualitySnapshot(snapshot: LocalQualitySnapshot) {
+        val downlinkLevel = snapshot.networkQuality.downlink.level
+        // 回调在 RTC 统计线程；如需显示 downlinkLevel，先切换到主线程。
+    }
 
-## MediaMetric.QualityStats
+    override fun onNetworkQualityChanged(change: NetworkQualityChange) {
+        // FY 服务端质量报告；弱网提示由应用自行去抖。
+    }
+}
 
-单侧链路（上行或下行）的质量样本。
+val metric: MediaMetric? = meetingEngine.getMetric()
+```
 
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| score | Double | 综合质量分数，0 ~ 100，越高越好。 |
-| level | String | 质量等级：`excellent` / `good` / `poor` / `lost`。 |
-| mos | Double | 语音主观质量分估算，1.0 ~ 4.5，越高越好。 |
-| loss | Double | 丢包率，0 ~ 1。 |
-| rtt | Double | 往返时延（ms）。 |
-| jitter | Double | 抖动（ms）。 |
-| packets | Long | 本轮统计参与计算的包数。 |
-| bitrate | Double | 平均码率（kbps）。 |
-| bytes | Long | 本窗口字节数。 |
+## 本地质量快照
 
-## MediaMetric.LocalMetric
+`LocalQualitySnapshot` 包含同一轮采样的 `timestamp: Long`、`networkQuality: NetworkQuality` 和 `mediaPlaybackExperience: MediaPlaybackExperience`。网络质量按上、下行及用户轨道提供档位、丢包率、码率、RTT 和抖动；播放体验按远端视频、音频轨道提供流畅度或中断信息。快照不包含逐轨原始计数；字段和档位见 [SRTC 媒体质量](/zh/rtc/android/media-quality)。
 
-本地聚合统计对象（Map 的 key 为 `String`）。
+## 详细统计
 
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| localAudios | `MutableMap<String, AudioSenderStats>` | 本地音频统计。 |
-| localVideos | `MutableMap<String, VideoSenderStats>` | 本地视频统计。 |
-| remoteAudios | `MutableMap<String, AudioReceiverStats>` | 远端音频统计。 |
-| remoteVideos | `MutableMap<String, VideoReceiverStats>` | 远端视频统计。 |
-| networkStats | NetworkStats | 网络状态统计。 |
+`getMetric()` 返回的顶层 `MediaMetric` 包含 `channel`、`sampleTimestampMs`、本地音视频发送轨道 `localAudios` / `localVideos`、远端接收轨道 `remoteAudios` / `remoteVideos`、汇总 `localUploadStats` / `remoteDownloadStats`、`networkStats`，以及可空的 FY 服务端 `qualityReport`。逐轨映射使用 `UserTrackDesc` 作为键；码率单位是 bps，丢包率为 0～1 的比例。详细字段与单位见 [SRTC 媒体质量](/zh/rtc/android/media-quality)。
 
-## MediaMetric.NetworkStats
+## FY 服务端质量报告
 
-网络状态统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| bitrateUp | Float | 上行码率（kb/s）。 |
-| bitrateDown | Float | 下行码率（kb/s）。 |
-| delay | Float | 延迟。 |
-| lossrateUp | Float | 上行丢包率。 |
-| lossrateDown | Float | 下行丢包率。 |
-| upLevel | MediaUploadLevel | 上行质量等级。 |
-| downLossLevel | MediaDownLossLevel | 下行丢包等级。 |
-| pktUp | Long | 上行包数。 |
-| pktDown | Long | 下行包数。 |
-| pktLossUp | Long | 上行丢包数。 |
-| pktLossDown | Long | 下行丢包数。 |
-
-## MediaMetric.LocalUploadStats
-
-本地上传统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| uid | String | 用户 ID。 |
-| delay | Float | 上传延时。 |
-| videoBitrate | Float | 视频上传码率（kb/s）。 |
-| audioBitrate | Float | 音频上传码率（kb/s）。 |
-| lossrate | Float | 丢包率。 |
-
-## MediaMetric.RemoteDownloadStats
-
-远端下载统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| uid | String | 用户 ID。 |
-| audioPacketsReceived | Long | 接收的音频包数。 |
-| videoPacketsReceived | Long | 接收的视频包数（含重传包）。 |
-| packetsLost | Long | 丢包数。 |
-| retransmittedPackets | Long | 重传包数（视频）。 |
-| lossrate | Float | 丢包率。 |
-| downLevel | MediaDownLevel | 下行质量等级。 |
-| audioBitrate | Float | 音频码率（kb/s）。 |
-| videoBitrate | Float | 视频码率（kb/s）。 |
-
-## MediaMetric.AudioSenderStats
-
-音频发送统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| audioLevel | Float | 音频能量。 |
-| trackId | String | 轨道 ID。 |
-| packetsSent | Long | 发送包数。 |
-| byteSent | Long | 发送字节数。 |
-| bitrateSent | Float | 发送码率（kb/s）。 |
-| jitter | Float | 网络抖动。 |
-| packetsLost | Int | 丢包数（未扣除重传）。 |
-| roundTripTime | Float | 往返时延。 |
-| mimeType | String | 编解码器类型。 |
-| timestamp | Long | 时间戳（ms）。 |
-| type | String | 媒体类型，固定为 `audio`。 |
-
-## MediaMetric.VideoSenderStats
-
-视频发送统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| firCount | Long | 请求发送 I 帧次数。 |
-| pliCount | Long | PLI 请求（请求关键帧）次数。 |
-| nackCount | Long | 请求重传丢失 RTP 包次数。 |
-| rid | String | Simulcast 流标识。 |
-| frameWidth | Int | 视频帧宽度。 |
-| frameHeight | Int | 视频帧高度。 |
-| framesPerSecond | Float | 视频帧率（fps）。 |
-| frameSent | Long | 发送帧数。 |
-| qualityLimitationReason | String | 质量受限主要原因（如 none/cpu/bandwidth/other/inactive）。 |
-| qualityLimitationDurations | `Map<String, Float>` | 各限制原因累计时长（秒）。 |
-| qualityLImitationResolutionChange | Long | 因质量限制导致分辨率变化次数。 |
-| retransmittedPacketsSent | Long | 已重传 RTP 包数。 |
-| targetBitrate | Float | 编码器目标比特率（bps）。 |
-| trackId | String | 轨道 ID。 |
-| packetsSent | Long | 发送包数。 |
-| byteSent | Long | 发送字节数。 |
-| bitrateSent | Float | 发送码率（kb/s）。 |
-| jitter | Float | 网络抖动。 |
-| packetsLost | Int | 丢包数（未扣除重传）。 |
-| roundTripTime | Float | 往返时延。 |
-| mimeType | String | 编解码器类型。 |
-| timestamp | Long | 时间戳（ms）。 |
-| type | String | 媒体类型，固定为 `video`。 |
-
-## MediaMetric.AudioReceiverStats
-
-音频接收统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| audioLevel | Float | 音频能量。 |
-| concealedSamples | Long | 补偿恢复的音频样本总数。 |
-| concealEvents | Long | 插值操作次数。 |
-| silentConcealedSamples | Long | 被补偿为静音的样本数量。 |
-| silentConcealmentEvents | Long | 静音补偿事件次数。 |
-| totalAudioEnergy | Double | 累计接收音频能量。 |
-| totalSamplesDuration | Double | 累计播放时长（秒）。 |
-| trackId | String | 轨道 ID。 |
-| packetsReceived | Long | 接收包数。 |
-| bytesReceived | Long | 接收字节数。 |
-| bitrateReceived | Float | 接收码率（kb/s）。 |
-| jitter | Float | 网络抖动。 |
-| jitterBufferDelay | Float | 抖动缓冲累计延迟。 |
-| packetsLost | Int | 丢包数（未扣除重传）。 |
-| mimeType | String | 编解码器类型。 |
-| timestamp | Long | 时间戳（ms）。 |
-| type | String | 媒体类型，固定为 `audio`。 |
-
-## MediaMetric.VideoReceiverStats
-
-视频接收统计对象。
-
-| 属性名称 | 数据类型 | 说明 |
-| --- | --- | --- |
-| framesDecoded | Long | 成功解码帧数。 |
-| framesDropped | Long | 解码丢弃帧数。 |
-| framesReceived | Long | 接收总帧数。 |
-| framesPerSecond | Float | 接收帧率（fps）。 |
-| frameWidth | Int | 接收帧宽度。 |
-| frameHeight | Int | 接收帧高度。 |
-| firCount | Int | 请求发送 I 帧次数。 |
-| pliCount | Int | PLI 请求（请求关键帧）次数。 |
-| nackCount | Int | 请求重传丢失 RTP 包次数。 |
-| retransmittedPacketsReceived | Long | 接收端统计的重传包数。 |
-| decoderImplementation | String | 解码器实现名称。 |
-| trackId | String | 轨道 ID。 |
-| packetsReceived | Long | 接收包数。 |
-| bytesReceived | Long | 接收字节数。 |
-| bitrateReceived | Float | 接收码率（kb/s）。 |
-| jitter | Float | 网络抖动。 |
-| jitterBufferDelay | Float | 抖动缓冲累计延迟。 |
-| packetsLost | Int | 丢包数（未扣除重传）。 |
-| mimeType | String | 编解码器类型。 |
-| timestamp | Long | 时间戳（ms）。 |
-| type | String | 媒体类型，固定为 `video`。 |
+`onNetworkQualityChanged()` 每收到一份 FY 服务端报告就为上、下行各回调一次，不做去抖；等级未变化时 `trend` 为 `STABLE`。它与本地 `LocalQualitySnapshot` 的评估相互独立。方向、档位和趋势枚举见 [SRTC 枚举类型](/zh/rtc/android/enums)，弱网处理建议见 [SRTC 网络质量](/zh/rtc/android/network-quality)。

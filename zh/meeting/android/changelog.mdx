@@ -1,9 +1,21 @@
 ---
 title: "更新日志"
-description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.39 的新增能力、修复、依赖升级与兼容性说明"
+description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.40 的新增能力、修复、依赖升级与兼容性说明"
 ---
 
 > 本页记录 Android SMeeting SDK 的主要版本变化。依赖版本见[集成](/zh/meeting/android/integration)，运行时可通过 `MeetingEngine.version()` 查询实际版本。
+
+## 2.0.40（2026-10-15）
+
+### 新增
+
++ 新增 `MeetingEngine.setRtcLanguage()`，可设置后续 RTC 请求的语言。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.37`。
++ `initSdk()` 不再接收媒体配置，`enterMeeting()` 和 `enterMeetingByMeetingId()` 不再接收 `Activity`。
++ 移除 `updateMediaOptions()` 和 `onMediaMetric()`；使用 `onLocalQualitySnapshot()` 接收周期质量快照，`getMetric()` 返回新的详细统计类型。详见[媒体质量](/zh/meeting/android/media-quality)。
 
 ## 2.0.39（2026-09-21）
 

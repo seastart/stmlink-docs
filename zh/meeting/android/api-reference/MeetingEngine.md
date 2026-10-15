@@ -16,6 +16,18 @@ description: "SMeeting Android SDK 的唯一公开入口，覆盖初始化、会
 
 ## 创建与版本
 
+### setRtcLanguage(language)
+
+```kotlin
+fun setRtcLanguage(language: RtcLanguage)
+```
+
+方法说明：设置进程内后续 RTC 频道和 IM 后端请求的语言。建议在 `create()` 或 `initSdk()` 前调用；实际错误文案以后端返回为准。
+
+参数说明：`language` 为 `RtcLanguage`，可选 `SYSTEM`、`ZH_CN` 或 `EN`，详见 [SRTC 枚举类型](/zh/rtc/android/enums)。
+
+返回值说明：无（`Unit`）。
+
 ### create(app)
 
 ```kotlin
@@ -102,12 +114,11 @@ val signInManager: SignInManager
 
 ## 初始化与释放
 
-### initSdk(meetToken, options, callback)
+### initSdk(meetToken, callback)
 
 ```kotlin
 fun initSdk(
     meetToken: String,
-    options: RTCMediaOptions?,
     callback: MeetingResultCallback
 )
 ```
@@ -119,24 +130,7 @@ fun initSdk(
 | 参数 | 说明 |
 | --- | --- |
 | `meetToken` | `String`，Meeting 服务端签发的初始化 token。 |
-| `options` | `RTCMediaOptions?`，SRTC 媒体配置；传 `null` 使用默认配置。 |
 | `callback` | `MeetingResultCallback`，初始化唯一终态回调。 |
-
-返回值说明：无（`Unit`）。
-
-### updateMediaOptions(options)
-
-```kotlin
-fun updateMediaOptions(options: RTCMediaOptions)
-```
-
-方法说明：更新底层 SRTC 媒体参数。
-
-参数说明：
-
-| 参数 | 说明 |
-| --- | --- |
-| `options` | `RTCMediaOptions`，新的媒体配置。 |
 
 返回值说明：无（`Unit`）。
 
@@ -157,14 +151,14 @@ fun release()
 ### getMetric()
 
 ```kotlin
-fun getMetric(): MediaMetric.Metric?
+fun getMetric(): MediaMetric?
 ```
 
 方法说明：获取当前会议最近一次采样的媒体质量快照；不会主动触发底层统计采集。
 
 参数说明：无。
 
-返回值说明：线程安全的 `MediaMetric.Metric` 副本；未入会或首个约 5 秒采样尚未产生时为 `null`。字段见[媒体质量](/zh/meeting/android/media-quality)。
+返回值说明：当前会议频道最近一次完成采样的 `MediaMetric` 副本；无活动会议、尚未采样或媒体连接失效时为 `null`。字段见[媒体质量](/zh/meeting/android/media-quality)。
 
 ### enableClientCloudRecordCapture
 
@@ -1113,11 +1107,10 @@ fun cancelMeetingBeforeStart(meetingId: String, callback: MeetingResultCallback)
 
 ## 入会与离会
 
-### enterMeeting(activity, roomNo, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
+### enterMeeting(roomNo, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
 
 ```kotlin
 fun enterMeeting(
-    activity: Activity,
     roomNo: String,
     password: String?,
     nick: String,
@@ -1135,7 +1128,6 @@ fun enterMeeting(
 
 | 参数 | 说明 |
 | --- | --- |
-| `activity` | SRTC 入会所需的当前 `Activity`。 |
 | `roomNo` | 目标房间号。 |
 | `password` | 入会密码；无密码时传 `null`。 |
 | `nick` | 本次入会昵称。 |
@@ -1147,11 +1139,10 @@ fun enterMeeting(
 
 返回值说明：无（异步结果见回调）。
 
-### enterMeetingByMeetingId(activity, meetingId, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
+### enterMeetingByMeetingId(meetingId, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
 
 ```kotlin
 fun enterMeetingByMeetingId(
-    activity: Activity,
     meetingId: String,
     password: String?,
     nick: String,
@@ -1169,7 +1160,6 @@ fun enterMeetingByMeetingId(
 
 | 参数 | 说明 |
 | --- | --- |
-| `activity` | SRTC 入会所需的当前 `Activity`。 |
 | `meetingId` | 目标会议 ID。 |
 | `password` | 入会密码；无密码时传 `null`。 |
 | `nick` | 本次入会昵称。 |
