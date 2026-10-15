@@ -3,7 +3,7 @@ title: "Model types"
 description: "Configuration, result, meeting, member, roll call, sign-in, IM, recording layout, and casting models used directly by the public APIs of SMeeting Android, with every field. Read this when you build options or read results, events, and snapshots."
 ---
 
-This page lists only the Meeting models directly exposed by `MeetingEngine`, the public managers, events, and result callbacks. `RTCMediaOptions`, `TrackInfo`, `RemoteVideoTrack`, device capabilities, media statistics, and similar types come from the transitive SRTC dependency; see [SRTC Android model types](/en/rtc/android/types).
+This page lists only the Meeting models directly exposed by `MeetingEngine`, the public managers, events, and result callbacks. `TrackInfo`, `RemoteVideoTrack`, device capabilities, media statistics, and similar types come from the transitive SRTC dependency; see [SRTC Android model types](/en/rtc/android/types).
 
 ## Configuration models
 

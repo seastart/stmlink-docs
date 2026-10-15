@@ -1,9 +1,21 @@
 ---
 title: "Changelog"
-description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.39, including the 2.0.35 breaking API changes. Read this before upgrading the SDK."
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.40, including breaking API changes. Read this before upgrading the SDK."
 ---
 
 > This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.40 (2026-10-15)
+
+### Added
+
++ Added `MeetingEngine.setRtcLanguage()` to set the language for subsequent RTC requests.
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.37`.
++ `initSdk()` no longer accepts media configuration; `enterMeeting()` and `enterMeetingByMeetingId()` no longer accept an `Activity`.
++ Removed `updateMediaOptions()` and `onMediaMetric()`; use `onLocalQualitySnapshot()` for periodic quality snapshots. `getMetric()` now returns the new detailed statistics type. See [Media quality](/en/meeting/android/media-quality).
 
 ## 2.0.39 (2026-09-21)
 

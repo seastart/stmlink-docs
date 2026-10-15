@@ -21,7 +21,6 @@ fun initMeeting(application: Application, meetToken: String) {
     meetingEngine = MeetingEngine.create(application)
     meetingEngine.initSdk(
         meetToken,
-        null,
         object : MeetingResultCallback {
             override fun onSuccess() {
                 // The SDK is ready
@@ -108,7 +107,6 @@ A successful entry returns `MeetingEnterInfo`. In-meeting APIs are still called 
 
 ```kotlin
 meetingEngine.enterMeeting(
-    activity = this,
     roomNo = "10000001",
     password = null,
     nick = "Alice",
@@ -176,7 +174,7 @@ meetingEngine.closeCamera()
 meetingEngine.closeMic()
 ```
 
-Remote video must be rendered with `VcsPlayerGlTextureView` or `VcsPlayerGlSurfaceView`; a plain Android `TextureView` / `SurfaceView` doesn't work.
+Remote video must be rendered with `VcsPlayerGlTextureView` or `VcsPlayerGlSurfaceView` from `cn.seastart.rtc.media.original.render`; a plain Android `TextureView` / `SurfaceView` doesn't work.
 
 ## 6. Subscribe to remote video
 

@@ -1,214 +1,48 @@
 ---
 title: "Media quality"
-description: "How to read Android SMeeting media statistics, server-side quality reports, and network quality changes through MeetingEngine.getMetric() or MeetingMediaEvent, plus the full MediaMetric field dictionary. Read this when building call quality indicators or diagnosing poor network."
+description: "Monitor current-meeting audio and video quality through SMeeting Android local quality snapshots, on-demand detailed statistics, and FY server reports."
 ---
 
-## Notes
+SMeeting 2.0.40 uses the monitoring models in `cn.seastart.rtc.monitoring.api` from SRTC 2.0.37. The old nested types under `cn.seastart.rtc.statistics.MediaMetric` and `onMediaMetric()` have been removed. See [SRTC media quality](/en/rtc/android/media-quality) for all fields and units.
 
-SMeeting directly reuses `MediaMetric`, `NetworkQualityChange`, and related statistics types from the transitive SRTC dependency; the fields follow the SRTC version you depend on. See SRTC [Media quality](/en/rtc/android/media-quality).
+## Get quality data
 
-You can get quality data in two ways:
-
-+ `MeetingEngine.getMetric()`: actively reads a thread-safe copy of the current meeting's most recent sample; it doesn't trigger an immediate sample and may be `null` right after entering the meeting.
-+ `MeetingEngine.mediaEvent`: listen to `MeetingMediaEvent.onMediaMetric()` and `onNetworkQualityChanged()`. Statistics are usually called back about every 5 seconds; callbacks stay on the SRTC source thread.
-
-`onNetworkQualityChanged()` passes through the SRTC callback as is: it fires once for the uplink and once for the downlink on every quality report from the server, without debouncing, and fires even when the level hasn't changed (`trend` is `STABLE`). Debounce actions such as poor-network prompts yourself. For level, direction, and trend enums, see [SRTC enums](/en/rtc/android/enums); for the full poor-network policy, see [SRTC network quality](/en/rtc/android/network-quality). The field dictionary below is kept consistent with [SRTC media quality](/en/rtc/android/media-quality).
-
-## MediaMetric.Metric
-
-Aggregate media quality statistics object.
-
-| Property | Data type | Description |
+| Entry point | Data | When to use it |
 | --- | --- | --- |
-| localAudios | `MutableMap<UserTrackDesc, AudioSenderStats>` | Local audio stats (by user track). |
-| localVideos | `MutableMap<UserTrackDesc, VideoSenderStats>` | Local video stats (by user track). |
-| remoteAudios | `MutableMap<UserTrackDesc, AudioReceiverStats>` | Remote audio stats (by user track). |
-| remoteVideos | `MutableMap<UserTrackDesc, VideoReceiverStats>` | Remote video stats (by user track). |
-| localUploadStats | LocalUploadStats | Local upload overview stats. |
-| remoteDownloadStats | `MutableMap<String, RemoteDownloadStats>` | Remote download stats (by `uid`). |
-| networkStats | NetworkStats | Network status stats. |
-| qualityReport | QualityReport? | Uplink/downlink quality report additionally sent by the server; `null` until the first report arrives. |
+| `MeetingMediaEvent.onLocalQualitySnapshot(snapshot)` | `LocalQualitySnapshot`, local uplink and downlink network quality and remote audio/video playback experience from the same sample | Show network and playback quality periodically; the callback stays on the RTC statistics thread, so switch threads before updating the UI |
+| `MeetingEngine.getMetric()` | `MediaMetric?`, a copy of the latest completed detailed sample for the current meeting channel | Read per-track bitrate, frame rate, loss, and network data on demand; it does not trigger an immediate underlying statistics sample |
+| `MeetingMediaEvent.onNetworkQualityChanged(change)` | FY server `NetworkQualityChange` | Handle server-side uplink and downlink quality levels; it is independent of the local snapshot, and WS does not produce FY reports |
 
-## MediaMetric.QualityReport
+`getMetric()` returns `null` when no meeting is active, no sample has completed, or the media connection is invalid. `onLocalQualitySnapshot()` is delivered about every 2 seconds after sampling completes; query detailed statistics only when needed.
 
-Uplink/downlink connection quality report computed and sent by the server, distinguishing uplink (this client to the server) from downlink (the server to this client).
+```kotlin
+import cn.seastart.meeting.event.MeetingMediaSimpleEvent
+import cn.seastart.rtc.monitoring.api.LocalQualitySnapshot
+import cn.seastart.rtc.monitoring.api.MediaMetric
+import cn.seastart.rtc.monitoring.api.NetworkQualityChange
 
-| Property | Data type | Description |
-| --- | --- | --- |
-| timestamp | Long | Timestamp (ms) when the server generated the quality report. |
-| uplink | QualityStats | Uplink quality from this client to the server. |
-| downlink | QualityStats | Downlink quality from the server to this client. |
+meetingEngine.mediaEvent = object : MeetingMediaSimpleEvent() {
+    override fun onLocalQualitySnapshot(snapshot: LocalQualitySnapshot) {
+        val downlinkLevel = snapshot.networkQuality.downlink.level
+        // This callback runs on the RTC statistics thread. Switch to the main thread before displaying downlinkLevel.
+    }
 
-## MediaMetric.QualityStats
+    override fun onNetworkQualityChanged(change: NetworkQualityChange) {
+        // FY server quality report; debounce poor-network prompts in your app.
+    }
+}
 
-Quality sample of one side of the link (uplink or downlink).
+val metric: MediaMetric? = meetingEngine.getMetric()
+```
 
-| Property | Data type | Description |
-| --- | --- | --- |
-| score | Double | Overall quality score, 0–100; higher is better. |
-| level | String | Quality level: `excellent` / `good` / `poor` / `lost`. |
-| mos | Double | Estimated voice MOS (mean opinion score), 1.0–4.5; higher is better. |
-| loss | Double | Packet loss rate, 0–1. |
-| rtt | Double | Round-trip time (ms). |
-| jitter | Double | Jitter (ms). |
-| packets | Long | Number of packets included in this round of statistics. |
-| bitrate | Double | Average bitrate (kbps). |
-| bytes | Long | Bytes in this window. |
+## Local quality snapshot
 
-## MediaMetric.LocalMetric
+`LocalQualitySnapshot` contains `timestamp: Long`, `networkQuality: NetworkQuality`, and `mediaPlaybackExperience: MediaPlaybackExperience` from the same sample. Network quality provides levels, loss rates, bitrates, RTT, and jitter by direction and user track. Playback experience provides smoothness or interruption data by remote video and audio track. The snapshot does not contain raw per-track counters; see [SRTC media quality](/en/rtc/android/media-quality) for fields and levels.
 
-Local aggregate statistics object (Map keys are `String`).
+## Detailed statistics
 
-| Property | Data type | Description |
-| --- | --- | --- |
-| localAudios | `MutableMap<String, AudioSenderStats>` | Local audio stats. |
-| localVideos | `MutableMap<String, VideoSenderStats>` | Local video stats. |
-| remoteAudios | `MutableMap<String, AudioReceiverStats>` | Remote audio stats. |
-| remoteVideos | `MutableMap<String, VideoReceiverStats>` | Remote video stats. |
-| networkStats | NetworkStats | Network status stats. |
+The top-level `MediaMetric` returned by `getMetric()` contains `channel`, `sampleTimestampMs`, local sending tracks `localAudios` / `localVideos`, remote receiving tracks `remoteAudios` / `remoteVideos`, aggregates `localUploadStats` / `remoteDownloadStats`, `networkStats`, and the nullable FY server `qualityReport`. Per-track maps use `UserTrackDesc` keys. Bitrates are in bps; loss rates are fractions from 0 to 1. See [SRTC media quality](/en/rtc/android/media-quality) for the full fields and units.
 
-## MediaMetric.NetworkStats
+## FY server quality reports
 
-Network state statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| bitrateUp | Float | Uplink bitrate (kb/s). |
-| bitrateDown | Float | Downlink bitrate (kb/s). |
-| delay | Float | Delay. |
-| lossrateUp | Float | Uplink packet loss rate. |
-| lossrateDown | Float | Downlink packet loss rate. |
-| upLevel | MediaUploadLevel | Uplink quality level. |
-| downLossLevel | MediaDownLossLevel | Downlink packet loss level. |
-| pktUp | Long | Uplink packet count. |
-| pktDown | Long | Downlink packet count. |
-| pktLossUp | Long | Uplink packets lost. |
-| pktLossDown | Long | Downlink packets lost. |
-
-## MediaMetric.LocalUploadStats
-
-Local upload statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| uid | String | User ID. |
-| delay | Float | Upload delay. |
-| videoBitrate | Float | Video upload bitrate (kb/s). |
-| audioBitrate | Float | Audio upload bitrate (kb/s). |
-| lossrate | Float | Packet loss rate. |
-
-## MediaMetric.RemoteDownloadStats
-
-Remote download statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| uid | String | User ID. |
-| audioPacketsReceived | Long | Audio packets received. |
-| videoPacketsReceived | Long | Video packets received (including retransmitted packets). |
-| packetsLost | Long | Packets lost. |
-| retransmittedPackets | Long | Retransmitted packets (video). |
-| lossrate | Float | Packet loss rate. |
-| downLevel | MediaDownLevel | Downlink quality level. |
-| audioBitrate | Float | Audio bitrate (kb/s). |
-| videoBitrate | Float | Video bitrate (kb/s). |
-
-## MediaMetric.AudioSenderStats
-
-Audio sender statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| audioLevel | Float | Audio energy. |
-| trackId | String | Track ID. |
-| packetsSent | Long | Packets sent. |
-| byteSent | Long | Bytes sent. |
-| bitrateSent | Float | Send bitrate (kb/s). |
-| jitter | Float | Network jitter. |
-| packetsLost | Int | Packets lost (retransmissions not deducted). |
-| roundTripTime | Float | Round-trip time. |
-| mimeType | String | Codec type. |
-| timestamp | Long | Timestamp (ms). |
-| type | String | Media type, always `audio`. |
-
-## MediaMetric.VideoSenderStats
-
-Video sender statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| firCount | Long | Number of requests to send an I-frame. |
-| pliCount | Long | Number of PLI (Picture Loss Indication) requests, i.e., keyframe requests. |
-| nackCount | Long | Number of requests to retransmit lost RTP packets. |
-| rid | String | Simulcast stream identifier. |
-| frameWidth | Int | Video frame width. |
-| frameHeight | Int | Video frame height. |
-| framesPerSecond | Float | Video frame rate (fps). |
-| frameSent | Long | Frames sent. |
-| qualityLimitationReason | String | The main reason quality is limited (such as none/cpu/bandwidth/other/inactive). |
-| qualityLimitationDurations | `Map<String, Float>` | Cumulative duration of each limitation reason (seconds). |
-| qualityLImitationResolutionChange | Long | Number of resolution changes caused by quality limitation. |
-| retransmittedPacketsSent | Long | RTP packets retransmitted. |
-| targetBitrate | Float | Encoder target bitrate (bps). |
-| trackId | String | Track ID. |
-| packetsSent | Long | Packets sent. |
-| byteSent | Long | Bytes sent. |
-| bitrateSent | Float | Send bitrate (kb/s). |
-| jitter | Float | Network jitter. |
-| packetsLost | Int | Packets lost (retransmissions not deducted). |
-| roundTripTime | Float | Round-trip time. |
-| mimeType | String | Codec type. |
-| timestamp | Long | Timestamp (ms). |
-| type | String | Media type, always `video`. |
-
-## MediaMetric.AudioReceiverStats
-
-Audio receiver statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| audioLevel | Float | Audio energy. |
-| concealedSamples | Long | Total audio samples recovered by concealment. |
-| concealEvents | Long | Number of interpolation operations. |
-| silentConcealedSamples | Long | Number of samples concealed as silence. |
-| silentConcealmentEvents | Long | Number of silent concealment events. |
-| totalAudioEnergy | Double | Cumulative received audio energy. |
-| totalSamplesDuration | Double | Cumulative playback duration (seconds). |
-| trackId | String | Track ID. |
-| packetsReceived | Long | Packets received. |
-| bytesReceived | Long | Bytes received. |
-| bitrateReceived | Float | Receive bitrate (kb/s). |
-| jitter | Float | Network jitter. |
-| jitterBufferDelay | Float | Cumulative jitter buffer delay. |
-| packetsLost | Int | Packets lost (retransmissions not deducted). |
-| mimeType | String | Codec type. |
-| timestamp | Long | Timestamp (ms). |
-| type | String | Media type, always `audio`. |
-
-## MediaMetric.VideoReceiverStats
-
-Video receiver statistics object.
-
-| Property | Data type | Description |
-| --- | --- | --- |
-| framesDecoded | Long | Frames decoded successfully. |
-| framesDropped | Long | Frames dropped during decoding. |
-| framesReceived | Long | Total frames received. |
-| framesPerSecond | Float | Receive frame rate (fps). |
-| frameWidth | Int | Received frame width. |
-| frameHeight | Int | Received frame height. |
-| firCount | Int | Number of requests to send an I-frame. |
-| pliCount | Int | Number of PLI (Picture Loss Indication) requests, i.e., keyframe requests. |
-| nackCount | Int | Number of requests to retransmit lost RTP packets. |
-| retransmittedPacketsReceived | Long | Retransmitted packets counted by the receiver. |
-| decoderImplementation | String | Decoder implementation name. |
-| trackId | String | Track ID. |
-| packetsReceived | Long | Packets received. |
-| bytesReceived | Long | Bytes received. |
-| bitrateReceived | Float | Receive bitrate (kb/s). |
-| jitter | Float | Network jitter. |
-| jitterBufferDelay | Float | Cumulative jitter buffer delay. |
-| packetsLost | Int | Packets lost (retransmissions not deducted). |
-| mimeType | String | Codec type. |
-| timestamp | Long | Timestamp (ms). |
-| type | String | Media type, always `video`. |
+`onNetworkQualityChanged()` fires once for the uplink and once for the downlink for each FY server report, without debouncing. When the level is unchanged, `trend` is `STABLE`. It is independent of the local `LocalQualitySnapshot` evaluation. See [SRTC enums](/en/rtc/android/enums) for directions, levels, and trends, and [SRTC network quality](/en/rtc/android/network-quality) for poor-network handling.

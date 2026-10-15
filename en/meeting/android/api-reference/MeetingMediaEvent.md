@@ -10,7 +10,7 @@ description: "Receive the current meeting's media connection, remote raw frames,
 + This interface covers connection state, raw remote frames, and aggregated quality statistics; for the receive state of a single remote video, use `MeetingRemoteVideoEvent`.
 
 + `onRemoteVideoFrame()` is called back on the SRTC media thread and must not block.
-+ Media statistics are usually produced about every 5 seconds; for poor-network level changes, prefer `onNetworkQualityChanged()`.
++ Local network and playback experience are delivered periodically through `onLocalQualitySnapshot()`. FY server quality level changes are delivered separately through `onNetworkQualityChanged()`. Call `MeetingEngine.getMetric()` for detailed per-track statistics on demand.
 + This listener is cleared when you exit the meeting; reassign it for the next meeting.
 
 ## Methods
@@ -61,19 +61,19 @@ Parameters:
 
 Returns: None (`Unit`).
 
-### onMediaMetric(metric)
+### onLocalQualitySnapshot(snapshot)
 
 ```kotlin
-fun onMediaMetric(metric: MediaMetric.Metric)
+fun onLocalQualitySnapshot(snapshot: LocalQualitySnapshot)
 ```
 
-Description: Delivers a media performance metric snapshot of the current meeting.
+Description: Delivers local uplink and downlink network quality and remote audio/video playback experience from the same sample of the current meeting. The callback stays on the RTC statistics thread.
 
 Parameters:
 
 | Parameter | Description |
 | --- | --- |
-| `metric` | Send, receive, network, and server-side quality statistics; for fields, see [Media quality](/en/meeting/android/media-quality). |
+| `snapshot` | `LocalQualitySnapshot`, containing network quality and per-track playback experience; see [Media quality](/en/meeting/android/media-quality) for fields. |
 
 Returns: None (`Unit`).
 
@@ -115,7 +115,7 @@ Returns: None (`Unit`).
 fun onNetworkQualityChanged(change: NetworkQualityChange)
 ```
 
-Description: Called once for the uplink and once for the downlink each time the current meeting receives a quality report from the server, without debouncing; when the level hasn't changed, `trend` is `STABLE`.
+Description: Called once for the uplink and once for the downlink each time the current meeting receives an FY server quality report, without debouncing; when the level hasn't changed, `trend` is `STABLE`. It is independent of the local quality snapshot.
 
 Parameters:
 

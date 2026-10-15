@@ -16,6 +16,18 @@ description: "The single public entry point of the SMeeting Android SDK: initial
 
 ## Creation and version
 
+### setRtcLanguage(language)
+
+```kotlin
+fun setRtcLanguage(language: RtcLanguage)
+```
+
+Description: Sets the language for subsequent RTC channel and IM backend requests in the process. Call it before `create()` or `initSdk()` when possible; the actual error message depends on the backend response.
+
+Parameters: `language` is `RtcLanguage`: `SYSTEM`, `ZH_CN`, or `EN`. See [SRTC enums](/en/rtc/android/enums).
+
+Returns: None (`Unit`).
+
 ### create(app)
 
 ```kotlin
@@ -102,12 +114,11 @@ Register a listener by assigning these properties directly; assign `null` to rem
 
 ## Initialization and release
 
-### initSdk(meetToken, options, callback)
+### initSdk(meetToken, callback)
 
 ```kotlin
 fun initSdk(
     meetToken: String,
-    options: RTCMediaOptions?,
     callback: MeetingResultCallback
 )
 ```
@@ -119,24 +130,7 @@ Parameters:
 | Parameter | Description |
 | --- | --- |
 | `meetToken` | `String`, the initialization token issued by the Meeting server. |
-| `options` | `RTCMediaOptions?`, the SRTC media configuration; pass `null` to use the default configuration. |
 | `callback` | `MeetingResultCallback`, the single final-state callback for initialization. |
-
-Returns: None (`Unit`).
-
-### updateMediaOptions(options)
-
-```kotlin
-fun updateMediaOptions(options: RTCMediaOptions)
-```
-
-Description: Updates the underlying SRTC media parameters.
-
-Parameters:
-
-| Parameter | Description |
-| --- | --- |
-| `options` | `RTCMediaOptions`, the new media configuration. |
 
 Returns: None (`Unit`).
 
@@ -157,14 +151,14 @@ Returns: None (`Unit`).
 ### getMetric()
 
 ```kotlin
-fun getMetric(): MediaMetric.Metric?
+fun getMetric(): MediaMetric?
 ```
 
 Description: Gets the most recently sampled media quality snapshot of the current meeting; it doesn't actively trigger underlying statistics collection.
 
 Parameters: None.
 
-Returns: A thread-safe copy of `MediaMetric.Metric`; `null` when not in a meeting or before the first sample (about 5 seconds) has been produced. For the fields, see [Media quality](/en/meeting/android/media-quality).
+Returns: A copy of the latest completed `MediaMetric` sample for the current meeting channel; `null` when no meeting is active, no sample is available, or the media connection is invalid. For the fields, see [Media quality](/en/meeting/android/media-quality).
 
 ### enableClientCloudRecordCapture
 
@@ -1113,11 +1107,10 @@ Returns: None (the asynchronous result is delivered through the callback).
 
 ## Entering and exiting meetings
 
-### enterMeeting(activity, roomNo, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
+### enterMeeting(roomNo, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
 
 ```kotlin
 fun enterMeeting(
-    activity: Activity,
     roomNo: String,
     password: String?,
     nick: String,
@@ -1135,7 +1128,6 @@ Parameters:
 
 | Parameter | Description |
 | --- | --- |
-| `activity` | The current `Activity`, required for the SRTC join. |
 | `roomNo` | Target room number. |
 | `password` | Meeting password; pass `null` if there is none. |
 | `nick` | Nickname for this meeting entry. |
@@ -1147,11 +1139,10 @@ Parameters:
 
 Returns: None (the asynchronous result is delivered through the callback).
 
-### enterMeetingByMeetingId(activity, meetingId, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
+### enterMeetingByMeetingId(meetingId, password, nick, avatar, streamVendor, isAudience, extendInfo, callback)
 
 ```kotlin
 fun enterMeetingByMeetingId(
-    activity: Activity,
     meetingId: String,
     password: String?,
     nick: String,
@@ -1169,7 +1160,6 @@ Parameters:
 
 | Parameter | Description |
 | --- | --- |
-| `activity` | The current `Activity`, required for the SRTC join. |
 | `meetingId` | Target meeting ID. |
 | `password` | Meeting password; pass `null` if there is none. |
 | `nick` | Nickname for this meeting entry. |
