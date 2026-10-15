@@ -668,8 +668,8 @@
   "en/rtc/android/advanced/multi-channel": {
     "reviewed": false,
     "source": "zh/rtc/android/advanced/multi-channel.md",
-    "zh_blob": "5418f845bbf82c77e14f6690fb01f3de0e818a51",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "15222fb796b0726dd1f16027fc2dc57ec3613beb",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/advanced/whiteboard": {
     "reviewed": true,
@@ -720,10 +720,10 @@
     "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
   },
   "en/rtc/android/api-reference/RTCChannel": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/android/api-reference/RTCChannel.md",
-    "zh_blob": "8304576db045644829332df6a9ed6c5af8b0a674",
-    "zh_commit": "a12305b8c9d2f58514394319b93a16c7aa339a23"
+    "zh_blob": "3664169446a7672871394e7fa7889b7532423aca",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/api-reference/RTCClientEvent": {
     "reviewed": false,
@@ -734,8 +734,8 @@
   "en/rtc/android/api-reference/RTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/android/api-reference/RTCEngine.md",
-    "zh_blob": "b0665d681b005b89cbb1eff1c58c7197e9f83a0b",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "b230887f6144935ee837545fcbaf4a3979c2171c",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/api-reference/RTCEngineEvent": {
     "reviewed": true,
@@ -756,10 +756,10 @@
     "zh_commit": "77087e38dfd58e2a219b2b11453a83bbaaefcc75"
   },
   "en/rtc/android/api-reference/RTCMediaEvent": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/android/api-reference/RTCMediaEvent.md",
-    "zh_blob": "266d9bc86186b0fdc610681e3ae216926329e8c3",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "b449dfd0337d6c23353c2acd853ba3549c0a5d8b",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/api-reference/RTCMicDeviceEvent": {
     "reviewed": true,
@@ -782,14 +782,14 @@
   "en/rtc/android/changelog": {
     "reviewed": false,
     "source": "zh/rtc/android/changelog.mdx",
-    "zh_blob": "f92d508ed1ed206e2b7fe218e1dec35668f79fb2",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "0de64ff14bd055219c8a4d7f10e9e5bcc976064b",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/enums": {
     "reviewed": false,
     "source": "zh/rtc/android/enums.md",
-    "zh_blob": "59b8dff583c99e7d54386a3e809b468130064b4d",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "c4880ccb99c7a6c9451b8cd11a652caad6839038",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/error-codes": {
     "reviewed": false,
@@ -800,20 +800,20 @@
   "en/rtc/android/integration": {
     "reviewed": false,
     "source": "zh/rtc/android/integration.md",
-    "zh_blob": "55148fc37193b245e5073ad5fc07f6ec574bdf39",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "1a1ef8f9bbbee4e9394a65537d553bcf595b74b5",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/media-quality": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/android/media-quality.md",
-    "zh_blob": "856cd817dae3bab69758012c03134666d8c54df6",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "2cf2691a6b5440dd09dbe05c231e1953dada6aa4",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/network-quality": {
     "reviewed": false,
     "source": "zh/rtc/android/network-quality.md",
-    "zh_blob": "09f7fa1f5cbad17858063187fe40876a8f00fe59",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "81896bf7a939e0101823c56f743ae3fe5ba4d9f8",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/android/presets/camera": {
     "reviewed": true,
@@ -846,10 +846,10 @@
     "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
   },
   "en/rtc/android/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/android/types.md",
-    "zh_blob": "2223bfe939d650a73ae02c1e0b03f7980a1f4efb",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "5c64aaffee4e4bca71af87c797a29f6f4218c34b",
+    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
   },
   "en/rtc/capi/advanced/custom-msg": {
     "reviewed": true,

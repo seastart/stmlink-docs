@@ -119,12 +119,12 @@ Remote tracks, subscription IDs, and render objects must all come from the same 
 ## Statistics and ASR
 
 ```kotlin
-fun getMetric(): MediaMetric.Metric?
+fun getMetric(): MediaMetric?
 fun startAsr()
 fun stopAsr()
 fun isStartAsr(): Boolean
 ```
 
-Each channel has its own media statistics and ASR state. `getMetric()` returns the most recent thread-safe snapshot and doesn't actively trigger underlying statistics collection.
+Each channel has its own media statistics and ASR state. `getMetric()` assembles a copy of detailed statistics from the latest completed sample on demand without triggering `getStats()`; it returns `null` when no valid sample is available.
 
 For the full multi-channel integration flow, see [Multi-channel](/en/rtc/android/advanced/multi-channel).

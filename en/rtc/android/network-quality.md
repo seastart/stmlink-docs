@@ -1,403 +1,74 @@
 ---
 title: "Network quality"
-description: "Monitor network quality in the Android SRTC SDK: quality level changes via onNetworkQualityChanged, periodic onMediaMetric snapshots, on-demand getMetric(), qualityReport levels, and handling poor uplink/downlink and reconnects. Read when building network indicators or poor-network handling."
+description: "Distinguish FY server quality reports, local network and playback snapshots, and per-track statistics queried on demand."
 ---
 
-The SDK offers three ways to get network quality, from "passively reacting to changes" to "actively querying". Pick the one that fits:
+The SDK provides three independent sources of quality information. Every callback includes `channel`; multi-channel apps should store results by channel. Public monitoring types are in `cn.seastart.rtc.monitoring.api`.
 
-| Method | API | Use case |
-|---|---|---|
-| Subscribe to quality level changes (recommended) | `RTCMediaEvent.onNetworkQualityChanged` | Network status indicators and poor-network prompts; **fires once each for uplink and downlink on every quality report from the server**, with no debouncing |
-| Periodic quality snapshots | `RTCMediaEvent.onMediaMetric` | Detailed diagnostic panels; delivers a full `MediaMetric.Metric` about every 5 seconds |
-| Actively query a snapshot | `RTCEngine.getMetric()` | Pull the latest full quality snapshot at any time |
+| Information | Entry point | Use |
+| --- | --- | --- |
+| FY server network quality | `RTCMediaEvent.onNetworkQualityChanged(channel, change)` | Each FY server report produces separate uplink and downlink events; WS does not provide this server report. |
+| Local network and playback experience | `RTCMediaEvent.onLocalQualitySnapshot(channel, snapshot)` | About every 2 seconds after sampling completes, each channel delivers local uplink and downlink network quality and per-track downlink playback experience. |
+| Detailed media statistics | `RTCEngine.getMetric()` / `RTCChannel.getMetric()` | Query the latest completed raw statistics sample for the default or a specified channel on demand. |
 
-`onNetworkQualityChanged` and `onMediaMetric` are delivered passively through `RTCMediaEvent`—just subscribe, no polling needed. `getMetric()` is for pulling on demand.
+Local snapshots and FY server reports have different data sources and quality levels; do not combine their levels. See [Media quality](/en/rtc/android/media-quality) for the detailed models and units.
 
-For the full data dictionary of `Metric` fields, see [Media quality](/en/rtc/android/media-quality).
-
-## 1. Subscribe to quality level changes (recommended)
-
-Most apps only need "a network status indicator + poor-network prompts", so prefer `onNetworkQualityChanged`. It's driven by the server's quality reports (about one every 5 seconds) and **fires on every report**, even when the level hasn't changed:
-
-- **No debouncing**: the SDK doesn't check for tier crossings or apply hysteresis, so when the level hovers around a boundary, the callback results flip back and forth with it. A status indicator can show `currentLevel` directly; for actions that interrupt the user or change the call, such as poor-network prompts and automatic degradation, debounce yourself (see 5.1).
-- **`trend` only compares with the previous callback**: `INITIAL` the first time, `DEGRADED` when worse, `RECOVERED` when better, and `STABLE` when unchanged (or when this level can't be recognized).
-- **Per direction**: uplink and downlink are evaluated and reported independently; each callback represents **one direction** only (`direction`).
-
-Extend `RTCMediaSimpleEvent`, override only the callbacks you need, and register it with `setRtcMediaEvent`:
+## Listen for periodic local snapshots
 
 ```kotlin
 import cn.seastart.rtc.impl.RTCMediaSimpleEvent
-import cn.seastart.rtc.info.NetworkQualityChange
-import cn.seastart.rtc.info.QualityDirection
-import cn.seastart.rtc.info.QualityTrend
+import cn.seastart.rtc.monitoring.api.LocalQualitySnapshot
 
 rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-    override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-        // change.direction     : UPLINK / DOWNLINK, the direction of this callback
-        // change.previousLevel : level in the previous callback
-        // change.currentLevel  : current level (excellent / good / poor / lost)
-        // change.trend         : INITIAL (first) / DEGRADED (worse) / RECOVERED (better) / STABLE (unchanged)
-        // change.report        : the full QualityReport that triggered this callback
-
-        // The callback may run off the main thread; switch to the main thread to update the UI
-        runOnUiThread {
-            when (change.direction) {
-                QualityDirection.UPLINK -> updateUplinkIndicator(change.currentLevel)
-                QualityDirection.DOWNLINK -> updateDownlinkIndicator(change.currentLevel)
-            }
-        }
+    override fun onLocalQualitySnapshot(channel: String, snapshot: LocalQualitySnapshot) {
+        val uplink = snapshot.networkQuality.uplink.level
+        val downlink = snapshot.networkQuality.downlink.level
+        val affectedTracks = snapshot.networkQuality.remoteTracks
+        val videoPlayback = snapshot.mediaPlaybackExperience.videoTracks
+        // Route by channel; switch to the main thread before updating UI.
     }
 })
 ```
 
-:::note
-`onNetworkQualityChanged` is called on a background thread of the signaling channel. Switch to the main thread (for example, `runOnUiThread` / `View.post`) before updating the UI.
-:::
+`snapshot.timestamp`, `snapshot.networkQuality.timestamp`, and `snapshot.mediaPlaybackExperience.timestamp` match and use milliseconds. The interval starts after collection and delivery finish, so delivery is not fixed to an exact 2-second wall-clock schedule. Without valid samples, a network or playback level may be `UNKNOWN` and nullable measurements may be `null`. `NetworkQuality` contains both direction summaries and per-track results. Playback experience describes continuity of media received locally. Poor network quality does not always mean playback stalls, and smooth playback does not measure picture clarity.
 
-`NetworkQualityChange` structure:
+Network levels are `UNKNOWN`, `EXCELLENT`, `GOOD`, `POOR`, `BAD`, and `LOST`. `LOST` applies only when ICE for an expected media track reaches `FAILED`; deliberate closure yields `UNKNOWN`. Video playback levels are `UNKNOWN`, `SMOOTH`, `DEGRADED`, and `FROZEN`; audio levels are `UNKNOWN`, `CLEAR`, `DEGRADED`, and `INTERRUPTED`. The per-track network `score` ranges from 0 to 100, is `null` when it cannot be evaluated, and is not a playback score.
 
-```kotlin
-/** Direction of the change */
-enum class QualityDirection {
-    /** Uplink: from this client to the server */
-    UPLINK,
-    /** Downlink: from the server to this client */
-    DOWNLINK
-}
-
-/** Trend of the change */
-enum class QualityTrend {
-    /** First level observed for this direction (no history to compare) */
-    INITIAL,
-    /** Level dropped; the network got worse */
-    DEGRADED,
-    /** Level rose; the network got better */
-    RECOVERED,
-    /** Level is the same as last time, or this level can't be recognized */
-    STABLE
-}
-
-data class NetworkQualityChange(
-    /** Direction of this callback */
-    var direction: QualityDirection,
-    /** Level in the previous callback; an empty string the first time (INITIAL) */
-    var previousLevel: String,
-    /** Current level: excellent / good / poor / lost */
-    var currentLevel: String,
-    /** Trend of the change */
-    var trend: QualityTrend,
-    /** The full quality report that triggered this callback, with uplink and downlink details */
-    var report: MediaMetric.QualityReport
-)
-```
-
-## 2. Periodic quality snapshots with `onMediaMetric`
-
-When you need a detailed diagnostic panel (bitrate, packet loss, frame rate, and so on for each track), subscribe to `onMediaMetric`. After joining a channel, the SDK delivers a full `MediaMetric.Metric` about every **5 seconds**:
+## Query detailed statistics on demand
 
 ```kotlin
-import cn.seastart.rtc.impl.RTCMediaSimpleEvent
-import cn.seastart.rtc.statistics.MediaMetric
+import cn.seastart.rtc.monitoring.api.MediaMetric
 
-rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-    override fun onMediaMetric(channel: String, metric: MediaMetric.Metric) {
-        // Connection quality assessment (same data source as onNetworkQualityChanged)
-        metric.qualityReport?.let { report ->
-            val up = report.uplink.level     // excellent / good / poor / lost
-            val down = report.downlink.level
-            renderDashboard(up, down)
-        }
-        // Overall network statistics
-        val net = metric.networkStats
-        // Track-level statistics
-        val localVideos = metric.localVideos
-        val remoteVideos = metric.remoteVideos
-    }
-})
-```
-
-:::note
-`qualityReport` is computed and delivered by the server. After you first join a channel, it may be `null` until the server's first quality report arrives; the example handles this with nullable access.
-:::
-
-## 3. Actively query with `getMetric`
-
-Pull the most recently collected full quality snapshot (including `qualityReport`) at any time. This suits on-demand cases such as a diagnostic panel that only computes when the user opens the details:
-
-```kotlin
-val metric = rtcEngine.getMetric()
-metric?.qualityReport?.let { report ->
-    // report.uplink.level / report.downlink.level ...
+val metric: MediaMetric? = rtcEngine.getMetric() // Default channel
+val otherMetric: MediaMetric? = rtcChannel.getMetric() // Specified channel
+metric?.let { sample ->
+    val channel = sample.channel
+    val sampledAtMs = sample.sampleTimestampMs
+    val localVideos = sample.localVideos
+    val remoteVideos = sample.remoteVideos
+    val serverReport = sample.qualityReport // Available for FY; null for WS
 }
 ```
 
-:::note
-Returns a thread-safe copy and doesn't trigger the underlying `getStats`. The sampling period is about 5 seconds, so it may be `null` right after media starts.
-:::
+The query returns the most recent **completed** sample. It does not trigger another WebRTC `getStats()` call or advance the network or playback evaluation window. It returns `null` before a usable sample exists or after monitoring becomes unavailable; repeated queries of one sample return independent copies. `sampleTimestampMs` is the completion time. If another sample finishes after a snapshot callback, a later query may have a different timestamp. Check both `channel` and timestamp before combining the results. Per-track `timestamp` comes from RTCStats and differs from the top-level wall-clock time.
 
-## 4. Connection quality assessment with `qualityReport`
+Detailed bitrates use bps, RTT and jitter use ms, and loss rates range from 0 to 1; packet, byte, and frame counts are cumulative. `null` means unavailable, while a measured zero stays `0`. Some direction totals are `0` when no tracks exist; that does not imply a measured zero for a particular track.
 
-All three methods return the same `qualityReport`: the server has already combined packet loss, RTT, jitter, bitrate, and other metrics to compute a level and MOS, so you can use it directly without computing anything yourself. It distinguishes two directions: **uplink** (from this client to the server) and **downlink** (from the server to this client).
+## FY server reports
 
 ```kotlin
-data class QualityReport(
-    /** Timestamp at which the server generated this quality report */
-    var timestamp: Long = 0L,
-    /** Uplink quality from this client to the server */
-    var uplink: QualityStats = QualityStats(),
-    /** Downlink quality from the server to this client */
-    var downlink: QualityStats = QualityStats()
-)
-
-data class QualityStats(
-    /** Overall quality score, 0–100; higher is better */
-    var score: Double = 0.0,
-    /** Quality level: excellent / good / poor / lost */
-    var level: String = "",
-    /** Estimated subjective voice quality score, 1.0–4.5; higher is better */
-    var mos: Double = 0.0,
-    /** Packet loss rate, 0–1 */
-    var loss: Double = 0.0,
-    /** Round-trip time, in milliseconds */
-    var rtt: Double = 0.0,
-    /** Jitter, in milliseconds */
-    var jitter: Double = 0.0,
-    /** Number of packets counted in this round of statistics */
-    var packets: Long = 0L,
-    /** Average bitrate, in kbps */
-    var bitrate: Double = 0.0,
-    /** Bytes in this window */
-    var bytes: Long = 0L
-)
-```
-
-`level` values:
-
-| level | Meaning |
-|---|---|
-| `excellent` | Excellent, nearly lossless |
-| `good` | Good, slight packet loss or delay |
-| `poor` | Poor, noticeable stuttering and packet loss |
-| `lost` | Connection lost; media can't be transmitted |
-
-> `onNetworkQualityChanged`, `onMediaMetric.qualityReport`, and `getMetric().qualityReport` share the same data source—the same quality report delivered by the server. They differ only in how it's delivered (per report / periodically / on demand).
-
-Besides `qualityReport`, `Metric` also contains overall network statistics `networkStats`, uplink/downlink aggregates `localUploadStats` / `remoteDownloadStats`, and track-level statistics `localAudios` / `localVideos` / `remoteAudios` / `remoteVideos`. For all fields, see [Media quality](/en/rtc/android/media-quality).
-
-## 5. Handling poor networks
-
-To handle a poor network, first separate two things: **direction** and **response**.
-
-+ A poor uplink means you can't send; you can proactively degrade (turn off the camera, unpublish video). A poor downlink means you can't receive; the server usually optimizes this automatically, and you can unsubscribe from video if needed. So look at both `uplink` and `downlink`, not just one side.
-+ `onNetworkQualityChanged` fires on every quality report, and the SDK doesn't debounce it. A status indicator can simply follow `currentLevel`; for actions like poor-network prompts and degradation, debounce yourself and act only after the network has stayed poor for a while (see 5.1). The same applies if you read `onMediaMetric` periodically.
-
-### 5.1 Show network status
-
-Map the quality level to a status indicator. Don't show raw data like packet loss or RTT to end users:
-
-| level | Status indicator |
-|---|---|
-| `excellent` / `good` | Normal |
-| `poor` | Poor; video quality may drop |
-| `lost` | Connection interrupted, reconnecting |
-
-A poor uplink and a poor downlink need different prompt messages. The callback isn't debounced, so when the level hovers around the `good` / `poor` boundary, it keeps reporting a drop. Prompt only after the network has stayed poor beyond a threshold, and only once per poor-network episode:
-
-```kotlin
-// When each direction entered poor / lost; no entry means it isn't poor right now
-private val badSince = mutableMapOf<QualityDirection, Long>()
-// Directions already prompted in this poor-network episode, to avoid repeated interruptions
-private val tipped = mutableSetOf<QualityDirection>()
+import cn.seastart.rtc.monitoring.api.NetworkQualityChange
 
 override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-    val dir = change.direction
-    if (!isBad(change.currentLevel)) {
-        // Clear after recovery; timing restarts the next time it gets worse
-        badSince.remove(dir)
-        tipped.remove(dir)
-        return
-    }
-    val since = badSince.getOrPut(dir) { System.currentTimeMillis() }
-    // Prompt only after it has stayed poor for more than 10 seconds
-    if (System.currentTimeMillis() - since >= 10_000 && tipped.add(dir)) {
-        when (dir) {
-            QualityDirection.UPLINK -> showTip("Your network is poor; others may not see you clearly")
-            QualityDirection.DOWNLINK -> showTip("Poor network; optimizing video quality")
-        }
-    }
-}
-
-private fun isBad(level: String) = level == "poor" || level == "lost"
-```
-
-### 5.2 Poor uplink
-
-When the uplink level stays at `poor` / `lost`, degrade step by step from light to heavy:
-
-**1. Turn off the camera and keep only audio.** Audio bitrate is low and almost always survives a poor network. Stopping camera capture significantly reduces uplink usage while keeping the publishing path, so you can restart capture as soon as the network recovers:
-
-```kotlin
-// On a poor network: stop camera capture; audio is unaffected
-localCameraTrack.stopCapture()
-
-// After the network recovers: restart capture
-localCameraTrack.startCapture(object : RTCResultListener {
-    override fun onSuccess() {}
-    override fun onFail(code: Int, message: String) {}
-})
-```
-
-**2. Unpublish video entirely.** More thorough than turning off the camera; it frees uplink encoding and sending resources:
-
-```kotlin
-rtcEngine.unPublishLocalVideo(localVideoTrack, object : RTCResultListener {
-    override fun onSuccess() {}
-    override fun onFail(code: Int, message: String) {}
-})
-```
-
-Turning off the camera changes the nature of the call, so prompt the user before doing it rather than acting silently—especially in scenarios like emergency command or law enforcement recording.
-
-To further pinpoint why the uplink is limited, read `qualityLimitationReason` on the local video tracks:
-
-```kotlin
-rtcEngine.getMetric()?.localVideos?.values?.forEach { stats ->
-    when (stats.qualityLimitationReason) {
-        "bandwidth" -> { /* Insufficient uplink bandwidth: lower the bitrate / turn off the camera first */ }
-        "cpu"       -> { /* The device can't keep up with encoding: lower the resolution / frame rate */ }
-    }
+    val direction = change.direction // UPLINK or DOWNLINK
+    val level = change.currentLevel // excellent / good / poor / lost
+    val trend = change.trend // INITIAL / DEGRADED / RECOVERED / STABLE
+    val report = change.report // ServerQualityReport
 }
 ```
 
-### 5.3 Poor downlink
+Each FY report triggers one callback for uplink and one for downlink, including `STABLE` when the level is unchanged; the SDK does not apply app-level debouncing. `report` contains server statistics for both directions. `getMetric().qualityReport` also holds a recent FY server report, but it is read when detailed statistics are first assembled for that sample and need not be synchronized exactly with a particular server callback. For WS, `qualityReport` is `null`. Callbacks run on an SDK background thread; switch to the main thread before updating UI.
 
-When the downlink level stays at `poor`:
+## Handle poor networks
 
-**1. First check whether the problem is on the other side.** Only if this client has downlink packet loss (`downlink.loss` clearly > 0) is your receiving path poor. If this client has almost no packet loss and only one person's video stutters, it's usually that person's poor uplink; unsubscribing won't help, so just show "The other user's network is poor".
-
-**2. When the publisher sends simulcast, the server switches layers automatically.** Based on each subscriber's own downlink bandwidth and packet loss, the server automatically switches it to the appropriate high or low stream; subscribers don't need to switch manually (when subscribing, the candidate layer list tells the server which layers it can switch to). With a single stream, there's nothing to degrade to automatically.
-
-**3. Unsubscribe from video and receive only audio.**
-
-```kotlin
-rtcEngine.unSubscribeRemoteTrack(uid, trackId)
-```
-
-**4. Multi-party calls**: subscribe only to the current speaker's video and receive only audio from everyone else. You can get the current speakers from `onActiveSpeakersChanged`:
-
-```kotlin
-override fun onActiveSpeakersChanged(channel: String, speakers: List<ActiveSpeakerInfo>) {
-    // speakers is the list of users currently speaking; use it to decide whose video to subscribe to
-    speakers.forEach { it.uid; it.level }
-}
-```
-
-### 5.4 Disconnects and reconnects
-
-Connection state notifications are in `RTCClientEvent`. The initial listener is passed in through `join(..., clientEvent, ...)`; the SDK reconnects automatically when the network drops, and you only need to update the UI accordingly:
-
-```kotlin
-import cn.seastart.rtc.impl.RTCClientSimpleEvent
-
-val clientEvent = object : RTCClientSimpleEvent() {
-    override fun onReconnecting(channel: String) {
-        showReconnecting()   // Show "Reconnecting"
-    }
-    override fun onReconnected(channel: String) {
-        hideReconnecting()   // Reconnected; restore the status indicator and any camera / subscriptions you turned off earlier
-    }
-    override fun onDisconnected(
-        channel: String,
-        leaveReason: LeaveReason,
-        statusCode: Int,
-        message: String
-    ) {
-        // The connection is lost
-    }
-}
-
-val rtcChannel = rtcEngine.join(token, clientEvent, null)
-```
-
-### 5.5 Quick reference
-
-| Signal | Response |
-|---|---|
-| `uplink = poor / lost` | Turn off the camera and keep audio → unpublish video; prompt "your network" |
-| `uplink` limitation reason `bandwidth` | Turn off the camera / lower the bitrate |
-| `uplink` limitation reason `cpu` | Lower the resolution / frame rate |
-| `downlink = poor` (this client has packet loss) | Unsubscribe from video and keep audio / in multi-party calls keep only the main speaker |
-| `downlink = poor` (this client has no packet loss) | Prompt "The other user's network is poor" |
-| `onReconnecting` | Show "Reconnecting" and refresh the state after recovery |
-
-## 6. Complete example
-
-Putting it all together: use `onNetworkQualityChanged` to drive the status indicator and per-direction prompts (prompt only on `DEGRADED`, so `STABLE` doesn't repeat it; a level hovering around a boundary can still repeat it, so debounce as in 5.1 if needed), degrade and recover as needed, and handle disconnects and reconnects.
-
-```kotlin
-import cn.seastart.rtc.impl.RTCMediaSimpleEvent
-import cn.seastart.rtc.impl.RTCClientSimpleEvent
-import cn.seastart.rtc.info.NetworkQualityChange
-import cn.seastart.rtc.info.QualityDirection
-import cn.seastart.rtc.info.QualityTrend
-import cn.seastart.rtc.track.LocalCameraTrack
-
-class NetworkQualityHandler(
-    private val rtcEngine: RTCEngine,
-    private val cameraTrack: LocalCameraTrack,
-    private val localVideoTrack: LocalVideoTrack
-) {
-    // Whether the camera was turned off proactively due to a poor network, so it can be turned back on after recovery
-    private var cameraOffByNetwork = false
-
-    // The creator must pass this listener to RTCEngine.join(...)
-    val clientEvent = object : RTCClientSimpleEvent() {
-        override fun onReconnecting(channel: String) {
-            showReconnecting()
-        }
-
-        override fun onReconnected(channel: String) {
-            hideReconnecting()
-            if (cameraOffByNetwork) {
-                cameraTrack.startCapture(null)
-                cameraOffByNetwork = false
-            }
-        }
-    }
-
-    fun attach() {
-        rtcEngine.setRtcMediaEvent(object : RTCMediaSimpleEvent() {
-            override fun onNetworkQualityChanged(channel: String, change: NetworkQualityChange) {
-                runOnUiThread {
-                    // Status indicator: update per direction (each callback represents one direction only)
-                    when (change.direction) {
-                        QualityDirection.UPLINK -> updateUplinkIndicator(change.currentLevel)
-                        QualityDirection.DOWNLINK -> updateDownlinkIndicator(change.currentLevel)
-                    }
-
-                    // Prompt only when it gets worse, with per-direction messages
-                    if (change.trend == QualityTrend.DEGRADED && isBad(change.currentLevel)) {
-                        when (change.direction) {
-                            QualityDirection.UPLINK ->
-                                showTip("Your network is poor; turn off your camera to keep the voice call going")
-                            QualityDirection.DOWNLINK ->
-                                showTip("Poor network; optimizing video quality")
-                        }
-                    }
-                }
-            }
-        })
-
-    }
-
-    // After the user confirms: turn off the camera and keep audio
-    fun downgradeToAudioOnly() {
-        cameraTrack.stopCapture()
-        cameraOffByNetwork = true
-    }
-
-    private fun isBad(level: String) = level == "poor" || level == "lost"
-}
-```
-
-> After creating `NetworkQualityHandler`, call `attach()` first, then pass `handler.clientEvent` to `RTCEngine.join(...)`. For degrading actions such as `stopCapture` in the example, we recommend letting the user confirm via a button instead of silently changing the nature of the call.
+First identify the affected channel, direction, and track. Use direction levels for status displays, then `remoteTracks`, `localTracks`, and playback lists to locate affected tracks. Apps should choose persistence and recovery conditions for prompts or automatic degradation based on their use case; a single `POOR` or `BAD` sample does not by itself require stopping video. For connection state changes, see [`RTCClientEvent`](/en/rtc/android/api-reference/RTCClientEvent).

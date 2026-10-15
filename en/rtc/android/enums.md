@@ -72,7 +72,7 @@ Used by `RTCEngine.setLanguage(...)` to set the language for subsequent channel 
 
 ### QualityDirection
 
-The direction of a network quality change, used in [`NetworkQualityChange`](/en/rtc/android/types).
+The network direction used by the server [`NetworkQualityChange`](/en/rtc/android/types) and local quality snapshots.
 
 | Enum name | Value | Description |
 | --- | --- | --- |
@@ -89,6 +89,22 @@ The trend of a network quality change, used in [`NetworkQualityChange`](/en/rtc/
 | DEGRADED | No explicit value | The level got worse than last time. |
 | RECOVERED | No explicit value | The level got better than last time. |
 | STABLE | No explicit value | The level is the same as last time, or this level can't be recognized. |
+
+### QualityLevel
+
+Local network quality levels, from best to worst: `EXCELLENT`, `GOOD`, `POOR`, `BAD`, and `LOST`; `UNKNOWN` means there is no reliable assessment. `LOST` applies only when ICE for an expected media track reaches `FAILED`; deliberate closure yields `UNKNOWN`.
+
+### QualityConstraint
+
+Local uplink video limitation: `NONE` (not applicable or not limited), `CPU` (encoder device limitation), or `BANDWIDTH` (bandwidth limitation). The corresponding field is `null` when a needed reason is unavailable.
+
+### VideoPlaybackLevel
+
+Local downlink video continuity levels: `UNKNOWN`, `SMOOTH`, `DEGRADED`, and `FROZEN`.
+
+### AudioPlaybackLevel
+
+Local downlink audio continuity levels: `UNKNOWN`, `CLEAR`, `DEGRADED`, and `INTERRUPTED`.
 
 ### StreamVendor
 

@@ -55,10 +55,10 @@
 
 - [集成](https://docs.stmlink.com/zh/rtc/android/integration.md): Android SRTC 音视频 SDK 环境配置与依赖安装
 - [快速开始](https://docs.stmlink.com/zh/rtc/android/quickstart.md): Android SRTC 的最小接入流程，涵盖 Engine 初始化、显式音视频采集、单频道发布订阅与资源释放
-- [网络质量](https://docs.stmlink.com/zh/rtc/android/network-quality.md): Android SRTC 音视频 SDK 流媒体网络质量监测与弱网处理指南
+- [网络质量](https://docs.stmlink.com/zh/rtc/android/network-quality.md): 区分 FY 服务端质量报告、本地网络与播放体验快照，以及按需查询的逐轨详细统计。
 - [类型定义](https://docs.stmlink.com/zh/rtc/android/types.md): Android 音视频 SDK 的频道、用户、轨道与摄像头能力等数据结构字段说明
 - [枚举类型](https://docs.stmlink.com/zh/rtc/android/enums.md): Android SRTC 音视频 SDK 枚举值定义
-- [媒体质量](https://docs.stmlink.com/zh/rtc/android/media-quality.md): Android SRTC 音视频 SDK 媒体质量统计数据结构说明
+- [媒体质量](https://docs.stmlink.com/zh/rtc/android/media-quality.md): Android SRTC 本地质量快照、按需查询的 MediaMetric 与 FY 服务端报告的数据结构和数值单位。
 - [错误码](https://docs.stmlink.com/zh/rtc/android/error-codes.md): Android SRTC 的 librtc 状态码、SDK 自产 102xxx 分域错误码、查询 API 与透传规则
 - [更新日志](https://docs.stmlink.com/zh/rtc/android/changelog.md): Android SRTC 音视频 SDK 版本更新记录
 
@@ -517,10 +517,10 @@
 
 - [Integration](https://docs.stmlink.com/en/rtc/android/integration.md): Set up an Android project for the SRTC SDK: environment requirements (AndroidX, minSdk 24, compileSdk 35), Maven repository and dependency configuration, runtime permissions, ABIs, background microphone capture, and video rendering views. Read before writing any Android SRTC code.
 - [Quickstart](https://docs.stmlink.com/en/rtc/android/quickstart.md): The minimal Android SRTC flow in Kotlin: create and initialize RTCEngine, register channel and media callbacks, join a channel, explicitly start camera/microphone/screen capture and publish, subscribe to remote video, then leave and release resources. Read after completing integration.
-- [Network quality](https://docs.stmlink.com/en/rtc/android/network-quality.md): Monitor network quality in the Android SRTC SDK: quality level changes via onNetworkQualityChanged, periodic onMediaMetric snapshots, on-demand getMetric(), qualityReport levels, and handling poor uplink/downlink and reconnects. Read when building network indicators or poor-network handling.
+- [Network quality](https://docs.stmlink.com/en/rtc/android/network-quality.md): Distinguish FY server quality reports, local network and playback snapshots, and per-track statistics queried on demand.
 - [Types](https://docs.stmlink.com/en/rtc/android/types.md): Field reference for Android SRTC SDK data structures: ChannelInfo, UserInfo, TrackInfo, UserTrackDesc, VolumeInfo, ActiveSpeakerInfo, NetworkQualityChange, camera and microphone device capabilities, and YuvFormat constants. Read when you need the meaning of a field returned by the SDK.
 - [Enums](https://docs.stmlink.com/en/rtc/android/enums.md): Android SRTC SDK enum values, including RtcLanguage, codec, device, track, quality, vendor, audio output, and screen capture enums. Read when you need the values and meanings of Android SDK enums.
-- [Media quality](https://docs.stmlink.com/en/rtc/android/media-quality.md): Field-level data dictionary for Android SRTC media quality statistics in MediaMetric: the overall Metric, server-side uplink/downlink QualityReport, network, upload, and download stats, and per-track audio/video sender and receiver stats. Read when interpreting onMediaMetric data.
+- [Media quality](https://docs.stmlink.com/en/rtc/android/media-quality.md): Data models and units for Android SRTC local quality snapshots, on-demand MediaMetric queries, and FY server reports.
 - [Error codes](https://docs.stmlink.com/en/rtc/android/error-codes.md): Android SRTC error codes: mapped librtc StatusCode values, SDK error domains, callback messages, the 2.0.35-to-2.0.36 code mapping, and RtcErrorCatalog. Read when handling Android SDK errors or upgrading.
 - [Changelog](https://docs.stmlink.com/en/rtc/android/changelog.md): Android SRTC SDK release history by version: new features, fixes, improvements, and breaking changes such as the OOK engine removal, multi-channel support, decoupled microphone capture, and camera switching changes. Read before upgrading the Android SDK.
 

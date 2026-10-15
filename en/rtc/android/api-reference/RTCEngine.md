@@ -270,11 +270,11 @@ Description: Sets the Engine-global microphone input device listener; pass `null
 
 ### getMetric()
 ```kotlin
-fun getMetric(): MediaMetric.Metric?
+fun getMetric(): MediaMetric?
 ```
-Description: Actively gets the most recently collected media quality snapshot of the default channel (including `qualityReport`). Returns a thread-safe copy and doesn't trigger the underlying `getStats`; the sampling period is about 5 seconds, so it may be `null` right after media starts. For additional channels, use `RTCChannel.getMetric()`; for poor-network level changes, prefer listening to [`RTCMediaEvent.onNetworkQualityChanged`](/en/rtc/android/api-reference/RTCMediaEvent).
+Description: Assembles a copy of detailed statistics from the latest completed sample for the default channel on demand, including the optional FY server `qualityReport`. It does not trigger `getStats()`. It may return `null` before a valid sample exists or after monitoring becomes unavailable. Use `RTCChannel.getMetric()` for another channel and [`RTCMediaEvent.onLocalQualitySnapshot`](/en/rtc/android/api-reference/RTCMediaEvent) for periodic local network and playback results.
 Parameters: None.  
-Returns: `MediaMetric.Metric?`, the most recent quality snapshot; `null` when there's no data yet. For fields, see [Media quality](/en/rtc/android/media-quality); for how to get it and handle poor networks, see [Network quality](/en/rtc/android/network-quality).
+Returns: `MediaMetric?`, the latest detailed statistics; `null` when no usable sample exists. For fields, see [Media quality](/en/rtc/android/media-quality); for how to obtain it, see [Network quality](/en/rtc/android/network-quality).
 
 ## Audio routing
 

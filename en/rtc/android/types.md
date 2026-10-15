@@ -106,7 +106,7 @@ Purpose: A network quality level event, delivered by [`RTCMediaEvent.onNetworkQu
 | previousLevel | String | The level in the previous callback; an empty string the first time (`INITIAL`). |
 | currentLevel | String | The current level (`excellent` / `good` / `poor` / `lost`). |
 | trend | QualityTrend | The trend compared with the previous callback (`INITIAL` / `DEGRADED` / `RECOVERED` / `STABLE`). For the enum, see [Enums](/en/rtc/android/enums). |
-| report | MediaMetric.QualityReport | A snapshot of the full quality report that triggered this event. For fields, see [Media quality](/en/rtc/android/media-quality). |
+| report | ServerQualityReport | The FY server quality report that triggered this event. For fields, see [Media quality](/en/rtc/android/media-quality). |
 
 ## CameraDeviceCapability
 

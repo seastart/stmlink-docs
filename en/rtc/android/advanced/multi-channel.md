@@ -127,8 +127,8 @@ private fun joinOneChannel(key: String, token: String) {
             // Media connection for this channel succeeded
         }
 
-        override fun onMediaMetric(channel: String, metric: MediaMetric.Metric) {
-            // Each channel has its own statistics snapshot
+        override fun onLocalQualitySnapshot(channel: String, snapshot: LocalQualitySnapshot) {
+            // Each channel has its own local network and playback snapshot
         }
     })
 }

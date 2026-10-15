@@ -5,6 +5,17 @@ description: "Android SRTC SDK release history by version: new features, fixes, 
 
 > This page is compiled from the version configuration and commit history of the `rtc-android` repository. Call `RTCEngine.version()` to get the actual SDK version at runtime.
 
+### [2.0.37] - 2026.10.15
+
+#### Added
+
++ Added `onLocalQualitySnapshot` for per-channel local uplink and downlink network quality and per-track audio/video playback experience. See [Network quality](/en/rtc/android/network-quality).
+
+#### Changed
+
++ Removed `onMediaMetric`; query detailed media statistics on demand with `RTCEngine.getMetric()` or `RTCChannel.getMetric()`.
++ `getMetric()` now returns the top-level `MediaMetric?`. Monitoring models moved to `cn.seastart.rtc.monitoring.api`; migrate old package names and nested types as described in [Media quality](/en/rtc/android/media-quality).
+
 ### [2.0.36] - 2026.10.09
 
 #### Added

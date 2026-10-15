@@ -36,13 +36,13 @@ fun onRemoteVideoFrame(
 
 A remote video frame was received in this channel. `uid` and `trackDesc` identify the remote track; `y`, `u`, and `v` are the image components, `width` / `height` are the dimensions, `format` is the pixel format, and `angle` is the rotation angle.
 
-### onMediaMetric(channel, metric)
+### onLocalQualitySnapshot(channel, snapshot)
 
 ```kotlin
-fun onMediaMetric(channel: String, metric: MediaMetric.Metric)
+fun onLocalQualitySnapshot(channel: String, snapshot: LocalQualitySnapshot)
 ```
 
-A snapshot of this channel's media performance metrics, reported about every 5 seconds after joining. For fields, see [Media quality](/en/rtc/android/media-quality).
+A snapshot of this channel's local network quality and downlink playback experience from the same sample, delivered about every 2 seconds after sampling completes. Its three timestamps match. Query detailed raw statistics on demand with `getMetric()`. For fields, see [Media quality](/en/rtc/android/media-quality).
 
 ### onNetworkQualityChanged(channel, change)
 
