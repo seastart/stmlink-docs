@@ -161,7 +161,11 @@ MCU 合流布局，共 20 种：
 | 枚举 | 成员 |
 | --- | --- |
 | `AgentType` | `sip = 2` / `h323 = 3` / `gb28181 = 4` / `rtsp = 5` / `rtmp = 6` / `filePlay = 7` / `tencentMeet = 8` / `ai = 9` |
-| `AgentStatus` | `idle = 1` / `busy = 2` / `offline = 3` |
+| `AgentStatus` | `unknown = 0` / `online = 1` / `offline = 2`（废弃别名 `idle = 1`、`busy = 2`） |
+
+<Warning>
+**1.2.0 起 `AgentStatus` 的取值改了**：1.1.0 及以前是 `idle = 1` / `busy = 2` / `offline = 3`，与服务端不符。服务端下发其它取值或缺失时为 `unknown`。**按数字比较的代码需要自查**（`offline` 从 `3` 变为 `2`）。
+</Warning>
 
 ### `MeetingStreamVendor`
 
@@ -265,6 +269,8 @@ MCU 合流布局，共 20 种：
 | `planTime` / `planDur` / `beginTime` / `endTime` / `createdAt` | `number` |
 | `creator` / `extendInfo` | `string` |
 | `watermarkDisabled` / `screenshotDisabled` / `chatDisabled` / `waitingRoomDisabled` / `enterBeforeHostDisabled` | `boolean` |
+| `entryMutePolicy?` | `EntryMutePolicy`（1.4.0 起）。后端缺字段或取值不认识时为 `undefined`，改会时据此决定要不要回传，别拿默认值冲掉后端设置 |
+| `content?` | `string`（1.4.0 起）。会议说明，没设说明的会议为 `undefined` |
 
 ### `ParticipantInfo` / `OnlineMemberInfo` / `NoEnterUserInfo`
 
@@ -339,7 +345,7 @@ MCU 合流布局，共 20 种：
 
 | 接口 | 字段 |
 | --- | --- |
-| `SignInfo` | `uid`、`beginAt`、`dur`、`endAt`、`desc`、`nums` |
+| `SignInfo` | `uid`、`beginAt`、`dur`、`endAt`、`desc`、`nums`、`hostName`（可选，发起人昵称；服务端暂未返回，取不到时按 `uid` 找会中成员） |
 | `SignDetailInfo` | `id`、`epoch`、`nickname`、`role: Role`、`userId`、`createdAt` |
 | `SignInListResult` | 签到列表结果 |
 
@@ -349,7 +355,7 @@ MCU 合流布局，共 20 种：
 
 | 接口 | 字段 |
 | --- | --- |
-| `AgentInfo` | `id`、`name`、`type: AgentType`、`status: AgentStatus`、`contact`、`remark` |
+| `AgentInfo` | `id`、`name`、`type: AgentType`、`status: AgentStatus`、`contact`、`remark`、`connParams?: JsonObject`（服务端 `conn_params`，1.2.0 起）、`connSubjects: Map<string, string>`（GB28181 通道表，国标设备按「设备编号:通道编号」邀请，1.2.0 起） |
 | `AgentInvite` | `type: AgentType`、`contact` |
 
 ---

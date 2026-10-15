@@ -149,12 +149,12 @@ virtual StatusCode getMemberByLinkId(int linkId, char** s, int* c) = 0;
 ## 流媒体相关函数
 ### 获取视频轨道对象
 ```cpp
-virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** track) = 0;
+virtual StatusCode getCameraTrack(const char* trackKey,IRTCLocalCameraTrack ** track) = 0;
 ```
 
 **参数**
 
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不同轨道对象，默认推流的desc |
+| trackKey | 本地视频轨道对象key，使用者维护此key。用于区分不同轨道对象，默认推流的desc |
 | --- | --- |
 | track | [视频轨道对象](./IRTCLocalCameraTrack.md) |
 
@@ -163,12 +163,12 @@ virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** 
 
 ### 获取共享屏幕流对象
 ```cpp
-virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** track) = 0;
+virtual StatusCode getScreenTrack(const char* trackKey,IRTCLocalScreenTrack ** track) = 0;
 ```
 
 **参数**
 
-| track_key | 本地视频轨道对象key，使用者维护此key。用于区分不同轨道对象,默认推流的desc |
+| trackKey | 本地视频轨道对象key，使用者维护此key。用于区分不同轨道对象,默认推流的desc |
 | --- | --- |
 | track | [屏幕轨道对象](./IRTCLocalScreenTrack.md) |
 
@@ -177,12 +177,12 @@ virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** 
 
 ### 获取音频流对象
 ```cpp
-virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track) = 0;
+virtual StatusCode getAudioTrack(const char* trackKey,IRTCLocalMicTrack** track) = 0;
 ```
 
 **参数**
 
-| track_key | 本地音频轨道对象key，使用者维护此key。用于区分不同轨道对象,默认推流的desc |
+| trackKey | 本地音频轨道对象key，使用者维护此key。用于区分不同轨道对象,默认推流的desc |
 | --- | --- |
 | track | [麦克风轨道对象](./IRTCLocalMicTrack.md) |
 
@@ -191,14 +191,14 @@ virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track
 
 ### 获取成员音频轨道对象
 ```cpp
-virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackid, IRTCRemoteAudioTrack** track) = 0;
+virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackId, IRTCRemoteAudioTrack** track) = 0;
 ```
 
 **参数**
 
 | uid | 用户id（空为全体用户） |
 | --- | --- |
-| trackid | 用户音频流轨道id（空为全体轨道） |
+| trackId | 用户音频流轨道id（空为全体轨道） |
 | track | [本地音频混音轨道对象](./IRTCRemoteAudioTrack.md) |
 
 
@@ -206,14 +206,14 @@ virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackid, IRT
 
 ### 获取成员视频轨道对象
 ```cpp
-virtual StatusCode getRemoteVideoTrack(const char* uid, const char* trackid, IRTCRemoteVideoTrack** track) = 0;
+virtual StatusCode getRemoteVideoTrack(const char* uid, const char* trackId, IRTCRemoteVideoTrack** track) = 0;
 ```
 
 **参数**
 
 | uid | 用户id |
 | --- | --- |
-| trackid | 用户视频流轨道id |
+| trackId | 用户视频流轨道id |
 | track | [成员视频轨道对象](./IRTCRemoteVideoTrack.md) |
 
 

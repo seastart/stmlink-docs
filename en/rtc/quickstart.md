@@ -71,7 +71,7 @@ While debugging, you can generate a temporary token in the developer console to 
 | --- | --- |
 | Web | [Integration](/en/rtc/web/integration) · [Quickstart](/en/rtc/web/quickstart) |
 | Android | [Integration](/en/rtc/android/integration) · [Quickstart](/en/rtc/android/quickstart) |
-| Windows | [Integration](/en/rtc/windows/integration) · [Quickstart](/en/rtc/windows/quickstart) |
+| Windows | [Integration](/en/rtc/windows/integration) · [Quickstart](/en/rtc/windows/quickstart-cpp) |
 | Swift (iOS / macOS) | [Integration](/en/rtc/swift/integration) · [Quickstart](/en/rtc/swift/quickstart) |
 | iOS (Objective-C) | [Integration](/en/rtc/ios/integration) · [Quickstart](/en/rtc/ios/quickstart) |
 | C (server / embedded) | [Integration](/en/rtc/capi/integration) · [Quickstart](/en/rtc/capi/quickstart) |

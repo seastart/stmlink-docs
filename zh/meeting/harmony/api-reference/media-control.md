@@ -36,6 +36,7 @@ if (this.meeting.cameraTrack !== undefined) {
 requestOpenMic(preset?: MicPreset, byAdmin?: boolean, adminUid?: string): Promise<LocalMicTrack>
 closeMic(): Promise<void>
 setMicMuted(muted: boolean): void
+getLocalAudioLevel(): Promise<number | undefined>
 ```
 
 | 方法 | 说明 |
@@ -52,6 +53,10 @@ setMicMuted(muted: boolean): void
 + `closeMic()` —— 真正关掉，轨道消失。
 
 高频操作用 `setMicMuted`，不要每次都 `closeMic` + `requestOpenMic`。
+
+`getLocalAudioLevel()`（1.4.0 起）读一次本端麦克风的采集电平（0~1，线性），用来画「我」的音量条 ——
+SFU 的 `onActiveSpeakers` 只含远端。未开麦 / 不在会中时返回 `undefined`；`setMicMuted(true)` 后归零。
+每次调用是一次统计采集，**轮询别超过 10Hz**，平滑与分档由业务层做。
 </Note>
 
 `byAdmin` / `adminUid` 是给「响应主持人请求」用的：收到
@@ -105,7 +110,7 @@ requestShare(shareType?: ShareType, preset?: ScreenPreset, byAdmin?: boolean, ad
 stopShare(): Promise<void>
 ```
 
-`ShareType` 有 `screen`（屏幕）与 `whiteBoard`（白板）两种。
+`ShareType` 有 `screen`（屏幕）与 `whiteBoard`（白板）两种。`stopShare()` 两种都能停（白板自 1.4.0 起，之前的版本停不掉白板）。
 
 <Warning>
 `requestShare()` 会弹**系统授权窗**，用户点同意之后才真正出帧。
@@ -190,12 +195,21 @@ getMutedAudioUids(): string[]
 ## MCU 合流
 
 ```typescript
-subscribeRemoteVideoMcu(uid: string): Promise<RemoteVideoTrack>
+subscribeRemoteVideoMcu(): Promise<RemoteVideoTrack>
 unsubscribeRemoteVideoMcu(): Promise<void>
 ```
 
 订阅服务端合成的一路画面，替代 N 路各自订阅。大型会议下这是主要方案 ——
 客户端解码开销不随人数线性上升。
+
+合成流由服务端以保留身份 `__mcu__` 发布，**不在会议成员里**，所以不传 uid（1.4.0 起）。
+合成任务没开时订阅不到画面；任务比订阅晚起来的话，在 `onRoomMcuTask` 报 `running` 后再调一次。
+重复调用返回同一个轨道，收流状态经 `onReceiveStreamStatusChange` 上报（`uid` 为 `__mcu__`）。
+
+<Note>
+≤1.3.0 的签名是 `subscribeRemoteVideoMcu(uid: string)`，按成员 uid 去找画面，合成流永远订阅不到。
+1.4.0 保留了这个可选参数以兼容旧调用（传了被忽略），新代码不要再传。
+</Note>
 
 布局由 `adminUpdateLayout(layoutData)` 控制。
 

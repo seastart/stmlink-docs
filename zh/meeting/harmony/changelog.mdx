@@ -3,6 +3,67 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.4.0] - 2026.10.15
+#### 新增
++ **`adminListOnlineMemberOf(meetingId, page?, perPage?)`**：指定会议的在线成员，对齐 Swift 版 `adminListOnlineMember(meetingId:page:perPage:)`。主持人在分组讨论的小组里时，用它拉主会场的在线成员。
++ **`SMeetingDelegate.onRoomTitleChange`**：会议改名（含小组会议），数据为 `title` / `previousTitle`。来自频道属性比对，同时兼容 Objective-C 版发出的 `admin_update_title` 广播，两路到达时只报一次。
++ **`getLocalAudioLevel()`**：本端麦克风采集电平（0~1），用来画「我」的音量条（`onActiveSpeakers` 只含远端）。未开麦时为 `undefined`，轮询别超过 10Hz。
++ `MeetingInfo` 新增 `entryMutePolicy?`（入会静音选项）与 `content?`（会议说明）；会议提醒 `ImMeetingRemindContent` 新增 `creatorId`；聊天事件新增 `action`（原始广播名）与 `isSystem`（主持人后台下发的系统消息）。
+
+#### 变更
++ **`subscribeRemoteVideoMcu()` 改为无参、频道级订阅合成画面**（接 SRTC 1.2.0 的 `Channel.subscribeRemoteVideoMcuTrack`）。合成流由服务端以保留身份 `__mcu__` 发布、不在会议成员里，旧版按成员 uid 去找画面，永远订阅不到。旧的 `uid` 参数保留为可选、传了被忽略，旧调用照常编译。
++ `mcuStop(meetingId, taskType?)`：`taskType` 可省略（停掉全部任务），并接受原始数字。服务端的 `task_type` 是按位组合（1 录像、2 合流、4 录音、8 直播流），自动录制起的任务可能是 9 这类组合值，停它时直接传 `RoomMcuTaskEventData.taskTypeRaw`。
+
+#### 修复
++ **用户从状态栏胶囊 / 控制中心停止屏幕共享后，远端冻屏**：旧版轨道仍在发布、服务端也不知道已经停了。现在 SDK 接住系统侧停止，自动撤发布、通知服务端并上抛 `onRoomShareStop`。
++ **本端发起的白板共享用 `stopShare()` 停不掉**：旧版没有屏幕轨道时直接返回、不通知服务端。现在与其它端一致，本端与远端都会收到 `onRoomShareStop`。
+
+<Note>
+无不兼容变更，1.3.0 的接入代码可直接升级。依赖不变，仍搭配 **SRTC 1.2.0**，只需替换 `smeeting` 的 HAR 并改 `oh-package.json5` 里的文件名。
+
+**集成方式补充**：除了模块级声明两个 HAR，**工程级 `oh-package.json5` 还要再声明一次 `srtc`**，否则 smeeting 引用的 SRTC 类型解析不到、编译报错。1.3.0 及以前同样需要，之前的文档漏写了，见[集成方式](/zh/meeting/harmony/integration)。
+
+1.3.0 记的两条已知限制均已解决：会议后端已接受鸿蒙终端类型（`10070` 不再出现）；合成画面改为频道级订阅后可正常订阅。
+</Note>
+
+### [1.3.0] - 2026.10.14
+#### 新增
++ **`SMeetingDelegate.onReceiveStreamStatusChange(meeting, status: ReceiveStreamStatus)`**：某一路远端视频收流超时 / 恢复，对应 Swift 版 `meeting(_:didChangeReceiveStreamStatus:)`。透传 SRTC 1.2.0 的同名事件，按轨道判定，用来开关画面上的「加载中」指示。**只报跳变**，初始状态按 SRTC `RemoteVideoTrack.isReceiveTimedOut` 现判。
+
+#### 变更
++ 依赖升到 **SRTC 1.2.0**（HAR 的 `peerDependencies` 为 `srtc@1.2.0`），SRTC 本版的新增能力见 [SRTC 鸿蒙版更新日志](/zh/rtc/harmony/changelog)。
+
+<Note>
+无不兼容变更，1.2.1 的接入代码可直接升级，但**必须同时把 SRTC 换成 1.2.0**（两个 HAR 都要替换并改 `oh-package.json5` 里的文件名），见[集成方式](/zh/meeting/harmony/integration)。
+
+已知限制不变：会议后端仍拒绝鸿蒙终端类型（`10070`）；`subscribeRemoteVideoMcu` 尚未改用 SRTC 1.2.0 的频道级合成流订阅，服务端合成画面仍订阅不到，待后续版本。
+</Note>
+
+### [1.2.1] - 2026.10.10
+#### 新增
++ `SignInfo` 新增可选的 `hostName`（发起人昵称）。服务端的签到列表目前不返回该字段，一般为 `undefined`，取不到时按 `uid` 找会中成员，或使用 `onSignInActivity` 里的 `hostName`。
+
+#### 修复
++ **授予 / 撤销联席主持人后，按 `RoomInfo.coHosts` 判断的角色慢一拍**：房间的联席名单比角色变更广播晚到，旧版在 `onUserRoleChange` 发出时 `coHosts` 还是旧的 —— 授予后仍算普通成员、撤销后仍算联席。现在事件发出前 SDK 已按新角色同步好 `coHosts`，随后到达的房间属性仍以服务端为准。
+
+<Note>
+无不兼容变更，1.2.0 的接入代码可直接升级。依赖不变，仍搭配 **SRTC 1.1.0**。
+</Note>
+
+### [1.2.0] - 2026.10.10
+<Warning>
+**`AgentStatus`（可邀请设备的在线状态）取值已改为与服务端一致，属不兼容变更**：旧版定义是 `idle = 1`（空闲）/ `busy = 2`（忙碌）/ `offline = 3`（离线），与服务端不符 —— 服务端会下发 `status = 0`，且 `2` 实际表示离线。新定义为 `unknown = 0`（未知）/ `online = 1`（在线）/ `offline = 2`（离线），服务端下发其它取值或缺失时为 `unknown`。旧名 `idle` / `busy` 保留为废弃别名（取值分别为 `1` / `2`）；**按数字比较（如 `=== 3` 判离线）的代码升级后行为会变，需要自查**。
+
+依赖不变，仍搭配 **SRTC 1.1.0**。
+</Warning>
+
+#### 新增
++ `AgentInfo` 新增 `connParams`（服务端 `conn_params`，原样透传）与 `connSubjects`（GB28181 通道表，`Map<通道编号, 通道名>`，没有时为空表）。国标设备要按「设备编号:通道编号」邀请，直接用 `contact` 会被服务端拒绝；通道展开由调用方完成。
+
+#### 修复
++ **集成方开启属性混淆后拿不到 GB28181 通道**：`consumer-rules.txt` 补了 `conn_params`、`subjects` 两个字段的 keep。
++ `AgentInfo.id` 在服务端下发数字 ID 时不再为空字符串。
+
 ### [1.1.0] - 2026.10.08
 <Warning>
 **本版含不兼容变更**：错误码按 SMeeting 统一码表调整、报错文案改为英文，`McuTaskStatus` 的取值与服务端对齐。凡是按 `SMeetingError.code` 的数值、按 `detail` 的中文文字、或拿 `McuTaskStatus` 的数字做判断的代码，升级后都需要调整，请先对照下方的旧码 → 新码表。

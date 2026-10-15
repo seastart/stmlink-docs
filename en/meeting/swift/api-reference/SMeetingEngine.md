@@ -197,7 +197,7 @@ let info = try await meeting.detailRoom(roomNo: "10000001")
 | `meetingId` | `String?` | No | Meeting ID |
 | `roomNo` | `String?` | No | Room number |
 
-**Returns:** `MeetingInfo`
+**Returns:** `MeetingInfo`. The detail response has no creation time, so `createdAt` is `0`; since 1.5.0 it also carries `entryMutePolicy` and `content` (`nil` when the backend doesn't return them). See [Types](/en/meeting/swift/types#meetinginfo) for fields
 
 **Throws:** `SMeetingError.notLoggedIn`, `SMeetingError.apiError(code:message:)`
 
@@ -426,6 +426,8 @@ Enables the out-of-meeting message path.
 try await meeting.enableIm()
 ```
 
+After it succeeds, `meeting(_:imDidConnect:)` fires once. Subsequent out-of-meeting messages are dispatched by action to `imCallCalling` / `imMeetingRemind` / `imAdminMoveOutWaitingRoom` / `imUserHelpSubMeeting`, and every message also fires `imDidReceiveMessage` as is; see [Out-of-meeting messages](/en/meeting/swift/advanced/im). In 1.4.1 and earlier these events were never actually dispatched; fixed in 1.5.0.
+
 **Returns:** None
 
 **Throws:** `SMeetingError.notLoggedIn`, `SMeetingError.apiError(code:message:)`, and underlying errors when the connection fails to be set up
@@ -438,7 +440,7 @@ Disables the out-of-meeting message path.
 await meeting.disableIm()
 ```
 
-**Returns:** None; doesn't throw. `logout()` calls it internally.
+**Returns:** None; doesn't throw. `logout()` calls it internally. Disabling it yourself doesn't fire `meeting(_:imDidDisconnect:)`.
 
 ---
 

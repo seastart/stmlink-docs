@@ -83,6 +83,18 @@ try await meeting.adminKickUserOut(targetId: uid, joinDisabled: true)
 
 对应的成员状态事件：`userNameDidChange`、`userRoleDidChange`、`userChatDisabledDidChange`、`userDrawDisabledDidChange`（1.3.6 起）。被移出的成员通过 `didDisconnect` 感知。
 
+转移主持人时，所有成员先收到两次 `userRoleDidChange`（新主持人 `.host`、原主持人 `.member`），再收到 `roomHostDidMove`（1.5.0 起）。原主持人的降级由 SDK 在本地完成，事件发出时 `getUsersInfoList()` 已是新角色：
+
+```swift
+func meeting(_ meeting: SMeetingEngine, roomHostDidMove data: RoomHostMoveEventData) {
+    // data.uid       新主持人
+    // data.sourceUid 原主持人
+    // data.opUid     操作者
+}
+```
+
+只需要刷新角色展示的话，处理 `userRoleDidChange` 就够了。
+
 涂鸦权限的当前状态读 `MeetingUserInfo.drawDisabled`，变化时收到：
 
 ```swift
@@ -140,8 +152,14 @@ try await meeting.adminCallUsers(conferee: [uid1, uid2])
 #### 在线人员列表
 
 ```swift
+// 当前所在会议
 let page = try await meeting.adminListOnlineMember(page: 1, perPage: 20)
+
+// 指定会议（1.5.0 起）
+let mainPage = try await meeting.adminListOnlineMember(meetingId: mainMeetingId, page: 1, perPage: 20)
 ```
+
+主持人身处分组小组时，编辑分组成员要拉的是**主会场**的在线成员，用带 `meetingId` 的重载并传 `RoomInfo.parent`，见 [分组讨论](/zh/meeting/swift/advanced/sub-meetings)。
 
 ---
 
@@ -164,7 +182,24 @@ try await meeting.adminInviteAgent(
 )
 ```
 
-`AgentType` 可选值见 [类型定义](/zh/meeting/swift/types#agenttype)。设备当前忙闲状态读 `AgentInfo.status`。
+`AgentType` 可选值见 [类型定义](/zh/meeting/swift/types#agenttype)。设备当前在线状态读 `AgentInfo.status`（`.unknown` / `.online` / `.offline`，见 [AgentStatus](/zh/meeting/swift/types#agentstatus)）。
+
+<Warning>
+1.5.0 起 `AgentStatus` 的取值改为与服务端一致：`0` 未知、`1` 在线、`2` 离线（此前为 `1` 空闲、`2` 忙碌、`3` 离线）。`idle` / `busy` 仍可编译，但已废弃，分别等于 `.online` / `.offline`。按 `rawValue` 做数值比较的代码需要检查。
+</Warning>
+
+#### 邀请 GB28181 设备
+
+GB28181 设备要按「设备编号:通道编号」逐个通道邀请，直接传 `contact` 会被服务端拒绝。通道表在 `AgentInfo.connSubjects`（`{通道编号: 通道名}`，1.5.0 起）：
+
+```swift
+let agents = agent.connSubjects.keys.map { channelNo in
+    (type: AgentType.gb28181, contact: "\(agent.contact):\(channelNo)")
+}
+try await meeting.adminInviteAgent(agents: agents, no: roomNo)
+```
+
+后端下发的完整连接参数在 `AgentInfo.connParams`（`[String: AnyCodable]?`），SDK 原样透传。
 
 ---
 

@@ -281,6 +281,19 @@ SDK 能上报你现在走的是它们，但**不能主动切到某个具体外�
 
 配套：`simulcastInfoFromJson` / `simulcastInfoToJson`。
 
+### `ReceiveStreamStatus`
+
+> 1.2.0 起
+
+`onReceiveStreamStatusChange` 的载荷。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `uid` | `string` | 发流成员；MCU 合成流为 `RemoteVideoMcuTrack.publisherUid`（`__mcu__`） |
+| `trackId` | `string` | 轨道 ID |
+| `trackDesc` | `string` | 轨道描述（`camera` / `screen` 等，对应 `TrackInfo.desc`） |
+| `timedOut` | `boolean` | `true` 接收已超时，`false` 接收已恢复（与 OC 版 `status` 真假一致，迁移时不用取反） |
+
 ---
 
 ## 采集参数

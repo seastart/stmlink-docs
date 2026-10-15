@@ -39,6 +39,19 @@ let count = try await meeting.signInCount(epoch: epoch)
 let details = try await meeting.signInDetail(epoch: epoch, nickname: nil)
 ```
 
+#### Export the sign-in list
+
+```swift
+// Export the sign-in details of a round (Excel); returns the URL of the file actually written
+let fileURL = try await meeting.signInExportDetail(epoch: epoch)
+
+// You can also choose where to write it
+let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+try await meeting.signInExportDetail(epoch: epoch, destination: docs.appendingPathComponent("sign-in.xlsx"))
+```
+
+`epoch` is the same value used by `signInCount` / `signInDetail`. Without `destination`, the file is written to `<UUID>.xlsx` in the temporary directory, which the system may clean up; to keep it, move it yourself or pass a path under Documents. Available since 1.5.0.
+
 `SignInfo` fields: `uid` (initiator), `beginAt`, `dur`, `endAt`, `desc`, `nums` (number signed in).
 `SignDetailInfo` fields: `id`, `epoch`, `nickname`, `role`, `userId`, `createdAt`.
 

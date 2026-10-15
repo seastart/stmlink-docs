@@ -69,7 +69,7 @@ onImCallCalling: (m, data) => {
 ```typescript
 onImMeetingRemind: (m, data) => {
   // data.content: ImMeetingRemindContent
-  //   roomNo / meetingId / title / creatorName / planTime / planDur
+  //   roomNo / meetingId / title / creatorName / creatorId（1.4.0 起）/ planTime / planDur
   this.showReminder(
     data.content.title,
     data.content.creatorName,

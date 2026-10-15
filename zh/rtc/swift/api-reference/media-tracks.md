@@ -99,6 +99,27 @@ try await channel.subscribeRemoteVideoTrack(uid: uid, trackId: trackId)
 
 ---
 
+#### `subscribeRemoteVideoMcuTrack()`
+
+订阅频道级 MCU 合成视频（1.5.3 起）。服务端合成任务把频道内的画面合成一路，以保留身份 `__mcu__` 发布，
+**这个身份不在频道成员列表里**，所以不能用 `subscribeRemoteVideoTrack(uid:trackId:)`，要用本方法。
+
+```swift
+let mcu = try await channel.subscribeRemoteVideoMcuTrack()
+mcu.addRenderer(renderer)          // 或交给 SRTCVideoView(track: mcu)
+
+try await channel.unsubscribeRemoteVideoMcuTrack()
+```
+
+**返回值：** `RemoteVideoMcuTrack`（继承 `RemoteVideoTrack`），重复调用返回同一对象；当前订阅中的轨道也可通过 `channel.remoteVideoMcuTrack` 取到。
+
+<Note>
+合成任务没开时 SFU 找不到这一路，SDK 会重试几秒后放弃（不抛错，也不出画面）。合成任务比订阅晚起来的场景，在任务开始运行后再调一次即可，调用是幂等的。
+收流超时 / 恢复照常经 `didChangeReceiveStreamStatus` 上报，`uid` 为 `RemoteVideoMcuTrack.publisherUid`（`"__mcu__"`）。
+</Note>
+
+---
+
 #### `unsubscribeRemoteTrack(_:debounceMs:)`
 
 取消订阅远端轨道。

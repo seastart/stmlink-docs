@@ -149,12 +149,12 @@ virtual StatusCode getMemberByLinkId(int linkId, char** s, int* c) = 0;
 ## Media streaming functions
 ### Get a video track object
 ```cpp
-virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** track) = 0;
+virtual StatusCode getCameraTrack(const char* trackKey,IRTCLocalCameraTrack ** track) = 0;
 ```
 
 **Parameters**
 
-| track_key | Key of the local video track object, maintained by you. Distinguishes different track objects; it's also the default publishing desc |
+| trackKey | Key of the local video track object, maintained by you. Distinguishes different track objects; it's also the default publishing desc |
 | --- | --- |
 | track | [Video track object](/en/rtc/windows/api-reference/IRTCLocalCameraTrack) |
 
@@ -163,12 +163,12 @@ virtual StatusCode getCameraTrack(const char* track_key,IRTCLocalCameraTrack ** 
 
 ### Get a screen sharing track object
 ```cpp
-virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** track) = 0;
+virtual StatusCode getScreenTrack(const char* trackKey,IRTCLocalScreenTrack ** track) = 0;
 ```
 
 **Parameters**
 
-| track_key | Key of the local video track object, maintained by you. Distinguishes different track objects; it's also the default publishing desc |
+| trackKey | Key of the local video track object, maintained by you. Distinguishes different track objects; it's also the default publishing desc |
 | --- | --- |
 | track | [Screen track object](/en/rtc/windows/api-reference/IRTCLocalScreenTrack) |
 
@@ -177,12 +177,12 @@ virtual StatusCode getScreenTrack(const char* track_key,IRTCLocalScreenTrack ** 
 
 ### Get an audio track object
 ```cpp
-virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track) = 0;
+virtual StatusCode getAudioTrack(const char* trackKey,IRTCLocalMicTrack** track) = 0;
 ```
 
 **Parameters**
 
-| track_key | Key of the local audio track object, maintained by you. Distinguishes different track objects; it's also the default publishing desc |
+| trackKey | Key of the local audio track object, maintained by you. Distinguishes different track objects; it's also the default publishing desc |
 | --- | --- |
 | track | [Microphone track object](/en/rtc/windows/api-reference/IRTCLocalMicTrack) |
 
@@ -191,14 +191,14 @@ virtual StatusCode getAudioTrack(const char* track_key,IRTCLocalMicTrack** track
 
 ### Get a user's audio track object
 ```cpp
-virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackid, IRTCRemoteAudioTrack** track) = 0;
+virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackId, IRTCRemoteAudioTrack** track) = 0;
 ```
 
 **Parameters**
 
 | uid | User ID (empty for all users) |
 | --- | --- |
-| trackid | ID of the user's audio track (empty for all tracks) |
+| trackId | ID of the user's audio track (empty for all tracks) |
 | track | [Local audio mixing track object](/en/rtc/windows/api-reference/IRTCRemoteAudioTrack) |
 
 
@@ -206,14 +206,14 @@ virtual StatusCode getRemoteAudioTrack(const char* uid, const char* trackid, IRT
 
 ### Get a user's video track object
 ```cpp
-virtual StatusCode getRemoteVideoTrack(const char* uid, const char* trackid, IRTCRemoteVideoTrack** track) = 0;
+virtual StatusCode getRemoteVideoTrack(const char* uid, const char* trackId, IRTCRemoteVideoTrack** track) = 0;
 ```
 
 **Parameters**
 
 | uid | User ID |
 | --- | --- |
-| trackid | ID of the user's video track |
+| trackId | ID of the user's video track |
 | track | [User video track object](/en/rtc/windows/api-reference/IRTCRemoteVideoTrack) |
 
 

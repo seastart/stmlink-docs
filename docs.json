@@ -178,7 +178,13 @@
                 "group": "Windows SDK",
                 "pages": [
                   "zh/rtc/windows/integration",
-                  "zh/rtc/windows/quickstart",
+                  {
+                    "group": "快速开始",
+                    "pages": [
+                      "zh/rtc/windows/quickstart-cpp",
+                      "zh/rtc/windows/quickstart-csharp"
+                    ]
+                  },
                   {
                     "group": "接口文档",
                     "pages": [
@@ -640,6 +646,45 @@
                 ]
               }
             ]
+          },
+          {
+            "tab": "产品与部署",
+            "groups": [
+              {
+                "group": "概览",
+                "pages": [
+                  "zh/product/overview",
+                  "zh/product/admin-console",
+                  "zh/product/demos"
+                ]
+              },
+              {
+                "group": "设备接入（会议室连接器）",
+                "pages": [
+                  "zh/product/device-access/overview",
+                  "zh/product/device-access/sip-h323",
+                  "zh/product/device-access/gb28181",
+                  "zh/product/device-access/rtsp",
+                  "zh/product/device-access/faq"
+                ]
+              },
+              {
+                "group": "终端产品",
+                "pages": [
+                  "zh/product/terminals/softsip",
+                  "zh/product/terminals/tv"
+                ]
+              },
+              {
+                "group": "私有化部署",
+                "pages": [
+                  "zh/product/deploy/architecture",
+                  "zh/product/deploy/ports",
+                  "zh/product/deploy/networks",
+                  "zh/product/deploy/optical-gap"
+                ]
+              }
+            ]
           }
         ]
       },
@@ -757,7 +802,13 @@
                 "group": "Windows SDK",
                 "pages": [
                   "en/rtc/windows/integration",
-                  "en/rtc/windows/quickstart",
+                  {
+                    "group": "Quickstart",
+                    "pages": [
+                      "en/rtc/windows/quickstart-cpp",
+                      "en/rtc/windows/quickstart-csharp"
+                    ]
+                  },
                   {
                     "group": "API reference",
                     "pages": [
@@ -1206,6 +1257,30 @@
     {
       "source": "/zh/meeting/web/api-reference",
       "destination": "/zh/meeting/web/api-reference/SMeeting"
+    },
+    {
+      "source": "/zh/rtc/windows/net/integration",
+      "destination": "/zh/rtc/windows/integration"
+    },
+    {
+      "source": "/zh/rtc/windows/net/quickstart",
+      "destination": "/zh/rtc/windows/quickstart-csharp"
+    },
+    {
+      "source": "/en/rtc/windows/net/integration",
+      "destination": "/en/rtc/windows/integration"
+    },
+    {
+      "source": "/en/rtc/windows/net/quickstart",
+      "destination": "/en/rtc/windows/quickstart-csharp"
+    },
+    {
+      "source": "/zh/rtc/windows/quickstart",
+      "destination": "/zh/rtc/windows/quickstart-cpp"
+    },
+    {
+      "source": "/en/rtc/windows/quickstart",
+      "destination": "/en/rtc/windows/quickstart-cpp"
     }
   ]
 }

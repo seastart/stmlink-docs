@@ -408,18 +408,35 @@ meeting.toggleRemoteAudioMute(true)   // 静音
 
 ### 合屏画面（MCU）
 
-#### `startPlayRemoteVideoMcu(view:uid:)`
+合成画面由服务端合成任务（`mcuStart` 的 `McuTaskType.mix`）产出，以保留身份 `__mcu__` 发布，**不属于任何会中成员**，所以这组接口都不需要 uid。合成任务要先跑起来：任务比订阅晚开始时，在 `roomMcuTask` 报合成任务 `running` 后再订阅一次（幂等）。
 
-订阅并播放服务端合成画面。需要服务端已配置合屏任务。
+#### `subscribeRemoteVideoMcu()`
+
+订阅服务端合成画面（1.5.1 起）。SwiftUI 把返回的轨道交给 `SRTCVideoView(track:)`。
+
+**返回值：** `RemoteVideoTrack`，重复调用返回同一轨道，也可通过 `meeting.mcuTrack` 取到。收流状态经 `didChangeReceiveStreamStatus` 上报，`uid` 为 `"__mcu__"`。
+
+**可能抛出：** `SMeetingError.notInMeeting`
+
+#### `unsubscribeRemoteVideoMcu()`
+
+取消订阅服务端合成画面，没订阅过时直接返回（1.5.1 起）。
+
+#### `startPlayRemoteVideoMcu(view:)`
+
+订阅并播放服务端合成画面（UIKit / AppKit 便利方法，1.5.1 起），`view` 须已挂在视图层级上。
 
 | 参数名 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
 | `view` | `NativeVideoView` | 是 | 渲染视图 |
-| `uid` | `String` | 是 | 合成画面对应的用户 ID |
 
 **返回值：** `RemoteVideoTrack`
 
-**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.remoteTrackUnavailable(uid:desc:)`（未找到合成画面轨道）
+**可能抛出：** `SMeetingError.notInMeeting`
+
+#### `startPlayRemoteVideoMcu(view:uid:)`（已废弃）
+
+1.5.1 起废弃，`uid` 不再使用，等同 `startPlayRemoteVideoMcu(view:)`。此前它按「合成画面是某个成员的摄像头轨道」去找，在当前链路下找不到，必抛 `remoteTrackUnavailable`。
 
 #### `stopPlayRemoteVideoMcu(view:)`
 

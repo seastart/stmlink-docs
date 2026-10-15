@@ -4,6 +4,37 @@ description: "Windows SRTC 音视频 SDK 版本更新记录"
 ---
 
 
+### [12] - 2026.10.13
+版本号：0.2.1-alpha.14
+
+**添加**
+
++ **新增 C# 封装 `srtcNet`**：`Srtc` 命名空间的 C++/CLI 混合程序集 `srtcNet.dll`，把 srtc 的 C++
+  接口（引擎、频道、频道设置、轨道、视图、录制、设备枚举、IM）完整暴露为惯用的 C# `class` /
+  `event` / `IDisposable`，回调无需手写 vtable
++ 交付包内新增 `rtc_dll/net/srtcNet.dll`（x86、x64 各一份，位数与包内原生 DLL 一致），与
+  `rtc_dll/bin/` 下的原生依赖配套使用
+
+**修改**
+
++ **修复设备名乱码**：设备枚举（`getEnumVideo` / `getEnumScreen` / `getEnumAudio` / `getEnumSpeaker`）
+  写进 JSON 的设备名由 ANSI 改为 UTF-8；新增 `StringUtil::AnsiToUTF8` / `UTF8ToAnsi`
+  （基于 `MultiByteToWideChar` / `WideCharToMultiByte`，不依赖 setlocale）
++ `srtc.h` 若干形参改名（`message_size`→`messageSize`、`track_key`→`trackKey`、`key`→`channelId` 等），
+  包含 `onJoinChannel` 等回调的形参 —— **仅改名，签名与语义不变**
+
+**API 变更**
+
+无破坏性变更。`srtc.h` 本次只有形参改名，纯虚接口（`IRTCEngine` / `IRTCEngineEvent` /
+`IRTCChannel` / `IRTCChannelEvent` 等）的 **vtable 未变**，`srtc.lib` 的导出符号也**未变**，
+只替换 dll 不需要重新编译。新增的 `srtcNet` 是独立程序集，不影响现有 C++ 使用方。
+
+**已知限制**
+
++ `srtcNet` 需要 **.NET Framework 4.7.2 及以上**，且位数必须与原生包一致（x86 程序配 x86 包），
+  否则运行期抛 `BadImageFormatException`
++ 设备名对外统一为 **UTF-8**：若使用方此前按 ANSI 解析设备枚举 JSON 里的 `name` 字段，需改为 UTF-8
+
 ### [11] - 2026.10.08
 版本号：0.2.1-alpha.13
 

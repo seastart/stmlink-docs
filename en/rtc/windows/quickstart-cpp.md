@@ -1,6 +1,7 @@
 ---
-title: "Quickstart"
-description: "The minimal Windows SRTC C++ flow: initialize IRTCEngine with log options, create an IRTCChannel, configure it and register callbacks before join(), publish camera/microphone/screen tracks, play remote audio, render remote video, record locally, and leave. Read after completing integration."
+title: "C++ Quickstart"
+sidebarTitle: "C++"
+description: "The minimal Windows SRTC C++ flow in about 10 minutes: initialize IRTCEngine with log options, create and configure an IRTCChannel, register callbacks before join(), publish camera/microphone/screen tracks, play remote audio, render remote video, record locally, and leave."
 ---
 
 There are two layers of objects in the call sequence; tell them apart first:
@@ -75,8 +76,8 @@ For more settings, see [IRTCChannelSetting](/en/rtc/windows/api-reference/IRTCCh
 ### Turn the camera on and off
 ```cpp
     SRTC::IRTCLocalCameraTrack* _camStream = nullptr;
-    const char* track_key = "camera";
-    SRTC::StatusCode ret = _ch->getCameraTrack(track_key, &_camStream);
+    const char* trackKey = "camera";
+    SRTC::StatusCode ret = _ch->getCameraTrack(trackKey, &_camStream);
     if ((ret != SRTC::StatusCode::OK) || !_camStream)
     {
         return ret;
@@ -90,8 +91,8 @@ For more settings, see [IRTCChannelSetting](/en/rtc/windows/api-reference/IRTCCh
 
 ```cpp
     SRTC::IRTCLocalCameraTrack* _camStream = nullptr;
-    const char* track_key = "camera";
-    SRTC::StatusCode ret = _ch->getCameraTrack(track_key, &_camStream);
+    const char* trackKey = "camera";
+    SRTC::StatusCode ret = _ch->getCameraTrack(trackKey, &_camStream);
     if ((ret != SRTC::StatusCode::OK) || !_camStream)
     {
         return ret;
@@ -114,8 +115,8 @@ For more local camera methods, see [IRTCLocalCameraTrack](/en/rtc/windows/api-re
 ### Turn the microphone on and off
 ```cpp
     SRTC::IRTCLocalMicTrack* _micStream = nullptr;
-    const char* track_key = "mic";
-    SRTC::StatusCode ret = _ch->getAudioTrack(track_key, &_micStream);
+    const char* trackKey = "mic";
+    SRTC::StatusCode ret = _ch->getAudioTrack(trackKey, &_micStream);
     if ((ret != SRTC::StatusCode::OK) || !_micStream)
     {
         return ret;
@@ -128,8 +129,8 @@ For more local camera methods, see [IRTCLocalCameraTrack](/en/rtc/windows/api-re
 
 ```cpp
     SRTC::IRTCLocalMicTrack* _micStream = nullptr;
-    const char* track_key = "mic";
-    SRTC::StatusCode ret = _ch->getAudioTrack(track_key, &_micStream);
+    const char* trackKey = "mic";
+    SRTC::StatusCode ret = _ch->getAudioTrack(trackKey, &_micStream);
     if ((ret != SRTC::StatusCode::OK) || !_micStream)
     {
         return ret;
@@ -146,8 +147,8 @@ For more local microphone methods, see [IRTCLocalMicTrack](/en/rtc/windows/api-r
 ### Start and stop screen sharing
 ```cpp
     SRTC::IRTCLocalScreenTrack* _screenStream = nullptr;
-    const char* track_key = "screen";
-    SRTC::StatusCode ret = _ch->getScreenTrack(track_key, &_screenStream);
+    const char* trackKey = "screen";
+    SRTC::StatusCode ret = _ch->getScreenTrack(trackKey, &_screenStream);
     if ((ret != SRTC::StatusCode::OK) || !_screenStream)
     {
         return ret;
@@ -160,8 +161,8 @@ For more local microphone methods, see [IRTCLocalMicTrack](/en/rtc/windows/api-r
 
 ```cpp
     SRTC::IRTCLocalScreenTrack* _screenStream = nullptr;
-    const char* track_key = "screen";
-    SRTC::StatusCode ret = _ch->getScreenTrack(track_key, &_screenStream);
+    const char* trackKey = "screen";
+    SRTC::StatusCode ret = _ch->getScreenTrack(trackKey, &_screenStream);
     if ((ret != SRTC::StatusCode::OK) || !_screenStream)
     {
         return ret;

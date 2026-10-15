@@ -4,7 +4,8 @@
     "zh/rtc/harmony/",
     "zh/meeting/harmony/",
     "zh/rtc/wechat-miniprogram/",
-    "zh/meeting/wechat-miniprogram/"
+    "zh/meeting/wechat-miniprogram/",
+    "zh/product/"
   ],
   "batches": [
     {

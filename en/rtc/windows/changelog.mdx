@@ -1,8 +1,90 @@
 ---
 title: "Changelog"
-description: "Release history of the Windows SRTC C++ SDK, from rtc2.0 to 0.2.1-alpha.12: new features, changes, fixes, and whether each release changes the API (breaking releases require a recompile, not just a DLL swap). Read before upgrading the SDK."
+description: "Release history of the Windows SRTC C++ SDK, from rtc2.0 to 0.2.1-alpha.14: new features, changes, fixes, and whether each release changes the API (breaking releases require a recompile, not just a DLL swap). Read before upgrading the SDK."
 ---
 
+
+### [12] - 2026.10.13
+Version: 0.2.1-alpha.14
+
+**Added**
+
++ **New C# wrapper `srtcNet`**: a C++/CLI mixed-mode assembly (`srtcNet.dll`) under the `Srtc` namespace
+  that exposes the srtc C++ interfaces (engine, channel, channel settings, tracks, views, recording,
+  device enumeration, IM) as idiomatic C# `class` / `event` / `IDisposable`, with no callback vtable to write
++ The package now ships `rtc_dll/net/srtcNet.dll` (one per architecture, matching the bitness of the
+  native DLLs in the package); use it together with the native dependencies under `rtc_dll/bin/`
+
+**Changed**
+
++ **Fixed garbled device names**: device enumeration (`getEnumVideo` / `getEnumScreen` / `getEnumAudio` /
+  `getEnumSpeaker`) now writes device names into the JSON as UTF-8 instead of ANSI. Added
+  `StringUtil::AnsiToUTF8` / `UTF8ToAnsi` (based on `MultiByteToWideChar` / `WideCharToMultiByte`,
+  not setlocale)
++ Several parameter names in `srtc.h` were renamed (`message_size`→`messageSize`, `track_key`→`trackKey`,
+  `key`→`channelId`, and the callback parameters of `onJoinChannel` and others)—**renames only,
+  signatures and semantics unchanged**
+
+**API changes**
+
+No breaking change. `srtc.h` only renamed parameters this release; the **vtable of the pure virtual
+interfaces** (`IRTCEngine` / `IRTCEngineEvent` / `IRTCChannel` / `IRTCChannelEvent`, etc.) is
+**unchanged**, and the exported symbols in `srtc.lib` are **unchanged**—swapping the DLLs does not
+require a recompile. The new `srtcNet` is a separate assembly and does not affect existing C++ consumers.
+
+**Known limitations**
+
++ `srtcNet` requires **.NET Framework 4.7.2 or later**, and its bitness must match the native package
+  (an x86 program needs the x86 package), otherwise it throws `BadImageFormatException` at runtime
++ Device names are now uniformly **UTF-8** outward: if you previously parsed the `name` field of the
+  device-enumeration JSON as ANSI, switch to UTF-8
+
+### [11] - 2026.10.08
+Version: 0.2.1-alpha.13
+
+**Added**
+
++ `StatusCode` in `srtc_def.h` gains `UserCancelled = 100013` (operation cancelled)
++ The internal module `srtc/SRTCStatus.h` gains `from_rtc()`: maps the underlying RTC library's error
+  codes to srtc's own error codes
++ `RTCEngine_GetStatusMsg()` now has Chinese and English texts for `OK`, `SyncDeal`, `UserCancelled`,
+  `MoudelNotSupport`, `BeforeSetting`, `NotFindStreamTrack`, and `ExceedingSpecifiedQuantity`
+  (previously they fell back to "not msg")
+
+**Changed**
+
++ The underlying RTC error codes returned by public srtc APIs (`join`, `getMember`, `getMemberByLinkId`,
+  `update_self_stream_info`, `Decrypt`, `init`, `enableIm`, and others) now go through `from_rtc()`; the
+  codes reported by the `onDisconnected` / `onImDisconnected` callbacks are mapped first too
++ The mapping covers the underlying RTC's `OK`, `SdkTokenInvalid`, `Conflict`, `NetError`, `Timeout`,
+  `ProtocolParsingError`, `MediaNetError`, `NotInitialized`, `SystemError`, `UserCancelled`,
+  `InvalidArgs`, and `NotFound`; codes with no counterpart (including the backend's pass-through
+  business codes `>= 1000`) keep their original value
+
+**Fixed**
+
++ Fixed the error-code mismatch: the underlying RTC uses compact codes (`4`/`5`/`6`/`24`/`26` …) while
+  srtc exposes the `100001+` table. Previously the public APIs cast the RTC code straight to `StatusCode`,
+  so the numbers did not line up and `RTCEngine_GetStatusMsg()` / `RTCEngine_GetLastErrorMessage()` fell
+  back to a placeholder text (like `!!!!!!!!!!code:6!!!!!!!!! not msg`). They now return srtc's own codes
+
+**API changes**
+
++ `srtc_def.h` only **adds** the enum value `UserCancelled = 100013`; existing values are unchanged.
+  `srtc.h` is unchanged, and the vtable of `IRTCEngine` / `IRTCEngineEvent` is **unchanged**—swapping the
+  DLLs does **not** require a recompile
++ But the **numerical semantics of the error codes changed**: for the same failure, a public API now
+  returns a different `StatusCode` number than the old version (the old version returned the underlying
+  RTC's compact code, the new one returns srtc's `100001+` code). If you compare error codes by number,
+  switch to comparing the `StatusCode` enum names, and update `srtc_def.h`
+
+**Known limitations**
+
++ The underlying RTC's `UserCancelled` maps to srtc's `100013`, which differs from other platforms'
+  `UserCancelled = 100012`; keep this in mind when aligning error codes across platforms. `SyncDeal`
+  still occupies `100012` in srtc
++ Underlying codes with no srtc counterpart are returned as-is, and may fall into the gaps of the srtc
+  error-code table; `RTCEngine_GetStatusMsg()` still returns a placeholder text for those
 
 ### [10] - 2026.10.08
 Version: 0.2.1-alpha.12

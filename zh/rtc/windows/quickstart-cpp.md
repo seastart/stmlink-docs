@@ -1,6 +1,7 @@
 ---
-title: "快速开始"
-description: "Windows SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能"
+title: "C++ 快速开始"
+sidebarTitle: "C++"
+description: "Windows SRTC C++ 的 10 分钟最小可跑流程：初始化 IRTCEngine、创建并配置 IRTCChannel、注册回调后 join、发布摄像头/麦克风/屏幕轨道、播放远端音频、渲染远端视频、本地录制与退出。"
 ---
 
 调用顺序上有两层对象，先分清楚：
@@ -75,8 +76,8 @@ if (ret != SRTC::StatusCode::OK)
 ### 开关摄像头
 ```cpp
     SRTC::IRTCLocalCameraTrack* _camStream = nullptr;
-    const char* track_key = "camera";
-    SRTC::StatusCode ret = _ch->getCameraTrack(track_key, &_camStream);
+    const char* trackKey = "camera";
+    SRTC::StatusCode ret = _ch->getCameraTrack(trackKey, &_camStream);
     if ((ret != SRTC::StatusCode::OK) || !_camStream)
     {
         return ret;
@@ -90,8 +91,8 @@ if (ret != SRTC::StatusCode::OK)
 
 ```cpp
     SRTC::IRTCLocalCameraTrack* _camStream = nullptr;
-    const char* track_key = "camera";
-    SRTC::StatusCode ret = _ch->getCameraTrack(track_key, &_camStream);
+    const char* trackKey = "camera";
+    SRTC::StatusCode ret = _ch->getCameraTrack(trackKey, &_camStream);
     if ((ret != SRTC::StatusCode::OK) || !_camStream)
     {
         return ret;
@@ -114,8 +115,8 @@ if (ret != SRTC::StatusCode::OK)
 ### 开关麦克风
 ```cpp
     SRTC::IRTCLocalMicTrack* _micStream = nullptr;
-    const char* track_key = "mic";
-    SRTC::StatusCode ret = _ch->getAudioTrack(track_key, &_micStream);
+    const char* trackKey = "mic";
+    SRTC::StatusCode ret = _ch->getAudioTrack(trackKey, &_micStream);
     if ((ret != SRTC::StatusCode::OK) || !_micStream)
     {
         return ret;
@@ -128,8 +129,8 @@ if (ret != SRTC::StatusCode::OK)
 
 ```cpp
     SRTC::IRTCLocalMicTrack* _micStream = nullptr;
-    const char* track_key = "mic";
-    SRTC::StatusCode ret = _ch->getAudioTrack(track_key, &_micStream);
+    const char* trackKey = "mic";
+    SRTC::StatusCode ret = _ch->getAudioTrack(trackKey, &_micStream);
     if ((ret != SRTC::StatusCode::OK) || !_micStream)
     {
         return ret;
@@ -146,8 +147,8 @@ if (ret != SRTC::StatusCode::OK)
 ### 开关桌面共享
 ```cpp
     SRTC::IRTCLocalScreenTrack* _screenStream = nullptr;
-    const char* track_key = "screen";
-    SRTC::StatusCode ret = _ch->getScreenTrack(track_key, &_screenStream);
+    const char* trackKey = "screen";
+    SRTC::StatusCode ret = _ch->getScreenTrack(trackKey, &_screenStream);
     if ((ret != SRTC::StatusCode::OK) || !_screenStream)
     {
         return ret;
@@ -160,8 +161,8 @@ if (ret != SRTC::StatusCode::OK)
 
 ```cpp
     SRTC::IRTCLocalScreenTrack* _screenStream = nullptr;
-    const char* track_key = "screen";
-    SRTC::StatusCode ret = _ch->getScreenTrack(track_key, &_screenStream);
+    const char* trackKey = "screen";
+    SRTC::StatusCode ret = _ch->getScreenTrack(trackKey, &_screenStream);
     if ((ret != SRTC::StatusCode::OK) || !_screenStream)
     {
         return ret;

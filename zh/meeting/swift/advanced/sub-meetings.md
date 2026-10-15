@@ -37,6 +37,14 @@ try await meeting.adminDeleteSubMeeting(ids: [groups[1].id])
 
 `adminSubMeetingList` 返回的每个 `SubMeetingInfo` 里 `users` 是已分配成员，`status` 是小组的会议状态（`MeetingStatus`）。
 
+分配成员时候选名单取主会场的在线成员。主持人此时如果身处某个小组，`adminListOnlineMember(page:perPage:)` 拉的是小组自己的成员，要改用带 `meetingId` 的重载并传主会场 ID（1.5.0 起）：
+
+```swift
+guard let room = meeting.getRoomInfo() else { return }
+let mainId = room.parent.isEmpty ? room.id : room.parent
+let online = try await meeting.adminListOnlineMember(meetingId: mainId, page: 1, perPage: 100)
+```
+
 ---
 
 ### 开始与结束

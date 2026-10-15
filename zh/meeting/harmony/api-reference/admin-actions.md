@@ -110,7 +110,7 @@ adminConfirmHandup(targetId: string, approve: boolean, code: HandupType): Promis
 ```typescript
 adminUpdateLayout(layoutData: LayoutData): Promise<void>
 mcuStart(meetingId: string, req: McuStartReq): Promise<void>
-mcuStop(meetingId: string, taskType: McuTaskType): Promise<void>
+mcuStop(meetingId: string, taskType?: McuTaskType | number): Promise<void>
 mcuRecordConfig(): Promise<McuRecordConfig>
 mcuRecordDetail(meetingId: string): Promise<McuRecordDetail>
 ```
@@ -119,6 +119,8 @@ mcuRecordDetail(meetingId: string): Promise<McuRecordDetail>
 `right_4` / `top_4` / `br_7` / `tl_7` / `tb_8`。
 
 `McuTaskType`：`record`（纯录制）/ `mix`（纯混流）/ `mixAndRecord`（两者）/ `audio`（录音，1.1.0 起）/ `live`（直播流，1.1.0 起）。`unknown` 仅用于解码，不要传给 `mcuStop`。
+
+服务端的 `task_type` 是**按位组合**的（1 录像、2 合流、4 录音、8 直播流，可相加，如开了直播能力的部署上自动录制起的是 9）。所以 `mcuStop` 自 1.4.0 起 `taskType` 可省略（停掉全部任务），也接受原始数字 —— 停自动起的任务时直接传 `RoomMcuTaskEventData.taskTypeRaw`。
 
 任务状态变化通过 `onRoomMcuTask` 上报，`taskStatus` 为 `exception` 时
 `errDesc` 有原因 —— 这个要提示给用户，录制出问题他们需要知道。
@@ -137,6 +139,7 @@ adminUpdateConferee(meetingId: string, conferee: string[]): Promise<void>
 adminInviteAgent(agents: AgentInvite[], no: string): Promise<void>
 agentList(type: AgentType[], name?: string, page?: number, perPage?: number): Promise<PageResult<AgentInfo>>
 adminListOnlineMember(page?: number, perPage?: number): Promise<PageResult<OnlineMemberInfo>>
+adminListOnlineMemberOf(meetingId: string, page?: number, perPage?: number): Promise<PageResult<OnlineMemberInfo>>
 ```
 
 | 方法 | 说明 |
@@ -146,7 +149,8 @@ adminListOnlineMember(page?: number, perPage?: number): Promise<PageResult<Onlin
 | `adminUpdateConferee` | 修改参会人名单 |
 | `adminInviteAgent` | 邀请第三方接入设备 |
 | `agentList` | 查询可用的接入设备 |
-| `adminListOnlineMember` | 在线成员分页列表 |
+| `adminListOnlineMember` | 当前会议的在线成员分页列表 |
+| `adminListOnlineMemberOf` | 指定会议的在线成员（1.4.0 起）。主持人在分组讨论的小组里时，用它拉主会场 |
 
 `AgentType` 覆盖 `sip` / `h323` / `gb28181` / `rtsp` / `rtmp` / `filePlay` /
 `tencentMeet` / `ai`。

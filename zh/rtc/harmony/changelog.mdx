@@ -3,6 +3,33 @@ title: "更新日志"
 description: "HarmonyOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.2.0] - 2026.10.14
+
+本版补齐与 Swift 版对齐的一批能力，**只有新增、无不兼容变更**，1.1.0 的接入代码可直接升级。
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.2.0.har`（184KB，SHA-256 `c609910ad7c2f34e2fc13422dd2695d68e212872e481413a35fa8dd91b4e7b43`）。
+
+#### 新增
+
++ **远端视频收流超时 / 恢复**：`ChannelDelegate.onReceiveStreamStatusChange(channel, status: ReceiveStreamStatus)` 与 `RemoteVideoTrack.isReceiveTimedOut`。订阅后约 3 秒收不到该路视频帧报一次超时，帧恢复后报一次恢复，用来驱动画面上的「加载中 / 对方网络异常」指示；两条引擎都触发。**只报跳变**，已出过帧的轨道重订不会再报恢复，初始状态按 `isReceiveTimedOut` 现判。
++ **MCU 合成画面**：`Channel.subscribeRemoteVideoMcuTrack()` / `unsubscribeRemoteVideoMcuTrack()` / `remoteVideoMcuTrack` 与 `RemoteVideoMcuTrack`。合成流发布者是保留身份 `__mcu__`、不在成员列表里，用这组接口按保留标识直接订阅；需服务端先开启合成任务。
++ **本端采集电平**：`Channel.getLocalAudioLevel(track)`，返回已发布本地音频轨道的采集电平（0~1），用来画「我」的音柱。轮询别超过 10Hz。
++ **网宿引擎的活跃说话人**：`onActiveSpeakersChange` 在网宿引擎下也会触发（SDK 每 500ms 轮询已订阅音频的接收音量在本地算出，CDN 链路约 10 秒延迟）。此前只有 SeaStart 引擎触发。
++ **前后置判断**：`LocalCameraTrack.isFrontCamera`。切换约 600ms 才完成，切换中读到的仍是旧值，准确值请在 `onTrackCameraSwitching(track, false)` 之后读。
++ **系统侧结束屏幕共享**：用户点状态栏录屏胶囊等系统入口结束共享时，SDK 自己 `stopCapture()` 并触发 `TrackDelegate.onTrackEnd`。SDK 只停采集，撤发布由业务层在 `onTrackEnd` 里做。
+
+#### 变更
+
++ `setMirrored` 在**后置**摄像头上调用无效（与 Swift 版一致，后置画面本就是真实方位），`isMirrored` 读回真实生效值，此时也不触发 `onTrackMirrorUpdate`。
+
+#### 修复
+
++ 网宿引擎下 `RemoteAudioMixTrack` 拉流的流名补上 `rtc_a_channel_` 前缀，与 Swift 版一致（原来漏了前缀）。
+
+<Note>
+已在 HUAWEI nova 12 Pro 上用发布形态的 HAR 真机验收：SeaStart 引擎协商到 H264。**尚未验证**：两台设备真机互通、推 CDN、多芯片平台的编解码覆盖。
+</Note>
+
 ### [1.1.0] - 2026.10.08
 
 本版按跨端[统一错误码表](/zh/rtc/error-codes)（第 2 版）重排错误码，**含不兼容变更**，升级前请对照下方「变更」与旧码 → 新码对照表检查按 `code` / `kind` 分支的代码。

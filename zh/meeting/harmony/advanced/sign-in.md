@@ -86,7 +86,7 @@ const details: SignDetailInfo[] = await meeting.signInDetail(epoch, '张');
 
 | 接口 | 字段 |
 | --- | --- |
-| `SignInfo` | `uid`、`beginAt`、`dur`、`endAt`、`desc`、`nums`（签到人数） |
+| `SignInfo` | `uid`、`beginAt`、`dur`、`endAt`、`desc`、`nums`（签到人数）、`hostName?`（发起人昵称，1.2.1 起；服务端暂未返回，取不到时按 `uid` 找会中成员，或用 `onSignInActivity` 里的 `hostName`） |
 | `SignDetailInfo` | `id`、`epoch`、`nickname`、`role`、`userId`、`createdAt` |
 
 <Note>

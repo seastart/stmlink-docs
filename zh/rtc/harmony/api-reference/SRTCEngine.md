@@ -265,6 +265,29 @@ getRemoteTrackByDesc(uid: string, desc: string): Track | undefined
 轨道，渲染时机看 `onTrackBindRtcTrack`（`SRTCVideoView` 内部已处理）。
 </Note>
 
+### MCU 合成画面
+
+> 1.2.0 起
+
+```typescript
+subscribeRemoteVideoMcuTrack(): Promise<RemoteVideoMcuTrack>
+unsubscribeRemoteVideoMcuTrack(): Promise<void>
+get remoteVideoMcuTrack(): RemoteVideoMcuTrack | undefined
+```
+
+订阅频道级 MCU 合成视频（服务端把频道内的画面合成一路）。合成流由服务端合成任务以保留身份 `__mcu__` 发布，**不在成员列表里**，所以不能走 `subscribeRemoteVideoTrack(uid, trackId)`，要用这一组按保留标识直接订阅。保留标识与 Swift / C / Python SDK 一致。
+
+```typescript
+const mcu = await channel.subscribeRemoteVideoMcuTrack();
+// 渲染与普通远端视频一样
+SRTCVideoView({ track: mcu, trackKey: RemoteVideoMcuTrack.mcuTrackId })
+```
+
++ 需要服务端先开启合成任务（服务端 API `mcu/start`）。任务没起来时 SFU 回 not found，SDK 会重试几秒；任务起来得更晚，请在收到合成任务进入运行状态后**再调一次**——这个时机由业务决定，SDK 不监听合成任务状态。
++ 重复调用返回同一个轨道对象；订阅失败时对象仍保留在 `remoteVideoMcuTrack` 上，可直接再调一次重试。
++ 收流状态同样经 `onReceiveStreamStatusChange` 上报，`uid` 为 `RemoteVideoMcuTrack.publisherUid`。
++ SeaStart 与网宿两条引擎都支持。
+
 ### Simulcast
 
 ```typescript
@@ -305,6 +328,20 @@ getConnectionQuality(): QualityEvaluation | undefined
 
 主动查询当前连接质量。做 UI 指示器更建议监听 `onConnectionQualityChange`，
 它已经做过等级判定与抖动抑制。
+
+### 本端采集电平
+
+> 1.2.0 起
+
+```typescript
+getLocalAudioLevel(track: LocalAudioTrack): Promise<number | undefined>
+```
+
+读一条**已发布**本地音频轨道当前的采集电平（0~1，线性值），用来画「我」的音柱。`onActiveSpeakersChange` 只含远端，自己的音量要用它读。
+
++ 读的是送进编码器之前的电平：`mute()` 后归零，与对端听到的一致。
++ 未发布的轨道没有发送统计，返回 `undefined`。
++ 每次调用是一次 `getStats`，**轮询频率别超过 10Hz**（建议 5～10Hz），平滑与映射由业务层做。
 
 ### 统计
 

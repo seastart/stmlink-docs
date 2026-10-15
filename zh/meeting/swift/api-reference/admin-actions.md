@@ -132,6 +132,8 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 | --- | --- | :---: | --- |
 | `targetId` | `String` | 是 | 新主持人 ID |
 
+所有成员先收到新、原主持人各一次 `meeting(_:userRoleDidChange:)`（`.host` / `.member`），再收到 `meeting(_:roomHostDidMove:)`（`RoomHostMoveEventData`，1.5.0 起提供）。
+
 #### `adminRequestUserOpenMic(targetId:)` / `adminRequestUserOpenCamera(targetId:)`
 
 邀请成员开麦 / 开摄像头。
@@ -209,10 +211,24 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 
 #### `adminListOnlineMember(page:perPage:)`
 
-在线人员列表。**需要在会议中。**
+当前所在会议的在线人员列表。**需要在会议中。**
 
 | 参数名 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
+| `page` | `Int` | 否 | 页码，默认 `1` |
+| `perPage` | `Int` | 否 | 每页条数，默认 `20` |
+
+**返回值：** `PageResult<OnlineMemberInfo>`
+
+#### `adminListOnlineMember(meetingId:page:perPage:)`
+
+指定会议的在线人员列表。**需要已登录。** 1.5.0 起提供。
+
+主持人身处分组小组时，编辑分组成员要拉主会场的在线成员，`meetingId` 传 `RoomInfo.parent`。
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `meetingId` | `String` | 是 | 会议 ID |
 | `page` | `Int` | 否 | 页码，默认 `1` |
 | `perPage` | `Int` | 否 | 每页条数，默认 `20` |
 
@@ -231,13 +247,15 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 
 **返回值：** `PageResult<AgentInfo>`
 
+`AgentInfo.status` 的取值 1.5.0 起改为 `0` 未知 / `1` 在线 / `2` 离线，见 [AgentStatus](/zh/meeting/swift/types#agentstatus)。GB28181 设备的通道表在 `AgentInfo.connSubjects`。
+
 #### `adminInviteAgent(agents:no:)`
 
 邀请设备入会。**需要已登录。**
 
 | 参数名 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `agents` | `[(type: AgentType, contact: String)]` | 是 | 设备类型与联系地址 |
+| `agents` | `[(type: AgentType, contact: String)]` | 是 | 设备类型与联系地址；GB28181 设备传「设备编号:通道编号」，通道编号取自 `AgentInfo.connSubjects` |
 | `no` | `String` | 是 | 会议房间号 |
 
 **返回值：** 无
@@ -516,6 +534,23 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 | `nickname` | `String?` | 否 | 按昵称过滤 |
 
 **返回值：** `[SignDetailInfo]`
+
+#### `signInExportDetail(epoch:destination:)`
+
+导出某一轮的签到详情（Excel 文件）并写到本地。1.5.0 起提供。
+
+```swift
+let fileURL = try await meeting.signInExportDetail(epoch: epoch)
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `epoch` | `Int` | 是 | 签到轮次 |
+| `destination` | `URL?` | 否 | 文件写入位置，默认 `nil` 时写到临时目录下的 `<UUID>.xlsx`（会被系统清理，需要保留请自行移走） |
+
+**返回值：** `URL`，实际写入的文件地址（`@discardableResult`）
+
+**可能抛出：** `SMeetingError.notInMeeting`、`SMeetingError.apiError(code:message:)`、`SMeetingError.httpError(status:message:)`、`SMeetingError.responseParseFailed(_:)`（后端没有返回文件）、`SMeetingError.internalError(_:)`（写文件失败）
 
 ---
 
