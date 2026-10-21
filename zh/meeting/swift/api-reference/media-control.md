@@ -194,7 +194,7 @@ public func startViewCaptureShare() async throws -> LocalVideoTrack
 **可能抛出：**
 
 + `SMeetingError.notInMeeting` —— 尚未加入会议。
-+ `SMeetingError.invalidState(_:)` —— 屏幕共享轨道已存在，包括已准备但尚未发布的广播监听轨道。
++ `SMeetingError.invalidState(_:)` —— 屏幕共享正在进行（已发布）。只调用过 `prepareBroadcastShare` 挂着广播监听、用户还没开播时不算，自 1.5.2 起可以正常开启视图录制（1.5.1 及以前这种情况也会抛错）。
 + 底层轨道发布错误。
 
 该接口直接发布媒体轨道，不执行 `requestShare()` 的会议后端申请及共享状态通知流程。调用方应按自己的业务管理共享状态，并保证视图录制与屏幕共享互斥；需要切换到屏幕共享时，先停止视图录制。

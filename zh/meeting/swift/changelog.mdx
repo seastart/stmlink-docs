@@ -3,6 +3,18 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.5.2] - 2026.10.21
+#### 修复
++ **iOS 上挂了全屏共享监听后，视图录制（`startViewCaptureShare()`）开不起来**：入会后调过 `prepareBroadcastShare` 的 App（会议类 App 通常一进房就挂监听，等用户从系统胶囊开播），旧版会把「监听已挂上」当成「正在屏幕共享」，`startViewCaptureShare()` 一律抛 `invalidState`，云录制等依赖视图录制的功能因此拿不到画面。现在只有屏幕共享真正发布后才互斥，只挂监听不影响视图录制。
++ **同一轮停止共享并发调用时广播监听被重复拆建**：会议后端下发的停止共享事件可能早于 `stopShare()` 的请求返回，两条路径会同时拆、建同一个广播监听，偶发停止后监听没有恢复。现在同一轮停止会合并，后到的调用等待这一轮收尾完成后再返回。
+
+#### 变更
++ SRTC 依赖仍为 **1.5.3**，iOS 全屏共享扩展 target 那条 `srtc-swift-sdk` 依赖保持 `exact: "1.5.3"` 不变。
+
+<Note>
+只有修复，没有接口变化，1.5.1 的接入代码可直接升级。平台下限不变（iOS 16 / macOS 14）。
+</Note>
+
 ### [1.5.1] - 2026.10.10
 #### 新增
 + **服务端合成画面可以订阅了**：`subscribeRemoteVideoMcu()` / `unsubscribeRemoteVideoMcu()` / `startPlayRemoteVideoMcu(view:)`。合成画面由服务端以保留身份 `__mcu__` 发布、不属于任何会中成员，所以不再需要 uid。合成任务（`McuTaskType.mix`）比订阅晚开始时，在 `roomMcuTask` 报 `running` 后再订一次（调用幂等）。
