@@ -3,6 +3,27 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.5.4] - 2026.10.24
+#### Fixed
++ **`LocalCameraTrack.isFrontCamera` wasn't updated after switching between the front and back cameras**: in previous versions, `switchCamera()` only switched the underlying capture, and the track's camera position stayed at the value from when the camera was turned on, so it still reported the front camera after switching to the back one. This caused three problems: front/back camera buttons that your app sets from `isFrontCamera` didn't update; `isMirrored` stayed `true`, so the local preview of the back camera was mirrored as well; and `unmute()` after `mute()` (or `restartCapture()`) restarted capture with the stale position, so **after switching to the back camera, turning the camera off and on again silently switched back to the front camera**. The track state is now updated once the switch completes, and mirroring follows the camera position automatically.
++ **The same write-back after `changeDeviceId(_:)`**: after switching cameras by device ID, `captureOptions.deviceId` and the camera position (on iOS, taken from the camera actually opened) are updated, and the mirroring state is refreshed.
+
+<Note>
+This is a fix-only release with no public API changes; integration code from 1.5.3 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+`SRTCBroadcastKit` is **1.0.17** in this release; its code is unchanged and only the version number is bumped along with the SDK.
+</Note>
+
+### [1.5.3] - 2026.10.10
+#### Added
++ **Channel-level MCU composite video subscription**: `Channel.subscribeRemoteVideoMcuTrack()` / `unsubscribeRemoteVideoMcuTrack()` / `remoteVideoMcuTrack` and `RemoteVideoMcuTrack`. The server-side composite task publishes the composite stream under the reserved identity `__mcu__`, which **isn't in the channel's user list**, so `subscribeRemoteVideoTrack(uid:trackId:)` can't find it; the new methods subscribe by the reserved identity directly, and repeated calls return the same track. Receive timeouts and recoveries are reported through `didChangeReceiveStreamStatus` as usual, with `uid` set to `"__mcu__"`. The Wangsu CDN engine is supported as well (it pulls the `rtc_v_channel_{channel}` stream).
+
+<Note>
+New methods only; integration code from 1.5.2 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14). When the composite task isn't running, subscribing produces no video (the SDK retries for a few seconds, then gives up without throwing); subscribe again once the task is running.
+
+`SRTCBroadcastKit` is **1.0.16** in this release; its code is unchanged and only the version number is bumped along with the SDK.
+</Note>
+
 ### [1.5.2] - 2026.10.10
 #### Fixed
 + **The iOS call audio session now recovers after being changed externally**: while the SDK holds the call audio session, if the host app changes the session category itself (typically to `.playback` for background keep-alive or for playing a notification sound), the recording path stops immediately, the orange microphone indicator disappears, and turning the mic on again doesn't bring it back, so the microphone stays silent for the rest of the call. Now, when the mic is turned on again or a channel is joined again, the SDK checks whether the category was taken over and, if so, reapplies the call configuration and restarts recording.

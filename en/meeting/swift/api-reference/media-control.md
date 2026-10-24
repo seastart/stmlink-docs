@@ -194,7 +194,7 @@ public func startViewCaptureShare() async throws -> LocalVideoTrack
 **Throws:**
 
 + `SMeetingError.notInMeeting`—you haven't entered a meeting yet.
-+ `SMeetingError.invalidState(_:)`—a screen sharing track already exists, including a broadcast listening track that's been prepared but not yet published.
++ `SMeetingError.invalidState(_:)`—screen sharing is in progress (published). Having only called `prepareBroadcastShare` to keep a broadcast listener ready, before the user starts broadcasting, doesn't count: since 1.5.2 you can start view capture in that case (1.5.1 and earlier also threw here).
 + Underlying track publishing errors.
 
 This API publishes the media track directly, without going through `requestShare()`'s flow of asking the meeting backend and notifying the sharing status. The caller should manage the sharing status according to its own business logic and make sure view capture and screen sharing are mutually exclusive; to switch to screen sharing, stop view capture first.
@@ -408,18 +408,35 @@ meeting.toggleRemoteAudioMute(true)   // Mute
 
 ### Composite video (MCU)
 
-#### `startPlayRemoteVideoMcu(view:uid:)`
+The composite video is produced by the server-side composite task (`McuTaskType.mix` of `mcuStart`) and published under the reserved identity `__mcu__`. It **doesn't belong to any in-meeting member**, so none of these methods take a uid. The composite task must be running first: if the task starts later than your subscription, subscribe again (idempotent) after `roomMcuTask` reports the composite task as `running`.
 
-Subscribes to and plays the server-side composite video. Requires the server to have a composite task set up.
+#### `subscribeRemoteVideoMcu()`
+
+Subscribes to the server-side composite video (since 1.5.1). In SwiftUI, pass the returned track to `SRTCVideoView(track:)`.
+
+**Returns:** `RemoteVideoTrack`. Repeated calls return the same track, which you can also get through `meeting.mcuTrack`. Receive status is reported through `didChangeReceiveStreamStatus` with `uid` set to `"__mcu__"`.
+
+**Throws:** `SMeetingError.notInMeeting`
+
+#### `unsubscribeRemoteVideoMcu()`
+
+Unsubscribes from the server-side composite video; returns immediately if you never subscribed (since 1.5.1).
+
+#### `startPlayRemoteVideoMcu(view:)`
+
+Subscribes to and plays the server-side composite video (UIKit / AppKit convenience method, since 1.5.1). `view` must already be in the view hierarchy.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
 | `view` | `NativeVideoView` | Yes | Renderer view |
-| `uid` | `String` | Yes | User ID corresponding to the composite video |
 
 **Returns:** `RemoteVideoTrack`
 
-**Throws:** `SMeetingError.notInMeeting`, `SMeetingError.remoteTrackUnavailable(uid:desc:)` (composite video track not found)
+**Throws:** `SMeetingError.notInMeeting`
+
+#### `startPlayRemoteVideoMcu(view:uid:)` (deprecated)
+
+Deprecated since 1.5.1. `uid` is no longer used; equivalent to `startPlayRemoteVideoMcu(view:)`. It used to look up the composite video as some member's camera track, which can't be found in the current pipeline, so it always threw `remoteTrackUnavailable`.
 
 #### `stopPlayRemoteVideoMcu(view:)`
 

@@ -11,7 +11,7 @@ Meeting video comes in three kinds, each with its own entry point:
 | --- | --- | --- |
 | Local camera / sharing | `SRTCVideoView(track:)` | Pass an `SRTCVideoRenderer` when turning it on |
 | Remote camera / sharing | `SMeetingRemoteVideoView` | `startPlayRemoteVideo(view:uid:trackDesc:)` |
-| Server-side composite (MCU) | Get `meeting.mcuTrack` and pass it to `SRTCVideoView` | `startPlayRemoteVideoMcu(view:uid:)` |
+| Server-side composite (MCU) | Get the track from `subscribeRemoteVideoMcu()` and pass it to `SRTCVideoView` | `startPlayRemoteVideoMcu(view:)` |
 
 Local video **doesn't need a subscription**; just render the track directly. Remote video **must be subscribed first** before it has any data.
 
@@ -166,13 +166,17 @@ With `SMeetingRemoteVideoView`, you only need to make the views appear / disappe
 When the meeting has a server-side composite task running, you can pull a single composite video instead of subscribing to members one by one:
 
 ```swift
-let track = try await meeting.startPlayRemoteVideoMcu(view: renderer, uid: mcuUid)
-// You can also get this track at any time through meeting.mcuTrack
-
+// UIKit / AppKit
+let track = try await meeting.startPlayRemoteVideoMcu(view: renderer)
 try await meeting.stopPlayRemoteVideoMcu(view: renderer)
+
+// SwiftUI: subscribe, then pass the track to SRTCVideoView(track:); you can also get it at any time through meeting.mcuTrack
+let mcu = try await meeting.subscribeRemoteVideoMcu()
+try await meeting.unsubscribeRemoteVideoMcu()
 ```
 
-The composite video requires the server to set up the composite task first; the layout is controlled by `adminUpdateLayout(_:)`. See [Recording and composite layout](/en/meeting/swift/advanced/recording).
+The composite video doesn't belong to any member (its publisher is the reserved identity `__mcu__`), so no uid is needed. The composite task (`McuTaskType.mix`) must be running first—
+if the task starts later than your subscription, subscribe again after `roomMcuTask` reports `running` (the call is idempotent); otherwise no video appears. The composite video requires the server to set up the composite task first; the layout is controlled by `adminUpdateLayout(_:)`. See [Recording and composite layout](/en/meeting/swift/advanced/recording).
 
 ---
 

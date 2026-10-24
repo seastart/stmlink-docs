@@ -289,7 +289,7 @@ Sign-in activities and sign-in details.
 
 | Type | Fields |
 | --- | --- |
-| `SignInfo` | `uid`, `beginAt`, `dur`, `endAt`, `desc`, `nums` |
+| `SignInfo` | `uid`, `beginAt`, `dur`, `endAt`, `desc`, `nums`, `hostName` (optional, the initiator's nickname; not yet returned by the server—when it's missing, look up the in-meeting member by `uid`) |
 | `SignDetailInfo` | `id`, `epoch`, `nickname`, `role`, `userId`, `createdAt` |
 
 #### McuRecordConfig / McuRecordDetail

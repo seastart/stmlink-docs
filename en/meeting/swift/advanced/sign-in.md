@@ -52,7 +52,12 @@ try await meeting.signInExportDetail(epoch: epoch, destination: docs.appendingPa
 
 `epoch` is the same value used by `signInCount` / `signInDetail`. Without `destination`, the file is written to `<UUID>.xlsx` in the temporary directory, which the system may clean up; to keep it, move it yourself or pass a path under Documents. Available since 1.5.0.
 
-`SignInfo` fields: `uid` (initiator), `beginAt`, `dur`, `endAt`, `desc`, `nums` (number signed in).
+`SignInfo` fields: `uid` (initiator), `beginAt`, `dur`, `endAt`, `desc`, `nums` (number signed in), `hostName` (optional, the initiator's nickname, since 1.5.1).
+
+<Note>
+The server's sign-in list currently **doesn't return** the initiator's nickname, so `hostName` is usually `nil`. While the initiator is still in the meeting, look the member up by `uid`;
+once the initiator has exited, they're no longer in the member list, so we recommend saving the `hostName` from the `signInActivity` event and matching it to the same round by initiator and start time.
+</Note>
 `SignDetailInfo` fields: `id`, `epoch`, `nickname`, `role`, `userId`, `createdAt`.
 
 #### Sign-in events

@@ -3,6 +3,56 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.5.4] - 2026.10.24
+#### Changed
++ The SRTC dependency is now **1.5.4**, which fixes the local camera's front/back position not updating after a switch (the back camera preview was mirrored, and turning the camera off and on again switched back to the front camera); see the SRTC Swift changelog for details. The meeting layer's `switchCamera()` benefits directly, with no code changes.
++ Update the `srtc-swift-sdk` dependency of your iOS full-screen sharing extension target to `exact: "1.5.4"` as well, matching the version pinned in this release's manifest; otherwise dependency resolution fails.
+
+<Note>
+No API changes; integration code from 1.5.3 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14).
+</Note>
+
+### [1.5.3] - 2026.10.21
+#### Fixed
++ **The process crashed when an API returned a non-object `data` such as `null`**: when the response `data` of some APIs (such as `mcuRecordDetail`) wasn't an object or array, previous versions triggered an Objective-C exception during internal conversion that neither `try` nor `try?` could catch, and the app crashed (reproducible on iOS by querying the recording details after starting cloud recording). The SDK now throws `SMeetingError.responseParseFailed` (`203356` / `205356`), which callers handle like any other error.
+
+#### Changed
++ The SRTC dependency stays at **1.5.3**; keep the `srtc-swift-sdk` dependency of your iOS full-screen sharing extension target at `exact: "1.5.3"`.
+
+<Note>
+Fixes only, no API changes; integration code from 1.5.2 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14). If you use recording details with 1.5.1 / 1.5.2, we recommend upgrading as soon as possible.
+</Note>
+
+### [1.5.2] - 2026.10.21
+#### Fixed
++ **On iOS, view capture (`startViewCaptureShare()`) couldn't start once a full-screen sharing listener was set up**: for apps that call `prepareBroadcastShare` after entering the meeting (meeting apps usually set up the listener right away and wait for the user to start broadcasting from the system pill), previous versions treated "listener set up" as "screen sharing in progress", so `startViewCaptureShare()` always threw `invalidState` and features that rely on view capture, such as cloud recording, got no video. Now the two are mutually exclusive only after screen sharing is actually published; a listener alone doesn't block view capture.
++ **The broadcast listener was torn down and rebuilt twice when stopping sharing concurrently**: the stop-sharing event from the meeting backend can arrive before the `stopShare()` request returns, so both paths tore down and rebuilt the same broadcast listener at the same time, and occasionally the listener didn't come back after stopping. Stops in the same round are now merged, and the later call waits for that round's cleanup to finish before returning.
+
+#### Changed
++ The SRTC dependency stays at **1.5.3**; keep the `srtc-swift-sdk` dependency of your iOS full-screen sharing extension target at `exact: "1.5.3"`.
+
+<Note>
+Fixes only, no API changes; integration code from 1.5.1 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14).
+</Note>
+
+### [1.5.1] - 2026.10.10
+#### Added
++ **The server-side composite video can now be subscribed to**: `subscribeRemoteVideoMcu()` / `unsubscribeRemoteVideoMcu()` / `startPlayRemoteVideoMcu(view:)`. The composite video is published by the server under the reserved identity `__mcu__` and doesn't belong to any in-meeting member, so a uid is no longer needed. If the composite task (`McuTaskType.mix`) starts later than your subscription, subscribe again after `roomMcuTask` reports `running` (the call is idempotent).
++ `SignInfo` adds an optional `hostName` (the initiator's nickname). The server's sign-in list doesn't return this field yet, so it's usually `nil`; when it's missing, look up the in-meeting member by `uid`, or use the `hostName` from the `signInActivity` event.
+
+#### Fixed
++ **After granting or revoking co-host, roles determined from `RoomInfo.coHosts` lagged one step behind**: the room's co-host list arrives later than the role-change broadcast, so in previous versions `coHosts` was still stale when `userRoleDidChange` fired—after granting, the member still counted as a regular member, and after revoking, still as a co-host. The SDK now updates `coHosts` for the new role before emitting the event; room properties that arrive afterward still take the server as the source of truth.
+
+#### Changed
++ `startPlayRemoteVideoMcu(view:uid:)` is deprecated; `uid` is no longer used, and it's equivalent to `startPlayRemoteVideoMcu(view:)`. The old implementation looked up the composite video as some member's camera track and always threw `remoteTrackUnavailable` in the current pipeline.
++ The SRTC dependency is now **1.5.3** (adds channel-level composite video subscription; see the audio & video SDK [changelog](/en/rtc/swift/changelog)). Update the `srtc-swift-sdk` dependency of your iOS full-screen sharing extension target to `exact: "1.5.3"` as well.
+
+<Note>
+New methods and fixes only; integration code from 1.5.0 can upgrade directly (using the old `startPlayRemoteVideoMcu(view:uid:)` produces a deprecation warning). The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+Verified: when the screen sharing extension process is killed by the system or crashes (while the user is still in the meeting), the SDK ends sharing automatically and notifies the meeting backend; other members receive the stop event within 1 second, with no handling needed in your app.
+</Note>
+
 ### [1.5.0] - 2026.10.10
 <Warning>
 **`AgentStatus` (the online status of invitable devices) now uses the server's values**: previous versions defined `idle = 1` / `busy = 2` / `offline = 3`, which didn't match the server. The server sends `status = 0`, and older versions failed to decode the whole SIP / H323 / RTSP / GB28181 device list when they got it. The new definition is `unknown = 0` / `online = 1` / `offline = 2`, and any other value from the server decodes to `.unknown`. The old names `idle` / `busy` remain as deprecated aliases (equal to `.online` / `.offline`), so source code still compiles; **but code that compares `rawValue` with numbers (such as `== 3` for offline) behaves differently after upgrading and needs to be checked**. Only the minor version is bumped, so projects integrated with `from: "1.4.x"` resolve to this release **automatically**.

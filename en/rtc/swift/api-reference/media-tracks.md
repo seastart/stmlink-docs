@@ -99,6 +99,27 @@ try await channel.subscribeRemoteVideoTrack(uid: uid, trackId: trackId)
 
 ---
 
+#### `subscribeRemoteVideoMcuTrack()`
+
+Subscribes to the channel-level MCU composite video (since 1.5.3). The server-side composite task combines the video in the channel into one stream and publishes it under the reserved identity `__mcu__`.
+**This identity isn't in the channel's user list**, so you can't use `subscribeRemoteVideoTrack(uid:trackId:)`; use this method instead.
+
+```swift
+let mcu = try await channel.subscribeRemoteVideoMcuTrack()
+mcu.addRenderer(renderer)          // or pass it to SRTCVideoView(track: mcu)
+
+try await channel.unsubscribeRemoteVideoMcuTrack()
+```
+
+**Returns:** `RemoteVideoMcuTrack` (subclass of `RemoteVideoTrack`); repeated calls return the same object. The currently subscribed track is also available through `channel.remoteVideoMcuTrack`.
+
+<Note>
+When the composite task isn't running, the SFU can't find this stream; the SDK retries for a few seconds and then gives up (no error is thrown and no video appears). If the composite task starts later than your subscription, call this again once the task is running; the call is idempotent.
+Receive timeouts and recoveries are reported through `didChangeReceiveStreamStatus` as usual, with `uid` set to `RemoteVideoMcuTrack.publisherUid` (`"__mcu__"`).
+</Note>
+
+---
+
 #### `unsubscribeRemoteTrack(_:debounceMs:)`
 
 Unsubscribes from a remote track.
