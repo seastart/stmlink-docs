@@ -1,6 +1,6 @@
 ---
 name: translate-en
-description: "stmlink-docs 英文版（en/）的翻译规程：新译页面、按中文 diff 增量同步英文、补服务端 API 翻译记忆表（i18n/server-api/*.en.json）、审校英文页并登记。触发场景：翻译 / 译成英文 / 同步英文文档、`i18n.py status` 报缺译或过期、`sync-server-api.py` 提示翻译记忆缺失、SDK 发版后同步该平台英文页、用户审校完要标记已审校、批量翻译某批次（P1a/P1b/P2/P3）。"
+description: "stmlink-docs 英文版（en/）的翻译规程：新译页面、按中文 diff 增量同步英文、补服务端 API 翻译记忆表（i18n/server-api/*.en.json）、审校英文页并登记。触发场景：翻译 / 译成英文 / 同步英文文档、`i18n.py status` 报缺译或过期、`sync-server-api.py` 提示翻译记忆缺失、SDK 发版后同步该平台英文页、用户审校完要标记已审校、批量翻译某批次（P1a/P1b/P2/P3/P4）。"
 ---
 
 # 英文版翻译规程

@@ -497,6 +497,83 @@ server_api:
     en: statistics (daily)
 
 # ---------------------------------------------------------------------------
+# 5b. 产品与部署（zh/product/，P4 批次）术语 —— 面向售前、实施、运维，不面向开发者
+#     2026-10-24 首译时新增，均为初版选择（待定），需用户确认
+# ---------------------------------------------------------------------------
+product:
+  - zh: 会议室连接器
+    en: Room Connector
+    note: 待定。官网英文版的产品名（stmlink-website en.json 的 connector.name）。只在中文写明「会议室连接器」的地方用；中文写「设备接入」的地方仍按 SRTC 节译 device integration。导航分组「设备接入（会议室连接器）」译 Device integration (Room Connector)
+  - zh: 产品与部署（导航 tab）/ 产品全景
+    en: Product & deployment / Product overview
+    note: 待定
+  - zh: 管理后台
+    en: admin console
+    note: 与现有英文页一致。菜单名加粗时界面仍是中文，写英文意译即可（如 **Meeting management**），不附中文原文
+  - zh: 在线体验 / 演示
+    en: Try it online / demo
+    note: 待定。「会议演示」Meeting demo，「RTC 演示」RTC demo
+  - zh: 终端产品
+    en: Endpoint apps
+    note: 待定。不写 terminal products
+  - zh: 软 SIP / H.323 终端（软终端）
+    en: Soft SIP / H.323 endpoint (soft endpoint)
+    note: 待定。安卓 App；不写 softphone（它带视频）
+  - zh: 安卓 TV 大屏版
+    en: Android TV edition
+    note: 产品名 STM Link Rooms 原样
+  - zh: 会议号
+    en: meeting number
+    note: 与现有 SMeeting 英文页一致；与 meeting ID 区分
+  - zh: 进会 / 入会（设备、参会人进 SMeeting 会议）
+    en: enter the meeting
+    note: 产品页多数在讲会议层，按 SMeeting 节用 enter / exit；讲 SRTC 频道的段落（如电话线路页）仍用 join / leave the channel
+  - zh: 电话线路 / 接入电话线路
+    en: phone lines / Connect phone lines
+    note: 待定。SIP Trunk 正文写 SIP trunk（小写 trunk），IP-PBX 原样
+  - zh: 来电 IP 白名单 / 自动黑名单
+    en: incoming-call IP allowlist / automatic blocklist
+    note: 不写 whitelist / blacklist；XML 标签 WhiteList 原样
+  - zh: 被叫号码 / 主叫
+    en: called number / caller
+  - zh: 电话按键
+    en: DTMF keypresses
+  - zh: 私有化部署
+    en: self-hosted deployment
+    note: 同服务端 API 节，不用 on-premises。导航分组「私有化部署」译 Self-hosted deployment
+  - zh: 光闸（网闸）
+    en: optical isolation gateway (network gatekeeper)
+    note: 待定。每页首次出现写 "optical isolation gateway (network gatekeeper)"，后文简写 optical gateway。它按业务协议双向放行，不是单向的 data diode，不写 data diode / air gap
+  - zh: 光闸跨网接入 / 穿透网关 / 外网网关 / 内网网关
+    en: Access across an optical gateway / tunnel gateway / external gateway / internal gateway
+    note: 待定
+  - zh: 内外网 / 内网 / 外网（部署语境）
+    en: internal and public networks / internal network / public network
+    note: 与 SRTC 节「网络线路」一致；线路取值 `内网` / `外网` 在代码与配置里原样
+  - zh: 信创（操作系统）
+    en: China's domestic IT-innovation (Xinchuang) platforms
+    note: 待定
+  - zh: 人大金仓 / 达梦 / 鲲鹏 / 飞腾
+    en: KingbaseES / Dameng (DM) / Kunpeng / Phytium
+  - zh: 海康 / 大华 / 宇视 / 华为 / 科达
+    en: Hikvision / Dahua / Uniview / Huawei / Kedacom
+  - zh: 公检法、政务
+    en: public security, procuratorates, courts, and government agencies
+  - zh: 网守 / 双流（辅流）
+    en: gatekeeper (GK) / dual-stream (secondary content stream)
+    note: H.323 术语
+  - zh: 云台 / 预置位 / 心跳周期 / 主码流 / 通道编码 ID
+    en: PTZ / preset position / heartbeat interval / main stream / channel encoding ID
+  - zh: 用户并发 / 设备并发（授权名额）
+    en: user concurrency / device concurrency (license quota)
+  - zh: 授权文件 / 平台码
+    en: license file / platform code
+  - zh: 安装器 / 离线安装包
+    en: installer / offline installation package
+  - zh: 统一入口 / 统一存储 / 媒体节点 / 媒体网关
+    en: unified entry point / unified storage / media node / media gateway
+
+# ---------------------------------------------------------------------------
 # 6. 禁止译法 —— 审校专项检查项，出现即改
 # ---------------------------------------------------------------------------
 forbidden:

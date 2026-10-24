@@ -665,6 +665,96 @@
     "zh_blob": "0f0a442c5125e4e16e2c87591b01f1a0894c4ac8",
     "zh_commit": "ab84e5ce53bf4a2348492aceb264590c804afeec"
   },
+  "en/product/admin-console": {
+    "reviewed": false,
+    "source": "zh/product/admin-console.md",
+    "zh_blob": "8543c3f3ce0179d68efd46f49276e242e88cdbdc",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/demos": {
+    "reviewed": false,
+    "source": "zh/product/demos.md",
+    "zh_blob": "f8ce74f3da662c8d8599d4f03363022c2e005300",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/deploy/architecture": {
+    "reviewed": false,
+    "source": "zh/product/deploy/architecture.md",
+    "zh_blob": "1b8ac6ddde1c54711d4a4874385f0821f94e2ad2",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/deploy/networks": {
+    "reviewed": false,
+    "source": "zh/product/deploy/networks.md",
+    "zh_blob": "f0c8eeaf558b00fb32bf4ac1bd79e1c3eec89229",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/deploy/optical-gap": {
+    "reviewed": false,
+    "source": "zh/product/deploy/optical-gap.md",
+    "zh_blob": "f935f39627528f6e22238ae03d47dec51db288a4",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/deploy/ports": {
+    "reviewed": false,
+    "source": "zh/product/deploy/ports.md",
+    "zh_blob": "ca3a52f34cd5a803f660e658710f0820dcdd5d1a",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/device-access/faq": {
+    "reviewed": false,
+    "source": "zh/product/device-access/faq.md",
+    "zh_blob": "6c08bb1cdb3794a9ebf4d24ec2b3f830efc1b56e",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/device-access/gb28181": {
+    "reviewed": false,
+    "source": "zh/product/device-access/gb28181.md",
+    "zh_blob": "bcf46574a8e59204612ebc558ad7f267493f77fc",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/device-access/overview": {
+    "reviewed": false,
+    "source": "zh/product/device-access/overview.md",
+    "zh_blob": "deb3dd00d59a935339b239af59106d9129284923",
+    "zh_commit": "a558acd7a3b2e60045f52cd94f072a3af63fd200"
+  },
+  "en/product/device-access/phone-lines": {
+    "reviewed": false,
+    "source": "zh/product/device-access/phone-lines.md",
+    "zh_blob": "75c557ee93792e6c5f50962ab6f1c199b9df56d7",
+    "zh_commit": "a558acd7a3b2e60045f52cd94f072a3af63fd200"
+  },
+  "en/product/device-access/rtsp": {
+    "reviewed": false,
+    "source": "zh/product/device-access/rtsp.md",
+    "zh_blob": "b88e1ba542e028986b2a436c12b1adb21a957601",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/device-access/sip-h323": {
+    "reviewed": false,
+    "source": "zh/product/device-access/sip-h323.md",
+    "zh_blob": "da9ae2eba6a2c7b05c90afeaf2cd8bfed3eada49",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/overview": {
+    "reviewed": false,
+    "source": "zh/product/overview.md",
+    "zh_blob": "78ab4b580e7e6ef0b63dbe05194d133cf54108ac",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/terminals/softsip": {
+    "reviewed": false,
+    "source": "zh/product/terminals/softsip.md",
+    "zh_blob": "5188e5d5c27aa3614eef86dccd40201787680d69",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
+  "en/product/terminals/tv": {
+    "reviewed": false,
+    "source": "zh/product/terminals/tv.md",
+    "zh_blob": "ad28a020e24f0286de7cde6c930b0669534abd36",
+    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+  },
   "en/rtc/android/advanced/audio-routing": {
     "reviewed": true,
     "source": "zh/rtc/android/advanced/audio-routing.md",

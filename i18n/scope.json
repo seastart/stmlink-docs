@@ -4,8 +4,7 @@
     "zh/rtc/harmony/",
     "zh/meeting/harmony/",
     "zh/rtc/wechat-miniprogram/",
-    "zh/meeting/wechat-miniprogram/",
-    "zh/product/"
+    "zh/meeting/wechat-miniprogram/"
   ],
   "batches": [
     {
@@ -87,6 +86,14 @@
         "zh/rtc/ios/",
         "zh/meeting/windows/",
         "zh/meeting/ios/"
+      ]
+    },
+    {
+      "name": "P4",
+      "description": "产品与部署（非开发者向）：产品全景、管理后台、在线体验、设备接入（会议室连接器）、终端产品、私有化部署",
+      "pages": [],
+      "prefixes": [
+        "zh/product/"
       ]
     }
   ]

@@ -1214,6 +1214,46 @@
                 ]
               }
             ]
+          },
+          {
+            "tab": "Product & deployment",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "en/product/overview",
+                  "en/product/admin-console",
+                  "en/product/demos"
+                ]
+              },
+              {
+                "group": "Device integration (Room Connector)",
+                "pages": [
+                  "en/product/device-access/overview",
+                  "en/product/device-access/sip-h323",
+                  "en/product/device-access/phone-lines",
+                  "en/product/device-access/gb28181",
+                  "en/product/device-access/rtsp",
+                  "en/product/device-access/faq"
+                ]
+              },
+              {
+                "group": "Endpoint apps",
+                "pages": [
+                  "en/product/terminals/softsip",
+                  "en/product/terminals/tv"
+                ]
+              },
+              {
+                "group": "Self-hosted deployment",
+                "pages": [
+                  "en/product/deploy/architecture",
+                  "en/product/deploy/ports",
+                  "en/product/deploy/networks",
+                  "en/product/deploy/optical-gap"
+                ]
+              }
+            ]
           }
         ],
         "footer": {
