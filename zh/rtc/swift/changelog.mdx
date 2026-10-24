@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.5.4] - 2026.10.24
+#### 修复
++ **切换前后置摄像头后 `LocalCameraTrack.isFrontCamera` 不更新**：旧版 `switchCamera()` 只切了底层采集，轨道上的前后置状态停在开摄像头时的值，切到后置仍报前置。由此带来三个问题：业务层按 `isFrontCamera` 回填的前后置按钮不跟着变；`isMirrored` 仍为 `true`，后置摄像头的本地预览也被左右镜像；`mute()` 后再 `unmute()`（或 `restartCapture()`）会按旧状态重启采集，**切到后置后关开一次摄像头会悄悄回到前置**。现在切换完成后轨道状态随之更新，镜像随前后置自动切换。
++ **`changeDeviceId(_:)` 后同样回写**：按设备 ID 切换摄像头后，`captureOptions.deviceId` 与前后置（iOS 按实际打开的摄像头）随之更新，镜像状态同步刷新。
+
+<Note>
+本版为纯修复，没有公开 API 变动，1.5.3 的接入代码可直接升级。平台下限不变（iOS 16 / macOS 14）。
+
+`SRTCBroadcastKit` 本次为 **1.0.17**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.5.3] - 2026.10.10
 #### 新增
 + **频道级 MCU 合成视频订阅**：`Channel.subscribeRemoteVideoMcuTrack()` / `unsubscribeRemoteVideoMcuTrack()` / `remoteVideoMcuTrack` 与 `RemoteVideoMcuTrack`。服务端合成任务以保留身份 `__mcu__` 发布合成流，这个身份**不在频道成员列表里**，`subscribeRemoteVideoTrack(uid:trackId:)` 找不到它；新接口按保留标识直接订阅，重复调用返回同一轨道。收流超时 / 恢复照常经 `didChangeReceiveStreamStatus` 上报，`uid` 为 `"__mcu__"`。网宿 CDN 引擎同样支持（拉 `rtc_v_channel_{频道}` 流）。
