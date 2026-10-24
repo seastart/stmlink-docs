@@ -39,7 +39,7 @@ set whether members can unmute themselves and turn on their cameras, and choose 
 ![Member management and permissions](/zh/product/images/demo-meeting-members.jpg)
 
 **Invite**: invite members from contacts by department (they receive a meeting reminder), or switch to "Invite device" to bring meeting-room endpoints and surveillance cameras into the meeting
-(for device integration, see [Room Connector](/en/product/device-access/overview)).
+(to connect devices, see [Room Connector](/en/product/device-access/overview)).
 
 ![Invite members](/zh/product/images/demo-meeting-invite.jpg)
 

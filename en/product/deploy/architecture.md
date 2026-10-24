@@ -72,7 +72,7 @@ flowchart TB
 | --- | --- |
 | Meeting service | When using SMeeting meeting features (not needed if you use only SRTC audio and video) |
 | MCU | When you need **cloud recording**, **video compositing**, **re-streaming**, or **connected SIP / H.323 endpoints need to see the meeting's video** |
-| Device gateway | When connecting SIP / H.323 endpoints, GB28181 cameras, or RTSP streams; see [Device integration](/en/product/device-access/overview) |
+| Device gateway | When connecting SIP / H.323 endpoints, GB28181 cameras, or RTSP streams; see [Room Connector](/en/product/device-access/overview) |
 | Voice recording gateway | When you need per-speaker segmented recording (audit trails for push-to-talk and dispatch) |
 | Speech recognition gateway | When you need live captions or meeting minutes; the recognition engine is deployed separately |
 | Log center | When you need to view client logs and call quality data centrally |
@@ -112,7 +112,7 @@ Server sizing depends heavily on concurrency, whether you record, and the number
 | Topology | Description | Best for |
 | --- | --- | --- |
 | **Single server** | All services on one server | Testing, small to medium scale |
-| **Split servers** | Extension services such as the MCU and device gateway deployed on separate servers | Heavy recording or device integration that needs isolated resources |
+| **Split servers** | Extension services such as the MCU and device gateway deployed on separate servers | Heavy recording or many connected devices that need isolated resources |
 | **Multiple media nodes** | Several servers each run a media forwarding node, with users assigned by load or proximity | High concurrency, multiple regions |
 | **Internal network + public internet planes** | One platform serves users on the internal network and the public internet at the same time | Government and enterprise internal networks plus remote work from the public internet; see [Internal network and public internet](/en/product/deploy/networks) |
 | **Across a cross-domain solution** | The platform is on the internal network, and public-internet users connect through a cross-domain solution (CDS) | Strongly isolated networks for public security, procuratorates, courts, and government agencies; see [Access across a cross-domain solution](/en/product/deploy/optical-gap) |

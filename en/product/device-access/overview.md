@@ -1,5 +1,5 @@
 ---
-title: "Device integration overview"
+title: "Room Connector overview"
 sidebarTitle: "Overview"
 description: "Which hardware Room Connector brings into meetings: SIP / H.323 endpoints, phone lines (SIP trunk / IP-PBX), GB28181 cameras, and RTSP streams. Covers how it works, per-protocol capabilities, three ways to enter, and prerequisites. Read first for product selection and presales."
 ---

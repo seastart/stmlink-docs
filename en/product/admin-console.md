@@ -18,7 +18,7 @@ meetings, recording, devices, and servers without writing code. Switch the **app
 | **Channel management** | Channel list, online users, assigned media node; open details to see users and call quality | Audio and video |
 | **Meeting management** | Meeting list (upcoming / in progress / ended), scheduled meetings, meeting details, and in-meeting controls | Meeting |
 | **Recording management** | Default recording layout, watermark, and window labels; recording file playback and download; voice recording | All |
-| **Device management** | Register SIP / H.323 endpoints, RTSP streams, and GB28181 cameras, and view their online status; see [Device integration](/en/product/device-access/overview) | All |
+| **Device management** | Register SIP / H.323 endpoints, RTSP streams, and GB28181 cameras, and view their online status; see [Room Connector](/en/product/device-access/overview) | All |
 | **Contacts management** | Departments and members, used for meeting invitations | Meeting |
 | **Video on demand** | Cloud media library, cloud editing, cloud transcoding, transcoding templates, and VOD nodes | All |
 | **Top-up management** | View this platform's platform code (provided when applying for a license), and allocate user concurrency, device concurrency, and validity period to apps | All |

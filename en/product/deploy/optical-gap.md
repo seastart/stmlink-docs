@@ -3,7 +3,7 @@ title: "Access across a cross-domain solution"
 description: "How public-internet users enter meetings when the platform sits behind a cross-domain solution (CDS): the RTSP tunnel, architecture, what the gateway must allow, only 3 channels needed, prerequisites, and limits. For strongly isolated government networks."
 ---
 
-Public security bureaus, procuratorates, courts, government agencies, and similar organizations physically isolate their internal network from the public internet with a **cross-domain solution (CDS)**. The CDS only allows specific business protocols
+Public security bureaus, procuratorates, courts, government agencies, and similar organizations separate their internal network from the public internet with a **cross-domain solution (CDS)**, which controls what may pass between security domains. The CDS only allows specific business protocols
 and doesn't let ordinary TCP / UDP pass through directly, so the audio and video platform's APIs, signaling, and media streams can't get across.
 
 On site, the CDS usually already has an **RTSP video service** channel open. Our solution takes advantage of this: a **tunnel gateway** sits on each side of the CDS
@@ -20,13 +20,13 @@ flowchart LR
     end
 
     subgraph DMZ["Public-internet side of the CDS"]
-        OG["External gateway<br/>443/TCP · 18883/TCP · 39001/UDP"]
+        OG["Outer gateway<br/>443/TCP · 18883/TCP · 39001/UDP"]
     end
 
     GAP{{"CDS<br/>allows RTSP only"}}
 
     subgraph IN["Internal network"]
-        IG["Internal gateway"]
+        IG["Inner gateway"]
         PF["Audio and video platform"]
         I1["Internal-network users"]
     end
@@ -40,24 +40,24 @@ flowchart LR
 
 | Component | Location | Role |
 | --- | --- | --- |
-| External gateway | Public-internet side of the CDS | Provides access ports for public-internet users and wraps traffic in RTSP sessions sent into the CDS |
-| Internal gateway | Internal side of the CDS | Restores the RTSP sessions coming through the CDS into the original traffic and hands it to the platform |
+| Outer gateway | Public-internet side of the CDS | Provides access ports for public-internet users and wraps traffic in RTSP sessions sent into the CDS |
+| Inner gateway | Internal side of the CDS | Restores the RTSP sessions coming through the CDS into the original traffic and hands it to the platform |
 | Audio and video platform | Internal network | Deployed normally; internal-network users access it directly |
 
 ---
 
 ## How it works
 
-+ **APIs and signaling (TCP)**: for each connection a public-internet user opens, the external gateway opens an RTSP session carried over RTSP over TCP, for reliable, ordered delivery
-+ **Audio and video (UDP)**: when the external gateway receives a user's first media packet, it opens an RTSP session carried over RTP over UDP, for real-time delivery
++ **APIs and signaling (TCP)**: for each connection a public-internet user opens, the outer gateway opens an RTSP session carried over RTSP over TCP, for reliable, ordered delivery
++ **Audio and video (UDP)**: when the outer gateway receives a user's first media packet, it opens an RTSP session carried over RTP over UDP, for real-time delivery
 + Once a session is established, traffic flows both ways, and the platform's responses return the same way
 
 ```mermaid
 sequenceDiagram
     participant C as Public-internet user
-    participant O as External gateway
+    participant O as Outer gateway
     participant G as CDS
-    participant I as Internal gateway
+    participant I as Inner gateway
     participant P as Platform
 
     C->>O: Open connection / send media packet
@@ -91,12 +91,12 @@ sequenceDiagram
 
 | Item | Requirement |
 | --- | --- |
-| Servers | One on each side of the CDS, running the external gateway and the internal gateway respectively |
-| Public address | The external gateway needs an IP or domain reachable by public-internet users |
+| Servers | One on each side of the CDS, running the outer gateway and the inner gateway respectively |
+| Public address | The outer gateway needs an IP or domain reachable by public-internet users |
 | CDS policy | Allow the RTSP control ports (for example, 3 TCP ports) and the RTP media port range (UDP, one pair per public-internet media connection, sized by concurrent public-internet users) between the two gateways. Specific ports are agreed with the CDS vendor during implementation |
-| Public-internet-side ports | The external gateway opens 443/TCP, 18883/TCP, and 39001/UDP externally, matching the platform ports |
-| Internal-side connectivity | The internal gateway can reach the platform's 443/TCP, 18883/TCP, and 39001/UDP |
-| Platform configuration | Deploy the platform with [internal-network and public-internet lines](/en/product/deploy/networks), with **the public-internet line's addresses pointing to the external gateway** |
+| Public-internet-side ports | The outer gateway opens 443/TCP, 18883/TCP, and 39001/UDP externally, matching the platform ports |
+| Internal-side connectivity | The inner gateway can reach the platform's 443/TCP, 18883/TCP, and 39001/UDP |
+| Platform configuration | Deploy the platform with [internal-network and public-internet lines](/en/product/deploy/networks), with **the public-internet line's addresses pointing to the outer gateway** |
 | License | The tunnel gateways need a separate license |
 | Capacity | Size the gateways' concurrent sessions and the CDS's throughput by the number of concurrent public-internet members |
 

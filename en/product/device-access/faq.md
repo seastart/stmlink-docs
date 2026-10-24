@@ -1,7 +1,7 @@
 ---
-title: "Device integration FAQ"
+title: "Room Connector FAQ"
 sidebarTitle: "FAQ"
-description: "Troubleshooting checklist for device integration, organized by symptom: endpoints that won't register or can't dial in, black screen or one-way audio after entering, GB28181 cameras offline or failing invitations, RTSP streams with no video, and devices rejected for exceeding concurrency."
+description: "Troubleshooting checklist for Room Connector, organized by symptom: endpoints that won't register or can't dial in, black screen or one-way audio after entering, GB28181 cameras offline or failing invitations, RTSP streams with no video, and devices rejected for exceeding concurrency."
 ---
 
 First confirm two basic things—many problems are solved right here:

@@ -94,5 +94,5 @@ Besides the SDKs, we also offer endpoint apps you can install directly on device
 | I am | Start here |
 | --- | --- |
 | Presales, project manager | This page → [Room Connector](/en/product/device-access/overview) → [Components and architecture](/en/product/deploy/architecture) |
-| Implementation, operations | [Network and port requirements](/en/product/deploy/ports) → [Device integration](/en/product/device-access/overview) |
+| Implementation, operations | [Network and port requirements](/en/product/deploy/ports) → [Room Connector](/en/product/device-access/overview) |
 | Developer | [SRTC or SMeeting?](/en/choose) → the Quickstart for your platform |

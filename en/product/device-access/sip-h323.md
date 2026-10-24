@@ -4,7 +4,7 @@ description: "Step-by-step guide to bringing Huawei, Kedacom, and other SIP / H.
 ---
 
 This guide uses a Huawei CloudLink endpoint as the example. Other brands use different menu names, but you fill in the same information. Before you start, read the
-[Device integration overview](/en/product/device-access/overview) to decide between "endpoint registration" and "direct IP".
+[Room Connector overview](/en/product/device-access/overview) to decide between "endpoint registration" and "direct IP".
 
 **Have this information ready**:
 
