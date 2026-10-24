@@ -24,11 +24,11 @@ all in the same meeting as people on phones and computers.
 
 ## Main features
 
-**Join meeting**: enter the meeting number; before entering, you can turn the microphone, camera, and speaker on or off. If the meeting has a password, you're prompted for it.
+**Join meeting**: enter the meeting ID; before entering, you can turn the microphone, camera, and speaker on or off. If the meeting has a password, you're prompted for it.
 
 ![Join meeting](/zh/product/terminals/images/tv-join.jpg)
 
-**Instant meeting**: enter a meeting name to start right away; during the meeting you can show the meeting number and QR code so others can enter.
+**Instant meeting**: enter a meeting name to start right away; during the meeting you can show the meeting ID and QR code so others can enter.
 
 **Wireless casting**: the **cast code** is always shown on the home page and top bar. Members open STM Link on their phones, tap "Wireless casting", and enter the cast code to cast the phone screen to the large display.
 
@@ -40,7 +40,7 @@ all in the same meeting as people on phones and computers.
 | --- | --- |
 | Audio and video | Microphone, speaker, and camera on/off |
 | Layout | Grid (with paging), speaker, and thumbnail views |
-| Invite | Show the meeting number, password, and QR code for entering |
+| Invite | Show the meeting ID, password, and QR code for entering |
 | Member management (host) | Rename, mute / unmute, video on/off, stop sharing, remove from the meeting, mute all |
 | Whiteboard | Start whiteboard collaboration during the meeting |
 | Cloud recording | Start / stop recording with one click |

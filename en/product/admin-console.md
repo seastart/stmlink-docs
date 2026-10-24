@@ -60,4 +60,4 @@ For multi-node deployments, you also adjust the scheduling policy here.
 
 ![Media gateways](/zh/product/images/admin-media-gw.png)
 
-**System configuration → Network**: the access addresses each network line delivers to clients; see [Internal and public networks](/en/product/deploy/networks).
+**System configuration → Network**: the access addresses each network line delivers to clients; see [Internal network and public internet](/en/product/deploy/networks).

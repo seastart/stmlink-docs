@@ -1,6 +1,6 @@
 ---
 title: "Components and architecture"
-description: "Which services make up a self-hosted SRTC / SMeeting deployment, which are required or optional, install order, supported OSes and databases (including KingbaseES and Dameng), and single- vs. multi-server layouts. Read before planning a deployment and preparing servers."
+description: "Which services make up a self-hosted SRTC / SMeeting deployment, which are required or optional, install order, supported OSes and databases, and single- vs. multi-server layouts. Read before planning a deployment and preparing servers."
 ---
 
 Our platform can be deployed entirely on the customer's own servers, with **fully offline installation** and no dependency on the internet. This page explains what an environment consists of,
@@ -62,7 +62,7 @@ flowchart TB
 | Unified entry point (Nginx) | The external HTTPS entry point for APIs, the admin console, the web client, and signaling |
 | Audio and video service | Channels, users, permissions, and media forwarding (SFU). The admin console is also here |
 | Unified storage | Storage gateway for video recordings, audio recordings, and meeting attachments; works with local disks or object storage |
-| Database | PostgreSQL; can also **reuse the customer's existing KingbaseES or Dameng** |
+| Database | PostgreSQL |
 | Redis | Caching and state |
 | MQTT signaling | Real-time signaling such as meeting control messages and member status |
 
@@ -97,10 +97,10 @@ Close the installer once installation is done. It has permission to change confi
 
 | Item | Requirement |
 | --- | --- |
-| CPU architecture | x86_64 (amd64) and ARM64 (Kunpeng, Phytium, and others) |
-| Operating system | Mainstream 64-bit Linux distributions, including Xinchuang operating systems; confirm specific versions with us |
+| CPU architecture | x86_64 (amd64) and ARM64 |
+| Operating system | Mainstream 64-bit Linux distributions; confirm specific versions with us |
 | Runtime | Docker (the installer can install it with one click, no internet needed) |
-| Database | PostgreSQL (bundled), KingbaseES, Dameng |
+| Database | PostgreSQL (bundled) |
 | Certificate | HTTPS certificate for the external domain (with the full certificate chain); on internal-only networks without a formal certificate you can use a self-signed one, but every client must trust the corresponding root certificate |
 
 Server sizing depends heavily on concurrency, whether you record, and the number of devices; contact us for an assessment based on your actual scenario.
@@ -114,5 +114,5 @@ Server sizing depends heavily on concurrency, whether you record, and the number
 | **Single server** | All services on one server | Testing, small to medium scale |
 | **Split servers** | Extension services such as the MCU and device gateway deployed on separate servers | Heavy recording or device integration that needs isolated resources |
 | **Multiple media nodes** | Several servers each run a media forwarding node, with users assigned by load or proximity | High concurrency, multiple regions |
-| **Internal + public network planes** | One platform serves internal-network and public-network users at the same time | Government and enterprise internal networks plus remote work from the public network; see [Internal and public networks](/en/product/deploy/networks) |
-| **Across an optical gateway** | The platform is on the internal network, and public-network users connect through an optical gateway | Strongly isolated networks for public security, procuratorates, courts, and government agencies; see [Access across an optical gateway](/en/product/deploy/optical-gap) |
+| **Internal network + public internet planes** | One platform serves users on the internal network and the public internet at the same time | Government and enterprise internal networks plus remote work from the public internet; see [Internal network and public internet](/en/product/deploy/networks) |
+| **Across a cross-domain solution** | The platform is on the internal network, and public-internet users connect through a cross-domain solution (CDS) | Strongly isolated networks for public security, procuratorates, courts, and government agencies; see [Access across a cross-domain solution](/en/product/deploy/optical-gap) |

@@ -57,7 +57,7 @@ There are also **sub-meetings** (split into a given number of groups), **sign-in
 
 ### After the meeting
 
-Meeting history shows each meeting's time, meeting number, type, materials, and invitees, and you can **Restart** the same meeting with one click.
+Meeting history shows each meeting's time, meeting ID, type, materials, and invitees, and you can **Restart** the same meeting with one click.
 
 ![Meeting history](/zh/product/images/demo-meeting-history.jpg)
 

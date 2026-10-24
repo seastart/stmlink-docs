@@ -920,11 +920,11 @@
 
 ## [EN] Product & deployment · Overview
 
-- [Product overview](https://docs.stmlink.com/en/product/overview.md): Everything STMLink offers on one page: SRTC and SMeeting SDKs, Room Connector for meeting-room hardware, cloud and per-speaker voice recording, speech recognition, the admin console, endpoint apps, and self-hosted and optical-gateway deployment. Start here if you don't write code.
+- [Product overview](https://docs.stmlink.com/en/product/overview.md): Everything STMLink offers on one page: SRTC and SMeeting SDKs, Room Connector for meeting-room hardware, cloud and per-speaker voice recording, speech recognition, the admin console, endpoint apps, and self-hosted and cross-domain solution (CDS) deployment. Start here if you don't write code.
 - [Admin console features](https://docs.stmlink.com/en/product/admin-console.md): What the built-in admin console does, menu by menu with screenshots: usage stats, channel and meeting management, in-meeting controls, recording, devices, contacts, VOD, licensing, accounts, and media node and gateway operations. Read when evaluating the product or preparing training.
 - [Try it online](https://docs.stmlink.com/en/product/demos.md): What the two web demos let you try, with screenshots: the meeting demo (scheduling, meeting controls, permissions, inviting members and devices, chat, layouts, history) and the RTC demo (calls, multi-user meetings, push-to-talk, multi-channel, remote monitoring), and how to get an account.
 
-## [EN] Product & deployment · Device integration (Room Connector)
+## [EN] Product & deployment · Room Connector
 
 - [Device integration overview](https://docs.stmlink.com/en/product/device-access/overview.md): Which hardware Room Connector brings into meetings: SIP / H.323 endpoints, phone lines (SIP trunk / IP-PBX), GB28181 cameras, and RTSP streams. Covers how it works, per-protocol capabilities, three ways to enter, and prerequisites. Read first for product selection and presales.
 - [SIP / H.323 endpoints](https://docs.stmlink.com/en/product/device-access/sip-h323.md): Step-by-step guide to bringing Huawei, Kedacom, and other SIP / H.323 meeting-room endpoints into meetings: register an account or IP in the admin console, configure the endpoint, dial in, or invite it from the platform, with console and endpoint screenshots.
@@ -940,7 +940,7 @@
 
 ## [EN] Product & deployment · Self-hosted deployment
 
-- [Components and architecture](https://docs.stmlink.com/en/product/deploy/architecture.md): Which services make up a self-hosted SRTC / SMeeting deployment, which are required or optional, install order, supported OSes and databases (including KingbaseES and Dameng), and single- vs. multi-server layouts. Read before planning a deployment and preparing servers.
+- [Components and architecture](https://docs.stmlink.com/en/product/deploy/architecture.md): Which services make up a self-hosted SRTC / SMeeting deployment, which are required or optional, install order, supported OSes and databases, and single- vs. multi-server layouts. Read before planning a deployment and preparing servers.
 - [Network and port requirements](https://docs.stmlink.com/en/product/deploy/ports.md): Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and MCU live ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams.
-- [Internal and public networks](https://docs.stmlink.com/en/product/deploy/networks.md): Deploying one self-hosted platform for internal and public-network users: what network lines are, the entry and media addresses each line needs, pitfalls when a data center's inbound and outbound IPs differ, and how your business system puts users on the right line.
-- [Access across an optical gateway](https://docs.stmlink.com/en/product/deploy/optical-gap.md): How public-network users enter meetings when the platform sits behind an optical isolation gateway (network gatekeeper): the RTSP tunnel, architecture, what the gateway must allow, only 3 channels needed, prerequisites, and limits. For strongly isolated government networks.
+- [Internal network and public internet](https://docs.stmlink.com/en/product/deploy/networks.md): Deploying one self-hosted platform for internal and public-internet users: what network lines are, the entry and media addresses each line needs, pitfalls when a data center's inbound and outbound IPs differ, and how your business system puts users on the right line.
+- [Access across a cross-domain solution](https://docs.stmlink.com/en/product/deploy/optical-gap.md): How public-internet users enter meetings when the platform sits behind a cross-domain solution (CDS): the RTSP tunnel, architecture, what the gateway must allow, only 3 channels needed, prerequisites, and limits. For strongly isolated government networks.

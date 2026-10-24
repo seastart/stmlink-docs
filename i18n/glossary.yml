@@ -303,7 +303,7 @@ srtc:
     note: 同一套 asr 接口。强调产出文字时用 transcription，接口名「启动语音识别」用 speech recognition。「会议纪要」译 meeting minutes
   - zh: 设备接入（agent）
     en: device integration
-    note: SIP 话机、H.323 终端、GB28181 监控、RTSP 设备以 agent 身份进频道。不用官网营销名 Room Connector（用户已确认 2026-09-29）
+    note: SIP 话机、H.323 终端、GB28181 监控、RTSP 设备以 agent 身份进频道。正文（含 zh/product/ 页）仍写 device integration；导航分组「设备接入（会议室连接器）」与中文写明「会议室连接器」处改用官网产品名 Room Connector（2026-10-24 用户确认译法以官网英文版为准，修正 2026-09-29「不用 Room Connector」的旧约定），见 product 节
   - zh: 设备网关
     en: device gateway
   - zh: 国标设备 / 通道 / 云台 / 预置位
@@ -498,12 +498,12 @@ server_api:
 
 # ---------------------------------------------------------------------------
 # 5b. 产品与部署（zh/product/，P4 批次）术语 —— 面向售前、实施、运维，不面向开发者
-#     2026-10-24 首译时新增，均为初版选择（待定），需用户确认
+#     2026-10-24 首译时新增；标「待定」的是初版选择、需用户确认，其余已按官网英文版确认
 # ---------------------------------------------------------------------------
 product:
   - zh: 会议室连接器
     en: Room Connector
-    note: 待定。官网英文版的产品名（stmlink-website en.json 的 connector.name）。只在中文写明「会议室连接器」的地方用；中文写「设备接入」的地方仍按 SRTC 节译 device integration。导航分组「设备接入（会议室连接器）」译 Device integration (Room Connector)
+    note: 用户已确认 2026-10-24（以官网英文版为准：stmlink-website en.json 的 connector.name、pages/products/connector.vue）。导航分组「设备接入（会议室连接器）」译 Room Connector；背后的服务「设备网关」译 device gateway
   - zh: 产品与部署（导航 tab）/ 产品全景
     en: Product & deployment / Product overview
     note: 待定
@@ -523,8 +523,8 @@ product:
     en: Android TV edition
     note: 产品名 STM Link Rooms 原样
   - zh: 会议号
-    en: meeting number
-    note: 与现有 SMeeting 英文页一致；与 meeting ID 区分
+    en: meeting ID
+    note: 用户已确认 2026-10-24，依据官网 pages/products/connector.vue（"call a meeting ID"）。只用于 en/product/；现有 SMeeting 英文页里的 meeting number 不改。拨号占位写 `meetingID@deviceGatewayIP`
   - zh: 进会 / 入会（设备、参会人进 SMeeting 会议）
     en: enter the meeting
     note: 产品页多数在讲会议层，按 SMeeting 节用 enter / exit；讲 SRTC 频道的段落（如电话线路页）仍用 join / leave the channel
@@ -542,19 +542,17 @@ product:
     en: self-hosted deployment
     note: 同服务端 API 节，不用 on-premises。导航分组「私有化部署」译 Self-hosted deployment
   - zh: 光闸（网闸）
-    en: optical isolation gateway (network gatekeeper)
-    note: 待定。每页首次出现写 "optical isolation gateway (network gatekeeper)"，后文简写 optical gateway。它按业务协议双向放行，不是单向的 data diode，不写 data diode / air gap
+    en: cross-domain solution (CDS)
+    note: 用户已确认 2026-10-24，依据官网 pages/technology.vue 的 cross-network 一节（第 201-218 行）。每页首次出现写全称加缩写 "cross-domain solution (CDS)"，后文用 CDS。只有讲「只能单向输出」时才用 data diode（官网同节用法）。不写 optical isolation gateway / optical gateway / network gatekeeper / air gap
   - zh: 光闸跨网接入 / 穿透网关 / 外网网关 / 内网网关
-    en: Access across an optical gateway / tunnel gateway / external gateway / internal gateway
-    note: 待定
+    en: Access across a cross-domain solution / tunnel gateway / external gateway / internal gateway
+    note: 页面标题随「光闸」译法（用户已确认 2026-10-24）；网关名待定（官网写 outer / inner gateway）
   - zh: 内外网 / 内网 / 外网（部署语境）
-    en: internal and public networks / internal network / public network
-    note: 与 SRTC 节「网络线路」一致；线路取值 `内网` / `外网` 在代码与配置里原样
-  - zh: 信创（操作系统）
-    en: China's domestic IT-innovation (Xinchuang) platforms
-    note: 待定
-  - zh: 人大金仓 / 达梦 / 鲲鹏 / 飞腾
-    en: KingbaseES / Dameng (DM) / Kunpeng / Phytium
+    en: internal network and public internet / internal network / public internet
+    note: 用户已确认 2026-10-24，依据官网 pages/technology.vue、pages/solutions/justice.vue。只用于 en/product/（SDK 页的「网络线路」仍按 SRTC 节写 public network）；线路取值 `内网` / `外网` 在代码与配置里原样
+  - zh: 信创（操作系统）/ 国产芯片、操作系统、数据库清单（飞腾、鲲鹏、海光、麒麟、统信、达梦、人大金仓等）
+    en: （英文不出现）
+    note: 用户已确认 2026-10-24，依据官网：信创页 zhOnly，英文首页对应卡片换成 "Runs where you do"（Linux servers on x86 or ARM, Docker or offline installer for air-gapped sites）。能改写成 x86 / ARM、offline installer 这类中性说法的改写，纯国内信创专属的句子 / 表格行直接删除，删后上下文要通顺
   - zh: 海康 / 大华 / 宇视 / 华为 / 科达
     en: Hikvision / Dahua / Uniview / Huawei / Kedacom
   - zh: 公检法、政务

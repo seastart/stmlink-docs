@@ -75,10 +75,10 @@ flowchart LR
 
 ## Three ways to enter a meeting
 
-**1. The device dials in**—dial the meeting number on the endpoint like a phone call:
+**1. The device dials in**—dial the meeting ID on the endpoint like a phone call:
 
-+ Endpoint registered to the platform: dial the **meeting number** directly
-+ Endpoint not registered: dial **`meetingNumber@deviceGatewayIP`**, for example `30332718@192.168.10.5`
++ Endpoint registered to the platform: dial the **meeting ID** directly
++ Endpoint not registered: dial **`meetingID@deviceGatewayIP`**, for example `30332718@192.168.10.5`
 
 **2. The platform invites the device**—the platform calls the device, and the endpoint rings like an incoming call (auto-answer can be set):
 
@@ -92,7 +92,7 @@ flowchart LR
 | --- | --- | --- |
 | How | Create an account in the console; the endpoint registers to the device gateway with it | Register the endpoint's IP and port in the console |
 | Platform sees online status | ✅ | ❌ |
-| Device dials in | Meeting number only | Must dial `meetingNumber@gatewayIP` |
+| Device dials in | Meeting ID only | Must dial `meetingID@gatewayIP` |
 | Network requirement | **The device can reach the gateway**—works when the device is behind NAT | **The gateway must be able to reach the device's IP** |
 | Recommendation | ✅ Preferred | Devices that don't support registration, or have a fixed IP |
 
@@ -111,7 +111,7 @@ GB28181 cameras support registration only, and RTSP streams support platform pul
 | **Which app incoming device calls go to** | Configure a default app at deployment; from gateway 1.3.5, calls can be routed to different apps by called-number prefix; see [Connect phone lines](/en/product/device-access/phone-lines#which-app-incoming-calls-go-to) |
 
 <Tip>
-"Meeting number" means the meeting number of an SMeeting meeting. If you use only the SRTC audio and video layer without the meeting layer, devices dial the **channel name**,
+"Meeting ID" means the meeting ID of an SMeeting meeting. If you use only the SRTC audio and video layer without the meeting layer, devices dial the **channel name**,
 so it's best to use channel names made of digits only, which endpoints can enter.
 </Tip>
 

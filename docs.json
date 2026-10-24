@@ -1227,7 +1227,7 @@
                 ]
               },
               {
-                "group": "Device integration (Room Connector)",
+                "group": "Room Connector",
                 "pages": [
                   "en/product/device-access/overview",
                   "en/product/device-access/sip-h323",

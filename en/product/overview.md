@@ -1,6 +1,6 @@
 ---
 title: "Product overview"
-description: "Everything STMLink offers on one page: SRTC and SMeeting SDKs, Room Connector for meeting-room hardware, cloud and per-speaker voice recording, speech recognition, the admin console, endpoint apps, and self-hosted and optical-gateway deployment. Start here if you don't write code."
+description: "Everything STMLink offers on one page: SRTC and SMeeting SDKs, Room Connector for meeting-room hardware, cloud and per-speaker voice recording, speech recognition, the admin console, endpoint apps, and self-hosted and cross-domain solution (CDS) deployment. Start here if you don't write code."
 ---
 
 We provide a complete **self-hostable** real-time audio and video platform: from low-level audio and video capabilities,
@@ -74,16 +74,16 @@ Besides the SDKs, we also offer endpoint apps you can install directly on device
 
 <Columns cols={2}>
   <Card title="Components and architecture" icon="sitemap" href="/en/product/deploy/architecture">
-    Fully offline installation, supporting x86 / ARM, Xinchuang operating systems, and KingbaseES / Dameng databases
+    Fully offline installation on Linux servers with x86 or ARM, via Docker or the offline installer
   </Card>
   <Card title="Network and port requirements" icon="network-wired" href="/en/product/deploy/ports">
     Clients need only 3 ports; firewall commands included, ready for your firewall change request
   </Card>
-  <Card title="Internal and public networks" icon="route" href="/en/product/deploy/networks">
-    One platform serves internal-network and public-network users at the same time
+  <Card title="Internal network and public internet" icon="route" href="/en/product/deploy/networks">
+    One platform serves users on the internal network and the public internet at the same time
   </Card>
-  <Card title="Access across an optical gateway" icon="shield-halved" href="/en/product/deploy/optical-gap">
-    With internal and public networks isolated by an optical gateway, public-network users still enter meetings through just 3 tunnel channels
+  <Card title="Access across a cross-domain solution" icon="shield-halved" href="/en/product/deploy/optical-gap">
+    With the internal network and the public internet isolated by a cross-domain solution (CDS), public-internet users still enter meetings through just 3 tunnel channels
   </Card>
 </Columns>
 

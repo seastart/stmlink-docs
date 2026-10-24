@@ -16,7 +16,7 @@ MCUs from brands such as Huawei and Kedacom, and enter meetings on our platform.
 
 + The meeting room already has an Android large display / all-in-one unit and you want to connect it to an existing SIP / H.323 video conferencing system at low cost
 + A video wall or command-center display needs to join a higher-level organization's video conference as an endpoint
-+ Use it with our meeting platform: register to the device gateway and dial the meeting number to enter; see [Device integration](/en/product/device-access/sip-h323)
++ Use it with our meeting platform: register to the device gateway and dial the meeting ID to enter; see [Device integration](/en/product/device-access/sip-h323)
 
 ---
 
@@ -59,7 +59,7 @@ MCUs from brands such as Huawei and Kedacom, and enter meetings on our platform.
 
 3. Go back to the home page, choose a protocol, enter the other party's address, and tap **Call**; or wait for an incoming call
 
-To enter meetings on our platform, point the SIP / 323 service at the device gateway (create the account in the admin console), then dial the **meeting number** on the home page.
+To enter meetings on our platform, point the SIP / 323 service at the device gateway (create the account in the admin console), then dial the **meeting ID** on the home page.
 The steps are exactly the same as for [hardware endpoints](/en/product/device-access/sip-h323).
 
 ---

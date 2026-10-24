@@ -58,7 +58,7 @@ The key is the `agent_join` callback: the gateway only hands the called number (
 | **Gateway registers upstream** | The gateway registers to the carrier or PBX with a SIP account (see `Reg` below), and the upstream forwards calls to it | The carrier requires registration authentication, or the gateway is behind NAT |
 | **Through an existing IP-PBX** | The PBX forwards certain extensions / numbers to the gateway, and the rest work as before | The customer already has a call center and wants to hand some numbers to AI |
 
-Dialing in to a meeting (entering the meeting number after the call connects) needs an IVR to collect digits, which the customer's PBX does before forwarding to the gateway; the gateway itself has no voice menu. AI calls don't need digit collection—the conversation starts as soon as the call connects.
+Dialing in to a meeting (entering the meeting ID after the call connects) needs an IVR to collect digits, which the customer's PBX does before forwarding to the gateway; the gateway itself has no voice menu. AI calls don't need digit collection—the conversation starts as soon as the call connects.
 
 ---
 
@@ -115,7 +115,7 @@ The prefix matches the called number. For carrier numbers, use the number itself
 </Sip>
 ```
 
-### Incoming-call IP allowlist (required for public lines)
+### Incoming-call IP allowlist (required for lines over the public internet)
 
 Once the SIP port is exposed to the internet, it keeps receiving scanning calls. The gateway has a built-in **automatic blocklist** (an IP is blocked after more than 5 attempts in 30 seconds),
 so scans never reach the join flow. With a carrier line, the peer IP is fixed, so also turn on the allowlist to accept calls only from the line side:

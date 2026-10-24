@@ -27,10 +27,10 @@ First confirm two basic things—many problems are solved right here:
 
 | Symptom / check | Cause and fix |
 | --- | --- |
-| An unregistered endpoint dialed only the meeting number | Unregistered endpoints must dial `meetingNumber@deviceGatewayAddress` |
-| The meeting number is right but it still can't enter | The meeting must **exist and not have ended**; device dial-ins always go to the app specified at deployment, so a meeting outside that app can't be found |
+| An unregistered endpoint dialed only the meeting ID | Unregistered endpoints must dial `meetingID@deviceGatewayAddress` |
+| The meeting ID is right but it still can't enter | The meeting must **exist and not have ended**; device dial-ins always go to the app specified at deployment, so a meeting outside that app can't be found |
 | Rejected as soon as it dials | The device gateway has the incoming-call IP allowlist on, and the endpoint's IP isn't on it |
-| Only SRTC is used, with no meeting layer | Dial the **channel name**, not a meeting number |
+| Only SRTC is used, with no meeting layer | Dial the **channel name**, not a meeting ID |
 
 ---
 
@@ -90,4 +90,4 @@ expand the license or have unused devices exit first. The device gateway itself 
 ## Still not working
 
 When contacting us, provide: device brand and model, integration method (SIP / H.323 / GB28181 / RTSP, registration or direct IP),
-when the problem occurred, and the meeting number. We can locate the issue from the device gateway's logs.
+when the problem occurred, and the meeting ID. We can locate the issue from the device gateway's logs.

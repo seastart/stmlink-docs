@@ -19,7 +19,7 @@ This guide uses a Huawei CloudLink endpoint as the example. Other brands use dif
 
 ## Option 1: Endpoint registration (recommended)
 
-The endpoint registers to the device gateway with an account, so the platform can see whether it's online and dialing needs only the meeting number.
+The endpoint registers to the device gateway with an account, so the platform can see whether it's online and dialing needs only the meeting ID.
 
 ### 1. Create an account in the admin console
 
@@ -96,13 +96,13 @@ Direct IP devices have no online status, so `--` in the list is normal.
 
 On the endpoint's call screen, enter the number and call it like a phone call:
 
-**Registered endpoints**: dial only the **meeting number**.
+**Registered endpoints**: dial only the **meeting ID**.
 
-![Registered endpoint dialing the meeting number](/zh/product/device-access/images/terminal-dial-number.png)
+![Registered endpoint dialing the meeting ID](/zh/product/device-access/images/terminal-dial-number.png)
 
-**Unregistered endpoints**: dial **`meetingNumber@deviceGatewayAddress`**.
+**Unregistered endpoints**: dial **`meetingID@deviceGatewayAddress`**.
 
-![Unregistered endpoint dialing meetingNumber@gatewayAddress](/zh/product/device-access/images/terminal-dial-ip.png)
+![Unregistered endpoint dialing meetingID@gatewayAddress](/zh/product/device-access/images/terminal-dial-ip.png)
 
 Once the call connects, the endpoint enters the meeting directly and sees the composite video of the whole meeting.
 
