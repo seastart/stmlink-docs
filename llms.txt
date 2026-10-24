@@ -487,8 +487,9 @@
 
 ## 产品与部署 · 设备接入（会议室连接器）
 
-- [设备接入概览](https://docs.stmlink.com/zh/product/device-access/overview.md): 会议室连接器能把哪些硬件拉进会议：SIP / H.323 会议终端、GB28181 国标摄像头、RTSP 视频流。讲清工作原理、各协议能做什么、三种入会方式和部署前提，选型和售前沟通先读这页
+- [设备接入概览](https://docs.stmlink.com/zh/product/device-access/overview.md): 会议室连接器能把哪些硬件拉进会议：SIP / H.323 会议终端、电话线路（SIP Trunk / IP-PBX）、GB28181 国标摄像头、RTSP 视频流。讲清工作原理、各协议能做什么、三种入会方式和部署前提，选型和售前沟通先读这页
 - [SIP / H.323 终端](https://docs.stmlink.com/zh/product/device-access/sip-h323.md): 手把手把会议室视频终端（华为、科达等 SIP / H.323 硬终端）接进会议：后台登记账号或 IP、终端侧怎么填、终端拨号呼入、平台邀请终端入会，附管理后台与终端配置截图
+- [接入电话线路](https://docs.stmlink.com/zh/product/device-access/phone-lines.md): 把运营商 SIP Trunk 或已有 IP-PBX 接到设备网关，让来电进频道和 AI Agent 或真人对话：三种接法、网关配置（按被叫号码路由、注册上游、白名单）、业务后端怎么为每通电话建频道、电话按键与挂断。做 AI 电话客服、AI 外呼、会议电话入会前先读这页
 - [GB28181 摄像头](https://docs.stmlink.com/zh/product/device-access/gb28181.md): 把国标监控摄像头、NVR 接进会议：在管理后台查平台信息、登记设备和通道，在摄像头（以海康为例）上配置平台接入，再把通道邀请进会，附两端配置截图和字段对照
 - [RTSP 视频流](https://docs.stmlink.com/zh/product/device-access/rtsp.md): 把任意能输出 RTSP 地址的网络摄像头、编码器、NVR、流媒体服务器接进会议：后台登记流地址、UDP/TCP 怎么选、常见品牌的地址格式，以及邀请进会的方法
 - [设备接入常见问题](https://docs.stmlink.com/zh/product/device-access/faq.md): 设备接入的排障清单：终端注册不上、拨号呼不进、进会后黑屏或单向无声、国标摄像头离线或邀请失败、RTSP 没画面、设备入会被拒。按现象查原因和处理办法

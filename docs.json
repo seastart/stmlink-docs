@@ -670,6 +670,7 @@
                 "pages": [
                   "zh/product/device-access/overview",
                   "zh/product/device-access/sip-h323",
+                  "zh/product/device-access/phone-lines",
                   "zh/product/device-access/gb28181",
                   "zh/product/device-access/rtsp",
                   "zh/product/device-access/faq"
