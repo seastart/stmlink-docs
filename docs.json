@@ -689,6 +689,7 @@
                   "zh/product/deploy/architecture",
                   "zh/product/deploy/ports",
                   "zh/product/deploy/networks",
+                  "zh/product/deploy/multi-node",
                   "zh/product/deploy/optical-gap"
                 ]
               }

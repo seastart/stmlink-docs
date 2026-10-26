@@ -504,6 +504,7 @@
 - [组件与架构](https://docs.stmlink.com/zh/product/deploy/architecture.md): 私有化部署一套 SRTC / SMeeting 由哪些服务组成、哪些必装哪些按需装、装的顺序、支持的操作系统和数据库（含人大金仓、达梦）、单机与多机部署方式。做部署规划和准备服务器前先读这页
 - [网络与端口要求](https://docs.stmlink.com/zh/product/deploy/ports.md): 私有化部署要开放哪些端口：客户端必开的 443/TCP、18883/TCP、39001/UDP，设备网关的 SIP / H.323 / GB28181 端口与 RTP 端口段，多节点与 MCU 直播端口，哪些端口严禁对外，附防火墙命令。给客户网络、安全部门提开墙申请时直接用
 - [内外网与多线路](https://docs.stmlink.com/zh/product/deploy/networks.md): 一套私有化平台同时服务内网用户和外网用户怎么部署：什么是网络线路（内网/外网）、每条线路要准备的入口地址和媒体地址、入口与出口 IP 不同的机房要注意什么，以及业务系统如何让用户走对线路
+- [多节点与就近接入](https://docs.stmlink.com/zh/product/deploy/multi-node.md): 一台媒体服务器不够用、或用户分布在多个机房/地区时怎么部署：多媒体节点如何按负载分配频道、节点满载后同一场会议如何溢出到其它节点、如何按地区分组让用户就近接入，以及容量配置、部署前提与限制。做大并发或多地域方案前读这页
 - [光闸跨网接入](https://docs.stmlink.com/zh/product/deploy/optical-gap.md): 平台部署在内网、内外网之间用光闸（网闸）隔离时，外网用户如何入会：RTSP 隧道穿透方案的原理、部署架构、光闸需要放行什么、外网只需 3 条通道、部署条件与使用限制。公检法、政务等强隔离网络的方案沟通用
 
 ## [EN] SRTC Audio & Video SDK · Overview
