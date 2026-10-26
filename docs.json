@@ -1251,6 +1251,7 @@
                   "en/product/deploy/architecture",
                   "en/product/deploy/ports",
                   "en/product/deploy/networks",
+                  "en/product/deploy/multi-node",
                   "en/product/deploy/optical-gap"
                 ]
               }

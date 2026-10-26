@@ -70,7 +70,7 @@ In a single-server deployment, services talk over loopback, so **nothing extra n
 
 | Scenario | Port | Description |
 | --- | --- | --- |
-| Multiple media nodes | 39002/UDP | Cascaded forwarding between media nodes; open in both directions between nodes |
+| Multiple media nodes | 39002/UDP | Cascaded forwarding between media nodes; open in both directions between nodes. See [Multiple nodes and nearest access](/en/product/deploy/multi-node) |
 | Extension services on separate servers | 8701/TCP | The MCU, device gateway, and others call platform APIs |
 | Extension services on separate servers | 11883/TCP, 39001/UDP | The MCU, device gateway, and others enter meetings as members and must reach the signaling and media ports |
 | Extension services on separate servers | 8721/TCP (MCU), 8722/TCP (device gateway) | The platform sends recording and call commands |

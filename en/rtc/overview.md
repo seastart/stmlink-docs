@@ -11,7 +11,7 @@ If you are still deciding between SRTC and SMeeting (the SDK behind STMLink Meet
 
 The real-time audio and video component focuses on cross-platform multi-user audio and video calls and low-latency interaction. It provides SDKs for WeChat Mini Program, Web, Android, iOS, Windows, Linux, and other platforms, so you can integrate quickly and connect to third-party private cloud backends. Combined with our other products, it also supports capabilities such as instant messaging and whiteboards, extending to more business scenarios.
 
-![SRTC architecture](/zh/rtc/images/421454_1722664667226-c4e3c4c0-9b66-4bbc-a905-f4fed9746fe7.jpeg)
+![SRTC architecture](/en/rtc/images/srtc-architecture.png)
 
 SRTC only handles the audio and video transport itself. It has **no user system and no business rules**—your backend owns both and works with SRTC through the server API.
 

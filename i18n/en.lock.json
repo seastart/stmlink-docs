@@ -680,8 +680,14 @@
   "en/product/deploy/architecture": {
     "reviewed": false,
     "source": "zh/product/deploy/architecture.md",
-    "zh_blob": "1b8ac6ddde1c54711d4a4874385f0821f94e2ad2",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "9db373e26049561a7aad52eabfd38dcc81b2f350",
+    "zh_commit": "11789ae6d45a2de1781e0a2988b240e3d9ce2a2e"
+  },
+  "en/product/deploy/multi-node": {
+    "reviewed": false,
+    "source": "zh/product/deploy/multi-node.md",
+    "zh_blob": "01a6925b7b1b5ffb70e53f377c077da30e8565d7",
+    "zh_commit": "11789ae6d45a2de1781e0a2988b240e3d9ce2a2e"
   },
   "en/product/deploy/networks": {
     "reviewed": false,
@@ -698,8 +704,8 @@
   "en/product/deploy/ports": {
     "reviewed": false,
     "source": "zh/product/deploy/ports.md",
-    "zh_blob": "ca3a52f34cd5a803f660e658710f0820dcdd5d1a",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "22ed3e56a9af8ee7420c260bc4ccd5684b88299d",
+    "zh_commit": "11789ae6d45a2de1781e0a2988b240e3d9ce2a2e"
   },
   "en/product/device-access/faq": {
     "reviewed": false,

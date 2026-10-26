@@ -113,6 +113,6 @@ Server sizing depends heavily on concurrency, whether you record, and the number
 | --- | --- | --- |
 | **Single server** | All services on one server | Testing, small to medium scale |
 | **Split servers** | Extension services such as the MCU and device gateway deployed on separate servers | Heavy recording or many connected devices that need isolated resources |
-| **Multiple media nodes** | Several servers each run a media forwarding node, with users assigned by load or proximity | High concurrency, multiple regions |
+| **Multiple media nodes** | Several servers each run a media forwarding node, with users assigned by load or proximity | High concurrency, multiple regions; see [Multiple nodes and nearest access](/en/product/deploy/multi-node) |
 | **Internal network + public internet planes** | One platform serves users on the internal network and the public internet at the same time | Government and enterprise internal networks plus remote work from the public internet; see [Internal network and public internet](/en/product/deploy/networks) |
 | **Across a cross-domain solution** | The platform is on the internal network, and public-internet users connect through a cross-domain solution (CDS) | Strongly isolated networks for public security, procuratorates, courts, and government agencies; see [Access across a cross-domain solution](/en/product/deploy/optical-gap) |
