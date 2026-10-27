@@ -197,7 +197,7 @@ rtcEngine.releaseSDK()
 ## 失败与错误处理
 
 + `join(...)` 返回 `null`：请求在频道 Session 创建前被拒绝，仍以本次 `onJoinFailed(...)` 的状态码为准。
-+ 重复加入同一频道：`onJoinFailed(channel, RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS, "")`（`102208`），已有频道和监听器不受影响。
++ 重复加入同一频道：`onJoinFailed(channel, RtcErrorCode.ALREADY_JOINED, "")`（`102005`），已有频道和监听器不受影响。
 + SDK 未初始化或已释放：`join(...)` 同步抛出 `SdkNotInitializedException`。
 + 入会后的异步操作失败：通过各操作的 `RTCResultListener.onFail(code, message)` 返回。
 + Engine 阻断操作或全局错误：通过 `RTCEngineEvent.onError(channelId, errorCode, message)` 返回。

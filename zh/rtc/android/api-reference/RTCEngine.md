@@ -136,7 +136,7 @@ fun join(
 
 返回值说明：`RTCChannel?`。非空仅表示 SDK 已接受请求并创建 Session，不代表入会成功；请求在创建前被拒绝时返回 `null`，失败原因仍通过本次 `clientEvent.onJoinFailed(...)` 返回。SDK 未初始化或已释放时同步抛出 `SdkNotInitializedException`。
 
-> 重复加入相同频道会返回 `null`，并以 `RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS`（`102208`）回调失败；已有频道与监听器保持不变。完整多频道流程见 [多频道](/zh/rtc/android/advanced/multi-channel)。
+> 重复加入相同频道会返回 `null`，并以 `RtcErrorCode.ALREADY_JOINED`（`102005`）回调失败；已有频道与监听器保持不变。完整多频道流程见 [多频道](/zh/rtc/android/advanced/multi-channel)。
 
 ### leave()
 ```kotlin
@@ -479,7 +479,7 @@ fun publishLocalVideo(track: LocalVideoTrack, publishCustomOpt: PublishCustomOpt
 ```
 方法说明：发布本地视频轨道。  
 参数说明：
-- `track`：`LocalVideoTrack`，本地视频轨道（摄像头 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack) / 录屏 [`LocalScreenTrack`](/zh/rtc/android/api-reference/LocalScreenTrack) / 本地自定义 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack)）。传入其他类型时通过 `listener.onFail` 返回 `RtcChannelErrorCode.TRACK_TYPE_INVALID`（`102002`，参见 [错误码](/zh/rtc/android/error-codes)）。
+- `track`：`LocalVideoTrack`，本地视频轨道（摄像头 [`LocalCameraTrack`](/zh/rtc/android/api-reference/LocalCameraTrack) / 录屏 [`LocalScreenTrack`](/zh/rtc/android/api-reference/LocalScreenTrack) / 本地自定义 [`LocalCustomVideoTrack`](/zh/rtc/android/api-reference/LocalCustomVideoTrack)）。传入其他类型时通过 `listener.onFail` 返回 `RtcErrorCode.INVALID_ARGUMENT`（`102031`，参见 [错误码](/zh/rtc/android/error-codes)）。
 - `publishCustomOpt`：`PublishCustomOptions?`，发布自定义参数，可为 `null`。参见 [摄像头预设](/zh/rtc/android/presets/camera)。
 - `listener`：`RTCResultListener?`，发布结果回调，可为 `null`。
 
