@@ -1597,13 +1597,30 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
 
 **请求参数**
 
-<ParamField body="agents" type="array<any>" required>
+<ParamField body="agents" type="array<object>" required>
   待邀请的设备列表
+  <Expandable title="元素字段">
+    <ParamField body="type" type="integer" required>
+      代理类型，2 SIP、3 H323、4 GB28181监控、5 RTSP拉流
+      示例：`4`
+    </ParamField>
+
+    <ParamField body="contact" type="string" required>
+      设备标识，从「设备列表」取；国标设备格式为 设备编号:通道编号
+      示例：`37070000082008000001:34020000001320000001`
+    </ParamField>
+
+    <ParamField body="nickname" type="string">
+      会中昵称(可选)，留空则用设备的显示名
+      示例：`嘉宾席摄像头`
+    </ParamField>
+
+  </Expandable>
 </ParamField>
 
 <ParamField body="no" type="string" required>
-  目标房间号(如果是meeting层应用就是会议号，如果是rtc层应用就是频道名)
-  示例：`fire`
+  目标房间号：SMeeting 应用填会议房间号 room_no（不是 meeting_id），SRTC 应用填频道名
+  示例：`021890611`
 </ParamField>
 
 
@@ -1612,9 +1629,13 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
 ```json
 {
   "agents": [
-    null
+    {
+      "contact": "37070000082008000001:34020000001320000001",
+      "nickname": "嘉宾席摄像头",
+      "type": 4
+    }
   ],
-  "no": "fire"
+  "no": "021890611"
 }
 ```
 

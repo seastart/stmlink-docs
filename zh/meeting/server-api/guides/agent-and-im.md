@@ -27,8 +27,18 @@ SIP / H323 / GB28181 等设备的接入，以及会议外的 IM 消息，SMeetin
 
 ### 设备入会时目标房间填什么
 
-邀请设备入会（`/server/v1/agent/invite`）的 `no` 参数是目标频道名。在 SMeeting 里，
-**会议 ID（`meeting_id`）就是 RTC 层的频道名**，`no` 直接填 `meeting_id` 即可。
+邀请设备入会（`/server/v1/agent/invite`）的 `no` 参数，在 SMeeting 里**填会议房间号 `room_no`**，
+不是 `meeting_id`。设备入会时 SMeeting 按房间号找到该房间当前的这一场会议，再把设备拉进去；
+填 `meeting_id` 会因为找不到会议而入会失败。
 
-注意不是房间号 `room_no` —— 那是给用户在客户端输入的号码，一个房间下可以先后开多场
-会议，只有 `meeting_id` 能唯一定位到设备该进的这一场。
+```json
+{
+  "agents": [
+    { "type": 4, "contact": "37070000082008000001:34020000001320000001" }
+  ],
+  "no": "021890611"
+}
+```
+
+`agents` 里每台设备的 `type` 与 `contact` 从[设备列表](/zh/rtc/server-api/agent)取，国标设备的
+`contact` 格式是 `设备编号:通道编号`，各字段说明见[邀请设备入会](/zh/rtc/server-api/agent#邀请设备入会)。
