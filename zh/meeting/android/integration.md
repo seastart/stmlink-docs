@@ -64,11 +64,11 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.meeting:meeting:2.0.41'
+    implementation 'cn.seastart.meeting:meeting:2.0.42'
 }
 ```
 
-> Meeting `2.0.41` 传递依赖 RTC `2.0.38`。升级前请阅读[兼容性变更](/zh/meeting/android/changelog)。
+> Meeting `2.0.42` 传递依赖 RTC `2.0.38`。升级前请阅读[兼容性变更](/zh/meeting/android/changelog)。
 
 ## 接入说明
 
