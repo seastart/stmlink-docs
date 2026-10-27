@@ -5,6 +5,18 @@ description: "Android SRTC SDK release history by version: new features, fixes, 
 
 > This page is compiled from the version configuration and commit history of the `rtc-android` repository. Call `RTCEngine.version()` to get the actual SDK version at runtime.
 
+### [2.0.38] - 2026.10.27
+
+#### Changed
+
++ Unified error constants under `RtcErrorCode` and aligned their values and meanings with the cross-platform rules. Update error code references and message mappings when upgrading; see [Error codes](/en/rtc/android/error-codes).
++ SDK-produced errors return an error code with an empty message; backend error codes and messages pass through unchanged.
+
+#### Fixed
+
++ Fixed incorrect classification of network timeouts and response parsing failures.
++ Fixed missing backend error messages when publishing through Wangsu fails.
+
 ### [2.0.37] - 2026.10.15
 
 #### Added

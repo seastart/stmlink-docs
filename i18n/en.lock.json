@@ -776,8 +776,8 @@
   "en/rtc/android/advanced/multi-channel": {
     "reviewed": false,
     "source": "zh/rtc/android/advanced/multi-channel.md",
-    "zh_blob": "15222fb796b0726dd1f16027fc2dc57ec3613beb",
-    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
+    "zh_blob": "3f3020f6e0d6bd12f47aaa7b150de726f3ebdf02",
+    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
   },
   "en/rtc/android/advanced/whiteboard": {
     "reviewed": true,
@@ -794,8 +794,8 @@
   "en/rtc/android/api-reference/LocalCameraTrack": {
     "reviewed": false,
     "source": "zh/rtc/android/api-reference/LocalCameraTrack.md",
-    "zh_blob": "2b07e4937958d95518a04d004de614030f7c9406",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "08b311e6a3dc7f1dd475d20db9c3784b1b3ad1bf",
+    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
   },
   "en/rtc/android/api-reference/LocalCustomVideoTrack": {
     "reviewed": false,
@@ -842,8 +842,8 @@
   "en/rtc/android/api-reference/RTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/android/api-reference/RTCEngine.md",
-    "zh_blob": "b230887f6144935ee837545fcbaf4a3979c2171c",
-    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
+    "zh_blob": "a2cd7a4cacd5fa3e32b8778e7cbca2581302a831",
+    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
   },
   "en/rtc/android/api-reference/RTCEngineEvent": {
     "reviewed": true,
@@ -890,8 +890,8 @@
   "en/rtc/android/changelog": {
     "reviewed": false,
     "source": "zh/rtc/android/changelog.mdx",
-    "zh_blob": "0de64ff14bd055219c8a4d7f10e9e5bcc976064b",
-    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
+    "zh_blob": "be9fabcebdf2b757c80253f4b5d9952aa807c32a",
+    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
   },
   "en/rtc/android/enums": {
     "reviewed": false,
@@ -902,14 +902,14 @@
   "en/rtc/android/error-codes": {
     "reviewed": false,
     "source": "zh/rtc/android/error-codes.md",
-    "zh_blob": "7ce8cf5a3b1814c70afe6b74834516ad35fc787c",
-    "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
+    "zh_blob": "ae83c85130c3ff90a463aea3d2de248f19cfa0cd",
+    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
   },
   "en/rtc/android/integration": {
     "reviewed": false,
     "source": "zh/rtc/android/integration.md",
-    "zh_blob": "1a1ef8f9bbbee4e9394a65537d553bcf595b74b5",
-    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
+    "zh_blob": "51e2072b6cd5f9cbe1b8b67cdb164738e318565c",
+    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
   },
   "en/rtc/android/media-quality": {
     "reviewed": false,

@@ -136,7 +136,7 @@ Parameters:
 
 Returns: `RTCChannel?`. A non-null value only means the SDK accepted the request and created a session, not that the join succeeded; if the request is rejected before creation, it returns `null`, and the failure reason is still returned through this call's `clientEvent.onJoinFailed(...)`. If the SDK isn't initialized or has been released, it synchronously throws `SdkNotInitializedException`.
 
-> Joining the same channel twice returns `null` and calls back a failure with `RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS` (`102208`); the existing channel and listener stay unchanged. For the full multi-channel flow, see [Multi-channel](/en/rtc/android/advanced/multi-channel).
+> Joining the same channel twice returns `null` and calls back a failure with `RtcErrorCode.ALREADY_JOINED` (`102005`); the existing channel and listener stay unchanged. For the full multi-channel flow, see [Multi-channel](/en/rtc/android/advanced/multi-channel).
 
 ### leave()
 ```kotlin
@@ -479,7 +479,7 @@ fun publishLocalVideo(track: LocalVideoTrack, publishCustomOpt: PublishCustomOpt
 ```
 Description: Publishes a local video track.  
 Parameters:
-- `track`: `LocalVideoTrack`, the local video track (camera [`LocalCameraTrack`](/en/rtc/android/api-reference/LocalCameraTrack) / screen recording [`LocalScreenTrack`](/en/rtc/android/api-reference/LocalScreenTrack) / local custom [`LocalCustomVideoTrack`](/en/rtc/android/api-reference/LocalCustomVideoTrack)). Passing any other type returns `RtcChannelErrorCode.TRACK_TYPE_INVALID` (`102002`; see [Error codes](/en/rtc/android/error-codes)) through `listener.onFail`.
+- `track`: `LocalVideoTrack`, the local video track (camera [`LocalCameraTrack`](/en/rtc/android/api-reference/LocalCameraTrack) / screen recording [`LocalScreenTrack`](/en/rtc/android/api-reference/LocalScreenTrack) / local custom [`LocalCustomVideoTrack`](/en/rtc/android/api-reference/LocalCustomVideoTrack)). Passing any other type returns `RtcErrorCode.INVALID_ARGUMENT` (`102031`; see [Error codes](/en/rtc/android/error-codes)) through `listener.onFail`.
 - `publishCustomOpt`: `PublishCustomOptions?`, custom publishing parameters; can be `null`. See [Camera preset](/en/rtc/android/presets/camera).
 - `listener`: `RTCResultListener?`, the publishing result callback; can be `null`.
 

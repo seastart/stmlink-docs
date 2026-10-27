@@ -197,7 +197,7 @@ rtcEngine.releaseSDK()
 ## Failures and error handling
 
 + `join(...)` returns `null`: the request was rejected before the channel session was created; the status code from this call's `onJoinFailed(...)` is still authoritative.
-+ Joining the same channel twice: `onJoinFailed(channel, RtcChannelErrorCode.CHANNEL_ALREADY_EXISTS, "")` (`102208`); the existing channel and listener are unaffected.
++ Joining the same channel twice: `onJoinFailed(channel, RtcErrorCode.ALREADY_JOINED, "")` (`102005`); the existing channel and listener are unaffected.
 + SDK not initialized or already released: `join(...)` synchronously throws `SdkNotInitializedException`.
 + Asynchronous operations that fail after joining: reported through each operation's `RTCResultListener.onFail(code, message)`.
 + Operations blocked by the Engine or global errors: reported through `RTCEngineEvent.onError(channelId, errorCode, message)`.
