@@ -136,7 +136,8 @@ This table is version 2, finalized on 2026-09-30. **Each platform follows the ve
 | Web | `206` | `@seastart/smeeting-web-sdk` 0.3.0 |
 | WeChat Mini Program | `207` | `@seastart/smeeting-wx-sdk` 0.1.0 |
 | Swift (iOS / macOS) | `203` / `205` | SMeeting Swift SDK 1.4.0 and later ([changelog](/en/meeting/swift/changelog)) |
-| Android, iOS (Objective-C), HarmonyOS, Windows | `202`, `203`, `208`, `201` | **Not shipped yet**; follows each platform's release. Until then, use that platform's error code page |
+| Android | `202` | SMeeting Android SDK 2.0.41 and later, with SRTC 2.0.38 ([changelog](/en/meeting/android/changelog)) |
+| iOS (Objective-C), HarmonyOS, Windows | `203`, `208`, `201` | **Not shipped yet**; follows each platform's release. Until then, use that platform's error code page |
 
 ---
 
@@ -148,6 +149,15 @@ This table is version 2, finalized on 2026-09-30. **Each platform follows the ve
 | Swift | See the mapping table in its changelog | [Swift changelog](/en/meeting/swift/changelog) |
 
 Mappings for the other platforms (Android, iOS Objective-C, HarmonyOS, Windows) will be given in each platform's changelog when it ships the new codes. For old SRTC-layer codes that are passed through (such as the `100xxx` common codes), see the [SRTC old-to-new mapping](/en/rtc/error-codes).
+
+---
+
+## Android exceptions from 2.0.41
+
+The following notes apply only to Android and are exceptions to the general descriptions on this page:
+
++ **Error messages**: Meeting SDK-generated errors have an empty-string `message`. Server and underlying SRTC error codes and messages pass through unchanged. SDK-generated errors from the SRTC 2.0.38 dependency also have empty messages, so the statement above that SDK-generated messages are always in English does not apply.
++ **HTTP status codes**: HTTP non-2xx responses return the HTTP status code and status message directly, rather than `202007`. In addition to the business and SDK error codes described above, you may therefore receive three-digit status codes such as `401`, `404`, and `500`. Local network errors use `202007`.
 
 ---
 

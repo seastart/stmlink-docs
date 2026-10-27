@@ -200,8 +200,8 @@
   "en/meeting/error-codes": {
     "reviewed": false,
     "source": "zh/meeting/error-codes.md",
-    "zh_blob": "10b1b58e0a56ccb8269bda2fb61aa8d10117bf46",
-    "zh_commit": "3834db942ad23bcb32a232b3faf9529aceb5b384"
+    "zh_blob": "07ff4cd59bf232f5489f2b1f4fa43d4c1610ce3f",
+    "zh_commit": "b33d57c898926c9efcbb550e77975149444a1397"
   },
   "en/meeting/ios/advanced/screen-recording": {
     "reviewed": true,
