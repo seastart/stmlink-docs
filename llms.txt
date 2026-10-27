@@ -910,7 +910,7 @@
 
 - [Cloud recording and live streaming guide](https://docs.stmlink.com/en/meeting/server-api/guides/recording.md): How cloud recording, stream mixing, and live streaming work for meetings: combining task types, when tasks start automatically, layouts and grid assignment, and how to get recording files and live stream URLs. Read this before integrating meeting recording.
 - [Callback events guide](https://docs.stmlink.com/en/meeting/server-api/guides/callbacks.md): How SMeeting notifies your backend when meetings, members, or recordings change: request format, signature verification, response requirements, the fields of each event, and idempotency. Read this when setting up callbacks.
-- [Device integration and IM](https://docs.stmlink.com/en/meeting/server-api/guides/agent-and-im.md): SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the meeting_id, not the room number.
+- [Device integration and IM](https://docs.stmlink.com/en/meeting/server-api/guides/agent-and-im.md): SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the room number room_no, not the meeting_id.
 
 ## [EN] SMeeting Conferencing SDK · Server API · API reference
 

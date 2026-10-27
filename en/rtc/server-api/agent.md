@@ -1597,13 +1597,30 @@ otherwise the device can't join the channel—see the "Callback events guide" fo
 
 **Request parameters**
 
-<ParamField body="agents" type="array<any>" required>
+<ParamField body="agents" type="array<object>" required>
   Devices to invite
+  <Expandable title="Element fields">
+    <ParamField body="type" type="integer" required>
+      Agent type: 2 SIP, 3 H.323, 4 GB28181 surveillance, 5 RTSP stream pull
+      Example: `4`
+    </ParamField>
+
+    <ParamField body="contact" type="string" required>
+      Device identifier, taken from the device list; for GB28181 devices use the format deviceId:channelId
+      Example: `37070000082008000001:34020000001320000001`
+    </ParamField>
+
+    <ParamField body="nickname" type="string">
+      Display name in the meeting (optional); defaults to the device's display name when empty
+      Example: `Guest seats camera`
+    </ParamField>
+
+  </Expandable>
 </ParamField>
 
 <ParamField body="no" type="string" required>
-  Target room number (the meeting number for an SMeeting-layer app, or the channel name for an SRTC-layer app)
-  Example: `fire`
+  Target room: for an SMeeting app, the meeting room number room_no (not meeting_id); for an SRTC app, the channel name
+  Example: `021890611`
 </ParamField>
 
 
@@ -1612,9 +1629,13 @@ Request example:
 ```json
 {
   "agents": [
-    null
+    {
+      "contact": "37070000082008000001:34020000001320000001",
+      "nickname": "Guest seats camera",
+      "type": 4
+    }
   ],
-  "no": "fire"
+  "no": "021890611"
 }
 ```
 
