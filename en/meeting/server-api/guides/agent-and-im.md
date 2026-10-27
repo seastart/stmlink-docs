@@ -1,6 +1,6 @@
 ---
 title: "Device integration and IM"
-description: "SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the meeting_id, not the room number."
+description: "SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the room number room_no, not the meeting_id."
 ---
 
 For integrating SIP / H.323 / GB28181 and other devices, and for out-of-meeting IM messages, SMeeting doesn't provide a separate set of endpoints—
@@ -27,8 +27,18 @@ Authentication is already done at the SMeeting layer when requests are forwarded
 
 ### What to use as the target when a device enters the meeting
 
-The `no` parameter of inviting a device (`/server/v1/agent/invite`) is the target channel name. In SMeeting,
-**the meeting ID (`meeting_id`) is the channel name at the RTC layer**, so pass `meeting_id` directly as `no`.
+In SMeeting, the `no` parameter of inviting a device (`/server/v1/agent/invite`) is **the meeting room number `room_no`**,
+not `meeting_id`. When the device enters, SMeeting looks up the current meeting of that room by its room number and brings the device into it;
+passing `meeting_id` fails because no meeting can be found.
 
-Note that it's not the room number `room_no`—that is the number users enter in the client, and one room can host several meetings
-one after another. Only `meeting_id` uniquely identifies the specific meeting the device should enter.
+```json
+{
+  "agents": [
+    { "type": 4, "contact": "37070000082008000001:34020000001320000001" }
+  ],
+  "no": "021890611"
+}
+```
+
+Take each device's `type` and `contact` in `agents` from the [device list](/en/rtc/server-api/agent). For GB28181 devices,
+`contact` uses the format `deviceId:channelId`. For all fields, see [Invite devices to the channel](/en/rtc/server-api/agent#invite-devices-to-the-channel).

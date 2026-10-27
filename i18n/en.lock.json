@@ -294,10 +294,10 @@
     "zh_commit": "37765cf015a439aa2a585748f34ce2bf480286e0"
   },
   "en/meeting/server-api/guides/agent-and-im": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/server-api/guides/agent-and-im.md",
-    "zh_blob": "4ebe2b1df5c3220b76f49b155b50b3ac70ffa600",
-    "zh_commit": "50a4be5bba8aeaef7eccb2e647ae3a6f6637f4d3"
+    "zh_blob": "ced92f806576a91f6c6c9beb12e0fae71c389d77",
+    "zh_commit": "8228546ed1b54f36541a70c13cd60308ba3ad53b"
   },
   "en/meeting/server-api/guides/callbacks": {
     "reviewed": true,
