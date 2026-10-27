@@ -64,11 +64,11 @@ The currently released version is:
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.meeting:meeting:2.0.41'
+    implementation 'cn.seastart.meeting:meeting:2.0.42'
 }
 ```
 
-> Meeting `2.0.41` transitively depends on RTC `2.0.38`. Read the [compatibility changes](/en/meeting/android/changelog) before upgrading.
+> Meeting `2.0.42` transitively depends on RTC `2.0.38`. Read the [compatibility changes](/en/meeting/android/changelog) before upgrading.
 
 ## Integration notes
 

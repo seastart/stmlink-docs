@@ -134,8 +134,8 @@
   "en/meeting/android/changelog": {
     "reviewed": false,
     "source": "zh/meeting/android/changelog.mdx",
-    "zh_blob": "8b6ff613007db98e73534953b18dda21bfeac551",
-    "zh_commit": "883441334802721460da07f718254c5a4e281df7"
+    "zh_blob": "62014f99f8c503f14cff7f8117b8ebbb378d964b",
+    "zh_commit": "6fdc4c4b8c50323747d65d5ccb450cb0c503d188"
   },
   "en/meeting/android/enums": {
     "reviewed": true,
@@ -152,8 +152,8 @@
   "en/meeting/android/integration": {
     "reviewed": false,
     "source": "zh/meeting/android/integration.md",
-    "zh_blob": "9bd7f22684ce37e5c2d85f048af5a8e26c99cc8e",
-    "zh_commit": "883441334802721460da07f718254c5a4e281df7"
+    "zh_blob": "9b039301c572caa8f19ec68d5d6bced9c5c03eeb",
+    "zh_commit": "6fdc4c4b8c50323747d65d5ccb450cb0c503d188"
   },
   "en/meeting/android/media-quality": {
     "reviewed": false,
