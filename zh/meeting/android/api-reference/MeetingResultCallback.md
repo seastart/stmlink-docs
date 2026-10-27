@@ -11,7 +11,7 @@ Meeting SDK 使用两类一次性结果回调：无业务返回值时使用 `Mee
 + Meeting 自产错误为 `202xxx`；SRTC、服务端或 HTTP 的有效错误码原样透传。
 
 + 回调保持实际来源线程，不保证主线程。
-+ `message` 面向开发诊断，不属于稳定的用户展示文案契约。
++ Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。
 
 ## MeetingResultCallback
 
@@ -40,7 +40,7 @@ fun onFailure(errorCode: Int, message: String?)
 | 参数 | 说明 |
 | --- | --- |
 | `errorCode` | 实际错误来源的开放整数错误码。 |
-| `message` | 可空诊断信息，仅用于日志和排障。 |
+| `message` | Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。 |
 
 返回值说明：无（`Unit`）。
 
@@ -75,6 +75,6 @@ fun onFailure(errorCode: Int, message: String?)
 | 参数 | 说明 |
 | --- | --- |
 | `errorCode` | 实际错误码。 |
-| `message` | 可空诊断信息。 |
+| `message` | Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。 |
 
 返回值说明：无（`Unit`）。详见[错误码](/zh/meeting/android/error-codes)。

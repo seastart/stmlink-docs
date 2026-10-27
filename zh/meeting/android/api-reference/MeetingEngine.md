@@ -8,21 +8,21 @@ description: "SMeeting Android SDK 的唯一公开入口，覆盖初始化、会
 ## 使用说明
 
 + `MeetingEngine.create(application)` 每次创建一个 Engine 实例。应用应在进程内集中持有一个实例，并在不再使用时调用 `release()`。
-+ 当前公开 API 采用单会议模型：同一 Engine 同时只能有一场加入中或活动会议；重复入会返回 `MeetingErrorCode.SESSION_ALREADY_ACTIVE`。
++ 当前公开 API 采用单会议模型：同一 Engine 同时只能有一场加入中或活动会议；重复入会返回 `MeetingErrorCode.ALREADY_IN_MEETING`。
 + 入会成功返回 [MeetingEnterInfo](/zh/meeting/android/types#meetingenterinfo)，后续会中能力继续通过当前 `MeetingEngine` 调用。
 + 所有异步结果回调保持实际来源线程，不保证主线程；更新 UI 前应切换到主线程。
-+ `MeetingResultCallback` / `MeetingValueResultCallback<T>` 的失败方法是 `onFailure(errorCode, message)`。`message` 仅用于诊断，不应直接展示给用户。
++ `MeetingResultCallback` / `MeetingValueResultCallback<T>` 的失败方法是 `onFailure(errorCode, message)`。Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。
 + `roomEvent`、`userEvent`、`mediaEvent`、`messageEvent` 会绑定当前会议并在离会时清除；需要接收下一场会议事件时应重新赋值。Engine、IM 和设备事件与 Engine 生命周期一致。
 
 ## 创建与版本
 
-### setRtcLanguage(language)
+### setLanguage(language)
 
 ```kotlin
-fun setRtcLanguage(language: RtcLanguage)
+fun setLanguage(language: RtcLanguage)
 ```
 
-方法说明：设置进程内后续 RTC 频道和 IM 后端请求的语言。建议在 `create()` 或 `initSdk()` 前调用；实际错误文案以后端返回为准。
+方法说明：自 2.0.41 起替代 `setRtcLanguage()`，统一设置进程内后续 RTC 与 Meeting HTTP 请求（含流式下载）的语言。建议在 `create()` 或 `initSdk()` 前调用；初始化和释放不重置配置，运行中切换不重发已有请求。`SYSTEM` 默认按每次请求时的系统语言标签发送，无法取得时回退为 `zh-CN`；固定中文为 `zh-CN`，英文为 `en`。该接口不翻译错误信息，实际提示以后端返回为准。
 
 参数说明：`language` 为 `RtcLanguage`，可选 `SYSTEM`、`ZH_CN` 或 `EN`，详见 [SRTC 枚举类型](/zh/rtc/android/enums)。
 
@@ -1551,7 +1551,7 @@ engine.switchCamera(targetFront, object : MeetingResultCallback {
         if (errorCode == MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED ||
             errorCode == MeetingErrorCode.SESSION_OPERATION_CANCELLED ||
             errorCode == MeetingErrorCode.LOCAL_DEVICE_OPERATION_IN_PROGRESS ||
-            errorCode == MeetingErrorCode.SDK_NOT_READY) return@runOnUiThread
+            errorCode == MeetingErrorCode.INVALID_STATE) return@runOnUiThread
         // UI 方向只在成功后更新，所以失败时仍保留原状态。
         if (previousId.isBlank()) {
             showCameraLost()
@@ -1562,7 +1562,7 @@ engine.switchCamera(targetFront, object : MeetingResultCallback {
             override fun onFailure(errorCode: Int, message: String?) = runOnUiThread {
                 if (generation == cameraUiGeneration && cameraEnabled &&
                     errorCode != MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED &&
-                    errorCode != MeetingErrorCode.SDK_NOT_READY) showCameraLost()
+                    errorCode != MeetingErrorCode.INVALID_STATE) showCameraLost()
             }
         })
     }
@@ -2508,7 +2508,7 @@ fun installVirtualBackground(modelData: ByteArray): Int
 | --- | --- | --- | --- |
 | modelData | `ByteArray` | 是 | 应用读取的 selfie_segmenter ONNX 模型内容；会议层直接持有数组引用，不做拷贝 |
 
-返回值：`0` 表示成功；SDK 未就绪时返回 `MeetingErrorCode.SDK_NOT_READY`，其他错误透传 RTC 的 `102xxx` 错误码。应检查结果后再开启效果。
+返回值：`0` 表示成功；SDK 未就绪时返回 `MeetingErrorCode.INVALID_STATE`，其他错误透传 RTC 的 `102xxx` 错误码。应检查结果后再开启效果。
 
 ### uninstallVirtualBackground()
 
@@ -2528,7 +2528,7 @@ fun enabledVirtualBackground(enabled: Boolean): Int
 | --- | --- | --- | --- |
 | enabled | `Boolean` | 是 | true 开启；false 关闭并直通原始采集画面 |
 
-返回值：`0` 表示成功；SDK 未就绪时返回 `MeetingErrorCode.SDK_NOT_READY`，其他错误透传 RTC 返回值。关闭效果不会卸载模型。
+返回值：`0` 表示成功；SDK 未就绪时返回 `MeetingErrorCode.INVALID_STATE`，其他错误透传 RTC 返回值。关闭效果不会卸载模型。
 
 ### setVirtualBackgroundBlur(level)
 

@@ -7,7 +7,7 @@ description: "会中点名管理器：发起与结束点名、主持人呼叫和
 
 ## 使用说明
 
-+ 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.SESSION_NOT_ACTIVE`。
++ 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.NOT_IN_MEETING`。
 + 列表和详情中的 `id` 含义不同：列表 `RollCallBean.id` 是点名活动 ID，详情用户 `RollCallUserBean.id` 是后续呼叫与应答使用的点名用户 ID。
 
 + `allMember` 为 `false` 时必须提供 `members`；成员项包含 UID 与昵称。

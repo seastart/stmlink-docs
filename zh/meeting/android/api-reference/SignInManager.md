@@ -7,7 +7,7 @@ description: "会中签到管理器：创建与结束签到、成员签到、人
 
 ## 使用说明
 
-+ 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.SESSION_NOT_ACTIVE`。
++ 该属性是稳定门面，可以在会前保存；未入会时所有异步方法返回 `MeetingErrorCode.NOT_IN_MEETING`。
 
 + 结果回调保持网络来源线程，不自动切换主线程。
 + `exportSignInDetail()` 返回一次性 `MeetingDownload`，读取完成或放弃时必须关闭。

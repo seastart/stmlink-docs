@@ -27,6 +27,6 @@ fun onError(errorCode: Int, message: String?)
 | 参数 | 说明 |
 | --- | --- |
 | `errorCode` | 开放错误码空间中的实际错误码。 |
-| `message` | 可空诊断信息，不属于 UI 文案契约。 |
+| `message` | Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。 |
 
 返回值说明：无（`Unit`）。

@@ -27,7 +27,7 @@ fun initMeeting(application: Application, meetToken: String) {
             }
 
             override fun onFailure(errorCode: Int, message: String?) {
-                // message 只用于诊断；用户文案根据 errorCode 生成
+                // 保留上游 message；为空时按 errorCode 提供本地化提示
             }
         }
     )

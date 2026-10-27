@@ -28,6 +28,6 @@ fun onScreenCaptureStateChanged(
 | 参数 | 说明 |
 | --- | --- |
 | `state` | SRTC 定义的屏幕采集状态，见 [SRTC 枚举](/zh/rtc/android/enums#screencapturestate)。 |
-| `message` | 可空附加诊断信息。 |
+| `message` | Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。 |
 
 返回值说明：无（`Unit`）。回调保持屏幕采集来源线程。

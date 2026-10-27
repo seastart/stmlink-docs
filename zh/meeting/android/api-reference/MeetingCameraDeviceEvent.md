@@ -64,6 +64,6 @@ fun onCameraDeviceError(
 | --- | --- |
 | `cameraId` | 发生错误的设备 ID。 |
 | `errorCode` | SRTC 或系统来源错误码。 |
-| `message` | 可空诊断信息。 |
+| `message` | Meeting 自产错误提示为空；RTC 和后端提示原样透传，可为 null 或空字符串。应用为无提示的错误提供本地化文案。 |
 
 返回值说明：无（`Unit`）。

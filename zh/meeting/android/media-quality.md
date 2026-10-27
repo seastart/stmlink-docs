@@ -3,7 +3,7 @@ title: "媒体质量"
 description: "通过 SMeeting Android 的本地质量快照、按需详细统计和 FY 服务端报告观察当前会议的音视频质量"
 ---
 
-SMeeting 2.0.40 使用 SRTC 2.0.37 的 `cn.seastart.rtc.monitoring.api` 监测模型。旧版 `cn.seastart.rtc.statistics.MediaMetric` 的嵌套类型和 `onMediaMetric()` 已移除；完整字段与数值单位见 [SRTC 媒体质量](/zh/rtc/android/media-quality)。
+SMeeting 2.0.41 使用 SRTC 2.0.38 的 `cn.seastart.rtc.monitoring.api` 监测模型。旧版 `cn.seastart.rtc.statistics.MediaMetric` 的嵌套类型和 `onMediaMetric()` 已移除；完整字段与数值单位见 [SRTC 媒体质量](/zh/rtc/android/media-quality)。
 
 ## 获取质量数据
 
