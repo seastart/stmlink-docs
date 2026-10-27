@@ -297,7 +297,7 @@
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/agent-and-im.md",
     "zh_blob": "ced92f806576a91f6c6c9beb12e0fae71c389d77",
-    "zh_commit": "8228546ed1b54f36541a70c13cd60308ba3ad53b"
+    "zh_commit": "9e1f635de783870477025dff71b362eed6786403"
   },
   "en/meeting/server-api/guides/callbacks": {
     "reviewed": true,
