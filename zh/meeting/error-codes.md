@@ -139,7 +139,8 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 | Swift（iOS / macOS） | `203` / `205` | SMeeting Swift SDK 1.4.0 起（[更新日志](/zh/meeting/swift/changelog)） |
 | iOS（Objective-C） | `203` | MeetingKit 2.2.0 起（[更新日志](/zh/meeting/ios/changelog)） |
 | 鸿蒙 | `208` | SMeeting 鸿蒙 SDK 1.1.0 起（[更新日志](/zh/meeting/harmony/changelog)） |
-| Android、Windows | `202`、`201` | **尚未按新码发版**，以各端发版为准，目前仍按该端错误码页 |
+| Android | `202` | SMeeting Android SDK 2.0.41 起，依赖 SRTC 2.0.38（[更新日志](/zh/meeting/android/changelog)） |
+| Windows | `201` | **尚未按新码发版**，以该端发版和错误码页为准 |
 
 ---
 
@@ -153,6 +154,15 @@ SMeeting 建在 SRTC 之上。当错误发生在底层音视频通道时（如�
 | 鸿蒙 | switchCamera 失败 `208008` → `208011`；共享已开启 `208009` → `208011`；远端轨道不存在 `208009` → `208209`；HTTP 非 200 由 `208404` / `208200` 改为 `208007`；响应无法解析改为 `208356` | [鸿蒙更新日志](/zh/meeting/harmony/changelog) · [鸿蒙错误码](/zh/meeting/harmony/error-codes) |
 
 其它端（Android、Windows）的旧码对照，随该端按新码发版时在其更新日志中给出。透传的 SRTC 层旧码（如 `100xxx` 通用码）见 [SRTC 旧码 → 新码对照](/zh/rtc/error-codes)。
+
+---
+
+## Android 2.0.41 起的特例说明
+
+以下补充仅适用于 Android，作为本页通用描述的例外：
+
++ **错误提示**：Meeting SDK 自产错误的 `message` 为空字符串；后端和底层 SRTC 的错误码与提示原样透传。依赖的 SRTC 2.0.38 自产错误提示也为空，不适用上文“SDK 自产错误提示固定为英文”的描述。
++ **HTTP 状态码**：HTTP 非 2xx 响应直接返回 HTTP 状态码和状态消息，不转换为 `202007`。因此除上述业务错误码和 SDK 错误码外，还可能收到 `401`、`404`、`500` 等三位状态码；本地网络错误使用 `202007`。
 
 ---
 
