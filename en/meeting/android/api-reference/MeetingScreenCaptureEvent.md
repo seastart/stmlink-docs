@@ -28,6 +28,6 @@ Parameters:
 | Parameter | Description |
 | --- | --- |
 | `state` | Screen capture state defined by SRTC; see [SRTC enums](/en/rtc/android/enums#screencapturestate). |
-| `message` | Nullable additional diagnostic information. |
+| `message` | Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available. |
 
 Returns: None (`Unit`). The callback stays on the screen capture source thread.

@@ -1,9 +1,22 @@
 ---
 title: "Changelog"
-description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.40, including breaking API changes. Read this before upgrading the SDK."
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.41, including breaking API changes. Read this before upgrading the SDK."
 ---
 
 > This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.41 (2026-10-27)
+
+### Changed
+
++ Replaced `MeetingEngine.setRtcLanguage()` with `setLanguage()` to set a shared request language for RTC and Meeting HTTP requests.
++ Aligned error code values and meanings with the unified rules. Meeting-produced errors have empty messages; RTC and backend errors pass through unchanged. See [Error codes](/en/meeting/android/error-codes).
++ Upgraded the SRTC dependency to `2.0.38`.
+
+### Fixed
+
++ Fixed inconsistent classification of HTTP response parsing failures, empty responses, and network errors.
++ Fixed incorrect error reporting for screen sharing conflicts and cancellation.
 
 ## 2.0.40 (2026-10-15)
 

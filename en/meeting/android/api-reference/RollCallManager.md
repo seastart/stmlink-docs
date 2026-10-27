@@ -7,7 +7,7 @@ description: "In-meeting roll call manager for the SMeeting Android SDK: start a
 
 ## Usage notes
 
-+ This property is a stable facade that you can keep before the meeting; when you are not in a meeting, all asynchronous methods return `MeetingErrorCode.SESSION_NOT_ACTIVE`.
++ This property is a stable facade that you can keep before the meeting; when you are not in a meeting, all asynchronous methods return `MeetingErrorCode.NOT_IN_MEETING`.
 + The `id` in the list and in the details mean different things: `RollCallBean.id` in the list is the roll call activity ID, while `RollCallUserBean.id` of a user in the details is the roll call user ID used for subsequent calls and answers.
 
 + When `allMember` is `false`, you must provide `members`; each member item contains a UID and a nickname.

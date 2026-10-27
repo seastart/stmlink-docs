@@ -3,7 +3,7 @@ title: "Media quality"
 description: "Monitor current-meeting audio and video quality through SMeeting Android local quality snapshots, on-demand detailed statistics, and FY server reports."
 ---
 
-SMeeting 2.0.40 uses the monitoring models in `cn.seastart.rtc.monitoring.api` from SRTC 2.0.37. The old nested types under `cn.seastart.rtc.statistics.MediaMetric` and `onMediaMetric()` have been removed. See [SRTC media quality](/en/rtc/android/media-quality) for all fields and units.
+SMeeting 2.0.41 uses the monitoring models in `cn.seastart.rtc.monitoring.api` from SRTC 2.0.38. The old nested types under `cn.seastart.rtc.statistics.MediaMetric` and `onMediaMetric()` have been removed. See [SRTC media quality](/en/rtc/android/media-quality) for all fields and units.
 
 ## Get quality data
 

@@ -27,6 +27,6 @@ Parameters:
 | Parameter | Description |
 | --- | --- |
 | `errorCode` | The actual error code in the open-ended error code space. |
-| `message` | Nullable diagnostic information; not part of the UI text contract. |
+| `message` | Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available. |
 
 Returns: None (`Unit`).

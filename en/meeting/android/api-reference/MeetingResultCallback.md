@@ -11,7 +11,7 @@ The Meeting SDK uses two kinds of one-shot result callbacks: `MeetingResultCallb
 + Errors produced by Meeting itself are `202xxx`; valid error codes from SRTC, the server, or HTTP are passed through as is.
 
 + Callbacks stay on the thread they actually come from; the main thread is not guaranteed.
-+ `message` is for development diagnostics and is not part of a stable user-facing text contract.
++ Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available.
 
 ## MeetingResultCallback
 
@@ -40,7 +40,7 @@ Parameters:
 | Parameter | Description |
 | --- | --- |
 | `errorCode` | Open-ended integer error code from the actual error source. |
-| `message` | Nullable diagnostic information, for logging and troubleshooting only. |
+| `message` | Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available. |
 
 Returns: None (`Unit`).
 
@@ -75,6 +75,6 @@ Parameters:
 | Parameter | Description |
 | --- | --- |
 | `errorCode` | The actual error code. |
-| `message` | Nullable diagnostic information. |
+| `message` | Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available. |
 
 Returns: None (`Unit`). See [Error codes](/en/meeting/android/error-codes).

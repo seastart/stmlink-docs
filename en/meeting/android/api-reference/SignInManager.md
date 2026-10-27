@@ -7,7 +7,7 @@ description: "In-meeting sign-in manager for the SMeeting Android SDK: create an
 
 ## Usage notes
 
-+ This property is a stable facade that you can keep before the meeting; when you are not in a meeting, all asynchronous methods return `MeetingErrorCode.SESSION_NOT_ACTIVE`.
++ This property is a stable facade that you can keep before the meeting; when you are not in a meeting, all asynchronous methods return `MeetingErrorCode.NOT_IN_MEETING`.
 
 + Result callbacks stay on the network thread they come from and don't switch to the main thread automatically.
 + `exportSignInDetail()` returns a one-shot `MeetingDownload`, which you must close when you finish reading it or give up.

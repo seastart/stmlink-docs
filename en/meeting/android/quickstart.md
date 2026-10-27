@@ -27,7 +27,7 @@ fun initMeeting(application: Application, meetToken: String) {
             }
 
             override fun onFailure(errorCode: Int, message: String?) {
-                // message is for diagnostics only; build user-facing text from errorCode
+                // Preserve upstream message; localize by errorCode when it is empty
             }
         }
     )

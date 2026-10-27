@@ -8,21 +8,21 @@ description: "The single public entry point of the SMeeting Android SDK: initial
 ## Usage notes
 
 + Each call to `MeetingEngine.create(application)` creates one Engine instance. Your app should hold a single instance in one place within the process and call `release()` when it's no longer needed.
-+ The current public API uses a single-meeting model: one Engine can have only one meeting that is being entered or active at a time; entering again returns `MeetingErrorCode.SESSION_ALREADY_ACTIVE`.
++ The current public API uses a single-meeting model: one Engine can have only one meeting that is being entered or active at a time; entering again returns `MeetingErrorCode.ALREADY_IN_MEETING`.
 + A successful entry returns [MeetingEnterInfo](/en/meeting/android/types#meetingenterinfo); in-meeting capabilities are then still called through the current `MeetingEngine`.
 + All asynchronous result callbacks stay on the thread they actually come from; the main thread is not guaranteed. Switch to the main thread before updating the UI.
-+ The failure method of `MeetingResultCallback` / `MeetingValueResultCallback<T>` is `onFailure(errorCode, message)`. `message` is for diagnostics only and shouldn't be shown to users directly.
++ The failure method of `MeetingResultCallback` / `MeetingValueResultCallback<T>` is `onFailure(errorCode, message)`. Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available.
 + `roomEvent`, `userEvent`, `mediaEvent`, and `messageEvent` are bound to the current meeting and cleared when you exit the meeting; assign them again to receive events for the next meeting. Engine, IM, and device events share the Engine's lifecycle.
 
 ## Creation and version
 
-### setRtcLanguage(language)
+### setLanguage(language)
 
 ```kotlin
-fun setRtcLanguage(language: RtcLanguage)
+fun setLanguage(language: RtcLanguage)
 ```
 
-Description: Sets the language for subsequent RTC channel and IM backend requests in the process. Call it before `create()` or `initSdk()` when possible; the actual error message depends on the backend response.
+Description: Starting with 2.0.41, this replaces `setRtcLanguage()` and sets a process-wide language for subsequent RTC and Meeting HTTP requests, including streaming downloads. Call it before `create()` or `initSdk()`. Initialization and release do not reset the setting; changing it does not resend existing requests. The default `SYSTEM` mode reads the system language tag for each request and falls back to `zh-CN` if unavailable. Fixed Chinese uses `zh-CN`, and English uses `en`. This method does not translate errors; the backend determines the message.
 
 Parameters: `language` is `RtcLanguage`: `SYSTEM`, `ZH_CN`, or `EN`. See [SRTC enums](/en/rtc/android/enums).
 
@@ -1551,7 +1551,7 @@ engine.switchCamera(targetFront, object : MeetingResultCallback {
         if (errorCode == MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED ||
             errorCode == MeetingErrorCode.SESSION_OPERATION_CANCELLED ||
             errorCode == MeetingErrorCode.LOCAL_DEVICE_OPERATION_IN_PROGRESS ||
-            errorCode == MeetingErrorCode.SDK_NOT_READY) return@runOnUiThread
+            errorCode == MeetingErrorCode.INVALID_STATE) return@runOnUiThread
         // The UI facing is updated only on success, so on failure it still keeps the original state.
         if (previousId.isBlank()) {
             showCameraLost()
@@ -1562,7 +1562,7 @@ engine.switchCamera(targetFront, object : MeetingResultCallback {
             override fun onFailure(errorCode: Int, message: String?) = runOnUiThread {
                 if (generation == cameraUiGeneration && cameraEnabled &&
                     errorCode != MeetingErrorCode.LOCAL_DEVICE_OPERATION_CANCELLED &&
-                    errorCode != MeetingErrorCode.SDK_NOT_READY) showCameraLost()
+                    errorCode != MeetingErrorCode.INVALID_STATE) showCameraLost()
             }
         })
     }
@@ -2508,7 +2508,7 @@ Installs the virtual background module; no license key is required.
 | --- | --- | --- | --- |
 | modelData | `ByteArray` | Yes | Contents of the selfie_segmenter ONNX model read by your app; the meeting layer holds the array reference directly without copying it |
 
-Returns: `0` on success; `MeetingErrorCode.SDK_NOT_READY` when the SDK isn't ready; other errors pass through RTC's `102xxx` error codes. Check the result before turning the effect on.
+Returns: `0` on success; `MeetingErrorCode.INVALID_STATE` when the SDK isn't ready; other errors pass through RTC's `102xxx` error codes. Check the result before turning the effect on.
 
 ### uninstallVirtualBackground()
 
@@ -2528,7 +2528,7 @@ fun enabledVirtualBackground(enabled: Boolean): Int
 | --- | --- | --- | --- |
 | enabled | `Boolean` | Yes | true turns it on; false turns it off and passes the original captured video through |
 
-Returns: `0` on success; `MeetingErrorCode.SDK_NOT_READY` when the SDK isn't ready; other errors pass through the RTC return value. Turning the effect off doesn't uninstall the model.
+Returns: `0` on success; `MeetingErrorCode.INVALID_STATE` when the SDK isn't ready; other errors pass through the RTC return value. Turning the effect off doesn't uninstall the model.
 
 ### setVirtualBackgroundBlur(level)
 

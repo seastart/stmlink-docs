@@ -10,7 +10,7 @@ fun onFailure(errorCode: Int, message: String?)
 fun onError(errorCode: Int, message: String?)
 ```
 
-`message` is for development diagnostics only and is not guaranteed to be suitable for showing to users. Your app should maintain user-facing text and localization based on `errorCode`.
+Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available.
 
 ## Error sources
 
@@ -26,6 +26,11 @@ The error code is an open-ended `Int` and doesn't contain only errors produced b
 
 So don't force callback error codes into a closed enum, and don't assume every error can be found in `MeetingErrorCode`.
 
+
+Non-2xx HTTP responses retain the original status code and status message. Local Meeting network failures use `202007`, timeouts use `202353`, cancellation uses `202354`, empty response bodies use `202355`, and parsing failures or missing required fields use `202356`. These local errors all have empty messages.
+
+MQTT `mcu_task.err_desc`, `mcu_alarm.alarm_brief`, chat content, and custom messages pass through their existing business events unchanged, with existing filtering rules preserved. They are not rewritten as SDK error messages.
+
 ## MeetingErrorCode
 
 Fully qualified class name: `cn.seastart.meeting.error.MeetingErrorCode`
@@ -34,20 +39,20 @@ Fully qualified class name: `cn.seastart.meeting.error.MeetingErrorCode`
 
 | Constant | Value | Description |
 | --- | --- | --- |
-| `UNDEFINED_ERROR` | `202000` | Final fallback error that can't be further identified or classified |
-| `SDK_NOT_INITIALIZED` | `202001` | The Meeting SDK has not finished initializing |
-| `SDK_NOT_READY` | `202002` | The RTC engine or a runtime state that Meeting requires is not ready yet |
-| `INVALID_PARAMETER` | `202003` | Invalid parameter passed to a Meeting public API |
-| `INVALID_RESPONSE_DATA` | `202004` | A successful upstream response is missing a required field or has an invalid field format |
+| `UNKNOWN` | `202000` | Fallback error that cannot be further classified |
+| `NOT_LOGGED_IN` | `202001` | Not logged in or Meeting SDK initialization is incomplete |
+| `TOKEN_EXPIRED` | `202002` | Meeting determined locally that the token has expired |
+| `NOT_IN_MEETING` | `202003` | Not in a meeting or no active meeting exists |
 | `TOKEN_INVALID` | `202005` | Meeting determined locally that the token is invalid |
-| `TOKEN_EXPIRED` | `202006` | Meeting determined locally that the token has expired |
+| `ALREADY_IN_MEETING` | `202006` | A meeting is already being entered or is active |
+| `NETWORK_ERROR` | `202007` | Local network transport failure, such as DNS or connection failure |
+| `INVALID_STATE` | `202011` | RTC or Meeting is not ready, or the current state does not allow the operation |
+| `INVALID_ARGUMENT` | `202012` | Invalid parameter passed to a Meeting public API |
 
 ### Session errors (202100–202199)
 
 | Constant | Value | Description |
 | --- | --- | --- |
-| `SESSION_ALREADY_ACTIVE` | `202101` | Tried to enter a meeting again while a Session is already entering or active |
-| `SESSION_NOT_ACTIVE` | `202102` | There is currently no usable active Session |
 | `ENTER_MEETING_CANCELLED` | `202103` | The meeting entry flow was explicitly canceled |
 | `WAITING_ROOM_CONTEXT_MISSING` | `202104` | No valid meeting context when exiting the waiting room |
 | `AUDIENCE_OPERATION_FORBIDDEN` | `202105` | An audience member called a restricted capability such as opening a device, sharing, or publishing |
@@ -82,9 +87,8 @@ Fully qualified class name: `cn.seastart.meeting.error.MeetingErrorCode`
 | Constant | Value | Description |
 | --- | --- | --- |
 | `HTTP_CLIENT_NOT_INITIALIZED` | `202351` | Meeting's internal HTTP client is not initialized yet |
-| `NETWORK_ERROR` | `202352` | Local network transport failure such as DNS, connection, or being offline |
 | `REQUEST_TIMEOUT` | `202353` | Local HTTP request timed out |
-| `REQUEST_CANCELLED` | `202354` | The HTTP request was canceled and needs to be converted into a failure callback |
+| `REQUEST_CANCELLED` | `202354` | HTTP request cancellation or an explicit stop during screen sharing startup |
 | `EMPTY_RESPONSE_BODY` | `202355` | The HTTP request succeeded but the response body is empty |
 | `RESPONSE_PARSE_FAILED` | `202356` | An HTTP response exists but can't be converted into a public business result |
 
@@ -105,9 +109,9 @@ The following errors come from RTC `2.0.33`, take effect with Meeting `2.0.37`, 
 override fun onFailure(errorCode: Int, message: String?) {
     logger.error("Meeting failed: code=$errorCode, message=$message")
 
-    val userMessage = when (errorCode) {
+    val userMessage = message?.takeIf { it.isNotBlank() } ?: when (errorCode) {
         MeetingErrorCode.TOKEN_EXPIRED -> "Your login has expired. Please log in again."
-        MeetingErrorCode.SESSION_ALREADY_ACTIVE -> "A meeting is already in progress"
+        MeetingErrorCode.ALREADY_IN_MEETING -> "A meeting is already in progress"
         MeetingErrorCode.SCREEN_PERMISSION_DENIED -> "Screen recording permission was not granted"
         else -> "Operation failed. Please try again later."
     }
@@ -115,4 +119,20 @@ override fun onFailure(errorCode: Int, message: String?) {
 }
 ```
 
-You can log both `errorCode` and `message`; the UI should use only text your app maintains itself.
+Log the original error code and message. Prefer a non-empty upstream message in the UI; otherwise, localize by error code. Do not infer the source from the numeric range.
+
+## Migrating to 2.0.41
+
+Old constant names have no compatibility aliases; other declared constants keep their values. In particular, `202002`, `202003`, and `202006` now have new meanings. Update hard-coded values and message mappings.
+
+| Old constant | Old code | New constant | New code |
+| --- | ---: | --- | ---: |
+| `UNDEFINED_ERROR` | `202000` | `UNKNOWN` | `202000` |
+| `SDK_NOT_INITIALIZED` | `202001` | `NOT_LOGGED_IN` | `202001` |
+| `SDK_NOT_READY` | `202002` | `INVALID_STATE` | `202011` |
+| `INVALID_PARAMETER` | `202003` | `INVALID_ARGUMENT` | `202012` |
+| `INVALID_RESPONSE_DATA` | `202004` | `RESPONSE_PARSE_FAILED` | `202356` |
+| `TOKEN_EXPIRED` | `202006` | `TOKEN_EXPIRED` | `202002` |
+| `SESSION_ALREADY_ACTIVE` | `202101` | `ALREADY_IN_MEETING` | `202006` |
+| `SESSION_NOT_ACTIVE` | `202102` | `NOT_IN_MEETING` | `202003` |
+| `NETWORK_ERROR` | `202352` | `NETWORK_ERROR` | `202007` |

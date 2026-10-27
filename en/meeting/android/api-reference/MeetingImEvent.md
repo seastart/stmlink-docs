@@ -45,7 +45,7 @@ Parameters:
 | --- | --- |
 | `reason` | Disconnect reason defined by SRTC. |
 | `statusCode` | Underlying status code. |
-| `message` | Nullable diagnostic information. |
+| `message` | Messages for Meeting-produced errors are empty; RTC and backend messages pass through unchanged and may be null or empty. Provide localized text when no message is available. |
 
 Returns: None (`Unit`).
 
