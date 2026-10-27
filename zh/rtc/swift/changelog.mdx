@@ -3,6 +3,20 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.5.5] - 2026.10.27
+#### 新增
++ **建轨时可指定轨道 ID**：`createLocalCustomVideoTrack(desc:trackId:)`、`createLocalScreenTrack(preset:audioPreset:mode:trackId:)`，以及 macOS 带采集源的 `createLocalScreenTrack(source:...:trackId:)`。用于同一路画面先后换采集源（例如视图录制与屏幕共享轮流发布）时保持轨道 ID 不变。网宿 CDN 的流名由轨道 ID 决定，云端录制只拉开录时的那一路流，ID 一换就会在约 30～45 秒后报「检测到推流中断了」并停止录制。原有建轨接口不变，仍随机生成 ID。
+
+#### 变更
++ **同一个轨道 ID 同时只能有一个对象在发布**：另一个对象仍在发布时再调用 `publishLocalTrack` 抛 `invalidState`，不再悄悄顶掉前一个。
++ **取消发布按对象身份判断**：对已被同 ID 新轨道替换的旧对象调用 `unpublishLocalTrack` 直接返回，不会把正在发布的新轨道一起摘掉。
+
+<Note>
+只新增接口，1.5.4 的接入代码可直接升级。平台下限不变（iOS 16 / macOS 14）。
+
+`SRTCBroadcastKit` 本次为 **1.0.18**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.5.4] - 2026.10.24
 #### 修复
 + **切换前后置摄像头后 `LocalCameraTrack.isFrontCamera` 不更新**：旧版 `switchCamera()` 只切了底层采集，轨道上的前后置状态停在开摄像头时的值，切到后置仍报前置。由此带来三个问题：业务层按 `isFrontCamera` 回填的前后置按钮不跟着变；`isMirrored` 仍为 `true`，后置摄像头的本地预览也被左右镜像；`mute()` 后再 `unmute()`（或 `restartCapture()`）会按旧状态重启采集，**切到后置后关开一次摄像头会悄悄回到前置**。现在切换完成后轨道状态随之更新，镜像随前后置自动切换。

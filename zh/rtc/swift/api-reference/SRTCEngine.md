@@ -243,6 +243,27 @@ let customVideoTrack = srtc.createLocalCustomVideoTrack(desc: "canvas")
 
 ---
 
+#### 指定轨道 ID 建轨（1.5.5 起）
+
+`createLocalCustomVideoTrack(desc:trackId:)`、`createLocalScreenTrack(preset:audioPreset:mode:trackId:)`，以及 macOS 的 `createLocalScreenTrack(source:preset:audioPreset:excludedWindowIds:excludesCurrentApplication:trackId:)`，与同名的原接口相同，只是多一个 `trackId: String` 参数，用它作为轨道 ID，不再随机生成。
+
+适用于「同一路画面先后换采集源」：几条轨道对象各自采集、**先后互斥**发布，但对外始终是同一个轨道 ID。网宿 CDN 的流名由轨道 ID 决定，云端录制只拉开录时的那一路流，换了 ID，录制会判定推流中断；同 ID 先取消发布再发布则不受影响。
+
+```swift
+let id = UUID().uuidString
+let viewTrack = srtc.createLocalCustomVideoTrack(desc: "screen", trackId: id)
+let screenTrack = srtc.createLocalScreenTrack(preset: .h1080p, trackId: id)
+// viewTrack 取消发布之后再发布 screenTrack，二者不能同时发布
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `trackId` | `String` | 是 | 轨道 ID |
+
+同一时刻只能发布同一 ID 的其中一个对象：另一个还在发布时调用 `publishLocalTrack` 会抛 `invalidState`。取消发布只对当前正在发布的那个对象生效，对已被替换的旧对象调用 `unpublishLocalTrack` 直接返回，不影响新轨道。
+
+---
+
 #### `createLocalCustomAudioTrack(desc:)`
 
 创建自定义音频轨道，适合外部 PCM 输入场景。
