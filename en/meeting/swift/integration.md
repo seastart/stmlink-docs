@@ -65,7 +65,7 @@ You need this step only for **iOS full-screen screen sharing** (sharing the enti
 dependencies: [
     .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.5.1"),
     // The version must match the SRTC version pinned inside SMeeting
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.5.4"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.5.5"),
 ],
 ```
 

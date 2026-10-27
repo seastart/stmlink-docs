@@ -3,6 +3,19 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.5.5] - 2026.10.27
+#### Fixed
++ **Switching screen sharing on a Wangsu CDN channel while cloud recording was running made the cloud report the stream as interrupted**: when view recording (`startViewCaptureShare()`) and screen sharing were published in turn, previous versions used a new track ID each time. The Wangsu stream name is derived from the track ID, and cloud recording only pulls the stream that existed when recording started. As a result, after "start recording → start sharing → stop sharing", a `roomMcuTask` exception ("检测到推流中断了", stream interrupted) arrived about 30–45 seconds later, and the recording ended at the switch. View recording and screen sharing tracks in the same room now keep the same track ID, while still capturing separately and being published one at a time; the recording covers the whole session. Behavior on SFU channels is unchanged.
+
+#### Changed
++ The SRTC dependency is now **1.5.5** (which adds track creation with a specified track ID); see the SRTC Swift changelog for details.
++ Update the `srtc-swift-sdk` dependency of your iOS full-screen sharing extension target to `exact: "1.5.5"` as well, matching the version pinned in this release's manifest; otherwise dependency resolution fails.
++ On Wangsu channels, publishing screen sharing while the view recording track is still published throws SRTC's `invalidState`, so the two are never published at the same time. The existing usage of calling `stopViewCaptureShare()` before sharing is unaffected.
+
+<Note>
+No API changes; integration code from 1.5.4 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14).
+</Note>
+
 ### [1.5.4] - 2026.10.24
 #### Changed
 + The SRTC dependency is now **1.5.4**, which fixes the local camera's front/back position not updating after a switch (the back camera preview was mirrored, and turning the camera off and on again switched back to the front camera); see the SRTC Swift changelog for details. The meeting layer's `switchCamera()` benefits directly, with no code changes.

@@ -243,6 +243,27 @@ After calling it, you can inject `CVPixelBuffer` values through `pushFrame(...)`
 
 ---
 
+#### Creating a track with a specified track ID (1.5.5+)
+
+`createLocalCustomVideoTrack(desc:trackId:)`, `createLocalScreenTrack(preset:audioPreset:mode:trackId:)`, and, on macOS, `createLocalScreenTrack(source:preset:audioPreset:excludedWindowIds:excludesCurrentApplication:trackId:)` are the same as the methods of the same name, except for an extra `trackId: String` parameter that is used as the track ID instead of a randomly generated one.
+
+Use them when the same feed switches capture sources: several track objects capture separately and are published **one at a time**, but always appear under the same track ID. With the Wangsu CDN, the stream name is derived from the track ID, and cloud recording only pulls the stream that existed when recording started; if the ID changes, recording treats the stream as interrupted. Unpublishing and then republishing under the same ID isn't affected.
+
+```swift
+let id = UUID().uuidString
+let viewTrack = srtc.createLocalCustomVideoTrack(desc: "screen", trackId: id)
+let screenTrack = srtc.createLocalScreenTrack(preset: .h1080p, trackId: id)
+// Publish screenTrack only after viewTrack is unpublished; the two can't be published at the same time
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `trackId` | `String` | Yes | Track ID |
+
+Only one object with a given ID can be published at a time: calling `publishLocalTrack` while another one is still published throws `invalidState`. Unpublishing only affects the object that is currently published; calling `unpublishLocalTrack` on an old object that has been replaced returns immediately and doesn't affect the new track.
+
+---
+
 #### `createLocalCustomAudioTrack(desc:)`
 
 Creates a custom audio track, for scenarios with external PCM input.

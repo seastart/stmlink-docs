@@ -3,6 +3,20 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.5.5] - 2026.10.27
+#### Added
++ **Specify the track ID when creating a track**: `createLocalCustomVideoTrack(desc:trackId:)`, `createLocalScreenTrack(preset:audioPreset:mode:trackId:)`, and, on macOS, `createLocalScreenTrack(source:...:trackId:)` with a capture source. Use them to keep the track ID unchanged when the same feed switches capture sources (for example, when view recording and screen sharing are published in turn). With the Wangsu CDN, the stream name is derived from the track ID, and cloud recording only pulls the stream that existed when recording started; once the ID changes, recording reports "检测到推流中断了" (stream interrupted) after about 30–45 seconds and stops. The existing track creation methods are unchanged and still generate a random ID.
+
+#### Changed
++ **Only one object per track ID can be published at a time**: calling `publishLocalTrack` while another object with the same ID is still published throws `invalidState` instead of silently replacing it.
++ **Unpublishing checks object identity**: calling `unpublishLocalTrack` on an old object that has been replaced by a new track with the same ID returns immediately and doesn't remove the new track that is being published.
+
+<Note>
+This release only adds APIs; integration code from 1.5.4 can upgrade directly. The minimum platforms are unchanged (iOS 16 / macOS 14).
+
+`SRTCBroadcastKit` is **1.0.18** in this release; its code is unchanged and only the version number is bumped along with the SDK.
+</Note>
+
 ### [1.5.4] - 2026.10.24
 #### Fixed
 + **`LocalCameraTrack.isFrontCamera` wasn't updated after switching between the front and back cameras**: in previous versions, `switchCamera()` only switched the underlying capture, and the track's camera position stayed at the value from when the camera was turned on, so it still reported the front camera after switching to the back one. This caused three problems: front/back camera buttons that your app sets from `isFrontCamera` didn't update; `isMirrored` stayed `true`, so the local preview of the back camera was mirrored as well; and `unmute()` after `mute()` (or `restartCapture()`) restarted capture with the stale position, so **after switching to the back camera, turning the camera off and on again silently switched back to the front camera**. The track state is now updated once the switch completes, and mirroring follows the camera position automatically.
