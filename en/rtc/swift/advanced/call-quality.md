@@ -15,7 +15,7 @@ The SFU periodically sends a set of control-plane messages, which the SDK turns 
 | `didSwitchLayer` | Result of a simulcast layer switch | Troubleshooting sudden changes in video quality |
 
 <Note>
-These four events **exist only on the SeaStart (SFU) engine**. They travel over the signaling DataChannel on the subscribing PeerConnection, and the Wangsu (CDN) engine has no such path, so with CDN you receive none of them and `getConnectionQuality()` also returns `nil`. Use `Channel.streamVendor` to tell the current engine—see [Types](/en/rtc/swift/types#streamvendor).
+The quality and layer events **exist only on the SeaStart (SFU) engine**. They travel over the signaling DataChannel on the subscribing PeerConnection, and the Wangsu (CDN) engine has no such path, so with CDN you don't receive them and `getConnectionQuality()` also returns `nil`. `didChangeActiveSpeakers` is the exception: on Wangsu channels the SDK computes remote speakers locally (covering subscribed audio only), so it fires on both engines. Use `Channel.streamVendor` to tell the current engine—see [Types](/en/rtc/swift/types#streamvendor).
 </Note>
 
 All callbacks have default empty implementations, so implement only the ones you care about. Register the same way as for other channel events:
@@ -109,6 +109,33 @@ func channel(_ channel: Channel, didChangeActiveSpeakers snapshot: ActiveSpeaker
 + `level` is a normalized linear volume (0–1), which you can use directly to draw a volume bar
 
 Each `ActiveSpeakerInfo` carries `uid` and `trackId`—the same user may have multiple audio tracks, so use the latter when you need to pinpoint the exact track.
+
+#### Your own volume (since 1.6.0)
+
+The snapshot **includes you as well**: the entry with `isLocal == true`, whose `trackId` is your published audio track. It appears only while you are publishing audio, not muted, and actually speaking—matching what the remote side hears. The server doesn't send your volume back to you, so the SDK computes this entry locally with **the same algorithm** the server uses to detect speakers. It is therefore on the same scale as remote speakers (both quantized in steps of 1/8), and one threshold is enough:
+
+```swift
+let speakingLevel = 0.125   // shared by remote speakers and you
+
+func channel(_ channel: Channel, didChangeActiveSpeakers snapshot: ActiveSpeakersSnapshot) {
+    selfLevel = snapshot.speakers.first(where: \.isLocal)?.level ?? 0
+    selfSpeaking = selfLevel >= speakingLevel
+    remoteLevels = Dictionary(snapshot.speakers.filter { !$0.isLocal }.map { ($0.uid, $0.level) },
+                              uniquingKeysWith: max)
+}
+```
+
+Tune your own entry with `srtc.activeSpeakerOptions`:
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `includeLocal` | `true` | Whether to include you in the snapshot; `false` means remote speakers only |
+| `interval` | `0.5` | Local sampling interval (seconds), read when joining a channel |
+| `silenceThreshold` | `0.01` | Local silence threshold (about -40 dBFS); below it you are left out of the snapshot |
+
+<Note>
+In 1.5.5 and earlier, your own volume required implementing an `AudioProcessor` and attaching it to `audioCaptureProcessor` to compute from captured audio. After upgrading, simply remove that code. Keeping it causes no conflict (the SDK's metering and your processor run in the same chain without replacing each other), but the volume you compute yourself is not on the same scale as remote speakers.
+</Note>
 
 ---
 

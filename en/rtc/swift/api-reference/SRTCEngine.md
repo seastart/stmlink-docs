@@ -53,7 +53,11 @@ For error codes and how to handle them, see [Error codes](/en/rtc/swift/error-co
 
 #### `audioCaptureProcessor`
 
-Audio processor applied after microphone capture, usable for voice changing, noise suppression, and similar processing.
+Audio processor applied after microphone capture, usable for voice changing, noise suppression, and similar processing. There is one globally; the SDK's own local level metering runs after it, and the two don't interfere. Since 1.6.0 you no longer need it to compute your own volume—see `activeSpeakerOptions`.
+
+#### `activeSpeakerOptions`
+
+`ActiveSpeakerOptions`, parameters for your own entry in the `didChangeActiveSpeakers` snapshot, available since 1.6.0: `includeLocal` (default `true`), `interval` (local sampling interval, default 0.5 s, read when joining a channel), and `silenceThreshold` (default 0.01). See [Call quality and active speakers](/en/rtc/swift/advanced/call-quality).
 
 #### `audioRenderProcessor`
 

@@ -3,6 +3,18 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.6.0] - 2026.10.30
+#### Added
++ **`activeSpeakersDidChange` includes you**: the snapshot gains a local entry (`ActiveSpeakerInfo.isLocal == true`) that appears while your mic is on and you are speaking. It shares the remote scale (0–1, quantized in steps of 1/8), so one threshold drives both your own volume bar and the "speaking" indicator. You no longer need to attach `meeting.srtc.audioCaptureProcessor` to compute your own volume.
++ **`SMeetingEngine.activeSpeakerOptions`**: passes through SRTC's `activeSpeakerOptions`, letting you turn off the local entry (`includeLocal = false`) or tune sampling. Set it before joining.
+
+#### Changed
++ Now depends on **SRTC 1.6.0**. In Wangsu (CDN) meetings, the remote `level` now uses the same scale as SFU meetings (it used to be two to three times higher and not quantized); re-check any hard-coded numeric thresholds.
+
+<Note>
+APIs are only added, nothing is removed or renamed, so 1.5.5 integration code compiles as is; the snapshot now includes you by default, so if your code treats everyone in it as remote, distinguish yourself with `isLocal`. For iOS full-screen sharing, change the extension target's `srtc-swift-sdk` dependency to `exact: "1.6.0"` as well.
+</Note>
+
 ### [1.5.5] - 2026.10.27
 #### Fixed
 + **Switching screen sharing on a Wangsu CDN channel while cloud recording was running made the cloud report the stream as interrupted**: when view recording (`startViewCaptureShare()`) and screen sharing were published in turn, previous versions used a new track ID each time. The Wangsu stream name is derived from the track ID, and cloud recording only pulls the stream that existed when recording started. As a result, after "start recording → start sharing → stop sharing", a `roomMcuTask` exception ("检测到推流中断了", stream interrupted) arrived about 30–45 seconds later, and the recording ended at the switch. View recording and screen sharing tracks in the same room now keep the same track ID, while still capturing separately and being published one at a time; the recording covers the whole session. Behavior on SFU channels is unchanged.

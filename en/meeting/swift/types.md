@@ -666,7 +666,7 @@ For why there are only two switchable states, see [Audio routing](/en/meeting/sw
 | `QualityReport` | `ts` (Unix milliseconds), `pub: QualitySample` (uplink), `sub: QualitySample` (downlink) |
 | `QualityEvaluation` | `uplink`, `downlink`, `overall` (the worse tier), `mos` (the smaller of uplink and downlink), `timestamp` |
 | `ConnectionQualityChange` | `evaluation: QualityEvaluation`, `previous: ConnectionQuality` (`unknown` on the first tier change) |
-| `ActiveSpeakerInfo` | `uid`, `trackId`, `level` (volume normalized to 0–1) |
+| `ActiveSpeakerInfo` | `uid`, `trackId`, `level` (linear volume, 0–1, quantized in steps of 1/8), `isLocal` (whether it's you, since 1.6.0) |
 | `ActiveSpeakersSnapshot` | `ts`, `speakers: [ActiveSpeakerInfo]` (already sorted by volume in descending order; empty when no one is speaking) |
 | `LayerSwitchedInfo` | `subKey`, `fromTrackId`, `toTrackId`, `reason` (such as `bwe_down` / `bwe_up`), `latencyMs` |
 

@@ -371,10 +371,11 @@ A simplified level evaluation snapshot, used by `getConnectionQuality()` and the
 
 | Type | Fields |
 | --- | --- |
-| `ActiveSpeakerInfo` | `uid`, `trackId`, `level` (normalized linear volume, 0–1) |
+| `ActiveSpeakerInfo` | `uid`, `trackId`, `level` (linear volume, 0–1, quantized in steps of 1/8), `isLocal` (whether it's you, since 1.6.0) |
 | `ActiveSpeakersSnapshot` | `ts`, `speakers: [ActiveSpeakerInfo]` |
+| `ActiveSpeakerOptions` | `includeLocal` (default `true`), `interval` (seconds, default 0.5), `silenceThreshold` (default 0.01), since 1.6.0 |
 
-`speakers` is the **full list**: the SDK has already merged the server's incremental protocol and sorted it by `level` in descending order; when nobody is speaking, it's an empty array.
+`speakers` is the **full list**: the SDK has already merged the server's incremental protocol and sorted it by `level` in descending order; when nobody is speaking, it's an empty array. Since 1.6.0 you are in it too (`isLocal == true`), on the same scale as remote speakers.
 
 ---
 

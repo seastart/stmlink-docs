@@ -3,6 +3,22 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.6.0] - 2026.10.30
+#### Added
++ **Your own volume now also comes through `didChangeActiveSpeakers`**: the snapshot gains a local entry with `ActiveSpeakerInfo.isLocal == true`, whose `trackId` is your published audio track. It appears only while you are publishing audio, not muted, and actually speaking—matching what the remote side hears. Previously you had to implement an `AudioProcessor` and attach it to `audioCaptureProcessor` to compute your own volume from captured audio; that is no longer needed.
++ **`SRTCEngine.activeSpeakerOptions`** (`ActiveSpeakerOptions`): `includeLocal` (default `true`; turn it off to get remote-only snapshots as before), `interval` (local sampling interval, default 0.5 s, read when joining a channel), and `silenceThreshold` (local silence threshold, default 0.01).
+
+#### Changed
++ **Remote and local levels share one scale, so one threshold is enough**: the SDK computes your level with the same algorithm the server uses to detect speakers, and `level` is quantized in steps of 1/8 (0.125, 0.25, …) just like remote levels.
++ **The remote `level` on Wangsu (CDN) channels uses a different scale now**: it used to be the peak volume from receiving statistics, two to three times higher than on SeaStart channels for the same speech and not quantized; it now matches SeaStart. **If you hard-coded numeric thresholds, re-check them** (for example, a 0.3 "speaking loudly" threshold—the same voice now reads about 0.125–0.25). Remote speakers on Wangsu channels still only cover subscribed audio.
++ **`audioCaptureProcessor` is still entirely yours**: the SDK's level metering runs in the same chain after your processor, so setting or clearing it doesn't affect your own volume in the snapshot.
+
+<Note>
+APIs are only added, nothing is removed or renamed, so 1.5.5 integration code compiles as is. However, **the snapshot now includes you by default**: if your code treats everyone in the snapshot as remote (for example, looking each uid up in the member list), distinguish yourself with `isLocal` or set `includeLocal` to `false`. Minimum platforms are unchanged (iOS 16 / macOS 14).
+
+`SRTCBroadcastKit` is **1.0.19** in this release; its code is unchanged and only the version number is bumped along with the SDK.
+</Note>
+
 ### [1.5.5] - 2026.10.27
 #### Added
 + **Specify the track ID when creating a track**: `createLocalCustomVideoTrack(desc:trackId:)`, `createLocalScreenTrack(preset:audioPreset:mode:trackId:)`, and, on macOS, `createLocalScreenTrack(source:...:trackId:)` with a capture source. Use them to keep the track ID unchanged when the same feed switches capture sources (for example, when view recording and screen sharing are published in turn). With the Wangsu CDN, the stream name is derived from the track ID, and cloud recording only pulls the stream that existed when recording started; once the ID changes, recording reports "检测到推流中断了" (stream interrupted) after about 30–45 seconds and stops. The existing track creation methods are unchanged and still generate a random ID.

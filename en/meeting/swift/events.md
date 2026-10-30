@@ -198,7 +198,7 @@ Quality is reported through **two separate feeds**; pick one based on what you n
 + `didReceiveQualityReport` fires on every report with the raw values (packet loss, RTT, jitter, bitrate, MOS), suitable for signal bar icons and detailed diagnostics panels
 + `connectionQualityDidChange` fires only when the level jumps to a different tier, suitable for "your network is poor" hints and proactive downgrade decisions
 
-`activeSpeakersDidChange` gives a **full snapshot** (already sorted by volume in descending order), so just overwrite your UI with it; you don't need to merge increments yourself. When no one is speaking, `speakers` is an empty array.
+`activeSpeakersDidChange` gives a **full snapshot** (already sorted by volume in descending order), so just overwrite your UI with it; you don't need to merge increments yourself. When no one is speaking, `speakers` is an empty array. Since 1.6.0 you are in the snapshot too (`isLocal == true`, present while your mic is on and you are speaking), on the same scale as remote speakers; to leave yourself out, set `meeting.activeSpeakerOptions.includeLocal = false`.
 
 The data structures of these four events are defined in the underlying SRTC module, so you need `import SRTC` to use them; for the fields, see [Types](/en/meeting/swift/types). For level determination, cold-start values, and proactive layer switching, see [SRTC · Call quality and active speakers](/en/rtc/swift/advanced/call-quality).
 

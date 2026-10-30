@@ -374,8 +374,8 @@
   "en/meeting/swift/advanced/screen-sharing": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/screen-sharing.md",
-    "zh_blob": "58e617385b73d4387c62f8b424e90c67c1036e89",
-    "zh_commit": "21b52a73270865c4249f5491e6378d19098cc73f"
+    "zh_blob": "6fbc273a96efec54408602b4228ae328c8e9f9d1",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/meeting/swift/advanced/sign-in": {
     "reviewed": false,
@@ -440,8 +440,8 @@
   "en/meeting/swift/changelog": {
     "reviewed": false,
     "source": "zh/meeting/swift/changelog.mdx",
-    "zh_blob": "78561f6fcb59dbe833a1799d629a1545c715d066",
-    "zh_commit": "21b52a73270865c4249f5491e6378d19098cc73f"
+    "zh_blob": "e9ad8f68953e7c7fef71f2110f5a8ea616cdc2d2",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/meeting/swift/error-codes": {
     "reviewed": false,
@@ -452,14 +452,14 @@
   "en/meeting/swift/events": {
     "reviewed": false,
     "source": "zh/meeting/swift/events.md",
-    "zh_blob": "a53e5343dabdcf3bc45b4157e98c29bb1953c6ee",
-    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
+    "zh_blob": "b869b86f0100f3fee95f8ec833b2d1579c0877d2",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/meeting/swift/integration": {
     "reviewed": false,
     "source": "zh/meeting/swift/integration.md",
-    "zh_blob": "98620c44e80178d0cc89268c5093bc9c8762c7af",
-    "zh_commit": "21b52a73270865c4249f5491e6378d19098cc73f"
+    "zh_blob": "d79c04de6588a5a2cd2acbb240a92df5883a298e",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/meeting/swift/key-concepts": {
     "reviewed": true,
@@ -476,8 +476,8 @@
   "en/meeting/swift/types": {
     "reviewed": false,
     "source": "zh/meeting/swift/types.md",
-    "zh_blob": "1d631de2a3249184cef423d6ee04f4d65cb0df00",
-    "zh_commit": "c595363e72ac29384b96a24df40a3e7a0e6fe664"
+    "zh_blob": "a0b28b09b9fbb6379f78d8191a58556ff506cee2",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/meeting/token": {
     "reviewed": true,
@@ -1248,10 +1248,10 @@
     "zh_commit": "626017231aa9f4cd40f7c53aa5be9789043f7c0c"
   },
   "en/rtc/swift/advanced/call-quality": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/swift/advanced/call-quality.md",
-    "zh_blob": "b899de3a171cb9d1ddff6bc191fff70441137ec8",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "7d793b56fe15e88076daaeaebdc925c42f503b2d",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/rtc/swift/advanced/custom-track": {
     "reviewed": true,
@@ -1292,8 +1292,8 @@
   "en/rtc/swift/api-reference/SRTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/swift/api-reference/SRTCEngine.md",
-    "zh_blob": "2c4c0ab3d2df63d1f9d5584266a4ff0583d3bbe2",
-    "zh_commit": "21b52a73270865c4249f5491e6378d19098cc73f"
+    "zh_blob": "2219b17b0c8390a36ff9e892d07405b3620c267c",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/rtc/swift/api-reference/media-tracks": {
     "reviewed": false,
@@ -1304,8 +1304,8 @@
   "en/rtc/swift/changelog": {
     "reviewed": false,
     "source": "zh/rtc/swift/changelog.mdx",
-    "zh_blob": "fb9621255dacd16650e8d1474ac28b1835ceba4c",
-    "zh_commit": "21b52a73270865c4249f5491e6378d19098cc73f"
+    "zh_blob": "9c06112ce3e9e6b600a327ceb2a40e3150107a25",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/rtc/swift/error-codes": {
     "reviewed": false,
@@ -1322,8 +1322,8 @@
   "en/rtc/swift/integration": {
     "reviewed": false,
     "source": "zh/rtc/swift/integration.md",
-    "zh_blob": "08e37b7a8f5503b5c5a61b9cb9f1c2198f9652e7",
-    "zh_commit": "21b52a73270865c4249f5491e6378d19098cc73f"
+    "zh_blob": "26583d9eaa77659a1a8f3f8adebbcf5d5d3e98df",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/rtc/swift/key-concepts": {
     "reviewed": true,
@@ -1340,8 +1340,8 @@
   "en/rtc/swift/types": {
     "reviewed": false,
     "source": "zh/rtc/swift/types.md",
-    "zh_blob": "31ee4aea5ebc0e9949ba27697fc485b0e451c3a4",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "5f94a9de4ad1558158fc4877305ae4d42e15a11f",
+    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/rtc/token": {
     "reviewed": true,
