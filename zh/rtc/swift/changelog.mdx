@@ -3,6 +3,22 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.6.0] - 2026.10.30
+#### 新增
++ **自己的音量也走 `didChangeActiveSpeakers`**：快照里新增本端那一条，`ActiveSpeakerInfo.isLocal` 为 `true`，`trackId` 是本端发布的音频轨。只在已发布音频、没有静音且确实在说话时出现，与对端听到的一致。以前「我」的音量只能自己实现 `AudioProcessor`、挂到 `audioCaptureProcessor` 上从采集数据算，现在不需要了。
++ **`SRTCEngine.activeSpeakerOptions`**（`ActiveSpeakerOptions`）：`includeLocal`（默认 `true`，关掉即回到只含远端）、`interval`（本端采样间隔，默认 0.5 秒，加入频道时读取）、`silenceThreshold`（本端静默门限，默认 0.01）。
+
+#### 变更
++ **远端与自己同一量纲，一个阈值即可**：本端由 SDK 按服务端判定说话人的同一算法计算，`level` 与远端一样按 1/8 分档（0.125、0.25 …）。
++ **网宿（CDN）频道里远端 `level` 的口径变了**：以前取的是接收统计里的峰值音量，同一段语音比 SeaStart 频道大两三倍、且不分档；现在与 SeaStart 一致。**按数值写死阈值的接入方请重新核对**（例如原先用 0.3 判断「大声说话」，现在同样的声音约为 0.125～0.25）。网宿频道的远端说话人仍只覆盖已订阅的音频。
++ **`audioCaptureProcessor` 仍完全留给业务**：SDK 的电平计量与它串在同一条链上（先跑你的处理器、再量电平），设置或清空它都不会影响快照里自己的音量。
+
+<Note>
+API 只新增不删改，1.5.5 的接入代码可直接编译。但**快照默认多了自己这一条**：若业务把快照里的每个人都当远端处理（例如按 uid 去成员列表查人），请用 `isLocal` 区分或把 `includeLocal` 设为 `false`。平台下限不变（iOS 16 / macOS 14）。
+
+`SRTCBroadcastKit` 本次为 **1.0.19**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.5.5] - 2026.10.27
 #### 新增
 + **建轨时可指定轨道 ID**：`createLocalCustomVideoTrack(desc:trackId:)`、`createLocalScreenTrack(preset:audioPreset:mode:trackId:)`，以及 macOS 带采集源的 `createLocalScreenTrack(source:...:trackId:)`。用于同一路画面先后换采集源（例如视图录制与屏幕共享轮流发布）时保持轨道 ID 不变。网宿 CDN 的流名由轨道 ID 决定，云端录制只拉开录时的那一路流，ID 一换就会在约 30～45 秒后报「检测到推流中断了」并停止录制。原有建轨接口不变，仍随机生成 ID。

@@ -3,6 +3,18 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.6.0] - 2026.10.30
+#### 新增
++ **`activeSpeakersDidChange` 含自己**：快照里新增本端那一条（`ActiveSpeakerInfo.isLocal == true`），开麦且在说话时出现，与远端同一量纲（0~1，按 1/8 分档），一个阈值即可画「我」的音柱和「正在说话」。不必再自己挂 `meeting.srtc.audioCaptureProcessor` 算本端音量。
++ **`SMeetingEngine.activeSpeakerOptions`**：透传 SRTC 的 `activeSpeakerOptions`，可关掉本端（`includeLocal = false`）或调整采样参数，建议入会前设置。
+
+#### 变更
++ 依赖升至 **SRTC 1.6.0**。网宿（CDN）会议里远端 `level` 的口径与 SFU 会议统一（以前偏大两三倍且不分档），按数值写死阈值的请重新核对。
+
+<Note>
+API 只新增不删改，1.5.5 的接入代码可直接编译；快照默认多了自己这一条，若业务把快照里的人都当远端处理，请用 `isLocal` 区分。做 iOS 全屏共享的工程，扩展 target 那条 `srtc-swift-sdk` 依赖请一起改成 `exact: "1.6.0"`。
+</Note>
+
 ### [1.5.5] - 2026.10.27
 #### 修复
 + **网宿 CDN 频道里开着云录制切换屏幕共享，录制会被云端判为推流中断**：视图录制（`startViewCaptureShare()`）与屏幕共享轮流发布时，旧版每次都换一个新轨道 ID，而网宿的流名由轨道 ID 决定，云端录制只拉开录时的那一路流。表现为「开录 → 开共享 → 停共享」后约 30～45 秒收到 `roomMcuTask` 异常（`检测到推流中断了`），录像只到切换前。现在同一房间里视图录制轨与屏幕共享轨沿用同一个轨道 ID，两者仍各自采集、互斥发布；录像覆盖整个过程。SFU 频道行为不变。

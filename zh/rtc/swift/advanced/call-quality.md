@@ -15,7 +15,7 @@ SFU 会周期性下发一组控制面消息，SDK 把它们转成四个 `Channel
 | `didSwitchLayer` | 大小流切层结果 | 排查画质突变 |
 
 <Note>
-这四个事件**仅 SeaStart（SFU）引擎有**。它们走的是订阅 PeerConnection 上的信令 DataChannel，而网宿（CDN）引擎没有这条通道，因此走 CDN 时不会收到任何一个，`getConnectionQuality()` 也返回 `nil`。用 `Channel.streamVendor` 判断当前引擎，见 [类型定义](/zh/rtc/swift/types#streamvendor)。
+质量与切层三个事件**仅 SeaStart（SFU）引擎有**。它们走的是订阅 PeerConnection 上的信令 DataChannel，而网宿（CDN）引擎没有这条通道，因此走 CDN 时收不到，`getConnectionQuality()` 也返回 `nil`。`didChangeActiveSpeakers` 例外：网宿频道里由 SDK 本地计算远端说话人（只覆盖已订阅的音频），两种引擎都会触发。用 `Channel.streamVendor` 判断当前引擎，见 [类型定义](/zh/rtc/swift/types#streamvendor)。
 </Note>
 
 所有回调都有默认空实现，只实现关心的即可。注册方式与其他频道事件一致：
@@ -109,6 +109,33 @@ func channel(_ channel: Channel, didChangeActiveSpeakers snapshot: ActiveSpeaker
 + `level` 是 0~1 的归一化线性音量，可以直接用来画音量条
 
 每个 `ActiveSpeakerInfo` 带 `uid` 与 `trackId` —— 同一个用户可能有多条音频轨道，要精确定位到轨道时用后者。
+
+#### 自己的音量（1.6.0 起）
+
+快照里**也有自己**：`isLocal == true` 的那一条，`trackId` 是本端发布的音频轨。它只在已发布音频、没有静音且确实在说话时出现 —— 与对端听到的一致。服务端不会把你的音量回传给你，这一条由 SDK 在本地按服务端判定说话人的**同一算法**计算，所以与远端同一量纲（都按 1/8 分档），一个阈值即可：
+
+```swift
+let speakingLevel = 0.125   // 远端和自己共用
+
+func channel(_ channel: Channel, didChangeActiveSpeakers snapshot: ActiveSpeakersSnapshot) {
+    selfLevel = snapshot.speakers.first(where: \.isLocal)?.level ?? 0
+    selfSpeaking = selfLevel >= speakingLevel
+    remoteLevels = Dictionary(snapshot.speakers.filter { !$0.isLocal }.map { ($0.uid, $0.level) },
+                              uniquingKeysWith: max)
+}
+```
+
+本端这一条的参数用 `srtc.activeSpeakerOptions` 调：
+
+| 参数 | 默认 | 说明 |
+| --- | --- | --- |
+| `includeLocal` | `true` | 是否把自己并进快照；`false` 即只含远端 |
+| `interval` | `0.5` | 本端采样间隔（秒），加入频道时读取 |
+| `silenceThreshold` | `0.01` | 本端静默门限（约 -40dBFS），低于它不进快照 |
+
+<Note>
+1.5.5 及以前「我」的音量要自己实现 `AudioProcessor`、挂到 `audioCaptureProcessor` 上从采集数据算。升级后删掉那套即可；不删也不冲突（SDK 的计量与你的处理器串在同一条链上，互不顶替），但自己算的那份与远端不是一个量纲。
+</Note>
 
 ---
 

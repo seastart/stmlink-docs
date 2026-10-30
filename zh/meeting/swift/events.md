@@ -198,7 +198,7 @@ extension MeetingController: SMeetingDelegate {
 + `didReceiveQualityReport` 是每次上报都触发的原始数值（丢包、RTT、抖动、码率、MOS），适合信号塔图标与详细诊断面板
 + `connectionQualityDidChange` 只在等级跳档时触发，适合「当前网络不佳」提示和主动降级决策
 
-`activeSpeakersDidChange` 给的是**全量快照**（已按音量降序排好），直接覆盖 UI 即可，不需要自己合并增量。无人说话时 `speakers` 为空数组。
+`activeSpeakersDidChange` 给的是**全量快照**（已按音量降序排好），直接覆盖 UI 即可，不需要自己合并增量。无人说话时 `speakers` 为空数组。自 1.6.0 起自己也在快照里（`isLocal == true`，开麦且在说话时出现），与远端同一量纲；不想要可设 `meeting.activeSpeakerOptions.includeLocal = false`。
 
 这四个事件的数据结构定义在底层 SRTC 模块，使用时需要 `import SRTC`，字段说明见 [类型定义](/zh/meeting/swift/types)；等级判定、冷启动取值与主动切层的完整说明见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
 

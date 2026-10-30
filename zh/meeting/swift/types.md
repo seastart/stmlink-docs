@@ -666,7 +666,7 @@ result.meta      // MetaRes
 | `QualityReport` | `ts`（Unix 毫秒）、`pub: QualitySample`（上行）、`sub: QualitySample`（下行） |
 | `QualityEvaluation` | `uplink`、`downlink`、`overall`（取较差档）、`mos`（取上下行较小值）、`timestamp` |
 | `ConnectionQualityChange` | `evaluation: QualityEvaluation`、`previous: ConnectionQuality`（首次跳档为 `unknown`） |
-| `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 归一化音量） |
+| `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 线性音量，按 1/8 分档）、`isLocal`（是否为自己，1.6.0 起） |
 | `ActiveSpeakersSnapshot` | `ts`、`speakers: [ActiveSpeakerInfo]`（已按音量降序，无人说话时为空） |
 | `LayerSwitchedInfo` | `subKey`、`fromTrackId`、`toTrackId`、`reason`（如 `bwe_down` / `bwe_up`）、`latencyMs` |
 

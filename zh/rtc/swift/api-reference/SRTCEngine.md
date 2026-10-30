@@ -53,7 +53,11 @@ srtc.language = "en"
 
 #### `audioCaptureProcessor`
 
-麦克风采集后的音频处理器，可用于变声、降噪等处理。
+麦克风采集后的音频处理器，可用于变声、降噪等处理。全局只有一个，SDK 自身的本端电平计量串在它之后，两者互不影响。自 1.6.0 起不需要再用它算自己的音量，见 `activeSpeakerOptions`。
+
+#### `activeSpeakerOptions`
+
+`ActiveSpeakerOptions`，`didChangeActiveSpeakers` 快照里「自己」那一条的参数，自 1.6.0 起提供：`includeLocal`（默认 `true`）、`interval`（本端采样间隔，默认 0.5 秒，加入频道时读取）、`silenceThreshold`（默认 0.01）。详见 [通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
 
 #### `audioRenderProcessor`
 

@@ -371,10 +371,11 @@ SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `Audi
 
 | 类型 | 字段 |
 | --- | --- |
-| `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 归一化线性音量） |
+| `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 线性音量，按 1/8 分档）、`isLocal`（是否为自己，1.6.0 起） |
 | `ActiveSpeakersSnapshot` | `ts`、`speakers: [ActiveSpeakerInfo]` |
+| `ActiveSpeakerOptions` | `includeLocal`（默认 `true`）、`interval`（秒，默认 0.5）、`silenceThreshold`（默认 0.01），1.6.0 起 |
 
-`speakers` 是**全量列表**，SDK 已合并服务端的增量协议并按 `level` 降序排好，无人说话时为空数组。
+`speakers` 是**全量列表**，SDK 已合并服务端的增量协议并按 `level` 降序排好，无人说话时为空数组。自 1.6.0 起自己也在其中（`isLocal == true`），与远端同一量纲。
 
 ---
 
