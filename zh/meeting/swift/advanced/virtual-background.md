@@ -1,6 +1,6 @@
 ---
 title: "虚拟背景"
-description: "Swift SMeeting 会议 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么是设备级配置、切换摄像头与重新开摄像头后不用自己补、低端机保帧率的两个参数，以及 1.3.0 抬高的系统要求"
+description: "Swift SMeeting 会议 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么是设备级配置、切换摄像头与重新开摄像头后不用自己补、低端机保帧率的两个参数，以及它只在 iOS 上提供"
 ---
 
 虚拟背景在摄像头采集链路上做人像分割，把人像之外的区域替换成虚化或指定图片。它是自研组件，装载**不需要授权密钥**。
@@ -12,7 +12,7 @@ description: "Swift SMeeting 会议 SDK 的虚拟背景：人像分割后做背�
 </Note>
 
 <Warning>
-`1.3.0` 起最低系统要求抬到 **iOS 16.0 / macOS 14.0**（此前为 iOS 13 / macOS 10.15）。低于此下限的工程解析不到 1.3.0 及以后的版本，详见 [集成方式](/zh/meeting/swift/integration)。
+**虚拟背景仅 iOS 提供**（iOS 16.0 及以上）。`1.7.0` 起 macOS 上的 `SMeetingEngine` 没有本页的全部接口，双端共用的代码请包进 `#if os(iOS)`；仍需要 macOS 虚拟背景的请留在 `1.6.0`（macOS 14 起）。详见 [集成方式](/zh/meeting/swift/integration)。
 
 推理运行时 `onnxruntime` 已静态链入音视频层的 `SRTC.xcframework`，你不需要额外声明任何依赖。
 </Warning>

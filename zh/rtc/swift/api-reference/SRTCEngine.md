@@ -306,7 +306,7 @@ srtc.defaultVideoProcessors = [myProcessor]
 
 ### 虚拟背景
 
-以下方法转发到 `SRTCVirtualBackground.shared`，状态整机一份。开启后**自动作用于所有摄像头轨道**，不需要往 `videoProcessors` 里挂东西。用法与调优见 [虚拟背景](/zh/rtc/swift/advanced/virtual-background)。
+**仅 iOS**：`1.7.0` 起 macOS 上没有这组成员，双端共用的代码请包进 `#if os(iOS)`。以下方法转发到 `SRTCVirtualBackground.shared`，状态整机一份。开启后**自动作用于所有摄像头轨道**，不需要往 `videoProcessors` 里挂东西。用法与调优见 [虚拟背景](/zh/rtc/swift/advanced/virtual-background)。
 
 | 成员 | 签名 | 说明 |
 | --- | --- | --- |

@@ -3,6 +3,27 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.7.0] - 2026.11.03
+<Warning>
+**破坏性变更（仅 macOS）：macOS 不再提供虚拟背景接口。** iOS 不受影响，接口与效果都不变。
+
+macOS 上不再有的符号：
++ 类型 `SRTCVirtualBackground`、`SRTCVirtualBackgroundEffect`
++ `SRTCEngine` 上的 `virtualBackground`、`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`
+
+两端都保留的：`SRTCNativeImage`，以及 `SRTCError` 里虚拟背景相关的 4 个错误码（错误码只增不删）。
+
+在 macOS 上调用这些接口的工程升级后**编译失败**，双端共用的代码请包进 `#if os(iOS)`。仍需要 macOS 虚拟背景的请留在 `1.6.0`。
+</Warning>
+
+#### 变更
++ **macOS 系统下限由 14 降到 12.3**（屏幕共享所用 ScreenCaptureKit 的起点），iOS 仍是 16。低于下限的工程报的是依赖解析失败，不是编译错误。
++ macOS 产物不再链接虚拟背景的推理运行时；iOS 上的虚拟背景与推理运行时版本不变。
+
+<Note>
+iOS 接入代码可直接升级。`SRTCBroadcastKit` 本次为 **1.0.20**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.6.0] - 2026.10.30
 #### 新增
 + **自己的音量也走 `didChangeActiveSpeakers`**：快照里新增本端那一条，`ActiveSpeakerInfo.isLocal` 为 `true`，`trackId` 是本端发布的音频轨。只在已发布音频、没有静音且确实在说话时出现，与对端听到的一致。以前「我」的音量只能自己实现 `AudioProcessor`、挂到 `audioCaptureProcessor` 上从采集数据算，现在不需要了。

@@ -126,7 +126,7 @@ srtc.language = "en"   // 进程级全局设置，建议在 joinChannel / enable
 | `virtualBackgroundModelNotFound(String)` | `029` | 模型文件不存在 | 检查 `modelPath`；传 `nil` 用内置模型 |
 | `virtualBackgroundSessionFailed(String)` | `030` | 推理会话创建失败 | 属运行环境问题，结合日志排查 |
 
-用法见 [虚拟背景](/zh/rtc/swift/advanced/virtual-background)。
+虚拟背景仅 iOS 提供，这四个错误只会在 iOS 上抛出；`1.7.0` 起 macOS 不再有虚拟背景接口，但错误码保留、两端都能引用。用法见 [虚拟背景](/zh/rtc/swift/advanced/virtual-background)。
 
 ---
 

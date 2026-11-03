@@ -6,14 +6,14 @@ description: "SRTC Swift SDK 的环境要求、Swift Package Manager 集成方�
 SRTC Swift SDK 是一套 `Swift Package` 形态的原生音视频 SDK，对外模块名为 `SRTC`，当前支持：
 
 + iOS 16.0 及以上
-+ macOS 14.0 及以上
++ macOS 12.3 及以上（`1.7.0` 起；虚拟背景仅 iOS 提供）
 + Xcode 15 及以上
 + Swift 5.9 及以上
 
 <Warning>
-**`1.4.0` 起系统下限由 iOS 13 / macOS 10.15 抬到 iOS 16 / macOS 14。** 低于此下限的工程解析不到 1.4.0 及以后的版本（报依赖解析失败，不是编译错误）；仍需支持更低系统的项目请留在 `1.3.3`。
+**`1.7.0` 起 macOS 下限由 14 降到 12.3，同时 macOS 不再提供虚拟背景。** iOS 下限仍是 16，iOS 上的虚拟背景不变。在 macOS 上调用虚拟背景接口的工程升级到 1.7.0 后编译失败，仍需要 macOS 虚拟背景的请留在 `1.6.0`。
 
-下限由虚拟背景的推理运行时决定，SwiftPM 的 `platforms:` 是包级的、没有 target 级下限，无法只让虚拟背景吃这条线。
+iOS 16 的下限由虚拟背景的推理运行时决定；macOS 的 12.3 是屏幕共享所用 ScreenCaptureKit 的起点。低于下限的工程报的是依赖解析失败，不是编译错误。`1.4.0` ～ `1.6.0` 的下限是 iOS 16 / macOS 14，仍需支持 iOS 13 / macOS 10.15 的项目请留在 `1.3.3`。
 </Warning>
 
 <Note>
@@ -33,7 +33,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.6.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.7.0")
 ],
 targets: [
     .target(

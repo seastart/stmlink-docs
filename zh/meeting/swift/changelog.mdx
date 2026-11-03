@@ -3,6 +3,22 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.7.0] - 2026.11.03
+<Warning>
+**破坏性变更（仅 macOS）：macOS 不再提供虚拟背景接口。** iOS 不受影响，接口与效果都不变。
+
+macOS 上的 `SMeetingEngine` 不再有：`virtualBackground`、`installVirtualBackground(modelPath:)`、`uninstallVirtualBackground()`、`enableVirtualBackground(_:)`、`isVirtualBackgroundEnabled`、`setVirtualBackgroundBlur(level:)`、`setVirtualBackgroundImage(_:)`、`setVirtualBackgroundInferenceInterval(_:)`、`setVirtualBackgroundMaskSync(_:)`。
+
+在 macOS 上调用这些接口的工程升级后**编译失败**，双端共用的代码请包进 `#if os(iOS)`。仍需要 macOS 虚拟背景的请留在 `1.6.0`。
+</Warning>
+
+#### 变更
++ 依赖升至 **SRTC 1.7.0**；**macOS 系统下限由 14 降到 12.3**，iOS 仍是 16。低于下限的工程报的是依赖解析失败，不是编译错误。
+
+<Note>
+iOS 接入代码可直接升级。做 iOS 全屏共享的，扩展 target 那条 `srtc-swift-sdk` 依赖改为 `exact: "1.7.0"`。
+</Note>
+
 ### [1.6.0] - 2026.10.30
 #### 新增
 + **`activeSpeakersDidChange` 含自己**：快照里新增本端那一条（`ActiveSpeakerInfo.isLocal == true`），开麦且在说话时出现，与远端同一量纲（0~1，按 1/8 分档），一个阈值即可画「我」的音柱和「正在说话」。不必再自己挂 `meeting.srtc.audioCaptureProcessor` 算本端音量。
