@@ -446,7 +446,7 @@ await meeting.disableIm()
 
 ### Virtual background
 
-This is a **device-level setting** (it applies to the single shared camera capture pipeline in the process), and it applies to all meetings at once. After switching cameras, turning the camera off and on again, or reconnecting after a disconnect during the meeting, your app doesn't need to apply it again. For usage and tuning, see [Virtual background](/en/meeting/swift/advanced/virtual-background).
+**iOS only**: starting with `1.7.0`, these members don't exist on macOS; wrap code shared by both platforms in `#if os(iOS)`. This is a **device-level setting** (it applies to the single shared camera capture pipeline in the process), and it applies to all meetings at once. After switching cameras, turning the camera off and on again, or reconnecting after a disconnect during the meeting, your app doesn't need to apply it again. For usage and tuning, see [Virtual background](/en/meeting/swift/advanced/virtual-background).
 
 | Member | Signature | Description |
 | --- | --- | --- |

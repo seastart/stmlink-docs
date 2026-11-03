@@ -374,8 +374,8 @@
   "en/meeting/swift/advanced/screen-sharing": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/screen-sharing.md",
-    "zh_blob": "6fbc273a96efec54408602b4228ae328c8e9f9d1",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "9d60a5d887c79857eb34b9b512bb05e3384abda3",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/meeting/swift/advanced/sign-in": {
     "reviewed": false,
@@ -396,10 +396,10 @@
     "zh_commit": "c595363e72ac29384b96a24df40a3e7a0e6fe664"
   },
   "en/meeting/swift/advanced/virtual-background": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/swift/advanced/virtual-background.md",
-    "zh_blob": "7cb631d3314a5478f59b899eba6c3e6bace9b98b",
-    "zh_commit": "c2d7c3193395a104fa860164a58f4cfb61ff2ba8"
+    "zh_blob": "0baa91f4f7e1aed8fe0777d221f7d7c5b786216c",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/meeting/swift/advanced/waiting-room": {
     "reviewed": true,
@@ -410,8 +410,8 @@
   "en/meeting/swift/api-reference/SMeetingEngine": {
     "reviewed": false,
     "source": "zh/meeting/swift/api-reference/SMeetingEngine.md",
-    "zh_blob": "198f394dd78884e8c54b3451b8bf34eb2d8b298a",
-    "zh_commit": "b66a43a3cf6ca06c15f6e1ef0199bf06b0c50a6d"
+    "zh_blob": "01e7041696a1064d7c57f46b6c67de58bb0afe0d",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/meeting/swift/api-reference/SMeetingRemoteVideoView": {
     "reviewed": true,
@@ -440,8 +440,8 @@
   "en/meeting/swift/changelog": {
     "reviewed": false,
     "source": "zh/meeting/swift/changelog.mdx",
-    "zh_blob": "e9ad8f68953e7c7fef71f2110f5a8ea616cdc2d2",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "3cdf07682c9f21dce98e705cec11fec9d5171af0",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/meeting/swift/error-codes": {
     "reviewed": false,
@@ -458,8 +458,8 @@
   "en/meeting/swift/integration": {
     "reviewed": false,
     "source": "zh/meeting/swift/integration.md",
-    "zh_blob": "d79c04de6588a5a2cd2acbb240a92df5883a298e",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "ee4668d9b6fd3b7c72a8170b0b2a84c177d7897d",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/meeting/swift/key-concepts": {
     "reviewed": true,
@@ -1284,16 +1284,16 @@
     "zh_commit": "f3c41c3d08d8e5309e0b68a287c461b2bea14304"
   },
   "en/rtc/swift/advanced/virtual-background": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/swift/advanced/virtual-background.md",
-    "zh_blob": "11521e7c640ebc4143888793b49e1eaf32a53563",
-    "zh_commit": "c2d7c3193395a104fa860164a58f4cfb61ff2ba8"
+    "zh_blob": "47fa1b70632a5efb45bf5a3d8ba098b6bc8de3ed",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/rtc/swift/api-reference/SRTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/swift/api-reference/SRTCEngine.md",
-    "zh_blob": "2219b17b0c8390a36ff9e892d07405b3620c267c",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "6d686045d0586e361ae3513cf9dd4060868ae97f",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/rtc/swift/api-reference/media-tracks": {
     "reviewed": false,
@@ -1304,14 +1304,14 @@
   "en/rtc/swift/changelog": {
     "reviewed": false,
     "source": "zh/rtc/swift/changelog.mdx",
-    "zh_blob": "9c06112ce3e9e6b600a327ceb2a40e3150107a25",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "8a78da3dcd89019e25989dc6c9ba49c77a06ad71",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/rtc/swift/error-codes": {
     "reviewed": false,
     "source": "zh/rtc/swift/error-codes.md",
-    "zh_blob": "2318fbe5d5d0e8395edfdf198e85c397612b7e08",
-    "zh_commit": "f3c41c3d08d8e5309e0b68a287c461b2bea14304"
+    "zh_blob": "b0fb73594a7b7d67ade2d6589f9b37371bc4095b",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/rtc/swift/events": {
     "reviewed": true,
@@ -1322,8 +1322,8 @@
   "en/rtc/swift/integration": {
     "reviewed": false,
     "source": "zh/rtc/swift/integration.md",
-    "zh_blob": "26583d9eaa77659a1a8f3f8adebbcf5d5d3e98df",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "eeff562b8c7d3c0f92eaa54e306b29de32696962",
+    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
   },
   "en/rtc/swift/key-concepts": {
     "reviewed": true,

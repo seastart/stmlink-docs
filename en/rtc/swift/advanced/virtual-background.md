@@ -1,6 +1,6 @@
 ---
 title: "Virtual background"
-description: "Virtual background in the SRTC Swift SDK: person segmentation for background blur or replacement, no license key. Why enabling it once covers all camera tracks, why camera switches need no extra work, two frame-rate settings for low-end devices, and the iOS 16 / macOS 14 minimum since 1.4.0."
+description: "Virtual background in the SRTC Swift SDK: person segmentation for background blur or replacement, no license key. Why enabling it once covers all camera tracks, why camera switches need no extra work, two frame-rate settings for low-end devices, and why it's available on iOS only."
 ---
 
 Virtual background runs person segmentation in the camera capture pipeline and replaces everything outside the person with a blur or a specified image. It's an in-house component, and installing it **doesn't require a license key**.
@@ -14,7 +14,7 @@ Once enabled, it **automatically applies to all camera tracks**, including those
 </Note>
 
 <Warning>
-Starting with `1.4.0`, the minimum system requirements were raised to **iOS 16.0 / macOS 14.0** (previously iOS 13 / macOS 10.15). Projects below these minimums can't resolve version 1.4.0 or later—see [Integration](/en/rtc/swift/integration) for details.
+**Virtual background is available on iOS only** (iOS 16.0 and later). Starting with `1.7.0`, none of the APIs on this page exist on macOS (`SRTCVirtualBackground`, `SRTCVirtualBackgroundEffect`, and the virtual background members of `SRTCEngine`); wrap code shared by both platforms in `#if os(iOS)`. If you still need virtual background on macOS, stay on `1.6.0` (macOS 14 and later). See [Integration](/en/rtc/swift/integration) for details.
 
 The inference runtime `onnxruntime` is **statically linked** into `SRTC.xcframework`, so you don't need to declare any extra dependency or embed anything.
 </Warning>

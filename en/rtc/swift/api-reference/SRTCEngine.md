@@ -306,7 +306,7 @@ A camera track is created anew every time the camera is turned on (turning the c
 
 ### Virtual background
 
-The following methods forward to `SRTCVirtualBackground.shared`, with a single process-wide state. Once enabled, it **automatically applies to all camera tracks**, and you don't need to add anything to `videoProcessors`. For usage and tuning, see [Virtual background](/en/rtc/swift/advanced/virtual-background).
+**iOS only**: starting with `1.7.0`, these members don't exist on macOS; wrap code shared by both platforms in `#if os(iOS)`. The following methods forward to `SRTCVirtualBackground.shared`, with a single process-wide state. Once enabled, it **automatically applies to all camera tracks**, and you don't need to add anything to `videoProcessors`. For usage and tuning, see [Virtual background](/en/rtc/swift/advanced/virtual-background).
 
 | Member | Signature | Description |
 | --- | --- | --- |

@@ -1,6 +1,6 @@
 ---
 title: "Virtual background"
-description: "Virtual background in the SMeeting Swift SDK: person segmentation for background blur or replacement, no license key needed. Covers why it's a device-level setting, why camera switches and restarts need no re-apply, two frame-rate parameters for low-end devices, and the 1.3.0 OS requirements."
+description: "Virtual background in the SMeeting Swift SDK: person segmentation for background blur or replacement, no license key needed. Covers why it's a device-level setting, why camera switches and restarts need no re-apply, two frame-rate parameters for low-end devices, and why it's available on iOS only."
 ---
 
 Virtual background performs person segmentation in the camera capture pipeline and replaces everything outside the person with blur or a specified image. It's an in-house component, and installing it **doesn't require a license key**.
@@ -12,7 +12,7 @@ During the meeting, **you don't need to re-apply anything after switching camera
 </Note>
 
 <Warning>
-Starting with `1.3.0`, the minimum system requirements are raised to **iOS 16.0 / macOS 14.0** (previously iOS 13 / macOS 10.15). Projects below this minimum can't resolve 1.3.0 or later. For details, see [Integration](/en/meeting/swift/integration).
+**Virtual background is available on iOS only** (iOS 16.0 and later). Starting with `1.7.0`, `SMeetingEngine` on macOS has none of the APIs on this page; wrap code shared by both platforms in `#if os(iOS)`. If you still need virtual background on macOS, stay on `1.6.0` (macOS 14 and later). For details, see [Integration](/en/meeting/swift/integration).
 
 The inference runtime `onnxruntime` is statically linked into the audio and video layer's `SRTC.xcframework`, so you don't need to declare any extra dependencies.
 </Warning>

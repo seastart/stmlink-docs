@@ -3,6 +3,22 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.7.0] - 2026.11.03
+<Warning>
+**Breaking change (macOS only): the virtual background APIs are no longer available on macOS.** iOS is unaffected; the APIs and the effect are unchanged there.
+
+`SMeetingEngine` on macOS no longer has: `virtualBackground`, `installVirtualBackground(modelPath:)`, `uninstallVirtualBackground()`, `enableVirtualBackground(_:)`, `isVirtualBackgroundEnabled`, `setVirtualBackgroundBlur(level:)`, `setVirtualBackgroundImage(_:)`, `setVirtualBackgroundInferenceInterval(_:)`, `setVirtualBackgroundMaskSync(_:)`.
+
+Projects that call these APIs on macOS **fail to compile** after upgrading; wrap code shared by both platforms in `#if os(iOS)`. If you still need virtual background on macOS, stay on `1.6.0`.
+</Warning>
+
+#### Changed
++ The dependency is upgraded to **SRTC 1.7.0**; **the macOS minimum is lowered from 14 to 12.3**, and iOS is still 16. Projects below the minimum get a dependency resolution failure, not a compile error.
+
+<Note>
+iOS integrations can upgrade directly. If you use iOS full-screen sharing, change the `srtc-swift-sdk` dependency of the extension target to `exact: "1.7.0"`.
+</Note>
+
 ### [1.6.0] - 2026.10.30
 #### Added
 + **`activeSpeakersDidChange` includes you**: the snapshot gains a local entry (`ActiveSpeakerInfo.isLocal == true`) that appears while your mic is on and you are speaking. It shares the remote scale (0–1, quantized in steps of 1/8), so one threshold drives both your own volume bar and the "speaking" indicator. You no longer need to attach `meeting.srtc.audioCaptureProcessor` to compute your own volume.

@@ -126,7 +126,7 @@ srtc.language = "en"   // Process-wide global setting; set it before joinChannel
 | `virtualBackgroundModelNotFound(String)` | `029` | The model file doesn't exist | Check `modelPath`; pass `nil` to use the built-in model |
 | `virtualBackgroundSessionFailed(String)` | `030` | Failed to create the inference session | A runtime environment issue; investigate with the logs |
 
-For usage, see [Virtual background](/en/rtc/swift/advanced/virtual-background).
+Virtual background is available on iOS only, so these four errors are thrown only on iOS. Starting with `1.7.0`, macOS no longer has the virtual background APIs, but the error codes are kept and can be referenced on both platforms. For usage, see [Virtual background](/en/rtc/swift/advanced/virtual-background).
 
 ---
 

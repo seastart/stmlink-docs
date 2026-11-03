@@ -1,19 +1,19 @@
 ---
 title: "Integration"
-description: "Add the SRTC Swift SDK to an iOS or macOS app: system requirements (iOS 16 / macOS 14 since 1.4.0), Swift Package Manager setup in Package.swift or Xcode, when to use SRTCBroadcastKit, camera and microphone permissions, and a minimal integration checklist. Read before the Swift quickstart."
+description: "Add the SRTC Swift SDK to an iOS or macOS app: system requirements (iOS 16 / macOS 12.3 since 1.7.0), Swift Package Manager setup in Package.swift or Xcode, when to use SRTCBroadcastKit, camera and microphone permissions, and a minimal integration checklist. Read before the Swift quickstart."
 ---
 
 The SRTC Swift SDK is a native audio and video SDK distributed as a `Swift Package`, with the public module name `SRTC`. It currently supports:
 
 + iOS 16.0 and later
-+ macOS 14.0 and later
++ macOS 12.3 and later (since `1.7.0`; virtual background is iOS only)
 + Xcode 15 and later
 + Swift 5.9 and later
 
 <Warning>
-**Starting with `1.4.0`, the minimum system versions were raised from iOS 13 / macOS 10.15 to iOS 16 / macOS 14.** Projects below these minimums can't resolve version 1.4.0 or later (you get a dependency resolution failure, not a compile error); projects that still need to support older systems should stay on `1.3.3`.
+**Starting with `1.7.0`, the macOS minimum is lowered from 14 to 12.3, and virtual background is no longer available on macOS.** The iOS minimum is still 16, and virtual background on iOS is unchanged. Projects that call the virtual background APIs on macOS fail to compile after upgrading to 1.7.0; if you still need virtual background on macOS, stay on `1.6.0`.
 
-The minimums are dictated by the inference runtime used for virtual background. SwiftPM's `platforms:` applies to the whole package and has no per-target minimum, so there's no way to apply this requirement to virtual background alone.
+The iOS 16 minimum is dictated by the inference runtime used for virtual background; macOS 12.3 is where ScreenCaptureKit, used for screen sharing, begins. Projects below these minimums get a dependency resolution failure, not a compile error. Versions `1.4.0` – `1.6.0` require iOS 16 / macOS 14; projects that still need to support iOS 13 / macOS 10.15 should stay on `1.3.3`.
 </Warning>
 
 <Note>
@@ -33,7 +33,7 @@ The SDK is distributed as a prebuilt XCFramework containing slices for three pla
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.6.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.7.0")
 ],
 targets: [
     .target(

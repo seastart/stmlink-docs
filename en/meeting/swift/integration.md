@@ -6,14 +6,14 @@ description: "Requirements (iOS 16 / macOS 14, Xcode 15, Swift 5.9), adding the 
 The SMeeting Swift SDK is a conferencing SDK delivered as a `Swift Package`, with the public module name `SMeeting`. It currently supports:
 
 + iOS 16.0 and later
-+ macOS 14.0 and later
++ macOS 12.3 and later (since `1.7.0`; virtual background is iOS only)
 + Xcode 15 and later
 + Swift 5.9 and later
 
 <Warning>
-**Starting with `1.3.0`, the minimum OS versions were raised from iOS 13 / macOS 10.15 to iOS 16 / macOS 14.** Projects below these minimums can't resolve 1.3.0 or later (you get a dependency resolution failure, not a compile error); projects that still need to support older systems should stay on `1.2.1`.
+**Starting with `1.7.0`, the macOS minimum is lowered from 14 to 12.3, and virtual background is no longer available on macOS.** The iOS minimum is still 16, and virtual background on iOS is unchanged. Projects that call the virtual background APIs on macOS fail to compile after upgrading to 1.7.0; if you still need virtual background on macOS, stay on `1.6.0`.
 
-The minimums come from the virtual background inference runtime in the audio and video layer—SwiftPM's `platforms:` is package-wide, and a dependent package can only be equal to or higher than its dependency. For details, see [Virtual background](/en/meeting/swift/advanced/virtual-background).
+The minimums follow the audio and video layer, SRTC—SwiftPM's `platforms:` is package-wide, and a dependent package can only be equal to or higher than its dependency. Projects below these minimums get a dependency resolution failure, not a compile error. Versions `1.3.0` – `1.6.0` require iOS 16 / macOS 14; projects that still need to support iOS 13 / macOS 10.15 should stay on `1.2.1`.
 </Warning>
 
 SMeeting is built on top of SRTC's audio and video capabilities: the meeting layer handles business semantics such as rooms, meetings, members, and host controls, while the underlying audio and video capture, encoding and decoding, and rendering are still provided by SRTC. When you add `SMeeting`, SRTC is resolved along with it as a dependency, so you don't need to add it separately.
@@ -37,7 +37,7 @@ The meeting layer is built on top of the audio and video layer, but you only nee
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.6.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.7.0"),
 ],
 targets: [
     .target(
@@ -63,9 +63,9 @@ You need this step only for **iOS full-screen screen sharing** (sharing the enti
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.6.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.7.0"),
     // The version must match the SRTC version pinned inside SMeeting
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.6.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.7.0"),
 ],
 ```
 
@@ -102,7 +102,7 @@ import SRTC
 | Choose a sharing source on macOS | `ScreenCaptureSources`, `DisplaySource`, `WindowSource` |
 | Full-screen sharing on iOS | `SRTCBroadcastPicker` (brings up the system broadcast picker) |
 | Audio routing on iOS | `AudioRoute`, `AudioRouteTarget`, `AudioRouteInfo`, `AudioCallState` |
-| Virtual background | `SRTCNativeImage` (the background image, an alias of `UIImage` / `NSImage`), `SRTCVirtualBackgroundEffect` |
+| Virtual background | `SRTCNativeImage` (the background image, an alias of `UIImage` / `NSImage`), `SRTCVirtualBackgroundEffect` (iOS only) |
 | Call quality events | `QualityReport`, `ConnectionQualityChange`, `ActiveSpeakersSnapshot`, `LayerSwitchedInfo` |
 | Disconnect reason | `DisconnectReason` |
 

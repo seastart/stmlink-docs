@@ -3,6 +3,27 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.7.0] - 2026.11.03
+<Warning>
+**Breaking change (macOS only): the virtual background APIs are no longer available on macOS.** iOS is unaffected; the APIs and the effect are unchanged there.
+
+Symbols no longer available on macOS:
++ The types `SRTCVirtualBackground` and `SRTCVirtualBackgroundEffect`
++ On `SRTCEngine`: `virtualBackground`, `installVirtualBackground(modelPath:)`, `uninstallVirtualBackground()`, `enableVirtualBackground(_:)`, `isVirtualBackgroundEnabled`, `setVirtualBackgroundBlur(level:)`, `setVirtualBackgroundImage(_:)`, `setVirtualBackgroundInferenceInterval(_:)`, `setVirtualBackgroundMaskSync(_:)`
+
+Kept on both platforms: `SRTCNativeImage`, and the 4 virtual background error codes in `SRTCError` (error codes are only ever added, never removed).
+
+Projects that call these APIs on macOS **fail to compile** after upgrading; wrap code shared by both platforms in `#if os(iOS)`. If you still need virtual background on macOS, stay on `1.6.0`.
+</Warning>
+
+#### Changed
++ **The macOS minimum is lowered from 14 to 12.3** (where ScreenCaptureKit, used for screen sharing, begins); iOS is still 16. Projects below the minimum get a dependency resolution failure, not a compile error.
++ The macOS build no longer links the virtual background inference runtime; virtual background on iOS and the inference runtime version are unchanged.
+
+<Note>
+iOS integrations can upgrade directly. `SRTCBroadcastKit` is **1.0.20** in this release; its code is unchanged, and only the version number was bumped along with the SDK.
+</Note>
+
 ### [1.6.0] - 2026.10.30
 #### Added
 + **Your own volume now also comes through `didChangeActiveSpeakers`**: the snapshot gains a local entry with `ActiveSpeakerInfo.isLocal == true`, whose `trackId` is your published audio track. It appears only while you are publishing audio, not muted, and actually speaking—matching what the remote side hears. Previously you had to implement an `AudioProcessor` and attach it to `audioCaptureProcessor` to compute your own volume from captured audio; that is no longer needed.
