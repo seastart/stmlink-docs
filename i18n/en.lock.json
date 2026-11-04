@@ -524,8 +524,8 @@
   "en/meeting/web/changelog": {
     "reviewed": false,
     "source": "zh/meeting/web/changelog.mdx",
-    "zh_blob": "4275e2abd65a717991642649bf66fdbd7153b3e6",
-    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
+    "zh_blob": "9120a56827ed26a19c4b35de022ad68fb1fb3b30",
+    "zh_commit": "ca922eaea4c4c73bfda9062130b76915ca76d847"
   },
   "en/meeting/web/error-codes": {
     "reviewed": false,
@@ -1424,8 +1424,8 @@
   "en/rtc/web/changelog": {
     "reviewed": false,
     "source": "zh/rtc/web/changelog.mdx",
-    "zh_blob": "268a71b9f8c042bde81c46e086ae033c268319f6",
-    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
+    "zh_blob": "b955bbc84d75c9f62e112f501f4d7b25077c583b",
+    "zh_commit": "ca922eaea4c4c73bfda9062130b76915ca76d847"
   },
   "en/rtc/web/channel-messages": {
     "reviewed": true,

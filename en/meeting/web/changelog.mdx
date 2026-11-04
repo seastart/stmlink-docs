@@ -13,6 +13,11 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.1 - 2026-11-04
+
++ **Works with webpack 4 and other older toolchains**: the build output is now down-leveled to ES2019, and the ESM build is renamed from `smeeting.mjs` to `smeeting.esm.js` (the `module` / `exports` fields in `package.json` are updated, so regular `import` statements are unaffected). This fixes the `Module parse failed` and `Can't import the named export ... from non EcmaScript module` errors with webpack 4's default configuration. APIs and runtime behavior are unchanged
++ The underlying SRTC is upgraded to Web 0.7.1, which is down-leveled to ES2019 as well; see the [SRTC Web changelog · v0.7.1](/en/rtc/web/changelog)
+
 ### v0.3.0 - 2026-09-30
 
 <Warning>

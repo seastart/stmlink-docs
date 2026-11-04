@@ -13,6 +13,11 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.1 - 2026-11-04
+
++ **兼容 webpack 4 等老工具链**：构建产物的语法降到 ES2019；ESM 产物由 `smeeting.mjs` 改名为 `smeeting.esm.js`（`package.json` 的 `module` / `exports` 已同步，正常 `import` 写法不受影响），修复 webpack 4 默认配置引入时报 `Module parse failed`、`Can't import the named export ... from non EcmaScript module` 的问题。接口与运行行为不变
++ 底层 SRTC 升级到 Web 0.7.1，同样降到 ES2019，见 [SRTC Web 更新日志 · v0.7.1](/zh/rtc/web/changelog)
+
 ### v0.3.0 - 2026-09-30
 
 <Warning>

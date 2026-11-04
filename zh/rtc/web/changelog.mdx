@@ -19,6 +19,10 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### v0.7.1 - 2026-11-04
+
++ **兼容 webpack 4 等老工具链**：构建产物的语法降到 ES2019（class 字段、可选链、BigInt 字面量等都已转换），修复 webpack 4、或未转译 `node_modules` 的老 babel 工具链引入时报 `Module parse failed` 的问题。接口与运行行为不变，产物体积约增加 7%
+
 ### v0.7.0 - 2026-09-30
 
 <Warning>
