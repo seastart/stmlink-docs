@@ -996,16 +996,16 @@
     "zh_commit": "0cf5f533465948b4fcc6afd386cd0a9d54091e5b"
   },
   "en/rtc/capi/api-reference/users": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/api-reference/users.md",
-    "zh_blob": "34e8f59afbd2ddfb917d3bc7e440455af015d2a3",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "fe615b96ff5c526943428b7f0167d335c23ea719",
+    "zh_commit": "7436b2a12f27b5b1d867b8ae6ee0dc95dda4578e"
   },
   "en/rtc/capi/changelog": {
     "reviewed": false,
     "source": "zh/rtc/capi/changelog.mdx",
-    "zh_blob": "55615c9dad1c4237ef6f4cd5e0495857b30df5d5",
-    "zh_commit": "c50d4917399a4860aa6d2eaa949f155fc59adf79"
+    "zh_blob": "c95d1ffadbc4db38934914ce6ab09ff6389adf5a",
+    "zh_commit": "7436b2a12f27b5b1d867b8ae6ee0dc95dda4578e"
   },
   "en/rtc/capi/error-codes": {
     "reviewed": false,
@@ -1164,10 +1164,10 @@
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/python/api-reference/channel": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/python/api-reference/channel.md",
-    "zh_blob": "b3a1aa5aff879ef590d6633ec9786b998c4b4231",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "4431df9671a3171e2df970ffb9cca5b7f7c96ea9",
+    "zh_commit": "7436b2a12f27b5b1d867b8ae6ee0dc95dda4578e"
   },
   "en/rtc/python/api-reference/events": {
     "reviewed": false,
@@ -1178,8 +1178,8 @@
   "en/rtc/python/changelog": {
     "reviewed": false,
     "source": "zh/rtc/python/changelog.mdx",
-    "zh_blob": "1ccc6a3321ed7a6d1e0aa231a52d145a14c186e2",
-    "zh_commit": "e2bd75528a4be3abc7576e5a8375bae3f6cdd6e5"
+    "zh_blob": "406037a5ae57dddad93b3cb8c8e21a29b83eb941",
+    "zh_commit": "7436b2a12f27b5b1d867b8ae6ee0dc95dda4578e"
   },
   "en/rtc/python/error-codes": {
     "reviewed": false,

@@ -98,7 +98,7 @@ The following properties read the local cache without going over the network, so
 
 | Member | Type | Description |
 | --- | --- | --- |
-| `me` | `UserInfo` | Local user info (`uid`, `sid`, etc.) |
+| `me` | `UserInfo` | Local user info (`uid`, `sid`, etc.); `stream_tracks` lists the tracks the local user has published (since 0.2.2) |
 | `info` | `ChannelInfo` | Channel info |
 | `users` | `list[UserInfo]` | All users in the channel, **including the local user** |
 | `get_user(uid)` | `UserInfo \| None` | The specified user; returns `None` if not in the channel |

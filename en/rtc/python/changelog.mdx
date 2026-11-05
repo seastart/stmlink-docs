@@ -3,6 +3,12 @@ title: "Changelog"
 description: "Release history of the SRTC Python SDK (PyPI package srtc): what each version added or changed, and whether you can upgrade directly. Read before upgrading."
 ---
 
+### [0.2.2] - 2026.11.05
+The bundled C library is upgraded to 0.1.2. **No API changes, so you can upgrade directly.**
+
+#### Fixes
++ **`ch.me.stream_tracks` was always empty**: the local user's info didn't include the tracks you published. It now contains them and updates right after `publish_audio` / `unpublish`
+
 ### [0.2.1] - 2026.11.05
 The bundled C library is upgraded to 0.1.1. **No API changes, so you can upgrade directly.**
 

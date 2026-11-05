@@ -3,6 +3,15 @@ title: "Changelog"
 description: "Release history of the C SDK (librtc), including the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
 ---
 
+### [0.1.2] - 2026.11.05
+
+#### Fixes
++ **Your own user info had no tracks**: `rtc_get_local_user_info`, and `rtc_get_user_info` called with your own `uid`, always returned an empty `stream_tracks`. It now contains the tracks you've published and updates right after you publish or unpublish
+
+<Note>
+Struct layouts and function signatures are the same as 0.1.1, so just replace the library files.
+</Note>
+
 ### [0.1.1] - 2026.11.05
 
 #### Fixes

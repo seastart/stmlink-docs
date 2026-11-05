@@ -73,7 +73,7 @@ Frees the user array returned by `rtc_get_users_info`, including each user's `pr
 int rtc_get_user_info(void* handle, const char* uid, rtc_user_info_t* user);
 ```
 
-Gets info for a single user. `user` is provided by the caller (a stack variable is fine), and the SDK fills in its fields.
+Gets info for a single user. `user` is provided by the caller (a stack variable is fine), and the SDK fills in its fields. If `uid` is your own uid, it returns the local user's info, the same as `rtc_get_local_user_info`.
 
 **Returns**
 
@@ -120,6 +120,8 @@ int rtc_get_local_user_info(void* handle, rtc_user_info_t* user);
 ```
 
 Gets the local user's info (`uid`, `sid`, etc.), since 0.0.9. You also need to call `rtc_free_user_info` when you're done with it.
+
+`stream_tracks` lists the tracks the local user has currently published (since 0.1.2; always empty in earlier versions).
 
 **Returns:** `RTC_OK` / `RTC_INVALID_PARAM` (invalid handle or `user`) / `RTC_NOT_CONNECTED` (not yet joined).
 
