@@ -98,7 +98,7 @@ disconnect_reason: DisconnectReason | None
 
 | 成员 | 类型 | 说明 |
 | --- | --- | --- |
-| `me` | `UserInfo` | 本端信息（`uid`、`sid` 等） |
+| `me` | `UserInfo` | 本端信息（`uid`、`sid` 等）；`stream_tracks` 为本端已发布的轨道（0.2.2 起） |
 | `info` | `ChannelInfo` | 频道信息 |
 | `users` | `list[UserInfo]` | 频道内所有用户，**含本端** |
 | `get_user(uid)` | `UserInfo \| None` | 指定用户，不在频道内返回 `None` |

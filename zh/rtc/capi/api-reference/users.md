@@ -73,7 +73,7 @@ void rtc_free_users_info(rtc_user_info_t* users, int count);
 int rtc_get_user_info(void* handle, const char* uid, rtc_user_info_t* user);
 ```
 
-获取单个用户信息。`user` 由调用方提供（栈上变量即可），SDK 填充其字段。
+获取单个用户信息。`user` 由调用方提供（栈上变量即可），SDK 填充其字段。`uid` 传自己的 uid 时返回本端信息，与 `rtc_get_local_user_info` 相同。
 
 **返回值**
 
@@ -120,6 +120,8 @@ int rtc_get_local_user_info(void* handle, rtc_user_info_t* user);
 ```
 
 获取本端的用户信息（`uid`、`sid` 等），0.0.9 起。用完同样要调用 `rtc_free_user_info`。
+
+`stream_tracks` 是本端当前已发布的轨道（0.1.2 起；更早的版本始终为空）。
 
 **返回值**：`RTC_OK` / `RTC_INVALID_PARAM`（句柄或 `user` 无效）/ `RTC_NOT_CONNECTED`（尚未入会）。
 
