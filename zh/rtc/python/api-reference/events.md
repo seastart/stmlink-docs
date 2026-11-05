@@ -47,7 +47,10 @@ class MyHandler(srtc.ChannelHandler):
 ## 顺序与时机
 
 <Warning>
-**用户类、轨道类事件之间不保证先后顺序**。例如某个用户的 `on_track_added` 可能先于他的 `on_user_join` 到达。按 `uid` 做幂等处理即可，不要假设"先加入、后发布"。
+用户类、轨道类事件**按 SDK 收到信令的顺序依次调用**（0.2.1 起；更早的版本不保证顺序，可能出现 `on_track_added` 先于 `on_user_join`）。注意两点：
+
++ 处理方法是 `async def` 时，各协程按顺序**开始**执行，但遇到 `await` 后会交错运行，需要严格顺序的逻辑请放在第一个 `await` 之前，或自己排队处理
++ 网络重连等情况下仍可能收到重复事件，请继续按 `uid` / 轨道 id 做幂等处理
 </Warning>
 
 + **入会前已经在频道里的用户和轨道不会触发 `on_user_join` / `on_track_added`**，请在入会后读取 `ch.users`
