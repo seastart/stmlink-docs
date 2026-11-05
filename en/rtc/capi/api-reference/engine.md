@@ -208,9 +208,9 @@ Every callback carries your context through the `context` parameter; the SDK pas
 <Warning>
 **Callbacks run on internal SDK threads.** Keep three things in mind:
 
-1. Different callbacks can fire concurrently, so protect shared state yourself
-2. Don't do slow work in callbacks, or you'll block the SDK event loop; queue slow processing and hand it to your own threads
-3. Pointers in callback parameters (`data`, `props`, `content_json`, `speakers`, etc.) are **only valid during the callback**; copy them right away if you need to keep them
+1. User, track, channel, custom message, reconnection (connection state `3` / `1`) and SFU signaling (layer switch, network quality, active speakers) callbacks **fire one at a time in the order the events happen** and never run concurrently with each other (since 0.1.1). Media sample callbacks (one thread per track), keyframe request callbacks and disconnection callbacks (`rtc_set_disconnected_callback` and connection state `2`) can run concurrently with them, so protect shared state yourself
+2. Don't do slow work in callbacks: event callbacks fire one at a time, so a blocked callback delays every event after it; queue slow processing and hand it to your own threads
+3. Pointers in callback parameters (`uid`, `track_info`, `data`, `props`, `content_json`, `speakers`, etc.) are **only valid during the callback**; if you need to keep them (including handing them to another thread for async processing), copy them before the callback returns
 </Warning>
 
 ### rtc_set_connection_callback

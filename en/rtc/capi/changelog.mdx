@@ -1,7 +1,17 @@
 ---
 title: "Changelog"
-description: "Release history of the C SDK (librtc), including the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
+description: "Release history of the C SDK (librtc), including the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
 ---
+
+### [0.1.1] - 2026.11.05
+
+#### Fixes
++ **Track events could be missed when a remote user unpublished a track and immediately republished it**: when a remote user did "unpublish → republish" back to back (for example, toggling a secondary video stream repeatedly), the SDK occasionally processed the two changes in reverse order and treated the newly published track as removed, so `rtc_track_event_callback` never received its "added" event and the track couldn't be subscribed. Signaling is now processed in arrival order, so tracks are no longer lost
++ **User / track event callbacks could arrive out of order**: events such as "left" and "joined" for the same user, or "removed" and "added" for the same track, could previously arrive out of order. User, track, channel, custom message and reconnection-state callbacks now fire **one at a time** in the order the events happen and never run concurrently (except media sample, keyframe request and disconnection callbacks; see [Callback registration](/en/rtc/capi/api-reference/engine#callback-registration))
+
+<Note>
+Struct layouts and function signatures are the same as 0.1.0, so just replace the library files. Since event callbacks now fire one at a time, a slow callback delays the callbacks after it. Don't do slow or blocking work in callbacks (queue slow processing and hand it to your own threads).
+</Note>
 
 ### [0.1.0] - 2026.09.30
 This release unifies error codes across all SDKs and is a **breaking change**, so the version jumps from 0.0.11 straight to 0.1.0.

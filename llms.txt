@@ -209,7 +209,7 @@
 - [快速开始](https://docs.stmlink.com/zh/rtc/capi/quickstart.md): SRTC C SDK 快速集成，10 分钟跑通加入频道、接收远端音视频与推流
 - [类型定义](https://docs.stmlink.com/zh/rtc/capi/types.md): SRTC C SDK 的结构体、编码常量、枚举取值与回调签名一览
 - [错误码](https://docs.stmlink.com/zh/rtc/capi/error-codes.md): SRTC C SDK 接口返回值的取值、含义与排查建议
-- [更新日志](https://docs.stmlink.com/zh/rtc/capi/changelog.md): C SDK（librtc）版本更新记录，含 0.1.0 错误码重排、0.0.9 删除 rtc_user_info_t.link_id 等需要改代码或重新编译的变更。升级 C SDK 前先读这页。
+- [更新日志](https://docs.stmlink.com/zh/rtc/capi/changelog.md): C SDK（librtc）版本更新记录，含 0.1.1 事件回调保序修复、 0.1.0 错误码重排、0.0.9 删除 rtc_user_info_t.link_id 等需要改代码或重新编译的变更。升级 C SDK 前先读这页。
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式） · 进阶实践
 
@@ -684,7 +684,7 @@
 - [Quickstart](https://docs.stmlink.com/en/rtc/capi/quickstart.md): Get started with the SRTC C SDK: two minimal runnable C programs that join a channel and write remote audio and video to disk, and publish encoded H.264 / Opus data, plus logging and common join and publish problems.
 - [Types](https://docs.stmlink.com/en/rtc/capi/types.md): Reference for everything librtc.h exposes: the rtc_track_info_t, rtc_user_info_t, rtc_channel_info_t, and rtc_publish_options_t structs, codec and log level constants, reserved composite stream identifiers, int enums in callback parameters, and all callback signatures.
 - [Error codes](https://docs.stmlink.com/en/rtc/capi/error-codes.md): C SDK return values (RTC_OK, RTC_ERROR, RTC_INVALID_PARAM, RTC_NOT_CONNECTED, RTC_TIMEOUT) and their causes, the SDK's own 180xxx codes and server 1xxx codes you get from rtc_get_last_error or the logs, and how to check return values and clean up on failure.
-- [Changelog](https://docs.stmlink.com/en/rtc/capi/changelog.md): Release history of the C SDK (librtc), including the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK.
+- [Changelog](https://docs.stmlink.com/en/rtc/capi/changelog.md): Release history of the C SDK (librtc), including the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK.
 
 ## [EN] SRTC Audio & Video SDK · C SDK (server/embedded) · Advanced
 
