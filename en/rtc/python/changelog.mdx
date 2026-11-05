@@ -3,6 +3,13 @@ title: "Changelog"
 description: "Release history of the SRTC Python SDK (PyPI package srtc): what each version added or changed, and whether you can upgrade directly. Read before upgrading."
 ---
 
+### [0.2.1] - 2026.11.05
+The bundled C library is upgraded to 0.1.1. **No API changes, so you can upgrade directly.**
+
+#### Fixes
++ **`on_track_added` could be missed when a remote user unpublished and immediately republished**: when a remote user did "unpublish → republish" back to back, the SDK occasionally processed the two changes in reverse order and treated the new track as removed, so `on_track_added` never fired and the track couldn't be subscribed. Signaling is now processed in arrival order, so tracks are no longer lost
++ **User and track events could arrive out of order**: previously a user's `on_track_added` could arrive before their `on_user_join`, or `on_track_removed` for a track could arrive after the `on_track_added` of its republished track. These events are now called one at a time in the order the SDK receives the signaling; see [Ordering and timing](/en/rtc/python/api-reference/events#ordering-and-timing)
+
 ### [0.2.0] - 2026.09.30
 This release unifies error codes across all SDKs and is a **breaking change**. The bundled C library is upgraded to 0.1.0.
 

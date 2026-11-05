@@ -1170,16 +1170,16 @@
     "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
   },
   "en/rtc/python/api-reference/events": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/python/api-reference/events.md",
-    "zh_blob": "edee8683eecbc76baf91b17e4750f4cf4539cf45",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "7e59cd20ff25dd8fa924e16d0840cad58979432b",
+    "zh_commit": "e2bd75528a4be3abc7576e5a8375bae3f6cdd6e5"
   },
   "en/rtc/python/changelog": {
     "reviewed": false,
     "source": "zh/rtc/python/changelog.mdx",
-    "zh_blob": "c278648bef79975987bb21a12f359f2a8ac72d80",
-    "zh_commit": "d8c8735692fa7418197914a23798240ece0310cd"
+    "zh_blob": "1ccc6a3321ed7a6d1e0aa231a52d145a14c186e2",
+    "zh_commit": "e2bd75528a4be3abc7576e5a8375bae3f6cdd6e5"
   },
   "en/rtc/python/error-codes": {
     "reviewed": false,

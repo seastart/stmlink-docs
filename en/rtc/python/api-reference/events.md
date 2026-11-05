@@ -47,7 +47,10 @@ class MyHandler(srtc.ChannelHandler):
 ## Ordering and timing
 
 <Warning>
-**There's no ordering guarantee between user events and track events.** For example, a user's `on_track_added` may arrive before their `on_user_join`. Just handle them idempotently by `uid`, and don't assume "join first, publish later".
+User events and track events are **called one at a time in the order the SDK receives the signaling** (since 0.2.1; earlier versions don't guarantee ordering, so `on_track_added` could arrive before `on_user_join`). Keep two things in mind:
+
++ When a handler method is `async def`, the coroutines **start** in order but interleave once they hit an `await`. Put logic that needs strict ordering before the first `await`, or queue the work yourself
++ Duplicate events can still arrive in cases such as network reconnection, so keep handling them idempotently by `uid` / track id
 </Warning>
 
 + **Users and tracks already in the channel before you joined don't trigger `on_user_join` / `on_track_added`**; read `ch.users` after joining
