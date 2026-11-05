@@ -208,9 +208,9 @@ void rtc_set_auto_subscribe(void* handle, int auto_audio, int auto_video);
 <Warning>
 **回调执行在 SDK 内部线程上**，注意三点：
 
-1. 不同回调可能并发触发，业务侧要自己做并发保护
-2. 回调里不要做耗时操作，否则会阻塞 SDK 事件循环；耗时处理请入队后交给自己的线程
-3. 回调参数中的指针（`data`、`props`、`content_json`、`speakers` 等）**只在回调期间有效**，需要留存必须立即拷贝
+1. 用户、轨道、频道、自定义消息、重连（连接状态 `3` / `1`）及 SFU 信令（切层、网络质量、说话人）这些事件回调**按发生顺序依次触发**，彼此不会并发（0.1.1 起）；媒体样本回调（每路轨道各自一个线程）、关键帧请求回调、断线回调（`rtc_set_disconnected_callback` 与连接状态 `2`）会与它们并发，业务侧要自己做并发保护
+2. 回调里不要做耗时操作：事件回调是依次触发的，一个回调阻塞会推迟其后所有事件；耗时处理请入队后交给自己的线程
+3. 回调参数中的指针（`uid`、`track_info`、`data`、`props`、`content_json`、`speakers` 等）**只在回调期间有效**，需要留存（包括投递给其它线程异步处理）必须在回调返回前拷贝
 </Warning>
 
 ### rtc_set_connection_callback
