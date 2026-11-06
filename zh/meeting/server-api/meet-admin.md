@@ -459,6 +459,65 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 
 ---
 
+## 转移主持人
+
+`POST /server/v1/meet-admin/move-host`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+转移主持人
+
+把会议的主持人转给会中另一位成员：新主持人的角色变为 1（主持人），原主持人降为 0（普通成员），
+会议的 host_uid 同步改为新主持人。变更会以会中自定义消息广播给全体成员，各端 SDK 会同步刷新
+成员列表与会控权限。
+
+新主持人必须在会中；目标已经是主持人时直接返回成功。
+开启了外部角色模式（业务自定义角色体系）时不支持本接口，请改用「更新用户角色」调整。
+
+**请求参数**
+
+<ParamField body="room_no" type="string">
+  房间号，与会议ID二选一
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  会议ID，与房间号二选一
+</ParamField>
+
+<ParamField body="target_id" type="string" required>
+  新主持人的用户ID，必须在会中
+  示例：`1001`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "room_no": "",
+  "target_id": "1001"
+}
+```
+
+**响应参数**
+
+<ResponseField name="data" type="string">
+  返回数据
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
 ## 主持人更新用户会中角色
 
 `POST /server/v1/meet-admin/update-user-role`

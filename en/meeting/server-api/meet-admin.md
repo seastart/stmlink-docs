@@ -459,6 +459,65 @@ Response example:
 
 ---
 
+## Transfer host
+
+`POST /server/v1/meet-admin/move-host`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Transfer host
+
+Transfers the meeting host to another member in the meeting: the new host's role becomes 1 (host) and the previous host is changed to 0 (member),
+and the meeting's host_uid is updated to the new host. The change is broadcast to all members as an in-meeting custom message, and each SDK refreshes
+the member list and meeting-control permissions accordingly.
+
+The new host must be in the meeting. If the target is already the host, the call returns success directly.
+This API is not supported in external role mode (a custom role system defined by your business); use "Update a member's role" instead.
+
+**Request parameters**
+
+<ParamField body="room_no" type="string">
+  Room number. Provide either this or the meeting ID
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  Meeting ID. Provide either this or the room number
+</ParamField>
+
+<ParamField body="target_id" type="string" required>
+  User ID of the new host, who must be in the meeting
+  Example: `1001`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "room_no": "",
+  "target_id": "1001"
+}
+```
+
+**Response parameters**
+
+<ResponseField name="data" type="string">
+  Response data
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
 ## Update a member's in-meeting role
 
 `POST /server/v1/meet-admin/update-user-role`
