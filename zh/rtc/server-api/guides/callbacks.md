@@ -79,6 +79,37 @@ Content-Type: application/json; charset=utf-8
 + `reason`：`1` 主动离开、`2` 被踢、`3` 被顶号、`4` 心跳超时、`5` 频道销毁、`6` 身份变成观众
 + `online` 是该用户离开**后**会中的在线人数，`0` 意味着人走空了
 
+### `user_stream_change` — 用户发布的流变化
+
+用户开始或停止发布某路流（开关麦克风、摄像头、屏幕共享等）时触发。
+
+```json
+{
+  "channel": "fire",
+  "uid": "1001",
+  "name": "张三",
+  "avatar": "https://example.com/a.png",
+  "device_type": 6,
+  "join_at": 1718250900,
+  "opened": ["camera_big", "camera_small"],
+  "closed": [],
+  "descs": ["camera_big", "camera_small", "mic"],
+  "ts_ms": 1718250917123
+}
+```
+
+事件**按轨道描述 `desc` 统计**，SRTC 不解释 `desc` 的含义——它是你发布轨道时自己定的。哪个
+`desc` 代表麦克风、哪个代表摄像头，由你的业务按自己的约定判断。
+
++ 只有用户「正在发布的 `desc` 集合」有增减时才推送；只改分辨率、码率等参数不推
++ 同一 `desc` 的多路轨道（如 simulcast 各层）算一个
++ `opened` / `closed` 是这一次新开始、新停止发布的 `desc`；`descs` 是变化后仍在发布的全部 `desc`
++ 一次上报里的增减合在一条事件里。要判断某个媒体有没有开关，可用 `descs` 去掉 `opened`、
+  加回 `closed` 还原出变化前的集合，再与 `descs` 比较
++ `name` / `avatar` / `join_at` 方便你自己排布合流画面：`avatar` 取自用户扩展属性 `props.avatar`，没有则为空
++ 用户离开频道时**不再补发**本事件，以 `user_leave` 视为全部停止发布
++ 多条之间可能乱序，以 `ts_ms`（毫秒）最大的一条为准
+
 ### `im_connect` / `im_disconnect` — IM 设备上线 / 下线
 
 ```json

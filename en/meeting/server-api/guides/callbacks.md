@@ -51,6 +51,10 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 | `mcu_status_change` | The status of a recording, stream mixing, or live streaming task changes |
 | `mcu_record_done` | A recording file is ready and you can get its playback URL (sent once per file when a recording produces several) |
 | `mcu_alarm` | A recording task encounters an error |
+| `user_mic_state_change` | A user turns the microphone on or off |
+| `user_camera_state_change` | A user turns the camera on or off |
+| `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (dual stream from a SIP/H.323 device, or the second screen share on Web) |
+| `share_state_change` | The meeting's sharing status changes (sharing starts / stops) |
 
 ### `user_enter` — User enters the meeting
 
@@ -174,7 +178,61 @@ is split into segments by duration, and a recording that resumes after an interr
 (The `alarm_brief` above means "Stream push interrupted".) `gw` is the gateway node running the task. Giving us this value speeds up troubleshooting a lot. Note that an alarm **doesn't mean the task has stopped**—
 rely on `task_status` in `mcu_status_change`.
 
+### `user_mic_state_change` / `user_camera_state_change` / `user_extra_screen_state_change` — User media status changes
+
+The three events share one structure. Read the status field that matches the event name; the other two are a snapshot at the time of sending:
+
+```json
+{
+  "meeting_id": "sny038",
+  "room_no": "803707296",
+  "user_id": "1001",
+  "real_name": "Alice",
+  "nickname": "Alice",
+  "avatar": "https://example.com/a.png",
+  "role": 1,
+  "device_type": 6,
+  "join_at": 1718250900,
+  "mic_state": 1,
+  "camera_state": 2,
+  "extra_screen_state": 2,
+  "ts_ms": 1718250917123
+}
+```
+
++ `mic_state` / `camera_state` / `extra_screen_state`: `1` on, `2` off — the same values as the [in-meeting member list](/en/meeting/server-api/meet#list-in-meeting-members)
++ Sent only when the status actually flips. The camera counts as on while either its high or low stream is published; both appearing together sends one event
++ "Extra screen" means the dual (secondary) stream of a SIP/H.323 device or the second screen share on Web. It is independent of meeting sharing (`share_state_change`)
++ When one action toggles several media at once (for example, joining with both microphone and camera on), each is sent separately with the same `ts_ms`
++ No "off" events are sent when a user leaves; treat `user_exit` as "everything off"
++ Status reflects whether the stream is being published: a microphone that is only muted locally while still published does not trigger "off"
+
+### `share_state_change` — Meeting sharing status changes
+
+Both start and stop of sharing use this event, for screen sharing and whiteboard sharing alike:
+
+```json
+{
+  "meeting_id": "sny038",
+  "room_no": "803707296",
+  "from_state": 0,
+  "to_state": 1,
+  "user_id": "1001",
+  "nickname": "Alice",
+  "ts_ms": 1718250917123
+}
+```
+
++ `from_state` / `to_state`: `0` no sharing, `1` screen, `2` whiteboard. `0→1/2` is a start, `1/2→0` is a stop, `1↔2` switches the sharing type
++ `user_id` is the person who started or stopped sharing; on stop it is the previous sharer
++ A stop is sent when the sharer stops, the host stops it, the host disables sharing, or the sharer leaves
++ When a new sharer takes over from a sharer who has dropped off, a stop for the previous sharer is sent first, then a start for the new one
++ "Start" is sent as soon as sharing is granted, without waiting for the client to actually push the screen
+
 ## Idempotency and retry
 
 Network jitter can cause the same event to be delivered more than once. Make your handling idempotent by `event` + business key (`meeting_id`, `task_id`,
 `user_id`). Don't deduplicate by `time`—there can be several events of the same type within the same second.
+
+Media status and sharing status events are not guaranteed to arrive in order (for example, when the microphone is toggled quickly, "off" may arrive before "on").
+Trust the one with the largest `ts_ms` (milliseconds); the three media status fields are a full snapshot at the time of sending, so you can simply overwrite.

@@ -79,6 +79,37 @@ Only `agent_join` and `agent_operate` are synchronous; all others are asynchrono
 + `reason`: `1` left voluntarily, `2` removed, `3` replaced by another session with the same uid, `4` heartbeat timeout, `5` channel destroyed, `6` switched to audience
 + `online` is the number of online users in the channel **after** this user left; `0` means the channel is now empty
 
+### `user_stream_change` — The streams a user publishes change
+
+Sent when a user starts or stops publishing a stream (turning the microphone, camera, screen sharing, and so on on or off).
+
+```json
+{
+  "channel": "fire",
+  "uid": "1001",
+  "name": "Alice",
+  "avatar": "https://example.com/a.png",
+  "device_type": 6,
+  "join_at": 1718250900,
+  "opened": ["camera_big", "camera_small"],
+  "closed": [],
+  "descs": ["camera_big", "camera_small", "mic"],
+  "ts_ms": 1718250917123
+}
+```
+
+The event is **counted by track description (`desc`)**. SRTC does not interpret `desc` — you set it when publishing a
+track. Which `desc` means microphone or camera is up to your own convention.
+
++ Sent only when the set of `desc` values the user is publishing changes. Changing resolution, bitrate, or other parameters does not trigger it
++ Several tracks with the same `desc` (such as simulcast layers) count as one
++ `opened` / `closed` are the `desc` values that started or stopped publishing this time; `descs` is every `desc` still published after the change
++ All changes from one update arrive in a single event. To tell whether a medium was turned on or off, rebuild the
+  previous set as `descs` minus `opened` plus `closed`, then compare it with `descs`
++ `name` / `avatar` / `join_at` help you lay out a mixed picture yourself. `avatar` comes from the user property `props.avatar` and is empty if not set
++ No further event is sent when the user leaves the channel; treat `user_leave` as "stopped publishing everything"
++ Events may arrive out of order. Trust the one with the largest `ts_ms` (milliseconds)
+
 ### `im_connect` / `im_disconnect` — IM device online / offline
 
 ```json
