@@ -48,8 +48,10 @@ npm install @seastart/smeeting-web-sdk@latest --save
 ### Local copy
 Download the SDK package manually:
 
-1. Download [smeeting.js](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting.js) and [smeeting.d.ts](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting.d.ts)
-2. Copy `smeeting.js` and `smeeting.d.ts` into your project.
+1. Download [smeeting-bundle.js](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting-bundle.js) and [smeeting-bundle.d.ts](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting-bundle.d.ts)
+2. Copy `smeeting-bundle.js` and `smeeting-bundle.d.ts` into your project.
+
+`smeeting-bundle.js` is a single-file UMD build with SRTC included, so you don't need to load `@seastart/srtc-web-sdk` separately. The other two builds in the npm package are for bundlers: `smeeting.esm.js` (ESM) and `smeeting.js` (CommonJS). Neither can be loaded directly with a `<script>` tag.
 
 
 
@@ -58,8 +60,14 @@ Import it with `import` or load it with a `script` tag
 
 ```typescript
 import { SMeeting } from '@seastart/smeeting-web-sdk';
-// or
-<script src="smeeting.js"></script>
+```
+
+```html
+<script src="smeeting-bundle.js"></script>
+<script>
+  // All exports are attached directly to window: SMeeting, LogLevel, etc.
+  const smeeting = new SMeeting({ logLevel: LogLevel.INFO });
+</script>
 ```
 
   

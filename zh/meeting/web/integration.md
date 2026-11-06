@@ -48,8 +48,10 @@ npm install @seastart/smeeting-web-sdk@latest --save
 ### 本地引用
 手动下载 sdk 包：
 
-1. 下载 [smeeting.js](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting.js) 和 [smeeting.d.ts](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting.d.ts)
-2. 将 `smeeting.js` `smeeting.d.ts` 复制到您的项目中。
+1. 下载 [smeeting-bundle.js](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting-bundle.js) 和 [smeeting-bundle.d.ts](https://www.unpkg.com/@seastart/smeeting-web-sdk@latest/smeeting-bundle.d.ts)
+2. 将 `smeeting-bundle.js` `smeeting-bundle.d.ts` 复制到您的项目中。
+
+`smeeting-bundle.js` 是内含 SRTC 的单文件 UMD 包，无需再单独引入 `@seastart/srtc-web-sdk`。npm 包里的另外两个产物供构建工具使用：`smeeting.esm.js`（ESM）和 `smeeting.js`（CommonJS），不能直接用 `<script>` 加载。
 
 
 
@@ -58,8 +60,14 @@ npm install @seastart/smeeting-web-sdk@latest --save
 
 ```typescript
 import { SMeeting } from '@seastart/smeeting-web-sdk';
-// or
-<script src="smeeting.js"></script>
+```
+
+```html
+<script src="smeeting-bundle.js"></script>
+<script>
+  // 所有导出直接挂在 window 上：SMeeting、LogLevel 等
+  const smeeting = new SMeeting({ logLevel: LogLevel.INFO });
+</script>
 ```
 
   
