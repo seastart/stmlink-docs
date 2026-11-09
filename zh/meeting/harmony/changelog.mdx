@@ -3,6 +3,14 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.4.1] - 2026.11.09
+#### 新增
++ **业务自定义会外消息事件**：非内置 `action` 的 IM 消息通过 `SMeetingDelegate.onImCustomMsg` 透传，携带发送者、`action` 和原始 `content`，与 Swift 及其它端保持一致。
+
+<Note>
+无不兼容变更，1.4.0 的接入代码可直接升级。依赖不变，仍搭配 **SRTC 1.2.0**，只需替换 `smeeting` 的 HAR。
+</Note>
+
 ### [1.4.0] - 2026.10.15
 #### 新增
 + **`adminListOnlineMemberOf(meetingId, page?, perPage?)`**：指定会议的在线成员，对齐 Swift 版 `adminListOnlineMember(meetingId:page:perPage:)`。主持人在分组讨论的小组里时，用它拉主会场的在线成员。
