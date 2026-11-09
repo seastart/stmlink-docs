@@ -107,3 +107,61 @@ export class RoomEventType extends CommonRoomEventType {
 
 ```
 
+## 会外消息事件
+
+调用 `smeeting.enableIm()` 启用会外消息后，会外消息事件通过 `smeeting.onNotifyImEvent` 监听：
+
+```typescript
+smeeting.onNotifyImEvent = (evt: ImEvent) => {
+  switch (evt.type) {
+    case CommonImEventType.CALL_CALLING:
+      // 有人呼叫入会
+      break;
+    case CommonImEventType.IM_CUSTOM_MSG: {
+      // 业务自定义消息，按 action 区分
+      const data = evt.data as ImCustomMsgEventData;
+      console.log(data.action, data.content, data.uid);
+      break;
+    }
+  }
+};
+```
+
+CommonImEventType及对应`data`定义如下：
+
+```typescript
+    /** 开始断线自动重连，无data */
+    static readonly RECONNECTING = 'reconnecting';
+    /** 重连成功，无data */
+    static readonly RECONNECTED = 'reconnected';
+    /** 自己被强制断开会议外消息连接，对应data为 ImDisconnectEventData */
+    static readonly DISCONNECTED = 'disconnected';
+
+    /** 开始呼叫，对应data为 ImCallCallingEventData */
+    static readonly CALL_CALLING = 'call_calling';
+    /** 会议提醒，对应data为 ImMeetingRemindEventData */
+    static readonly MEETING_REMIND = 'meeting_remind';
+    /** 移出等候室消息，对应data为 ImAdminMoveOutWaitingRoomEventData */
+    static readonly ADMIN_MOVE_OUT_WAITING_ROOM = 'admin_move_out_waiting_room';
+    /** 小组请求帮助，对应data为 ImUserHelpSubMeetingEventData */
+    static readonly USER_HELP_SUB_MEETING = 'user_help_sub_meeting';
+    /** 业务自定义消息（action 不属于以上内置类型），对应data为 ImCustomMsgEventData（v0.3.2 起） */
+    static readonly IM_CUSTOM_MSG = 'im_custom_msg';
+```
+
+业务自定义消息由服务端 [`im/send-msg`](/zh/rtc/server-api/im#发送im消息) 发送，`action` 自行约定（不要与上面的内置类型重名），`content` 会原样透传：
+
+```typescript
+interface ImCustomMsgEventData {
+    /** 消息类型，即发送时填写的 action */
+    action: string;
+    /** 消息内容，即发送时填写的 content */
+    content: any;
+    /** 发送者会话ID */
+    sid: string;
+    /** 发送者用户ID */
+    uid: string;
+    /** 发送者名称 */
+    name: string;
+}
+```

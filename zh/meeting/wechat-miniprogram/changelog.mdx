@@ -13,6 +13,12 @@ npm info @seastart/smeeting-wx-sdk version
 
 ---
 
+### v0.1.1 - 2026-11-09
+
+#### 修复
++ **会外消息（IM）的自定义消息收不到回调**：服务端 [`im/send-msg`](/zh/rtc/server-api/im#发送im消息) 发送的消息，`action` 不是 SDK 内置类型时之前会被静默丢弃。现在统一以新增的 `CommonImEventType.IM_CUSTOM_MSG` 事件透传给 `onNotifyImEvent`，`data` 为 `ImCustomMsgEventData`（含 `action`、`content` 及发送者 `uid` / `name` / `sid`）
++ 去掉收到会外消息时多余的控制台打印
+
 ### v0.1.0 - 2026-09-30
 
 <Warning>

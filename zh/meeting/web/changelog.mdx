@@ -13,6 +13,12 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.2 - 2026-11-09
+
+#### 修复
++ **会外消息（IM）的自定义消息收不到回调**：服务端 [`im/send-msg`](/zh/rtc/server-api/im#发送im消息) 发送的消息，`action` 不是 SDK 内置类型时之前会被静默丢弃，`onNotifyImEvent` 不触发。现在统一以新增的 `CommonImEventType.IM_CUSTOM_MSG` 事件透传，`data` 为 `ImCustomMsgEventData`（含 `action`、`content` 及发送者 `uid` / `name` / `sid`），见 [事件参考 · 会外消息事件](/zh/meeting/web/events#会外消息事件)
++ 去掉收到会外消息时多余的控制台打印
+
 ### v0.3.1 - 2026-11-04
 
 + **兼容 webpack 4 等老工具链**：构建产物的语法降到 ES2019；ESM 产物由 `smeeting.mjs` 改名为 `smeeting.esm.js`（`package.json` 的 `module` / `exports` 已同步，正常 `import` 写法不受影响），修复 webpack 4 默认配置引入时报 `Module parse failed`、`Can't import the named export ... from non EcmaScript module` 的问题。接口与运行行为不变
