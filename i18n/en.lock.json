@@ -524,8 +524,8 @@
   "en/meeting/web/changelog": {
     "reviewed": false,
     "source": "zh/meeting/web/changelog.mdx",
-    "zh_blob": "9120a56827ed26a19c4b35de022ad68fb1fb3b30",
-    "zh_commit": "ca922eaea4c4c73bfda9062130b76915ca76d847"
+    "zh_blob": "14273675bddde82f2dd87174ea7f7527444eb20a",
+    "zh_commit": "65d8b919a4b116eaf5e16e8e4807dce05e7d86ec"
   },
   "en/meeting/web/error-codes": {
     "reviewed": false,
@@ -534,10 +534,10 @@
     "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
   },
   "en/meeting/web/events": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/web/events.md",
-    "zh_blob": "533b1c841d49ac3ca80681c8e911077c85a5b9ec",
-    "zh_commit": "15c1e038190de1c63fef7d94a79430c222e8527d"
+    "zh_blob": "2647b40048bdaac2dce81a5ae4965310a8e39281",
+    "zh_commit": "65d8b919a4b116eaf5e16e8e4807dce05e7d86ec"
   },
   "en/meeting/web/integration": {
     "reviewed": true,

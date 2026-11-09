@@ -106,3 +106,62 @@ export class RoomEventType extends CommonRoomEventType {
 }
 
 ```
+
+## Out-of-meeting message events
+
+After enabling out-of-meeting messages with `smeeting.enableIm()`, listen for them via `smeeting.onNotifyImEvent`:
+
+```typescript
+smeeting.onNotifyImEvent = (evt: ImEvent) => {
+  switch (evt.type) {
+    case CommonImEventType.CALL_CALLING:
+      // someone is calling you into a meeting
+      break;
+    case CommonImEventType.IM_CUSTOM_MSG: {
+      // your own business message; branch on action
+      const data = evt.data as ImCustomMsgEventData;
+      console.log(data.action, data.content, data.uid);
+      break;
+    }
+  }
+};
+```
+
+CommonImEventType and the corresponding `data`:
+
+```typescript
+    /** Auto-reconnect started; no data */
+    static readonly RECONNECTING = 'reconnecting';
+    /** Reconnected; no data */
+    static readonly RECONNECTED = 'reconnected';
+    /** Your IM connection was forcibly closed; data is ImDisconnectEventData */
+    static readonly DISCONNECTED = 'disconnected';
+
+    /** Incoming call; data is ImCallCallingEventData */
+    static readonly CALL_CALLING = 'call_calling';
+    /** Meeting reminder; data is ImMeetingRemindEventData */
+    static readonly MEETING_REMIND = 'meeting_remind';
+    /** Moved out of the waiting room; data is ImAdminMoveOutWaitingRoomEventData */
+    static readonly ADMIN_MOVE_OUT_WAITING_ROOM = 'admin_move_out_waiting_room';
+    /** A breakout group asks for help; data is ImUserHelpSubMeetingEventData */
+    static readonly USER_HELP_SUB_MEETING = 'user_help_sub_meeting';
+    /** Custom business message (action is not one of the built-in types above); data is ImCustomMsgEventData (since v0.3.2) */
+    static readonly IM_CUSTOM_MSG = 'im_custom_msg';
+```
+
+Custom messages are sent with the server API [`im/send-msg`](/en/rtc/server-api/im#send-an-im-message). Choose your own `action` values (avoid the built-in names above); `content` is passed through unchanged:
+
+```typescript
+interface ImCustomMsgEventData {
+    /** Message type: the action given when sending */
+    action: string;
+    /** Message body: the content given when sending */
+    content: any;
+    /** Sender's session ID */
+    sid: string;
+    /** Sender's user ID */
+    uid: string;
+    /** Sender's name */
+    name: string;
+}
+```
