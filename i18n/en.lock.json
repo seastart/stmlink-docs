@@ -1004,8 +1004,8 @@
   "en/rtc/capi/changelog": {
     "reviewed": false,
     "source": "zh/rtc/capi/changelog.mdx",
-    "zh_blob": "c95d1ffadbc4db38934914ce6ab09ff6389adf5a",
-    "zh_commit": "7436b2a12f27b5b1d867b8ae6ee0dc95dda4578e"
+    "zh_blob": "63b56bbf1e071db1093a56765c78a9dd414fd280",
+    "zh_commit": "5c67033211ab9914a6322fced171b5472948ed6e"
   },
   "en/rtc/capi/error-codes": {
     "reviewed": false,
