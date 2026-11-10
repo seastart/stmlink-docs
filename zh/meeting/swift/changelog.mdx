@@ -3,6 +3,14 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.7.2] - 2026.11.10
+#### 修复
++ **macOS 工程无法构建**：1.7.1 的 macOS 产物只含 arm64，且 framework 结构不符合 macOS 规范，接入后构建或签名失败。1.7.2 恢复为 arm64 + x86_64 通用的标准 macOS framework。
+
+<Note>
+接口与行为与 1.7.1 完全一致，iOS 不受影响。macOS 接入方请升级到 1.7.2，不要停留在 1.7.1。依赖仍为 **SRTC 1.7.0**；iOS 全屏共享扩展继续使用 `srtc-swift-sdk` 的 `exact: "1.7.0"`。
+</Note>
+
 ### [1.7.1] - 2026.11.09
 #### 新增
 + **业务自定义会外消息事件**：非内置 `action` 的 IM 消息通过 `SMeetingDelegate.imCustomMsg` 透传，携带发送者、`action` 和原始 `content`，与鸿蒙及其它端保持一致。
