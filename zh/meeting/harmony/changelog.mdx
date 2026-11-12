@@ -3,6 +3,21 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.5.0] - 2026.11.12
+
+<Warning>
+**不兼容变更：最低系统版本提高到 HarmonyOS 5.0.3（API 15），且必须搭配 SRTC 1.3.0。** 随 SRTC 1.3.0 升级底层依赖 `@ohos/webrtc` 到 1.0.5。升级前请把工程 `compatibleSdkVersion` 改为 `5.0.3(15)`，同时替换 `libs/` 下的 `srtc` 与 `smeeting` 两个 HAR，并同步修改模块级与工程级 `oh-package.json5` 里的版本号。
+</Warning>
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.5.0.har`（SHA-256 `31afd76b7a4dfd89a9929006f6fee9f5fe89f8229d7cb3298a773b24d3f05106`），依赖 SRTC 1.3.0。
+
+#### 修复
+
+随 SRTC 1.3.0 修复（会议层接口无变化）：
+
++ **横屏应用里开屏幕共享，其他参会者看到的画面过小**。
++ **横竖屏切换后摄像头画面被拉伸**：横屏会中页开摄像头后切到竖屏页面（或反向），其他参会者看到的人像被拉宽或压扁。
+
 ### [1.4.1] - 2026.11.09
 #### 新增
 + **业务自定义会外消息事件**：非内置 `action` 的 IM 消息通过 `SMeetingDelegate.onImCustomMsg` 透传，携带发送者、`action` 和原始 `content`，与 Swift 及其它端保持一致。

@@ -5,8 +5,8 @@ description: "SRTC HarmonyOS SDK 的环境要求、HAR 集成方式与权限配�
 
 SRTC HarmonyOS SDK 是一套 `HAR`（静态共享包）形态的原生音视频 SDK，对外模块名为 `srtc`，当前支持：
 
-+ HarmonyOS 5.0.0（API 12）及以上
-+ DevEco Studio 5.0 及以上
++ HarmonyOS 5.0.3（API 15）及以上（自 1.3.0 起；1.2.0 及以前为 API 12）
++ DevEco Studio 5.0.3 及以上（需带 API 15 的 SDK），工程 `compatibleSdkVersion` 不低于 `5.0.3(15)`
 + ArkTS（Stage 模型）
 + **仅 arm64-v8a**
 
@@ -25,22 +25,22 @@ SDK 的视频预设统一使用 H264，底层的 H264 / H265 编解码只走设�
 SDK 以预编译 HAR 分发，从制品仓下载：
 
 ```bash
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.2.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.3.0.har
 ```
 
-下载后可以核对 SHA-256，应为 `c609910ad7c2f34e2fc13422dd2695d68e212872e481413a35fa8dd91b4e7b43`：
+下载后可以核对 SHA-256，应为 `1555572f9073ba328af8786c22dcae22b5fb016f4c01e3092b5593ce43d4230b`：
 
 ```bash
-shasum -a 256 srtc-harmony-1.2.0.har
+shasum -a 256 srtc-harmony-1.3.0.har
 ```
 
-把下载到的文件放进模块的 `libs/` 目录，并重命名为 `srtc-1.2.0.har`：
+把下载到的文件放进模块的 `libs/` 目录，并重命名为 `srtc-1.3.0.har`：
 
 ```
 your-project/
 └── entry/
     ├── libs/
-    │   └── srtc-1.2.0.har
+    │   └── srtc-1.3.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
@@ -58,7 +58,7 @@ HarmonyOS 的 ohpm 没有按 Git tag 解析版本的机制，SDK 通过 `file:` 
 ```json5
 {
   "dependencies": {
-    "srtc": "file:./libs/srtc-1.2.0.har"
+    "srtc": "file:./libs/srtc-1.3.0.har"
   }
 }
 ```
@@ -99,6 +99,10 @@ ohpm install
   }
 }
 ```
+
+<Note>
+自 1.3.0 起，SDK 的 HAR 自带声明 `ohos.permission.ACCELEROMETER`（`system_grant`，不弹授权框），构建时自动合并进你的应用，无需在 `module.json5` 中重复声明。它供底层在窗口方向锁定、手机实际朝向与窗口不一致时校正前置摄像头画面方向。
+</Note>
 
 摄像头与麦克风属于 `user_grant` 权限，除了在 `module.json5` 中声明，还必须在运行时主动申请：
 

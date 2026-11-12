@@ -5,8 +5,8 @@ description: "SMeeting HarmonyOS SDK 的环境要求、HAR 集成方式与权限
 
 SMeeting HarmonyOS SDK 是一套 `HAR`（静态共享包）形态的原生会议 SDK，对外模块名为 `smeeting`，当前支持：
 
-+ HarmonyOS 5.0.0（API 12）及以上
-+ DevEco Studio 5.0 及以上
++ HarmonyOS 5.0.3（API 15）及以上（自 1.5.0 起；1.4.x 及以前为 API 12）
++ DevEco Studio 5.0.3 及以上（需带 API 15 的 SDK），工程 `compatibleSdkVersion` 不低于 `5.0.3(15)`
 + ArkTS（Stage 模型）
 + **仅 arm64-v8a**
 
@@ -29,8 +29,8 @@ HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDep
 两个包都从制品仓下载：
 
 ```bash
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.2.0.har
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.4.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.3.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.5.0.har
 ```
 
 放进模块的 `libs/` 目录，去掉文件名里的 `-harmony`：
@@ -39,16 +39,16 @@ curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1
 your-project/
 └── entry/
     ├── libs/
-    │   ├── srtc-1.2.0.har
-    │   └── smeeting-1.4.0.har
+    │   ├── srtc-1.3.0.har
+    │   └── smeeting-1.5.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
 
 <Note>
-两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.4.0 依赖 SRTC 1.2.0，**不能搭配 SRTC 1.1.x 及以前**（用到了 SRTC 1.2.0 才有的收流状态事件与频道级合成流订阅，HAR 里也以 `peerDependencies` 钉住 `srtc@1.2.0`）。升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
+两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.5.0 依赖 SRTC 1.3.0（HAR 里以 `peerDependencies` 钉住 `srtc@1.3.0`），请搭配使用；升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
 
-SMeeting 1.4.0 的 HAR 校验值（sha256）：`e290753171e2e5834dbb933ab27e30d9e5b9800381f7fe5a97e57aa97d3288c1`，可用 `shasum -a 256 smeeting-harmony-1.4.0.har` 核对。
+SMeeting 1.5.0 的 HAR 校验值（sha256）：`31afd76b7a4dfd89a9929006f6fee9f5fe89f8229d7cb3298a773b24d3f05106`，可用 `shasum -a 256 smeeting-harmony-1.5.0.har` 核对；SRTC 1.3.0 为 `1555572f9073ba328af8786c22dcae22b5fb016f4c01e3092b5593ce43d4230b`。
 </Note>
 
 ---
@@ -60,8 +60,8 @@ SMeeting 1.4.0 的 HAR 校验值（sha256）：`e290753171e2e5834dbb933ab27e30d9
 ```json5
 {
   "dependencies": {
-    "smeeting": "file:./libs/smeeting-1.4.0.har",
-    "srtc": "file:./libs/srtc-1.2.0.har"
+    "smeeting": "file:./libs/smeeting-1.5.0.har",
+    "srtc": "file:./libs/srtc-1.3.0.har"
   }
 }
 ```
@@ -71,7 +71,7 @@ SMeeting 1.4.0 的 HAR 校验值（sha256）：`e290753171e2e5834dbb933ab27e30d9
 ```json5
 {
   "dependencies": {
-    "srtc": "file:./entry/libs/srtc-1.2.0.har"
+    "srtc": "file:./entry/libs/srtc-1.3.0.har"
   }
 }
 ```
