@@ -3,6 +3,17 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.5.1] - 2026.11.12
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.5.1.har`（SHA-256 `f0ad91e1e1af18fe0bdec802c0aec0100957263ca287ae334aa24f89be607817`），依赖 SRTC 1.3.0。
+
+#### 修复
++ **被动断开后再次入会报「已在会中」**：被顶号、被踢、心跳超时、会议结束等被动断开后，SDK 在派发 `onDisconnected` 之后自行走 `exitRoom` 收尾、清理会议状态，业务方不必再补调 `exitRoom`；业务方照旧补调也不会误清后续新会议的状态。
+
+<Note>
+无不兼容变更，1.5.0 的接入代码可直接升级。依赖不变，仍搭配 **SRTC 1.3.0**，只需替换 `smeeting` 的 HAR，并同步模块级 `oh-package.json5` 里的文件名。
+</Note>
+
 ### [1.5.0] - 2026.11.12
 
 <Warning>

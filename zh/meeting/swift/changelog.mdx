@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.7.3] - 2026.11.12
+#### 修复
++ **被动断开后会议状态残留**：被顶号、被踢、心跳超时、会议结束等被动断开后，SDK 在派发 `didDisconnect` 之后自行清理会议状态。此前业务方不补调 `exitRoom()` 就再次 `enterRoom`，会带着旧会议的 `meetingId`、成员表入会。
+
+#### 变更
++ `enterRoom` 在已处于会中时抛出 `SMeetingError.alreadyInMeeting`（与文档描述及 Web 端一致）。切换会议请先 `exitRoom()` 再 `enterRoom`；被动断开后无需再补调 `exitRoom()`。
+
+<Note>
+依赖仍为 **SRTC 1.7.0**；iOS 全屏共享扩展继续使用 `srtc-swift-sdk` 的 `exact: "1.7.0"`。
+</Note>
+
 ### [1.7.2] - 2026.11.10
 #### 修复
 + **macOS 工程无法构建**：1.7.1 的 macOS 产物只含 arm64，且 framework 结构不符合 macOS 规范，接入后构建或签名失败。1.7.2 恢复为 arm64 + x86_64 通用的标准 macOS framework。
