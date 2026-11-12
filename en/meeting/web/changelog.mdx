@@ -13,6 +13,11 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.3 - 2026-11-12
+
+#### Fixes
++ **Entering again after being removed, replaced by another login, or after the meeting ended failed with "already in a meeting" (`206006`)**: after `DISCONNECTED`, the SDK used to keep its meeting state until your code called `exitRoom()`. Without that call, a later `enterRoom` on the same SDK instance was rejected locally and never reached the server. The SDK now clears the state itself once the `DISCONNECTED` callback returns, so you can call `enterRoom` again directly. Calling `exitRoom()` in the callback still works, so existing code needs no change
+
 ### v0.3.2 - 2026-11-09
 
 #### Fixes

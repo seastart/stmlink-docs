@@ -34,7 +34,7 @@ CommonRoomEventType及对应`data`定义如下：
     static readonly RECONNECTING = 'reconnecting';
     /** 重连成功，断线重连成功后会触发，无data */
     static readonly RECONNECTED = 'reconnected';
-    /** 自己被强制退出会议，对应data为 DisconnectEventData */
+    /** 自己被强制退出会议（被踢、被顶号、心跳超时、会议结束等），对应data为 DisconnectEventData。回调返回后 SDK 即清理会议状态，可直接 enterRoom 重新入会（v0.3.3 起） */
     static readonly DISCONNECTED = 'disconnected';
 
     /** 其他用户进入会议，对应data为 UserInfo */

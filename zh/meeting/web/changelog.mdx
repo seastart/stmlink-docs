@@ -13,6 +13,11 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.3 - 2026-11-12
+
+#### 修复
++ **被踢出、被顶号或会议结束后，再次入会报「已在会议中」（`206006`）**：之前收到 `DISCONNECTED` 后，SDK 内部的会议状态要等业务方调用 `exitRoom()` 才会清掉；不调用的话，同一个 SDK 实例之后再 `enterRoom` 会被直接拒绝，请求不会发到服务端。现在 SDK 在 `DISCONNECTED` 回调返回后自行清理，可以直接重新 `enterRoom`；回调里照旧调用 `exitRoom()` 也不会出错，已有代码无需修改
+
 ### v0.3.2 - 2026-11-09
 
 #### 修复

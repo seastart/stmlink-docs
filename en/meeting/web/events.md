@@ -34,7 +34,7 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     static readonly RECONNECTING = 'reconnecting';
     /** Reconnected; fires after reconnecting successfully following a disconnect, no data */
     static readonly RECONNECTED = 'reconnected';
-    /** You were forced to exit the meeting; data is DisconnectEventData */
+    /** You were forced to exit the meeting (removed, replaced by another login, heartbeat timeout, meeting ended, etc.); data is DisconnectEventData. The SDK clears its meeting state once the callback returns, so you can call enterRoom again directly (since v0.3.3) */
     static readonly DISCONNECTED = 'disconnected';
 
     /** Another user entered the meeting; data is UserInfo */
