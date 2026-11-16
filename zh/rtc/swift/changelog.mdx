@@ -3,6 +3,15 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.8.0] - 2026.11.16
+#### 新增
++ **AI 降噪插件 `SRTCDeepFilterNet`**：同一个包里新增的可选产品，基于 DeepFilterNet3，与 Web 降噪插件同一份算法和模型。挂到 `audioCaptureProcessor` 上即生效，支持运行时调整强度（0–100）与旁路；设备不支持时抛 `featureNotSupported`，运行中算力不足会自动暂停并回调 `onOverload`。见 [AI 降噪](/zh/rtc/swift/advanced/deepfilternet)。
++ **`AudioProcessingDeclaring` / `AudioProcessingConstraints`**：采集处理器可声明对 WebRTC 自带降噪、回声消除、自动增益的要求，设为 `audioCaptureProcessor` 时 SDK 按声明调整，清空后恢复。见 [类型定义](/zh/rtc/swift/types#audioprocessingconstraints)。
+
+<Note>
+API 只新增不删改，1.7.0 的接入代码可直接编译，平台下限不变（iOS 16 / macOS 12.3）。`SRTCBroadcastKit` 本次为 **1.0.21**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.7.0] - 2026.11.03
 <Warning>
 **破坏性变更（仅 macOS）：macOS 不再提供虚拟背景接口。** iOS 不受影响，接口与效果都不变。

@@ -185,3 +185,26 @@ description: "Android 音视频 SDK 的频道、用户、轨道与摄像头能�
 | `YUY2` | `20` | YUYV 打包格式。 |
 
 屏幕原始帧回调与 `LocalCustomVideoTrack.inputData` 使用 I420。渲染控件的 `updateFrame` 支持 I420、NV12、NV21，不支持 YV12、YUY2。
+
+## AudioCaptureProcessor
+
+包路径：`cn.seastart.rtc.audio.AudioCaptureProcessor`，自 2.0.39 起提供。麦克风采集处理器，通过 `RTCEngine.setAudioCaptureProcessor(...)` 挂载，在 SDK 采集线程上原地处理每一帧 PCM，处理后再分发给所有频道。
+
+| 成员 | 说明 |
+| --- | --- |
+| `audioProcessing: AudioProcessingConstraints?` | 对自带 3A 的要求，默认 `null`（不干预）。 |
+| `initialize(sampleRate: Int, channelCount: Int)` | 采集格式确定时调用（每次采集会话启动，含设备切换、路由变化后的重建；以及采集中挂上处理器时），须快速返回。 |
+| `process(data: ByteArray, offset: Int, length: Int)` | 原地处理一帧 16bit 小端 PCM（交错声道），默认 48kHz 单声道 10ms 即 960 字节。每 10ms 同步调用一次，须在几毫秒内返回；返回后缓冲会被复用，不要持有 `data`。抛出的异常会被 SDK 捕获，该帧按原样发送。 |
+| `release()` | 处理器被替换或清空时调用，之后不会再收到 `process`。 |
+
+## AudioProcessingConstraints
+
+包路径：`cn.seastart.rtc.audio.AudioProcessingConstraints`，自 2.0.39 起提供。采集处理器对自带音频前处理（3A）的要求，与 Web、Swift SDK 的同名类型含义一致。
+
+| 属性名称 | 数据类型 | 说明 |
+| --- | --- | --- |
+| noiseSuppression | Boolean? | 降噪。`false` 时关闭系统与 WebRTC 自带降噪。 |
+| echoCancellation | Boolean? | 回声消除，Android 暂不处理，保持 SDK 默认。 |
+| autoGainControl | Boolean? | 自动增益，Android 暂不处理，保持 SDK 默认。 |
+
+取值 `false` 表示要求关闭；`true` 或 `null` 表示不干预，沿用 SDK 默认配置。

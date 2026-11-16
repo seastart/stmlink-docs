@@ -266,6 +266,16 @@ fun setRtcMicDeviceEvent(e: RTCMicDeviceEvent?)
 
 方法说明：设置 Engine 全局麦克风输入设备监听器，传 `null` 解绑。详见 [RTCMicDeviceEvent](/zh/rtc/android/api-reference/RTCMicDeviceEvent)。
 
+### setAudioCaptureProcessor(processor)
+
+```kotlin
+fun setAudioCaptureProcessor(processor: AudioCaptureProcessor?)
+```
+
+方法说明：设置麦克风采集处理器，传 `null` 清除。自 2.0.39 起提供。Engine 级生效，作用于所有频道，入会前后都可以调用；SDK 持有强引用，替换或清除时调用旧处理器的 `release()`，`releaseSDK()` 不会清除它。处理器声明 `audioProcessing.noiseSuppression = false` 时，SDK 关闭系统与 WebRTC 自带降噪，清除后恢复；该变化会让麦克风采集重建一次（不到半秒的空档）。  
+参数说明：`processor`，实现 [`AudioCaptureProcessor`](/zh/rtc/android/types#audiocaptureprocessor) 的处理器，如 AI 降噪插件的 `DeepFilterNetProcessor`，见 [AI 降噪](/zh/rtc/android/advanced/deepfilternet)。  
+返回值说明：无（`Unit`）。
+
 ## 媒体质量
 
 ### getMetric()

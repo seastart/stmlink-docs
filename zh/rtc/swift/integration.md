@@ -33,7 +33,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.7.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.8.0")
 ],
 targets: [
     .target(
@@ -57,6 +57,10 @@ targets: [
 
 同一个包里还有一个 `SRTCBroadcastKit` 产品，只给 iOS 屏幕共享的 Broadcast Upload Extension
 使用，普通接入不需要它。集成步骤见[屏幕共享](/zh/rtc/swift/advanced/screen-sharing)。
+
+#### SRTCDeepFilterNet（AI 降噪才需要）
+
+`1.8.0` 起包里还有一个可选的 `SRTCDeepFilterNet` 产品，提供 AI 降噪，加到 App target 上即可。用法见 [AI 降噪](/zh/rtc/swift/advanced/deepfilternet)。
 
 <Warning>
 `SRTCBroadcastKit` 只勾选到扩展 target，**不要**勾到 App target；扩展 target 也**不要**

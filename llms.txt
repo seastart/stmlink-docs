@@ -67,6 +67,7 @@
 - [多频道](https://docs.stmlink.com/zh/rtc/android/advanced/multi-channel.md): 使用一个 RTCEngine 同时加入多个频道，并按频道隔离事件、发布订阅、成员状态和媒体统计
 - [音频路由](https://docs.stmlink.com/zh/rtc/android/advanced/audio-routing.md): Android SRTC 音视频 SDK 通过 AudioRouterManager 管理扬声器、听筒、有线耳机与蓝牙耳机的音频路由
 - [自定义推流](https://docs.stmlink.com/zh/rtc/android/advanced/custom-track.md): Android SRTC 音视频 SDK 通过 LocalCustomVideoTrack 把外部画面（白板、画布、播放器、第三方采集源）作为视频流发布到频道
+- [AI 降噪（DeepFilterNet）](https://docs.stmlink.com/zh/rtc/android/advanced/deepfilternet.md): 用可选插件 cn.seastart.rtc:denoise 给麦克风开启可调强度的 AI 降噪：依赖引入、开关与强度调节、设备不支持与算力不足的处理，以及自定义采集处理器 AudioCaptureProcessor 的用法
 - [白板接入](https://docs.stmlink.com/zh/rtc/android/advanced/whiteboard.md): 白板是一个 H5 页面，由 SRTC 在加入频道成功时通过 onJoinSucceed 下发链接；接入方用 WebView 加载并处理约定的交互事件。读它了解链接来源、WebView 配置、JS Bridge 与导出/插图等系统回调的处理
 
 ## SRTC 音视频 SDK · Android SDK · 接口文档
@@ -146,6 +147,7 @@
 - [音频路由（iOS）](https://docs.stmlink.com/zh/rtc/swift/advanced/audio-routing.md): iOS 上用 AudioRouteSession 控制声音从扬声器还是听筒出，理解持久/临时两层设置、外设为何不可主动切换，以及入会即申请麦克风权限的原因
 - [屏幕共享](https://docs.stmlink.com/zh/rtc/swift/advanced/screen-sharing.md): SRTC Swift SDK 在 macOS 与 iOS 上的屏幕共享接入方式与平台差异
 - [虚拟背景](https://docs.stmlink.com/zh/rtc/swift/advanced/virtual-background.md): Swift SRTC 音视频 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么开一次就作用于全部摄像头轨道、切摄像头不用自己补、低端机保帧率的两个参数，以及它只在 iOS 上提供
+- [AI 降噪（DeepFilterNet）](https://docs.stmlink.com/zh/rtc/swift/advanced/deepfilternet.md): 用 SRTCDeepFilterNet 插件给麦克风开启可调强度的 AI 降噪：集成、开关、强度调节、设备不支持与算力不足的处理，以及自定义采集处理器如何声明关闭自带降噪
 - [多频道](https://docs.stmlink.com/zh/rtc/swift/advanced/multi-channel.md): 同时加入多个频道：轨道如何跨频道复用、采集何时回收、以及多频道发布音频的硬约束
 - [通话质量与活跃说话人](https://docs.stmlink.com/zh/rtc/swift/advanced/call-quality.md): 读取网络质量数值与等级、做「网络不佳」提示与主动降级、渲染说话人高亮，以及大小流主动切层
 - [自定义推流](https://docs.stmlink.com/zh/rtc/swift/advanced/custom-track.md): 使用自定义音视频轨道、视频处理器和音频处理器扩展 Swift SDK 的采集能力

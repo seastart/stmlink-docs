@@ -409,3 +409,17 @@ SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `Audi
 <Note>
 对应老 `RTCEngineKit` 的 `engineChannel:onReceiveStreamStatusChange:trackId:status:`，`timedOut` 与老版 `status` 的真假值一致（`true` 为超时），迁移时不需要取反。
 </Note>
+
+---
+
+### AudioProcessingConstraints
+
+采集处理器对 WebRTC 自带 3A 的要求，1.8.0 起提供，与 Web SDK 的同名类型含义一致。处理器遵循 `AudioProcessingDeclaring` 协议（只有一个只读属性 `audioProcessing: AudioProcessingConstraints`）后，设为 `SRTCEngine.audioCaptureProcessor` 时生效。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `noiseSuppression` | `Bool?` | 降噪 |
+| `echoCancellation` | `Bool?` | 回声消除 |
+| `autoGainControl` | `Bool?` | 自动增益 |
+
+取值 `false` 表示要求关闭；`true` 或 `nil` 表示不干预，沿用 SDK 默认配置。只作用于 WebRTC 的软件处理，iOS / macOS 系统自带的语音处理不受影响。用法见 [AI 降噪](/zh/rtc/swift/advanced/deepfilternet#自定义处理器声明-3a-要求)。

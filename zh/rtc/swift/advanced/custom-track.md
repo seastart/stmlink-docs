@@ -136,11 +136,13 @@ final class MyAudioProcessor: NSObject, AudioProcessor {
     func audioProcessingRelease() {}
 }
 
-srtc.audioCaptureProcessor = MyAudioProcessor()
+let processor = MyAudioProcessor()   // 由业务持有，SDK 对处理器是弱引用
+srtc.audioCaptureProcessor = processor
 ```
 
 需要注意：
 
++ SDK 对处理器是弱引用，业务要自己持有实例，否则设置后会被立即释放
 + `audioCaptureProcessor` 是采集后处理
 + `audioRenderProcessor` 是远端播放前处理
 + 这是全局能力，不是 per-track 能力

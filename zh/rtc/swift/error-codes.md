@@ -113,7 +113,7 @@ srtc.language = "en"   // 进程级全局设置，建议在 joinChannel / enable
 | `internalError(String)` | `025` | SDK 内部错误 | 结合日志排查 |
 | `cancelled` | `026` | 操作被取消 | 业务层通常可忽略或重试 |
 | `invalidArgument(String)` | `031` | 参数非法：必填参数为空、轨道类型不符等 | 检查传参 |
-| `featureNotSupported(String)` | `032` | 当前系统版本 / 环境 / 模式不支持该能力：如 macOS 12.3 以下共享屏幕、ReplayKit 不可用、多频道共享轨道开 simulcast | 换用支持的方式，或给用户提示 |
+| `featureNotSupported(String)` | `032` | 当前系统版本 / 环境 / 模式不支持该能力：如 macOS 12.3 以下共享屏幕、ReplayKit 不可用、多频道共享轨道开 simulcast、设备不支持 AI 降噪 | 换用支持的方式，或给用户提示 |
 
 ---
 

@@ -53,7 +53,9 @@ srtc.language = "en"
 
 #### `audioCaptureProcessor`
 
-麦克风采集后的音频处理器，可用于变声、降噪等处理。全局只有一个，SDK 自身的本端电平计量串在它之后，两者互不影响。自 1.6.0 起不需要再用它算自己的音量，见 `activeSpeakerOptions`。
+麦克风采集后的音频处理器（`AudioProcessor?`），可用于变声、降噪等处理。全局只有一个，SDK 自身的本端电平计量串在它之后，两者互不影响。自 1.6.0 起不需要再用它算自己的音量，见 `activeSpeakerOptions`。
+
+SDK 对处理器是**弱引用**，业务要自己持有实例，否则设置后会被立即释放。处理器若同时遵循 `AudioProcessingDeclaring`（1.8.0 起），设置时 SDK 按它声明的 [`AudioProcessingConstraints`](/zh/rtc/swift/types#audioprocessingconstraints) 调整 WebRTC 自带的 3A，换掉或清空时恢复。官方 AI 降噪插件见 [AI 降噪](/zh/rtc/swift/advanced/deepfilternet)。
 
 #### `activeSpeakerOptions`
 

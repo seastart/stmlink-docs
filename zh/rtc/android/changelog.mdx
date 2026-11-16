@@ -5,6 +5,14 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.39] - 2026.11.16
+
+#### 新增
+
++ 新增可选的 AI 降噪插件 `cn.seastart.rtc:denoise:0.1.0`，基于 DeepFilterNet3，与 Web 降噪插件同一份算法和模型，支持运行时调整强度与旁路，见 [AI 降噪](/zh/rtc/android/advanced/deepfilternet)。
++ 新增 `RTCEngine.setAudioCaptureProcessor` 与 `AudioCaptureProcessor` 接口，可在麦克风采集后接入自定义音频处理；处理器可通过 `AudioProcessingConstraints` 声明关闭自带降噪，见 [类型定义](/zh/rtc/android/types#audiocaptureprocessor)。
++ 新增错误码 `FEATURE_NOT_SUPPORTED`（`102032`），表示当前设备不支持该能力，见 [错误码](/zh/rtc/android/error-codes)。
+
 ### [2.0.38] - 2026.10.27
 
 #### 变更

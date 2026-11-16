@@ -68,6 +68,7 @@ HTTP 非 2xx 保留原始状态码和状态消息；没有 HTTP 状态码时，�
 | `VIRTUAL_BACKGROUND_NOT_INSTALLED` | `102028` | 虚拟背景未安装 |
 | `VIRTUAL_BACKGROUND_MODEL_NOT_FOUND` | `102029` | 虚拟背景模型不存在或无效 |
 | `INVALID_ARGUMENT` | `102031` | 参数非法 |
+| `FEATURE_NOT_SUPPORTED` | `102032` | 当前环境 / 设备不支持该能力，如设备不支持 AI 降噪 |
 | `SCREEN_SHARE_DENIED` | `102039` | 屏幕共享被拒绝：用户取消，或系统未授权录屏 |
 | `PERMISSION_DENIED` | `102042` | 设备权限被拒（无法区分摄像头 / 麦克风时；能区分时用 231 / 251） |
 | `FORBIDDEN` | `102043` | 当前身份 / 角色不允许该操作 |
