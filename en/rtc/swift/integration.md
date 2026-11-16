@@ -33,7 +33,7 @@ The SDK is distributed as a prebuilt XCFramework containing slices for three pla
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.7.0")
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", from: "1.8.0")
 ],
 targets: [
     .target(
@@ -57,6 +57,10 @@ If you use an Xcode project instead of a pure SPM project:
 
 The same package also contains an `SRTCBroadcastKit` product. It is used only by the Broadcast Upload Extension for iOS screen sharing;
 regular integrations don't need it. For integration steps, see [Screen sharing](/en/rtc/swift/advanced/screen-sharing).
+
+#### SRTCDeepFilterNet (only for AI noise suppression)
+
+Starting with `1.8.0`, the package also contains an optional `SRTCDeepFilterNet` product that provides AI noise suppression; add it to your app target. For usage, see [AI noise suppression](/en/rtc/swift/advanced/deepfilternet).
 
 <Warning>
 Add `SRTCBroadcastKit` only to the extension target—**don't** add it to the app target; the extension target also must **not**

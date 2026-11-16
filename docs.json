@@ -768,6 +768,7 @@
                       "en/rtc/android/advanced/multi-channel",
                       "en/rtc/android/advanced/audio-routing",
                       "en/rtc/android/advanced/custom-track",
+                      "en/rtc/android/advanced/deepfilternet",
                       "en/rtc/android/advanced/whiteboard"
                     ]
                   },
@@ -862,6 +863,7 @@
                       "en/rtc/swift/advanced/audio-routing",
                       "en/rtc/swift/advanced/screen-sharing",
                       "en/rtc/swift/advanced/virtual-background",
+                      "en/rtc/swift/advanced/deepfilternet",
                       "en/rtc/swift/advanced/multi-channel",
                       "en/rtc/swift/advanced/call-quality",
                       "en/rtc/swift/advanced/custom-track"

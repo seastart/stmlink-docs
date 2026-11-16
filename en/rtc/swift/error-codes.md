@@ -113,7 +113,7 @@ srtc.language = "en"   // Process-wide global setting; set it before joinChannel
 | `internalError(String)` | `025` | Internal SDK error | Investigate with the logs |
 | `cancelled` | `026` | The operation was canceled | Your code can usually ignore it or retry |
 | `invalidArgument(String)` | `031` | Invalid argument: a required parameter is empty, the track type doesn't match, etc. | Check the arguments |
-| `featureNotSupported(String)` | `032` | The capability isn't supported by the current OS version / environment / mode: for example, screen sharing below macOS 12.3, ReplayKit unavailable, or simulcast on a track shared across multiple channels | Use a supported approach, or show the user a message |
+| `featureNotSupported(String)` | `032` | The capability isn't supported by the current OS version / environment / mode: for example, screen sharing below macOS 12.3, ReplayKit unavailable, simulcast on a track shared across multiple channels, or a device that doesn't support AI noise suppression | Use a supported approach, or show the user a message |
 
 ---
 

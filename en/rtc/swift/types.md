@@ -409,3 +409,17 @@ It's **judged per track**, looking only at whether this video is producing frame
 <Note>
 It corresponds to `engineChannel:onReceiveStreamStatusChange:trackId:status:` in the older `RTCEngineKit`; `timedOut` has the same truth value as the old `status` (`true` means timed out), so you don't need to invert it when migrating.
 </Note>
+
+---
+
+### AudioProcessingConstraints
+
+A capture processor's requirements for WebRTC's built-in 3A, available since 1.8.0, with the same meaning as the same-named type in the Web SDK. It takes effect when a processor that conforms to the `AudioProcessingDeclaring` protocol (a single read-only property `audioProcessing: AudioProcessingConstraints`) is set as `SRTCEngine.audioCaptureProcessor`.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `noiseSuppression` | `Bool?` | Noise suppression |
+| `echoCancellation` | `Bool?` | Echo cancellation |
+| `autoGainControl` | `Bool?` | Automatic gain control |
+
+`false` requires the feature off; `true` or `nil` leaves the SDK default unchanged. It applies only to WebRTC's software processing; the system's own voice processing on iOS / macOS is unaffected. For usage, see [AI noise suppression](/en/rtc/swift/advanced/deepfilternet#declaring-3a-requirements-in-a-custom-processor).

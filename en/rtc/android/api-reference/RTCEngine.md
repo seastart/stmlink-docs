@@ -266,6 +266,16 @@ fun setRtcMicDeviceEvent(e: RTCMicDeviceEvent?)
 
 Description: Sets the Engine-global microphone input device listener; pass `null` to unbind. See [RTCMicDeviceEvent](/en/rtc/android/api-reference/RTCMicDeviceEvent).
 
+### setAudioCaptureProcessor(processor)
+
+```kotlin
+fun setAudioCaptureProcessor(processor: AudioCaptureProcessor?)
+```
+
+Description: Sets the microphone capture processor; pass `null` to clear it. Available since 2.0.39. It is Engine-level and applies to all channels, and can be called before or after joining. The SDK holds a strong reference and calls the old processor's `release()` when it's replaced or cleared; `releaseSDK()` doesn't clear it. When the processor declares `audioProcessing.noiseSuppression = false`, the SDK turns off the system's and WebRTC's built-in noise suppression and restores it when cleared; this change rebuilds microphone capture once (a gap of less than half a second).  
+Parameters: `processor`, a processor implementing [`AudioCaptureProcessor`](/en/rtc/android/types#audiocaptureprocessor), such as the AI noise suppression plugin's `DeepFilterNetProcessor`; see [AI noise suppression](/en/rtc/android/advanced/deepfilternet).  
+Returns: None (`Unit`).
+
 ## Media quality
 
 ### getMetric()

@@ -5,6 +5,14 @@ description: "Android SRTC SDK release history by version: new features, fixes, 
 
 > This page is compiled from the version configuration and commit history of the `rtc-android` repository. Call `RTCEngine.version()` to get the actual SDK version at runtime.
 
+### [2.0.39] - 2026.11.16
+
+#### Added
+
++ Added the optional AI noise suppression plugin `cn.seastart.rtc:denoise:0.1.0`, based on DeepFilterNet3 and using the same algorithm and model as the Web noise suppression plugin, with runtime strength adjustment and bypass. See [AI noise suppression](/en/rtc/android/advanced/deepfilternet).
++ Added `RTCEngine.setAudioCaptureProcessor` and the `AudioCaptureProcessor` interface for plugging custom audio processing in after microphone capture; a processor can declare built-in noise suppression off with `AudioProcessingConstraints`. See [Types](/en/rtc/android/types#audiocaptureprocessor).
++ Added error code `FEATURE_NOT_SUPPORTED` (`102032`), meaning the current device doesn't support the capability. See [Error codes](/en/rtc/android/error-codes).
+
 ### [2.0.38] - 2026.10.27
 
 #### Changed

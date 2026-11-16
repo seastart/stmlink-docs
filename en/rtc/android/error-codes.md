@@ -68,6 +68,7 @@ Starting with 2.0.38, the seven domain-specific error code objects are replaced 
 | `VIRTUAL_BACKGROUND_NOT_INSTALLED` | `102028` | Virtual background module is not installed |
 | `VIRTUAL_BACKGROUND_MODEL_NOT_FOUND` | `102029` | Virtual background model not found or invalid |
 | `INVALID_ARGUMENT` | `102031` | Invalid argument |
+| `FEATURE_NOT_SUPPORTED` | `102032` | The capability isn't supported in the current environment or on this device, for example a device that doesn't support AI noise suppression |
 | `SCREEN_SHARE_DENIED` | `102039` | Screen share denied by user or system |
 | `PERMISSION_DENIED` | `102042` | Device permission denied |
 | `FORBIDDEN` | `102043` | Operation not allowed for the current role |

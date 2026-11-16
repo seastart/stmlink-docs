@@ -3,6 +3,15 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.8.0] - 2026.11.16
+#### Added
++ **AI noise suppression plugin `SRTCDeepFilterNet`**: a new optional product in the same package, based on DeepFilterNet3 and using the same algorithm and model as the Web noise suppression plugin. It takes effect once set on `audioCaptureProcessor` and supports runtime strength adjustment (0–100) and bypass; it throws `featureNotSupported` on unsupported devices, and pauses automatically and calls `onOverload` when the CPU can't keep up during a call. See [AI noise suppression](/en/rtc/swift/advanced/deepfilternet).
++ **`AudioProcessingDeclaring` / `AudioProcessingConstraints`**: a capture processor can declare its requirements for WebRTC's built-in noise suppression, echo cancellation, and automatic gain control. The SDK applies the declaration when the processor is set as `audioCaptureProcessor` and restores the defaults when it's cleared. See [Types](/en/rtc/swift/types#audioprocessingconstraints).
+
+<Note>
+APIs are only added, not removed or changed, so 1.7.0 integration code compiles as is, and the platform minimums are unchanged (iOS 16 / macOS 12.3). `SRTCBroadcastKit` is **1.0.21** in this release; its code is unchanged and only its version number is bumped along with the SDK.
+</Note>
+
 ### [1.7.0] - 2026.11.03
 <Warning>
 **Breaking change (macOS only): the virtual background APIs are no longer available on macOS.** iOS is unaffected; the APIs and the effect are unchanged there.

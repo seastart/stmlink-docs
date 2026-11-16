@@ -136,11 +136,13 @@ final class MyAudioProcessor: NSObject, AudioProcessor {
     func audioProcessingRelease() {}
 }
 
-srtc.audioCaptureProcessor = MyAudioProcessor()
+let processor = MyAudioProcessor()   // Held by your code; the SDK keeps only a weak reference to the processor
+srtc.audioCaptureProcessor = processor
 ```
 
 Note:
 
++ The SDK holds the processor weakly; your code must keep the instance, otherwise it is released immediately after being set
 + `audioCaptureProcessor` processes audio after capture
 + `audioRenderProcessor` processes remote audio before playback
 + This is a global capability, not a per-track one

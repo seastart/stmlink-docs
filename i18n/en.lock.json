@@ -773,6 +773,12 @@
     "zh_blob": "db7b1b147b732738421a2599832528eb03fba369",
     "zh_commit": "7b55bb61578286ec5c171ed3c618341d26e72b58"
   },
+  "en/rtc/android/advanced/deepfilternet": {
+    "reviewed": false,
+    "source": "zh/rtc/android/advanced/deepfilternet.md",
+    "zh_blob": "812f62add9445c329d39aaa6be20333a7739d34f",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+  },
   "en/rtc/android/advanced/multi-channel": {
     "reviewed": false,
     "source": "zh/rtc/android/advanced/multi-channel.md",
@@ -842,8 +848,8 @@
   "en/rtc/android/api-reference/RTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/android/api-reference/RTCEngine.md",
-    "zh_blob": "a2cd7a4cacd5fa3e32b8778e7cbca2581302a831",
-    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
+    "zh_blob": "ed051cba73ccac1416a106eb5a57b355f842c1ed",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/android/api-reference/RTCEngineEvent": {
     "reviewed": true,
@@ -890,8 +896,8 @@
   "en/rtc/android/changelog": {
     "reviewed": false,
     "source": "zh/rtc/android/changelog.mdx",
-    "zh_blob": "be9fabcebdf2b757c80253f4b5d9952aa807c32a",
-    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
+    "zh_blob": "21f5d98a5676923c3e1671e25258db41b975ab86",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/android/enums": {
     "reviewed": false,
@@ -902,14 +908,14 @@
   "en/rtc/android/error-codes": {
     "reviewed": false,
     "source": "zh/rtc/android/error-codes.md",
-    "zh_blob": "ae83c85130c3ff90a463aea3d2de248f19cfa0cd",
-    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
+    "zh_blob": "33abf322e8d7fd5d1fdf1297cd2dc2d34a8ab6a9",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/android/integration": {
     "reviewed": false,
     "source": "zh/rtc/android/integration.md",
-    "zh_blob": "51e2072b6cd5f9cbe1b8b67cdb164738e318565c",
-    "zh_commit": "634bb6e4db363290eca24dd194a1f42aeb835d93"
+    "zh_blob": "568cf9670ba5bbe0ea160f6ca4098400068775de",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/android/media-quality": {
     "reviewed": false,
@@ -956,8 +962,8 @@
   "en/rtc/android/types": {
     "reviewed": false,
     "source": "zh/rtc/android/types.md",
-    "zh_blob": "5c64aaffee4e4bca71af87c797a29f6f4218c34b",
-    "zh_commit": "d310ef4412a920c79d1dacc4166a12d3ad7f9715"
+    "zh_blob": "fc147e18dcf6fae16fd71bfa09790bd40a7884b1",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/capi/advanced/custom-msg": {
     "reviewed": true,
@@ -1254,10 +1260,16 @@
     "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
   },
   "en/rtc/swift/advanced/custom-track": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/swift/advanced/custom-track.md",
-    "zh_blob": "cbc1da611eda7d4a69f0f11e90e9b055223e2926",
-    "zh_commit": "0cb9b12ae47299c956cdc9d751ffab00793a5804"
+    "zh_blob": "db450394481bb7301060efa71588eba205ff053f",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+  },
+  "en/rtc/swift/advanced/deepfilternet": {
+    "reviewed": false,
+    "source": "zh/rtc/swift/advanced/deepfilternet.md",
+    "zh_blob": "16bb14ea5d927c81b964aec7397623d2c425c325",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/swift/advanced/device-management": {
     "reviewed": true,
@@ -1292,8 +1304,8 @@
   "en/rtc/swift/api-reference/SRTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/swift/api-reference/SRTCEngine.md",
-    "zh_blob": "6d686045d0586e361ae3513cf9dd4060868ae97f",
-    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
+    "zh_blob": "35bc677a61d954106a0b58ab8d661b13a32d6ca9",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/swift/api-reference/media-tracks": {
     "reviewed": false,
@@ -1304,14 +1316,14 @@
   "en/rtc/swift/changelog": {
     "reviewed": false,
     "source": "zh/rtc/swift/changelog.mdx",
-    "zh_blob": "8a78da3dcd89019e25989dc6c9ba49c77a06ad71",
-    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
+    "zh_blob": "0edbf5a37816be81443707a0c7b098fa41594f5e",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/swift/error-codes": {
     "reviewed": false,
     "source": "zh/rtc/swift/error-codes.md",
-    "zh_blob": "b0fb73594a7b7d67ade2d6589f9b37371bc4095b",
-    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
+    "zh_blob": "721f4538ca31fbe84260c1e1985bdf886bbff40e",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/swift/events": {
     "reviewed": true,
@@ -1322,8 +1334,8 @@
   "en/rtc/swift/integration": {
     "reviewed": false,
     "source": "zh/rtc/swift/integration.md",
-    "zh_blob": "eeff562b8c7d3c0f92eaa54e306b29de32696962",
-    "zh_commit": "6fa609f0019688792104c6934a8d257291fccb09"
+    "zh_blob": "5758b72613cc1d684cbfed2832e596a51709b545",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/swift/key-concepts": {
     "reviewed": true,
@@ -1340,8 +1352,8 @@
   "en/rtc/swift/types": {
     "reviewed": false,
     "source": "zh/rtc/swift/types.md",
-    "zh_blob": "5f94a9de4ad1558158fc4877305ae4d42e15a11f",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "3bcd71c8a9cf0d523cbb2263741c27b99ec3b03e",
+    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
   },
   "en/rtc/token": {
     "reviewed": true,

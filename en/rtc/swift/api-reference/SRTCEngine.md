@@ -53,7 +53,9 @@ For error codes and how to handle them, see [Error codes](/en/rtc/swift/error-co
 
 #### `audioCaptureProcessor`
 
-Audio processor applied after microphone capture, usable for voice changing, noise suppression, and similar processing. There is one globally; the SDK's own local level metering runs after it, and the two don't interfere. Since 1.6.0 you no longer need it to compute your own volume—see `activeSpeakerOptions`.
+Audio processor applied after microphone capture (`AudioProcessor?`), usable for voice changing, noise suppression, and similar processing. There is one globally; the SDK's own local level metering runs after it, and the two don't interfere. Since 1.6.0 you no longer need it to compute your own volume—see `activeSpeakerOptions`.
+
+The SDK holds the processor **weakly**, so your code must keep the instance; otherwise it is released immediately after being set. If the processor also conforms to `AudioProcessingDeclaring` (since 1.8.0), the SDK adjusts WebRTC's built-in 3A according to its declared [`AudioProcessingConstraints`](/en/rtc/swift/types#audioprocessingconstraints) when it's set, and restores the defaults when it's replaced or cleared. For the official AI noise suppression plugin, see [AI noise suppression](/en/rtc/swift/advanced/deepfilternet).
 
 #### `activeSpeakerOptions`
 

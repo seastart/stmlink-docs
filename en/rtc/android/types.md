@@ -185,3 +185,26 @@ Package path: `cn.seastart.rtc.media.format.YuvFormat`. Identifies the pixel lay
 | `YUY2` | `20` | Packed YUYV format. |
 
 The raw screen frame callback and `LocalCustomVideoTrack.inputData` use I420. The render view's `updateFrame` supports I420, NV12, and NV21, but not YV12 or YUY2.
+
+## AudioCaptureProcessor
+
+Package path: `cn.seastart.rtc.audio.AudioCaptureProcessor`, available since 2.0.39. A microphone capture processor attached with `RTCEngine.setAudioCaptureProcessor(...)`. It processes each PCM frame in place on the SDK capture thread before the data is distributed to all channels.
+
+| Member | Description |
+| --- | --- |
+| `audioProcessing: AudioProcessingConstraints?` | Requirements for the built-in 3A; defaults to `null` (no change). |
+| `initialize(sampleRate: Int, channelCount: Int)` | Called when the capture format is determined (each time a capture session starts, including rebuilds after device switches or route changes, and when a processor is attached while capturing). Must return quickly. |
+| `process(data: ByteArray, offset: Int, length: Int)` | Processes one frame of 16-bit little-endian PCM (interleaved channels) in place; by default 48 kHz mono 10 ms, i.e. 960 bytes. Called synchronously every 10 ms and must return within a few milliseconds; the buffer is reused after return, so don't keep `data`. Exceptions thrown are caught by the SDK, and that frame is sent unchanged. |
+| `release()` | Called when the processor is replaced or cleared; `process` isn't called afterward. |
+
+## AudioProcessingConstraints
+
+Package path: `cn.seastart.rtc.audio.AudioProcessingConstraints`, available since 2.0.39. A capture processor's requirements for the built-in audio preprocessing (3A), with the same meaning as the same-named type in the Web and Swift SDKs.
+
+| Property | Data type | Description |
+| --- | --- | --- |
+| noiseSuppression | Boolean? | Noise suppression. `false` turns off the system's and WebRTC's built-in noise suppression. |
+| echoCancellation | Boolean? | Echo cancellation; not yet handled on Android, keeps the SDK default. |
+| autoGainControl | Boolean? | Automatic gain control; not yet handled on Android, keeps the SDK default. |
+
+`false` requires the feature off; `true` or `null` leaves the SDK default unchanged.
