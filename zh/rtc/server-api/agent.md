@@ -1615,6 +1615,16 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
       示例：`嘉宾席摄像头`
     </ParamField>
 
+    <ParamField body="dtmf" type="string">
+      接通后自动发给设备的按键(可选，仅 SIP/H323)，用于呼第三方 MCU / 云会议时输入会议密码、走语音导航。 只允许 0-9 * # A-D，逗号表示停顿 0.5 秒，最长 64 个字符（最大长度 64）
+      示例：`123456#`
+    </ParamField>
+
+    <ParamField body="dtmf_delay_ms" type="integer">
+      音频接通后等多久再发 dtmf(可选)，单位毫秒，0~60000，不传默认 2000。对端要先放完提示音才收按键时调大
+      示例：`3000`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1631,6 +1641,8 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
   "agents": [
     {
       "contact": "37070000082008000001:34020000001320000001",
+      "dtmf": "123456#",
+      "dtmf_delay_ms": 3000,
       "nickname": "嘉宾席摄像头",
       "type": 4
     }
@@ -1750,6 +1762,65 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
   "channel": "fire",
   "enabled": false,
   "op_uid": "1001",
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 向设备发按键
+
+`POST /server/v1/agent/send-dtmf`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+向通话中的 SIP / H323 设备发按键（DTMF），用于语音导航选菜单、输入第三方会议的密码等。
+设备会依次按下 digits 里的键；接口只表示已交给设备网关，不等按键发完。
+若只是入会时要输一次会议密码，直接在「邀请设备入会」里传 dtmf 更省事。
+
+**请求参数**
+
+<ParamField body="uid" type="string" required>
+  设备会中用户ID，带 _agent_ 前缀，从「在线/离线成员列表」或 user_join 回调拿（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  设备所在频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="digits" type="string" required>
+  按键串，只允许 0-9 * # A-D，逗号表示停顿 0.5 秒，最长 64 个字符（最大长度 64）
+  示例：`1#`
+</ParamField>
+
+<ParamField body="duration_ms" type="integer">
+  每个键的按下时长(可选)，单位毫秒，不传或 0 用默认 160，最小按 40 算
+  示例：`160`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "channel": "fire",
+  "digits": "1#",
+  "duration_ms": 160,
   "uid": "_agent_co63jg6g54hu3b0xhtie"
 }
 ```

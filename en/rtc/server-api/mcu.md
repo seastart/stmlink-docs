@@ -81,7 +81,7 @@ Changes affect only new tasks started afterward; in-progress tasks are not affec
 **Request parameters**
 
 <ParamField body="layout" type="string">
-  Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), plus equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25)
+  Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged)
   Example: `auto`
 </ParamField>
 
@@ -1136,10 +1136,10 @@ calling again doesn't create a new task but updates the existing one with the pa
 </ParamField>
 
 <ParamField body="layout_data" type="object">
-  Layout data. If omitted, the app's default recording configuration is used (see "Get the default recording configuration")
+  Layout data. If omitted, the server's default layout is used, and the watermark and user name labels use the app's default recording configuration (see "Get the default recording configuration")
   <Expandable title="Fields">
-    <ParamField body="layout" type="string" required>
-      Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), plus equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25)
+    <ParamField body="layout" type="string">
+      Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged). If omitted, the server's default layout is used (auto by default; the deployer can change it)
       Example: `auto`
     </ParamField>
 
@@ -1227,6 +1227,11 @@ calling again doesn't create a new task but updates the existing one with the pa
       User name table, corresponding to McuDiv.Uids (optional)
     </ParamField>
 
+    <ParamField body="push_url" type="string">
+      Push URL, effective only when task_type includes 8 (live stream): if set, the mixed stream is pushed to this URL instead of the built-in live server (so no playback URL can be queried). Only rtmp:// is supported for now. When calling the start API again on a running task, omitting it keeps the original URL
+      Example: `rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1261,6 +1266,7 @@ Request example:
     "names": {},
     "nobody_text": "",
     "polling_dur": 0,
+    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
@@ -1423,6 +1429,9 @@ Get live stream playback URLs; returns rtmp / flv / hls URLs at once, so you can
 
 Unlike recording playback, live stream URLs are available while the task is **in progress**—provided that
 task_type included the live streaming bit (8) when the task was started. The URLs expire; don't cache them long term.
+
+For a task started with layout_data.push_url (push mode), the mixed stream is pushed to your own URL,
+so there is no playback URL to query and this API returns error code 1048.
 
 **Request parameters**
 

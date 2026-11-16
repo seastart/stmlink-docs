@@ -45,7 +45,7 @@ see the "Whiteboard" docs.
 </ParamField>
 
 <ParamField body="net" type="string">
-  Network line. The value is a Chinese line name; leave empty to let the server choose
+  Network line. The value is a line name from the deployment's network configuration; the internal/external lines can also be written as lan/wan; leave empty to let the server choose
   Example: `内网`
 </ParamField>
 
@@ -134,6 +134,143 @@ Response example:
   "code": 0,
   "data": {
     "is_exist": false
+  }
+}
+```
+
+---
+
+## Export whiteboard content
+
+`POST /server/v1/white-board/detail`
+
+Authentication: required (see [Overview](/en/rtc/server-api/overview))
+
+Export whiteboard content, for saving the board to your own external storage; it can later be loaded back with the reload API.
+
+Returns a full snapshot of the whiteboard, structured as &#123;shape ID: shape object&#125;. Note that it is **not the same format** as the incremental packets
+uploaded by whiteboard clients (updates.added/modified/deleted); do not call reload with incremental packets.
+
+With compress=true, content is returned (zlib-compressed, then base64-encoded), which reduces transfer size for large boards;
+by default plain data is returned. The two are equivalent and can be converted into each other.
+
+No error is returned when the whiteboard does not exist or is empty; count=0 is returned. To tell "does not exist" from "empty", call exist first.
+
+**Request parameters**
+
+<ParamField body="board" type="string" required>
+  Board ID (up to 64 bytes; letters, digits, underscores (_), and hyphens (-) only)
+  Example: `fire`
+</ParamField>
+
+<ParamField body="compress" type="boolean">
+  Whether to return compressed content. If true, content is a base64 string of zlib-compressed data; if false (default), data is plain text
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "board": "fire",
+  "compress": false
+}
+```
+
+**Response parameters**
+
+<ResponseField name="board" type="string">
+  Whiteboard ID
+</ResponseField>
+
+<ResponseField name="compress" type="boolean">
+  Whether the returned content is compressed
+</ResponseField>
+
+<ResponseField name="count" type="integer">
+  Number of shapes
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Plain-text content
+</ResponseField>
+
+<ResponseField name="content" type="string">
+  zlib + base64 compressed content
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": {
+    "board": "",
+    "compress": false,
+    "content": "",
+    "count": 0,
+    "data": {}
+  }
+}
+```
+
+---
+
+## Import whiteboard content
+
+`POST /server/v1/white-board/reload`
+
+Authentication: required (see [Overview](/en/rtc/server-api/overview))
+
+Import whiteboard content. Clears the existing content of the specified whiteboard and replaces it entirely, then notifies all clients on the board
+to clear the canvas and reload.
+
+Pass the data either as content (zlib + base64, i.e. what the detail API returns with compress=true) or as data (plain text),
+**but not both**: passing both returns an error; passing neither is valid and clears the whiteboard.
+
+This **overwrites the whole board** rather than merging: all content on the board before import is discarded. The whiteboard is created automatically if it does not exist.
+
+**Request parameters**
+
+<ParamField body="board" type="string" required>
+  Board ID (up to 64 bytes; letters, digits, underscores (_), and hyphens (-) only)
+  Example: `fire`
+</ParamField>
+
+<ParamField body="content" type="string">
+  Base64 string of zlib-compressed data; mutually exclusive with data
+</ParamField>
+
+<ParamField body="data" type="object">
+  Plain-text data; mutually exclusive with content
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "board": "fire",
+  "content": "",
+  "data": {}
+}
+```
+
+**Response parameters**
+
+<ResponseField name="count" type="integer">
+  Number of shapes after import
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": {
+    "count": 0
   }
 }
 ```

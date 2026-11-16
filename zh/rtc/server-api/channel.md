@@ -105,7 +105,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 </ParamField>
 
 <ParamField body="net" type="string">
-  线路，取值是中文线路名，由部署的网络配置决定；留空则由服务端选择
+  线路，取值是部署的网络配置里的线路名，内网/外网也可写作 lan/wan；留空则由服务端选择
   示例：`内网`
 </ParamField>
 

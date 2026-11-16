@@ -105,7 +105,7 @@ Channels don't need to be created in advance; a channel opens automatically when
 </ParamField>
 
 <ParamField body="net" type="string">
-  Network line. The value is a Chinese line name determined by the deployment's network configuration; leave empty to let the server choose
+  Network line. The value is a line name from the deployment's network configuration; the internal/external lines can also be written as lan/wan; leave empty to let the server choose
   Example: `内网`
 </ParamField>
 

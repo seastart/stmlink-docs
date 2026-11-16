@@ -81,7 +81,7 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 **请求参数**
 
 <ParamField body="layout" type="string">
-  布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
+  布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格)
   示例：`auto`
 </ParamField>
 
@@ -1136,10 +1136,10 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
 </ParamField>
 
 <ParamField body="layout_data" type="object">
-  布局数据。不传时使用应用的默认录制配置（见获取默认录制配置）
+  布局数据。不传时使用服务端默认布局，水印与成员名标签使用应用的默认录制配置（见获取默认录制配置）
   <Expandable title="字段">
-    <ParamField body="layout" type="string" required>
-      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 以及等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25)
+    <ParamField body="layout" type="string">
+      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格) 不传时使用服务端默认布局（默认为 auto，可由部署方调整）
       示例：`auto`
     </ParamField>
 
@@ -1227,6 +1227,11 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
       用户名称表, 与McuDiv.Uids对应(不必需)
     </ParamField>
 
+    <ParamField body="push_url" type="string">
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1261,6 +1266,7 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
     "names": {},
     "nobody_text": "",
     "polling_dur": 0,
+    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
@@ -1423,6 +1429,9 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
 
 与录像回放不同，直播地址在任务**进行中**就能取到 —— 前提是启动任务时
 task_type 带了直播位（8）。地址有有效期，不要长期缓存。
+
+启动时传了 layout_data.push_url（推流模式）的任务，合成流推到你自己的地址，
+没有拉流地址可查，调用本接口会返回错误码 1048。
 
 **请求参数**
 

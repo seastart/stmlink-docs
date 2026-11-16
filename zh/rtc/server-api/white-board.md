@@ -45,7 +45,7 @@ white_board，授权码就是该用户的 sid），直接内嵌即可，不必�
 </ParamField>
 
 <ParamField body="net" type="string">
-  网络线路，取值是中文线路名；留空则由服务端选择
+  网络线路，取值是部署的网络配置里的线路名，内网/外网也可写作 lan/wan；留空则由服务端选择
   示例：`内网`
 </ParamField>
 
@@ -134,6 +134,143 @@ white_board，授权码就是该用户的 sid），直接内嵌即可，不必�
   "code": 0,
   "data": {
     "is_exist": false
+  }
+}
+```
+
+---
+
+## 导出白板内容
+
+`POST /server/v1/white-board/detail`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+导出白板内容。用于把板上内容存到业务方自己的外部存储，之后可用 reload 接口灌回。
+
+返回的是白板的全量快照，结构为 &#123;图形ID: 图形对象&#125;。注意它与白板客户端上行的增量包
+（updates.added/modified/deleted）**不是同一种格式**，别拿增量包去调 reload。
+
+compress=true 时返回 content（内容经 zlib 压缩后做 base64），适合内容较多时减少传输量；
+默认返回明文 data。两者内容等价，可互相转换。
+
+白板不存在或为空板时不报错，返回 count=0。需要区分「不存在」与「空板」请先调 exist。
+
+**请求参数**
+
+<ParamField body="board" type="string" required>
+  板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="compress" type="boolean">
+  是否压缩返回。true时content为zlib压缩后的base64串，false(默认)时data为明文
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "board": "fire",
+  "compress": false
+}
+```
+
+**响应参数**
+
+<ResponseField name="board" type="string">
+  白板ID
+</ResponseField>
+
+<ResponseField name="compress" type="boolean">
+  返回的是否为压缩内容
+</ResponseField>
+
+<ResponseField name="count" type="integer">
+  图形数量
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  明文内容
+</ResponseField>
+
+<ResponseField name="content" type="string">
+  zlib+base64压缩内容
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "board": "",
+    "compress": false,
+    "content": "",
+    "count": 0,
+    "data": {}
+  }
+}
+```
+
+---
+
+## 导入白板内容
+
+`POST /server/v1/white-board/reload`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+导入白板内容。清空指定白板的现有内容并整体重设，随后通知板内所有客户端
+清空画布并重新加载。
+
+数据从 content（zlib+base64，即 detail 接口 compress=true 的产物）或 data（明文）传入，
+**二选一**：同时传会报错；都不传是合法的，语义为清空白板。
+
+语义是**整板覆盖**，不是合并：导入前板上的内容全部丢弃。白板不存在时会自动创建。
+
+**请求参数**
+
+<ParamField body="board" type="string" required>
+  板子ID（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="content" type="string">
+  zlib压缩后的base64串，与data二选一
+</ParamField>
+
+<ParamField body="data" type="object">
+  明文数据，与content二选一
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "board": "fire",
+  "content": "",
+  "data": {}
+}
+```
+
+**响应参数**
+
+<ResponseField name="count" type="integer">
+  导入后的图形数量
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "count": 0
   }
 }
 ```

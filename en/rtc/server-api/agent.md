@@ -1615,6 +1615,16 @@ otherwise the device can't join the channel—see the "Callback events guide" fo
       Example: `Guest seats camera`
     </ParamField>
 
+    <ParamField body="dtmf" type="string">
+      Keys sent to the device automatically after the call connects (optional, SIP/H323 only), for entering a meeting password or navigating voice menus when calling a third-party MCU / cloud meeting. Only 0-9 * # A-D are allowed, a comma means a 0.5-second pause, up to 64 characters (max length 64)
+      Example: `123456#`
+    </ParamField>
+
+    <ParamField body="dtmf_delay_ms" type="integer">
+      How long to wait after audio connects before sending dtmf (optional), in milliseconds, 0-60000, default 2000. Increase it if the far end only accepts keys after its prompt finishes
+      Example: `3000`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1631,6 +1641,8 @@ Request example:
   "agents": [
     {
       "contact": "37070000082008000001:34020000001320000001",
+      "dtmf": "123456#",
+      "dtmf_delay_ms": 3000,
       "nickname": "Guest seats camera",
       "type": 4
     }
@@ -1750,6 +1762,65 @@ Request example:
   "channel": "fire",
   "enabled": false,
   "op_uid": "1001",
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## Send DTMF to a device
+
+`POST /server/v1/agent/send-dtmf`
+
+Authentication: required (see [Overview](/en/rtc/server-api/overview))
+
+Send key presses (DTMF) to a SIP / H323 device in a call, for navigating voice menus, entering a third-party meeting password, and so on.
+The device presses the keys in digits one by one; a successful response only means the request was handed to the device gateway, without waiting for the keys to finish.
+If you only need to enter a meeting password once when joining, it is simpler to pass dtmf in "Invite a device to join".
+
+**Request parameters**
+
+<ParamField body="uid" type="string" required>
+  In-channel user ID of the device, with the _agent_ prefix; get it from "List online or offline users" or the user_join callback (letters, digits, underscores (_), and hyphens (-) only)
+  Example: `_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  Name of the channel the device is in (up to 64 bytes; letters, digits, underscores (_), and hyphens (-) only)
+  Example: `fire`
+</ParamField>
+
+<ParamField body="digits" type="string" required>
+  Key sequence; only 0-9 * # A-D are allowed, a comma means a 0.5-second pause, up to 64 characters (max length 64)
+  Example: `1#`
+</ParamField>
+
+<ParamField body="duration_ms" type="integer">
+  How long each key is pressed (optional), in milliseconds; omit or 0 for the default 160, minimum 40
+  Example: `160`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "channel": "fire",
+  "digits": "1#",
+  "duration_ms": 160,
   "uid": "_agent_co63jg6g54hu3b0xhtie"
 }
 ```

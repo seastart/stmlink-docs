@@ -30,6 +30,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `1023` | UserNotInChannel | 成员不在频道中 |
 | `1024` | ChannelNotOpen | 频道未开启 |
 | `1025` | ChannelOpened | 频道已开启 |
+| `1026` | WbDataInvalid | 白板数据格式不合法 |
 | `1027` | GrantWbTokenFailed | 生成白板Token失败 |
 | `1028` | InvalidChannelName | 频道名不符合规范 |
 | `1029` | InvalidUid | uid不符合规范 |
@@ -39,6 +40,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `1033` | ConcurrentLimit | 并发已达上限 |
 | `1034` | SfuNoAvailableNode | 没有可用的流媒体节点 |
 | `1035` | SfuNodeOverloaded | 流媒体节点已满载 |
+| `1036` | WbDataDecodeFail | 白板数据解压失败 |
 | `1040` | McuTaskNotFound | 未找到MCU任务 |
 | `1041` | McuRecordNotStop | 录像任务还未结束 |
 | `1042` | McuRecordNoVod | 录像任务还未生成录像文件 |
@@ -46,6 +48,8 @@ description: "服务端 API 响应体中 code 的取值"
 | `1044` | McuTaskIsEnd | MCU任务已经停止 |
 | `1045` | McuRecordNotFound | 未找到录像文件 |
 | `1046` | McuRecordNotDone | 录像文件还未上传完成 |
+| `1047` | McuPushUrlInvalid | MCU推流地址无效 |
+| `1048` | McuPushNoLiveUrl | 推流模式的任务没有拉流地址 |
 | `1050` | TalkrecTaskNotFound | 未找到语音录制任务 |
 | `1051` | TalkrecRecordNotFound | 未找到语音录制段 |
 | `1052` | TalkrecRecordNoVod | 语音录制段还未生成录音文件 |

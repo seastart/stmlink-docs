@@ -1028,6 +1028,8 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
 Get live stream URLs
 
+If layout_data.push_url was passed when starting the task (push mode), the mixed stream is pushed to your own URL and there is no playback URL to query; error code 1048 is returned.
+
 **Request parameters**
 
 <ParamField body="room_no" type="string">
@@ -1206,8 +1208,8 @@ Start a recording task
 <ParamField body="layout_data" type="object" required>
   Layout data
   <Expandable title="Fields">
-    <ParamField body="layout" type="string" required>
-      Layout type
+    <ParamField body="layout" type="string">
+      Layout type; if omitted, the server's default layout is used
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1288,6 +1290,11 @@ Start a recording task
       </Expandable>
     </ParamField>
 
+    <ParamField body="push_url" type="string">
+      Push URL, effective only when task_type includes 8 (live stream): if set, the mixed stream is pushed to this URL instead of the built-in live server (so no playback URL can be queried). Only rtmp:// is supported for now. When calling the start API again on a running task, omitting it keeps the original URL
+      Example: `rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1320,6 +1327,7 @@ Request example:
     "layout": "",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",

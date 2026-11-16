@@ -30,6 +30,7 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1023` | UserNotInChannel | User is not in the channel |
 | `1024` | ChannelNotOpen | Channel is not open |
 | `1025` | ChannelOpened | Channel is already open |
+| `1026` | WbDataInvalid | Invalid whiteboard data format |
 | `1027` | GrantWbTokenFailed | Failed to generate the whiteboard token |
 | `1028` | InvalidChannelName | Invalid channel name |
 | `1029` | InvalidUid | Invalid uid |
@@ -39,6 +40,7 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1033` | ConcurrentLimit | Concurrency limit reached |
 | `1034` | SfuNoAvailableNode | No media server node available |
 | `1035` | SfuNodeOverloaded | Media server node is fully loaded |
+| `1036` | WbDataDecodeFail | Failed to decompress the whiteboard data |
 | `1040` | McuTaskNotFound | MCU task not found |
 | `1041` | McuRecordNotStop | Recording task has not ended yet |
 | `1042` | McuRecordNoVod | Recording task has not produced a recording file yet |
@@ -46,6 +48,8 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1044` | McuTaskIsEnd | MCU task has already stopped |
 | `1045` | McuRecordNotFound | Recording file not found |
 | `1046` | McuRecordNotDone | Recording file has not finished uploading |
+| `1047` | McuPushUrlInvalid | Invalid MCU push URL |
+| `1048` | McuPushNoLiveUrl | Task in push mode has no playback URL |
 | `1050` | TalkrecTaskNotFound | Voice recording task not found |
 | `1051` | TalkrecRecordNotFound | Voice segment not found |
 | `1052` | TalkrecRecordNoVod | Voice segment has not produced an audio file yet |

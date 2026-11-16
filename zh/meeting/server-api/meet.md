@@ -1264,8 +1264,8 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 <ParamField body="layout_data" type="object">
   布局数据
   <Expandable title="字段">
-    <ParamField body="layout" type="string" required>
-      布局类型
+    <ParamField body="layout" type="string">
+      布局类型, 不传时使用服务端默认布局
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1346,6 +1346,11 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       </Expandable>
     </ParamField>
 
+    <ParamField body="push_url" type="string">
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1404,6 +1409,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     "layout": "",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
@@ -1581,8 +1587,8 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 <ParamField body="layout_data" type="object">
   布局数据
   <Expandable title="字段">
-    <ParamField body="layout" type="string" required>
-      布局类型
+    <ParamField body="layout" type="string">
+      布局类型, 不传时使用服务端默认布局
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1663,6 +1669,11 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       </Expandable>
     </ParamField>
 
+    <ParamField body="push_url" type="string">
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1719,6 +1730,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     "layout": "",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",

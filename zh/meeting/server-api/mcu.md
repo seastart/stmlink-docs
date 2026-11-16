@@ -1028,6 +1028,8 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 获取直播地址
 
+启动任务时传了 layout_data.push_url（推流模式）的，合成流推到你自己的地址，没有拉流地址可查，会返回错误码 1048。
+
 **请求参数**
 
 <ParamField body="room_no" type="string">
@@ -1206,8 +1208,8 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 <ParamField body="layout_data" type="object" required>
   布局数据
   <Expandable title="字段">
-    <ParamField body="layout" type="string" required>
-      布局类型
+    <ParamField body="layout" type="string">
+      布局类型, 不传时使用服务端默认布局
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1288,6 +1290,11 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
       </Expandable>
     </ParamField>
 
+    <ParamField body="push_url" type="string">
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1320,6 +1327,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
     "layout": "",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
