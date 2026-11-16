@@ -116,6 +116,7 @@ await mic.removeProcessor();
 ### 注意事项
 
 - 仅支持音频轨道。
+- 挂载时 SDK 会自动关闭浏览器自带降噪（需要重新采集一次麦克风，声音会短暂中断），卸载后恢复，避免两道降噪叠加让人声发闷；回声消除、自动增益不受影响。详见[声明对浏览器 3A 的要求](/zh/rtc/web/advanced/audio-processor)。需 `@seastart/srtc-web-sdk` 0.7.3 及以上。
 - 需在 HTTPS（或 localhost）环境运行；`AudioContext` 可能需用户手势后才能 `resume`。
 - 采样率固定 48kHz。
 - 计算量高于 RNNoise，请在目标设备实测 CPU 占用与端到端延迟。

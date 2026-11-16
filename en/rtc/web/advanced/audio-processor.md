@@ -102,6 +102,42 @@ export class MyProcessor implements TrackProcessor {
 
 > When writing an audio processor, reuse `options.audioContext` if it exists (don't `close` it yourself); only close it in `destroy` if you created the context yourself.
 
+### Declaring browser 3A requirements (audio processors)
+
+When the browser captures the microphone it applies its own 3A (noise suppression, echo cancellation, auto gain control). If your processor already does noise suppression, adding the browser's on top makes voices sound muffled. An audio processor can implement `AudioTrackProcessor` (which extends `TrackProcessor`) and use `audioProcessing` to declare what the browser should do:
+
+```typescript
+import type { AudioTrackProcessor, ProcessorOptions } from "@seastart/srtc-web-sdk";
+
+export class MyDenoiser implements AudioTrackProcessor {
+  readonly name = "my-denoiser";
+  // Ask the browser to turn off its own noise suppression; echo cancellation and
+  // auto gain control are not declared, so the capture options still apply
+  readonly audioProcessing = { noiseSuppression: false };
+  processedTrack?: MediaStreamTrack;
+
+  async init(options: ProcessorOptions): Promise<void> { /* ... */ }
+  async destroy(): Promise<void> { /* ... */ }
+}
+```
+
+`audioProcessing` fields (type `AudioProcessingConstraints`):
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `noiseSuppression` | `boolean?` | Browser noise suppression |
+| `echoCancellation` | `boolean?` | Browser echo cancellation |
+| `autoGainControl` | `boolean?` | Browser auto gain control |
+
+Rules:
+
+- When attached to a microphone track (`LocalMicTrack`), the SDK **recaptures the microphone once** with the declared settings, so audio drops out briefly. Detaching the processor, or a processor that fails to initialize, restores the original settings. Browsers can't switch these settings mid-capture, so a recapture is the only way.
+- If the declaration matches the current capture settings (for example, your app already turned noise suppression off), no recapture happens.
+- When chaining processors (an array or a `ProcessorPipeline`), the declarations are merged: a setting is turned off if any processor asks for it to be off.
+- The options you passed to `startCapture` are left unchanged; the declaration stays in effect after switching devices or calling `startCapture` again.
+- The SDK's [RNNoise](/en/rtc/web/advanced/rnnoise) and [DeepFilterNet](/en/rtc/web/advanced/deepfilternet) plugins both declare `{ noiseSuppression: false }`.
+- In Chrome, if the same microphone has another live capture track on the same page (such as a mic test your page runs), those tracks share one set of 3A settings and the declaration may not take effect. Stop other captures on the same device before attaching the processor.
+
 ---
 
 ### Lifecycle and notes

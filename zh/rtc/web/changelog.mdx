@@ -19,6 +19,17 @@ npm info @seastart/srtc-web-sdk version
 
 ### 近期更新
 
+### v0.7.3 - 2026-11-16
+
++ **挂降噪插件时自动关闭浏览器自带降噪**：使用 [RNNoise](/zh/rtc/web/advanced/rnnoise) / [DeepFilterNet](/zh/rtc/web/advanced/deepfilternet) 降噪插件时，SDK 会自动关闭浏览器自带的降噪，卸载后恢复，避免两道降噪叠加让人声发闷。插件需同时升级（RNNoise 0.1.1、DeepFilterNet 0.1.2）
++ **新增音频处理器接口 `AudioTrackProcessor`**：自定义音频处理器可通过 `audioProcessing` 声明对浏览器降噪、回声消除、自动增益的要求，详见[音视频处理器](/zh/rtc/web/advanced/audio-processor)
++ **挂着处理器时停止采集，麦克风/摄像头不再一直亮着**：以前挂了处理器后 `stopCapture` 或切换设备，原始麦克风、摄像头没有真正停止，浏览器的录音、摄像头指示一直亮着
++ **重复调用 `setProcessor` 不再无声/黑屏**：已挂着处理器时再次 `setProcessor`，新处理器可能拿到失效的轨道，导致无声或黑屏
+
+### v0.7.2 - 2026-11-09
+
++ **摄像头打不开时麦克风不再一起失败**：获取设备列表（`getDevices`）时，如果摄像头存在但打不开（被其它程序占用、VDI 摄像头重定向异常等，浏览器报 `NotReadableError`），以前会连带麦克风一起失败、拿不到设备列表；现在会改为只申请麦克风后重试，保证可以正常开麦
+
 ### v0.7.1 - 2026-11-04
 
 + **兼容 webpack 4 等老工具链**：构建产物的语法降到 ES2019（class 字段、可选链、BigInt 字面量等都已转换），修复 webpack 4、或未转译 `node_modules` 的老 babel 工具链引入时报 `Module parse failed` 的问题。接口与运行行为不变，产物体积约增加 7%

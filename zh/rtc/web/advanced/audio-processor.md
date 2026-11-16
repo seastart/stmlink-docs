@@ -102,6 +102,41 @@ export class MyProcessor implements TrackProcessor {
 
 > 编写音频处理器时，若 `options.audioContext` 存在应复用它（不要自行 `close`）；仅在自建上下文时才在 `destroy` 中关闭。
 
+### 声明对浏览器 3A 的要求（音频处理器）
+
+浏览器采集麦克风时自带 3A（降噪、回声消除、自动增益）。如果处理器自己就做降噪，再叠一道浏览器降噪会让人声发闷。音频处理器可以实现 `AudioTrackProcessor`（继承 `TrackProcessor`），用 `audioProcessing` 声明希望浏览器怎么处理：
+
+```typescript
+import type { AudioTrackProcessor, ProcessorOptions } from "@seastart/srtc-web-sdk";
+
+export class MyDenoiser implements AudioTrackProcessor {
+  readonly name = "my-denoiser";
+  // 要求关闭浏览器自带降噪；回声消除、自动增益不声明，沿用采集参数
+  readonly audioProcessing = { noiseSuppression: false };
+  processedTrack?: MediaStreamTrack;
+
+  async init(options: ProcessorOptions): Promise<void> { /* ... */ }
+  async destroy(): Promise<void> { /* ... */ }
+}
+```
+
+`audioProcessing` 字段（类型 `AudioProcessingConstraints`）：
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `noiseSuppression` | `boolean?` | 浏览器降噪 |
+| `echoCancellation` | `boolean?` | 浏览器回声消除 |
+| `autoGainControl` | `boolean?` | 浏览器自动增益 |
+
+规则：
+
+- 挂到麦克风轨道（`LocalMicTrack`）时，SDK 按声明**重新采集一次麦克风**，声音会有一次短暂中断；卸载处理器、或处理器初始化失败时恢复原来的设置。浏览器不支持在采集中途切换这几项，所以只能重采。
+- 声明的值和当前实际采集参数一样时（比如业务本来就关了降噪），不会重采。
+- 串联多个处理器（数组或 `ProcessorPipeline`）时，各级的声明合并生效：同一项只要有一个处理器要求关闭就关闭。
+- 不改你传给 `startCapture` 的采集参数；切换设备、重新 `startCapture` 后声明继续生效。
+- SDK 提供的 [RNNoise](/zh/rtc/web/advanced/rnnoise)、[DeepFilterNet](/zh/rtc/web/advanced/deepfilternet) 降噪插件都已声明 `{ noiseSuppression: false }`。
+- Chrome 下，同一页面里同一只麦克风如果还有别的采集轨道开着（比如页面自己做的麦克风检测），这些轨道会共用一套 3A 设置，声明可能不生效。挂处理器前请先停掉同一设备上的其他采集。
+
 ---
 
 ### 生命周期与注意事项

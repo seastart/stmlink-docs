@@ -19,6 +19,17 @@ npm info @seastart/srtc-web-sdk version
 
 ### Recent updates
 
+### v0.7.3 - 2026-11-16
+
++ **Browser noise suppression is turned off automatically with noise suppression plugins**: when you use the [RNNoise](/en/rtc/web/advanced/rnnoise) or [DeepFilterNet](/en/rtc/web/advanced/deepfilternet) plugin, the SDK turns off the browser's own noise suppression and restores it on detach, so the two don't stack and muffle voices. Upgrade the plugins as well (RNNoise 0.1.1, DeepFilterNet 0.1.2)
++ **New audio processor interface `AudioTrackProcessor`**: a custom audio processor can use `audioProcessing` to declare what it needs from the browser's noise suppression, echo cancellation, and auto gain control. See [Audio/video processors](/en/rtc/web/advanced/audio-processor)
++ **Microphone and camera actually stop when a processor is attached**: previously, with a processor attached, `stopCapture` or switching devices didn't stop the original microphone or camera, so the browser's recording or camera indicator stayed on
++ **Calling `setProcessor` again no longer causes silence or a black screen**: calling `setProcessor` while a processor was already attached could hand the new processor a dead track, resulting in silence or a black screen
+
+### v0.7.2 - 2026-11-09
+
++ **Microphone no longer fails along with an unusable camera**: when listing devices (`getDevices`), if a camera is present but cannot be started (held by another app, broken VDI camera redirection, etc. — the browser reports `NotReadableError`), the microphone used to fail with it and no device list was returned. The SDK now retries with the microphone only, so the user can still unmute
+
 ### v0.7.1 - 2026-11-04
 
 + **Works with webpack 4 and other older toolchains**: the build output is now down-leveled to ES2019 (class fields, optional chaining, BigInt literals, and similar syntax are transpiled). This fixes the `Module parse failed` error when the SDK is imported with webpack 4, or with older babel setups that do not transpile `node_modules`. APIs and runtime behavior are unchanged; the bundle is about 7% larger

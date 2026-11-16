@@ -89,6 +89,7 @@ await mic.removeProcessor();
 ### Notes
 
 - Supports audio tracks only.
+- On attach, the SDK automatically turns off the browser's own noise suppression (the microphone is recaptured once, so audio drops out briefly) and restores it on detach, so the two noise suppressors don't stack and muffle voices; echo cancellation and auto gain control are unaffected. See [Declaring browser 3A requirements](/en/rtc/web/advanced/audio-processor). Requires `@seastart/srtc-web-sdk` 0.7.3 or later.
 - Must run over HTTPS (or localhost); `AudioContext` may need a user gesture before it can `resume`.
 - The sample rate is fixed at 48 kHz.
 - After switching the microphone device (`changeDeviceId`) or calling `startCapture` again, noise suppression resumes automatically; you don't need to call `setProcessor` again.
