@@ -10,7 +10,7 @@ SIP / H323 / GB28181 等设备的接入，以及会议外的 IM 消息，SMeetin
 
 <Columns cols={2}>
   <Card title="设备接入" href="/zh/rtc/server-api/agent">
-    设备的增删改查、网关列表、邀请入会、会中开关设备音视频
+    设备的增删改查、网关列表、邀请入会、会中开关设备音视频、切换设备画面
   </Card>
   <Card title="IM 消息" href="/zh/rtc/server-api/im">
     会议外的即时消息、IM 授权与设备在线管理
@@ -42,3 +42,20 @@ SIP / H323 / GB28181 等设备的接入，以及会议外的 IM 消息，SMeetin
 
 `agents` 里每台设备的 `type` 与 `contact` 从[设备列表](/zh/rtc/server-api/agent)取，国标设备的
 `contact` 格式是 `设备编号:通道编号`，各字段说明见[邀请设备入会](/zh/rtc/server-api/agent#邀请设备入会)。
+
+### 会中操作设备时频道和用户 ID 填什么
+
+开关设备音视频、发按键、[切换设备看到的画面](/zh/rtc/server-api/agent#切换设备看到的画面)这几个接口
+针对的是已经在会里的设备，参数里的 `channel` 在 SMeeting 里**填会议 ID `meeting_id`**（不是房间号），
+`uid` 填设备在会中的用户 ID（带 `_agent_` 前缀，从参会人列表或成员入会回调拿）。
+
+切换设备画面时，`sub_uid` 直接填要看的那位参会人的 `user_id`：
+
+```json
+{
+  "channel": "<meeting_id>",
+  "uid": "_agent_co63jg6g54hu3b0xhtie",
+  "sub_uid": "1001",
+  "sub_tdesc": "camera_big"
+}
+```

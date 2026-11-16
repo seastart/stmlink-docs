@@ -10,7 +10,7 @@ So the documentation for these two groups of endpoints is the two SRTC pages:
 
 <Columns cols={2}>
   <Card title="Device integration" href="/en/rtc/server-api/agent">
-    Add, delete, update, and query devices, list gateways, invite devices, and turn device audio and video on or off during the meeting
+    Add, delete, update, and query devices, list gateways, invite devices, turn device audio and video on or off, and switch the video a device watches during the meeting
   </Card>
   <Card title="IM messages" href="/en/rtc/server-api/im">
     Out-of-meeting instant messages, IM grants, and device online status management
@@ -42,3 +42,20 @@ passing `meeting_id` fails because no meeting can be found.
 
 Take each device's `type` and `contact` in `agents` from the [device list](/en/rtc/server-api/agent). For GB28181 devices,
 `contact` uses the format `deviceId:channelId`. For all fields, see [Invite devices to the channel](/en/rtc/server-api/agent#invite-devices-to-the-channel).
+
+### What to use for channel and user ID when operating a device in a meeting
+
+Turning a device's audio/video on or off, sending DTMF, and [switching the video a device watches](/en/rtc/server-api/agent#switch-the-video-a-device-watches)
+all target a device that is already in the meeting. In SMeeting, the `channel` parameter of these APIs is **the meeting ID `meeting_id`** (not the room number),
+and `uid` is the device's in-meeting user ID (prefixed with `_agent_`, taken from the participant list or the member-joined callback).
+
+When switching the video a device watches, set `sub_uid` to the `user_id` of the participant to watch:
+
+```json
+{
+  "channel": "<meeting_id>",
+  "uid": "_agent_co63jg6g54hu3b0xhtie",
+  "sub_uid": "1001",
+  "sub_tdesc": "camera_big"
+}
+```

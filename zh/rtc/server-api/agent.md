@@ -1840,3 +1840,65 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
 
 ---
 
+## 切换设备看到的画面
+
+`POST /server/v1/agent/switch-subscribe`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+设备入会后默认看 MCU 合成画面，调用本接口可以改成看频道里某位成员的摄像头或屏幕共享，
+也可以随时切回合成画面。设备不会退会、话机呼叫不会断，只换它收到的那一路视频。
+
+目标成员还没开摄像头 / 还没入会也能切：设备会保持原画面，等对方开始发布后自动出画。
+设备在上一次切换完成前（通常一两秒内）再次切换会报错，稍后重试即可。
+需设备网关 1.4.1 及以上版本。
+
+**请求参数**
+
+<ParamField body="uid" type="string" required>
+  设备会中用户ID，带 _agent_ 前缀，从「在线/离线成员列表」或 user_join 回调拿（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  设备所在频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="sub_uid" type="string">
+  要让设备看谁：频道里另一位成员的用户ID。不传、传空或传 __mcu__ 表示切回 MCU 合成画面(设备入会时的默认画面)（最大长度 64）
+  示例：`1001`
+</ParamField>
+
+<ParamField body="sub_tdesc" type="string">
+  看这位成员的哪一路视频：camera_big 摄像头大流、camera_small 摄像头小流、screen 屏幕共享。sub_uid 是普通成员时必传，切回合成画面时忽略（最大长度 32）
+  示例：`camera_big`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "channel": "fire",
+  "sub_tdesc": "camera_big",
+  "sub_uid": "1001",
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+

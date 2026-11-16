@@ -1840,3 +1840,65 @@ Response example:
 
 ---
 
+## Switch the video a device watches
+
+`POST /server/v1/agent/switch-subscribe`
+
+Authentication: required (see [Overview](/en/rtc/server-api/overview))
+
+After joining, a device watches the MCU composite picture by default. Call this API to make it watch a specific member's camera or screen share instead,
+and switch back to the composite picture at any time. The device stays in the channel and the phone call is not dropped; only the incoming video changes.
+
+You can switch even if the target member has not turned on the camera or joined yet: the device keeps its current picture and shows the new one automatically once the member starts publishing.
+Switching again before the previous switch completes (usually within a second or two) returns an error; just retry a moment later.
+Requires device gateway 1.4.1 or later.
+
+**Request parameters**
+
+<ParamField body="uid" type="string" required>
+  In-channel user ID of the device, with the _agent_ prefix; get it from "List online or offline users" or the user_join callback (letters, digits, underscores (_), and hyphens (-) only)
+  Example: `_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  Name of the channel the device is in (up to 64 bytes; letters, digits, underscores (_), and hyphens (-) only)
+  Example: `fire`
+</ParamField>
+
+<ParamField body="sub_uid" type="string">
+  Whom the device should watch: the user ID of another member in the channel. Omit it, pass an empty string or pass __mcu__ to switch back to the MCU composite picture (the device's default after joining) (max length 64)
+  Example: `1001`
+</ParamField>
+
+<ParamField body="sub_tdesc" type="string">
+  Which video of that member to watch: camera_big (camera main stream), camera_small (camera sub stream), screen (screen share). Required when sub_uid is a regular member; ignored when switching back to the composite picture (max length 32)
+  Example: `camera_big`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "channel": "fire",
+  "sub_tdesc": "camera_big",
+  "sub_uid": "1001",
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
