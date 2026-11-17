@@ -1265,7 +1265,8 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   布局数据
   <Expandable title="字段">
     <ParamField body="layout" type="string">
-      布局类型, 不传时使用服务端默认布局
+      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格) 不传时使用服务端默认布局（默认为 auto，可由部署方调整）
+      示例：`auto`
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1273,6 +1274,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       <Expandable title="字段">
         <ParamField body="type" type="integer">
           类型 0默认, 1无, 2单排, 3多排
+          示例：`1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1307,6 +1309,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       <Expandable title="字段">
         <ParamField body="type" type="string">
           类型, 字母或组合: L左, R右, T上, B下
+          示例：`L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1397,7 +1400,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -1406,7 +1409,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
         ]
       }
     ],
-    "layout": "",
+    "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
     "push_url": "rtmp://live.example.com/app/stream_key",
@@ -1415,7 +1418,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -1423,7 +1426,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "meeting_mode": 0,
@@ -1588,7 +1591,8 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   布局数据
   <Expandable title="字段">
     <ParamField body="layout" type="string">
-      布局类型, 不传时使用服务端默认布局
+      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格) 不传时使用服务端默认布局（默认为 auto，可由部署方调整）
+      示例：`auto`
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1596,6 +1600,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       <Expandable title="字段">
         <ParamField body="type" type="integer">
           类型 0默认, 1无, 2单排, 3多排
+          示例：`1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1630,6 +1635,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       <Expandable title="字段">
         <ParamField body="type" type="string">
           类型, 字母或组合: L左, R右, T上, B下
+          示例：`L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1718,7 +1724,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -1727,7 +1733,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
         ]
       }
     ],
-    "layout": "",
+    "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
     "push_url": "rtmp://live.example.com/app/stream_key",
@@ -1736,7 +1742,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -1744,7 +1750,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "meeting_id": "",

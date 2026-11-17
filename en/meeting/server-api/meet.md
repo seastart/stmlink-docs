@@ -1265,7 +1265,8 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
   Layout data
   <Expandable title="Fields">
     <ParamField body="layout" type="string">
-      Layout type; if omitted, the server's default layout is used
+      Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged). If omitted, the server's default layout is used (auto by default; the deployer can change it)
+      Example: `auto`
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1273,6 +1274,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
       <Expandable title="Fields">
         <ParamField body="type" type="integer">
           Type. 0: default, 1: none, 2: single row, 3: multiple rows
+          Example: `1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1307,6 +1309,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
       <Expandable title="Fields">
         <ParamField body="type" type="string">
           Type, a letter or combination: L left, R right, T top, B bottom
+          Example: `L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1397,7 +1400,7 @@ Request example:
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -1406,7 +1409,7 @@ Request example:
         ]
       }
     ],
-    "layout": "",
+    "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
     "push_url": "rtmp://live.example.com/app/stream_key",
@@ -1415,7 +1418,7 @@ Request example:
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -1423,7 +1426,7 @@ Request example:
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "meeting_mode": 0,
@@ -1588,7 +1591,8 @@ Update a meeting
   Layout data
   <Expandable title="Fields">
     <ParamField body="layout" type="string">
-      Layout type; if omitted, the server's default layout is used
+      Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged). If omitted, the server's default layout is used (auto by default; the deployer can change it)
+      Example: `auto`
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1596,6 +1600,7 @@ Update a meeting
       <Expandable title="Fields">
         <ParamField body="type" type="integer">
           Type. 0: default, 1: none, 2: single row, 3: multiple rows
+          Example: `1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1630,6 +1635,7 @@ Update a meeting
       <Expandable title="Fields">
         <ParamField body="type" type="string">
           Type, a letter or combination: L left, R right, T top, B bottom
+          Example: `L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1718,7 +1724,7 @@ Request example:
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -1727,7 +1733,7 @@ Request example:
         ]
       }
     ],
-    "layout": "",
+    "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
     "push_url": "rtmp://live.example.com/app/stream_key",
@@ -1736,7 +1742,7 @@ Request example:
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -1744,7 +1750,7 @@ Request example:
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "meeting_id": "",

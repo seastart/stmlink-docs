@@ -25,15 +25,16 @@ None
 </ResponseField>
 
 <ResponseField name="layout" type="string">
-  Layout type: auto, full, grids_2, grids_4, ...
+  Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged)
+  Example: `auto`
 </ResponseField>
 
 <ResponseField name="watermark_type" type="integer">
-  Watermark type. 1: none, 2: single row, 3: multiple rows
+  Watermark type: 0 default, 1 none, 2 single row, 3 multiple rows
 </ResponseField>
 
 <ResponseField name="window_tag_type" type="string">
-  Window label position, a letter or combination: L left, R right, T top, B bottom; empty disables labels
+  Position of the user name label on each view, a letter or combination: L left, R right, T top, B bottom (such as LB for bottom left); empty means no label
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
@@ -53,7 +54,7 @@ Response example:
   "data": {
     "app_id": "",
     "created_at": 0,
-    "layout": "",
+    "layout": "auto",
     "updated_at": 0,
     "watermark_type": 0,
     "window_tag_type": ""
@@ -74,15 +75,18 @@ Update the global default recording settings
 **Request parameters**
 
 <ParamField body="layout" type="string">
-  Layout type: auto, full, grids_2, grids_4, ...
+  Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged)
+  Example: `auto`
 </ParamField>
 
 <ParamField body="watermark_type" type="integer">
-  Watermark type. 1: none, 2: single row, 3: multiple rows
+  Watermark type: 0 default, 1 none, 2 single row, 3 multiple rows
+  Example: `1`
 </ParamField>
 
 <ParamField body="window_tag_type" type="string">
-  Window label position, a letter or combination: L left, R right, T top, B bottom; empty disables labels
+  Position of the user name label on each view, a letter or combination: L left, R right, T top, B bottom (such as LB for bottom left); empty means no label
+  Example: `L`
 </ParamField>
 
 
@@ -90,9 +94,9 @@ Request example:
 
 ```json
 {
-  "layout": "",
-  "watermark_type": 0,
-  "window_tag_type": ""
+  "layout": "auto",
+  "watermark_type": 1,
+  "window_tag_type": "L"
 }
 ```
 
@@ -1209,7 +1213,8 @@ Start a recording task
   Layout data
   <Expandable title="Fields">
     <ParamField body="layout" type="string">
-      Layout type; if omitted, the server's default layout is used
+      Layout type: auto (automatic), full (full screen), right_4 (small views on the right), top_4 (small views on top), br_7 (bottom L-shape), tl_7 (top L-shape), tb_8 (side-by-side), equal grids grids_N (N is 2, 3, 4, 5, 6, 8, 9, 12, 16, 20, 25), ring layouts ring_16 (large ring: 25-cell grid with the middle 9 cells merged) and ring_12 (small ring: 16-cell grid with the middle 4 cells merged). If omitted, the server's default layout is used (auto by default; the deployer can change it)
+      Example: `auto`
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1217,6 +1222,7 @@ Start a recording task
       <Expandable title="Fields">
         <ParamField body="type" type="integer">
           Type. 0: default, 1: none, 2: single row, 3: multiple rows
+          Example: `1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1251,6 +1257,7 @@ Start a recording task
       <Expandable title="Fields">
         <ParamField body="type" type="string">
           Type, a letter or combination: L left, R right, T top, B bottom
+          Example: `L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1315,7 +1322,7 @@ Request example:
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -1324,7 +1331,7 @@ Request example:
         ]
       }
     ],
-    "layout": "",
+    "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
     "push_url": "rtmp://live.example.com/app/stream_key",
@@ -1333,7 +1340,7 @@ Request example:
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -1341,7 +1348,7 @@ Request example:
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "meeting_id": "",

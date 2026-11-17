@@ -25,15 +25,16 @@ description: "整场会议的云端录制、点播地址与直播推流"
 </ResponseField>
 
 <ResponseField name="layout" type="string">
-  布局类型 auto,full,grids_2,grids_4,...
+  布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格)
+  示例：`auto`
 </ResponseField>
 
 <ResponseField name="watermark_type" type="integer">
-  水印类型 1无,2单排,3多排
+  水印类型 0默认,1无,2单排,3多排
 </ResponseField>
 
 <ResponseField name="window_tag_type" type="string">
-  窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签
+  每个画面上成员名标签的位置，字母或组合:L左,R右,T上,B下（如 LB 左下）；空表示不显示标签
 </ResponseField>
 
 <ResponseField name="created_at" type="integer">
@@ -53,7 +54,7 @@ description: "整场会议的云端录制、点播地址与直播推流"
   "data": {
     "app_id": "",
     "created_at": 0,
-    "layout": "",
+    "layout": "auto",
     "updated_at": 0,
     "watermark_type": 0,
     "window_tag_type": ""
@@ -74,15 +75,18 @@ description: "整场会议的云端录制、点播地址与直播推流"
 **请求参数**
 
 <ParamField body="layout" type="string">
-  布局类型 auto,full,grids_2,grids_4,...
+  布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格)
+  示例：`auto`
 </ParamField>
 
 <ParamField body="watermark_type" type="integer">
-  水印类型 1无,2单排,3多排
+  水印类型 0默认,1无,2单排,3多排
+  示例：`1`
 </ParamField>
 
 <ParamField body="window_tag_type" type="string">
-  窗口标签位置 字母或组合:L左,R右,T上,B下,空表示不启用标签
+  每个画面上成员名标签的位置，字母或组合:L左,R右,T上,B下（如 LB 左下）；空表示不显示标签
+  示例：`L`
 </ParamField>
 
 
@@ -90,9 +94,9 @@ description: "整场会议的云端录制、点播地址与直播推流"
 
 ```json
 {
-  "layout": "",
-  "watermark_type": 0,
-  "window_tag_type": ""
+  "layout": "auto",
+  "watermark_type": 1,
+  "window_tag_type": "L"
 }
 ```
 
@@ -1209,7 +1213,8 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
   布局数据
   <Expandable title="字段">
     <ParamField body="layout" type="string">
-      布局类型, 不传时使用服务端默认布局
+      布局类型: auto自动 full全屏 right_4右侧小窗 top_4顶部小窗 br_7下L型 tl_7上L型 tb_8左右布局, 等分宫格 grids_N (N 取 2,3,4,5,6,8,9,12,16,20,25), 回字型 ring_16大回字型(25宫格合并中间9格) ring_12小回字型(16宫格合并中间4格) 不传时使用服务端默认布局（默认为 auto，可由部署方调整）
+      示例：`auto`
     </ParamField>
 
     <ParamField body="watermark" type="object">
@@ -1217,6 +1222,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
       <Expandable title="字段">
         <ParamField body="type" type="integer">
           类型 0默认, 1无, 2单排, 3多排
+          示例：`1`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1251,6 +1257,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
       <Expandable title="字段">
         <ParamField body="type" type="string">
           类型, 字母或组合: L左, R右, T上, B下
+          示例：`L`
         </ParamField>
 
         <ParamField body="text" type="string">
@@ -1315,7 +1322,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
               "color": "",
               "size": 0,
               "text": "",
-              "type": ""
+              "type": "L"
             }
           }
         ],
@@ -1324,7 +1331,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
         ]
       }
     ],
-    "layout": "",
+    "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
     "push_url": "rtmp://live.example.com/app/stream_key",
@@ -1333,7 +1340,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
       "color": "",
       "size": 0,
       "text": "",
-      "type": ""
+      "type": "L"
     },
     "watermark": {
       "color": "",
@@ -1341,7 +1348,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
       "ol_width": 0,
       "size": 0,
       "text": "",
-      "type": 0
+      "type": 1
     }
   },
   "meeting_id": "",
