@@ -3,6 +3,44 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.8.0] - 2026.11.17
+#### Changed
++ The SRTC dependency is upgraded from 1.7.0 to **1.8.0**. SMeeting's own APIs and behavior are unchanged; 1.7.x integrations can upgrade directly.
+
+#### Added
++ **AI noise suppression is available**: SRTC 1.8.0 ships the DeepFilterNet AI noise suppression plugin (the `SRTCDeepFilterNet` product of `srtc-swift-sdk`). SMeeting needs no new API: attach the plugin to `smeeting.srtc.audioCaptureProcessor`. See the SRTC page [AI noise suppression (DeepFilterNet)](/en/rtc/swift/advanced/deepfilternet). Keep a strong reference to the processor yourself (the SDK holds it weakly).
+
+<Warning>
+If your project declares its own `srtc-swift-sdk` dependency (iOS full-screen sharing extension, AI noise suppression plugin), change it to `exact: "1.8.0"` as well, matching the SRTC version SMeeting 1.8.0 pins; otherwise dependency resolution fails.
+</Warning>
+
+### [1.7.3] - 2026.11.12
+#### Fixed
++ **Meeting state left behind after a passive disconnect**: after being replaced by another login, kicked, timing out on heartbeat, or the meeting ending, the SDK now clears the meeting state itself after dispatching `didDisconnect`. Previously, calling `enterRoom` again without first calling `exitRoom()` joined with the old meeting's `meetingId` and member list.
+
+#### Changed
++ `enterRoom` throws `SMeetingError.alreadyInMeeting` when already in a meeting (consistent with the documentation and the Web SDK). To switch meetings, call `exitRoom()` and then `enterRoom`; after a passive disconnect you no longer need to call `exitRoom()`.
+
+<Note>
+The dependency is still **SRTC 1.7.0**; the iOS full-screen sharing extension keeps `exact: "1.7.0"` for `srtc-swift-sdk`.
+</Note>
+
+### [1.7.2] - 2026.11.10
+#### Fixed
++ **macOS projects failed to build**: the macOS slice in 1.7.1 contained only arm64 and its framework layout did not follow the macOS convention, so builds or code signing failed after integration. 1.7.2 restores the standard universal (arm64 + x86_64) macOS framework.
+
+<Note>
+APIs and behavior are identical to 1.7.1, and iOS is unaffected. macOS integrations should upgrade to 1.7.2 rather than stay on 1.7.1. The dependency is still **SRTC 1.7.0**; the iOS full-screen sharing extension keeps `exact: "1.7.0"` for `srtc-swift-sdk`.
+</Note>
+
+### [1.7.1] - 2026.11.09
+#### Added
++ **Custom out-of-meeting message events**: IM messages with a non-built-in `action` are passed through `SMeetingDelegate.imCustomMsg`, carrying the sender, the `action`, and the raw `content`, consistent with HarmonyOS and the other platforms.
+
+<Note>
+No incompatible changes; 1.7.0 integrations can upgrade directly. The dependency is still **SRTC 1.7.0**; the iOS full-screen sharing extension keeps `exact: "1.7.0"` for `srtc-swift-sdk`.
+</Note>
+
 ### [1.7.0] - 2026.11.03
 <Warning>
 **Breaking change (macOS only): the virtual background APIs are no longer available on macOS.** iOS is unaffected; the APIs and the effect are unchanged there.
