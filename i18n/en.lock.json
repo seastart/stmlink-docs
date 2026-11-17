@@ -309,7 +309,7 @@
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/recording.md",
     "zh_blob": "7bc7cfd54bc4e8fbaea71df181fddac2a76fd223",
-    "zh_commit": "1b66d56c8e6e7f3f8b4e3cd5c42936700fcf5614"
+    "zh_commit": "813d3a1f33ef1142a6b93e2c57cff9c4d35930e1"
   },
   "en/meeting/server-api/overview": {
     "reviewed": true,
@@ -1233,7 +1233,7 @@
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/recording.md",
     "zh_blob": "53083a2e2ef20a97b574c80490f8febd6653541a",
-    "zh_commit": "1b66d56c8e6e7f3f8b4e3cd5c42936700fcf5614"
+    "zh_commit": "813d3a1f33ef1142a6b93e2c57cff9c4d35930e1"
   },
   "en/rtc/server-api/overview": {
     "reviewed": true,
