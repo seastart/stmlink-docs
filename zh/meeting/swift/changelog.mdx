@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.8.0] - 2026.11.17
+#### 变更
++ 依赖的 SRTC 从 1.7.0 升到 **1.8.0**。SMeeting 自身的接口与行为没有变化，1.7.x 的接入代码可直接升级。
+
+#### 新增
++ **可接入 AI 降噪**：SRTC 1.8.0 提供 DeepFilterNet AI 降噪插件（`srtc-swift-sdk` 的产品 `SRTCDeepFilterNet`）。SMeeting 不需要新增接口，把插件挂到 `smeeting.srtc.audioCaptureProcessor` 即可，用法见 SRTC 文档 [AI 降噪（DeepFilterNet）](/zh/rtc/swift/advanced/deepfilternet)。处理器要由业务方自己持有（SDK 对它是弱引用）。
+
+<Warning>
+工程里自己声明过 `srtc-swift-sdk` 依赖的（iOS 全屏共享扩展、AI 降噪插件），要一并改为 `exact: "1.8.0"`，与 SMeeting 1.8.0 锁定的 SRTC 版本一致，否则依赖解析直接失败。
+</Warning>
+
 ### [1.7.3] - 2026.11.12
 #### 修复
 + **被动断开后会议状态残留**：被顶号、被踢、心跳超时、会议结束等被动断开后，SDK 在派发 `didDisconnect` 之后自行清理会议状态。此前业务方不补调 `exitRoom()` 就再次 `enterRoom`，会带着旧会议的 `meetingId`、成员表入会。
