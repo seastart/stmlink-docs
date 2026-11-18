@@ -462,6 +462,7 @@
 - [签到](https://docs.stmlink.com/zh/meeting/harmony/advanced/sign-in.md): 发起签到、成员签到、查询统计与明细
 - [音频路由](https://docs.stmlink.com/zh/meeting/harmony/advanced/audio-routing.md): 扬声器与听筒切换、持久设置与临时设置的优先级、蓝牙与有线耳机、系统来电
 - [设备管理](https://docs.stmlink.com/zh/meeting/harmony/advanced/device-management.md): 枚举摄像头与麦克风、切换设备、热插拔监听与设备选择器
+- [设备检测（会前 / 会中预览）](https://docs.stmlink.com/zh/meeting/harmony/advanced/device-check.md): 在入会前或会中做摄像头、麦克风、扬声器检测：枚举设备、requestOpenCamera 的 publish = false 只预览不推流、isCameraOpened 判断要不要关、麦克风音量只能在会中发布后读、扬声器走音频路由
 
 ## SMeeting 会议 SDK · HarmonyOS SDK · 接口文档
 

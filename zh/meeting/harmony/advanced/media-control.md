@@ -86,6 +86,20 @@ meeting.switchCameraDevice(deviceId);         // 指定设备
 
 摄像头**没有** `setMuted` 这种"假关" —— 用户预期关摄像头就该真的关（指示灯熄灭）。
 
+只预览不发布（设置页预览、设备检测，1.6.0 起）：
+
+```typescript
+// 不请求会控、不发布、不发事件，会中开着设置页预览也不会推给其他人
+const preview = await meeting.requestOpenCamera(cameraPreset720p(), false, undefined, false);
+// …
+// 只关预览打开的；会中摄像头本来就开着（isCameraOpened）就别关
+if (!meeting.isCameraOpened) {
+  await meeting.closeCamera();
+}
+```
+
+预览之后要正式开摄像头，直接 `requestOpenCamera()`（默认 `publish = true`），会发布同一条轨、不重新采集。
+
 本地预览：
 
 ```typescript

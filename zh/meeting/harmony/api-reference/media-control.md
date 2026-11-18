@@ -41,7 +41,7 @@ getLocalAudioLevel(): Promise<number | undefined>
 
 | 方法 | 说明 |
 | --- | --- |
-| `requestOpenMic` | 申请开麦。**会被后端拒绝**（全体静音时） |
+| `requestOpenMic` | 申请开麦。**会被后端拒绝**（全体静音时）。没有只采集不发布的模式：`getLocalAudioLevel()` 读的是发送统计，不发布读不到 |
 | `closeMic` | 关麦，销毁轨道 |
 | `setMicMuted` | 通话中临时静音，**不重建轨道** |
 
@@ -68,10 +68,26 @@ SFU 的 `onActiveSpeakers` 只含远端。未开麦 / 不在会中时返回 `und
 ## 摄像头
 
 ```typescript
-requestOpenCamera(preset?: CameraPreset, byAdmin?: boolean, adminUid?: string): Promise<LocalCameraTrack>
+requestOpenCamera(preset?: CameraPreset, byAdmin?: boolean, adminUid?: string, publish?: boolean): Promise<LocalCameraTrack>
 closeCamera(): Promise<void>
 switchCamera(cameraId?: string): void
+readonly isCameraOpened: boolean
 ```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `preset` | `CameraPreset` | 否 | 摄像头预设，默认 `cameraPreset720p()` |
+| `byAdmin` | `boolean` | 否 | 是否响应主持人请求，默认 `false` |
+| `adminUid` | `string` | 否 | 发起请求的主持人 ID（`byAdmin` 为 `true` 时必传） |
+| `publish` | `boolean` | 否 | 是否作为会议摄像头打开并发布，默认 `true`；`false` 只采集预览（1.6.0 起） |
+
+`publish = false` 时只采集、只预览（设备检测、设置页预览）：**不请求会控、不发布、不发摄像头状态事件**，会前会中都能用，
+`meeting.cameraTrack` 照常有值。之后再以 `publish = true` 调用会把这条轨「转正」—— 请求会控并发布**同一条轨**，不重新采集；
+摄像头已作为会议摄像头打开时以 `publish = false` 调用直接返回正在用的轨。主持人关摄像头 / 全员禁用不影响只预览的轨。
+会前打开的摄像头入会后再调用 `requestOpenCamera()` 会补发布。
+
+`isCameraOpened`（1.6.0 起）表示摄像头是否作为**会议摄像头**打开：只预览时 `cameraTrack` 有值、它为 `false`。
+关预览时据此判断要不要 `closeCamera()`，避免把会中正开着的摄像头一起关掉。
 
 `switchCamera()` 不传参数就是前后置切换，传 `deviceId` 切到指定摄像头。
 
@@ -106,9 +122,12 @@ currentCameraZoom(): number
 ## 屏幕共享
 
 ```typescript
-requestShare(shareType?: ShareType, preset?: ScreenPreset, byAdmin?: boolean, adminUid?: string): Promise<void>
+requestShare(shareType?: ShareType, preset?: ScreenPreset, byAdmin?: boolean, adminUid?: string, audioPreset?: ScreenAudioPreset): Promise<void>
 stopShare(): Promise<void>
 ```
+
+`audioPreset`（1.6.0 起）：同时共享系统声音，不传只共享画面。声音挂在同一条共享轨上，随共享一起发布、一起停止，
+用 SRTC 的 `screenAudioPresetDefault()` 即可。
 
 `ShareType` 有 `screen`（屏幕）与 `whiteBoard`（白板）两种。`stopShare()` 两种都能停（白板自 1.4.0 起，之前的版本停不掉白板）。
 

@@ -9,12 +9,13 @@ SMeeting 建在 SRTC 之上，**不是**替代它：
 
 ```
 SMeetingEngine        会议业务：账号、会议 CRUD、会控、等候室、子会议、录制、签到
-   └── srtc: SRTCEngine   媒体：频道连接、采集、发布、订阅、渲染
+   └── SRTCEngine     媒体：频道连接、采集、发布、订阅、渲染（内部持有，不对外）
 ```
 
-`meeting.srtc` 是可以直接访问的。这意味着：
+会议层**不暴露底层 SRTC 引擎**（1.6.0 起；1.5.x 及以前的 `meeting.srtc` 已移除）。会议层自己管着频道、轨道和会议状态，
+业务直接拿引擎调入会 / 发布会让会议状态失真，所以需要的媒体能力都由会议层提供同名接口（如 `requestShare` 的系统声音参数）。这意味着：
 
-+ 会议 SDK 覆盖不到的底层能力，可以从 `meeting.srtc` 拿
++ 媒体操作一律走 `SMeetingEngine` 的接口，不要自己 `new SRTCEngine()`
 + 渲染组件、轨道类型、编解码工具**都来自 `srtc`** ——
   所以 `import { SRTCVideoView, Track } from 'srtc'` 是常态，不是绕路
 + 媒体相关的错误会是 `SRTCError`（`108xxx`），会议业务的错误是 `SMeetingError`（`208xxx`）

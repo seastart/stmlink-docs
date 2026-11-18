@@ -621,7 +621,8 @@
                       "zh/meeting/harmony/advanced/resources",
                       "zh/meeting/harmony/advanced/sign-in",
                       "zh/meeting/harmony/advanced/audio-routing",
-                      "zh/meeting/harmony/advanced/device-management"
+                      "zh/meeting/harmony/advanced/device-management",
+                      "zh/meeting/harmony/advanced/device-check"
                     ]
                   },
                   {

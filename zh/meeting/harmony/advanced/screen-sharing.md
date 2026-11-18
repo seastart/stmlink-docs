@@ -138,12 +138,15 @@ await meeting.adminUpdateLayout(layoutData);
 
 ### 系统音频
 
-会议 SDK 的 `requestShare` 目前不带系统音频参数。需要连系统声音一起共享时，
-走底层 SRTC 的接口：
+需要连系统声音一起共享时，给 `requestShare` 传最后一个参数 `audioPreset`（1.6.0 起）。
+声音挂在同一条共享轨上，随共享一起发布、一起停止：
 
 ```typescript
-const screen = meeting.srtc.createLocalScreenTrack(
-  screenPreset1080p(), screenAudioPresetDefault());
+import { screenPreset1080p, screenAudioPresetDefault } from 'srtc';
+import { ShareType } from 'smeeting';
+
+await meeting.requestShare(ShareType.screen, screenPreset1080p(), false, undefined,
+  screenAudioPresetDefault());
 ```
 
 细节与坑（`excludesCurrentProcessAudio` 防回环等）见
