@@ -3,6 +3,14 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.6.1] - 2026.11.18
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.6.1.har`（SHA-256 `02b613a9aa1e9fc0730eb4fcbf48f9ad3deed4557be6920c880e832ea06b7b0c`），依赖 SRTC 1.3.1。会议层接口与 1.6.0 相同，同时替换 `srtc` 与 `smeeting` 两个 HAR 并同步 `oh-package.json5` 里的文件名即可。
+
+#### 变更
+
++ 依赖的 SRTC 升级到 1.3.1：修复屏幕共享时切到后台或旋转屏幕后，对端画面停止更新的问题。屏幕方向与开始共享时不一致的那段时间，对端看到的共享画面是横向显示的。详见 [SRTC 更新日志](/zh/rtc/harmony/changelog)。
+
 ### [1.6.0] - 2026.11.18
 
 <Warning>
