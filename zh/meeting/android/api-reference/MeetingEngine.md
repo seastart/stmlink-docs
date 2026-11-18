@@ -2492,6 +2492,24 @@ fun startCast(code: String, option: CastStartOption, callback: MeetingValueResul
 
 返回值：`Unit`，业务结果由回调返回。相关模型见模型类型页，归属取值见枚举类型页。
 
+## 音频采集处理
+
+自 `2.0.43` 起支持。与 RTC 层 `RTCEngine.setAudioCaptureProcessor` 同名同参，用来挂 AI 降噪插件等麦克风采集处理器，用法见[AI 降噪](/zh/meeting/android/advanced/deepfilternet)。
+
+### setAudioCaptureProcessor(processor)
+
+```kotlin
+fun setAudioCaptureProcessor(processor: AudioCaptureProcessor?)
+```
+
+设置麦克风采集处理器，传 `null` 清除。`initSdk` 前后、入会前后都可以调用，对之后的所有会议生效；`release()` 后设置仍保留，重新初始化时自动挂上。SDK 持有强引用，替换或清除时调用旧处理器的 `release()`。处理器声明关闭降噪时，SDK 关闭系统与 WebRTC 自带降噪，清除后恢复，切换时麦克风采集会重建一次（不到半秒的空档）。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| processor | `cn.seastart.rtc.audio.AudioCaptureProcessor?` | 是 | 采集处理器，如 `cn.seastart.rtc.denoise.DeepFilterNetProcessor`；`null` 表示清除 |
+
+返回值：`Unit`。
+
 ## 虚拟背景
 
 自 `2.0.39` 起支持。先初始化 SDK 并装载人像分割模型，再设置虚化或背景图片，最后开启效果。摄像头采集或切换成功、断线重连成功后，会议层会重新下发缓存配置；`release()` 清理缓存并释放底层资源。

@@ -330,6 +330,16 @@ SMeeting是绝大多数操作的入口。
      */
     switchMic(deviceId: string): Promise<void>;
     /**
+     * 设置麦克风音频处理器（如 AI 降噪插件 `@seastart/srtc-plugin-deepfilternet` 的 `DeepFilterNetProcessor`），
+     * 传 `undefined` 清除。传数组时按顺序串联。自 0.3.4 起提供，仅 Web 端。
+     *
+     * 入会前后都可以调用：麦克风已开时立即挂上（替换旧处理器），之后每次开麦自动挂上、关麦时卸下，
+     * 离会后设置仍保留。处理器在关麦时会被 destroy、开麦时重新 init，同一个实例可以反复使用。
+     * 开麦时挂载失败不影响开麦，只记录警告。用法见「AI 降噪」进阶实践页。
+     * @param processor 音频处理器；`undefined` 表示清除
+     */
+    setAudioProcessor(processor?: AudioTrackProcessor | AudioTrackProcessor[]): Promise<void>;
+    /**
      * 打开共享
      * @param shareType 共享类型
      * @param container 预览容器

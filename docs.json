@@ -426,6 +426,12 @@
                   "zh/meeting/web/quickstart",
                   "zh/meeting/web/whiteboard",
                   {
+                    "group": "进阶实践",
+                    "pages": [
+                      "zh/meeting/web/advanced/deepfilternet"
+                    ]
+                  },
+                  {
                     "group": "接口文档",
                     "pages": [
                       "zh/meeting/web/api-reference/SMeeting"
@@ -446,7 +452,8 @@
                     "group": "进阶实践",
                     "pages": [
                       "zh/meeting/android/advanced/audio-routing",
-                      "zh/meeting/android/advanced/whiteboard"
+                      "zh/meeting/android/advanced/whiteboard",
+                      "zh/meeting/android/advanced/deepfilternet"
                     ]
                   },
                   {
