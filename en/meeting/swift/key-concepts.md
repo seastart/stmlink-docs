@@ -212,13 +212,13 @@ See [Out-of-meeting messages](/en/meeting/swift/advanced/im).
 
 ### Underlying RTC capabilities
 
-When the meeting layer's high-level APIs aren't enough (for example, you need raw frame processing or custom encoding parameters that only SRTC provides), you can access the underlying instance through `meeting.srtc`.
+The meeting layer holds an SRTC instance internally but doesn't expose it. When you need SRTC-layer capabilities, use the same-named APIs on the meeting layer: the capture processor `audioCaptureProcessor` (for example, [AI noise suppression](/en/meeting/swift/advanced/deepfilternet)), the default video processors `defaultVideoProcessors`, and so on; see [SMeetingEngine](/en/meeting/swift/api-reference/SMeetingEngine). Pass the log level when you create the instance:
 
 ```swift
-meeting.srtc.logLevel = .debug
+let meeting = SMeetingEngine(logLevel: .debug)
 ```
 
-> Always use `meeting.srtc`; don't create another SRTCEngine instance yourself. The meeting and the underlying layer share the same instance, and creating another one leads to split state, duplicate message connections, and devices being taken over.
+> Don't create another SRTCEngine instance yourself: the meeting already holds one, and creating another leads to split state, duplicate message connections, and devices being taken over.
 
 ---
 

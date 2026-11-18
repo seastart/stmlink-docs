@@ -13,6 +13,16 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.5 - 2026-11-18
+
+#### Added
++ **Capture-only preview (device checks)**: `requestOpenCamera()` / `requestOpenMic()` gain a trailing `publish` parameter. With `false` they only capture and preview, without asking the meeting for permission, publishing, or firing state events; they work before and during a meeting. Calling again with `publish: true` promotes the track and publishes the same track without restarting capture. See [Device checks](/en/meeting/web/advanced/device-check)
++ `requestOpenMic()` returns the local mic track (`LocalMicTrack`), so you can read the volume with `getVolume()` directly
++ Added `isCameraOpened()` / `isMicOpened()`: whether the camera / mic is open as the meeting camera / mic; `false` during a preview only
+
+#### Fixed
++ Fixed an issue where a camera or mic opened before entering a meeting couldn't be published after entering: calling `requestOpenCamera()` / `requestOpenMic()` again reported "already on". It is now published
+
 ### v0.3.4 - 2026-11-18
 
 #### Added

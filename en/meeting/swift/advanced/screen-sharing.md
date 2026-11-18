@@ -79,6 +79,16 @@ try await meeting.requestShare(source: source, excludedWindowIds: ids)
 This is a **behavior change** in 1.3.2 (SRTC 1.4.2): previously, all windows of the process were cut out of the whole-screen video, so others couldn't see your in-meeting windows. The new behavior is more natural when sharing across machines (others can see your meeting UI); products that depend on the old behavior must explicitly set `excludesCurrentApplication: true` after upgrading.
 </Warning>
 
+#### macOS: also share the computer's audio
+
+Pass `audioPreset` to share the audio playing on the computer as well (available since 1.9.0, macOS only):
+
+```swift
+try await meeting.requestShare(source: source, audioPreset: .default, excludedWindowIds: ids)
+```
+
+The audio comes from the same capture as the picture: it is published with the share and stops with `stopShare()`, with nothing else for you to handle. Sound from your own app isn't captured by default.
+
 #### Local preview
 
 If you need a local preview of the shared content in UIKit / AppKit, pass `view`; in SwiftUI, don't pass it and use `SRTCVideoView(track: meeting.screenTrack)` instead.

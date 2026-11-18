@@ -70,7 +70,7 @@ This lets you tell at a glance whether an error was "stopped by the client itsel
 
 ### Error language
 
-`meeting.language` (such as `"en"` or `"zh-CN"`; `nil` follows the system language) is the same process-wide setting as `meeting.srtc.language`. Requests from both the meeting layer and the RTC layer to the backend carry `Accept-Language`, and **the messages of backend business errors (codes ≥ 1000)** come back in Chinese or English accordingly; the SDK's own errors are always in English and aren't affected.
+`meeting.language` (such as `"en"` or `"zh-CN"`; `nil` follows the system language) is the same process-wide setting as the SRTC layer's language. Requests from both the meeting layer and the RTC layer to the backend carry `Accept-Language`, and **the messages of backend business errors (codes ≥ 1000)** come back in Chinese or English accordingly; the SDK's own errors are always in English and aren't affected.
 
 ```swift
 meeting.language = "en"   // Set it before login

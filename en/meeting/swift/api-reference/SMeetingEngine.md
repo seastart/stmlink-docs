@@ -35,21 +35,11 @@ let v = SMeetingEngine.version
 
 The SDK version number, of type `String`; a static property.
 
-#### `srtc`
-
-The underlying RTC instance, of type `SRTCEngine`. An escape hatch for when the meeting layer's APIs aren't enough.
-
-```swift
-meeting.srtc.logLevel = .debug
-```
-
-> Always use this instance; don't create a second SRTCEngine yourself—the meeting and the underlying layer share the same instance, and creating another one leads to split state, duplicate message connections, and devices being taken over.
-
 #### `language`
 
 SDK language, of type `String?` (such as `"en"` or `"zh-CN"`). Defaults to `nil`, which follows the system language. Available since 1.4.0.
 
-This is the same process-wide setting as `meeting.srtc.language`: requests from both the meeting layer and the RTC layer to the backend carry `Accept-Language`, and **the messages of backend business errors (codes ≥ 1000)** come back in Chinese or English accordingly. The SDK's own errors (`SMeetingError.message` / `SRTCError.message`) are always in English and aren't affected. Set it before `login`; changing it later takes effect immediately for subsequent requests.
+This is the same process-wide setting as the SRTC layer's language: requests from both the meeting layer and the RTC layer to the backend carry `Accept-Language`, and **the messages of backend business errors (codes ≥ 1000)** come back in Chinese or English accordingly. The SDK's own errors (`SMeetingError.message` / `SRTCError.message`) are always in English and aren't affected. Set it before `login`; changing it later takes effect immediately for subsequent requests.
 
 ```swift
 meeting.language = "en"
@@ -81,6 +71,19 @@ Whether you're currently in a meeting, of type `Bool`.
 #### `cameraTrack` / `screenTrack` / `mcuTrack`
 
 The local camera track (`LocalCameraTrack?`), the local screen sharing track (`LocalScreenTrack?`), and the remote composite track (`RemoteVideoTrack?`). Each is `nil` when the corresponding capability isn't on.
+
+#### `isCameraOpened`
+
+Whether the camera is open as the **meeting camera**, of type `Bool`, read-only. Available since 1.9.0.
+
+During a preview-only `requestOpenCamera(publish: false)`, `cameraTrack` isn't `nil` but this property is `false`. Use it to tell "opened for preview" apart from "actually on in the meeting", and decide whether to call `closeCamera()` when closing the preview:
+
+```swift
+// Closing the settings page preview: close only a preview-only camera; leave the meeting camera alone
+if !meeting.isCameraOpened {
+    await meeting.closeCamera()
+}
+```
 
 ---
 
@@ -462,7 +465,37 @@ await meeting.disableIm()
 
 **Throws:** `SRTCError.virtualBackgroundAlreadyInstalled`, `.virtualBackgroundNotInstalled`, `.virtualBackgroundModelNotFound(String)`, `.virtualBackgroundSessionFailed(String)`
 
-This group forwards to the audio and video layer, and the meeting layer doesn't keep a separate copy of the state, so it's equivalent to calling through `meeting.srtc` directly; we recommend using the meeting layer's methods.
+This group forwards to the audio and video layer, and the meeting layer doesn't keep a separate copy of the state.
+
+---
+
+### Audio and video processing
+
+The following APIs are available since 1.9.0. They forward to the same-named SRTC APIs, and the meeting layer doesn't keep a separate copy of the state.
+
+#### `audioCaptureProcessor`
+
+The microphone capture processor, of type `AudioProcessor?`; `nil` clears it. The most common use is attaching the SRTC AI noise suppression plugin; see [AI noise suppression (DeepFilterNet)](/en/meeting/swift/advanced/deepfilternet).
+
+```swift
+let processor = try DeepFilterNetProcessor()
+self.denoiser = processor                    // Kept by your code
+meeting.audioCaptureProcessor = processor
+```
+
++ **The SDK holds the processor weakly**: keep your own reference to the processor; otherwise it's released immediately and processing silently stops working.
++ Global; only one can be attached at a time, and you can set it at any time before or after entering a meeting.
++ When the processor conforms to `AudioProcessingDeclaring` (for example, the noise suppression plugin declares that built-in noise suppression should be off), the SDK turns off the corresponding WebRTC software processing as declared and restores it when cleared.
+
+#### `defaultVideoProcessors`
+
+Engine-level default video processors (beauty filters and so on), of type `[VideoProcessor]`. They apply automatically to camera tracks created **from then on**.
+
+```swift
+meeting.defaultVideoProcessors = [beautyProcessor]
+```
+
+A new camera track is created every time the camera is turned on, so processors attached only to `cameraTrack?.videoProcessors` are gone the next time; put "set it once" processors here.
 
 ---
 

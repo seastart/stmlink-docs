@@ -1043,7 +1043,8 @@
                   {
                     "group": "Advanced",
                     "pages": [
-                      "en/meeting/web/advanced/deepfilternet"
+                      "en/meeting/web/advanced/deepfilternet",
+                      "en/meeting/web/advanced/device-check"
                     ]
                   },
                   {
@@ -1155,7 +1156,9 @@
                       "en/meeting/swift/advanced/video-rendering",
                       "en/meeting/swift/advanced/screen-sharing",
                       "en/meeting/swift/advanced/virtual-background",
+                      "en/meeting/swift/advanced/deepfilternet",
                       "en/meeting/swift/advanced/device-management",
+                      "en/meeting/swift/advanced/device-check",
                       "en/meeting/swift/advanced/audio-routing",
                       "en/meeting/swift/advanced/messaging",
                       "en/meeting/swift/advanced/handup",

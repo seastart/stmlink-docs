@@ -11,12 +11,15 @@ The APIs on this page are all on `SMeetingEngine`. For usage, see [Media control
 
 ### Camera
 
-#### `requestOpenCamera(view:deviceId:preset:byAdmin:adminUid:)`
+#### `requestOpenCamera(view:deviceId:preset:byAdmin:adminUid:publish:)`
 
-Turns on the camera: asks the meeting for permission → starts capture → publishes.
+Turns on the camera: asks the meeting for permission → starts capture → publishes. With `publish: false` it only captures for a preview, for device checks and settings page previews.
 
 ```swift
 let track = try await meeting.requestOpenCamera()
+
+// Preview only, without sending it to anyone (works before and during a meeting)
+let preview = try await meeting.requestOpenCamera(view: previewView, publish: false)
 ```
 
 | Parameter | Type | Required | Description |
@@ -26,16 +29,26 @@ let track = try await meeting.requestOpenCamera()
 | `preset` | `CameraPreset` | No | Capture preset, default `.h720p` |
 | `byAdmin` | `Bool` | No | Whether this responds to the host's turn-on request, default `false` |
 | `adminUid` | `String?` | No | ID of the host who sent the request; must be passed together when `byAdmin` is `true` |
+| `publish` | `Bool` | No | Whether to open it as the meeting camera and publish it, default `true`; `false` only captures for a preview. Available since 1.9.0 |
 
 **Returns:** `LocalCameraTrack` (you can ignore it, or read `meeting.cameraTrack` at any time)
 
 **Throws:**
 
-+ `SMeetingError.unauthorized`—the room has camera off for everyone with members not allowed to turn cameras back on themselves, and you're not the host / a co-host
++ `SMeetingError.unauthorized`—the room has camera off for everyone with members not allowed to turn cameras back on themselves, and you're not the host / a co-host (not thrown with `publish: false`)
 + `SMeetingError.apiError(code:message:)`
 + Underlying errors when capture or publishing fails (the SDK has already rolled back automatically, so you don't need to call `closeCamera()`)
 
 Calling it again while the camera is already on doesn't start another stream; if you pass a different `deviceId`, it switches to the target device.
+
+Behavior of `publish: false`:
+
++ It doesn't ask the meeting for permission, doesn't publish, and doesn't fire camera state events; it works before and during a meeting. The host turning off your camera or disabling cameras for everyone doesn't affect a preview-only track
++ Calling it again later with `publish: true` "promotes" this track: it asks the meeting for permission and publishes the same track, without restarting capture
++ If the camera is already open as the meeting camera, calling it with `publish: false` just returns the track in use
++ Use [`isCameraOpened`](/en/meeting/swift/api-reference/SMeetingEngine#iscameraopened) to tell the two states apart; always close with `closeCamera()` (no "closed" event is fired for a preview-only camera)
+
+If you opened the camera with the default `publish: true` before entering a meeting, calling it again after entering publishes it to the meeting.
 
 ---
 
@@ -71,7 +84,7 @@ try await meeting.switchCamera(deviceId: deviceId)   // Switch to a specified de
 #### `requestOpenMic(deviceId:preset:byAdmin:adminUid:)`
 
 ```swift
-try await meeting.requestOpenMic()
+let micTrack = try await meeting.requestOpenMic()
 ```
 
 | Parameter | Type | Required | Description |
@@ -81,13 +94,15 @@ try await meeting.requestOpenMic()
 | `byAdmin` | `Bool` | No | Whether this responds to the host's turn-on request, default `false` |
 | `adminUid` | `String?` | No | ID of the host who sent the request |
 
-**Returns:** None
+**Returns:** `LocalMicTrack` (returned since 1.9.0; you can ignore it)
 
 **Throws:**
 
 + `SMeetingError.unauthorized`—the room has mute all on with members not allowed to unmute themselves, and you're not the host / a co-host
 + `SMeetingError.apiError(code:message:)`
 + Underlying errors when capture or publishing fails (the SDK rolls back automatically)
+
+The microphone has **no** `publish: false`: on Apple platforms the microphone stays muted until it is published, and the recording pipeline outside a meeting doesn't start until you enter one, so testing the mic outside a meeting or capture-only isn't supported yet; see [Device checks](/en/meeting/swift/advanced/device-check).
 
 ---
 
@@ -105,7 +120,7 @@ await meeting.closeMic()
 
 > **Change in 1.3.5**: the `messageOnly` parameter and its mode have been removed from `requestShare`. To broadcast only the sharing status, use `requestShare(shareType: .whiteBoard)`; screen sharing still performs normal media capture and publishing. Remove `messageOnly: true` from old code or switch to whiteboard sharing.
 
-#### `requestShare(shareType:preset:view:byAdmin:adminUid:)`
+#### `requestShare(shareType:preset:audioPreset:view:byAdmin:adminUid:)`
 
 ```swift
 try await meeting.requestShare()
@@ -115,6 +130,7 @@ try await meeting.requestShare()
 | --- | --- | :---: | --- |
 | `shareType` | `ShareType` | No | `.screen` (default) or `.whiteBoard` |
 | `preset` | `ScreenPreset` | No | Capture preset, default `.h1080p` |
+| `audioPreset` | `ScreenAudioPreset?` | No | Also share the computer's audio; pass `.default` to turn it on. Default `nil` (no audio). **macOS only**; available since 1.9.0 |
 | `view` | `NativeVideoView?` | No | Local preview view |
 | `byAdmin` | `Bool` | No | Whether this responds to the host's turn-on request, default `false` |
 | `adminUid` | `String?` | No | ID of the host who sent the request |
@@ -132,7 +148,7 @@ When `shareType` is `.whiteBoard`, no media stream is created; it only broadcast
 
 ---
 
-#### `requestShare(source:preset:view:byAdmin:adminUid:excludedWindowIds:excludesCurrentApplication:)`
+#### `requestShare(source:preset:audioPreset:view:byAdmin:adminUid:excludedWindowIds:excludesCurrentApplication:)`
 
 An overload that specifies the capture source, **macOS 12.3 and later only**.
 
@@ -151,6 +167,7 @@ try await meeting.requestShare(source: displays[0], excludedWindowIds: ids)
 | --- | --- | :---: | --- |
 | `source` | `ScreenCaptureSource` | Yes | `DisplaySource` (display) or `WindowSource` (app window) |
 | `preset` | `ScreenPreset` | No | Capture preset, default `.h1080p` |
+| `audioPreset` | `ScreenAudioPreset?` | No | Also share the computer's audio; pass `.default` to turn it on. Default `nil`. Available since 1.9.0 |
 | `view` | `NativeVideoView?` | No | Local preview view |
 | `byAdmin` | `Bool` | No | Whether this responds to the host's turn-on request |
 | `adminUid` | `String?` | No | ID of the host who sent the request |
@@ -160,6 +177,8 @@ try await meeting.requestShare(source: displays[0], excludedWindowIds: ids)
 **Returns:** None
 
 **Throws:** Same as the previous overload.
+
+The computer's audio comes from the same capture as the picture: it is published with the share and stops with `stopShare()`. If publishing the audio fails, the share just continues without audio; the picture isn't affected.
 
 <Warning>
 Since 1.3.2 (SRTC 1.4.2), whole-screen sharing **includes your app's own windows by default**. The main in-meeting window is usually rendering remote video; if your UI has a sharing preview, or you're testing with two instances on the same machine, be sure to put these windows into `excludedWindowIds`; otherwise you get an infinite mirror.

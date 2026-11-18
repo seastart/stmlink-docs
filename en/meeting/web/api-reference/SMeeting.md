@@ -304,13 +304,21 @@ SMeeting is the entry point for most operations.
     enterRoom(req: MeetingEnterReq): Promise<void>;
     /**
      * Open the camera
+     *
+     * When publish is false, it only captures and previews in container (device checks, settings page preview): it doesn't ask the meeting
+     * for permission, doesn't publish, and doesn't fire camera state events; it works before and during a meeting. Calling it again later with
+     * publish: true "promotes" this track: it asks the meeting for permission and publishes the same track without restarting capture. If the camera
+     * is already open as the meeting camera, calling it with publish: false just returns the track in use (only adding the preview container).
+     * Always close with closeCamera; to remove only the preview container you added, use track.removePlayView(container).
+     * A camera opened before entering a meeting is published when you call it again after entering.
      * @param container Preview container
      * @param deviceId Camera device ID
      * @param preset Camera preset
      * @param byAdmin Whether this is a host operation
      * @param adminUid Host ID (which host made the request)
+     * @param publish Whether to open it as the meeting camera and publish it, default true; false only captures for a preview (since 0.3.5)
      */
-    requestOpenCamera(container: HTMLElement, deviceId?: string, preset?: CameraPreset, byAdmin?: boolean, adminUid?: string): Promise<LocalCameraTrack>;
+    requestOpenCamera(container: HTMLElement, deviceId?: string, preset?: CameraPreset, byAdmin?: boolean, adminUid?: string, publish?: boolean): Promise<LocalCameraTrack>;
     /**
      * Switch the camera
      * @param deviceId Camera device ID; on mobile, omit it to toggle between front and rear cameras; on desktop, you can specify a camera
@@ -318,12 +326,21 @@ SMeeting is the entry point for most operations.
     switchCamera(deviceId?: string): Promise<void>;
     /**
      * Open the mic
+     *
+     * When publish is false, it only captures (device checks, testing the mic during a meeting): it doesn't ask the meeting for permission,
+     * doesn't publish, and doesn't fire mic state events; it works before and during a meeting. Read the volume with getVolume() on the returned track;
+     * processors set with setAudioProcessor are attached as well. Calling it again later with publish: true "promotes" this track (asks the meeting
+     * for permission and publishes the same track without restarting capture); if the mic is already open as the meeting mic, calling it with
+     * publish: false just returns the track in use. Always close with closeMic. A mic opened before entering a meeting is published when you call it
+     * again after entering.
      * @param deviceId Mic device ID
      * @param preset Mic preset
      * @param byAdmin Whether this is a host operation
      * @param adminUid Host ID (which host made the request)
+     * @param publish Whether to open it as the meeting mic and publish it, default true; false only captures (since 0.3.5)
+     * @returns The local mic track (since 0.3.5)
      */
-    requestOpenMic(deviceId?: string, preset?: MicPreset, byAdmin?: boolean, adminUid?: string): Promise<void>;
+    requestOpenMic(deviceId?: string, preset?: MicPreset, byAdmin?: boolean, adminUid?: string, publish?: boolean): Promise<LocalMicTrack>;
     /**
      * Switch the mic
      * @param deviceId Mic device ID
@@ -407,4 +424,13 @@ SMeeting is the entry point for most operations.
      * @returns
      */
     getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaDeviceInfo[]>;
+    /**
+     * Whether the camera is open as the meeting camera (requestOpenCamera defaults to publish: true).
+     * During a preview-only publish: false, the camera is capturing but this returns false; use it to decide whether to call closeCamera when closing the preview (since 0.3.5)
+     */
+    isCameraOpened(): boolean;
+    /**
+     * Whether the mic is open as the meeting mic (requestOpenMic defaults to publish: true); same meaning as isCameraOpened (since 0.3.5)
+     */
+    isMicOpened(): boolean;
 ```

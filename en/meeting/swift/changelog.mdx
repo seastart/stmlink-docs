@@ -3,12 +3,37 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.9.0] - 2026.11.18
+#### Added
++ **`audioCaptureProcessor`**: the microphone capture processor, which can take the SRTC AI noise suppression plugin `SRTCDeepFilterNet`; see [AI noise suppression (DeepFilterNet)](/en/meeting/swift/advanced/deepfilternet). The SDK holds the processor weakly, so keep your own reference.
++ **`defaultVideoProcessors`**: engine-level default video processors (beauty filters and so on) that apply automatically to camera tracks created from then on.
++ **`requestOpenCamera(... publish:)`**: `publish: false` only captures for a preview, without asking the meeting for permission, publishing, or firing events; it works before and during a meeting, for device checks and settings page previews. Calling it again with `publish: true` promotes it and publishes the same track without restarting capture. See [Device checks](/en/meeting/swift/advanced/device-check).
++ **`isCameraOpened`**: whether the camera is open as the meeting camera; `false` during a preview only.
++ **`requestOpenMic` returns `LocalMicTrack`** (you can ignore it; existing code needs no changes).
++ **`requestShare(... audioPreset:)`**: when sharing on macOS you can also share the computer's audio; it is published and stopped together with the share.
+
+#### Fixed
++ A camera opened before entering a meeting is now published to the meeting when you call `requestOpenCamera()` again after entering; previously it wasn't sent to anyone.
+
+#### Changed
++ The SRTC dependency stays at **1.8.0**; keep any `srtc-swift-sdk` dependency you declare yourself (full-screen sharing extension, AI noise suppression plugin) at `exact: "1.8.0"`.
+
+<Warning>
+**Breaking change**: the `SMeetingEngine.srtc` property has been removed; the meeting layer no longer exposes the underlying SRTC instance. Capabilities you used through `meeting.srtc` move to meeting-layer APIs:
+
++ `meeting.srtc.audioCaptureProcessor` → `meeting.audioCaptureProcessor`
++ `meeting.srtc.defaultVideoProcessors` → `meeting.defaultVideoProcessors`
++ If you opened a camera through `meeting.srtc` just for a preview → `meeting.requestOpenCamera(publish: false)`
++ `meeting.srtc.logLevel` → pass `SMeetingEngine(logLevel:)` when creating the instance; `meeting.srtc.language` → `meeting.language`
++ If you captured and published the computer's audio yourself through `meeting.srtc`, switch to `requestShare(... audioPreset: .default)`
+</Warning>
+
 ### [1.8.0] - 2026.11.17
 #### Changed
 + The SRTC dependency is upgraded from 1.7.0 to **1.8.0**. SMeeting's own APIs and behavior are unchanged; 1.7.x integrations can upgrade directly.
 
 #### Added
-+ **AI noise suppression is available**: SRTC 1.8.0 ships the DeepFilterNet AI noise suppression plugin (the `SRTCDeepFilterNet` product of `srtc-swift-sdk`). SMeeting needs no new API: attach the plugin to `smeeting.srtc.audioCaptureProcessor`. See the SRTC page [AI noise suppression (DeepFilterNet)](/en/rtc/swift/advanced/deepfilternet). Keep a strong reference to the processor yourself (the SDK holds it weakly).
++ **AI noise suppression is available**: SRTC 1.8.0 ships the DeepFilterNet AI noise suppression plugin (the `SRTCDeepFilterNet` product of `srtc-swift-sdk`). To attach it, see `audioCaptureProcessor` added in 1.9.0. See the SRTC page [AI noise suppression (DeepFilterNet)](/en/rtc/swift/advanced/deepfilternet). Keep a strong reference to the processor yourself (the SDK holds it weakly).
 
 <Warning>
 If your project declares its own `srtc-swift-sdk` dependency (iOS full-screen sharing extension, AI noise suppression plugin), change it to `exact: "1.8.0"` as well, matching the SRTC version SMeeting 1.8.0 pins; otherwise dependency resolution fails.
