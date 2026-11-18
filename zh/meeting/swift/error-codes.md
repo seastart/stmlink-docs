@@ -70,7 +70,7 @@ SDK 对外抛出的错误类型是 `SMeetingError`，一个带语义的 Swift �
 
 ### 报错语言
 
-`meeting.language`（如 `"en"`、`"zh-CN"`，`nil` 跟随系统语言）与 `meeting.srtc.language` 是同一个进程级设置。会议层和 RTC 层请求后端时都带上 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案**随之返回中文或英文；SDK 自身的报错一律英文，不受影响。
+`meeting.language`（如 `"en"`、`"zh-CN"`，`nil` 跟随系统语言）与 SRTC 层的语言是同一个进程级设置。会议层和 RTC 层请求后端时都带上 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案**随之返回中文或英文；SDK 自身的报错一律英文，不受影响。
 
 ```swift
 meeting.language = "en"   // 建议在 login 之前设置

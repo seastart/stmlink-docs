@@ -11,12 +11,15 @@ description: "SMeeting Swift SDK 媒体控制接口参考：摄像头、麦克�
 
 ### 摄像头
 
-#### `requestOpenCamera(view:deviceId:preset:byAdmin:adminUid:)`
+#### `requestOpenCamera(view:deviceId:preset:byAdmin:adminUid:publish:)`
 
-打开摄像头：向会议申请 → 开始采集 → 发布。
+打开摄像头：向会议申请 → 开始采集 → 发布。`publish: false` 时只采集预览，用于设备检测、设置页预览。
 
 ```swift
 let track = try await meeting.requestOpenCamera()
+
+// 只预览，不推给其他人（会前会中都可用）
+let preview = try await meeting.requestOpenCamera(view: previewView, publish: false)
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -26,16 +29,26 @@ let track = try await meeting.requestOpenCamera()
 | `preset` | `CameraPreset` | 否 | 采集预设，默认 `.h720p` |
 | `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请，默认 `false` |
 | `adminUid` | `String?` | 否 | 发起邀请的主持人 ID，`byAdmin` 为 `true` 时必须一起传 |
+| `publish` | `Bool` | 否 | 是否作为会议摄像头打开并发布，默认 `true`；`false` 只采集预览。自 1.9.0 起提供 |
 
 **返回值：** `LocalCameraTrack`（可忽略，也可随时读 `meeting.cameraTrack`）
 
 **可能抛出：**
 
-+ `SMeetingError.unauthorized` —— 房间全体禁画且禁止自我解除，且你不是主持人 / 联席主持人
++ `SMeetingError.unauthorized` —— 房间全体禁画且禁止自我解除，且你不是主持人 / 联席主持人（`publish: false` 不会抛）
 + `SMeetingError.apiError(code:message:)`
 + 采集或发布失败时的底层错误（此时 SDK 已自动回滚，无需你再调 `closeCamera()`）
 
 已经打开时重复调用不会重复起流；如果传入了不同的 `deviceId`，会切到目标设备。
+
+`publish: false` 的行为：
+
++ 不请求会控、不发布、不发摄像头状态事件，会前会中都可用；主持人关闭摄像头、全员禁画不影响只预览的轨
++ 之后再以 `publish: true` 调用会把这条轨「转正」：请求会控并发布同一条轨，不重新采集
++ 摄像头已作为会议摄像头打开时以 `publish: false` 调用，直接返回正在用的轨
++ 用 [`isCameraOpened`](/zh/meeting/swift/api-reference/SMeetingEngine#iscameraopened) 区分两种状态；关闭统一用 `closeCamera()`（只预览时不发「关闭」事件）
+
+会前用默认 `publish: true` 打开的摄像头，入会后再调用一次会补发布。
 
 ---
 
@@ -71,7 +84,7 @@ try await meeting.switchCamera(deviceId: deviceId)   // 切到指定设备
 #### `requestOpenMic(deviceId:preset:byAdmin:adminUid:)`
 
 ```swift
-try await meeting.requestOpenMic()
+let micTrack = try await meeting.requestOpenMic()
 ```
 
 | 参数名 | 类型 | 必填 | 说明 |
@@ -81,13 +94,15 @@ try await meeting.requestOpenMic()
 | `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请，默认 `false` |
 | `adminUid` | `String?` | 否 | 发起邀请的主持人 ID |
 
-**返回值：** 无
+**返回值：** `LocalMicTrack`（自 1.9.0 起返回，可忽略）
 
 **可能抛出：**
 
 + `SMeetingError.unauthorized` —— 房间全体静音且禁止自我解除，且你不是主持人 / 联席主持人
 + `SMeetingError.apiError(code:message:)`
 + 采集或发布失败时的底层错误（SDK 会自动回滚）
+
+麦克风**没有** `publish: false`：苹果平台上麦克风在发布前一直处于静音、会外的录音链路要入会后才启动，所以暂不支持会外 / 只采集测麦，见 [设备检测](/zh/meeting/swift/advanced/device-check)。
 
 ---
 
@@ -105,7 +120,7 @@ await meeting.closeMic()
 
 > **1.3.5 变更**：`requestShare` 已移除 `messageOnly` 参数及对应模式。需要仅广播共享状态时，请使用 `requestShare(shareType: .whiteBoard)`；屏幕共享仍会执行正常的媒体采集与发布。旧代码中的 `messageOnly: true` 需要删除或改用白板共享。
 
-#### `requestShare(shareType:preset:view:byAdmin:adminUid:)`
+#### `requestShare(shareType:preset:audioPreset:view:byAdmin:adminUid:)`
 
 ```swift
 try await meeting.requestShare()
@@ -115,6 +130,7 @@ try await meeting.requestShare()
 | --- | --- | :---: | --- |
 | `shareType` | `ShareType` | 否 | `.screen`（默认）或 `.whiteBoard` |
 | `preset` | `ScreenPreset` | 否 | 采集预设，默认 `.h1080p` |
+| `audioPreset` | `ScreenAudioPreset?` | 否 | 同时共享电脑声音，传 `.default` 开启，默认 `nil` 不共享声音。**仅 macOS 生效**，自 1.9.0 起提供 |
 | `view` | `NativeVideoView?` | 否 | 本地预览视图 |
 | `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请，默认 `false` |
 | `adminUid` | `String?` | 否 | 发起邀请的主持人 ID |
@@ -132,7 +148,7 @@ try await meeting.requestShare()
 
 ---
 
-#### `requestShare(source:preset:view:byAdmin:adminUid:excludedWindowIds:excludesCurrentApplication:)`
+#### `requestShare(source:preset:audioPreset:view:byAdmin:adminUid:excludedWindowIds:excludesCurrentApplication:)`
 
 指定采集源的重载，**仅 macOS 12.3 及以上**。
 
@@ -151,6 +167,7 @@ try await meeting.requestShare(source: displays[0], excludedWindowIds: ids)
 | --- | --- | :---: | --- |
 | `source` | `ScreenCaptureSource` | 是 | `DisplaySource`（显示器）或 `WindowSource`（应用窗口） |
 | `preset` | `ScreenPreset` | 否 | 采集预设，默认 `.h1080p` |
+| `audioPreset` | `ScreenAudioPreset?` | 否 | 同时共享电脑声音，传 `.default` 开启，默认 `nil`。自 1.9.0 起提供 |
 | `view` | `NativeVideoView?` | 否 | 本地预览视图 |
 | `byAdmin` | `Bool` | 否 | 是否在响应主持人的开启邀请 |
 | `adminUid` | `String?` | 否 | 发起邀请的主持人 ID |
@@ -160,6 +177,8 @@ try await meeting.requestShare(source: displays[0], excludedWindowIds: ids)
 **返回值：** 无
 
 **可能抛出：** 同上一个重载。
+
+电脑声音与画面是同一条采集，随共享一起发布、随 `stopShare()` 一起停止；声音发布失败时只降级成没声音的共享，不影响画面。
 
 <Warning>
 自 1.3.2（SRTC 1.4.2）起，整屏共享**默认包含本 App 自己的窗口**。会中主窗口通常正在渲染远端画面，界面上若有共享预览、或同机双开自测，务必把这些窗口放进 `excludedWindowIds`，否则形成无限镜像。

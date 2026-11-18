@@ -13,6 +13,16 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.5 - 2026-11-18
+
+#### 新增
++ **只采集预览（设备检测）**：`requestOpenCamera()` / `requestOpenMic()` 新增末尾参数 `publish`，传 `false` 时只采集、只预览，不请求会控、不发布、不发状态事件，会前会中都可用；之后以 `publish: true` 再调一次会转正发布同一条轨，不重新采集。见 [设备检测](/zh/meeting/web/advanced/device-check)
++ `requestOpenMic()` 返回本地麦克风轨道（`LocalMicTrack`），可直接 `getVolume()` 读音量
++ 新增 `isCameraOpened()` / `isMicOpened()`：是否作为会议摄像头 / 麦克风打开，只预览时为 `false`
+
+#### 修复
++ 入会前打开的摄像头、麦克风，入会后再次调用 `requestOpenCamera()` / `requestOpenMic()` 报「已打开」、无法发布到会议的问题，现在会补发布
+
 ### v0.3.4 - 2026-11-18
 
 #### 新增

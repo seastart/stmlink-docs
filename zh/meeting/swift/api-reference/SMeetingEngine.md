@@ -35,21 +35,11 @@ let v = SMeetingEngine.version
 
 SDK 版本号，类型 `String`，静态属性。
 
-#### `srtc`
-
-底层 RTC 实例，类型 `SRTCEngine`。当会议层接口不足以满足需求时的逃生口。
-
-```swift
-meeting.srtc.logLevel = .debug
-```
-
-> 请始终使用这个实例，不要自行创建第二个 SRTCEngine —— 会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
-
 #### `language`
 
 SDK 语言，类型 `String?`（如 `"en"`、`"zh-CN"`），默认 `nil` = 跟随系统语言。自 1.4.0 起提供。
 
-与 `meeting.srtc.language` 是同一个进程级设置：会议层和 RTC 层请求后端都带 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案**随之返回中文或英文；SDK 自身的报错（`SMeetingError.message` / `SRTCError.message`）一律英文，不受影响。建议在 `login` 之前设置，之后修改对后续请求即时生效。
+与 SRTC 层的语言是同一个进程级设置：会议层和 RTC 层请求后端都带 `Accept-Language`，**后端业务错误（码 ≥ 1000）的文案**随之返回中文或英文；SDK 自身的报错（`SMeetingError.message` / `SRTCError.message`）一律英文，不受影响。建议在 `login` 之前设置，之后修改对后续请求即时生效。
 
 ```swift
 meeting.language = "en"
@@ -81,6 +71,19 @@ meeting.delegates.remove(delegate: self)
 #### `cameraTrack` / `screenTrack` / `mcuTrack`
 
 本地摄像头轨道（`LocalCameraTrack?`）、本地屏幕共享轨道（`LocalScreenTrack?`）、远端合屏轨道（`RemoteVideoTrack?`）。未开启对应能力时为 `nil`。
+
+#### `isCameraOpened`
+
+摄像头是否作为**会议摄像头**打开，类型 `Bool`，只读。自 1.9.0 起提供。
+
+`requestOpenCamera(publish: false)` 只预览时 `cameraTrack` 不为 `nil`、本属性为 `false`。用它区分「预览打开的」和「会中真开着的」，决定关预览时要不要调 `closeCamera()`：
+
+```swift
+// 关闭设置页预览：只预览的才关，会议摄像头开着时不动
+if !meeting.isCameraOpened {
+    await meeting.closeCamera()
+}
+```
 
 ---
 
@@ -462,7 +465,37 @@ await meeting.disableIm()
 
 **可能抛出：** `SRTCError.virtualBackgroundAlreadyInstalled`、`.virtualBackgroundNotInstalled`、`.virtualBackgroundModelNotFound(String)`、`.virtualBackgroundSessionFailed(String)`
 
-这一组是对音视频层的转发，会议层不另存一份状态，因此与直接用 `meeting.srtc` 调等价，推荐用会议层的方法。
+这一组是对音视频层的转发，会议层不另存一份状态。
+
+---
+
+### 音视频处理
+
+以下接口自 1.9.0 起提供，是对 SRTC 同名接口的转发，会议层不另存一份状态。
+
+#### `audioCaptureProcessor`
+
+麦克风采集处理器，类型 `AudioProcessor?`，`nil` 表示清除。最常见的用法是挂 SRTC 的 AI 降噪插件，见 [AI 降噪（DeepFilterNet）](/zh/meeting/swift/advanced/deepfilternet)。
+
+```swift
+let processor = try DeepFilterNetProcessor()
+self.denoiser = processor                    // 业务持有
+meeting.audioCaptureProcessor = processor
+```
+
++ **SDK 对处理器是弱引用**，业务方要自己持有处理器对象，否则它会被立即释放、处理静默失效。
++ 全局生效，同一时刻只能挂一个；入会前后任意时刻都可以设置。
++ 处理器遵循 `AudioProcessingDeclaring` 时（如降噪插件声明关闭自带降噪），SDK 按声明关掉 WebRTC 对应的软件处理，清空时恢复。
+
+#### `defaultVideoProcessors`
+
+引擎级默认视频处理器（美颜等），类型 `[VideoProcessor]`，对**此后新建**的摄像头轨道自动生效。
+
+```swift
+meeting.defaultVideoProcessors = [beautyProcessor]
+```
+
+摄像头轨道每次开摄像头都是新建的，只挂在 `cameraTrack?.videoProcessors` 上的话下次开摄像头就没了，「配一次」的处理器放这里。
 
 ---
 

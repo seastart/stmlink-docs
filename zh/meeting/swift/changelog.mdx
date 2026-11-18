@@ -3,12 +3,37 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.9.0] - 2026.11.18
+#### 新增
++ **`audioCaptureProcessor`**：麦克风采集处理器，可挂 SRTC 的 AI 降噪插件 `SRTCDeepFilterNet`，见 [AI 降噪（DeepFilterNet）](/zh/meeting/swift/advanced/deepfilternet)。SDK 对处理器是弱引用，业务方要自己持有。
++ **`defaultVideoProcessors`**：引擎级默认视频处理器（美颜等），对此后新建的摄像头轨道自动生效。
++ **`requestOpenCamera(... publish:)`**：`publish: false` 只采集预览、不请求会控、不发布、不发事件，会前会中都可用，用于设备检测和设置页预览；之后以 `publish: true` 调用会转正发布同一条轨，不重新采集。见 [设备检测](/zh/meeting/swift/advanced/device-check)。
++ **`isCameraOpened`**：摄像头是否作为会议摄像头打开，只预览时为 `false`。
++ **`requestOpenMic` 返回 `LocalMicTrack`**（可忽略，已有代码无需修改）。
++ **`requestShare(... audioPreset:)`**：macOS 共享时可同时共享电脑声音，声音随共享一起发布与停止。
+
+#### 修复
++ 会前打开的摄像头，入会后再调用 `requestOpenCamera()` 会补发布到会议，此前不会推给其他人。
+
+#### 变更
++ 依赖的 SRTC 仍为 **1.8.0**，自己声明的 `srtc-swift-sdk` 依赖（全屏共享扩展、AI 降噪插件）保持 `exact: "1.8.0"`。
+
+<Warning>
+**破坏性变更**：`SMeetingEngine.srtc` 属性已移除，会议层不再对外暴露底层 SRTC 实例。原来经 `meeting.srtc` 使用的能力改用会议层接口：
+
++ `meeting.srtc.audioCaptureProcessor` → `meeting.audioCaptureProcessor`
++ `meeting.srtc.defaultVideoProcessors` → `meeting.defaultVideoProcessors`
++ 用 `meeting.srtc` 单独开摄像头做预览的 → `meeting.requestOpenCamera(publish: false)`
++ `meeting.srtc.logLevel` → 创建时传 `SMeetingEngine(logLevel:)`；`meeting.srtc.language` → `meeting.language`
++ 自己用 `meeting.srtc` 采集并发布电脑声音的，改为 `requestShare(... audioPreset: .default)`
+</Warning>
+
 ### [1.8.0] - 2026.11.17
 #### 变更
 + 依赖的 SRTC 从 1.7.0 升到 **1.8.0**。SMeeting 自身的接口与行为没有变化，1.7.x 的接入代码可直接升级。
 
 #### 新增
-+ **可接入 AI 降噪**：SRTC 1.8.0 提供 DeepFilterNet AI 降噪插件（`srtc-swift-sdk` 的产品 `SRTCDeepFilterNet`）。SMeeting 不需要新增接口，把插件挂到 `smeeting.srtc.audioCaptureProcessor` 即可，用法见 SRTC 文档 [AI 降噪（DeepFilterNet）](/zh/rtc/swift/advanced/deepfilternet)。处理器要由业务方自己持有（SDK 对它是弱引用）。
++ **可接入 AI 降噪**：SRTC 1.8.0 提供 DeepFilterNet AI 降噪插件（`srtc-swift-sdk` 的产品 `SRTCDeepFilterNet`）。挂载方式见 1.9.0 新增的 `audioCaptureProcessor`，用法见 SRTC 文档 [AI 降噪（DeepFilterNet）](/zh/rtc/swift/advanced/deepfilternet)。处理器要由业务方自己持有（SDK 对它是弱引用）。
 
 <Warning>
 工程里自己声明过 `srtc-swift-sdk` 依赖的（iOS 全屏共享扩展、AI 降噪插件），要一并改为 `exact: "1.8.0"`，与 SMeeting 1.8.0 锁定的 SRTC 版本一致，否则依赖解析直接失败。

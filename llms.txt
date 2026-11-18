@@ -301,6 +301,7 @@
 ## SMeeting 会议 SDK · Web SDK · 进阶实践
 
 - [AI 降噪（DeepFilterNet）](https://docs.stmlink.com/zh/meeting/web/advanced/deepfilternet.md): 在 Web 会议里给麦克风开启 AI 降噪：安装 @seastart/srtc-plugin-deepfilternet，用 setAudioProcessor 交给会议层，开麦自动挂载、关麦自动卸载
+- [设备检测（会前 / 会中预览）](https://docs.stmlink.com/zh/meeting/web/advanced/device-check.md): 在入会前或会中做摄像头、麦克风、扬声器检测：getDevices 枚举设备，requestOpenCamera / requestOpenMic 传 publish: false 只采集不推流，getVolume 读麦克风音量，isCameraOpened / isMicOpened 判断要不要关，扬声器用 <audio> + setSinkId 试听
 
 ## SMeeting 会议 SDK · Web SDK · 接口文档
 
@@ -392,7 +393,9 @@
 - [视频渲染](https://docs.stmlink.com/zh/meeting/swift/advanced/video-rendering.md): 在 SwiftUI 与 UIKit / AppKit 中渲染 SMeeting 的本端画面、远端画面与合屏画面
 - [屏幕共享](https://docs.stmlink.com/zh/meeting/swift/advanced/screen-sharing.md): SMeeting Swift SDK 的屏幕共享接入：默认采集、macOS 指定共享源、iOS 全屏共享（Broadcast Upload Extension）、白板共享与共享事件
 - [虚拟背景](https://docs.stmlink.com/zh/meeting/swift/advanced/virtual-background.md): Swift SMeeting 会议 SDK 的虚拟背景：人像分割后做背景虚化或背景替换，不需要授权密钥；本页交代它为什么是设备级配置、切换摄像头与重新开摄像头后不用自己补、低端机保帧率的两个参数，以及它只在 iOS 上提供
+- [AI 降噪（DeepFilterNet）](https://docs.stmlink.com/zh/meeting/swift/advanced/deepfilternet.md): 在会议里给麦克风开启 AI 降噪：加 srtc-swift-sdk 的 SRTCDeepFilterNet 产品，赋给 SMeetingEngine.audioCaptureProcessor，以及处理器的持有、设备不支持、算力不足和自定义采集处理器
 - [外设管理](https://docs.stmlink.com/zh/meeting/swift/advanced/device-management.md): SMeeting Swift SDK 中摄像头、麦克风、扬声器的枚举与切换，以及设备插拔事件处理
+- [设备检测（会前 / 会中预览）](https://docs.stmlink.com/zh/meeting/swift/advanced/device-check.md): 在入会前或会中做摄像头、麦克风、扬声器检测：枚举设备、requestOpenCamera(publish: false) 只预览不推流、isCameraOpened 判断要不要关、麦克风音量与扬声器试听在苹果平台上的限制与做法
 - [音频路由（iOS）](https://docs.stmlink.com/zh/meeting/swift/advanced/audio-routing.md): 会议中控制声音从扬声器还是听筒出：持久默认与临时切换两层、外设为什么不能主动切、以及入会即申请麦克风权限的原因
 - [会中消息](https://docs.stmlink.com/zh/meeting/swift/advanced/messaging.md): SMeeting Swift SDK 的会中聊天消息、自定义消息发送与接收，以及禁言控制
 - [举手与开启请求](https://docs.stmlink.com/zh/meeting/swift/advanced/handup.md): SMeeting Swift SDK 中成员举手申请、主持人审批，以及主持人邀请成员开麦开摄像头的完整流程

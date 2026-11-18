@@ -304,13 +304,20 @@ SMeeting是绝大多数操作的入口。
     enterRoom(req: MeetingEnterReq): Promise<void>;
     /**
      * 打开摄像头
+     *
+     * publish 为 false 时只采集、只在 container 里预览（设备检测、设置页预览）：不请求会控、不发布、
+     * 不发摄像头状态事件，会前会中都可用。之后再以 publish: true 调用会把这条轨「转正」——
+     * 请求会控并发布同一条轨，不重新采集；摄像头已作为会议摄像头打开时以 publish: false 调用，
+     * 直接返回正在用的轨（只追加预览容器）。关闭统一用 closeCamera；只想移除自己加的预览容器用
+     * track.removePlayView(container)。会前打开的摄像头入会后再次调用会补发布。
      * @param container 预览容器
      * @param deviceId 摄像头设备id
      * @param preset 摄像头预设值
      * @param byAdmin 是否主持人操作
      * @param adminUid 主持人id（哪个主持人请求打开）
+     * @param publish 是否作为会议摄像头打开并发布，默认 true；false 只采集预览（0.3.5 起）
      */
-    requestOpenCamera(container: HTMLElement, deviceId?: string, preset?: CameraPreset, byAdmin?: boolean, adminUid?: string): Promise<LocalCameraTrack>;
+    requestOpenCamera(container: HTMLElement, deviceId?: string, preset?: CameraPreset, byAdmin?: boolean, adminUid?: string, publish?: boolean): Promise<LocalCameraTrack>;
     /**
      * 切换摄像头
      * @param deviceId 摄像头设备id，手机端不传自动切换前后置摄像头，桌面端可指定摄像头
@@ -318,12 +325,20 @@ SMeeting是绝大多数操作的入口。
     switchCamera(deviceId?: string): Promise<void>;
     /**
      * 打开麦克风
+     *
+     * publish 为 false 时只采集（设备检测、会中试音）：不请求会控、不发布、不发麦克风状态事件，
+     * 会前会中都可用，用返回轨道的 getVolume() 读音量；setAudioProcessor 设置的处理器同样会挂上。
+     * 之后再以 publish: true 调用会把这条轨「转正」（请求会控并发布同一条轨，不重新采集）；
+     * 麦克风已作为会议麦克风打开时以 publish: false 调用直接返回正在用的轨。关闭统一用 closeMic。
+     * 会前打开的麦克风入会后再次调用会补发布。
      * @param deviceId 麦克风设备id
      * @param preset 麦克风预设值
      * @param byAdmin 是否主持人操作
      * @param adminUid 主持人id（哪个主持人请求打开）
+     * @param publish 是否作为会议麦克风打开并发布，默认 true；false 只采集（0.3.5 起）
+     * @returns 本地麦克风轨道（0.3.5 起）
      */
-    requestOpenMic(deviceId?: string, preset?: MicPreset, byAdmin?: boolean, adminUid?: string): Promise<void>;
+    requestOpenMic(deviceId?: string, preset?: MicPreset, byAdmin?: boolean, adminUid?: string, publish?: boolean): Promise<LocalMicTrack>;
     /**
      * 切换麦克风
      * @param deviceId 麦克风设备id
@@ -406,6 +421,15 @@ SMeeting是绝大多数操作的入口。
      * @returns
      */
     getDevices(kind?: MediaDeviceKind, requestPermissions?: boolean): Promise<MediaDeviceInfo[]>;
+    /**
+     * 摄像头是否作为会议摄像头打开（requestOpenCamera 默认 publish: true）。
+     * publish: false 只预览时摄像头在采集、本方法返回 false，用来决定关预览时要不要 closeCamera（0.3.5 起）
+     */
+    isCameraOpened(): boolean;
+    /**
+     * 麦克风是否作为会议麦克风打开（requestOpenMic 默认 publish: true），含义同 isCameraOpened（0.3.5 起）
+     */
+    isMicOpened(): boolean;
 ```
 
 

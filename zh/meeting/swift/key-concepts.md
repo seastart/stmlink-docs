@@ -212,13 +212,13 @@ extension MeetingController: SMeetingDelegate {
 
 ### 底层 RTC 能力
 
-当会议层的高层接口不足以满足需求时（例如需要 SRTC 才有的原始帧处理、自定义编码参数），可以通过 `meeting.srtc` 访问底层实例。
+会议层内部持有一个 SRTC 实例，但不对外暴露。需要 SRTC 层的能力时，用会议层上同名的接口：采集处理器 `audioCaptureProcessor`（如 [AI 降噪](/zh/meeting/swift/advanced/deepfilternet)）、默认视频处理器 `defaultVideoProcessors` 等，见 [SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine)。日志级别在创建实例时传入：
 
 ```swift
-meeting.srtc.logLevel = .debug
+let meeting = SMeetingEngine(logLevel: .debug)
 ```
 
-> 请始终使用 `meeting.srtc`，不要自行另建一个 SRTCEngine 实例：会议与底层共享同一个实例，另起一个会导致状态分裂、消息通道重复、设备被抢占。
+> 不要自行另建一个 SRTCEngine 实例：会议已经持有一个，另起一个会导致状态分裂、消息通道重复、设备被抢占。
 
 ---
 

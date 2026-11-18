@@ -79,6 +79,16 @@ try await meeting.requestShare(source: source, excludedWindowIds: ids)
 这是 1.3.2（SRTC 1.4.2）的**行为变更**：此前整个进程的窗口都会被从整屏画面里挖掉，对端看不到你的会中窗口。跨机器共享时新行为更自然（对端能看到你的会议界面），依赖旧行为的产品升级后需显式设置 `excludesCurrentApplication: true`。
 </Warning>
 
+#### macOS：同时共享电脑声音
+
+传 `audioPreset` 即可把电脑播放的声音一起共享出去（自 1.9.0 起提供，仅 macOS）：
+
+```swift
+try await meeting.requestShare(source: source, audioPreset: .default, excludedWindowIds: ids)
+```
+
+声音与画面是同一条采集，随共享一起发布、随 `stopShare()` 一起停止，不需要另外处理。本 App 自己发出的声音默认不会被采进去。
+
 #### 本地预览
 
 如果你在 UIKit / AppKit 下需要本地预览共享画面，可以传入 `view`；SwiftUI 下不传，改用 `SRTCVideoView(track: meeting.screenTrack)`。
