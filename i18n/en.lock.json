@@ -17,6 +17,12 @@
     "zh_blob": "a735359d2e16f3c7a17e5cf5ec5c02d2651c16a5",
     "zh_commit": "6689fa152bccd4b1038f82d20d6e3a3324d4369f"
   },
+  "en/meeting/android/advanced/deepfilternet": {
+    "reviewed": false,
+    "source": "zh/meeting/android/advanced/deepfilternet.md",
+    "zh_blob": "cde2385e6ce6c8e5f05d0b67e9d78a3f49ec31b3",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
+  },
   "en/meeting/android/advanced/whiteboard": {
     "reviewed": true,
     "source": "zh/meeting/android/advanced/whiteboard.md",
@@ -38,8 +44,8 @@
   "en/meeting/android/api-reference/MeetingEngine": {
     "reviewed": false,
     "source": "zh/meeting/android/api-reference/MeetingEngine.md",
-    "zh_blob": "b66c6b5dc99efc49d7330a6066daa167091f243e",
-    "zh_commit": "883441334802721460da07f718254c5a4e281df7"
+    "zh_blob": "7b439a29a05a1132ad4865bf1cf8d05fcd2bbac5",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
   },
   "en/meeting/android/api-reference/MeetingEngineEvent": {
     "reviewed": false,
@@ -134,8 +140,8 @@
   "en/meeting/android/changelog": {
     "reviewed": false,
     "source": "zh/meeting/android/changelog.mdx",
-    "zh_blob": "62014f99f8c503f14cff7f8117b8ebbb378d964b",
-    "zh_commit": "6fdc4c4b8c50323747d65d5ccb450cb0c503d188"
+    "zh_blob": "a0e9f1e33725153f5442b4501bba155827992c91",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
   },
   "en/meeting/android/enums": {
     "reviewed": true,
@@ -152,8 +158,8 @@
   "en/meeting/android/integration": {
     "reviewed": false,
     "source": "zh/meeting/android/integration.md",
-    "zh_blob": "9b039301c572caa8f19ec68d5d6bced9c5c03eeb",
-    "zh_commit": "6fdc4c4b8c50323747d65d5ccb450cb0c503d188"
+    "zh_blob": "952800b130ba3be7d7d1b37ebc54855266ed82bb",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
   },
   "en/meeting/android/media-quality": {
     "reviewed": false,
@@ -515,17 +521,23 @@
     "zh_blob": "430ad225ac89638845544330368ff0d955b264f4",
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
+  "en/meeting/web/advanced/deepfilternet": {
+    "reviewed": false,
+    "source": "zh/meeting/web/advanced/deepfilternet.md",
+    "zh_blob": "5b7b5945558ab2cba64cd22a04888009fc0695c0",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
+  },
   "en/meeting/web/api-reference/SMeeting": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/web/api-reference/SMeeting.md",
-    "zh_blob": "ed7bc603d8ed14eb25c0ff8dc2ca02759125fec1",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "3c59327e5f5293e6cde235f4bef901cd21dde4b3",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
   },
   "en/meeting/web/changelog": {
     "reviewed": false,
     "source": "zh/meeting/web/changelog.mdx",
-    "zh_blob": "14273675bddde82f2dd87174ea7f7527444eb20a",
-    "zh_commit": "65d8b919a4b116eaf5e16e8e4807dce05e7d86ec"
+    "zh_blob": "24dc4d69fe966ed56ae71274b951797587aa1e47",
+    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
   },
   "en/meeting/web/error-codes": {
     "reviewed": false,

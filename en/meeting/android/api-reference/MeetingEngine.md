@@ -2492,6 +2492,24 @@ Consumes a cast code and gets the target meeting. The server consumes the cast c
 
 Returns: `Unit`; the business result is returned through the callback. For the related models, see the model types page; for ownership values, see the enums page.
 
+## Audio capture processing
+
+Supported since `2.0.43`. Same name and parameters as the RTC-layer `RTCEngine.setAudioCaptureProcessor`; use it to attach microphone capture processors such as the AI noise suppression plugin. See [AI noise suppression](/en/meeting/android/advanced/deepfilternet) for usage.
+
+### setAudioCaptureProcessor(processor)
+
+```kotlin
+fun setAudioCaptureProcessor(processor: AudioCaptureProcessor?)
+```
+
+Sets the microphone capture processor; pass `null` to clear it. You can call it before or after `initSdk` and in or out of a meeting, and it applies to all later meetings. The setting persists after `release()` and is attached again automatically on the next initialization. The SDK holds a strong reference and calls `release()` on the old processor when you replace or clear it. If the processor declares noise suppression off, the SDK turns off the built-in noise suppression of the system and WebRTC and restores it when cleared; switching restarts microphone capture once (a gap of under half a second).
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| processor | `cn.seastart.rtc.audio.AudioCaptureProcessor?` | Yes | Capture processor, such as `cn.seastart.rtc.denoise.DeepFilterNetProcessor`; `null` clears it |
+
+Returns: `Unit`.
+
 ## Virtual background
 
 Supported since `2.0.39`. First initialize the SDK and install the person segmentation model, then set blur or a background image, and finally turn the effect on. After camera capture or a switch succeeds, or after a successful reconnection, the meeting layer reapplies the cached configuration; `release()` clears the cache and releases the underlying resources.

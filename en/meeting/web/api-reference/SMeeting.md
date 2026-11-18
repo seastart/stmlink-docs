@@ -330,6 +330,17 @@ SMeeting is the entry point for most operations.
      */
     switchMic(deviceId: string): Promise<void>;
     /**
+     * Set the microphone audio processor (such as `DeepFilterNetProcessor` from the AI noise suppression plugin `@seastart/srtc-plugin-deepfilternet`).
+     * Pass `undefined` to clear it. Pass an array to chain processors in order. Available since 0.3.4, Web only.
+     *
+     * Can be called before or after entering a meeting: if the mic is on, the processor is attached immediately (replacing the old one);
+     * after that it is attached every time the mic opens and detached when the mic closes, and the setting persists after leaving the meeting.
+     * The processor is destroyed when the mic closes and initialized again when it opens, so the same instance can be reused.
+     * A failure to attach when the mic opens doesn't block the mic; only a warning is logged. See the "AI noise suppression" advanced guide.
+     * @param processor Audio processor; `undefined` clears it
+     */
+    setAudioProcessor(processor?: AudioTrackProcessor | AudioTrackProcessor[]): Promise<void>;
+    /**
      * Start sharing
      * @param shareType Sharing type
      * @param container Preview container

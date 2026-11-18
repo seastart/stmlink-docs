@@ -1,9 +1,19 @@
 ---
 title: "Changelog"
-description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.42, including breaking API changes. Read this before upgrading the SDK."
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.43, including breaking API changes. Read this before upgrading the SDK."
 ---
 
 > This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.43 (2026-11-18)
+
+### Added
+
++ Added `MeetingEngine.setAudioCaptureProcessor()` for attaching a microphone capture processor; use it with the `cn.seastart.rtc:denoise` plugin to turn on AI noise suppression. See [AI noise suppression](/en/meeting/android/advanced/deepfilternet).
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.39`.
 
 ## 2.0.42 (2026-10-27)
 

@@ -13,6 +13,12 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.4 - 2026-11-18
+
+#### Added
++ **AI noise suppression**: added `setAudioProcessor()`, which hands microphone audio processors such as `@seastart/srtc-plugin-deepfilternet` to the meeting layer; from then on they are attached every time the mic opens and detached when the mic closes or you leave the meeting. See [AI noise suppression](/en/meeting/web/advanced/deepfilternet)
++ Upgraded the underlying SRTC dependency to Web `^0.7.3`
+
 ### v0.3.3 - 2026-11-12
 
 #### Fixes

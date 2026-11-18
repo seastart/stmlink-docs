@@ -1038,6 +1038,12 @@
                   "en/meeting/web/quickstart",
                   "en/meeting/web/whiteboard",
                   {
+                    "group": "Advanced",
+                    "pages": [
+                      "en/meeting/web/advanced/deepfilternet"
+                    ]
+                  },
+                  {
                     "group": "API reference",
                     "pages": [
                       "en/meeting/web/api-reference/SMeeting"
@@ -1058,7 +1064,8 @@
                     "group": "Advanced",
                     "pages": [
                       "en/meeting/android/advanced/audio-routing",
-                      "en/meeting/android/advanced/whiteboard"
+                      "en/meeting/android/advanced/whiteboard",
+                      "en/meeting/android/advanced/deepfilternet"
                     ]
                   },
                   {

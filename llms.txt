@@ -780,6 +780,10 @@
 - [Error codes](https://docs.stmlink.com/en/meeting/web/error-codes.md): Error codes of the SMeeting Web SDK (0.3.0 and later): how to tell meeting-layer 206xxx codes, passed-through SRTC 106xxx codes, and server business codes apart by code, how the language parameter affects the language of server errors, and each code's meaning, common causes, and suggested user message.
 - [Changelog](https://docs.stmlink.com/en/meeting/web/changelog.md): Release history of the SMeeting Web SDK (@seastart/smeeting-web-sdk), including changes that require code updates: v0.3.0 error code renumbering, English error messages, the new language parameter (with an old-to-new code mapping), and corrected McuTaskStatus values. Read before upgrading.
 
+## [EN] SMeeting Conferencing SDK · Web SDK · Advanced
+
+- [AI noise suppression (DeepFilterNet)](https://docs.stmlink.com/en/meeting/web/advanced/deepfilternet.md): Turn on AI noise suppression for the microphone in Web meetings: install @seastart/srtc-plugin-deepfilternet and hand it to the meeting layer with setAudioProcessor, which attaches it whenever the mic opens and detaches it when the mic closes
+
 ## [EN] SMeeting Conferencing SDK · Web SDK · API reference
 
 - [SMeeting](https://docs.stmlink.com/en/meeting/web/api-reference/SMeeting.md): Full method list of SMeeting, the main entry class of the Web conferencing SDK: login, creating and entering meetings, camera/mic/sharing, chat and custom messages, raise hand, host controls, device invitations, and recording. Read this to look up a method signature.
@@ -792,12 +796,13 @@
 - [Enums](https://docs.stmlink.com/en/meeting/android/enums.md): Meeting, member, device, message, sharing, recording, roll call, and external device enums of Android SMeeting, with values and meanings, plus where to find the SRTC enums Meeting uses directly. Read this when mapping enum values in events and models.
 - [Media quality](https://docs.stmlink.com/en/meeting/android/media-quality.md): Monitor current-meeting audio and video quality through SMeeting Android local quality snapshots, on-demand detailed statistics, and FY server reports.
 - [Error codes](https://docs.stmlink.com/en/meeting/android/error-codes.md): Where SMeeting Android SDK errors come from (Meeting SDK, SRTC SDK, librtc, server, HTTP), the full list of 202xxx MeetingErrorCode constants, passed-through RTC camera errors, and how your app should handle them. Read this when handling onFailure / onError.
-- [Changelog](https://docs.stmlink.com/en/meeting/android/changelog.md): New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.42, including breaking API changes. Read this before upgrading the SDK.
+- [Changelog](https://docs.stmlink.com/en/meeting/android/changelog.md): New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.43, including breaking API changes. Read this before upgrading the SDK.
 
 ## [EN] SMeeting Conferencing SDK · Android SDK · Advanced
 
 - [Audio routing](https://docs.stmlink.com/en/meeting/android/advanced/audio-routing.md): Manage audio output routing (speaker, earpiece, wired headset, Bluetooth headset) in the SMeeting Android SDK: get AudioRouterManager from MeetingEngine, set the mode and auto-switch policy, handle device callbacks, switch routes manually, and release it.
 - [Whiteboard sharing](https://docs.stmlink.com/en/meeting/android/advanced/whiteboard.md): Open a whiteboard in an Android meeting: get the whiteboard URL with requestShareBoard() and host it in a WebView, respond to others' sharing and to entering mid-meeting, and inject the JS interface the WebView needs.
+- [AI noise suppression (DeepFilterNet)](https://docs.stmlink.com/en/meeting/android/advanced/deepfilternet.md): Turn on AI noise suppression for the microphone in meetings: add the cn.seastart.rtc:denoise plugin, attach it with MeetingEngine.setAudioCaptureProcessor, and handle unsupported devices, CPU overload, and custom capture processors
 
 ## [EN] SMeeting Conferencing SDK · Android SDK · API reference
 
