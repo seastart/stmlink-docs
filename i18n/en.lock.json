@@ -1254,10 +1254,10 @@
     "zh_commit": "7d15b7e905bbad59375d66eacdfa3d7fb24c8783"
   },
   "en/rtc/server-api/guides/callbacks": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/server-api/guides/callbacks.md",
-    "zh_blob": "064adfc7375525eccf04fee37d0f539e171a8ae5",
-    "zh_commit": "7d15b7e905bbad59375d66eacdfa3d7fb24c8783"
+    "zh_blob": "8835301549d5728ba918a0a2c84d76147ffb73a3",
+    "zh_commit": "4bfc18bef65c0ac74b96d04b0cd5d2367a7f22fa"
   },
   "en/rtc/server-api/guides/recording": {
     "reviewed": false,
