@@ -118,8 +118,8 @@ Content-Type: application/json; charset=utf-8
 
 `im_disconnect` 多一个 `reason`，取值同 `user_leave`。
 
-`device_type`：`0` 未知、`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 微信小程序。
-`80` 起是服务端代理入会的号段（`81` MCU、`82` SIP、`83` H323、`84` GB28181、`85` RTSP、`86` RTMP、`87` 文件播放、`88` 已废弃（号位保留，不会再出现）、`89` 语音转写）。
+`device_type`：`0` 未知、`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 微信小程序、`8` 鸿蒙。
+`80` 起是服务端代理入会的号段（`81` MCU、`82` SIP、`83` H323、`84` GB28181、`85` RTSP、`86` RTMP、`87` 文件播放、`88` 已废弃（号位保留，不会再出现）、`89` 语音转写、`90` 语音录制、`91` 单路流输出）。
 
 ### `agent_online` / `agent_offline` — 设备上线 / 离线
 

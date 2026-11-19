@@ -118,8 +118,8 @@ track. Which `desc` means microphone or camera is up to your own convention.
 
 `im_disconnect` has an extra `reason`, with the same values as `user_leave`.
 
-`device_type`: `0` unknown, `1` Windows, `2` Android, `3` iOS, `4` Linux, `5` macOS, `6` WebRTC, `7` WeChat Mini Program.
-From `80` up is the range for agents joining on the server side (`81` MCU, `82` SIP, `83` H.323, `84` GB28181, `85` RTSP, `86` RTMP, `87` file playback, `88` deprecated (number reserved, no longer used), `89` transcription).
+`device_type`: `0` unknown, `1` Windows, `2` Android, `3` iOS, `4` Linux, `5` macOS, `6` WebRTC, `7` WeChat Mini Program, `8` HarmonyOS.
+From `80` up is the range for agents joining on the server side (`81` MCU, `82` SIP, `83` H.323, `84` GB28181, `85` RTSP, `86` RTMP, `87` file playback, `88` deprecated (number reserved, no longer used), `89` transcription, `90` voice recording, `91` single-stream output).
 
 ### `agent_online` / `agent_offline` — Device online / offline
 
