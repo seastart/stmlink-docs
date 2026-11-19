@@ -106,7 +106,9 @@ stopPlay(): void
 
 #### getVolume
 
-Gets the current audio input volume, in the range 0–100.
+Gets the current audio input volume as an integer from 0 to 100 (available from v0.7.4; earlier versions always return 0).
+
+The value is mapped from decibels: below about -45 dBFS (room noise) it is 0, and above about -10 dBFS (the peak of normal speech) it is 100. It is an instantaneous value. For a level meter, read it about every 100 ms and smooth it in the UI with a fast attack and slow release (rise immediately, fall gradually); otherwise the bar jumps in the gaps between words. Returns 0 when nothing is being captured, capture has stopped, or the track is disabled.
 
 ```typescript
 getVolume(): number

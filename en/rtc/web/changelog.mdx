@@ -19,6 +19,15 @@ npm info @seastart/srtc-web-sdk version
 
 ### Recent updates
 
+### v0.7.4 - 2026-11-19
+
++ **`getVolume()` now works**: on local audio tracks (microphone and others), `getVolume()` used to always return 0. It now returns the input volume from 0 to 100 (0 below about -45 dBFS, 100 above about -10 dBFS), ready to drive a microphone level meter. See [Media tracks](/en/rtc/web/api-reference/media-tracks)
++ **Media reconnection failures are no longer silent**: when automatic reconnection of the SFU media connection finally gives up (the server returns an unrecoverable error, or repeated retries fail), the SDK emits `DISCONNECTED` with the reason, instead of leaving the user in the channel with no audio or video. Make sure your app handles this event
++ **Members and tracks are restored after a lost session**: after the signaling connection drops, if the server has lost the session (for example after a long disconnection), the SDK fetches the channel details again on reconnect, emits the member join/leave and track add/remove events missed while disconnected, and then emits `RECONNECTED`. Short disconnections are still covered by the server re-sending messages
++ **Joining no longer hangs on a network hiccup**: if the signaling connection fails on its first attempt during join and then succeeds on retry, `join` now returns instead of hanging
++ **Users who rejoin are no longer removed by mistake**: a late leave message from a user's old session no longer removes them after they rejoin
++ **No more spurious `USER_TRACK_UPDATE`**: track update events are no longer emitted on every stream update when the remote tracks haven't changed
+
 ### v0.7.3 - 2026-11-16
 
 + **Browser noise suppression is turned off automatically with noise suppression plugins**: when you use the [RNNoise](/en/rtc/web/advanced/rnnoise) or [DeepFilterNet](/en/rtc/web/advanced/deepfilternet) plugin, the SDK turns off the browser's own noise suppression and restores it on detach, so the two don't stack and muffle voices. Upgrade the plugins as well (RNNoise 0.1.1, DeepFilterNet 0.1.2)
