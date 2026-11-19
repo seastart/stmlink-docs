@@ -1256,8 +1256,8 @@
   "en/rtc/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/callbacks.md",
-    "zh_blob": "8835301549d5728ba918a0a2c84d76147ffb73a3",
-    "zh_commit": "4bfc18bef65c0ac74b96d04b0cd5d2367a7f22fa"
+    "zh_blob": "c4563f4f15b1183210e76ee5d9b2024aec033795",
+    "zh_commit": "6a66e81804e6c1338d0792516ae31a477776e5d3"
   },
   "en/rtc/server-api/guides/recording": {
     "reviewed": false,
