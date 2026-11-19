@@ -2239,3 +2239,424 @@ Response example:
 
 ---
 
+## Start meeting transcription
+
+`POST /server/v1/meet/asr-start`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Start real-time transcription for a meeting in progress, optionally with real-time translation. Returns the session_id of this transcription session.
+
++ Speech from every member in the meeting whose mic is on is transcribed; clients get captions through the channel messages asr_res (original text) and asr_trans (translation)
++ Transcription stops automatically when the meeting ends; you don't need to call "Stop meeting transcription" first
++ If the app has minutes enabled, meeting minutes are generated automatically after each transcription session ends; get them with "Get meeting minutes"
+
+Transcription, translation, and minutes depend on the speech recognition and large language model configured on the platform; if they are not configured, the corresponding error is returned.
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID; the meeting must be in progress
+</ParamField>
+
+<ParamField body="translate_lang" type="string">
+  Target language for real-time translation; empty means transcription only, without translation (max length 10)
+  Example: `en`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "translate_lang": "en"
+}
+```
+
+**Response parameters**
+
+<ResponseField name="session_id" type="string">
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": {
+    "session_id": ""
+  }
+}
+```
+
+---
+
+## Stop meeting transcription
+
+`POST /server/v1/meet/asr-stop`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Stop real-time transcription for a meeting. Transcription results already produced are kept; if the app has minutes enabled, minutes for this session are then generated automatically.
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## Get meeting minutes
+
+`POST /server/v1/meet/ai-summary`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Get a meeting's transcription sessions and the latest minutes of each, sorted by start time ascending.
+
++ Turning transcription off and on again during a meeting creates multiple sessions, and minutes are generated for each session separately
++ A null summary means minutes haven't been generated for that session yet; a status of 0/1 means queued or generating, 2 completed, 3 failed (error gives the reason)
++ content is in Markdown
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**Response parameters**
+
+<ResponseField name="session_id" type="string">
+  Transcription session ID
+</ResponseField>
+
+<ResponseField name="started_at" type="integer">
+  Transcription start time (seconds)
+</ResponseField>
+
+<ResponseField name="ended_at" type="integer">
+  Transcription end time (seconds); 0 while in progress
+</ResponseField>
+
+<ResponseField name="status" type="integer">
+  Session status. 1: transcribing, 2: ended
+</ResponseField>
+
+<ResponseField name="sentence_count" type="integer">
+  Number of transcribed sentences
+</ResponseField>
+
+<ResponseField name="summary_status" type="integer">
+  Minutes status. -1: not generated, 0: queued, 1: generating, 2: completed, 3: failed
+</ResponseField>
+
+<ResponseField name="summary" type="object">
+  Latest minutes; null if not generated yet (or if the app doesn't have minutes enabled)
+  <Expandable title="Fields">
+    <ResponseField name="summary_id" type="string">
+      Minutes ID
+    </ResponseField>
+
+    <ResponseField name="session_id" type="string">
+      Recognition session ID
+    </ResponseField>
+
+    <ResponseField name="channel" type="string">
+      Channel name, which is the meeting ID
+    </ResponseField>
+
+    <ResponseField name="template_id" type="string">
+      Minutes template ID
+    </ResponseField>
+
+    <ResponseField name="status" type="integer">
+      Status. 0: queued, 1: generating, 2: completed, 3: failed
+    </ResponseField>
+
+    <ResponseField name="content" type="string">
+      Minutes content (Markdown); if regeneration fails, the last successful content is kept
+    </ResponseField>
+
+    <ResponseField name="model" type="string">
+      Model used for generation
+    </ResponseField>
+
+    <ResponseField name="prompt_tokens" type="integer">
+      Number of input tokens
+    </ResponseField>
+
+    <ResponseField name="completion_tokens" type="integer">
+      Number of output tokens
+    </ResponseField>
+
+    <ResponseField name="error" type="string">
+      Failure reason (when the status is failed)
+    </ResponseField>
+
+    <ResponseField name="finished_at" type="integer">
+      Completion time (seconds)
+    </ResponseField>
+
+    <ResponseField name="created_at" type="integer">
+      Creation time (seconds)
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="integer">
+      Last-modified time (seconds)
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "ended_at": 0,
+      "sentence_count": 0,
+      "session_id": "",
+      "started_at": 0,
+      "status": 0,
+      "summary": {
+        "channel": "",
+        "completion_tokens": 0,
+        "content": "",
+        "created_at": 0,
+        "error": "",
+        "finished_at": 0,
+        "model": "",
+        "prompt_tokens": 0,
+        "session_id": "",
+        "status": 0,
+        "summary_id": "",
+        "template_id": "",
+        "updated_at": 0
+      },
+      "summary_status": 0
+    }
+  ]
+}
+```
+
+---
+
+## Get meeting transcripts
+
+`POST /server/v1/meet/ai-transcript`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Get a meeting's transcripts, organized by session (sorted by start time ascending), with all finalized sentences of each session.
+
++ Sessions are divided the same way as in "Get meeting minutes"; pass session_id to get only that session
++ Sentences are sorted by begin_ms ascending; begin_ms / end_ms are milliseconds relative to the session's started_at
++ trans_text is the translation; empty when real-time translation is not enabled
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID
+</ParamField>
+
+<ParamField body="session_id" type="string">
+  Transcription session ID; omit to get all sessions of the meeting
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "session_id": ""
+}
+```
+
+**Response parameters**
+
+<ResponseField name="session_id" type="string">
+  Transcription session ID
+</ResponseField>
+
+<ResponseField name="started_at" type="integer">
+  Transcription start time (seconds); sentences' begin_ms/end_ms are relative to it
+</ResponseField>
+
+<ResponseField name="ended_at" type="integer">
+  Transcription end time (seconds); 0 while in progress
+</ResponseField>
+
+<ResponseField name="status" type="integer">
+  Session status. 1: transcribing, 2: ended
+</ResponseField>
+
+<ResponseField name="sentences" type="array<object>">
+  Finalized sentences, sorted by start time ascending; an empty array when there are no sentences
+  <Expandable title="Element fields">
+    <ResponseField name="sentence_id" type="string">
+      Sentence ID; matches sentence_id in the asr_trans channel message
+    </ResponseField>
+
+    <ResponseField name="channel" type="string">
+      Channel name, which is the meeting ID
+    </ResponseField>
+
+    <ResponseField name="session_id" type="string">
+      ID of the recognition session it belongs to
+    </ResponseField>
+
+    <ResponseField name="uid" type="string">
+      Speaker's user ID
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Speaker's in-meeting display name
+    </ResponseField>
+
+    <ResponseField name="sentence" type="string">
+      Original text
+    </ResponseField>
+
+    <ResponseField name="begin_ms" type="integer">
+      Sentence start time, in milliseconds from the start of the session
+    </ResponseField>
+
+    <ResponseField name="end_ms" type="integer">
+      Sentence end time, in milliseconds from the start of the session
+    </ResponseField>
+
+    <ResponseField name="trans_text" type="string">
+      Translated text; empty when translation is not enabled
+    </ResponseField>
+
+    <ResponseField name="trans_lang" type="string">
+      Translation language, such as en
+    </ResponseField>
+
+    <ResponseField name="created_at" type="integer">
+      Time produced (seconds)
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "ended_at": 0,
+      "sentences": [
+        {
+          "begin_ms": 0,
+          "channel": "",
+          "created_at": 0,
+          "end_ms": 0,
+          "name": "",
+          "sentence": "",
+          "sentence_id": "",
+          "session_id": "",
+          "trans_lang": "",
+          "trans_text": "",
+          "uid": ""
+        }
+      ],
+      "session_id": "",
+      "started_at": 0,
+      "status": 0
+    }
+  ]
+}
+```
+
+---
+
+## Regenerate meeting minutes
+
+`POST /server/v1/meet/ai-summary-generate`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Regenerate the meeting minutes of a transcription session, optionally with a different minutes template. It runs asynchronously; when it finishes, get the latest result with "Get meeting minutes".
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID
+</ParamField>
+
+<ParamField body="session_id" type="string" required>
+  Transcription session ID, taken from the session_id returned by "Get meeting minutes"
+</ParamField>
+
+<ParamField body="template_id" type="string">
+  Minutes template ID; empty means the app's default template
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "session_id": "",
+  "template_id": ""
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+

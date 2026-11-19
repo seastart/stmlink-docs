@@ -54,6 +54,15 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1051` | TalkrecRecordNotFound | Voice segment not found |
 | `1052` | TalkrecRecordNoVod | Voice segment has not produced an audio file yet |
 | `1053` | TalkrecGatewayNotFound | No voice recording gateway available |
+| `1060` | AiProviderNotConfigured | The large language model is not configured or not enabled |
+| `1061` | AiLlmCallFailed | Large language model call failed |
+| `1062` | AsrSessionNotFound | Recognition session not found |
+| `1063` | AsrSessionNoSentence | The recognition session has no transcript |
+| `1064` | AiSummaryGenerating | The summary is being generated |
+| `1065` | AiSummaryNotFound | Summary not found |
+| `1066` | AiTemplateNotFound | Summary template not found |
+| `1070` | StreamOutGatewayNotFound | No stream output gateway available |
+| `1071` | StreamOutGatewayFailed | Stream output gateway failed to issue the stream URL |
 
 ## Common framework error codes
 

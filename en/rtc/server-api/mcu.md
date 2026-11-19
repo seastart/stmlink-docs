@@ -1020,17 +1020,12 @@ To delete one specific recording, pass task_id.
   Example: `fire`
 </ParamField>
 
-<ParamField body="is_lan" type="boolean">
-  Whether to return internal network playback URLs, for purely internal deployments or dedicated-line access; public network URLs are returned by default
-</ParamField>
-
 
 Request example:
 
 ```json
 {
   "channel": "fire",
-  "is_lan": false,
   "task_id": "sxjgwy"
 }
 ```
@@ -1433,6 +1428,8 @@ task_type included the live streaming bit (8) when the task was started. The URL
 For a task started with layout_data.push_url (push mode), the mixed stream is pushed to your own URL,
 so there is no playback URL to query and this API returns error code 1048.
 
+The host part of the URLs is always the public address configured for the live streaming service; this API doesn't distinguish between internal and public networks.
+
 **Request parameters**
 
 <ParamField body="task_id" type="string">
@@ -1445,17 +1442,12 @@ so there is no playback URL to query and this API returns error code 1048.
   Example: `fire`
 </ParamField>
 
-<ParamField body="is_lan" type="boolean">
-  Whether to return internal network playback URLs, for purely internal deployments or dedicated-line access; public network URLs are returned by default
-</ParamField>
-
 
 Request example:
 
 ```json
 {
   "channel": "fire",
-  "is_lan": false,
   "task_id": "sxjgwy"
 }
 ```

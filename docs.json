@@ -380,7 +380,9 @@
                       "zh/rtc/server-api/agent",
                       "zh/rtc/server-api/im",
                       "zh/rtc/server-api/white-board",
-                      "zh/rtc/server-api/asr"
+                      "zh/rtc/server-api/asr",
+                      "zh/rtc/server-api/ai",
+                      "zh/rtc/server-api/stream"
                     ]
                   },
                   "zh/rtc/server-api/error-codes",
@@ -996,7 +998,9 @@
                       "en/rtc/server-api/agent",
                       "en/rtc/server-api/im",
                       "en/rtc/server-api/white-board",
-                      "en/rtc/server-api/asr"
+                      "en/rtc/server-api/asr",
+                      "en/rtc/server-api/ai",
+                      "en/rtc/server-api/stream"
                     ]
                   },
                   "en/rtc/server-api/error-codes",

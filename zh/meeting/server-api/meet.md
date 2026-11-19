@@ -2239,3 +2239,424 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 
 ---
 
+## 开启会议转写
+
+`POST /server/v1/meet/asr-start`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+对进行中的会议开启实时转写，可同时开启实时翻译。返回本次转写的场次 session_id。
+
++ 会中所有开麦成员的发言都会被转写，客户端通过频道消息 asr_res（原文）、asr_trans（译文）拿到字幕
++ 会议结束时转写自动停止，不必先调「关闭会议转写」
++ 应用开启了纪要时，每场转写结束后自动生成会议纪要，用「查询会议纪要」获取
+
+转写、翻译与纪要依赖平台侧的语音识别与大模型配置，未配置时返回对应错误。
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID，必须是进行中的会议
+</ParamField>
+
+<ParamField body="translate_lang" type="string">
+  实时翻译目标语言，空表示只转写不翻译（最大长度 10）
+  示例：`en`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "translate_lang": "en"
+}
+```
+
+**响应参数**
+
+<ResponseField name="session_id" type="string">
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "session_id": ""
+  }
+}
+```
+
+---
+
+## 关闭会议转写
+
+`POST /server/v1/meet/asr-stop`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+关闭会议的实时转写。已产生的转写结果保留，应用开启了纪要时随后自动生成本场纪要。
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 查询会议纪要
+
+`POST /server/v1/meet/ai-summary`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+查询会议的转写场次及各场最新纪要，按开始时间升序。
+
++ 一场会议中途关闭再开启转写会产生多个场次，每场单独生成纪要
++ summary 为 null 表示该场尚未生成纪要；status 为 0/1 表示排队或生成中，2 完成，3 失败（error 为原因）
++ content 为 Markdown 格式
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**响应参数**
+
+<ResponseField name="session_id" type="string">
+  转写场次ID
+</ResponseField>
+
+<ResponseField name="started_at" type="integer">
+  转写开始时间(秒)
+</ResponseField>
+
+<ResponseField name="ended_at" type="integer">
+  转写结束时间(秒), 进行中为0
+</ResponseField>
+
+<ResponseField name="status" type="integer">
+  场次状态 1转写中 2已结束
+</ResponseField>
+
+<ResponseField name="sentence_count" type="integer">
+  转写句子数
+</ResponseField>
+
+<ResponseField name="summary_status" type="integer">
+  纪要状态 -1未生成 0排队 1生成中 2完成 3失败
+</ResponseField>
+
+<ResponseField name="summary" type="object">
+  最新纪要; 尚未生成(或应用未开纪要)时为 null
+  <Expandable title="字段">
+    <ResponseField name="summary_id" type="string">
+      纪要ID
+    </ResponseField>
+
+    <ResponseField name="session_id" type="string">
+      识别场次ID
+    </ResponseField>
+
+    <ResponseField name="channel" type="string">
+      频道名, 即会议ID
+    </ResponseField>
+
+    <ResponseField name="template_id" type="string">
+      纪要模板ID
+    </ResponseField>
+
+    <ResponseField name="status" type="integer">
+      状态 0排队 1生成中 2完成 3失败
+    </ResponseField>
+
+    <ResponseField name="content" type="string">
+      纪要正文(Markdown); 重新生成失败时保留上一次成功的内容
+    </ResponseField>
+
+    <ResponseField name="model" type="string">
+      生成所用模型
+    </ResponseField>
+
+    <ResponseField name="prompt_tokens" type="integer">
+      输入token数
+    </ResponseField>
+
+    <ResponseField name="completion_tokens" type="integer">
+      输出token数
+    </ResponseField>
+
+    <ResponseField name="error" type="string">
+      失败原因(状态为失败时)
+    </ResponseField>
+
+    <ResponseField name="finished_at" type="integer">
+      完成时间(秒)
+    </ResponseField>
+
+    <ResponseField name="created_at" type="integer">
+      创建时间(秒)
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="integer">
+      最后变更时间(秒)
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "ended_at": 0,
+      "sentence_count": 0,
+      "session_id": "",
+      "started_at": 0,
+      "status": 0,
+      "summary": {
+        "channel": "",
+        "completion_tokens": 0,
+        "content": "",
+        "created_at": 0,
+        "error": "",
+        "finished_at": 0,
+        "model": "",
+        "prompt_tokens": 0,
+        "session_id": "",
+        "status": 0,
+        "summary_id": "",
+        "template_id": "",
+        "updated_at": 0
+      },
+      "summary_status": 0
+    }
+  ]
+}
+```
+
+---
+
+## 查询会议转写原文
+
+`POST /server/v1/meet/ai-transcript`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+查询会议的转写原文，按场次组织（按开始时间升序），每场返回全部定稿句子。
+
++ 场次划分与「查询会议纪要」一致，传 session_id 只取该场
++ 句子按 begin_ms 升序；begin_ms / end_ms 是相对该场 started_at 的毫秒
++ trans_text 为译文，未开启实时翻译时为空
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID
+</ParamField>
+
+<ParamField body="session_id" type="string">
+  转写场次ID，不传表示取本会议全部场次
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "session_id": ""
+}
+```
+
+**响应参数**
+
+<ResponseField name="session_id" type="string">
+  转写场次ID
+</ResponseField>
+
+<ResponseField name="started_at" type="integer">
+  转写开始时间(秒), 句子的 begin_ms/end_ms 相对它计算
+</ResponseField>
+
+<ResponseField name="ended_at" type="integer">
+  转写结束时间(秒), 进行中为0
+</ResponseField>
+
+<ResponseField name="status" type="integer">
+  场次状态 1转写中 2已结束
+</ResponseField>
+
+<ResponseField name="sentences" type="array<object>">
+  定稿句子, 按句首时刻升序; 没有句子时为空数组
+  <Expandable title="元素字段">
+    <ResponseField name="sentence_id" type="string">
+      句子ID, 与频道消息 asr_trans 里的 sentence_id 对应
+    </ResponseField>
+
+    <ResponseField name="channel" type="string">
+      频道名, 即会议ID
+    </ResponseField>
+
+    <ResponseField name="session_id" type="string">
+      所属识别场次ID
+    </ResponseField>
+
+    <ResponseField name="uid" type="string">
+      说话人用户ID
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      说话人会中昵称
+    </ResponseField>
+
+    <ResponseField name="sentence" type="string">
+      原文
+    </ResponseField>
+
+    <ResponseField name="begin_ms" type="integer">
+      句首时刻, 相对场次开始的毫秒
+    </ResponseField>
+
+    <ResponseField name="end_ms" type="integer">
+      句尾时刻, 相对场次开始的毫秒
+    </ResponseField>
+
+    <ResponseField name="trans_text" type="string">
+      译文, 未开启翻译时为空
+    </ResponseField>
+
+    <ResponseField name="trans_lang" type="string">
+      译文语言, 如 en
+    </ResponseField>
+
+    <ResponseField name="created_at" type="integer">
+      产生时间(秒)
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "ended_at": 0,
+      "sentences": [
+        {
+          "begin_ms": 0,
+          "channel": "",
+          "created_at": 0,
+          "end_ms": 0,
+          "name": "",
+          "sentence": "",
+          "sentence_id": "",
+          "session_id": "",
+          "trans_lang": "",
+          "trans_text": "",
+          "uid": ""
+        }
+      ],
+      "session_id": "",
+      "started_at": 0,
+      "status": 0
+    }
+  ]
+}
+```
+
+---
+
+## 重新生成会议纪要
+
+`POST /server/v1/meet/ai-summary-generate`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+重新生成某场转写的会议纪要，可换用其它纪要模板。异步执行，完成后用「查询会议纪要」获取最新结果。
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID
+</ParamField>
+
+<ParamField body="session_id" type="string" required>
+  转写场次ID，取自「查询会议纪要」返回的 session_id
+</ParamField>
+
+<ParamField body="template_id" type="string">
+  纪要模板ID，空表示用应用设置的默认模板
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "session_id": "",
+  "template_id": ""
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+

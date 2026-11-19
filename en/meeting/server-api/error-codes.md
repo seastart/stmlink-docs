@@ -47,6 +47,8 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `2120` | EnterBeforeHost | Cannot enter the meeting before the host |
 | `2131` | CastCodeInvalid | Cast code is invalid or has expired |
 | `2132` | CastToSelf | Cannot cast to your own device |
+| `2141` | AiNotHost | Only the host or a co-host can do this |
+| `2142` | AiSessionNotInMeeting | This transcription session does not belong to this meeting |
 
 ## Common framework error codes
 

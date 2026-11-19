@@ -119,7 +119,7 @@ track. Which `desc` means microphone or camera is up to your own convention.
 `im_disconnect` has an extra `reason`, with the same values as `user_leave`.
 
 `device_type`: `0` unknown, `1` Windows, `2` Android, `3` iOS, `4` Linux, `5` macOS, `6` WebRTC, `7` WeChat Mini Program.
-From `80` up is the range for agents joining on the server side (`81` MCU, `82` SIP, `83` H.323, `84` GB28181, `85` RTSP, `86` RTMP, `87` file playback, `88` stream distribution, `89` transcription).
+From `80` up is the range for agents joining on the server side (`81` MCU, `82` SIP, `83` H.323, `84` GB28181, `85` RTSP, `86` RTMP, `87` file playback, `88` deprecated (number reserved, no longer used), `89` transcription).
 
 ### `agent_online` / `agent_offline` — Device online / offline
 
@@ -281,6 +281,29 @@ one segment per utterance. This is the data source for live captions, push-to-ta
 `end_reason` is worth watching: `2` means the segment was cut off by the duration limit (one utterance is split into several segments),
 and `5` means the server closed the segment as a fallback. If it appears often, silence detection isn't wrapping up segments properly, and it's worth checking the audio quality.
 
+### `ai_summary_ready` — Meeting minutes generation finished
+
+```json
+{
+  "channel": "fire",
+  "session_id": "as7kq2m9",
+  "status": 2,
+  "error": ""
+}
+```
+
+Sent when generation of the meeting minutes for a speech recognition session finishes, whether it succeeds or finally fails. Minutes come from two paths: if the app has automatic minutes enabled,
+they are generated automatically when the recognition session ends; or you call [Generate meeting minutes](/en/rtc/server-api/ai#generate-meeting-minutes) to generate (or regenerate) them manually.
+
++ `session_id` is the recognition session ID, the same as the one returned by [Start speech recognition](/en/rtc/server-api/asr#start-speech-recognition)
++ `status`: `2` completed, `3` failed; on failure `error` gives the reason, and it is empty on success
++ The minutes content is long and is **not included in the callback**; when you receive it, call [Get meeting minutes](/en/rtc/server-api/ai#get-meeting-minutes) with `session_id`
+
+Retryable failures during generation are retried automatically by the server and are not sent; only when retries are exhausted, or the error can't be fixed by retrying
+(such as no large language model configured, or no transcribed sentences in the session), is a single callback with `status: 3` sent.
+At the same time, the channel also receives a custom message whose `action` is `ai_summary_ready` (carrying only `session_id` and `status`),
+which clients can use to refresh the minutes they display.
+
 ## Synchronous events
 
 For these two events, we **wait for your answer** before continuing, so your handling must be fast (5-second timeout).
@@ -300,7 +323,7 @@ For these two events, we **wait for your answer** before continuing, so your han
 }
 ```
 
-`type` is the agent type: `1` MCU, `2` SIP, `3` H.323, `4` GB28181 surveillance, `5` RTSP stream pull, `6` RTMP stream pull, `7` file playback, `8` stream distribution, `9` transcription.
+`type` is the agent type: `1` MCU, `2` SIP, `3` H.323, `4` GB28181 surveillance, `5` RTSP stream pull, `6` RTMP stream pull, `7` file playback, `8` deprecated (number reserved, no longer used), `9` transcription.
 `no` is the target room number the device wants to join (the meeting number in your own business).
 
 You need to turn it into a session: use `no` to find the corresponding channel, call [Get a channel join token](/en/rtc/server-api/channel#get-a-channel-join-token) to get a `sid`, and return it to us as is:

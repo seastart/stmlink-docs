@@ -54,6 +54,15 @@ description: "服务端 API 响应体中 code 的取值"
 | `1051` | TalkrecRecordNotFound | 未找到语音录制段 |
 | `1052` | TalkrecRecordNoVod | 语音录制段还未生成录音文件 |
 | `1053` | TalkrecGatewayNotFound | 没有可用的语音录制网关 |
+| `1060` | AiProviderNotConfigured | 大模型未配置或未启用 |
+| `1061` | AiLlmCallFailed | 大模型调用失败 |
+| `1062` | AsrSessionNotFound | 识别场次不存在 |
+| `1063` | AsrSessionNoSentence | 识别场次没有转写内容 |
+| `1064` | AiSummaryGenerating | 纪要正在生成中 |
+| `1065` | AiSummaryNotFound | 纪要不存在 |
+| `1066` | AiTemplateNotFound | 纪要模板不存在 |
+| `1070` | StreamOutGatewayNotFound | 没有可用的流输出网关 |
+| `1071` | StreamOutGatewayFailed | 流输出网关签发拉流地址失败 |
 
 ## 框架通用错误码
 

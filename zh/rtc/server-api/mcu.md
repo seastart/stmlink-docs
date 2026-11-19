@@ -1020,17 +1020,12 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
   示例：`fire`
 </ParamField>
 
-<ParamField body="is_lan" type="boolean">
-  是否返回内网播放地址，适合纯内网部署或专线接入；默认返回外网地址
-</ParamField>
-
 
 请求示例：
 
 ```json
 {
   "channel": "fire",
-  "is_lan": false,
   "task_id": "sxjgwy"
 }
 ```
@@ -1433,6 +1428,8 @@ task_type 带了直播位（8）。地址有有效期，不要长期缓存。
 启动时传了 layout_data.push_url（推流模式）的任务，合成流推到你自己的地址，
 没有拉流地址可查，调用本接口会返回错误码 1048。
 
+地址的主机部分固定是直播服务配置的对外地址，本接口不区分内外网。
+
 **请求参数**
 
 <ParamField body="task_id" type="string">
@@ -1445,17 +1442,12 @@ task_type 带了直播位（8）。地址有有效期，不要长期缓存。
   示例：`fire`
 </ParamField>
 
-<ParamField body="is_lan" type="boolean">
-  是否返回内网播放地址，适合纯内网部署或专线接入；默认返回外网地址
-</ParamField>
-
 
 请求示例：
 
 ```json
 {
   "channel": "fire",
-  "is_lan": false,
   "task_id": "sxjgwy"
 }
 ```

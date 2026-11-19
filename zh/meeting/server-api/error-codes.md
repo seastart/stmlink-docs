@@ -47,6 +47,8 @@ description: "服务端 API 响应体中 code 的取值"
 | `2120` | EnterBeforeHost | 不能在主持人进入前加入会议 |
 | `2131` | CastCodeInvalid | 投屏码无效或已过期 |
 | `2132` | CastToSelf | 不能向自己的设备投屏 |
+| `2141` | AiNotHost | 仅主持人或联席主持人可操作 |
+| `2142` | AiSessionNotInMeeting | 该转写场次不属于本会议 |
 
 ## 框架通用错误码
 
