@@ -314,8 +314,8 @@
   "en/meeting/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/recording.md",
-    "zh_blob": "7bc7cfd54bc4e8fbaea71df181fddac2a76fd223",
-    "zh_commit": "813d3a1f33ef1142a6b93e2c57cff9c4d35930e1"
+    "zh_blob": "66412b2104e91b3b2d7dbfe51b03a38db7d3c232",
+    "zh_commit": "d64cae5f7eada6a269f986989e3df374243b2aae"
   },
   "en/meeting/server-api/overview": {
     "reviewed": true,
@@ -734,8 +734,8 @@
   "en/product/deploy/ports": {
     "reviewed": false,
     "source": "zh/product/deploy/ports.md",
-    "zh_blob": "22ed3e56a9af8ee7420c260bc4ccd5684b88299d",
-    "zh_commit": "11789ae6d45a2de1781e0a2988b240e3d9ce2a2e"
+    "zh_blob": "a5b2d4e740bd6bec210853e3686705d3fe2693c7",
+    "zh_commit": "d64cae5f7eada6a269f986989e3df374243b2aae"
   },
   "en/product/device-access/faq": {
     "reviewed": false,
@@ -1262,8 +1262,8 @@
   "en/rtc/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/recording.md",
-    "zh_blob": "53083a2e2ef20a97b574c80490f8febd6653541a",
-    "zh_commit": "813d3a1f33ef1142a6b93e2c57cff9c4d35930e1"
+    "zh_blob": "447afd45f4edeabe8a0952704eeae236e497c788",
+    "zh_commit": "d64cae5f7eada6a269f986989e3df374243b2aae"
   },
   "en/rtc/server-api/overview": {
     "reviewed": true,
