@@ -64,7 +64,7 @@ The currently released version is:
 
 ```groovy
 dependencies {
-    implementation 'cn.seastart.meeting:meeting:2.0.43'
+    implementation 'cn.seastart.meeting:meeting:2.0.44'
 }
 ```
 
