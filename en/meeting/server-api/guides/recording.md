@@ -51,7 +51,10 @@ A meeting has only one in-progress task per type. Calling `start` again with dif
 | --- | --- | --- |
 | When the URL is available | After you receive the `mcu_record_done` callback | While the task is **in progress** |
 | Use | Playback and archiving afterward | Distributing the video to an audience that doesn't take part in the interaction |
-| URL expiration | Yes; get a new URL before each playback | Yes |
+| URL expiration | Yes; get a new URL before each playback | Yes; 24 hours by default, get a new URL before each playback |
+
+The live stream playback URL is HTTP-FLV (H264 video + AAC audio of the channel-wide mix); RTMP and HLS playback URLs are no longer provided (the returned `rtmp` and `hls` are empty).
+To push to your own live streaming platform, pass an `rtmp://` or `rtmps://` push URL in `layout_data.push_url` when starting the task; there is then no playback URL to get.
 
 <Note>To get playback URLs, wait for the [`mcu_record_done` callback](/en/meeting/server-api/guides/callbacks). Don't request them as soon as the task ends—transcoding usually isn't finished yet.</Note>
 

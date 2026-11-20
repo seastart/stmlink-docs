@@ -16,11 +16,13 @@ Start real-time speech recognition for a channel to transcribe what's said into 
 
 + Calling it again for the same channel doesn't start a second recognition session; it returns the session already in progress
 + It recognizes audio from every user in the channel whose mic is on; results carry uid and name to identify the speaker
-+ Each run from start to stop (or until the channel is destroyed) is one recognition session; transcription results and meeting minutes are archived by session
++ One meeting in a channel (from when the channel opens until it is destroyed) is one recognition session; transcription results and meeting minutes are archived by session
++ Stopping and starting again during the meeting (for example, to change the translation language) keeps the original session and returns the original session_id, so a meeting produces only one set of minutes; a new meeting after the channel is destroyed is a new session
 + Query transcription results by session or by channel with "List speech recognition sentences"
 
 Charges accrue continuously once started; it stops automatically when the channel is destroyed. You can also end it early with "Stop speech recognition".
 If the app has automatic minutes enabled, meeting minutes are generated when the session ends, and the channel message ai_summary_ready is sent when they are ready;
+if the same session is started again and ends, the minutes are regenerated from all transcripts and overwrite the original ones;
 if translate_lang is passed (or the app has real-time translation enabled), the translation of each finalized sentence is delivered through the channel message asr_trans.
 
 **Request parameters**
@@ -112,7 +114,7 @@ Response example:
 
 Authentication: required (see [Overview](/en/rtc/server-api/overview))
 
-List the app's speech recognition sessions with pagination, with the meeting minutes status of each. Each run from start to stop (or until the channel is destroyed) is one session.
+List the app's speech recognition sessions with pagination, with the meeting minutes status of each. One meeting in a channel (from open to destroy) is one session; stopping and starting again during the meeting stays in the same session.
 
 Channel names get reused (the same meeting room hosts meetings every day), so sessions are what tell the transcriptions and minutes of each meeting apart.
 

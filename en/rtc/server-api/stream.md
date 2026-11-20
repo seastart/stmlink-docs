@@ -97,10 +97,13 @@ Response example:
 
 Authentication: required (see [Overview](/en/rtc/server-api/overview))
 
-Get an HTTP-FLV pull URL for one user's video in a channel. The server subscribes to the user's video as an audience member
-and outputs it as HTTP-FLV as is, without transcoding; suited to players or third-party platforms that accept only FLV.
+Get the HTTP-FLV pull URL of a user in the channel (video + optional audio). The server subscribes to the user's video as an audience member,
+and outputs the video as HTTP-FLV without transcoding, suitable for players or third-party platforms that only accept FLV.
 
-+ Video only, no audio. The video must be H264; if the publisher uses VP8 or another codec, pull requests get a 404, so have the publisher use H264
++ By default the same user's audio is included (audio=same): this API used to output video only and now includes audio by default; pass audio=none if you only want video
++ You can choose another audio source: mix for the channel's mixed audio (requires an in-progress stream mixing or live streaming task in the channel), or user for a specific user's audio (with audio_uid).
+For example, "presenter's video + channel mixed audio" is uid=presenter, audio=mix
++ Audio is transcoded to AAC on the server; the video must be H264, and if the publisher uses VP8 or another codec, pull requests get a 404, so have the publisher use H264
 + The URL is signed and can be pulled repeatedly by multiple players until it expires; after expiry, new pull requests are rejected, while playback already in progress is not affected
 + The server subscribes only when someone pulls and unsubscribes automatically after the last player disconnects, so an unused URL consumes no resources; there is no stop endpoint to call
 + It doesn't check whether the channel is open or the user is online, so you can generate the URL in advance; if the user hasn't published yet when a player pulls, the player gets a 404 and should retry
@@ -125,6 +128,21 @@ The actual validity period is the returned expire_at (the server-side limit may 
   Example: `camera`
 </ParamField>
 
+<ParamField body="audio" type="string">
+  Audio source: same for the same user's audio (default), none for no audio, mix for the channel's mixed audio (requires an in-progress stream mixing or live streaming task in the channel), or user for a specific user's audio (audio_uid is then required)
+  Example: `same`
+</ParamField>
+
+<ParamField body="audio_uid" type="string">
+  Required when audio is user: whose audio to use (letters, digits, underscores (_), and hyphens (-) only)
+  Example: `1002`
+</ParamField>
+
+<ParamField body="audio_desc" type="string">
+  Audio track description, used to pick one track when the user publishes multiple audio tracks; defaults to the first one. Takes effect when audio is same or user (max length 50)
+  Example: `mic`
+</ParamField>
+
 <ParamField body="expire" type="integer">
   URL validity period (seconds); defaults to one hour if omitted, up to one day
   Example: `3600`
@@ -135,6 +153,9 @@ Request example:
 
 ```json
 {
+  "audio": "same",
+  "audio_desc": "mic",
+  "audio_uid": "1002",
   "channel": "fire",
   "desc": "camera",
   "expire": 3600,

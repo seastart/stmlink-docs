@@ -63,6 +63,7 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1066` | AiTemplateNotFound | Summary template not found |
 | `1070` | StreamOutGatewayNotFound | No stream output gateway available |
 | `1071` | StreamOutGatewayFailed | Stream output gateway failed to issue the stream URL |
+| `1072` | LivePushGatewayNotFound | No live push gateway available |
 
 ## Common framework error codes
 

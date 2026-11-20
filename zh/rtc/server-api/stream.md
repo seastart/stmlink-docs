@@ -97,10 +97,13 @@ description: "把频道内某个用户的音视频以 RTSP / HTTP-FLV 拉流地�
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-获取频道内某个用户视频的 HTTP-FLV 拉流地址。服务端以观众身份订阅该用户的视频，
-不转码、原样封装成 HTTP-FLV 输出，适合接进只认 FLV 的播放器或第三方平台。
+获取频道内某个用户的 HTTP-FLV 拉流地址（视频 + 可选音频）。服务端以观众身份订阅该用户的视频，
+视频不转码、原样封装成 HTTP-FLV 输出，适合接进只认 FLV 的播放器或第三方平台。
 
-+ 只出视频，不含音频；视频须为 H264，发布端使用 VP8 等其它编码时拉流会收到 404，请让发布端使用 H264
++ 默认带同一用户的音频（audio=same）：此前本接口只出视频，现在默认有声音；只要画面请传 audio=none
++ 音频可另选来源：mix 房间合成音频（频道内须有进行中的合流或直播任务）、user 指定用户的音频（配 audio_uid）。
+例如「主讲人画面 + 房间混音」即 uid=主讲人、audio=mix
++ 音频由服务端转成 AAC 封装；视频须为 H264，发布端使用 VP8 等其它编码时拉流会收到 404，请让发布端使用 H264
 + 地址自带签名，有效期内可被多个拉流端反复拉取；过期后新的拉流请求会被拒绝，已在播放的不受影响
 + 有人来拉时才订阅，最后一个拉流端断开后自动退订，不拉不占资源；无需调用停止接口
 + 不校验频道是否开启、用户是否在线，地址可提前生成；拉流时该用户还没发布，拉流端会收到 404，需重试
@@ -125,6 +128,21 @@ description: "把频道内某个用户的音视频以 RTSP / HTTP-FLV 拉流地�
   示例：`camera`
 </ParamField>
 
+<ParamField body="audio" type="string">
+  音频来源：same 同一用户的音频（默认）、none 不要音频、mix 房间合成音频（频道内须有进行中的合流/直播任务）、 user 指定用户的音频（须同时传 audio_uid）
+  示例：`same`
+</ParamField>
+
+<ParamField body="audio_uid" type="string">
+  audio 为 user 时必填：取哪个用户的音频（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`1002`
+</ParamField>
+
+<ParamField body="audio_desc" type="string">
+  音频轨道描述，该用户发布多路音频时用来指定其中一路；不传取第一路。audio 为 same 或 user 时生效（最大长度 50）
+  示例：`mic`
+</ParamField>
+
 <ParamField body="expire" type="integer">
   地址有效期（秒），不传时默认一小时，最长一天
   示例：`3600`
@@ -135,6 +153,9 @@ description: "把频道内某个用户的音视频以 RTSP / HTTP-FLV 拉流地�
 
 ```json
 {
+  "audio": "same",
+  "audio_desc": "mic",
+  "audio_uid": "1002",
   "channel": "fire",
   "desc": "camera",
   "expire": 3600,

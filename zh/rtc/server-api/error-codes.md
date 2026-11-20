@@ -63,6 +63,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `1066` | AiTemplateNotFound | 纪要模板不存在 |
 | `1070` | StreamOutGatewayNotFound | 没有可用的流输出网关 |
 | `1071` | StreamOutGatewayFailed | 流输出网关签发拉流地址失败 |
+| `1072` | LivePushGatewayNotFound | 没有可用的直播推流网关 |
 
 ## 框架通用错误码
 

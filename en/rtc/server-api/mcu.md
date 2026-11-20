@@ -1093,6 +1093,12 @@ Authentication: required (see [Overview](/en/rtc/server-api/overview))
 Start a server-side recording, stream mixing, or live streaming task. A channel has only one in-progress task per type:
 calling again doesn't create a new task but updates the existing one with the parameters passed in.
 
+A live stream (task_type includes 8) can be used in two ways:
++ Pull mode (no layout_data.push_url): while the task is in progress, get a signed HTTP-FLV URL with "Get live stream playback URL"
++ Push mode (layout_data.push_url set): the server pushes the composite video to your RTMP URL (rtmp:// and rtmps:// are supported); the audio source is set by push_audio
+(mix for the channel's mixed audio, default; none for no audio; user for a specific user's audio, with push_audio_uid and optionally push_audio_desc).
+The push reconnects automatically after a disconnection, and persistent failures are reported through the MCU alarm callback; if no push service is available, this API returns error code 1072
+
 **Request parameters**
 
 <ParamField body="task_type" type="integer" required>
@@ -1223,8 +1229,23 @@ calling again doesn't create a new task but updates the existing one with the pa
     </ParamField>
 
     <ParamField body="push_url" type="string">
-      Push URL, effective only when task_type includes 8 (live stream): if set, the mixed stream is pushed to this URL instead of the built-in live server (so no playback URL can be queried). Only rtmp:// is supported for now. When calling the start API again on a running task, omitting it keeps the original URL
+      Push URL, effective only when task_type includes 8 (live stream): if set, the composite video is pushed to this URL (push mode) and no playback URL is provided. rtmp:// and rtmps:// are supported, and the URL must include the stream key (URLs with an empty stream name, such as rtmp://host/app/, are rejected). When calling the start API again on a running task, omitting it keeps the original URL and its audio source
       Example: `rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
+    <ParamField body="push_audio" type="string">
+      Audio source for the push, effective only when push_url is set: mix for the channel's mixed audio (default), none for no audio, or user for a specific user's audio (push_audio_uid is then required)
+      Example: `mix`
+    </ParamField>
+
+    <ParamField body="push_audio_uid" type="string">
+      Required when push_audio is user: whose audio to use
+      Example: `1001`
+    </ParamField>
+
+    <ParamField body="push_audio_desc" type="string">
+      Optional when push_audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the user's first audio track
+      Example: `mic`
     </ParamField>
 
   </Expandable>
@@ -1261,6 +1282,9 @@ Request example:
     "names": {},
     "nobody_text": "",
     "polling_dur": 0,
+    "push_audio": "mix",
+    "push_audio_desc": "mic",
+    "push_audio_uid": "1001",
     "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
@@ -1420,15 +1444,19 @@ Response example:
 
 Authentication: required (see [Overview](/en/rtc/server-api/overview))
 
-Get live stream playback URLs; returns rtmp / flv / hls URLs at once, so you can choose one for your player.
+Get the live stream playback URL: returns the HTTP-FLV URL of the composite video (H264 video + AAC audio); rtmp and hls are discontinued and always empty.
 
-Unlike recording playback, live stream URLs are available while the task is **in progress**—provided that
-task_type included the live streaming bit (8) when the task was started. The URLs expire; don't cache them long term.
+Unlike recording playback, the live stream URL is available while the task is **in progress**—provided that
+task_type included the live streaming bit (8) when the task was started.
 
-For a task started with layout_data.push_url (push mode), the mixed stream is pushed to your own URL,
++ The URL is signed and valid for 24 hours by default (adjustable with expire, up to one day); after expiry, new pull requests are rejected, while playback already in progress is not affected.
+Just call this API to get a fresh URL before playback; don't cache it for long
++ The audio source is selectable: mix for the channel's mixed audio (default), none for no audio, or user for a specific user's audio track (with audio_uid and audio_desc)
++ The server subscribes only when someone pulls and unsubscribes automatically after the last player disconnects; when the task stops, pulls are disconnected
+
+For a task started with layout_data.push_url (push mode), the composite stream is pushed to your own URL,
 so there is no playback URL to query and this API returns error code 1048.
-
-The host part of the URLs is always the public address configured for the live streaming service; this API doesn't distinguish between internal and public networks.
+The actual validity is given by the returned expire_at (the server-side cap may be shorter than requested).
 
 **Request parameters**
 
@@ -1442,12 +1470,36 @@ The host part of the URLs is always the public address configured for the live s
   Example: `fire`
 </ParamField>
 
+<ParamField body="audio" type="string">
+  Audio source: mix for the channel's mixed audio (default), none for no audio, or user for a specific user's audio (audio_uid is then required)
+  Example: `mix`
+</ParamField>
+
+<ParamField body="audio_uid" type="string">
+  Required when audio is user: whose audio to use (letters, digits, underscores (_), and hyphens (-) only)
+  Example: `1001`
+</ParamField>
+
+<ParamField body="audio_desc" type="string">
+  Optional when audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the first one (max length 50)
+  Example: `mic`
+</ParamField>
+
+<ParamField body="expire" type="integer">
+  URL validity in seconds; defaults to 24 hours if omitted, up to one day
+  Example: `86400`
+</ParamField>
+
 
 Request example:
 
 ```json
 {
+  "audio": "mix",
+  "audio_desc": "mic",
+  "audio_uid": "1001",
   "channel": "fire",
+  "expire": 86400,
   "task_id": "sxjgwy"
 }
 ```
@@ -1455,15 +1507,21 @@ Request example:
 **Response parameters**
 
 <ResponseField name="rtmp" type="string">
-  RTMP playback URL; lowest latency, suited to players that need low latency
+  Discontinued; always an empty string (kept so that existing callers don't fail to parse)
 </ResponseField>
 
 <ResponseField name="flv" type="string">
-  HTTP-FLV playback URL, commonly used on the Web
+  HTTP-FLV playback URL (composite video in H264 + AAC audio); signed, and can be pulled repeatedly until it expires
+  Example: `http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv`
 </ResponseField>
 
 <ResponseField name="hls" type="string">
-  HLS (m3u8) playback URL; best compatibility, relatively higher latency
+  Discontinued; always an empty string (kept so that existing callers don't fail to parse)
+</ResponseField>
+
+<ResponseField name="expire_at" type="integer">
+  Expiry time of the flv URL, Unix timestamp in seconds; after expiry, new pull requests are rejected, while playback already in progress is not affected
+  Example: `1718198266`
 </ResponseField>
 
 
@@ -1473,7 +1531,8 @@ Response example:
 {
   "code": 0,
   "data": {
-    "flv": "",
+    "expire_at": 1718198266,
+    "flv": "http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv",
     "hls": "",
     "rtmp": ""
   }

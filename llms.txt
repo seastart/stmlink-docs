@@ -515,7 +515,7 @@
 ## 产品与部署 · 私有化部署
 
 - [组件与架构](https://docs.stmlink.com/zh/product/deploy/architecture.md): 私有化部署一套 SRTC / SMeeting 由哪些服务组成、哪些必装哪些按需装、装的顺序、支持的操作系统和数据库（含人大金仓、达梦）、单机与多机部署方式。做部署规划和准备服务器前先读这页
-- [网络与端口要求](https://docs.stmlink.com/zh/product/deploy/ports.md): 私有化部署要开放哪些端口：客户端必开的 443/TCP、18883/TCP、39001/UDP，设备网关的 SIP / H.323 / GB28181 端口与 RTP 端口段，多节点与 MCU 直播端口，哪些端口严禁对外，附防火墙命令。给客户网络、安全部门提开墙申请时直接用
+- [网络与端口要求](https://docs.stmlink.com/zh/product/deploy/ports.md): 私有化部署要开放哪些端口：客户端必开的 443/TCP、18883/TCP、39001/UDP，设备网关的 SIP / H.323 / GB28181 端口与 RTP 端口段，多节点、媒体网关（单路拉流与直播）端口，哪些端口严禁对外，附防火墙命令。给客户网络、安全部门提开墙申请时直接用
 - [内外网与多线路](https://docs.stmlink.com/zh/product/deploy/networks.md): 一套私有化平台同时服务内网用户和外网用户怎么部署：什么是网络线路（内网/外网）、每条线路要准备的入口地址和媒体地址、入口与出口 IP 不同的机房要注意什么，以及业务系统如何让用户走对线路
 - [多节点与就近接入](https://docs.stmlink.com/zh/product/deploy/multi-node.md): 一台媒体服务器不够用、或用户分布在多个机房/地区时怎么部署：多媒体节点如何按负载分配频道、节点满载后同一场会议如何溢出到其它节点、如何按地区分组让用户就近接入，以及容量配置、部署前提与限制。做大并发或多地域方案前读这页
 - [光闸跨网接入](https://docs.stmlink.com/zh/product/deploy/optical-gap.md): 平台部署在内网、内外网之间用光闸（网闸）隔离时，外网用户如何入会：RTSP 隧道穿透方案的原理、部署架构、光闸需要放行什么、外网只需 3 条通道、部署条件与使用限制。公检法、政务等强隔离网络的方案沟通用
@@ -967,7 +967,7 @@
 ## [EN] Product & deployment · Self-hosted deployment
 
 - [Components and architecture](https://docs.stmlink.com/en/product/deploy/architecture.md): Which services make up a self-hosted SRTC / SMeeting deployment, which are required or optional, install order, supported OSes and databases, and single- vs. multi-server layouts. Read before planning a deployment and preparing servers.
-- [Network and port requirements](https://docs.stmlink.com/en/product/deploy/ports.md): Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and MCU live ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams.
+- [Network and port requirements](https://docs.stmlink.com/en/product/deploy/ports.md): Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and media gateway (single-stream pull and live streaming) ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams.
 - [Internal network and public internet](https://docs.stmlink.com/en/product/deploy/networks.md): Deploying one self-hosted platform for internal and public-internet users: what network lines are, the entry and media addresses each line needs, pitfalls when a data center's inbound and outbound IPs differ, and how your business system puts users on the right line.
 - [Multiple nodes and nearest access](https://docs.stmlink.com/en/product/deploy/multi-node.md): Deploying when one media server isn't enough or users are spread across data centers and regions: how multiple media nodes share channels by load, how a meeting overflows to other nodes when its node is full, how users connect to the nearest node by server group, plus capacity settings, prerequisites, and limits. Read before planning high-concurrency or multi-region deployments.
 - [Access across a cross-domain solution](https://docs.stmlink.com/en/product/deploy/optical-gap.md): How public-internet users enter meetings when the platform sits behind a cross-domain solution (CDS): the RTSP tunnel, architecture, what the gateway must allow, only 3 channels needed, prerequisites, and limits. For strongly isolated government networks.

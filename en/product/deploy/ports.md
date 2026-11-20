@@ -1,6 +1,6 @@
 ---
 title: "Network and port requirements"
-description: "Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and MCU live ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams."
+description: "Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and media gateway (single-stream pull and live streaming) ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams."
 ---
 
 **The short version**: a standard deployment only needs to open three ports to clients—**443/TCP, 18883/TCP, and 39001/UDP**;
@@ -77,17 +77,18 @@ In a single-server deployment, services talk over loopback, so **nothing extra n
 
 ---
 
-## MCU live streaming (optional, off by default)
+## Media gateway: single-stream pull and live streaming (optional)
 
-Needed only when using the MCU's built-in live streaming:
+Needed only when the media gateway is deployed and you use single-stream pull or live stream playback. Open them only to the pulling side (business systems, live audiences):
 
 | Port | Protocol | Purpose |
 | --- | --- | --- |
-| 1935 | TCP | RTMP |
-| 7001 | TCP | HTTP-FLV playback |
-| 7002 | TCP | HLS playback |
+| 8554 | TCP | RTSP single-stream pull |
+| 8556 | TCP | HTTP-FLV pull (single streams and the live composite video, with audio) |
 
-These ports have no encryption or authentication. For public audiences, we recommend reverse proxying them through 443 instead of exposing them directly.
+Pull URLs are signed and expire, but don't open the ports to the whole internet; for public audiences, we recommend reverse proxying them through 443.
+Pushing a live stream to a third-party platform needs outbound access from the media gateway; see "Outbound connections from servers" below.
+The MCU's built-in live streaming ports (1935 / 7001 / 7002) are no longer used; keep them closed.
 
 ---
 
@@ -116,7 +117,8 @@ On internal-only networks, the following features need **outbound** access from 
 | Event callbacks | The callback URL of the customer's business system (443 / 80) |
 | Storing recordings in object storage | OSS / S3 endpoint (443) |
 | Speech recognition | Recognition engine service (default 10096) |
-| MCU re-streaming / stream pulling | CDN (1935 / 443), cameras (554) |
+| Live stream push to a third-party platform (media gateway) | RTMP (1935) or RTMPS (443) of the live streaming platform / CDN |
+| Device gateway pulling camera streams | Cameras (554) |
 
 ---
 

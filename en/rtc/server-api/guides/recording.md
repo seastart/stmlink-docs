@@ -16,7 +16,7 @@ This page covers how cloud recording and live streaming work as a whole. For the
 | 1 | Video recording | Recording files (possibly several segments) | [Get a recording file's playback URL](/en/rtc/server-api/mcu#get-a-recording-files-playback-url) |
 | 2 | Stream mixing | Mixes multiple streams into one | Re-streaming, for downstream systems that don't support multiple streams |
 | 4 | Audio recording | Audio-only file | Same as video recording |
-| 8 | Live stream | Live stream playback URL | [Get live stream playback URLs](/en/rtc/server-api/mcu#get-live-stream-playback-urls) |
+| 8 | Live stream | HTTP-FLV live stream playback URL, or a push to your live streaming platform | [Get live stream playback URLs](/en/rtc/server-api/mcu#get-live-stream-playback-urls); see "Live streaming: pull and push" below |
 
 So `3` = video recording + stream mixing, `9` = video recording + live stream, and `15` = all four.
 
@@ -73,9 +73,24 @@ You can run both at the same time; they don't affect each other.
 | --- | --- | --- |
 | When the URL is available | After the task **stops and transcoding finishes** | While the task is **in progress** |
 | Use | Playback and archiving afterward | Distributing the video to an audience that doesn't take part in the interaction |
-| URL expiration | Yes; get a new URL before each playback | Yes |
+| URL expiration | Yes; get a new URL before each playback | Yes; 24 hours by default, get a new URL before each playback |
 
 This difference determines the call sequence: a live stream "can be distributed as soon as it starts", while a recording "has output only after it ends".
+
+## Live streaming: pull and push
+
+A task whose `task_type` includes `8` works in one of two modes, depending on whether `layout_data.push_url` is passed when the task is started:
+
+| | Pull mode (no `push_url`) | Push mode (`push_url` set) |
+| --- | --- | --- |
+| How viewers watch | Call [Get live stream playback URLs](/en/rtc/server-api/mcu#get-live-stream-playback-urls) for an HTTP-FLV URL and play it on the web with a player such as flv.js | Your live streaming platform / CDN distributes it |
+| Protocol | HTTP-FLV (H264 video + AAC audio) | `rtmp://` or `rtmps://` |
+| Audio | `audio`: `mix` channel-wide mixed audio (default) / `none` / `user` a specific user | `layout_data.push_audio`, same values |
+| URL | Signed, valid for 24 hours by default; after expiry new pull requests are rejected, while playback in progress continues | The push URL you provide (must include the stream key) |
+
++ The video is always the composite video arranged by the layout. RTMP and HLS playback URLs are no longer provided (`rtmp` and `hls` returned by `live-url` are always empty); if you need them, use push mode to push to your own platform
++ In push mode, `live-url` returns error code `1048`. The push reconnects automatically after a disconnection, and persistent failures are reported through the [`mcu_alarm` callback](/en/rtc/server-api/guides/callbacks); if no push service is available, starting the task returns `1072`
++ Self-hosted deployments need the media gateway deployed and the corresponding ports opened; see [Network and port requirements](/en/product/deploy/ports)
 
 ## Choosing a layout
 
