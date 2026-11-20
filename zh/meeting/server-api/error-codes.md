@@ -45,6 +45,10 @@ description: "服务端 API 响应体中 code 的取值"
 | `2117` | ShareNotAllow | 不允许共享 |
 | `2118` | EnterWaitingRoom | 加入会议失败，进入了等候室 |
 | `2120` | EnterBeforeHost | 不能在主持人进入前加入会议 |
+| `2121` | UserShareDisabled | 你的账号没有共享权限，请联系管理员 |
+| `2122` | UserCameraDisabled | 你的账号没有开摄像头权限，请联系管理员 |
+| `2123` | TargetShareDisabled | 该成员的账号没有共享权限 |
+| `2124` | TargetCameraDisabled | 该成员的账号没有开摄像头权限 |
 | `2131` | CastCodeInvalid | 投屏码无效或已过期 |
 | `2132` | CastToSelf | 不能向自己的设备投屏 |
 | `2141` | AiNotHost | 仅主持人或联席主持人可操作 |

@@ -1350,8 +1350,23 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ParamField>
 
     <ParamField body="push_url" type="string">
-      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成画面推到该地址(推流模式), 不再提供拉流地址; 支持 rtmp:// 与 rtmps://, 须带推流码(如 rtmp://host/app/ 这类流名为空的地址会被拒绝)。 任务进行中再次调用开始接口时不传则沿用原地址及其音频来源; 没有可用的推流服务时返回错误码 1072
       示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
+    <ParamField body="push_audio" type="string">
+      推流的音频来源, 仅传了 push_url 时生效: mix 房间合成音频(默认)、none 不要音频、user 某个用户的音频(须同时传 push_audio_uid)
+      示例：`mix`
+    </ParamField>
+
+    <ParamField body="push_audio_uid" type="string">
+      push_audio 为 user 时必填: 取哪个用户的音频(会中用户ID)
+      示例：`1001`
+    </ParamField>
+
+    <ParamField body="push_audio_desc" type="string">
+      push_audio 为 user 时可选: 该用户的哪条音频轨道(按轨道描述精确匹配), 不传取该用户的第一条音频
+      示例：`mic`
     </ParamField>
 
   </Expandable>
@@ -1412,6 +1427,9 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_audio": "mix",
+    "push_audio_desc": "mic",
+    "push_audio_uid": "1001",
     "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
@@ -1676,8 +1694,23 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     </ParamField>
 
     <ParamField body="push_url" type="string">
-      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成画面推到该地址(推流模式), 不再提供拉流地址; 支持 rtmp:// 与 rtmps://, 须带推流码(如 rtmp://host/app/ 这类流名为空的地址会被拒绝)。 任务进行中再次调用开始接口时不传则沿用原地址及其音频来源; 没有可用的推流服务时返回错误码 1072
       示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
+    <ParamField body="push_audio" type="string">
+      推流的音频来源, 仅传了 push_url 时生效: mix 房间合成音频(默认)、none 不要音频、user 某个用户的音频(须同时传 push_audio_uid)
+      示例：`mix`
+    </ParamField>
+
+    <ParamField body="push_audio_uid" type="string">
+      push_audio 为 user 时必填: 取哪个用户的音频(会中用户ID)
+      示例：`1001`
+    </ParamField>
+
+    <ParamField body="push_audio_desc" type="string">
+      push_audio 为 user 时可选: 该用户的哪条音频轨道(按轨道描述精确匹配), 不传取该用户的第一条音频
+      示例：`mic`
     </ParamField>
 
   </Expandable>
@@ -1736,6 +1769,9 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_audio": "mix",
+    "push_audio_desc": "mic",
+    "push_audio_uid": "1001",
     "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",

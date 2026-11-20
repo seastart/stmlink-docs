@@ -1030,7 +1030,14 @@ Response example:
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
-Get live stream URLs
+Get the live stream playback URL: returns the HTTP-FLV URL of the composite video (H264 video + AAC audio); rtmp and hls are discontinued and always empty.
+
+The live URL is available while the task is **in progress**, provided that task_type included the live stream bit (8) when the task was started.
+
+- The URL is signed and valid for 24 hours by default (adjustable with expire, up to one day); after expiry, new pull requests are rejected, while playback already in progress is not affected.
+Just call this API to get a fresh URL before playback; don't cache it for long. The actual validity is given by the returned expire_at
+- The audio source is selectable: mix for the meeting's mixed audio (default), none for no audio, or user for one audio track of a specific user (with audio_uid and audio_desc)
+- The stream is subscribed only when someone pulls it, and unsubscribed automatically after the last puller disconnects; pulling stops when the task stops
 
 If layout_data.push_url was passed when starting the task (push mode), the mixed stream is pushed to your own URL and there is no playback URL to query; error code 1048 is returned.
 
@@ -1041,7 +1048,27 @@ If layout_data.push_url was passed when starting the task (push mode), the mixed
 </ParamField>
 
 <ParamField body="meeting_id" type="string">
-  Meeting ID
+  Meeting ID (required if room_no is not set)
+</ParamField>
+
+<ParamField body="audio" type="string">
+  Audio source: mix for the meeting's mixed audio (default), none for no audio, or user for a specific user's audio (audio_uid is then required)
+  Example: `mix`
+</ParamField>
+
+<ParamField body="audio_uid" type="string">
+  Required when audio is user: whose audio to use (in-meeting user ID) (max length 64)
+  Example: `1001`
+</ParamField>
+
+<ParamField body="audio_desc" type="string">
+  Optional when audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the first one (max length 50)
+  Example: `mic`
+</ParamField>
+
+<ParamField body="expire" type="integer">
+  URL validity in seconds; defaults to 24 hours if omitted, up to one day
+  Example: `86400`
 </ParamField>
 
 
@@ -1049,6 +1076,10 @@ Request example:
 
 ```json
 {
+  "audio": "mix",
+  "audio_desc": "mic",
+  "audio_uid": "1001",
+  "expire": 86400,
   "meeting_id": "",
   "room_no": ""
 }
@@ -1057,15 +1088,21 @@ Request example:
 **Response parameters**
 
 <ResponseField name="rtmp" type="string">
-  RTMP playback URL
+  Discontinued; always an empty string (kept so that existing callers don't fail to parse)
 </ResponseField>
 
 <ResponseField name="flv" type="string">
-  HTTP-FLV playback URL
+  HTTP-FLV playback URL (composite video in H264 + AAC audio); signed, and can be pulled repeatedly until it expires
+  Example: `http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv`
 </ResponseField>
 
 <ResponseField name="hls" type="string">
-  HLS playback URL
+  Discontinued; always an empty string (kept so that existing callers don't fail to parse)
+</ResponseField>
+
+<ResponseField name="expire_at" type="integer">
+  Expiry time of the flv URL, Unix timestamp in seconds; after expiry, new pull requests are rejected, while playback already in progress is not affected
+  Example: `1718198266`
 </ResponseField>
 
 
@@ -1075,7 +1112,8 @@ Response example:
 {
   "code": 0,
   "data": {
-    "flv": "",
+    "expire_at": 1718198266,
+    "flv": "http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv",
     "hls": "",
     "rtmp": ""
   }
@@ -1177,6 +1215,12 @@ Response example:
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
 Start a recording task
+
+A live stream (task_type includes 8) can be used in two ways:
+- Pull mode (no layout_data.push_url): while the task is in progress, get a signed HTTP-FLV URL with "Get live stream playback URL"
+- Push mode (layout_data.push_url set): the server pushes the composite video to your RTMP URL (rtmp:// and rtmps:// are supported); the audio source is set by push_audio
+(mix for the meeting's mixed audio, the default; none for no audio; user for a specific user's audio, with push_audio_uid and optionally push_audio_desc).
+The push reconnects automatically after a disconnection; this API returns error code 1072 if no push service is available
 
 **Request parameters**
 
@@ -1298,8 +1342,23 @@ Start a recording task
     </ParamField>
 
     <ParamField body="push_url" type="string">
-      Push URL, effective only when task_type includes 8 (live stream): if set, the mixed stream is pushed to this URL instead of the built-in live server (so no playback URL can be queried). Only rtmp:// is supported for now. When calling the start API again on a running task, omitting it keeps the original URL
+      Push URL, effective only when task_type includes 8 (live stream): if set, the composite video is pushed to this URL (push mode) and no playback URL is provided. rtmp:// and rtmps:// are supported, and the URL must include the stream key (URLs with an empty stream name, such as rtmp://host/app/, are rejected). When calling the start API again on a running task, omitting it keeps the original URL and its audio source; error code 1072 is returned if no push service is available
       Example: `rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
+    <ParamField body="push_audio" type="string">
+      Audio source for the push, effective only when push_url is set: mix for the meeting's mixed audio (default), none for no audio, or user for a specific user's audio (push_audio_uid is then required)
+      Example: `mix`
+    </ParamField>
+
+    <ParamField body="push_audio_uid" type="string">
+      Required when push_audio is user: whose audio to use (in-meeting user ID)
+      Example: `1001`
+    </ParamField>
+
+    <ParamField body="push_audio_desc" type="string">
+      Optional when push_audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the user's first audio track
+      Example: `mic`
     </ParamField>
 
   </Expandable>
@@ -1334,6 +1393,9 @@ Request example:
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_audio": "mix",
+    "push_audio_desc": "mic",
+    "push_audio_uid": "1001",
     "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",

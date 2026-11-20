@@ -45,6 +45,10 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `2117` | ShareNotAllow | Sharing not allowed |
 | `2118` | EnterWaitingRoom | Could not enter the meeting; placed in the waiting room |
 | `2120` | EnterBeforeHost | Cannot enter the meeting before the host |
+| `2121` | UserShareDisabled | Your account is not allowed to share. Contact the administrator |
+| `2122` | UserCameraDisabled | Your account is not allowed to turn on the camera. Contact the administrator |
+| `2123` | TargetShareDisabled | This member's account is not allowed to share |
+| `2124` | TargetCameraDisabled | This member's account is not allowed to turn on the camera |
 | `2131` | CastCodeInvalid | Cast code is invalid or has expired |
 | `2132` | CastToSelf | Cannot cast to your own device |
 | `2141` | AiNotHost | Only the host or a co-host can do this |

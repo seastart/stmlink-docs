@@ -1030,7 +1030,14 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
 
-获取直播地址
+获取直播拉流地址：返回合成画面的 HTTP-FLV 地址（视频 H264 + 音频 AAC），rtmp、hls 已停用恒为空。
+
+直播地址在任务**进行中**就能取到 —— 前提是启动任务时 task_type 带了直播位（8）。
+
+- 地址自带签名，默认 24 小时有效（expire 可调，最长一天），过期后新的拉流请求会被拒绝，已在播放的不受影响；
+播放前调一次本接口取新地址即可，不要长期缓存。实际有效期以返回的 expire_at 为准
+- 音频来源可选：mix 房间合成音频（默认）、none 不要音频、user 指定用户的某条音频（配 audio_uid、audio_desc）
+- 有人来拉时才订阅，最后一个拉流端断开后自动退订；任务停止后拉流随之断开
 
 启动任务时传了 layout_data.push_url（推流模式）的，合成流推到你自己的地址，没有拉流地址可查，会返回错误码 1048。
 
@@ -1041,7 +1048,27 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 </ParamField>
 
 <ParamField body="meeting_id" type="string">
-  会议ID
+  会议ID(无RoomNo时必填)
+</ParamField>
+
+<ParamField body="audio" type="string">
+  音频来源：mix 房间合成音频（默认）、none 不要音频、user 指定用户的音频（须同时传 audio_uid）
+  示例：`mix`
+</ParamField>
+
+<ParamField body="audio_uid" type="string">
+  audio 为 user 时必填：取哪个用户的音频（会中用户ID）（最大长度 64）
+  示例：`1001`
+</ParamField>
+
+<ParamField body="audio_desc" type="string">
+  audio 为 user 时可选：该用户的哪条音频轨道（按轨道描述精确匹配），不传取第一条（最大长度 50）
+  示例：`mic`
+</ParamField>
+
+<ParamField body="expire" type="integer">
+  地址有效期（秒），不传时默认 24 小时，最长一天
+  示例：`86400`
 </ParamField>
 
 
@@ -1049,6 +1076,10 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 ```json
 {
+  "audio": "mix",
+  "audio_desc": "mic",
+  "audio_uid": "1001",
+  "expire": 86400,
   "meeting_id": "",
   "room_no": ""
 }
@@ -1057,15 +1088,21 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 **响应参数**
 
 <ResponseField name="rtmp" type="string">
-  RTMP 拉流地址
+  已停用，恒为空字符串（保留字段免得老调用方解析出错）
 </ResponseField>
 
 <ResponseField name="flv" type="string">
-  HTTP-FLV 拉流地址
+  HTTP-FLV 拉流地址（合成画面 H264 + AAC 音频），自带签名，有效期内可反复拉
+  示例：`http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv`
 </ResponseField>
 
 <ResponseField name="hls" type="string">
-  HLS 拉流地址
+  已停用，恒为空字符串（保留字段免得老调用方解析出错）
+</ResponseField>
+
+<ResponseField name="expire_at" type="integer">
+  flv 地址过期时间，秒级时间戳；过期后新的拉流请求会被拒绝，已在播放的不受影响
+  示例：`1718198266`
 </ResponseField>
 
 
@@ -1075,7 +1112,8 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 {
   "code": 0,
   "data": {
-    "flv": "",
+    "expire_at": 1718198266,
+    "flv": "http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv",
     "hls": "",
     "rtmp": ""
   }
@@ -1177,6 +1215,12 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
 
 开始录制任务
+
+直播流（task_type 含 8）有两种用法：
+- 拉流模式（不传 layout_data.push_url）：任务进行中用「获取直播拉流地址」取带签名的 HTTP-FLV 地址
+- 推流模式（传 layout_data.push_url）：服务端把合成画面推到你的 RTMP 地址（支持 rtmp:// 与 rtmps://）；音频来源由 push_audio 指定
+（mix 房间合成音频，默认；none 不要音频；user 指定用户的音频，配 push_audio_uid、可选 push_audio_desc）。
+推流断线会自动重连；没有可用的推流服务时本接口返回错误码 1072
 
 **请求参数**
 
@@ -1298,8 +1342,23 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
     </ParamField>
 
     <ParamField body="push_url" type="string">
-      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成流推到该地址, 不再推内置直播服务(也就查不到拉流地址); 目前只支持 rtmp://。任务进行中再次调用开始接口时不传则沿用原地址
+      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成画面推到该地址(推流模式), 不再提供拉流地址; 支持 rtmp:// 与 rtmps://, 须带推流码(如 rtmp://host/app/ 这类流名为空的地址会被拒绝)。 任务进行中再次调用开始接口时不传则沿用原地址及其音频来源; 没有可用的推流服务时返回错误码 1072
       示例：`rtmp://live.example.com/app/stream_key`
+    </ParamField>
+
+    <ParamField body="push_audio" type="string">
+      推流的音频来源, 仅传了 push_url 时生效: mix 房间合成音频(默认)、none 不要音频、user 某个用户的音频(须同时传 push_audio_uid)
+      示例：`mix`
+    </ParamField>
+
+    <ParamField body="push_audio_uid" type="string">
+      push_audio 为 user 时必填: 取哪个用户的音频(会中用户ID)
+      示例：`1001`
+    </ParamField>
+
+    <ParamField body="push_audio_desc" type="string">
+      push_audio 为 user 时可选: 该用户的哪条音频轨道(按轨道描述精确匹配), 不传取该用户的第一条音频
+      示例：`mic`
     </ParamField>
 
   </Expandable>
@@ -1334,6 +1393,9 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
+    "push_audio": "mix",
+    "push_audio_desc": "mic",
+    "push_audio_uid": "1001",
     "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
