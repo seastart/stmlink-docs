@@ -306,16 +306,22 @@
     "zh_commit": "9e1f635de783870477025dff71b362eed6786403"
   },
   "en/meeting/server-api/guides/callbacks": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/server-api/guides/callbacks.md",
-    "zh_blob": "c200b81907df763a335797f50f438eeb6f2ba02b",
-    "zh_commit": "54a92b721edc8ac8eee728de5c37b60db3d2f1be"
+    "zh_blob": "222177558d91c79b1c1cacc1c58ea954bd7c2fee",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+  },
+  "en/meeting/server-api/guides/media-output": {
+    "reviewed": false,
+    "source": "zh/meeting/server-api/guides/media-output.md",
+    "zh_blob": "6dd2aa01d2449081febc996bfdbb48037e49a09b",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/meeting/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/recording.md",
-    "zh_blob": "66412b2104e91b3b2d7dbfe51b03a38db7d3c232",
-    "zh_commit": "d64cae5f7eada6a269f986989e3df374243b2aae"
+    "zh_blob": "a77e48a86df6f143ac4f6a4b131149d03d36496a",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/meeting/server-api/overview": {
     "reviewed": true,
@@ -516,10 +522,10 @@
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
   "en/meeting/ui-sdk/server-integration": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ui-sdk/server-integration.md",
-    "zh_blob": "cfb81f3aeced89f4b7e7bc9f9ac872e5854a8a12",
-    "zh_commit": "54a92b721edc8ac8eee728de5c37b60db3d2f1be"
+    "zh_blob": "60719215f2b3175336878e668c86699050b5e06f",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/meeting/ui-sdk/web": {
     "reviewed": true,
@@ -734,8 +740,8 @@
   "en/product/deploy/ports": {
     "reviewed": false,
     "source": "zh/product/deploy/ports.md",
-    "zh_blob": "a5b2d4e740bd6bec210853e3686705d3fe2693c7",
-    "zh_commit": "d64cae5f7eada6a269f986989e3df374243b2aae"
+    "zh_blob": "7b1d12f0903361cc3bff922bd2bbcc1b6513880e",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/product/device-access/faq": {
     "reviewed": false,
@@ -1256,14 +1262,20 @@
   "en/rtc/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/callbacks.md",
-    "zh_blob": "c4563f4f15b1183210e76ee5d9b2024aec033795",
-    "zh_commit": "6a66e81804e6c1338d0792516ae31a477776e5d3"
+    "zh_blob": "c0522ad20ed4e68607fc6aac345994b8c2f5e4c8",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+  },
+  "en/rtc/server-api/guides/media-output": {
+    "reviewed": false,
+    "source": "zh/rtc/server-api/guides/media-output.md",
+    "zh_blob": "7c06df58260e5b421f1c342d73c48b9882c8d0c2",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/rtc/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/recording.md",
-    "zh_blob": "447afd45f4edeabe8a0952704eeae236e497c788",
-    "zh_commit": "d64cae5f7eada6a269f986989e3df374243b2aae"
+    "zh_blob": "4c9222a3538134062b1abcf41a3e88a26a74f932",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/rtc/server-api/overview": {
     "reviewed": true,
@@ -1272,10 +1284,10 @@
     "zh_commit": "abd948324304268ebd2003201f6d3d16dfeda6a8"
   },
   "en/rtc/server-api/server-demo": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/server-api/server-demo.md",
-    "zh_blob": "d8c88dfbc2388d01da65a0ae1bfbdd7e7b201e9a",
-    "zh_commit": "e0bac1e93fd590fba0eac485c451c97b03d6f2ab"
+    "zh_blob": "88fe504e0fbc1ad42b2238b51c4c89fff473c964",
+    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
   },
   "en/rtc/swift/advanced/audio-routing": {
     "reviewed": true,

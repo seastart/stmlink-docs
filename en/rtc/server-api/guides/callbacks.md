@@ -149,13 +149,13 @@ with direct IP and RTSP stream pull, we connect to the device ourselves, so ther
 Each status change is sent only once: periodic registration refreshes and GB28181 Keepalives don't send `agent_online` again;
 when heartbeats resume after going offline, an online event is sent again. Devices don't belong to a particular app, so every app that subscribes to this event receives it.
 
-### `mcu_task` — Recording, stream mixing, or live streaming task status changes
+### `mcu_task` — Recording or stream mixing task status changes
 
 ```json
 {
   "channel": "fire",
   "task_id": "sxjgwy",
-  "task_type": 9,
+  "task_type": 3,
   "task_status": 1,
   "err_desc": "",
   "began_at": 1718250917,
@@ -166,7 +166,7 @@ when heartbeats resume after going offline, an online event is sent again. Devic
 }
 ```
 
-+ `task_type` is a bit mask; for its meaning, see the [Cloud recording and live streaming guide](/en/rtc/server-api/guides/recording)
++ `task_type` is a bit mask; for its meaning, see the [Cloud recording and stream mixing guide](/en/rtc/server-api/guides/recording)
 + `task_status`: `0` pending, `1` in progress, `2` ending, `3` ended abnormally, `4` ended normally
 + `err_desc` has content only when the task ended abnormally
 + `record_count` / `total_duration` / `total_size` are the number of files, total duration (seconds), and total bytes produced by this recording
@@ -236,6 +236,11 @@ So:
 ```
 
 (The `alarm_brief` above means "Task ended abnormally".) Use it to feed your own alerting system. Recording is billed continuously, and if no one notices an abnormal interruption, what you lose is the recording itself.
+
+**Push tasks that keep failing also use this event** (see [Media output guide · Push failure alarms](/en/rtc/server-api/guides/media-output#push-failure-alarms)):
+
++ `task_type` `0` means it's a push alarm, and `task_id` is then the push task's `push_id`, not an MCU task, so don't pass it to `mcu/*` endpoints
++ `task_type` greater than `0` means an MCU task alarm, with the same bit meanings as `mcu_task`
 
 ### `talkrec_task` — Voice recording task status changes
 

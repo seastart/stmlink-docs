@@ -1349,26 +1349,6 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
       </Expandable>
     </ParamField>
 
-    <ParamField body="push_url" type="string">
-      Push URL, effective only when task_type includes 8 (live stream): if set, the composite video is pushed to this URL (push mode) and no playback URL is provided. rtmp:// and rtmps:// are supported, and the URL must include the stream key (URLs with an empty stream name, such as rtmp://host/app/, are rejected). When calling the start API again on a running task, omitting it keeps the original URL and its audio source; error code 1072 is returned if no push service is available
-      Example: `rtmp://live.example.com/app/stream_key`
-    </ParamField>
-
-    <ParamField body="push_audio" type="string">
-      Audio source for the push, effective only when push_url is set: mix for the meeting's mixed audio (default), none for no audio, or user for a specific user's audio (push_audio_uid is then required)
-      Example: `mix`
-    </ParamField>
-
-    <ParamField body="push_audio_uid" type="string">
-      Required when push_audio is user: whose audio to use (in-meeting user ID)
-      Example: `1001`
-    </ParamField>
-
-    <ParamField body="push_audio_desc" type="string">
-      Optional when push_audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the user's first audio track
-      Example: `mic`
-    </ParamField>
-
   </Expandable>
 </ParamField>
 
@@ -1427,10 +1407,6 @@ Request example:
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
-    "push_audio": "mix",
-    "push_audio_desc": "mic",
-    "push_audio_uid": "1001",
-    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
@@ -1693,26 +1669,6 @@ Update a meeting
       </Expandable>
     </ParamField>
 
-    <ParamField body="push_url" type="string">
-      Push URL, effective only when task_type includes 8 (live stream): if set, the composite video is pushed to this URL (push mode) and no playback URL is provided. rtmp:// and rtmps:// are supported, and the URL must include the stream key (URLs with an empty stream name, such as rtmp://host/app/, are rejected). When calling the start API again on a running task, omitting it keeps the original URL and its audio source; error code 1072 is returned if no push service is available
-      Example: `rtmp://live.example.com/app/stream_key`
-    </ParamField>
-
-    <ParamField body="push_audio" type="string">
-      Audio source for the push, effective only when push_url is set: mix for the meeting's mixed audio (default), none for no audio, or user for a specific user's audio (push_audio_uid is then required)
-      Example: `mix`
-    </ParamField>
-
-    <ParamField body="push_audio_uid" type="string">
-      Required when push_audio is user: whose audio to use (in-meeting user ID)
-      Example: `1001`
-    </ParamField>
-
-    <ParamField body="push_audio_desc" type="string">
-      Optional when push_audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the user's first audio track
-      Example: `mic`
-    </ParamField>
-
   </Expandable>
 </ParamField>
 
@@ -1769,10 +1725,6 @@ Request example:
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
-    "push_audio": "mix",
-    "push_audio_desc": "mic",
-    "push_audio_uid": "1001",
-    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",

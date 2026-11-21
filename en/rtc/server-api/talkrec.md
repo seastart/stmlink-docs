@@ -1,6 +1,6 @@
 ---
 title: "Per-speaker voice recording"
-description: "Per-speaker voice recording by a server-side listener: split into segments by utterance, with segment-level query and playback; for mixed recording of the entire channel, see \"Cloud recording and live streaming\""
+description: "Per-speaker voice recording by a server-side listener: split into segments by utterance, with segment-level query and playback; for mixed recording of the entire channel, see \"Cloud recording and stream mixing\""
 ---
 
 {/* The API reference on this page is auto-generated from the backend source. Do not edit it by hand—changes are overwritten on the next sync.

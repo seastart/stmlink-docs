@@ -48,8 +48,6 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1044` | McuTaskIsEnd | MCU task has already stopped |
 | `1045` | McuRecordNotFound | Recording file not found |
 | `1046` | McuRecordNotDone | Recording file has not finished uploading |
-| `1047` | McuPushUrlInvalid | Invalid MCU push URL |
-| `1048` | McuPushNoLiveUrl | Task in push mode has no playback URL |
 | `1050` | TalkrecTaskNotFound | Voice recording task not found |
 | `1051` | TalkrecRecordNotFound | Voice segment not found |
 | `1052` | TalkrecRecordNoVod | Voice segment has not produced an audio file yet |
@@ -64,6 +62,10 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1070` | StreamOutGatewayNotFound | No stream output gateway available |
 | `1071` | StreamOutGatewayFailed | Stream output gateway failed to issue the stream URL |
 | `1072` | LivePushGatewayNotFound | No live push gateway available |
+| `1073` | StreamNoMcuTask | No composition task is running in the channel |
+| `1074` | StreamPushNotFound | Push task not found |
+| `1075` | StreamPushUrlInvalid | Invalid push URL |
+| `1076` | StreamPushGatewayFailed | The live push gateway rejected the push request |
 
 ## Common framework error codes
 

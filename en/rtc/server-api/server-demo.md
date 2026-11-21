@@ -18,7 +18,7 @@ So only your backend can do the following:
 | --- | --- |
 | Issue channel join tokens | `channel/grant` |
 | Channel controls (removing users, changing user properties) | `channel/kick-user`, `channel/update-user` |
-| Starting and stopping recording, live streaming, voice recording, and transcription | `mcu/*`, `talkrec/*`, `asr/*` |
+| Starting and stopping recording, live streaming (pull / push), voice recording, and transcription | `mcu/*`, `stream/*`, `talkrec/*`, `asr/*` |
 | Device integration (SIP / GB28181 surveillance, etc.) | `agent/*` |
 
 The client only gets a token to join the channel and sends and receives streams; everything else goes through your backend.

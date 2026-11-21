@@ -85,7 +85,7 @@ See [Meeting management](/en/meeting/server-api/meet#create-a-meeting) for the f
 + **The host** is determined by `creator`, and **co-hosts** go in `co_hosts` (an array). Both also take the `user_id`, the same value as in the whitelist; you don't need to sync the user first and get a different ID back. If `creator` is omitted, the server marks no one as host, and no one in the meeting gets meeting control permissions—remember to include it when creating the meeting
 + **You usually don't need to pass `role` in `conferee_details`**: it has no effect with built-in roles, and host / co-host are specified with the two fields above. Only projects that have enabled [custom roles](/en/meeting/key-concepts#custom-roles) (for example, tendering and bidding that distinguishes experts and witnesses) rely on it to assign each person an identity
 + **`meeting_type`**: `1` instant meeting, `2` scheduled meeting. A scheduled meeting must include `plan_time` and `plan_dur`
-+ To record automatically, add `auto_record: true`; you don't need to manage recording start and stop in your business logic. See the [Cloud recording and live streaming guide](/en/meeting/server-api/guides/recording)
++ To record automatically, add `auto_record: true`; you don't need to manage recording start and stop in your business logic. See the [Cloud recording and stream mixing guide](/en/meeting/server-api/guides/recording)
 
 The returned **`room_no`** is the room number used in step 3, and `meeting_id` is the input for all subsequent meeting endpoints:
 

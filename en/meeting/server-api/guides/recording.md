@@ -1,24 +1,27 @@
 ---
-title: "Cloud recording and live streaming guide"
-description: "How cloud recording, stream mixing, and live streaming work for meetings: combining task types, when tasks start automatically, layouts and grid assignment, and how to get recording files and live stream URLs. Read this before integrating meeting recording."
+title: "Cloud recording and stream mixing guide"
+description: "How cloud recording, stream mixing, and audio recording work for meetings: combining task types, when tasks start automatically, layouts, and how to get recording files; for pulling and pushing the composite video, see the Media output guide"
 ---
 
-This page covers how cloud recording and live streaming work as a whole. For the parameters and response structure of each endpoint, see [Meeting recording and live streaming](/en/meeting/server-api/mcu).
+This page covers how cloud recording and stream mixing work as a whole. For the parameters and response structure of each endpoint, see [Meeting recording and live streaming](/en/meeting/server-api/mcu).
 
-## One task, four capabilities
+<Tip>To pull the meeting's video out for playback (HTTP-FLV / RTSP) or push it to a live streaming platform (RTMP / RTMPS), see the [Media output guide](/en/meeting/server-api/guides/media-output): when the meeting has a stream mixing task, use `video=mcu` for the composite video; you can also take any single user's video.</Tip>
 
-`task_type` is a **bit mask**. Each of the four independent capabilities takes one bit; add the values of the ones you want at the same time:
+## One task, three capabilities
+
+`task_type` is a **bit mask**. Each of the three independent capabilities takes one bit; add the values of the ones you want at the same time:
 
 | Value | Capability | Output | How to get it |
 | --- | --- | --- | --- |
 | 1 | Video recording | Recording files (possibly several segments) | [Get the playback URL of a recording file](/en/meeting/server-api/mcu#get-the-playback-url-of-a-recording-file) |
-| 2 | Stream mixing | Mixes multiple streams into one | Re-streaming, for downstream systems that don't support multiple streams |
+| 2 | Stream mixing | Composite video and the meeting's mixed audio | Pull or push it with [media output](/en/meeting/server-api/guides/media-output) (`video=mcu`) |
 | 4 | Audio recording | Audio-only file | Same as video recording |
-| 8 | Live stream | Live stream playback URL | [Get live stream URLs](/en/meeting/server-api/mcu#get-live-stream-urls) |
 
-So `3` = video recording + stream mixing, `9` = video recording + live stream, and `15` = all four.
+So `3` = video recording + stream mixing, and `7` = all three.
 
-<Warning>Don't treat `3` as a separate "hybrid mode" type. Earlier docs listed the values as "1 recording, 2 mixing, 3 hybrid", which was wrong—it left out audio recording and live stream, and misrepresented how the values combine.</Warning>
+<Warning>Don't treat `3` as a separate "hybrid mode" type. Earlier docs listed the values as "1 recording, 2 mixing, 3 hybrid", which was wrong—it left out audio recording and misrepresented how the values combine.</Warning>
+
+<Note>The former `8` (live stream) has been merged into `2`. For compatibility with existing integrations, the meeting layer still accepts values that include `8` and handles them as `2` (for example, `9` as `3`), and `task_type` in callbacks is filled back with the original value you passed; use `2` directly in new integrations.</Note>
 
 ## Some tasks start automatically
 
@@ -32,8 +35,8 @@ When the first person enters the meeting, the server decides whether to start a 
 | **Scheduled** meeting in composite mode, `auto_record` off | `2` stream mixing |
 | **Scheduled** meeting in composite mode, `auto_record` on | `3` video recording + stream mixing |
 
-If live streaming is enabled in your deployment, `8` (live stream) is added to every row above—for example, a regular meeting with
-`auto_record` on actually starts `9`. This switch is set by the deployment, not by the API. If you're not sure, ask us.
+If live streaming is enabled in your deployment, a regular meeting with `auto_record` on also mixes streams and actually starts `3` (video recording + stream mixing),
+so the composite video can be pulled or pushed directly. This switch is set by the deployment, not by the API. If you're not sure, ask us.
 
 Automatically started tasks use the meeting's own `layout_data` (passed when creating or modifying the meeting) for the layout; if none is set, the server's default layout is used (`auto` by default).
 
@@ -47,14 +50,13 @@ A meeting has only one in-progress task per type. Calling `start` again with dif
 
 ## Key differences between video recording and live streaming
 
-| | Video recording | Live streaming |
+| | Video recording | Live streaming (media output) |
 | --- | --- | --- |
-| When the URL is available | After you receive the `mcu_record_done` callback | While the task is **in progress** |
+| When the URL is available | After you receive the `mcu_record_done` callback | You can pull or push while the stream mixing task is **in progress** |
 | Use | Playback and archiving afterward | Distributing the video to an audience that doesn't take part in the interaction |
-| URL expiration | Yes; get a new URL before each playback | Yes; 24 hours by default, get a new URL before each playback |
+| URL expiration | Yes; get a new URL before each playback | Pull URLs last 24 hours by default; get a new URL before each playback |
 
-The live stream playback URL is HTTP-FLV (H264 video + AAC audio of the channel-wide mix); RTMP and HLS playback URLs are no longer provided (the returned `rtmp` and `hls` are empty).
-To push to your own live streaming platform, pass an `rtmp://` or `rtmps://` push URL in `layout_data.push_url` when starting the task; there is then no playback URL to get.
+For live pulling and pushing, see the [Media output guide](/en/meeting/server-api/guides/media-output). The `layout_data.push_url` push parameters of `mcu/start` have been removed; use `stream/push/start` instead.
 
 <Note>To get playback URLs, wait for the [`mcu_record_done` callback](/en/meeting/server-api/guides/callbacks). Don't request them as soon as the task ends—transcoding usually isn't finished yet.</Note>
 
@@ -137,7 +139,7 @@ Typical use: "main speaker pinned to the large view, screen share pinned to one 
 2. Set auto_record when creating the meeting                   POST /server/v1/meet/create
    → the task starts automatically when the first person enters; skip to step 5
    Or: start manually partway through the meeting              POST /server/v1/mcu/start        → task_id
-3. task_type includes 8 → live stream URL available right away POST /server/v1/mcu/live-url
+3. Stream mixing task running → pull / push                   POST /server/v1/stream/pull-url, stream/push/start
 4. End                                                         POST /server/v1/mcu/stop
 5. Get playback after the mcu_record_done callback             POST /server/v1/mcu/vod-url   (one segment by record_id)
    For all segments of the meeting                             POST /server/v1/mcu/vods-url
@@ -169,5 +171,5 @@ The four `vods-url` fields `url` / `size` / `mcu_at` / `mcu_dur` keep their mean
 
 ## Billing note
 
-Video recording, audio recording, and live streaming are server-side capabilities that incur ongoing costs. Leaving `auto_record` on means every meeting is recorded—
+Video recording, stream mixing, and audio recording (as well as pushes) are server-side capabilities that incur ongoing costs. Leaving `auto_record` on means every meeting is recorded—
 confirm that's what you want before going live. For manually started tasks, it's best to explicitly call stop in your meeting-ending flow.

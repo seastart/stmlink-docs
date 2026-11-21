@@ -1,6 +1,6 @@
 ---
 title: "Network and port requirements"
-description: "Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and media gateway (single-stream pull and live streaming) ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams."
+description: "Ports a self-hosted deployment opens: client ports 443/TCP, 18883/TCP, 39001/UDP; device gateway SIP / H.323 / GB28181 ports and RTP range; multi-node and media gateway (media output: pull and push) ports; ports never to expose; firewall commands. Use it for firewall change requests to network and security teams."
 ---
 
 **The short version**: a standard deployment only needs to open three ports to clients—**443/TCP, 18883/TCP, and 39001/UDP**;
@@ -77,17 +77,17 @@ In a single-server deployment, services talk over loopback, so **nothing extra n
 
 ---
 
-## Media gateway: single-stream pull and live streaming (optional)
+## Media gateway: media output (optional)
 
-Needed only when the media gateway is deployed and you use single-stream pull or live stream playback. Open them only to the pulling side (business systems, live audiences):
+Needed only when the media gateway is deployed and you pull streams with [media output](/en/rtc/server-api/guides/media-output). Open them only to the pulling side (business systems, NVRs, live audiences):
 
 | Port | Protocol | Purpose |
 | --- | --- | --- |
-| 8554 | TCP | RTSP single-stream pull |
-| 8556 | TCP | HTTP-FLV pull (single streams and the live composite video, with audio) |
+| 8554 | TCP | RTSP pull (a single user's video or the composite video, with audio) |
+| 8556 | TCP | HTTP-FLV pull (a single user's video or the composite video, with audio) |
 
 Pull URLs are signed and expire, but don't open the ports to the whole internet; for public audiences, we recommend reverse proxying them through 443.
-Pushing a live stream to a third-party platform needs outbound access from the media gateway; see "Outbound connections from servers" below.
+Pushing to a live streaming platform needs outbound access from the media gateway; see "Outbound connections from servers" below.
 The MCU's built-in live streaming ports (1935 / 7001 / 7002) are no longer used; keep them closed.
 
 ---
@@ -117,7 +117,7 @@ On internal-only networks, the following features need **outbound** access from 
 | Event callbacks | The callback URL of the customer's business system (443 / 80) |
 | Storing recordings in object storage | OSS / S3 endpoint (443) |
 | Speech recognition | Recognition engine service (default 10096) |
-| Live stream push to a third-party platform (media gateway) | RTMP (1935) or RTMPS (443) of the live streaming platform / CDN |
+| Push to a live streaming platform (media gateway) | RTMP (1935) or RTMPS (443) of the live streaming platform / CDN |
 | Device gateway pulling camera streams | Cameras (554) |
 
 ---

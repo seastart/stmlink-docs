@@ -1,26 +1,29 @@
 ---
-title: "Cloud recording and live streaming guide"
-description: "How cloud recording, stream mixing, audio recording, and live streaming work for a whole channel: combining task types, how one recording yields multiple files, layouts and grid assignment, and how to get recording files and live stream URLs. Read this before integrating cloud recording."
+title: "Cloud recording and stream mixing guide"
+description: "How cloud recording, stream mixing, and audio recording work for a whole channel: combining task types, layouts, and how to get recording files; for pulling and pushing the composite video, see the Media output guide"
 ---
 
-This page covers how cloud recording and live streaming work as a whole. For the parameters and response structure of each endpoint, see [Cloud recording and live streaming](/en/rtc/server-api/mcu).
+This page covers how cloud recording and stream mixing work as a whole. For the parameters and response structure of each endpoint, see [Cloud recording and stream mixing](/en/rtc/server-api/mcu).
+
+<Tip>To pull the composite video out for playback (HTTP-FLV / RTSP) or push it to a live streaming platform (RTMP / RTMPS), see the [Media output guide](/en/rtc/server-api/guides/media-output): start a stream mixing task first, then use the media output endpoints with `video=mcu`.</Tip>
 
 <Note>This page covers recording the **whole channel**: the entire channel is mixed into one stream. The output is **not necessarily a single file**—long recordings are split into segments by duration; see "One recording produces multiple files" below. If what you need is audio **split into tracks by speaker and into segments by utterance**, that is a different set of endpoints: see [Per-speaker voice recording](/en/rtc/server-api/talkrec). The differences between the two are in the comparison table below.</Note>
 
-## One task, four capabilities
+## One task, three capabilities
 
-`task_type` is a **bit mask**. Each of the four independent capabilities takes one bit; add the values of the ones you want at the same time:
+`task_type` is a **bit mask**. Each of the three independent capabilities takes one bit; add the values of the ones you want at the same time:
 
 | Value | Capability | Output | How to get it |
 | --- | --- | --- | --- |
 | 1 | Video recording | Recording files (possibly several segments) | [Get a recording file's playback URL](/en/rtc/server-api/mcu#get-a-recording-files-playback-url) |
-| 2 | Stream mixing | Mixes multiple streams into one | Re-streaming, for downstream systems that don't support multiple streams |
+| 2 | Stream mixing | Composite video and the channel's mixed audio, published back to the channel | Pull or push it with [media output](/en/rtc/server-api/guides/media-output) (`video=mcu`) |
 | 4 | Audio recording | Audio-only file | Same as video recording |
-| 8 | Live stream | HTTP-FLV live stream playback URL, or a push to your live streaming platform | [Get live stream playback URLs](/en/rtc/server-api/mcu#get-live-stream-playback-urls); see "Live streaming: pull and push" below |
 
-So `3` = video recording + stream mixing, `9` = video recording + live stream, and `15` = all four.
+So `3` = video recording + stream mixing, and `7` = all three.
 
-<Warning>Don't treat `3` as a separate "hybrid mode" type. Earlier docs listed the values as "1 recording, 2 mixing, 3 hybrid", which was wrong—it left out audio recording and live stream, and misrepresented how the values combine.</Warning>
+<Warning>Don't treat `3` as a separate "hybrid mode" type. Earlier docs listed the values as "1 recording, 2 mixing, 3 hybrid", which was wrong—it left out audio recording and misrepresented how the values combine.</Warning>
+
+<Note>The former `8` (live stream) has been merged into `2`. Values that include `8` now return an error; change them to `2` (for example, `9` → `3`). Live pulling and pushing now use the media output endpoints; for the migration table, see [Media output guide · Migrating from the old endpoints](/en/rtc/server-api/guides/media-output#migrating-from-the-old-endpoints). Historical tasks that have already ended may still have a `task_type` that includes `8` when queried.</Note>
 
 ## One recording produces multiple files
 
@@ -66,31 +69,6 @@ If what you need is audio **split into tracks by speaker and into segments by ut
 | Best for | Archiving the channel's audio | Push-to-talk, record keeping, per-sentence processing |
 
 You can run both at the same time; they don't affect each other.
-
-## Key differences between video recording and live streaming
-
-| | Video recording | Live streaming |
-| --- | --- | --- |
-| When the URL is available | After the task **stops and transcoding finishes** | While the task is **in progress** |
-| Use | Playback and archiving afterward | Distributing the video to an audience that doesn't take part in the interaction |
-| URL expiration | Yes; get a new URL before each playback | Yes; 24 hours by default, get a new URL before each playback |
-
-This difference determines the call sequence: a live stream "can be distributed as soon as it starts", while a recording "has output only after it ends".
-
-## Live streaming: pull and push
-
-A task whose `task_type` includes `8` works in one of two modes, depending on whether `layout_data.push_url` is passed when the task is started:
-
-| | Pull mode (no `push_url`) | Push mode (`push_url` set) |
-| --- | --- | --- |
-| How viewers watch | Call [Get live stream playback URLs](/en/rtc/server-api/mcu#get-live-stream-playback-urls) for an HTTP-FLV URL and play it on the web with a player such as flv.js | Your live streaming platform / CDN distributes it |
-| Protocol | HTTP-FLV (H264 video + AAC audio) | `rtmp://` or `rtmps://` |
-| Audio | `audio`: `mix` channel-wide mixed audio (default) / `none` / `user` a specific user | `layout_data.push_audio`, same values |
-| URL | Signed, valid for 24 hours by default; after expiry new pull requests are rejected, while playback in progress continues | The push URL you provide (must include the stream key) |
-
-+ The video is always the composite video arranged by the layout. RTMP and HLS playback URLs are no longer provided (`rtmp` and `hls` returned by `live-url` are always empty); if you need them, use push mode to push to your own platform
-+ In push mode, `live-url` returns error code `1048`. The push reconnects automatically after a disconnection, and persistent failures are reported through the [`mcu_alarm` callback](/en/rtc/server-api/guides/callbacks); if no push service is available, starting the task returns `1072`
-+ Self-hosted deployments need the media gateway deployed and the corresponding ports opened; see [Network and port requirements](/en/product/deploy/ports)
 
 ## Choosing a layout
 
@@ -168,7 +146,7 @@ Typical use: "main speaker pinned to the large view, screen share pinned to one 
 ```text
 1. Optional: configure the app's default recording settings    POST /server/v1/mcu/save-record-config
 2. Once someone is in the channel, start the task              POST /server/v1/mcu/start        → task_id
-   ├─ task_type includes 8 → live stream URL available now     POST /server/v1/mcu/live-url
+   ├─ task_type includes 2 → pull / push with media output     POST /server/v1/stream/pull-url, stream/push/start
    └─ Need to change the layout → call start again with the same parameters (for the same channel and type, this updates the task instead of creating a new one)
 3. End                                                         POST /server/v1/mcu/stop
 4. Get playback after transcoding finishes                     POST /server/v1/mcu/vod-url
@@ -179,4 +157,4 @@ When a channel is destroyed, in-progress tasks **stop automatically**; you don't
 
 ## Billing note
 
-Video recording, audio recording, and live streaming are server-side capabilities that incur ongoing costs. If you forget to stop a task after starting it, it keeps running until the channel is destroyed—so explicitly call stop in your end-of-call flow rather than relying only on channel destruction.
+Video recording, stream mixing, and audio recording (as well as pushes) are server-side capabilities that incur ongoing costs. If you forget to stop a task after starting it, it keeps running until the channel is destroyed—so explicitly call stop in your end-of-call flow rather than relying only on channel destruction.

@@ -48,9 +48,9 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 | `user_enter` | A user enters the meeting |
 | `user_exit` | A user exits the meeting |
 | `meeting_status_change` | The meeting status changes (between not started, in progress, and ended)|
-| `mcu_status_change` | The status of a recording, stream mixing, or live streaming task changes |
+| `mcu_status_change` | The status of a recording or stream mixing task changes |
 | `mcu_record_done` | A recording file is ready and you can get its playback URL (sent once per file when a recording produces several) |
-| `mcu_alarm` | A recording task encounters an error |
+| `mcu_alarm` | A recording task encounters an error, or a push task keeps failing |
 | `user_mic_state_change` | A user turns the microphone on or off |
 | `user_camera_state_change` | A user turns the camera on or off |
 | `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (dual stream from a SIP/H.323 device, or the second screen share on Web) |
@@ -112,7 +112,7 @@ a "normal start" (1→2) apart from cases like "an abnormal restart".
 }
 ```
 
-+ `task_type` is a bit mask; for the values, see the [Cloud recording and live streaming guide](/en/meeting/server-api/guides/recording)
++ `task_type` is a bit mask; for the values, see the [Cloud recording and stream mixing guide](/en/meeting/server-api/guides/recording)
 + `task_status`: `0` pending, `1` in progress, `2` ending, `3` ended abnormally, `4` ended normally
 + `err_desc` has content only when `task_status=3`
 + `record_count` / `total_duration` / `total_size` are the number of files, total duration (seconds), and total bytes produced by this recording
@@ -177,6 +177,10 @@ is split into segments by duration, and a recording that resumes after an interr
 
 (The `alarm_brief` above means "Stream push interrupted".) `gw` is the gateway node running the task. Giving us this value speeds up troubleshooting a lot. Note that an alarm **doesn't mean the task has stopped**—
 rely on `task_status` in `mcu_status_change`.
+
+**Push tasks that keep failing also use this event**: `task_type` `0` means it's a push alarm, and `task_id` is then the push task's `push_id`,
+not a recording task, so don't pass it to `mcu/*` endpoints; whether the push has recovered is shown by `status` in [List push tasks](/en/meeting/server-api/stream#list-push-tasks).
+See the [Media output guide](/en/meeting/server-api/guides/media-output).
 
 ### `user_mic_state_change` / `user_camera_state_change` / `user_extra_screen_state_change` — User media status changes
 
