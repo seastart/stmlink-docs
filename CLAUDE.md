@@ -163,7 +163,7 @@ navigation.languages（中文/英文）
 | 产品 | 目录 | 源码仓 | 生成的页 |
 | --- | --- | --- | --- |
 | SRTC | `zh/rtc/server-api/` | `rtc-backend` | `channel` / `mcu` / `talkrec` / `agent` / `im` / `white-board` / `asr` / `ai` / `stream` + `error-codes` |
-| SMeeting | `zh/meeting/server-api/` | `meeting-backend` | `user-auth` / `meet` / `meet-admin` / `mcu` + `error-codes` |
+| SMeeting | `zh/meeting/server-api/` | `meeting-backend` | `user-auth` / `meet` / `meet-admin` / `mcu` / `stream` + `error-codes` |
 
 页面清单不是写死的 —— 分组来自 `router.go` 的 gin group，新增分组会自动多出一页。
 
