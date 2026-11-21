@@ -1,6 +1,6 @@
 ---
 title: "Meeting recording and live streaming"
-description: "Cloud recording of the whole meeting, playback URLs, and the live stream pull URL; for more ways to pull and push, see \"Media output\""
+description: "Cloud recording of the whole meeting and playback URLs; for live pulling and pushing, see \"Media output\""
 ---
 
 {/* The API reference on this page is auto-generated from the backend source. Do not edit it by hand—changes are overwritten on the next sync.
@@ -1024,104 +1024,6 @@ Response example:
 
 ---
 
-## Get live stream URLs (legacy endpoint, served by stream/pull-url internally)
-
-`POST /server/v1/mcu/live-url`
-
-Authentication: required (see [Overview](/en/meeting/server-api/overview))
-
-Get the live stream playback URL: returns the HTTP-FLV URL of the composite video (H264 video + AAC audio); rtmp and hls are discontinued and always empty.
-
-Equivalent to Request a pull URL in "Media output" (protocol=flv, video=mcu); use that endpoint for new integrations: it also supports RTSP, single-user video, and any combination.
-
-The live URL is available only while a stream mixing task is **in progress**, provided that task_type included the stream mixing bit (2) when the task was started; when no stream mixing task is in progress, success is returned with data null.
-
-- The URL is signed and valid for 24 hours by default (adjustable with expire, up to one day); after expiry, new pull requests are rejected, while playback already in progress is not affected.
-Just call this API to get a fresh URL before playback; don't cache it for long. The actual validity is given by the returned expire_at
-- The audio source is selectable: mix for the meeting's mixed audio (default), none for no audio, or user for one audio track of a specific user (with audio_uid and audio_desc)
-- The stream is subscribed only when someone pulls it, and unsubscribed automatically after the last puller disconnects; pulling stops when the task stops
-
-**Request parameters**
-
-<ParamField body="room_no" type="string">
-  Room number
-</ParamField>
-
-<ParamField body="meeting_id" type="string">
-  Meeting ID (required if room_no is not set)
-</ParamField>
-
-<ParamField body="audio" type="string">
-  Audio source: mix is the mixed audio of the room (default; auto means the same), none means no audio, user is a specific user's audio (audio_uid is also required)
-  Example: `mix`
-</ParamField>
-
-<ParamField body="audio_uid" type="string">
-  Required when audio is user: whose audio to use (in-meeting user ID) (max length 64)
-  Example: `1001`
-</ParamField>
-
-<ParamField body="audio_desc" type="string">
-  Optional when audio is user: which of that user's audio tracks to use (exact match on the track description); defaults to the first one (max length 50)
-  Example: `mic`
-</ParamField>
-
-<ParamField body="expire" type="integer">
-  URL validity in seconds; defaults to 24 hours if omitted, up to one day
-  Example: `86400`
-</ParamField>
-
-
-Request example:
-
-```json
-{
-  "audio": "mix",
-  "audio_desc": "mic",
-  "audio_uid": "1001",
-  "expire": 86400,
-  "meeting_id": "",
-  "room_no": ""
-}
-```
-
-**Response parameters**
-
-<ResponseField name="rtmp" type="string">
-  Discontinued; always an empty string (kept so that existing callers don't fail to parse)
-</ResponseField>
-
-<ResponseField name="flv" type="string">
-  HTTP-FLV playback URL (composite video in H264 + AAC audio); signed, and can be pulled repeatedly until it expires
-  Example: `http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv`
-</ResponseField>
-
-<ResponseField name="hls" type="string">
-  Discontinued; always an empty string (kept so that existing callers don't fail to parse)
-</ResponseField>
-
-<ResponseField name="expire_at" type="integer">
-  Expiry time of the flv URL, Unix timestamp in seconds; after expiry, new pull requests are rejected, while playback already in progress is not affected
-  Example: `1718198266`
-</ResponseField>
-
-
-Response example:
-
-```json
-{
-  "code": 0,
-  "data": {
-    "expire_at": 1718198266,
-    "flv": "http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv",
-    "hls": "",
-    "rtmp": ""
-  }
-}
-```
-
----
-
 ## Delete a recording task
 
 `POST /server/v1/mcu/del-task`
@@ -1216,11 +1118,9 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
 Start a recording task
 
-For live streaming, include the stream mixing bit (2) in the task, then use the "Media output" endpoints to get a pull URL or start a push (RTMP/RTMPS).
+For live streaming, include the stream mixing bit (2) in the task, then use the "Media output" endpoints to get a pull URL (video=mcu) or start a push (RTMP/RTMPS).
 
-The live stream bit (8) has been merged into stream mixing (2) and is handled as stream mixing when passed:
-- Composite-mode meetings (or meetings that have automatically started a stream mixing task): the meeting's composite video is reused as is and its layout isn't changed, so layout_data doesn't apply to this part; the other bits start their own tasks (for example, 9 starts only video recording 1), and 8 alone returns the task_id of the meeting's composite task directly
-- Other meetings: a stream mixing task is started, and task_type in status callbacks is still the value you passed (8, 9, and so on)
+The live stream bit (8) is no longer supported; if task_type includes 8, an error is returned: use stream mixing (2) to publish the composite video instead, then pull with stream/pull-url or push with stream/push/start.
 
 **Request parameters**
 
@@ -1233,7 +1133,7 @@ The live stream bit (8) has been merged into stream mixing (2) and is handled as
 </ParamField>
 
 <ParamField body="task_type" type="integer" required>
-  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording; e.g. 3 = video recording + stream mixing. Live pulling and pushing use the mixed video, see "Media output" (8, the live stream, has been merged into 2 and is handled as 2 when passed; for composite-mode meetings, see the endpoint description)
+  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording; e.g. 3 = video recording + stream mixing. Live pulling and pushing use the mixed video, see "Media output". 8 (live stream) is no longer supported and returns an error: use 2 to publish the composite video instead, then pull with stream/pull-url or push with stream/push/start
   Example: `3`
 </ParamField>
 
@@ -1425,7 +1325,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
 Stop a recording task
 
-When task_type includes the live stream bit (8), it's handled the same way as when starting: in a composite-mode meeting (or a meeting that has automatically started a stream mixing task), the meeting's composite video is not stopped and only the other bits are stopped (for example, 9 stops only video recording 1); 8 alone returns success directly.
+When task_type includes the live stream bit (8), an error is returned (8 is no longer supported).
 
 **Request parameters**
 

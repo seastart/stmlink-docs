@@ -22,7 +22,8 @@ For example, "presenter's video + meeting mixed audio" is video=user, video_uid=
 audio is transcoded to AAC by default; pass rtsp_audio=opus to pass Opus through as is and skip server-side transcoding
 - The URL is signed and can be pulled repeatedly by multiple players until it expires; after expiry, new pull requests are rejected, while playback already in progress is not affected
 - Sources are subscribed only when someone pulls and unsubscribed automatically after the last player disconnects, so nothing is consumed when no one is pulling; there is no stop endpoint to call
-- Whether the meeting is in progress and the user is in the meeting are not checked, so URLs can be generated in advance; if the source hasn't published yet when pulling, the player gets a 404 and should retry
+- The meeting must have started (the channel is open), otherwise error code 1024 is returned; 2101 is returned if the meeting doesn't exist
+- Whether the user is in the meeting is not checked; if the source hasn't published yet when pulling, the player gets a 404 and should retry
 
 The actual validity period is the returned expire_at (the server-configured limit may be smaller than the requested value).
 
@@ -132,7 +133,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 Start a push: pushes the selected video and audio in the meeting to your RTMP live room (rtmp:// and rtmps:// are supported) and returns a push_id.
 The source parameters are the same as for requesting a pull URL, and a meeting can have multiple pushes at once (for example, the composite video to one platform and a guest's own video to another).
 
-+ The meeting must be in progress (someone is in the meeting); when the meeting ends and everyone leaves, all of its pushes stop automatically
++ The meeting must be in progress (someone is in the meeting), and error code 2101 is returned if the meeting doesn't exist; when the meeting ends and everyone leaves, all of its pushes stop automatically
 + Calling again for the same push URL in the same meeting doesn't start another push: if the sources are unchanged, the existing push_id is returned; if they changed, this push is updated to the new sources
 + While a source doesn't exist yet (for example, the stream mixing task hasn't started, or the user to push hasn't published), the push stays in waiting; this is not a failure, and pushing starts automatically once the source appears
 + Pushes reconnect automatically after a disconnection; query push status with List push tasks
@@ -359,7 +360,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="started_at" type="integer">
-  Push start time (when it was first handed to the push service), Unix timestamp in seconds; 0 means not started yet
+  Push start time (when it first entered publishing), Unix timestamp in seconds; 0 means it has never actually started pushing (for example, it has stayed in waiting)
   Example: `1718194667`
 </ResponseField>
 

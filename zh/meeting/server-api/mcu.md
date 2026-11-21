@@ -1,6 +1,6 @@
 ---
 title: "会议录制与直播"
-description: "整场会议的云端录制、点播地址与直播拉流地址；更多拉流与推流方式见「媒体输出」"
+description: "整场会议的云端录制与点播地址；直播拉流与推流见「媒体输出」"
 ---
 
 {/* 本页接口结构由后端源码自动生成，请勿手工编辑 —— 改动会在下次同步时被覆盖。
@@ -1024,104 +1024,6 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 ---
 
-## 直播流地址（兼容老接口，内部走 stream/pull-url）
-
-`POST /server/v1/mcu/live-url`
-
-鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
-
-获取直播拉流地址：返回合成画面的 HTTP-FLV 地址（视频 H264 + 音频 AAC），rtmp、hls 已停用恒为空。
-
-等价于「媒体输出」的申请拉流地址（protocol=flv、video=mcu），新对接请直接用那个接口：它还支持 RTSP、单人画面与任意组合。
-
-直播地址在合流任务**进行中**才能取到 —— 前提是启动任务时 task_type 带了合流位（2）；没有进行中的合流任务时返回成功、data 为 null。
-
-- 地址自带签名，默认 24 小时有效（expire 可调，最长一天），过期后新的拉流请求会被拒绝，已在播放的不受影响；
-播放前调一次本接口取新地址即可，不要长期缓存。实际有效期以返回的 expire_at 为准
-- 音频来源可选：mix 房间合成音频（默认）、none 不要音频、user 指定用户的某条音频（配 audio_uid、audio_desc）
-- 有人来拉时才订阅，最后一个拉流端断开后自动退订；任务停止后拉流随之断开
-
-**请求参数**
-
-<ParamField body="room_no" type="string">
-  房间号
-</ParamField>
-
-<ParamField body="meeting_id" type="string">
-  会议ID(无RoomNo时必填)
-</ParamField>
-
-<ParamField body="audio" type="string">
-  音频来源：mix 房间合成音频（默认，auto 同义）、none 不要音频、user 指定用户的音频（须同时传 audio_uid）
-  示例：`mix`
-</ParamField>
-
-<ParamField body="audio_uid" type="string">
-  audio 为 user 时必填：取哪个用户的音频（会中用户ID）（最大长度 64）
-  示例：`1001`
-</ParamField>
-
-<ParamField body="audio_desc" type="string">
-  audio 为 user 时可选：该用户的哪条音频轨道（按轨道描述精确匹配），不传取第一条（最大长度 50）
-  示例：`mic`
-</ParamField>
-
-<ParamField body="expire" type="integer">
-  地址有效期（秒），不传时默认 24 小时，最长一天
-  示例：`86400`
-</ParamField>
-
-
-请求示例：
-
-```json
-{
-  "audio": "mix",
-  "audio_desc": "mic",
-  "audio_uid": "1001",
-  "expire": 86400,
-  "meeting_id": "",
-  "room_no": ""
-}
-```
-
-**响应参数**
-
-<ResponseField name="rtmp" type="string">
-  已停用，恒为空字符串（保留字段免得老调用方解析出错）
-</ResponseField>
-
-<ResponseField name="flv" type="string">
-  HTTP-FLV 拉流地址（合成画面 H264 + AAC 音频），自带签名，有效期内可反复拉
-  示例：`http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv`
-</ResponseField>
-
-<ResponseField name="hls" type="string">
-  已停用，恒为空字符串（保留字段免得老调用方解析出错）
-</ResponseField>
-
-<ResponseField name="expire_at" type="integer">
-  flv 地址过期时间，秒级时间戳；过期后新的拉流请求会被拒绝，已在播放的不受影响
-  示例：`1718198266`
-</ResponseField>
-
-
-响应示例：
-
-```json
-{
-  "code": 0,
-  "data": {
-    "expire_at": 1718198266,
-    "flv": "http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv",
-    "hls": "",
-    "rtmp": ""
-  }
-}
-```
-
----
-
 ## 删除录像任务
 
 `POST /server/v1/mcu/del-task`
@@ -1216,11 +1118,9 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 开始录制任务
 
-要直播时让任务带上合流位（2），再用「媒体输出」的接口取拉流地址或开推流（RTMP/RTMPS）。
+要直播时让任务带上合流位（2），再用「媒体输出」的接口取拉流地址（video=mcu）或开推流（RTMP/RTMPS）。
 
-直播流位（8）已并入合流（2），传了按合流处理：
-- 合成模式会议（或会议已自动开了合流任务）：直接沿用会议的合成画面，不改它的布局，layout_data 对这部分不生效；其余位单独开任务（如 9 只开录像 1），纯 8 直接返回会议合成任务的 task_id
-- 其它会议：开一个合流任务，状态回调里的 task_type 仍是你传的值（8、9 等）
+直播流位（8）已不再支持，task_type 含 8 时直接报错：请改用 2（合流）发布合成画面，再用 stream/pull-url 拉流或 stream/push/start 推流。
 
 **请求参数**
 
@@ -1233,7 +1133,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 </ParamField>
 
 <ParamField body="task_type" type="integer" required>
-  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。直播拉流/推流取合流画面，见「媒体输出」（8 直播流已并入 2，传了按 2 处理，合成模式会议见接口说明）
+  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。直播拉流/推流取合流画面，见「媒体输出」。8(直播流)已不再支持，传了会报错：请改用 2 发布合成画面，再用 stream/pull-url 拉流或 stream/push/start 推流
   示例：`3`
 </ParamField>
 
@@ -1425,7 +1325,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 结束录制任务
 
-task_type 含直播流位（8）时与开始时同样处理：合成模式会议（或会议已自动开了合流任务）不停会议的合成画面，只停其余位（如 9 只停录像 1），纯 8 直接返回成功。
+task_type 含直播流位（8）时直接报错（8 已不再支持）。
 
 **请求参数**
 

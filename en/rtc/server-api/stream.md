@@ -22,7 +22,7 @@ For example, "presenter's video + channel mixed audio" is video=user, video_uid=
 audio is transcoded to AAC by default; pass rtsp_audio=opus to pass Opus through as is and skip server-side transcoding
 - The URL is signed and can be pulled repeatedly by multiple players until it expires; after expiry, new pull requests are rejected, while playback already in progress is not affected
 - Sources are subscribed only when someone pulls and unsubscribed automatically after the last player disconnects, so nothing is consumed when no one is pulling; there is no stop endpoint to call
-- The channel being open and the user being online are not checked, so URLs can be generated in advance; if the source hasn't published yet when pulling, the player gets a 404 and should retry
+- The channel must already be open, otherwise error code 1024 is returned; whether the user is online is not checked, and if the source hasn't published yet when pulling, the player gets a 404 and should retry
 - If the user leaves and comes back, the pull doesn't break; there is just a gap in between
 
 The actual validity period is the returned expire_at (the server-side limit may be shorter than the requested value).
@@ -133,8 +133,8 @@ Authentication: required (see [Overview](/en/rtc/server-api/overview))
 Start a push: pushes the selected video and audio in the channel to your RTMP live room (rtmp:// and rtmps:// are supported) and returns a push_id.
 The source parameters are the same as for requesting a pull URL, and a channel can have multiple pushes at once (for example, the composite video to one platform and a guest's own video to another).
 
-+ The channel must already be open; when the channel is destroyed, all of its pushes stop automatically
-+ Calling again for the same push URL in the same channel doesn't start another push: if the sources are unchanged, the existing push_id is returned; if they changed, this push is updated to the new sources
++ The channel must already be open, otherwise error code 1024 is returned; when the channel is destroyed, all of its pushes stop automatically
++ Calling again for the same push URL in the same channel doesn't start another push, and the push_id stays the same: if the sources are unchanged, it returns directly; if they changed, this push is updated to the new sources (the push is re-established with the new sources, so the live room may briefly drop), and the sources in the push task list are updated accordingly
 + While a source doesn't exist yet (for example, the stream mixing task hasn't started, or the user to push hasn't published), the push stays in waiting; this is not a failure, and pushing starts automatically once the source appears
 + Pushes reconnect automatically after a disconnection; persistent failures are reported through the MCU alarm callback (mcu_alarm): task_type 0 means it's a push alarm, and task_id is then the push_id (same format as an MCU task ID but not an MCU task; don't pass it to mcu/detail or other mcu/* endpoints)
 + Query push status with List push tasks; error code 1072 is returned when no push service is available, 1075 when the push URL is invalid, and 1076 when the push service rejects the push
@@ -354,7 +354,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="started_at" type="integer">
-  Push start time (when it was first handed to the push service), Unix timestamp in seconds; 0 means not started yet
+  Push start time (when it first entered publishing), Unix timestamp in seconds; 0 means it has never actually started pushing (for example, it has stayed in waiting)
   Example: `1718194667`
 </ResponseField>
 

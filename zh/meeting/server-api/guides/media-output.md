@@ -1,6 +1,6 @@
 ---
 title: "媒体输出接入指南"
-description: "把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取会议混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、直播流地址兼容接口与迁移"
+description: "把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取会议混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、旧接口迁移"
 ---
 
 本页讲会议层媒体输出的整体玩法。单个接口的参数与返回结构见[媒体输出](/zh/meeting/server-api/stream)。
@@ -31,6 +31,7 @@ description: "把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流�
 + `video_uid` / `audio_uid` 填会中用户 ID
 + **停止推流要同时传 `meeting_id` 和 `push_id`**，推流不属于这场会议时返回 `1074`
 + 开始推流要求会议进行中（有人在会）；会议结束、所有人离开后其下全部推流自动停止
++ 申请拉流地址、开始推流时 `meeting_id` 对应的会议不存在返回 `2101`
 
 ## 合成画面和混音依赖合流任务
 
@@ -57,16 +58,12 @@ description: "把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流�
 **`task_type` 为 `0` 表示推流告警，此时 `task_id` 是 `push_id`**，不是录制任务，不要拿去调 `mcu/*` 接口。
 告警不代表推流已停止，以推流列表的 `status` 为准。
 
-## 直播流地址（兼容接口）
-
-[直播流地址](/zh/meeting/server-api/mcu)（`mcu/live-url`）为兼容存量对接保留，
-等价于申请拉流地址的 `protocol=flv`、`video=mcu`，返回结构不变（`rtmp`、`hls` 恒为空）；
-没有进行中的合流任务时仍返回成功、`data` 为 `null`。**新对接请直接用申请拉流地址**，它还支持 RTSP、单人画面和任意组合。
-
 ## 从旧用法迁移
+
+旧的直播接口与用法已删除，没有兼容期，请把调用方改到新接口：
 
 | 旧用法 | 新用法 |
 | --- | --- |
 | `mcu/start` 的 `layout_data.push_url` / `push_audio*` | 已删除。改用 `stream/push/start`，`video=mcu`，`audio` 等同原 `push_audio`；停推用 `stream/push/stop` |
-| `task_type` 含 `8`（直播流） | 改成 `2`（合流），如 `9` → `3`。为兼容存量对接，会议层仍接受含 `8` 的值并按 `2` 处理，回调里的 `task_type` 仍回填你传的原始值 |
-| `mcu/live-url` | 仍可用；新对接改用 `stream/pull-url`（`protocol=flv`、`video=mcu`） |
+| `task_type` 含 `8`（直播流） | 改成 `2`（合流），如 `9` → `3`；传含 `8` 的值会报错（`mcu/start`、`mcu/stop` 都是） |
+| `mcu/live-url` | 已删除。改用 `stream/pull-url`（`protocol=flv`、`video=mcu`），返回 `url` 与 `expire_at`；没有进行中的合流任务时返回错误码 `1073`（原来是成功、`data` 为 `null`） |
