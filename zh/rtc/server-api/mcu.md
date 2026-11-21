@@ -224,7 +224,7 @@ description: "整场云端录制、点播地址与合流（合成画面发布回
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  任务类型 1录像 2合流 4录音, 按位组合(历史任务可能含 8 原直播流, 已并入合流)
+  任务类型 1录像 2合流 4录音, 按位组合
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -487,7 +487,7 @@ description: "整场云端录制、点播地址与合流（合成画面发布回
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  任务类型 1录像 2合流 4录音, 按位组合(历史任务可能含 8 原直播流, 已并入合流)
+  任务类型 1录像 2合流 4录音, 按位组合
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -1094,12 +1094,12 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
 重复调用不新建，而是按传入参数更新已有任务。
 
 合流（task_type 含 2）把合成画面与房间混音发布回频道。要把合成画面拉出去播放或推到直播平台，
-在合流任务进行中调用「申请拉流地址」或「开始推流」，来源选 video=mcu。原直播流类型 8 已并入合流，不再接受。
+在合流任务进行中调用「申请拉流地址」或「开始推流」，来源选 video=mcu。
 
 **请求参数**
 
 <ParamField body="task_type" type="integer" required>
-  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。合流把合成画面发布回频道，拉流/推流见媒体输出接口。8(直播流)已不再支持，传了会报错：请改用 2 发布合成画面，再用 stream/pull-url 拉流或 stream/push/start 推流
+  任务类型，按位组合：1录像、2合流（合成画面发布回频道）、4录音；如 3 表示录像+合流。合成画面的拉流/推流见媒体输出接口
   示例：`3`
 </ParamField>
 

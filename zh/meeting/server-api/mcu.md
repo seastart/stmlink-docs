@@ -210,7 +210,7 @@ description: "整场会议的云端录制与点播地址；直播拉流与推流
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  任务类型 1录像 2合流 4录音 8直播流, 按位组合
+  任务类型 1录像 2合流 4录音, 按位组合
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -427,7 +427,7 @@ description: "整场会议的云端录制与点播地址；直播拉流与推流
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  任务类型 1录像 2合流 4录音 8直播流, 按位组合
+  任务类型 1录像 2合流 4录音, 按位组合
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -1120,8 +1120,6 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 要直播时让任务带上合流位（2），再用「媒体输出」的接口取拉流地址（video=mcu）或开推流（RTMP/RTMPS）。
 
-直播流位（8）已不再支持，task_type 含 8 时直接报错：请改用 2（合流）发布合成画面，再用 stream/pull-url 拉流或 stream/push/start 推流。
-
 **请求参数**
 
 <ParamField body="room_no" type="string">
@@ -1133,7 +1131,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 </ParamField>
 
 <ParamField body="task_type" type="integer" required>
-  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。直播拉流/推流取合流画面，见「媒体输出」。8(直播流)已不再支持，传了会报错：请改用 2 发布合成画面，再用 stream/pull-url 拉流或 stream/push/start 推流
+  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。直播拉流/推流取合流画面，见「媒体输出」
   示例：`3`
 </ParamField>
 
@@ -1322,10 +1320,6 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 `POST /server/v1/mcu/stop`
 
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
-
-结束录制任务
-
-task_type 含直播流位（8）时直接报错（8 已不再支持）。
 
 **请求参数**
 

@@ -13,7 +13,7 @@ description: "SMeeting Swift SDK 的服务端录制、合流任务控制、布�
 | `.mix` | 合流，把多路画面合成一路供拉流观看 |
 | `.mixAndRecord` | 合流并录制 |
 | `.audio` | 录音 |
-| `.live` | 直播流 |
+| `.live` | 已废弃，将在下一版本删除：服务端已不支持，直播请用 `.mix` + 服务端媒体输出接口 |
 
 创建会议时也可以通过 `MeetingCreateReq.autoRecord` 让会议开始后自动录制。
 

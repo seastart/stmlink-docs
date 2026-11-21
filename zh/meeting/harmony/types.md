@@ -145,7 +145,7 @@ MCU 合流布局，共 20 种：
 
 | 枚举 | 成员 |
 | --- | --- |
-| `McuTaskType` | `record = 1`（纯录制）/ `mix = 2`（纯混流）/ `mixAndRecord = 3`（混流 + 录制）/ `audio = 4`（录音）/ `live = 8`（直播流）/ `unknown = -1` |
+| `McuTaskType` | `record = 1`（纯录制）/ `mix = 2`（纯混流）/ `mixAndRecord = 3`（混流 + 录制）/ `audio = 4`（录音）/ `live = 8`（已废弃，将在下一版本删除；服务端已不支持）/ `unknown = -1` |
 | `McuTaskStatus` | `waitStart = 0`（待开始）/ `running = 1`（进行中）/ `waitEnd = 2`（待结束）/ `exception = 3`（异常结束，原因见 `errDesc`）/ `normal = 4`（正常结束）/ `unknown = -1` |
 
 取值与服务端下发的 `task_type` / `task_status` 一致。`task_type` 由服务端按位组合，组合出的其它值（如 5、9）解码为 `unknown`。

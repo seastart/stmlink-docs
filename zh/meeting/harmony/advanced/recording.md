@@ -18,7 +18,7 @@ description: "启动录制与混流、布局配置、任务状态监听与异常
 | `mix = 2` | 纯混流（合成一路给客户端订阅） |
 | `mixAndRecord = 3` | 混流 + 录制 |
 | `audio = 4` | 录音（1.1.0 起） |
-| `live = 8` | 直播流（1.1.0 起） |
+| `live = 8` | **已废弃，将在下一版本删除**：服务端已不支持类型 8，传了返回参数错误。直播请用 `mix` 开合流任务，再由服务端调媒体输出接口拉流或推流 |
 
 `McuTaskType.unknown`（`-1`）是 1.1.0 新增的解码兜底，只出现在事件和详情里，**不要拿来发请求**。
 
@@ -44,7 +44,7 @@ await meeting.mcuStop(meetingId, McuTaskType.mixAndRecord);
 `mcuStop` 要传**同一个 `taskType`** —— 服务端按类型区分任务。
 启的是 `mixAndRecord` 就不能用 `record` 去停。
 
-服务端的 `task_type` 是按位组合的（1 录像、2 合流、4 录音、8 直播流），自动录制起的任务可能是 9 这类组合值。
+服务端的 `task_type` 是按位组合的（1 录像、2 合流、4 录音），自动录制起的任务可能是枚举里没有的组合值（如 7）。
 1.4.0 起 `mcuStop` 接受原始数字，停这类任务直接传 `onRoomMcuTask` 里的 `taskTypeRaw`；不传 `taskType` 则停掉全部。
 </Note>
 

@@ -118,9 +118,9 @@ mcuRecordDetail(meetingId: string): Promise<McuRecordDetail>
 `LayoutType` 提供 20 种预置布局：`auto` / `full` / `grids_2` … `grids_25` /
 `right_4` / `top_4` / `br_7` / `tl_7` / `tb_8`。
 
-`McuTaskType`：`record`（纯录制）/ `mix`（纯混流）/ `mixAndRecord`（两者）/ `audio`（录音，1.1.0 起）/ `live`（直播流，1.1.0 起）。`unknown` 仅用于解码，不要传给 `mcuStop`。
+`McuTaskType`：`record`（纯录制）/ `mix`（纯混流）/ `mixAndRecord`（两者）/ `audio`（录音，1.1.0 起）/ `live`（**已废弃，将在下一版本删除**：服务端已不支持类型 8，直播请用 `mix` + 服务端媒体输出接口）。`unknown` 仅用于解码，不要传给 `mcuStop`。
 
-服务端的 `task_type` 是**按位组合**的（1 录像、2 合流、4 录音、8 直播流，可相加，如开了直播能力的部署上自动录制起的是 9）。所以 `mcuStop` 自 1.4.0 起 `taskType` 可省略（停掉全部任务），也接受原始数字 —— 停自动起的任务时直接传 `RoomMcuTaskEventData.taskTypeRaw`。
+服务端的 `task_type` 是**按位组合**的（1 录像、2 合流、4 录音，可相加，如 7 = 三种全开）。所以 `mcuStop` 自 1.4.0 起 `taskType` 可省略（停掉全部任务），也接受原始数字 —— 停自动起的任务时直接传 `RoomMcuTaskEventData.taskTypeRaw`。
 
 任务状态变化通过 `onRoomMcuTask` 上报，`taskStatus` 为 `exception` 时
 `errDesc` 有原因 —— 这个要提示给用户，录制出问题他们需要知道。
