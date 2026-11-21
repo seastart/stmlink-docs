@@ -65,7 +65,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `1073` | StreamNoMcuTask | 房间没有进行中的合成任务 |
 | `1074` | StreamPushNotFound | 推流任务不存在 |
 | `1075` | StreamPushUrlInvalid | 推流地址无效 |
-| `1076` | StreamPushGatewayFailed | 网关原始回复只进日志, 不透传给客户 |
+| `1076` | StreamPushGatewayFailed | 直播推流网关拒绝了推流请求 |
 
 ## 框架通用错误码
 
