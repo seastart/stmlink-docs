@@ -564,7 +564,7 @@ If you're not sure which one to use, don't pass it, and let the server decide ba
 | `mix` | `2` | Stream mixing mode |
 | `mixAndRecord` | `3` | Stream mixing and recording |
 | `audio` | `4` | Audio recording mode |
-| `live` | `8` | Live stream mode |
+| `live` | `8` | **Deprecated; will be removed in the next release**: the server no longer supports type 8 and returns a parameter error if it's passed. For live streaming, start a stream mixing task with `mix`, then have your server pull or push it via the media output endpoints |
 | `unknown` | `-1` | A value this SDK version doesn't recognize (only for decoding; don't use it in requests) |
 
 #### McuTaskStatus

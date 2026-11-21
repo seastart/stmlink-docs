@@ -224,7 +224,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  Task type: 1 video recording, 2 stream mixing, 4 audio recording; combine as bit flags (historical tasks may include 8, the former live stream, now merged into stream mixing)
+  Task type: 1 video recording, 2 stream mixing, 4 audio recording; combine as bit flags
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -487,7 +487,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  Task type: 1 video recording, 2 stream mixing, 4 audio recording; combine as bit flags (historical tasks may include 8, the former live stream, now merged into stream mixing)
+  Task type: 1 video recording, 2 stream mixing, 4 audio recording; combine as bit flags
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -1094,12 +1094,12 @@ Starts a server-side recording or stream mixing task. A channel has only one tas
 calling again doesn't create a new task but updates the existing one with the parameters passed in.
 
 Stream mixing (task_type includes 2) publishes the composite video and the channel's mixed audio back to the channel. To pull the composite video out for playback or push it to a live streaming platform,
-call "Request a pull URL" or "Start a push" while the stream mixing task is in progress, with video=mcu as the source. The former live stream type 8 has been merged into stream mixing and is no longer accepted.
+call "Request a pull URL" or "Start a push" while the stream mixing task is in progress, with video=mcu as the source.
 
 **Request parameters**
 
 <ParamField body="task_type" type="integer" required>
-  Task type as bit flags: 1 video recording, 2 stream mixing, 4 audio recording; for example, 3 means video recording + stream mixing. Stream mixing publishes the composite video back to the channel; for pulling or pushing it, see the media output endpoints. 8 (live stream) is no longer supported and returns an error: use 2 to publish the composite video instead, then pull it with stream/pull-url or push it with stream/push/start
+  Task type as bit flags: 1 video recording, 2 stream mixing (publishes the composite video back to the channel), 4 audio recording; for example, 3 means video recording + stream mixing. For pulling or pushing the composite video, see the media output endpoints
   Example: `3`
 </ParamField>
 

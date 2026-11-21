@@ -210,7 +210,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording, 8 live stream
+  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -427,7 +427,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording, 8 live stream
+  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -1120,8 +1120,6 @@ Start a recording task
 
 For live streaming, include the stream mixing bit (2) in the task, then use the "Media output" endpoints to get a pull URL (video=mcu) or start a push (RTMP/RTMPS).
 
-The live stream bit (8) is no longer supported; if task_type includes 8, an error is returned: use stream mixing (2) to publish the composite video instead, then pull with stream/pull-url or push with stream/push/start.
-
 **Request parameters**
 
 <ParamField body="room_no" type="string">
@@ -1133,7 +1131,7 @@ The live stream bit (8) is no longer supported; if task_type includes 8, an erro
 </ParamField>
 
 <ParamField body="task_type" type="integer" required>
-  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording; e.g. 3 = video recording + stream mixing. Live pulling and pushing use the mixed video, see "Media output". 8 (live stream) is no longer supported and returns an error: use 2 to publish the composite video instead, then pull with stream/pull-url or push with stream/push/start
+  Task type, a bit mask: 1 video recording, 2 stream mixing, 4 audio recording; e.g. 3 = video recording + stream mixing. Live pulling and pushing use the mixed video, see "Media output"
   Example: `3`
 </ParamField>
 
@@ -1322,10 +1320,6 @@ Response example:
 `POST /server/v1/mcu/stop`
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
-
-Stop a recording task
-
-When task_type includes the live stream bit (8), an error is returned (8 is no longer supported).
 
 **Request parameters**
 

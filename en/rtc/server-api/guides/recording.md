@@ -23,7 +23,7 @@ So `3` = video recording + stream mixing, and `7` = all three.
 
 <Warning>Don't treat `3` as a separate "hybrid mode" type. Earlier docs listed the values as "1 recording, 2 mixing, 3 hybrid", which was wrong—it left out audio recording and misrepresented how the values combine.</Warning>
 
-<Note>The former `8` (live stream) has been merged into `2`. Values that include `8` now return an error; change them to `2` (for example, `9` → `3`). Live pulling and pushing now use the media output endpoints; for the migration table, see [Media output guide · Migrating from the old endpoints](/en/rtc/server-api/guides/media-output#migrating-from-the-old-endpoints). Historical tasks that have already ended may still have a `task_type` that includes `8` when queried.</Note>
+<Note>The former type `8` (live stream) has been removed; passing `8` or a combination that includes `8` returns parameter error `10000`. For live streaming, use `2` (stream mixing) plus the media output endpoints to pull or push; for the migration table, see [Media output guide · Migrating from the old endpoints](/en/rtc/server-api/guides/media-output#migrating-from-the-old-endpoints). At upgrade time, the `task_type` of historical tasks has `8` replaced with `2` (for example, `9` → `3`).</Note>
 
 ## One recording produces multiple files
 

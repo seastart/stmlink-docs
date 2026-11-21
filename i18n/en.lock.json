@@ -314,14 +314,14 @@
   "en/meeting/server-api/guides/media-output": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/media-output.md",
-    "zh_blob": "671a3bfb9900b64246da4ceb551993346fe1283e",
-    "zh_commit": "24bde094382edb6aaedfad09d504e8524e7d1e92"
+    "zh_blob": "d7da32e3088207686c049a7d9585ea4ee751ffce",
+    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
   },
   "en/meeting/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/recording.md",
-    "zh_blob": "56e46a29a80e0e5abe587bb02873e1d6b6d0d4c3",
-    "zh_commit": "24bde094382edb6aaedfad09d504e8524e7d1e92"
+    "zh_blob": "152fe41e39cc4284bfb83006179c202c76eb252a",
+    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
   },
   "en/meeting/server-api/overview": {
     "reviewed": true,
@@ -386,8 +386,8 @@
   "en/meeting/swift/advanced/recording": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/recording.md",
-    "zh_blob": "95692f9dc7a09d4f80916095f2c975c2241bb53a",
-    "zh_commit": "44e0fb60b6f2f65f32c21241e2ae5b44396a56a6"
+    "zh_blob": "fd2dfe915b5c6c561f8fd3cbb6f83c89286b6237",
+    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
   },
   "en/meeting/swift/advanced/resources": {
     "reviewed": true,
@@ -500,8 +500,8 @@
   "en/meeting/swift/types": {
     "reviewed": false,
     "source": "zh/meeting/swift/types.md",
-    "zh_blob": "a0b28b09b9fbb6379f78d8191a58556ff506cee2",
-    "zh_commit": "6eefc25dbe65bb801d3cbee7457b0a4036adb29e"
+    "zh_blob": "02b0542980d1f905b0d41fffe863c36c8eedd4f6",
+    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
   },
   "en/meeting/token": {
     "reviewed": true,
@@ -1268,14 +1268,14 @@
   "en/rtc/server-api/guides/media-output": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/media-output.md",
-    "zh_blob": "c409e82268b8c718745eb7a6c078b016ed6fe732",
-    "zh_commit": "24bde094382edb6aaedfad09d504e8524e7d1e92"
+    "zh_blob": "91e7c4b9f1bc6fea777c4550e3180adf48b5457a",
+    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
   },
   "en/rtc/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/recording.md",
-    "zh_blob": "4c9222a3538134062b1abcf41a3e88a26a74f932",
-    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+    "zh_blob": "e05d47869804e86daf217927facce783a6046b77",
+    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
   },
   "en/rtc/server-api/overview": {
     "reviewed": true,
