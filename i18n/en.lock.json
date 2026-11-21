@@ -314,14 +314,14 @@
   "en/meeting/server-api/guides/media-output": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/media-output.md",
-    "zh_blob": "d7da32e3088207686c049a7d9585ea4ee751ffce",
-    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
+    "zh_blob": "9e03b4a6e200a878921ff56e7aa995affd20498e",
+    "zh_commit": "a5c32a054a02a9ca0a0d556d8a7aa78b23c736b1"
   },
   "en/meeting/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/recording.md",
-    "zh_blob": "152fe41e39cc4284bfb83006179c202c76eb252a",
-    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
+    "zh_blob": "61cac616415bc94c50c7fffd173db0ffc3f1eccf",
+    "zh_commit": "a5c32a054a02a9ca0a0d556d8a7aa78b23c736b1"
   },
   "en/meeting/server-api/overview": {
     "reviewed": true,
@@ -1268,14 +1268,14 @@
   "en/rtc/server-api/guides/media-output": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/media-output.md",
-    "zh_blob": "91e7c4b9f1bc6fea777c4550e3180adf48b5457a",
-    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
+    "zh_blob": "a5f9f8958be3adb033bcfb081b3136b51d7d19fd",
+    "zh_commit": "a5c32a054a02a9ca0a0d556d8a7aa78b23c736b1"
   },
   "en/rtc/server-api/guides/recording": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/recording.md",
-    "zh_blob": "e05d47869804e86daf217927facce783a6046b77",
-    "zh_commit": "1bea89d70b2d8738c686642ea22b1d89a65de03d"
+    "zh_blob": "76082ee5bf545cf760cf9382460e4fd03b6d1ea0",
+    "zh_commit": "a5c32a054a02a9ca0a0d556d8a7aa78b23c736b1"
   },
   "en/rtc/server-api/overview": {
     "reviewed": true,

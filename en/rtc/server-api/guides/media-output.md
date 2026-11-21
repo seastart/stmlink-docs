@@ -154,7 +154,7 @@ The old single-stream and live streaming endpoints have been removed with no com
 | `stream/rtsp-url` | `stream/pull-url` with `protocol=rtsp`, `video=user`, `video_uid=old uid`. Note that audio **now defaults to AAC**; pass `rtsp_audio=opus` to keep the old Opus passthrough |
 | `mcu/live-url` | `stream/pull-url` with `protocol=flv`, `video=mcu` (no `task_id` needed; located by `channel`) |
 | `layout_data.push_url` / `push_audio*` of `mcu/start` | `stream/push/start` with `video=mcu`, and `audio` equivalent to the old `push_audio`; stop with `stream/push/stop`—it no longer stops together with the MCU task |
-| `task_type` including `8` (live stream) | Type `8` has been removed; use `2` (stream mixing) plus the media output endpoints above: the stream mixing task publishes the composite video back to the channel, then you pull or push it. Passing `8` or a combination that includes `8` (such as `9`) to `mcu/start` or `mcu/stop` returns parameter error `10000` |
+| `task_type` including `8` (live stream) | Type `8` has been removed; use `2` (stream mixing) plus the media output endpoints above: the stream mixing task publishes the composite video back to the channel, then you pull or push it. Passing `8` or a combination that includes `8` (such as `9`) to `mcu/start` or `mcu/stop` returns parameter error `10070` (invalid request parameters) |
 
 + Error code `1047` (invalid MCU push URL) has been removed and replaced by `1075`; `1048` (task in push mode has no playback URL) has been removed—pulling and pushing are independent, so this case no longer exists
 + At upgrade time, the `task_type` of historical tasks (including ended ones) has `8` replaced with `2` (for example, `9` → `3`, `12` → `6`), so `8` no longer appears in queries or callbacks

@@ -65,5 +65,5 @@ The old live streaming endpoints and usage have been removed with no compatibili
 | Old usage | New usage |
 | --- | --- |
 | `layout_data.push_url` / `push_audio*` of `mcu/start` | Removed. Use `stream/push/start` with `video=mcu`, and `audio` equivalent to the old `push_audio`; stop with `stream/push/stop` |
-| `task_type` including `8` (live stream) | Type `8` has been removed; use `2` (stream mixing) plus the media output endpoints above. Passing `8` or a combination that includes `8` (such as `9`) to `mcu/start` or `mcu/stop` returns parameter error `10000`; at upgrade time, the `task_type` of historical tasks has `8` replaced with `2` (for example, `9` → `3`) |
+| `task_type` including `8` (live stream) | Type `8` has been removed; use `2` (stream mixing) plus the media output endpoints above. Passing `8` or a combination that includes `8` (such as `9`) to `mcu/start` or `mcu/stop` returns parameter error `10070` (invalid request parameters); at upgrade time, the `task_type` of historical tasks has `8` replaced with `2` (for example, `9` → `3`) |
 | `mcu/live-url` | Removed. Use `stream/pull-url` (`protocol=flv`, `video=mcu`), which returns `url` and `expire_at`; when no stream mixing task is in progress, error code `1073` is returned (previously success with `data` null) |
