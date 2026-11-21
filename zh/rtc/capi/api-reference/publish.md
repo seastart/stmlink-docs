@@ -134,6 +134,33 @@ SDK 会拷贝一份传入的数据，调用返回后你可以立即复用或释�
 
 ---
 
+## rtc_write_sample_ts
+
+```c
+int rtc_write_sample_ts(void* track_handle, uint8_t* data, int length, int64_t capture_time_us);
+```
+
+0.2.0 新增。与 `rtc_write_sample` 作用相同，区别是不传时间戳增量，而是传这一帧的**内容时刻**（采集或合成的时刻）。SDK 据此换算 RTP 时间戳，并按内容时刻生成 RTCP SR。
+
+适合音视频分别采集、编码耗时不固定的场景（如服务端合流、转码）：订阅端按 SR 对齐音画时，用的是内容时刻而不是发送时刻，编码耗时和发送排队的抖动不会影响音画同步，你也不需要为此自己整形发送节奏。
+
+| 参数 | 说明 |
+| --- | --- |
+| `data` | 同 `rtc_write_sample` |
+| `length` | 同 `rtc_write_sample` |
+| `capture_time_us` | 这一帧的内容时刻，**平台单调时钟**的微秒数，即 C++ 的 `std::chrono::steady_clock`：Linux / Android 为 `CLOCK_MONOTONIC`，macOS / iOS 为 `CLOCK_UPTIME_RAW`，Windows 为 `QueryPerformanceCounter` |
+
+**返回值**：同 `rtc_write_sample`；同一轨道混用 `rtc_write_sample` 与 `rtc_write_sample_ts` 时返回 `RTC_ERROR`。
+
+<Warning>
+- **同一轨道二选一**：一条轨道从发布起只用其中一个接口写入。
+- **同一进程内所有调用本接口的轨道必须用同一个时钟**，音视频才能对齐。传入的时钟与上面的单调时钟相差超过 60 秒时，SDK 改为按首帧写入时刻换算：音画对齐不受影响，只是 SR 的绝对时间整体晚一个首帧写入延迟。
+- **同一轨道在一个线程里按时刻递增的顺序写入**。时刻回退、重复，或一次前跳超过 1 小时，会被当作时钟异常：RTP 时间戳继续递增，并以这一帧重新建立换算基准。停发一段时间后再写，RTP 时间戳按真实间隔推进。
+- 与 `rtc_write_sample` 一样，SDK 不控制发送节奏，写入即发出。
+</Warning>
+
+---
+
 ## rtc_set_keyframe_request_callback
 
 ```c
