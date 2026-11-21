@@ -65,5 +65,5 @@ description: "把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流�
 | 旧用法 | 新用法 |
 | --- | --- |
 | `mcu/start` 的 `layout_data.push_url` / `push_audio*` | 已删除。改用 `stream/push/start`，`video=mcu`，`audio` 等同原 `push_audio`；停推用 `stream/push/stop` |
-| `task_type` 含 `8`（直播流） | 类型 `8` 已删除，改用 `2`（合流）+ 上面的媒体输出接口。`mcu/start`、`mcu/stop` 传 `8` 或含 `8` 的组合（如 `9`）返回参数错误 `10000`；升级时历史任务的 `task_type` 会把 `8` 换成 `2`（如 `9` → `3`） |
+| `task_type` 含 `8`（直播流） | 类型 `8` 已删除，改用 `2`（合流）+ 上面的媒体输出接口。`mcu/start`、`mcu/stop` 传 `8` 或含 `8` 的组合（如 `9`）返回参数错误 `10070`（请求参数不合法）；升级时历史任务的 `task_type` 会把 `8` 换成 `2`（如 `9` → `3`） |
 | `mcu/live-url` | 已删除。改用 `stream/pull-url`（`protocol=flv`、`video=mcu`），返回 `url` 与 `expire_at`；没有进行中的合流任务时返回错误码 `1073`（原来是成功、`data` 为 `null`） |

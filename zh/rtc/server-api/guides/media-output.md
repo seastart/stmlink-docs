@@ -154,7 +154,7 @@ description: "把频道里的画面和声音送出去：HTTP-FLV / RTSP 拉流�
 | `stream/rtsp-url` | `stream/pull-url`，`protocol=rtsp`、`video=user`、`video_uid=原 uid`。注意音频**默认改成 AAC**，要保持原来的 Opus 直通传 `rtsp_audio=opus` |
 | `mcu/live-url` | `stream/pull-url`，`protocol=flv`、`video=mcu`（不再需要 `task_id`，按 `channel` 取） |
 | `mcu/start` 的 `layout_data.push_url` / `push_audio*` | `stream/push/start`，`video=mcu`，`audio` 等同原 `push_audio`；停推用 `stream/push/stop`，不再跟着 MCU 任务停 |
-| `task_type` 含 `8`（直播流） | 类型 `8` 已删除，改用 `2`（合流）+ 上面的媒体输出接口：合流任务把合成画面发布回频道，再拉流或推流。`mcu/start`、`mcu/stop` 传 `8` 或含 `8` 的组合（如 `9`）返回参数错误 `10000` |
+| `task_type` 含 `8`（直播流） | 类型 `8` 已删除，改用 `2`（合流）+ 上面的媒体输出接口：合流任务把合成画面发布回频道，再拉流或推流。`mcu/start`、`mcu/stop` 传 `8` 或含 `8` 的组合（如 `9`）返回参数错误 `10070`（请求参数不合法） |
 
 + 错误码 `1047`（MCU 推流地址无效）已删除，由 `1075` 取代；`1048`（推流模式的任务没有拉流地址）已删除，推流与拉流互不影响，不再有这种情况
 + 升级时历史任务（含已结束的）的 `task_type` 会把 `8` 换成 `2`（如 `9` → `3`、`12` → `6`），查询与回调里不会再出现 `8`
