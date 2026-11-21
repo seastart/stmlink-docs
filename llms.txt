@@ -483,7 +483,7 @@
 ## SMeeting 会议 SDK · 服务端 API · 接入指南
 
 - [云录制与合流接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/recording.md): 会议的云端录制、合流与录音：任务类型怎么组合、什么时候会自动开、画面怎么排、产物怎么取；合成画面的拉流与推流见媒体输出接入指南
-- [媒体输出接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/media-output.md): 把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取会议混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、直播流地址兼容接口与迁移
+- [媒体输出接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/media-output.md): 把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取会议混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、旧接口迁移
 - [回调事件接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/callbacks.md): 会议、成员、录制状态变化时 SMeeting 通知你的业务后端：怎么接、怎么验签、每个事件的字段结构
 - [设备接入与 IM](https://docs.stmlink.com/zh/meeting/server-api/guides/agent-and-im.md): SMeeting 的设备接入与 IM 接口直接沿用 SRTC 的同名接口，本页说明怎么调
 
@@ -492,7 +492,7 @@
 - [会议授权](https://docs.stmlink.com/zh/meeting/server-api/user-auth.md): 把业务系统的用户换成会议 Token，以及把已授权的用户踢下线
 - [会议管理](https://docs.stmlink.com/zh/meeting/server-api/meet.md): 会前会后的会议编排：创建、修改、取消、查询，以及参会记录与聊天记录
 - [会中控制](https://docs.stmlink.com/zh/meeting/server-api/meet-admin.md): 会议进行中主持人可做的操作：全体音视频管控、成员角色与踢人、举手处理、呼叫入会
-- [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播拉流地址；更多拉流与推流方式见「媒体输出」
+- [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制与点播地址；直播拉流与推流见「媒体输出」
 - [媒体输出](https://docs.stmlink.com/zh/meeting/server-api/stream.md): 拉流地址（HTTP-FLV / RTSP）与推流任务（RTMP / RTMPS）：画面取合成画面或任意一人，声音取会议混音或任意一人，可自由组合
 
 ## 产品与部署 · 概览
@@ -938,7 +938,7 @@
 ## [EN] SMeeting Conferencing SDK · Server API · Guides
 
 - [Cloud recording and stream mixing guide](https://docs.stmlink.com/en/meeting/server-api/guides/recording.md): How cloud recording, stream mixing, and audio recording work for meetings: combining task types, when tasks start automatically, layouts, and how to get recording files; for pulling and pushing the composite video, see the Media output guide
-- [Media output guide](https://docs.stmlink.com/en/meeting/server-api/guides/media-output.md): Send a meeting's video and audio out: HTTP-FLV / RTSP pull URLs and RTMP / RTMPS push tasks. Video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination; covers the stream mixing dependency, protocol limits, push status and alarms, the legacy live stream URL endpoint, and migration
+- [Media output guide](https://docs.stmlink.com/en/meeting/server-api/guides/media-output.md): Send a meeting's video and audio out: HTTP-FLV / RTSP pull URLs and RTMP / RTMPS push tasks. Video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination; covers the stream mixing dependency, protocol limits, push status and alarms, and migrating from the old endpoints
 - [Callback events guide](https://docs.stmlink.com/en/meeting/server-api/guides/callbacks.md): How SMeeting notifies your backend when meetings, members, or recordings change: request format, signature verification, response requirements, the fields of each event, and idempotency. Read this when setting up callbacks.
 - [Device integration and IM](https://docs.stmlink.com/en/meeting/server-api/guides/agent-and-im.md): SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the room number room_no, not the meeting_id.
 
@@ -947,7 +947,7 @@
 - [Meeting authorization](https://docs.stmlink.com/en/meeting/server-api/user-auth.md): Issue meeting tokens for users in your system, and force authorized users to log out
 - [Meeting management](https://docs.stmlink.com/en/meeting/server-api/meet.md): Meeting scheduling before and after the meeting: create, update, cancel, and query meetings, plus attendance records and chat history
 - [In-meeting controls](https://docs.stmlink.com/en/meeting/server-api/meet-admin.md): Actions the host can take during a meeting: audio and video controls for everyone, member roles and removal, raise-hand handling, and calling users into the meeting
-- [Meeting recording and live streaming](https://docs.stmlink.com/en/meeting/server-api/mcu.md): Cloud recording of the whole meeting, playback URLs, and the live stream pull URL; for more ways to pull and push, see \"Media output\"
+- [Meeting recording and live streaming](https://docs.stmlink.com/en/meeting/server-api/mcu.md): Cloud recording of the whole meeting and playback URLs; for live pulling and pushing, see \"Media output\"
 - [Media output](https://docs.stmlink.com/en/meeting/server-api/stream.md): Pull URLs (HTTP-FLV / RTSP) and push tasks (RTMP / RTMPS): video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination
 
 ## [EN] Product & deployment · Overview

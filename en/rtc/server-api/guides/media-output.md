@@ -77,7 +77,7 @@ Using only a single user's video and audio (`video=user`, `audio=auto` or `user`
 + The URL is signed and valid for 24 hours by default (adjustable with `expire`, at most one day); it can be pulled repeatedly by multiple players until it expires. After expiry, new pull requests are rejected, while **playback already in progress continues**.
   The actual validity period is the returned `expire_at`; request a new URL before each playback instead of caching it for a long time
 + **On-demand subscription**: sources are subscribed only when someone pulls and unsubscribed automatically after the last player disconnects, so nothing is consumed when no one is pulling, and there is no stop endpoint
-+ URLs can be generated in advance: if the source hasn't published yet when pulling, the player gets a 404 and should retry; if the user leaves and comes back, the pull doesn't break, with a gap in between
++ The channel must already be open when you request a pull URL, otherwise `1024` is returned; if the source hasn't published yet when pulling, the player gets a 404 and should retry; if the user leaves and comes back, the pull doesn't break, with a gap in between
 + RTSP doesn't fill in silence: while the audio source is absent (not published, or muted and not sending), the audio is a gap, which players generally handle fine
 
 ### Limits of audio only (`video=none`)

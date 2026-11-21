@@ -21,7 +21,7 @@ So `3` = video recording + stream mixing, and `7` = all three.
 
 <Warning>Don't treat `3` as a separate "hybrid mode" type. Earlier docs listed the values as "1 recording, 2 mixing, 3 hybrid", which was wrong—it left out audio recording and misrepresented how the values combine.</Warning>
 
-<Note>The former `8` (live stream) has been merged into `2`. For compatibility with existing integrations, the meeting layer still accepts values that include `8` and handles them as `2` (for example, `9` as `3`), and `task_type` in callbacks is filled back with the original value you passed; use `2` directly in new integrations.</Note>
+<Note>The former `8` (live stream) has been merged into `2` and is no longer supported; values that include `8` return an error. For live pulling and pushing, use [Media output](/en/meeting/server-api/guides/media-output).</Note>
 
 ## Some tasks start automatically
 

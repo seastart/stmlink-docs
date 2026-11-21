@@ -1,6 +1,6 @@
 ---
 title: "Media output guide"
-description: "Send a meeting's video and audio out: HTTP-FLV / RTSP pull URLs and RTMP / RTMPS push tasks. Video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination; covers the stream mixing dependency, protocol limits, push status and alarms, the legacy live stream URL endpoint, and migration"
+description: "Send a meeting's video and audio out: HTTP-FLV / RTSP pull URLs and RTMP / RTMPS push tasks. Video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination; covers the stream mixing dependency, protocol limits, push status and alarms, and migrating from the old endpoints"
 ---
 
 This page covers how media output works at the meeting layer. For the parameters and response structure of each endpoint, see [Media output](/en/meeting/server-api/stream).
@@ -31,6 +31,7 @@ Video and audio each choose their own source, for both pulling and pushing:
 + `video_uid` / `audio_uid` take the in-meeting user ID
 + **Stopping a push requires both `meeting_id` and `push_id`**; `1074` is returned if the push doesn't belong to this meeting
 + Starting a push requires the meeting to be in progress (someone is in the meeting); when the meeting ends and everyone leaves, all of its pushes stop automatically
++ Requesting a pull URL or starting a push returns `2101` if the meeting for `meeting_id` doesn't exist
 
 ## The composite video and mixed audio depend on a stream mixing task
 
@@ -57,16 +58,12 @@ When a push keeps failing (retrying for about 90 seconds), you are notified thro
 **`task_type` `0` means it's a push alarm, and `task_id` is then the `push_id`**—not a recording task, so don't pass it to `mcu/*` endpoints.
 An alarm doesn't mean the push has stopped; rely on `status` in the push list.
 
-## Live stream URL (legacy endpoint)
-
-[Get live stream URLs](/en/meeting/server-api/mcu) (`mcu/live-url`) is kept for compatibility with existing integrations.
-It's equivalent to requesting a pull URL with `protocol=flv` and `video=mcu`, and its response structure is unchanged (`rtmp` and `hls` are always empty);
-when no stream mixing task is in progress, it still returns success with `data` null. **Use Request a pull URL for new integrations**; it also supports RTSP, single-user video, and any combination.
-
 ## Migrating from the old usage
+
+The old live streaming endpoints and usage have been removed with no compatibility period; switch your callers to the new endpoints:
 
 | Old usage | New usage |
 | --- | --- |
 | `layout_data.push_url` / `push_audio*` of `mcu/start` | Removed. Use `stream/push/start` with `video=mcu`, and `audio` equivalent to the old `push_audio`; stop with `stream/push/stop` |
-| `task_type` including `8` (live stream) | Change to `2` (stream mixing), for example `9` → `3`. For compatibility with existing integrations, the meeting layer still accepts values that include `8` and handles them as `2`, and `task_type` in callbacks is filled back with the original value you passed |
-| `mcu/live-url` | Still works; for new integrations use `stream/pull-url` (`protocol=flv`, `video=mcu`) |
+| `task_type` including `8` (live stream) | Change to `2` (stream mixing), for example `9` → `3`; values that include `8` return an error (for both `mcu/start` and `mcu/stop`) |
+| `mcu/live-url` | Removed. Use `stream/pull-url` (`protocol=flv`, `video=mcu`), which returns `url` and `expire_at`; when no stream mixing task is in progress, error code `1073` is returned (previously success with `data` null) |
