@@ -19,7 +19,7 @@ srtc 服务端 api 拥有**全局最高的权力**，每个请求都要用 `app_
 | --- | --- |
 | 签发加入频道token | `channel/grant` |
 | 会控（踢人、改用户属性） | `channel/kick-user`、`channel/update-user` |
-| 录制、直播、语音录制、转写的启停 | `mcu/*`、`talkrec/*`、`asr/*` |
+| 录制、直播（拉流 / 推流）、语音录制、转写的启停 | `mcu/*`、`stream/*`、`talkrec/*`、`asr/*` |
 | 设备接入（SIP / 国标监控等） | `agent/*` |
 
 客户端只拿 token 入频道、收发流，其余一律走你的后端。

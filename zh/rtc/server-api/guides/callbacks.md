@@ -149,13 +149,13 @@ IP 直连与 RTSP 拉流由我们主动去连，不存在上下线。
 每次状态翻转只推一次：设备周期性的注册刷新、国标 Keepalive 不会重复推 `agent_online`；
 离线后恢复心跳会再推一次上线。设备不归属某个应用，所以订阅了本事件的每个应用都会收到。
 
-### `mcu_task` — 录制/合流/直播任务状态变化
+### `mcu_task` — 录制/合流任务状态变化
 
 ```json
 {
   "channel": "fire",
   "task_id": "sxjgwy",
-  "task_type": 9,
+  "task_type": 3,
   "task_status": 1,
   "err_desc": "",
   "began_at": 1718250917,
@@ -166,7 +166,7 @@ IP 直连与 RTSP 拉流由我们主动去连，不存在上下线。
 }
 ```
 
-+ `task_type` 按位组合，含义见[云录制与直播接入指南](/zh/rtc/server-api/guides/recording)
++ `task_type` 按位组合，含义见[云录制与合流接入指南](/zh/rtc/server-api/guides/recording)
 + `task_status`：`0` 待开始、`1` 进行中、`2` 待结束、`3` 异常结束、`4` 正常结束
 + `err_desc` 仅在异常结束时有内容
 + `record_count` / `total_duration` / `total_size` 是本次录制产出的文件数、总时长（秒）、总字节
@@ -236,6 +236,11 @@ IP 直连与 RTSP 拉流由我们主动去连，不存在上下线。
 ```
 
 用于接你自己的告警系统。录制是持续计费的能力，异常中断如果没人知道，损失的是录像本身。
+
+**推流任务持续失败也走这个事件**（见[媒体输出接入指南 · 推流失败告警](/zh/rtc/server-api/guides/media-output#推流失败告警)）：
+
++ `task_type` 为 `0` 表示推流告警，此时 `task_id` 是推流任务的 `push_id`，不是 MCU 任务，不要拿去调 `mcu/*` 接口
++ `task_type` 大于 `0` 时是 MCU 任务告警，按位含义同 `mcu_task`
 
 ### `talkrec_task` — 语音录制任务状态变化
 

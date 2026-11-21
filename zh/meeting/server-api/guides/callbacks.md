@@ -48,9 +48,9 @@ Content-Type: application/json; charset=utf-8
 | `user_enter` | 用户进入会议 |
 | `user_exit` | 用户离开会议 |
 | `meeting_status_change` | 会议状态变化（未开始 / 进行中 / 已结束之间流转）|
-| `mcu_status_change` | 录制、合流或直播任务的状态变化 |
+| `mcu_status_change` | 录制或合流任务的状态变化 |
 | `mcu_record_done` | 一个录像文件已就绪，可以取播放地址了（一次录制多个文件时推多条） |
-| `mcu_alarm` | 录制任务出现异常 |
+| `mcu_alarm` | 录制任务出现异常，或推流任务持续失败 |
 | `user_mic_state_change` | 用户打开或关闭麦克风 |
 | `user_camera_state_change` | 用户打开或关闭摄像头 |
 | `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（SIP/H.323 设备的双流、Web 端第二路共享） |
@@ -112,7 +112,7 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
-+ `task_type` 按位组合，取值见[云录制与直播接入指南](/zh/meeting/server-api/guides/recording)
++ `task_type` 按位组合，取值见[云录制与合流接入指南](/zh/meeting/server-api/guides/recording)
 + `task_status`：`0` 待开始、`1` 进行中、`2` 待结束、`3` 异常结束、`4` 正常结束
 + `err_desc` 只在 `task_status=3` 时有内容
 + `record_count` / `total_duration` / `total_size` 是本次录制产出的文件数、总时长（秒）、总字节
@@ -177,6 +177,10 @@ Content-Type: application/json; charset=utf-8
 
 `gw` 是任务所在的网关节点，排查时告诉我们这个值能快很多。注意告警**不代表任务已终止** ——
 以 `mcu_status_change` 的 `task_status` 为准。
+
+**推流任务持续失败也走这个事件**：`task_type` 为 `0` 表示推流告警，此时 `task_id` 是推流任务的 `push_id`，
+不是录制任务，不要拿去调 `mcu/*` 接口；推流是否恢复以[推流任务列表](/zh/meeting/server-api/stream#推流任务列表)的 `status` 为准。
+见[媒体输出接入指南](/zh/meeting/server-api/guides/media-output)。
 
 ### `user_mic_state_change` / `user_camera_state_change` / `user_extra_screen_state_change` — 用户媒体状态变化
 

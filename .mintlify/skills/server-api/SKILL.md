@@ -118,7 +118,8 @@ Public server APIs use only `/server/v1/...` and `/stm/srvapi/v1/...` (SMeeting 
 | `POST /server/v1/channel/list-user` | 查频道成员 |
 | `POST /server/v1/channel/kick-user` | 踢人 |
 | `POST /server/v1/channel/set-callback` | 注册事件回调地址（一次性） |
-| `POST /server/v1/mcu/start` / `stop` | 起停录制 / 合流 / 转推任务 |
+| `POST /server/v1/mcu/start` / `stop` | 起停录制 / 合流任务 |
+| `POST /server/v1/stream/pull-url` / `stream/push/start` | 拉流地址（HTTP-FLV / RTSP）/ 推流到直播平台（RTMP），画面声音可取合成或任意一人 |
 | `POST /server/v1/im/grant` / `send-msg` | IM 令牌与发消息 |
 
 **SMeeting**

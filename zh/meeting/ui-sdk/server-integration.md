@@ -107,7 +107,7 @@ POST /server/v1/meet/create
   要区分专家、见证人）才靠它给每个人定身份
 + **`meeting_type`**：`1` 即时会议、`2` 预约会议。预约会议必须给 `plan_time` 和 `plan_dur`
 + 要自动录像就加 `auto_record: true`，不用在业务里管录制启停，详见
-  [云录制与直播接入指南](/zh/meeting/server-api/guides/recording)
+  [云录制与合流接入指南](/zh/meeting/server-api/guides/recording)
 
 返回里的 **`room_no`** 是第 3 步要用的房间号，`meeting_id` 是后续所有会议接口的入参：
 

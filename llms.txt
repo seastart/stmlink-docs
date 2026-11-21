@@ -253,21 +253,22 @@
 
 ## SRTC 音视频 SDK · 服务端 API · 接入指南
 
-- [云录制与直播接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/recording.md): 整场云端录制、合流、录音与直播的完整玩法：任务类型怎么组合、画面怎么排、产物怎么取
+- [云录制与合流接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/recording.md): 整场云端录制、合流与录音的完整玩法：任务类型怎么组合、画面怎么排、产物怎么取；合成画面的拉流与推流见媒体输出接入指南
+- [媒体输出接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/media-output.md): 把频道里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取房间混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、旧接口迁移对照
 - [回调事件接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/callbacks.md): RTC 侧在频道/用户/录制状态变化时通知你的业务后端：怎么接、怎么验签、每个事件的字段结构
 - [设备接入指南](https://docs.stmlink.com/zh/rtc/server-api/guides/agents.md): SIP / H323 话机、国标监控、RTSP 流怎么登记进来，再拉进频道
 
 ## SRTC 音视频 SDK · 服务端 API · 接口文档
 
 - [频道](https://docs.stmlink.com/zh/rtc/server-api/channel.md): 频道的创建、查询、成员管理与历史记录
-- [云录制与直播](https://docs.stmlink.com/zh/rtc/server-api/mcu.md): 整场云端录制、点播地址与直播推流；按说话人分轨的录音是另一套接口，见「语音录制」
-- [语音录制](https://docs.stmlink.com/zh/rtc/server-api/talkrec.md): 按说话人分轨的旁路录音：按一次讲话切段，段级查询与播放；整场混音录制见「云录制与直播」
+- [云录制与合流](https://docs.stmlink.com/zh/rtc/server-api/mcu.md): 整场云端录制、点播地址与合流（合成画面发布回频道）；合成画面的拉流与推流见「媒体输出」，按说话人分轨的录音见「语音录制」
+- [语音录制](https://docs.stmlink.com/zh/rtc/server-api/talkrec.md): 按说话人分轨的旁路录音：按一次讲话切段，段级查询与播放；整场混音录制见「云录制与合流」
 - [设备接入](https://docs.stmlink.com/zh/rtc/server-api/agent.md): SIP / H323 / GB28181 监控等设备的接入与会中操作
 - [IM 消息](https://docs.stmlink.com/zh/rtc/server-api/im.md): 会议外的即时消息与设备在线管理
 - [电子白板](https://docs.stmlink.com/zh/rtc/server-api/white-board.md): 白板的授权、检测与销毁
 - [语音转写](https://docs.stmlink.com/zh/rtc/server-api/asr.md): ASR 语音识别的启停与结果回调
 - [会议纪要](https://docs.stmlink.com/zh/rtc/server-api/ai.md): 按语音识别场次生成与获取会议纪要（大模型生成，Markdown）；识别的启停与场次列表见「语音转写」
-- [单路流输出](https://docs.stmlink.com/zh/rtc/server-api/stream.md): 把频道内某个用户的音视频以 RTSP / HTTP-FLV 拉流地址输出，接入 NVR、录像机或第三方播放器
+- [媒体输出](https://docs.stmlink.com/zh/rtc/server-api/stream.md): 拉流地址（HTTP-FLV / RTSP）与推流任务（RTMP / RTMPS）：画面取合成画面或任意一人，声音取房间混音或任意一人，可自由组合
 
 ## SMeeting 会议 SDK · 概览
 
@@ -481,7 +482,8 @@
 
 ## SMeeting 会议 SDK · 服务端 API · 接入指南
 
-- [云录制与直播接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/recording.md): 会议的云端录制、合流与直播：任务类型怎么组合、什么时候会自动开、画面怎么排、产物怎么取
+- [云录制与合流接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/recording.md): 会议的云端录制、合流与录音：任务类型怎么组合、什么时候会自动开、画面怎么排、产物怎么取；合成画面的拉流与推流见媒体输出接入指南
+- [媒体输出接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/media-output.md): 把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取会议混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、直播流地址兼容接口与迁移
 - [回调事件接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/callbacks.md): 会议、成员、录制状态变化时 SMeeting 通知你的业务后端：怎么接、怎么验签、每个事件的字段结构
 - [设备接入与 IM](https://docs.stmlink.com/zh/meeting/server-api/guides/agent-and-im.md): SMeeting 的设备接入与 IM 接口直接沿用 SRTC 的同名接口，本页说明怎么调
 
@@ -490,7 +492,8 @@
 - [会议授权](https://docs.stmlink.com/zh/meeting/server-api/user-auth.md): 把业务系统的用户换成会议 Token，以及把已授权的用户踢下线
 - [会议管理](https://docs.stmlink.com/zh/meeting/server-api/meet.md): 会前会后的会议编排：创建、修改、取消、查询，以及参会记录与聊天记录
 - [会中控制](https://docs.stmlink.com/zh/meeting/server-api/meet-admin.md): 会议进行中主持人可做的操作：全体音视频管控、成员角色与踢人、举手处理、呼叫入会
-- [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播推流
+- [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播拉流地址；更多拉流与推流方式见「媒体输出」
+- [媒体输出](https://docs.stmlink.com/zh/meeting/server-api/stream.md): 拉流地址（HTTP-FLV / RTSP）与推流任务（RTMP / RTMPS）：画面取合成画面或任意一人，声音取会议混音或任意一人，可自由组合
 
 ## 产品与部署 · 概览
 
@@ -515,7 +518,7 @@
 ## 产品与部署 · 私有化部署
 
 - [组件与架构](https://docs.stmlink.com/zh/product/deploy/architecture.md): 私有化部署一套 SRTC / SMeeting 由哪些服务组成、哪些必装哪些按需装、装的顺序、支持的操作系统和数据库（含人大金仓、达梦）、单机与多机部署方式。做部署规划和准备服务器前先读这页
-- [网络与端口要求](https://docs.stmlink.com/zh/product/deploy/ports.md): 私有化部署要开放哪些端口：客户端必开的 443/TCP、18883/TCP、39001/UDP，设备网关的 SIP / H.323 / GB28181 端口与 RTP 端口段，多节点、媒体网关（单路拉流与直播）端口，哪些端口严禁对外，附防火墙命令。给客户网络、安全部门提开墙申请时直接用
+- [网络与端口要求](https://docs.stmlink.com/zh/product/deploy/ports.md): 私有化部署要开放哪些端口：客户端必开的 443/TCP、18883/TCP、39001/UDP，设备网关的 SIP / H.323 / GB28181 端口与 RTP 端口段，多节点、媒体网关（媒体输出：拉流与推流）端口，哪些端口严禁对外，附防火墙命令。给客户网络、安全部门提开墙申请时直接用
 - [内外网与多线路](https://docs.stmlink.com/zh/product/deploy/networks.md): 一套私有化平台同时服务内网用户和外网用户怎么部署：什么是网络线路（内网/外网）、每条线路要准备的入口地址和媒体地址、入口与出口 IP 不同的机房要注意什么，以及业务系统如何让用户走对线路
 - [多节点与就近接入](https://docs.stmlink.com/zh/product/deploy/multi-node.md): 一台媒体服务器不够用、或用户分布在多个机房/地区时怎么部署：多媒体节点如何按负载分配频道、节点满载后同一场会议如何溢出到其它节点、如何按地区分组让用户就近接入，以及容量配置、部署前提与限制。做大并发或多地域方案前读这页
 - [光闸跨网接入](https://docs.stmlink.com/zh/product/deploy/optical-gap.md): 平台部署在内网、内外网之间用光闸（网闸）隔离时，外网用户如何入会：RTSP 隧道穿透方案的原理、部署架构、光闸需要放行什么、外网只需 3 条通道、部署条件与使用限制。公检法、政务等强隔离网络的方案沟通用
@@ -748,14 +751,14 @@
 ## [EN] SRTC Audio & Video SDK · Server API · API reference
 
 - [Channel](https://docs.stmlink.com/en/rtc/server-api/channel.md): Create and query channels, manage users, and view history
-- [Cloud recording and live streaming](https://docs.stmlink.com/en/rtc/server-api/mcu.md): Cloud recording of the entire channel, VOD URLs, and live streaming; per-speaker voice recording is a separate set of endpoints, see \"Per-speaker voice recording\"
-- [Per-speaker voice recording](https://docs.stmlink.com/en/rtc/server-api/talkrec.md): Per-speaker voice recording by a server-side listener: split into segments by utterance, with segment-level query and playback; for mixed recording of the entire channel, see \"Cloud recording and live streaming\"
+- [云录制与合流](https://docs.stmlink.com/en/rtc/server-api/mcu.md): 整场云端录制、点播地址与合流（合成画面发布回频道）；合成画面的拉流与推流见「媒体输出」，按说话人分轨的录音见「语音录制」
+- [Per-speaker voice recording](https://docs.stmlink.com/en/rtc/server-api/talkrec.md): 按说话人分轨的旁路录音：按一次讲话切段，段级查询与播放；整场混音录制见「云录制与合流」
 - [Device integration](https://docs.stmlink.com/en/rtc/server-api/agent.md): Integration and in-channel control of SIP, H.323, GB28181 surveillance, and other devices
 - [IM messages](https://docs.stmlink.com/en/rtc/server-api/im.md): Out-of-channel IM messages and IM device presence management
 - [Whiteboard](https://docs.stmlink.com/en/rtc/server-api/white-board.md): Authorize, check, and destroy whiteboards
 - [Transcription](https://docs.stmlink.com/en/rtc/server-api/asr.md): Start and stop ASR speech recognition and get the results
 - [Meeting minutes](https://docs.stmlink.com/en/rtc/server-api/ai.md): Generate and get meeting minutes per speech recognition session (generated by a large language model, in Markdown); to start or stop recognition and list sessions, see \"Transcription\"
-- [Single-stream output](https://docs.stmlink.com/en/rtc/server-api/stream.md): Output one user's audio and video in a channel as an RTSP / HTTP-FLV pull URL for NVRs, recorders, or third-party players
+- [媒体输出](https://docs.stmlink.com/en/rtc/server-api/stream.md): 拉流地址（HTTP-FLV / RTSP）与推流任务（RTMP / RTMPS）：画面取合成画面或任意一人，声音取房间混音或任意一人，可自由组合
 
 ## [EN] SMeeting Conferencing SDK · Overview
 
@@ -942,7 +945,8 @@
 - [Meeting authorization](https://docs.stmlink.com/en/meeting/server-api/user-auth.md): Issue meeting tokens for users in your system, and force authorized users to log out
 - [Meeting management](https://docs.stmlink.com/en/meeting/server-api/meet.md): Meeting scheduling before and after the meeting: create, update, cancel, and query meetings, plus attendance records and chat history
 - [In-meeting controls](https://docs.stmlink.com/en/meeting/server-api/meet-admin.md): Actions the host can take during a meeting: audio and video controls for everyone, member roles and removal, raise-hand handling, and calling users into the meeting
-- [Meeting recording and live streaming](https://docs.stmlink.com/en/meeting/server-api/mcu.md): Cloud recording of the whole meeting, playback URLs, and live streaming
+- [Meeting recording and live streaming](https://docs.stmlink.com/en/meeting/server-api/mcu.md): 整场会议的云端录制、点播地址与直播拉流地址；更多拉流与推流方式见「媒体输出」
+- [媒体输出](https://docs.stmlink.com/en/meeting/server-api/stream.md): 拉流地址（HTTP-FLV / RTSP）与推流任务（RTMP / RTMPS）：画面取合成画面或任意一人，声音取会议混音或任意一人，可自由组合
 
 ## [EN] Product & deployment · Overview
 

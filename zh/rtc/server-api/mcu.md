@@ -1,6 +1,6 @@
 ---
-title: "云录制与直播"
-description: "整场云端录制、点播地址与直播推流；按说话人分轨的录音是另一套接口，见「语音录制」"
+title: "云录制与合流"
+description: "整场云端录制、点播地址与合流（合成画面发布回频道）；合成画面的拉流与推流见「媒体输出」，按说话人分轨的录音见「语音录制」"
 ---
 
 {/* 本页接口结构由后端源码自动生成，请勿手工编辑 —— 改动会在下次同步时被覆盖。
@@ -224,7 +224,7 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  任务类型 1录像 2合流 4录音 8直播流, 按位组合
+  任务类型 1录像 2合流 4录音, 按位组合(历史任务可能含 8 原直播流, 已并入合流)
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -487,7 +487,7 @@ description: "整场云端录制、点播地址与直播推流；按说话人分
 </ResponseField>
 
 <ResponseField name="task_type" type="integer">
-  任务类型 1录像 2合流 4录音 8直播流, 按位组合
+  任务类型 1录像 2合流 4录音, 按位组合(历史任务可能含 8 原直播流, 已并入合流)
 </ResponseField>
 
 <ResponseField name="task_status" type="integer">
@@ -1084,26 +1084,23 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
 
 ---
 
-## 启动录制/合流/直播任务
+## 启动录制/合流任务
 
 `POST /server/v1/mcu/start`
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-启动服务端的录制、合流或直播任务。同一频道对同一类型只有一个进行中的任务：
+启动服务端的录制或合流任务。同一频道对同一类型只有一个进行中的任务：
 重复调用不新建，而是按传入参数更新已有任务。
 
-直播流（task_type 含 8）有两种用法：
-+ 拉流模式（不传 layout_data.push_url）：任务进行中用「获取直播拉流地址」取带签名的 HTTP-FLV 地址
-+ 推流模式（传 layout_data.push_url）：服务端把合成画面推到你的 RTMP 地址（支持 rtmp:// 与 rtmps://）；音频来源由 push_audio 指定
-（mix 房间合成音频，默认；none 不要音频；user 指定用户的音频，配 push_audio_uid、可选 push_audio_desc）。
-推流断线会自动重连，持续失败时经 MCU 告警回调通知；没有可用的推流服务时本接口返回错误码 1072
+合流（task_type 含 2）把合成画面与房间混音发布回频道。要把合成画面拉出去播放或推到直播平台，
+在合流任务进行中调用「申请拉流地址」或「开始推流」，来源选 video=mcu。原直播流类型 8 已并入合流，不再接受。
 
 **请求参数**
 
 <ParamField body="task_type" type="integer" required>
-  任务类型，按位组合：1录像、2合流、4录音、8直播流；如 3 表示录像+合流，9 表示录像+直播
-  示例：`9`
+  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。合流把合成画面发布回频道，拉流/推流见媒体输出接口。8(直播流)已不再支持，传了会报错：请改用 2 发布合成画面，再用 stream/pull-url 拉流或 stream/push/start 推流
+  示例：`3`
 </ParamField>
 
 <ParamField body="op_uid" type="string">
@@ -1228,26 +1225,6 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
       用户名称表, 与McuDiv.Uids对应(不必需)
     </ParamField>
 
-    <ParamField body="push_url" type="string">
-      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成画面推到该地址(推流模式), 不再提供拉流地址; 支持 rtmp:// 与 rtmps://, 须带推流码(如 rtmp://host/app/ 这类流名为空的地址会被拒绝)。任务进行中再次调用开始接口时不传则沿用原地址及其音频来源
-      示例：`rtmp://live.example.com/app/stream_key`
-    </ParamField>
-
-    <ParamField body="push_audio" type="string">
-      推流的音频来源, 仅传了 push_url 时生效: mix 房间合成音频(默认)、none 不要音频、user 某个用户的音频(须同时传 push_audio_uid)
-      示例：`mix`
-    </ParamField>
-
-    <ParamField body="push_audio_uid" type="string">
-      push_audio 为 user 时必填: 取哪个用户的音频
-      示例：`1001`
-    </ParamField>
-
-    <ParamField body="push_audio_desc" type="string">
-      push_audio 为 user 时可选: 该用户的哪条音频轨道(按轨道描述精确匹配), 不传取该用户的第一条音频
-      示例：`mic`
-    </ParamField>
-
   </Expandable>
 </ParamField>
 
@@ -1282,10 +1259,6 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
     "names": {},
     "nobody_text": "",
     "polling_dur": 0,
-    "push_audio": "mix",
-    "push_audio_desc": "mic",
-    "push_audio_uid": "1001",
-    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
@@ -1306,7 +1279,7 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
   "op_uid": "1001",
   "room_no": "818595664",
   "tags": "周会,研发",
-  "task_type": 9,
+  "task_type": 3,
   "title": "项目周会 2024-06-12"
 }
 ```
@@ -1331,13 +1304,13 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
 
 ---
 
-## 停止录制/合流/直播任务
+## 停止录制/合流任务
 
 `POST /server/v1/mcu/stop`
 
 鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
 
-停止进行中的录制/合流/直播任务。录像文件在任务停止后才完成转码，随后才能取到播放地址。
+停止进行中的录制/合流任务。录像文件在任务停止后才完成转码，随后才能取到播放地址。
 频道销毁时进行中的任务会自动停止，不必先手动调用。
 
 **请求参数**
@@ -1433,109 +1406,6 @@ reason=2 表示这一片与上一片之间存在时间空洞（录制曾中断�
 {
   "code": 0,
   "data": null
-}
-```
-
----
-
-## 获取直播拉流地址
-
-`POST /server/v1/mcu/live-url`
-
-鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
-
-获取直播拉流地址：返回合成画面的 HTTP-FLV 地址（视频 H264 + 音频 AAC），rtmp、hls 已停用恒为空。
-
-与录像回放不同，直播地址在任务**进行中**就能取到 —— 前提是启动任务时
-task_type 带了直播位（8）。
-
-+ 地址自带签名，默认 24 小时有效（expire 可调，最长一天），过期后新的拉流请求会被拒绝，已在播放的不受影响；
-播放前调一次本接口取新地址即可，不要长期缓存
-+ 音频来源可选：mix 房间合成音频（默认）、none 不要音频、user 指定用户的某条音频（配 audio_uid、audio_desc）
-+ 有人来拉时才订阅，最后一个拉流端断开后自动退订；任务停止后拉流随之断开
-
-启动时传了 layout_data.push_url（推流模式）的任务，合成流推到你自己的地址，
-没有拉流地址可查，调用本接口会返回错误码 1048。
-实际有效期以返回的 expire_at 为准（服务端配置的上限可能小于请求值）。
-
-**请求参数**
-
-<ParamField body="task_id" type="string">
-  任务ID
-  示例：`sxjgwy`
-</ParamField>
-
-<ParamField body="channel" type="string">
-  频道(无TaskId时必填)
-  示例：`fire`
-</ParamField>
-
-<ParamField body="audio" type="string">
-  音频来源：mix 房间合成音频（默认）、none 不要音频、user 指定用户的音频（须同时传 audio_uid）
-  示例：`mix`
-</ParamField>
-
-<ParamField body="audio_uid" type="string">
-  audio 为 user 时必填：取哪个用户的音频（仅支持大小写字母、数字、下划线 _ 与连字符 -）
-  示例：`1001`
-</ParamField>
-
-<ParamField body="audio_desc" type="string">
-  audio 为 user 时可选：该用户的哪条音频轨道（按轨道描述精确匹配），不传取第一条（最大长度 50）
-  示例：`mic`
-</ParamField>
-
-<ParamField body="expire" type="integer">
-  地址有效期（秒），不传时默认 24 小时，最长一天
-  示例：`86400`
-</ParamField>
-
-
-请求示例：
-
-```json
-{
-  "audio": "mix",
-  "audio_desc": "mic",
-  "audio_uid": "1001",
-  "channel": "fire",
-  "expire": 86400,
-  "task_id": "sxjgwy"
-}
-```
-
-**响应参数**
-
-<ResponseField name="rtmp" type="string">
-  已停用，恒为空字符串（保留字段免得老调用方解析出错）
-</ResponseField>
-
-<ResponseField name="flv" type="string">
-  HTTP-FLV 拉流地址（合成画面 H264 + AAC 音频），自带签名，有效期内可反复拉
-  示例：`http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv`
-</ResponseField>
-
-<ResponseField name="hls" type="string">
-  已停用，恒为空字符串（保留字段免得老调用方解析出错）
-</ResponseField>
-
-<ResponseField name="expire_at" type="integer">
-  flv 地址过期时间，秒级时间戳；过期后新的拉流请求会被拒绝，已在播放的不受影响
-  示例：`1718198266`
-</ResponseField>
-
-
-响应示例：
-
-```json
-{
-  "code": 0,
-  "data": {
-    "expire_at": 1718198266,
-    "flv": "http://1.2.3.4:8080/f/eyJhcHBpZCI6....flv",
-    "hls": "",
-    "rtmp": ""
-  }
 }
 ```
 

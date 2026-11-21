@@ -1,6 +1,6 @@
 ---
 title: "会议录制与直播"
-description: "整场会议的云端录制、点播地址与直播推流"
+description: "整场会议的云端录制、点播地址与直播拉流地址；更多拉流与推流方式见「媒体输出」"
 ---
 
 {/* 本页接口结构由后端源码自动生成，请勿手工编辑 —— 改动会在下次同步时被覆盖。
@@ -1024,7 +1024,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 ---
 
-## 直播流地址
+## 直播流地址（兼容老接口，内部走 stream/pull-url）
 
 `POST /server/v1/mcu/live-url`
 
@@ -1032,14 +1032,14 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 获取直播拉流地址：返回合成画面的 HTTP-FLV 地址（视频 H264 + 音频 AAC），rtmp、hls 已停用恒为空。
 
-直播地址在任务**进行中**就能取到 —— 前提是启动任务时 task_type 带了直播位（8）。
+等价于「媒体输出」的申请拉流地址（protocol=flv、video=mcu），新对接请直接用那个接口：它还支持 RTSP、单人画面与任意组合。
+
+直播地址在合流任务**进行中**才能取到 —— 前提是启动任务时 task_type 带了合流位（2）；没有进行中的合流任务时返回成功、data 为 null。
 
 - 地址自带签名，默认 24 小时有效（expire 可调，最长一天），过期后新的拉流请求会被拒绝，已在播放的不受影响；
 播放前调一次本接口取新地址即可，不要长期缓存。实际有效期以返回的 expire_at 为准
 - 音频来源可选：mix 房间合成音频（默认）、none 不要音频、user 指定用户的某条音频（配 audio_uid、audio_desc）
 - 有人来拉时才订阅，最后一个拉流端断开后自动退订；任务停止后拉流随之断开
-
-启动任务时传了 layout_data.push_url（推流模式）的，合成流推到你自己的地址，没有拉流地址可查，会返回错误码 1048。
 
 **请求参数**
 
@@ -1052,7 +1052,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 </ParamField>
 
 <ParamField body="audio" type="string">
-  音频来源：mix 房间合成音频（默认）、none 不要音频、user 指定用户的音频（须同时传 audio_uid）
+  音频来源：mix 房间合成音频（默认，auto 同义）、none 不要音频、user 指定用户的音频（须同时传 audio_uid）
   示例：`mix`
 </ParamField>
 
@@ -1216,11 +1216,11 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 开始录制任务
 
-直播流（task_type 含 8）有两种用法：
-- 拉流模式（不传 layout_data.push_url）：任务进行中用「获取直播拉流地址」取带签名的 HTTP-FLV 地址
-- 推流模式（传 layout_data.push_url）：服务端把合成画面推到你的 RTMP 地址（支持 rtmp:// 与 rtmps://）；音频来源由 push_audio 指定
-（mix 房间合成音频，默认；none 不要音频；user 指定用户的音频，配 push_audio_uid、可选 push_audio_desc）。
-推流断线会自动重连；没有可用的推流服务时本接口返回错误码 1072
+要直播时让任务带上合流位（2），再用「媒体输出」的接口取拉流地址或开推流（RTMP/RTMPS）。
+
+直播流位（8）已并入合流（2），传了按合流处理：
+- 合成模式会议（或会议已自动开了合流任务）：直接沿用会议的合成画面，不改它的布局，layout_data 对这部分不生效；其余位单独开任务（如 9 只开录像 1），纯 8 直接返回会议合成任务的 task_id
+- 其它会议：开一个合流任务，状态回调里的 task_type 仍是你传的值（8、9 等）
 
 **请求参数**
 
@@ -1233,8 +1233,8 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 </ParamField>
 
 <ParamField body="task_type" type="integer" required>
-  任务类型，按位组合：1录像、2合流、4录音、8直播流；如 3 表示录像+合流，9 表示录像+直播
-  示例：`9`
+  任务类型，按位组合：1录像、2合流、4录音；如 3 表示录像+合流。直播拉流/推流取合流画面，见「媒体输出」（8 直播流已并入 2，传了按 2 处理，合成模式会议见接口说明）
+  示例：`3`
 </ParamField>
 
 <ParamField body="title" type="string">
@@ -1341,26 +1341,6 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
       </Expandable>
     </ParamField>
 
-    <ParamField body="push_url" type="string">
-      推流地址, 仅任务类型含 8(直播流) 时生效: 传了则把合成画面推到该地址(推流模式), 不再提供拉流地址; 支持 rtmp:// 与 rtmps://, 须带推流码(如 rtmp://host/app/ 这类流名为空的地址会被拒绝)。 任务进行中再次调用开始接口时不传则沿用原地址及其音频来源; 没有可用的推流服务时返回错误码 1072
-      示例：`rtmp://live.example.com/app/stream_key`
-    </ParamField>
-
-    <ParamField body="push_audio" type="string">
-      推流的音频来源, 仅传了 push_url 时生效: mix 房间合成音频(默认)、none 不要音频、user 某个用户的音频(须同时传 push_audio_uid)
-      示例：`mix`
-    </ParamField>
-
-    <ParamField body="push_audio_uid" type="string">
-      push_audio 为 user 时必填: 取哪个用户的音频(会中用户ID)
-      示例：`1001`
-    </ParamField>
-
-    <ParamField body="push_audio_desc" type="string">
-      push_audio 为 user 时可选: 该用户的哪条音频轨道(按轨道描述精确匹配), 不传取该用户的第一条音频
-      示例：`mic`
-    </ParamField>
-
   </Expandable>
 </ParamField>
 
@@ -1393,10 +1373,6 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
     "layout": "auto",
     "nobody_text": "",
     "polling_dur": 0,
-    "push_audio": "mix",
-    "push_audio_desc": "mic",
-    "push_audio_uid": "1001",
-    "push_url": "rtmp://live.example.com/app/stream_key",
     "tag": {
       "bg_color": "",
       "color": "",
@@ -1418,7 +1394,7 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
   "op_uid": "",
   "room_no": "",
   "tags": "",
-  "task_type": 9,
+  "task_type": 3,
   "title": ""
 }
 ```
@@ -1446,6 +1422,10 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 `POST /server/v1/mcu/stop`
 
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+结束录制任务
+
+task_type 含直播流位（8）时与开始时同样处理：合成模式会议（或会议已自动开了合流任务）不停会议的合成画面，只停其余位（如 9 只停录像 1），纯 8 直接返回成功。
 
 **请求参数**
 

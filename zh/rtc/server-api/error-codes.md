@@ -48,8 +48,6 @@ description: "服务端 API 响应体中 code 的取值"
 | `1044` | McuTaskIsEnd | MCU任务已经停止 |
 | `1045` | McuRecordNotFound | 未找到录像文件 |
 | `1046` | McuRecordNotDone | 录像文件还未上传完成 |
-| `1047` | McuPushUrlInvalid | MCU推流地址无效 |
-| `1048` | McuPushNoLiveUrl | 推流模式的任务没有拉流地址 |
 | `1050` | TalkrecTaskNotFound | 未找到语音录制任务 |
 | `1051` | TalkrecRecordNotFound | 未找到语音录制段 |
 | `1052` | TalkrecRecordNoVod | 语音录制段还未生成录音文件 |
@@ -64,6 +62,10 @@ description: "服务端 API 响应体中 code 的取值"
 | `1070` | StreamOutGatewayNotFound | 没有可用的流输出网关 |
 | `1071` | StreamOutGatewayFailed | 流输出网关签发拉流地址失败 |
 | `1072` | LivePushGatewayNotFound | 没有可用的直播推流网关 |
+| `1073` | StreamNoMcuTask | 房间没有进行中的合成任务 |
+| `1074` | StreamPushNotFound | 推流任务不存在 |
+| `1075` | StreamPushUrlInvalid | 推流地址无效 |
+| `1076` | StreamPushGatewayFailed | 网关原始回复只进日志, 不透传给客户 |
 
 ## 框架通用错误码
 

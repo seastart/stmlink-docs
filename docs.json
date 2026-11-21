@@ -367,6 +367,7 @@
                     "group": "接入指南",
                     "pages": [
                       "zh/rtc/server-api/guides/recording",
+                      "zh/rtc/server-api/guides/media-output",
                       "zh/rtc/server-api/guides/callbacks",
                       "zh/rtc/server-api/guides/agents"
                     ]
@@ -651,6 +652,7 @@
                     "group": "接入指南",
                     "pages": [
                       "zh/meeting/server-api/guides/recording",
+                      "zh/meeting/server-api/guides/media-output",
                       "zh/meeting/server-api/guides/callbacks",
                       "zh/meeting/server-api/guides/agent-and-im"
                     ]
@@ -661,7 +663,8 @@
                       "zh/meeting/server-api/user-auth",
                       "zh/meeting/server-api/meet",
                       "zh/meeting/server-api/meet-admin",
-                      "zh/meeting/server-api/mcu"
+                      "zh/meeting/server-api/mcu",
+                      "zh/meeting/server-api/stream"
                     ]
                   },
                   "zh/meeting/server-api/error-codes"
@@ -1237,7 +1240,8 @@
                       "en/meeting/server-api/user-auth",
                       "en/meeting/server-api/meet",
                       "en/meeting/server-api/meet-admin",
-                      "en/meeting/server-api/mcu"
+                      "en/meeting/server-api/mcu",
+                      "en/meeting/server-api/stream"
                     ]
                   },
                   "en/meeting/server-api/error-codes"

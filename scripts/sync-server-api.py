@@ -112,6 +112,7 @@ PROJECTS = [
             'group': '接入指南',
             'pages': [
                 'zh/rtc/server-api/guides/recording',
+                'zh/rtc/server-api/guides/media-output',
                 'zh/rtc/server-api/guides/callbacks',
                 'zh/rtc/server-api/guides/agents',
             ],
@@ -134,6 +135,7 @@ PROJECTS = [
             'group': '接入指南',
             'pages': [
                 'zh/meeting/server-api/guides/recording',
+                'zh/meeting/server-api/guides/media-output',
                 'zh/meeting/server-api/guides/callbacks',
                 'zh/meeting/server-api/guides/agent-and-im',
             ],
