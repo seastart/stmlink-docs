@@ -419,7 +419,9 @@ Response example:
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
-Stop the current share
+Stop the current share in the meeting (screen or whiteboard). Returns success directly if no one is sharing.
+
++ If the sharer is a device, the device gateway is also told to stop sending the shared picture
 
 **Request parameters**
 
@@ -808,6 +810,14 @@ Response example:
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
+Ask a member in the meeting to start sharing. The target can be a regular member or a device.
+
++ Target is a regular member: a sharing invitation is sent, and sharing starts only after the member accepts; a success response only means the invitation was sent
++ Target is a device (a stream-pulling device such as RTSP/GB28181 that joined through the device gateway): the device cannot confirm, so the server makes it start sharing directly
++ Target is a SIP/H.323 endpoint: starting sharing remotely is not supported and error code 2126 is returned; to share, press the share button on the endpoint
++ Device sharing and member sharing are mutually exclusive: if someone else is already sharing, error code 2104 is returned; if the device gateway fails to switch, the sharing state is rolled back and the gateway's error is returned
++ To end a device's share, use "Stop the current share"
+
 **Request parameters**
 
 <ParamField body="room_no" type="string">
@@ -819,7 +829,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 </ParamField>
 
 <ParamField body="target_id" type="string" required>
-  User ID
+  User ID; can be a device
 </ParamField>
 
 

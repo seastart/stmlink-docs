@@ -1595,6 +1595,8 @@ callback arrives (the device's uid has the _agent_ prefix). Inviting a device th
 The agent_join callback is triggered before the device accepts the invitation. If you subscribe to this event, you must return sid as required,
 otherwise the device can't join the channel—see the "Callback events guide" for details.
 
+SIP / H323 devices do not support share_enabled=true: if any one of them passes it, the whole request returns error code 1037 and no device is called.
+
 **Request parameters**
 
 <ParamField body="agents" type="array<object>" required>
@@ -1625,6 +1627,26 @@ otherwise the device can't join the channel—see the "Callback events guide" fo
       Example: `3000`
     </ParamField>
 
+    <ParamField body="camera_enabled" type="boolean">
+      Whether to send the camera picture after joining (optional), defaults to true. Still subject to the meeting layer's disable policies: if the meeting has disabled cameras, passing true won't turn it on
+      Example: `true`
+    </ParamField>
+
+    <ParamField body="mic_enabled" type="boolean">
+      Whether to send audio after joining (optional), defaults to true. Still subject to the meeting layer's disable policies
+      Example: `true`
+    </ParamField>
+
+    <ParamField body="share_enabled" type="boolean">
+      Whether to start sharing right after joining (optional), defaults to false. Still subject to the meeting layer's disable policies. Only takes effect for stream-pulling devices such as RTSP / GB28181 (the main picture is published as screen sharing instead); not supported for SIP / H323, where passing true fails the whole request with 1037 — to share, press the share button on the endpoint
+      Example: `false`
+    </ParamField>
+
+    <ParamField body="speaker_enabled" type="boolean">
+      Whether the meeting audio is played through the device speaker (optional); the counterpart of mic_enabled (device microphone into the meeting). SIP / H323 defaults to true if omitted; GB28181 takes the gateway configuration if omitted (default false), and true starts a GB28181 voice broadcast after joining; ignored for RTSP and other pull-stream devices
+      Example: `true`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1640,10 +1662,14 @@ Request example:
 {
   "agents": [
     {
+      "camera_enabled": true,
       "contact": "37070000082008000001:34020000001320000001",
       "dtmf": "123456#",
       "dtmf_delay_ms": 3000,
+      "mic_enabled": true,
       "nickname": "Guest seats camera",
+      "share_enabled": false,
+      "speaker_enabled": true,
       "type": 4
     }
   ],
@@ -1883,6 +1909,117 @@ Request example:
   "channel": "fire",
   "sub_tdesc": "camera_big",
   "sub_uid": "1001",
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## Turn device sharing on or off
+
+`POST /server/v1/agent/set-share-enabled`
+
+Authentication: required (see [Overview](/en/rtc/server-api/overview))
+
+Turn a device's screen sharing on or off. With enabled=true: stream-pulling devices such as RTSP / GB28181 publish their main picture as screen sharing (screen) instead,
+clients in the channel see it just like regular screen sharing, and the MCU composite layout also shows it as a share.
+SIP / H323 endpoints cannot start sharing remotely, and enabled=true returns error code 1037: to share, press the share button (dual-stream / content key) on the endpoint.
+With enabled=false the device's screen sharing is withdrawn and stream-pulling devices switch back to the camera picture; dual-stream content the SIP / H323 endpoint started itself is withdrawn, and the endpoint is asked to give up the presentation token where possible.
+
+This API only makes the device send / withdraw a share; it **does not enforce sharing exclusivity**. If only one person may share in the channel at a time,
+check this in your business backend before calling. Requires a device gateway version that supports externally started sharing.
+
+**Request parameters**
+
+<ParamField body="uid" type="string" required>
+  In-channel user ID of the device, with the _agent_ prefix; get it from "List online or offline users" or the user_join callback (letters, digits, underscores (_), and hyphens (-) only)
+  Example: `_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  Name of the channel the device is in (up to 64 bytes; letters, digits, underscores (_), and hyphens (-) only)
+  Example: `fire`
+</ParamField>
+
+<ParamField body="enabled" type="boolean">
+  true starts sharing, false stops it. SIP / H323 endpoints cannot start sharing remotely: passing true returns 1037 (to share, press the share button on the endpoint); passing false stops the dual-stream content the endpoint is sending
+  Example: `true`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "channel": "fire",
+  "enabled": true,
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## Turn device speaker on or off
+
+`POST /server/v1/agent/set-speaker-enabled`
+
+Authentication: required (see [Overview](/en/rtc/server-api/overview))
+
+Turn the device speaker on or off: whether the meeting audio is played out of the device; the counterpart of "Turn device audio on or off" (whether the device microphone's audio goes into the meeting).
+SIP / H323 endpoints: turns on or off the meeting audio sent to the endpoint; GB28181 cameras: on = start a GB28181 voice broadcast, off = end the broadcast;
+RTSP and other pull-stream devices have no speaker, so the call has no effect. For the initial value when the device joins, see speaker_enabled in "Invite devices to the channel".
+Requires a device gateway version that supports the device speaker switch.
+
+**Request parameters**
+
+<ParamField body="uid" type="string" required>
+  In-channel user ID of the device, with the _agent_ prefix; get it from "List online or offline users" or the user_join callback (letters, digits, underscores (_), and hyphens (-) only)
+  Example: `_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  Name of the channel the device is in (up to 64 bytes; letters, digits, underscores (_), and hyphens (-) only)
+  Example: `fire`
+</ParamField>
+
+<ParamField body="enabled" type="boolean">
+  true plays the meeting audio through the device speaker, false stops it. For SIP / H323, this turns on or off the meeting audio sent to the endpoint; for GB28181, on = start a voice broadcast, off = end the broadcast; RTSP and other pull-stream devices have no speaker, so the call has no effect
+  Example: `true`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "channel": "fire",
+  "enabled": true,
   "uid": "_agent_co63jg6g54hu3b0xhtie"
 }
 ```

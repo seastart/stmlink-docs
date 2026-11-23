@@ -50,6 +50,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `2123` | TargetShareDisabled | 该成员的账号没有共享权限 |
 | `2124` | TargetCameraDisabled | 该成员的账号没有开摄像头权限 |
 | `2125` | FileDisabled | 文件功能已关闭 |
+| `2126` | AgentShareNeedTerminal | SIP/H.323 终端不支持远程开启共享，请在终端上按共享键发起 |
 | `2131` | CastCodeInvalid | 投屏码无效或已过期 |
 | `2132` | CastToSelf | 不能向自己的设备投屏 |
 | `2141` | AiNotHost | 仅主持人或联席主持人可操作 |

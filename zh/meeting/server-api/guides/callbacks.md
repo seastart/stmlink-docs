@@ -53,7 +53,7 @@ Content-Type: application/json; charset=utf-8
 | `mcu_alarm` | 录制任务出现异常，或推流任务持续失败 |
 | `user_mic_state_change` | 用户打开或关闭麦克风 |
 | `user_camera_state_change` | 用户打开或关闭摄像头 |
-| `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（SIP/H.323 设备的双流、Web 端第二路共享） |
+| `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（客户端推送的副屏） |
 | `share_state_change` | 会议的共享状态变化（开始共享 / 结束共享） |
 
 ### `user_enter` — 用户进入会议
@@ -206,7 +206,8 @@ Content-Type: application/json; charset=utf-8
 
 + `mic_state` / `camera_state` / `extra_screen_state`：`1` 开、`2` 关，取值与[会中人员列表](/zh/meeting/server-api/meet#查询会中人员列表)一致
 + 只在开关真正变化时推送：摄像头的大流、小流任一在发布都算开着，两路一起出现只推一次
-+ 「额外屏幕」指 SIP/H.323 设备的双流（辅流）和 Web 端的第二路屏幕共享，与会议共享（`share_state_change`）互不影响
++ 「额外屏幕」指客户端推送的额外屏幕（副屏，如远程评标场景每人常驻的第二路画面），每人各推各的、常驻，与会议共享（`share_state_change`）互不影响
++ SIP/H.323 终端的辅流共享不走本事件，它作为会议共享由 `share_state_change` 体现
 + 一次操作同时开关多个媒体时（例如进会同时开麦和摄像头），会分别推送，`ts_ms` 相同
 + 用户离会时**不再补发**关闭事件，以 `user_exit` 视为全部关闭
 + 状态以「是否在发布」为准：只在本地静音、仍在发布的麦克风不会触发关闭
@@ -232,6 +233,7 @@ Content-Type: application/json; charset=utf-8
 + 共享者自己结束、主持人结束、主持人禁止共享、共享者离会，都会推送结束
 + 新共享者接管已掉线者的共享时，先推一条原共享者的结束，再推一条新共享者的开始
 + 申请到共享就推送「开始」，不等客户端真正推出屏幕画面
++ SIP/H.323 终端的辅流共享也是会议共享：终端本地按共享键发起时推送本事件（平台不能远程开启这类终端的共享），`user_id` 为该设备
 
 ## 幂等与重试
 

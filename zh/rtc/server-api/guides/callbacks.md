@@ -120,6 +120,7 @@ Content-Type: application/json; charset=utf-8
 
 `device_type`：`0` 未知、`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 微信小程序、`8` 鸿蒙。
 `80` 起是服务端代理入会的号段（`81` MCU、`82` SIP、`83` H323、`84` GB28181、`85` RTSP、`86` RTMP、`87` 文件播放、`88` 已废弃（号位保留，不会再出现）、`89` 语音转写、`90` 语音录制、`91` 单路流输出）。
+经设备网关入会的设备按各自的真实类型上报（如 SIP 为 `82`、H323 为 `83`），不是统一的 `80`。
 
 ### `agent_online` / `agent_offline` — 设备上线 / 离线
 
@@ -362,7 +363,7 @@ IP 直连与 RTSP 拉流由我们主动去连，不存在上下线。
   二者不冲突。
 </Warning>
 
-### `agent_operate` — 会中设备被操作（开关麦、开关摄像头）
+### `agent_operate` — 会中设备被操作（开关麦、开关摄像头、开始/停止共享）
 
 ```json
 {
@@ -370,11 +371,24 @@ IP 直连与 RTSP 拉流由我们主动去连，不存在上下线。
   "uid": "gb_34020000001320000001",
   "by_admin": true,
   "op_uid": "1001",
-  "op_type": "camera"
+  "op_type": "agent_open_camera"
 }
 ```
 
-返回 `code` 非 0 即拒绝这次操作。不订阅本事件时自动同意所有设备的流媒体操作。
+`op_type` 的取值：
+
+| `op_type` | 含义 |
+| --- | --- |
+| `agent_open_mic` / `agent_close_mic` | 打开 / 关闭设备麦克风 |
+| `agent_open_camera` / `agent_close_camera` | 打开 / 关闭设备摄像头 |
+| `agent_start_share` | SIP/H.323 终端在本地按了共享键，申请共享（辅流）——平台不能远程开启这类终端的共享，按键是唯一的发起方式；RTSP / 国标等拉流设备邀请时带了 `share_enabled: true`，入会时也会触发一次。返回 `code` 非 0 即拒绝：你返回的错误码会原样传回设备网关，终端收到拒绝应答，不会进会共享；拉流设备则退回作为普通摄像头画面发布 |
+| `agent_stop_share` | 终端自己停止了共享。此时共享已经结束，返回值只用于记录，不会让共享继续 |
+
+返回 `code` 非 0 即拒绝这次操作。不订阅本事件时自动同意所有设备的流媒体操作（终端申请共享也直接放行）。
+
+终端的共享在频道里以屏幕共享（`screen`）发布，与客户端的屏幕共享一样。由服务端接口
+[开关设备共享](/zh/rtc/server-api/agent#开关设备共享)
+发起（仅拉流设备）或停止的共享**不会**触发 `agent_start_share` / `agent_stop_share`——那是你自己发起的，不再回来征询。
 
 ## 幂等与顺序
 

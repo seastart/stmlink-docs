@@ -41,6 +41,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `1034` | SfuNoAvailableNode | 没有可用的流媒体节点 |
 | `1035` | SfuNodeOverloaded | 流媒体节点已满载 |
 | `1036` | WbDataDecodeFail | 白板数据解压失败 |
+| `1037` | AgentShareNeedTerminal | SIP/H.323 终端不支持远程开启共享，请在终端上按共享键发起 |
 | `1040` | McuTaskNotFound | 未找到MCU任务 |
 | `1041` | McuRecordNotStop | 录像任务还未结束 |
 | `1042` | McuRecordNoVod | 录像任务还未生成录像文件 |

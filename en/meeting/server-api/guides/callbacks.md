@@ -53,7 +53,7 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 | `mcu_alarm` | A recording task encounters an error, or a push task keeps failing |
 | `user_mic_state_change` | A user turns the microphone on or off |
 | `user_camera_state_change` | A user turns the camera on or off |
-| `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (dual stream from a SIP/H.323 device, or the second screen share on Web) |
+| `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (a secondary screen pushed by a client) |
 | `share_state_change` | The meeting's sharing status changes (sharing starts / stops) |
 
 ### `user_enter` — User enters the meeting
@@ -206,7 +206,8 @@ The three events share one structure. Read the status field that matches the eve
 
 + `mic_state` / `camera_state` / `extra_screen_state`: `1` on, `2` off — the same values as the [in-meeting member list](/en/meeting/server-api/meet#list-in-meeting-members)
 + Sent only when the status actually flips. The camera counts as on while either its high or low stream is published; both appearing together sends one event
-+ "Extra screen" means the dual (secondary) stream of a SIP/H.323 device or the second screen share on Web. It is independent of meeting sharing (`share_state_change`)
++ "Extra screen" means an extra screen pushed by a client (a secondary screen, such as the always-on second view each participant keeps in remote bid evaluation). Each person pushes their own and keeps it on; it is independent of meeting sharing (`share_state_change`)
++ Dual-stream content sharing from a SIP/H.323 endpoint doesn't use this event; it counts as meeting sharing and shows up in `share_state_change`
 + When one action toggles several media at once (for example, joining with both microphone and camera on), each is sent separately with the same `ts_ms`
 + No "off" events are sent when a user leaves; treat `user_exit` as "everything off"
 + Status reflects whether the stream is being published: a microphone that is only muted locally while still published does not trigger "off"
@@ -232,6 +233,7 @@ Both start and stop of sharing use this event, for screen sharing and whiteboard
 + A stop is sent when the sharer stops, the host stops it, the host disables sharing, or the sharer leaves
 + When a new sharer takes over from a sharer who has dropped off, a stop for the previous sharer is sent first, then a start for the new one
 + "Start" is sent as soon as sharing is granted, without waiting for the client to actually push the screen
++ Dual-stream content sharing from a SIP/H.323 endpoint is meeting sharing too: when the endpoint presses its local share button, this event is sent (the platform can't start sharing on these endpoints remotely) and `user_id` is that device
 
 ## Idempotency and retry
 

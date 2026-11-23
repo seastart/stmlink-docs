@@ -120,6 +120,7 @@ track. Which `desc` means microphone or camera is up to your own convention.
 
 `device_type`: `0` unknown, `1` Windows, `2` Android, `3` iOS, `4` Linux, `5` macOS, `6` WebRTC, `7` WeChat Mini Program, `8` HarmonyOS.
 From `80` up is the range for agents joining on the server side (`81` MCU, `82` SIP, `83` H.323, `84` GB28181, `85` RTSP, `86` RTMP, `87` file playback, `88` deprecated (number reserved, no longer used), `89` transcription, `90` voice recording, `91` single-stream output).
+Devices joining through the device gateway report their own actual type (for example `82` for SIP and `83` for H.323), not a uniform `80`.
 
 ### `agent_online` / `agent_offline` — Device online / offline
 
@@ -362,7 +363,7 @@ Returning a non-zero `code` rejects the device's join. If your user details don'
   the two don't conflict.
 </Warning>
 
-### `agent_operate` — A device in the channel is controlled (microphone or camera on/off)
+### `agent_operate` — A device in the channel is controlled (microphone or camera on/off, start/stop sharing)
 
 ```json
 {
@@ -370,11 +371,24 @@ Returning a non-zero `code` rejects the device's join. If your user details don'
   "uid": "gb_34020000001320000001",
   "by_admin": true,
   "op_uid": "1001",
-  "op_type": "camera"
+  "op_type": "agent_open_camera"
 }
 ```
 
-Returning a non-zero `code` rejects the operation. If you don't subscribe to this event, all media operations on devices are allowed automatically.
+Values of `op_type`:
+
+| `op_type` | Meaning |
+| --- | --- |
+| `agent_open_mic` / `agent_close_mic` | Turn the device microphone on / off |
+| `agent_open_camera` / `agent_close_camera` | Turn the device camera on / off |
+| `agent_start_share` | A SIP/H.323 endpoint pressed its local share button and requests to share (dual-stream content); the platform can't start sharing on these endpoints remotely, so the share button is the only way to start it. It is also triggered once when a stream-pulling device such as RTSP / GB28181 joins after being invited with `share_enabled: true`. Returning a non-zero `code` rejects it: your error code is passed back to the device gateway as is, the endpoint receives a rejection, and nothing is shared into the channel; a stream-pulling device falls back to publishing a regular camera picture |
+| `agent_stop_share` | The endpoint stopped sharing on its own. The share has already ended; the return value is only recorded and can't keep the share going |
+
+Returning a non-zero `code` rejects the operation. If you don't subscribe to this event, all media operations on devices are allowed automatically (share requests from endpoints are allowed too).
+
+An endpoint's share is published in the channel as screen sharing (`screen`), just like screen sharing from a client. Sharing started or stopped through the server API
+[Turn device sharing on or off](/en/rtc/server-api/agent#turn-device-sharing-on-or-off)
+(starting applies to stream-pulling devices only) does **not** trigger `agent_start_share` / `agent_stop_share`: you started it yourself, so you aren't asked again.
 
 ## Idempotency and ordering
 

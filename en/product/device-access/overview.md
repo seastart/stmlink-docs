@@ -16,7 +16,7 @@ and the service behind it is the **device gateway**.
 | --- | --- | --- | --- |
 | **Video conferencing endpoints** | SIP, H.323 | Meeting-room hardware endpoints, command-center displays, phones | **Two-way**: the endpoint's video and audio go into the meeting, and the meeting's video and audio come back to the endpoint |
 | **Phone lines** | SIP | Carrier SIP trunks, IP-PBX, AI phone customer service, AI outbound calls, dialing in to meetings | **Two-way voice**: incoming calls join a channel and talk with AI or a person; see [Connect phone lines](/en/product/device-access/phone-lines) |
-| **GB28181 surveillance cameras / NVRs** | GB28181 | Bringing public security, emergency response, and campus surveillance into consultations | **One-way**: camera video goes into the meeting, with remote PTZ control |
+| **GB28181 surveillance cameras / NVRs** | GB28181 | Bringing public security, emergency response, and campus surveillance into consultations | Camera video goes into the meeting, with remote PTZ control; if the device has a speaker / sound column and supports voice broadcast, the meeting audio can play out of it |
 | **IP cameras / video streams** | RTSP | Any camera, encoder, or media server that can provide an RTSP URL | **One-way**: the video stream goes into the meeting |
 
 Once in the meeting, a device is a regular member: its name is the "Display name" you entered when registering it, and it appears in the member list,
@@ -62,13 +62,13 @@ flowchart LR
 | Device registers to the platform | ✅ Optional | ✅ Optional (gateway has a built-in gatekeeper) | ✅ Required | — |
 | Video into the meeting | ✅ | ✅ | ✅ | ✅ |
 | Audio into the meeting | ✅ | ✅ | ✅ (if the device has audio) | ✅ (if the stream has audio) |
-| Receives the meeting's video and audio | ✅ | ✅ | — | — |
+| Receives the meeting's video and audio | ✅ | ✅ | Audio only (GB28181 voice broadcast; requires device support and broadcast enabled on the gateway) | — |
 | Video codec | H.264 | H.264 | H.264 (PS container) | H.264; H.265 is converted to H.264 automatically |
 | Audio codec | G.711A | G.711A | G.711A | Common codecs; the gateway transcodes |
 | PTZ / preset positions | — | — | ✅ (via server API) | — |
 
 <Note>
-**Dual-stream (secondary content stream) sharing** from endpoints isn't supported yet: a computer screen an endpoint shares over the secondary stream doesn't enter the meeting. To share content, share the screen from a meeting client.
+**Dual-stream (secondary content stream) sharing** from endpoints is supported: press the share button on the endpoint, and the secondary stream enters the meeting as the meeting share (the camera picture keeps going); when someone else in the meeting shares, the shared content is also sent to the endpoint over the secondary stream. The secondary stream supports H.264 only.
 </Note>
 
 ---

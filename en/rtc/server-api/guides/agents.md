@@ -74,10 +74,58 @@ If you subscribe to the `agent_join` callback, you must also return `sid` in it,
 
 Devices can't turn their own microphone and camera on or off; only the server can send these commands:
 [Turn device video on or off](/en/rtc/server-api/agent#turn-device-video-on-or-off) / [Turn device audio on or off](/en/rtc/server-api/agent#turn-device-audio-on-or-off).
+Whether the meeting audio plays through the device speaker is controlled with [Turn device speaker on or off](/en/rtc/server-api/agent#turn-device-speaker-on-or-off) (see "Device speaker" below).
 For `uid`, use the device's user ID in the channel (prefixed with `_agent_`, from the user list or the `user_join` callback).
 If you don't pass `uid`, the operation applies to all devices in the channel.
 
 If you subscribe to the `agent_operate` callback, both operations first ask your backend, and a non-zero return rejects them.
+
+### Initial switches when inviting
+
+When you [invite devices to the channel](/en/rtc/server-api/agent#invite-devices-to-the-channel), each item in `agents[]` can carry four optional switches that decide what the device sends first after joining and whether it plays the meeting audio:
+
+| Parameter | Default | Meaning |
+| --- | --- | --- |
+| `camera_enabled` | `true` | Whether to send the camera picture after joining |
+| `mic_enabled` | `true` | Whether the device microphone's audio goes into the meeting after joining (uplink) |
+| `share_enabled` | `false` | Whether to start sharing right after joining |
+| `speaker_enabled` | SIP/H.323 `true`; GB28181 takes the device gateway configuration (default `false`) | Whether the meeting audio plays through the device speaker (downlink); ignored for stream-pulling devices such as RTSP |
+
++ `mic_enabled` and `speaker_enabled` are a pair: the former decides whether the meeting hears what the device says, the latter whether the device side hears what is said in the meeting
++ The first three switches only express "want it on" and are **still subject to the meeting's disable policies**: if the meeting has disabled cameras, `camera_enabled: true` won't turn the camera on (your backend rejects it through the `agent_operate` callback)
++ `share_enabled` only takes effect for **stream-pulling devices** such as RTSP / GB28181: after joining, the device first requests sharing through `agent_operate` (`agent_start_share`); if allowed, its main picture is published as screen sharing; **if rejected, it falls back to publishing a regular camera picture** (no video if `camera_enabled` is `false`)
++ SIP/H.323 devices **don't support** `share_enabled: true`: if any one of them passes it, the whole invitation returns error code `1037` and no device is called. To share, press the share button on the endpoint (see the next section)
+
+### Device sharing
+
+A device's share is published in the channel as screen sharing (`screen`); clients and the MCU composite layout treat it like regular screen sharing. The two kinds of devices behave differently:
+
++ **Stream-pulling devices such as RTSP / GB28181** (only one picture): sharing **switches** the main picture to be published as screen sharing, and the camera picture is withdrawn; stopping the share switches back to the camera picture
++ **SIP/H.323 endpoints**: sharing **can't be started remotely from the platform**; it can only be started by pressing the share button on the endpoint. The dual-stream content is published as screen sharing, and the camera picture keeps going
+
+A share can be started in two ways:
+
++ **The endpoint presses its local share button** (SIP/H.323 only): your backend is asked first through the `agent_operate` callback (`op_type` is `agent_start_share`); a non-zero return rejects it and the endpoint receives a rejection. When the endpoint stops sharing, the callback is sent with `agent_stop_share`. See the [Callback events guide](/en/rtc/server-api/guides/callbacks)
++ **Started from the server**: [Turn device sharing on or off](/en/rtc/server-api/agent#turn-device-sharing-on-or-off), with `enabled` set to `true` to start and `false` to stop. `true` only works for stream-pulling devices and returns error code `1037` for SIP/H.323 endpoints; `false` works for both kinds, and withdraws dual-stream content a SIP/H.323 endpoint started with its share button. This API **doesn't enforce sharing exclusivity**; if only one person may share in the channel at a time, check this in your backend before calling
+
+### Device speaker
+
+`speaker_enabled` decides whether the meeting audio (the channel mix) is sent to the device and played through its speaker. The effect by device type:
+
+| Device | When omitted | On (`true`) | Off (`false`) |
+| --- | --- | --- | --- |
+| SIP/H.323 endpoint | `true` (the endpoint always hears the meeting audio) | Sends the meeting audio to the endpoint | The endpoint doesn't hear the meeting audio; the gateway sends silent frames instead, so the media connection stays up |
+| GB28181 camera | Takes the device gateway configuration (default `false`) | The gateway starts a GB28181 **voice broadcast** to the device, and the meeting audio plays through the device's speaker / sound column | Ends the voice broadcast |
+| Stream-pulling devices such as RTSP | — | No speaker: ignored when inviting; in the channel the call succeeds but has no effect | Same |
+
+A GB28181 voice broadcast requires all of the following:
+
++ Voice broadcast is enabled on the device gateway (for private deployments, turn it on in the gateway configuration)
++ The device itself supports GB28181 voice broadcast and has a speaker or sound column attached
++ The gateway only sends G.711A (PCMA) audio to the device
+
+To switch it in the channel, use [Turn device speaker on or off](/en/rtc/server-api/agent#turn-device-speaker-on-or-off) (`uid`, `channel`, `enabled`). For GB28181 the broadcast is started **asynchronously**:
+a successful response only means the command was sent; if the device refuses the broadcast (not supported, no speaker attached, etc.), this isn't reflected in the API result and only shows up in the device gateway logs.
 
 ## Device type numbers
 
@@ -90,4 +138,8 @@ If you subscribe to the `agent_operate` callback, both operations first ask your
 | 4 | GB28181 surveillance | `gb28181` |
 | 5 | RTSP stream pull | `rtsp` |
 
-The `device_type` of users in the channel is a third numbering scheme (the agent range starting at `80`); see the [Callback events guide](/en/rtc/server-api/guides/callbacks).
+The `device_type` of users in the channel is a third numbering scheme (the agent range starting at `80`): devices joining through the device gateway report their actual type, which is `80` plus the number in the table (SIP `82`, H.323 `83`, GB28181 `84`, RTSP `85`); see the [Callback events guide](/en/rtc/server-api/guides/callbacks).
+
+## Parameter naming conventions
+
+Switch-type parameters are distinguished by suffix: `xxx_disabled` means **not allowed** (a permission / policy, such as the meeting forbidding cameras), `xxx_state` is **the current state as queried**, and `xxx_enabled` means **on / off** (a command, or the desired initial value when inviting, still subject to `_disabled`).

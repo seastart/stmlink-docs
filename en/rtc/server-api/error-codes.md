@@ -41,6 +41,7 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1034` | SfuNoAvailableNode | No media server node available |
 | `1035` | SfuNodeOverloaded | Media server node is fully loaded |
 | `1036` | WbDataDecodeFail | Failed to decompress the whiteboard data |
+| `1037` | AgentShareNeedTerminal | SIP/H.323 endpoints cannot start sharing remotely; press the content-sharing key on the endpoint instead |
 | `1040` | McuTaskNotFound | MCU task not found |
 | `1041` | McuRecordNotStop | Recording task has not ended yet |
 | `1042` | McuRecordNoVod | Recording task has not produced a recording file yet |

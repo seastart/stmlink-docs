@@ -1595,6 +1595,8 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
 设备接受邀请前会触发 agent_join 回调。若你订阅了该事件，需要按要求返回 sid，
 否则设备无法入会 —— 详见「回调事件接入指南」。
 
+SIP / H323 设备不支持 share_enabled=true：只要有一台这样传，整个请求返回错误码 1037，一台都不呼。
+
 **请求参数**
 
 <ParamField body="agents" type="array<object>" required>
@@ -1625,6 +1627,26 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
       示例：`3000`
     </ParamField>
 
+    <ParamField body="camera_enabled" type="boolean">
+      入会后是否发摄像头画面(可选)，不传默认 true。仍受会议层禁止策略约束：会议禁了摄像头，传 true 也开不了
+      示例：`true`
+    </ParamField>
+
+    <ParamField body="mic_enabled" type="boolean">
+      入会后是否发声音(可选)，不传默认 true。仍受会议层禁止策略约束
+      示例：`true`
+    </ParamField>
+
+    <ParamField body="share_enabled" type="boolean">
+      入会后是否直接共享画面(可选)，不传默认 false。仍受会议层禁止策略约束。 仅 RTSP / 国标等拉流设备生效(主画面改以屏幕共享发布)；SIP / H323 不支持，传 true 整个请求报 1037，终端要共享请在终端上按共享键
+      示例：`false`
+    </ParamField>
+
+    <ParamField body="speaker_enabled" type="boolean">
+      会议声音是否从设备喇叭放出(可选)，与 mic_enabled(设备麦克风进会)成对。 SIP / H323 不传默认 true；国标不传取网关配置(默认 false)，传 true 时入会后发起国标语音广播；RTSP 等拉流设备忽略
+      示例：`true`
+    </ParamField>
+
   </Expandable>
 </ParamField>
 
@@ -1640,10 +1662,14 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
 {
   "agents": [
     {
+      "camera_enabled": true,
       "contact": "37070000082008000001:34020000001320000001",
       "dtmf": "123456#",
       "dtmf_delay_ms": 3000,
+      "mic_enabled": true,
       "nickname": "嘉宾席摄像头",
+      "share_enabled": false,
+      "speaker_enabled": true,
       "type": 4
     }
   ],
@@ -1883,6 +1909,117 @@ command 支持 up/down/left/right/zoomin/zoomout/stop，以及两个动作的"+"
   "channel": "fire",
   "sub_tdesc": "camera_big",
   "sub_uid": "1001",
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 开关设备共享
+
+`POST /server/v1/agent/set-share-enabled`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+开关设备的屏幕共享。enabled=true 时：RTSP / 国标等拉流设备把主画面改为以屏幕共享（screen）发布，
+频道里的客户端会像看普通屏幕共享一样看到它，MCU 合成画面也按共享显示。
+SIP / H323 终端不支持远程开始共享，enabled=true 返回错误码 1037：终端要共享请在终端上按共享键（辅流 / 双流键）。
+enabled=false 撤销设备的屏幕共享，拉流设备切回摄像头画面；SIP / H323 终端自己发起的辅流会被撤销，并尽量让终端交出共享权。
+
+本接口只负责让设备发出 / 撤销共享，**不做共享互斥**：频道里同一时刻只允许一人共享的话，
+请在你的业务后端先判断再调用。需设备网关支持外部启动共享的版本。
+
+**请求参数**
+
+<ParamField body="uid" type="string" required>
+  设备会中用户ID，带 _agent_ 前缀，从「在线/离线成员列表」或 user_join 回调拿（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  设备所在频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="enabled" type="boolean">
+  true 开始共享，false 停止共享。SIP / H323 终端不支持远程开始共享，传 true 报 1037(要共享请在终端上按共享键)； 传 false 可停止终端正在发的辅流共享
+  示例：`true`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "channel": "fire",
+  "enabled": true,
+  "uid": "_agent_co63jg6g54hu3b0xhtie"
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 开关设备喇叭
+
+`POST /server/v1/agent/set-speaker-enabled`
+
+鉴权：需要（见[概览](/zh/rtc/server-api/overview)）
+
+开关设备喇叭：会议里的声音是否从设备放出来，与「开关设备音频」（设备麦克风的声音进不进会）成对。
+SIP / H323 终端：开关送给终端的会议声音；国标监控：开 = 发起国标语音广播，关 = 结束广播；
+RTSP 等拉流设备没有喇叭，调用无效果。设备入会时的初始值见「邀请设备入会」的 speaker_enabled。
+需设备网关支持设备喇叭开关的版本。
+
+**请求参数**
+
+<ParamField body="uid" type="string" required>
+  设备会中用户ID，带 _agent_ 前缀，从「在线/离线成员列表」或 user_join 回调拿（仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`_agent_co63jg6g54hu3b0xhtie`
+</ParamField>
+
+<ParamField body="channel" type="string" required>
+  设备所在频道名（长度 64 字节以内，仅支持大小写字母、数字、下划线 _ 与连字符 -）
+  示例：`fire`
+</ParamField>
+
+<ParamField body="enabled" type="boolean">
+  true 让会议声音从设备喇叭放出，false 不放。SIP / H323 开关送给终端的会议声音； 国标开 = 发起语音广播、关 = 结束广播；RTSP 等拉流设备没有喇叭，调用无效果
+  示例：`true`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "channel": "fire",
+  "enabled": true,
   "uid": "_agent_co63jg6g54hu3b0xhtie"
 }
 ```
