@@ -460,3 +460,72 @@ SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `Audi
 | `autoGainControl` | `Bool?` | 自动增益 |
 
 取值 `false` 表示要求关闭；`true` 或 `nil` 表示不干预，沿用 SDK 默认配置。只作用于 WebRTC 的软件处理，iOS / macOS 系统自带的语音处理不受影响。用法见 [AI 降噪](/zh/rtc/swift/advanced/deepfilternet#自定义处理器声明-3a-要求)。
+
+---
+
+### NetworkCheckResult
+
+会前网络检测的结果（1.10.0 起），由 [`networkCheck`](/zh/rtc/swift/api-reference/SRTCEngine#会前网络检测) 返回。本节各类型均 `Codable`，`JSONEncoder` 编码后的字段名与其它端一致，可直接上报或打日志。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `status` | `NetworkCheckStatus` | 总体结论：有一项 `fail` 即 `fail`；无 `fail` 但有 `warning` 即 `warning`；否则 `ok` |
+| `items` | `[NetworkCheckItem]` | 固定 5 项，顺序固定为 `permission` / `connectivity` / `mtu` / `dns` / `server` |
+| `costMs` | `Int` | 总耗时，毫秒 |
+
+另有方法 `item(_ id: NetworkCheckItemId) -> NetworkCheckItem?` 按 id 取某一项。
+
+#### NetworkCheckItem
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `NetworkCheckItemId` | 检测项 |
+| `status` | `NetworkCheckItemStatus` | 本项结果 |
+| `reason` | `String` | 机器可读的原因码，`pass` 时为空串，取值见下表 |
+| `message` | `String` | 给人看的中文说明，App 可直接显示 |
+| `costMs` | `Int` | 本项耗时，毫秒 |
+| `data` | `NetworkCheckData` | 本项测量值 |
+
+#### NetworkCheckItemId
+
+| 值 | 检测内容 | 失败 / 告警时的 `reason` |
+| --- | --- | --- |
+| `permission` | iOS：蜂窝数据权限，仅当前走蜂窝网络时才判失败；macOS 无此概念，恒为 `pass` | `cellular_restricted` |
+| `connectivity` | 系统网络连接状态 | `offline` |
+| `mtu` | 向媒体服务器发不分片探测包（1200 / 1300 / 1400 / 1472 字节），取能回显的最大档 | `mtu_too_small`、`udp_blocked`；系统不支持设置不分片时为 `unsupported`（`df_not_supported`） |
+| `dns` | 解析接口、信令、媒体服务器的域名（IP 地址跳过） | `dns_failed` |
+| `server` | 接口（`api`）、信令（`signal`）、媒体（`media`）三个子检查 | `api_unreachable`、`signal_unreachable`、`udp_blocked`、`media_unavailable` |
+
+流媒体供应商不是 SeaStart 时，`mtu` 与媒体检测记 `skipped`（`vendor_not_supported`）；拿不到服务端信息（服务端未升级）时，`mtu` 与信令、媒体检测记 `skipped`（`server_info_unavailable`）。
+
+#### NetworkCheckStatus / NetworkCheckItemStatus
+
+| 类型 | 取值 |
+| --- | --- |
+| `NetworkCheckStatus` | `ok`、`warning`、`fail` |
+| `NetworkCheckItemStatus` | `pass`（通过）、`warning`（有隐患但不影响使用）、`fail`（失败）、`skipped`（无需检测）、`unsupported`（当前平台不支持） |
+
+#### NetworkCheckData
+
+各项只填自己的字段，其余为 `nil`，编码时省略。
+
+| 字段 | 类型 | 所属项 | 说明 |
+| --- | --- | --- | --- |
+| `netType` | `String?` | `connectivity` | `"wifi"` / `"cellular"` / `"ethernet"` / `"unknown"` |
+| `maxSize` | `Int?` | `mtu` | 能回显的最大档位，字节；一档都不通时为 `nil` |
+| `hosts` | `[NetworkCheckHost]?` | `dns` | 各域名的解析结果：`host`（域名）、`ips`（解析到的 IP，失败为空）、`costMs`（耗时） |
+| `api` | `NetworkCheckSubCheck?` | `server` | 接口服务是否可达 |
+| `signal` | `NetworkCheckSubCheck?` | `server` | 信令服务是否连得上（TCP/TLS，不通再试 WebSocket） |
+| `media` | `NetworkCheckSubCheck?` | `server` | 媒体服务器 UDP 是否有应答 |
+
+#### NetworkCheckSubCheck
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `ok` | `Bool` | 是否连通（即 `status == .pass`） |
+| `status` | `NetworkCheckItemStatus` | 子检查状态；`skipped` / `unsupported` 时 `ok` 为 `false`，但不算失败 |
+| `reason` | `String` | 原因码，`pass` 时为空串 |
+| `rttMs` | `Int` | 耗时，毫秒；未执行时为 0 |
+| `via` | `String?` | 仅 `signal`：实际连通（或最后尝试）的方式，`"tcp"` 或 `"ws"` |
+| `httpStatus` | `Int?` | 仅 `api` 失败时：HTTP 状态码 |
+| `code` | `Int?` | 仅 `api` 失败时：服务端返回的业务错误码（如应用不存在 / 已停用） |

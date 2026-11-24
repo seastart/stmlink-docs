@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.10.0] - 2026.11.24
+#### 新增
++ **会前网络检测 `networkCheck`**：入会前调用、不需要入会鉴权，按 `permission`（蜂窝数据权限）→ `connectivity`（是否联网）→ `mtu` → `dns` → `server`（接口 / 信令 / 媒体）固定顺序逐项检测 5 项，每完成一项在主线程回调 `onItem`，最后返回 `NetworkCheckResult`（`ok` / `warning` / `fail`，各项带机器可读的 `reason` 与可直接展示的中文 `message`）。全部正常时约 1~5 秒，单项超时默认 3000 毫秒。见 [SRTCEngine](/zh/rtc/swift/api-reference/SRTCEngine#会前网络检测)、[类型定义](/zh/rtc/swift/types#networkcheckresult)。
+  + `SRTCEngine.networkCheck(appId:serverUrl:timeoutMs:onItem:)`，已有 token 时也可用 `networkCheck(token:timeoutMs:onItem:)`（只取其中的 app_id 与服务器地址，过期也行）
+  + `cancelNetworkCheck()` 取消进行中的检测，被取消时抛 `cancelled`；同一时刻只允许一个检测，重复调用抛 `alreadyJoined`
+  + 新增类型 `NetworkCheckResult`、`NetworkCheckItem`、`NetworkCheckItemId`、`NetworkCheckStatus`、`NetworkCheckItemStatus`、`NetworkCheckData`、`NetworkCheckSubCheck`、`NetworkCheckHost`，均可 `Codable` 编码
+
+<Note>
+`server` 中的接口检测需要服务端支持会前网络检测；服务端未升级时该项为 `fail`（`api_unreachable`），`mtu` 与信令、媒体检测记 `skipped`，不影响其它项。API 只新增不删改，1.9.0 的接入代码可直接编译，平台下限不变（iOS 16 / macOS 12.3）。`SRTCBroadcastKit` 本次为 **1.0.23**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.9.0] - 2026.11.24
 #### 新增
 + **本地网络质量 `didUpdateLocalQuality`**：SDK 在本端按 WebRTC 统计计算上下行的往返时延、丢包、抖动和档位，约每 2 秒回调一次 `LocalQualitySnapshot`，**SeaStart 与网宿（CDN）两种引擎都有**。网宿频道此前拿不到任何网络质量数据，现在可以做信号塔与网络详情面板。`Channel.getLocalQuality()` 可读最近一次采样。见 [通话质量](/zh/rtc/swift/advanced/call-quality#本地网络质量)、[类型定义](/zh/rtc/swift/types#localqualitysnapshot)。

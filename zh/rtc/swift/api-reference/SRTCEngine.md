@@ -328,6 +328,52 @@ srtc.defaultVideoProcessors = [myProcessor]
 
 ---
 
+### 会前网络检测
+
+#### `networkCheck(appId:serverUrl:timeoutMs:onItem:)`
+
+会前网络检测，1.10.0 起提供。按 `permission`（网络权限）→ `connectivity`（网络连接）→ `mtu` → `dns`（域名解析）→ `server`（接口 / 信令 / 媒体服务器）固定顺序逐项检测，每完成一项回调 `onItem`（主线程），全部完成后返回结果。**入会前调用**，不需要入会，也不需要 token 鉴权。全部正常时约 1~5 秒。
+
+```swift
+let result = try await srtc.networkCheck(appId: appId, serverUrl: clientApi) { item in
+    print(item.id, item.status, item.message)
+}
+print(result.status)   // .ok / .warning / .fail
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `appId` | `String` | 是 | 应用 ID（与 token 里的 `app_id` 相同） |
+| `serverUrl` | `String` | 是 | RTC 服务地址，即 token 里的 `client_api`（如 `https://host/client/`） |
+| `timeoutMs` | `Int` | 否 | 单项超时，毫秒，默认 `3000` |
+| `onItem` | `(@Sendable (NetworkCheckItem) -> Void)?` | 否 | 每完成一项回调一次，在主线程执行 |
+
+**返回值：** [`NetworkCheckResult`](/zh/rtc/swift/types#networkcheckresult)（`async throws`）
+
+**可能抛出：** `SRTCError.invalidArgument`（参数为空）、`.alreadyJoined`（已有检测在进行，同一时刻只允许一个）、`.cancelled`（被 `cancelNetworkCheck()` 或调用方任务取消）
+
+<Note>
+`server` 中的接口检测需要服务端支持会前网络检测；服务端未升级时该项为 `fail`（`api_unreachable`），`mtu` 与信令、媒体检测记 `skipped`，不影响其它项。
+</Note>
+
+---
+
+#### `networkCheck(token:timeoutMs:onItem:)`
+
+已有入会 / IM token 时的便捷写法：从 token 里取 `app_id` 与 `client_api`，其余同上。只读取地址、不用它鉴权，**过期的 token 也可以**。token 解不开时抛 `SRTCError.invalidArgument`。1.10.0 起提供。
+
+```swift
+let result = try await srtc.networkCheck(token: token)
+```
+
+---
+
+#### `cancelNetworkCheck()`
+
+取消正在进行的网络检测，进行中的 `networkCheck` 随即抛 `SRTCError.cancelled`；没有检测在进行时无操作。1.10.0 起提供。
+
+---
+
 ### 相关页面
 
 + [核心概念](/zh/rtc/swift/key-concepts)
