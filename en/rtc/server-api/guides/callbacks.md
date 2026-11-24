@@ -76,7 +76,8 @@ Only `agent_join` and `agent_operate` are synchronous; all others are asynchrono
 { "channel": "fire", "uid": "1001", "reason": 1, "online": 3 }
 ```
 
-+ `reason`: `1` left voluntarily, `2` removed, `3` replaced by another session with the same uid, `4` heartbeat timeout, `5` channel destroyed, `6` switched to audience
++ `reason`: `1` left voluntarily, `2` removed, `3` replaced by another session with the same uid, `4` heartbeat timeout, `5` channel destroyed, `6` switched to audience, `7` device connection lost
++ `7` only applies to SIP / H.323 terminals joined through the device gateway: the terminal dropped abnormally (signaling or media timeout, network failure). A normal hang-up on the terminal is still `1`, so you can tell a normal hang-up from an unexpected drop
 + `online` is the number of online users in the channel **after** this user left; `0` means the channel is now empty
 
 ### `user_stream_change` — The streams a user publishes change
