@@ -479,6 +479,38 @@ SMeeting是绝大多数操作的入口。
      * 获取本地屏幕共享轨道；未在共享屏幕时为 undefined（0.3.7 起）
      */
     getLocalScreenTrack(): LocalScreenTrack | undefined;
+    /**
+     * 当前会议是否开启了转写（字幕）（0.3.6 起）
+     */
+    isAsrEnabled(): boolean;
+    /**
+     * 主持人开启会议转写。开启后所有成员收到 ROOM_ASR_STATE_CHANGED，字幕通过 ASR_RESULT / ASR_TRANSLATION 下发（0.3.6 起）
+     * @param translateLang 实时翻译目标语言（如 en / zh），不传只转写不翻译
+     * @returns 本次转写的场次 id
+     */
+    adminAsrStart(translateLang?: string): Promise<{ session_id: string }>;
+    /**
+     * 主持人关闭会议转写。应用开启纪要时随后自动生成本场纪要，完成后触发 AI_SUMMARY_READY（0.3.6 起）
+     */
+    adminAsrStop(): Promise<void>;
+    /**
+     * 查询会议的转写场次及纪要（会后也可查），按开始时间升序（0.3.6 起）
+     * @param meetingId 会议 id，不传则取当前会议
+     */
+    aiSummary(meetingId?: string): Promise<MeetingAiSummary[]>;
+    /**
+     * 查询会议的转写原文（会后也可查），按场次组织，每场句子按 begin_ms 升序（0.3.6 起）
+     * @param meetingId 会议 id，不传则取当前会议
+     * @param sessionId 转写场次 id，不传则取全部场次
+     */
+    aiTranscript(meetingId?: string, sessionId?: string): Promise<MeetingAiTranscript[]>;
+    /**
+     * 主持人（重新）生成某场转写的纪要，完成后触发 AI_SUMMARY_READY（0.3.6 起）
+     * @param sessionId 转写场次 id，取自 aiSummary 返回
+     * @param meetingId 会议 id，不传则取当前会议
+     * @param templateId 纪要模板 id，不传用应用设置的模板
+     */
+    adminAiSummaryGenerate(sessionId: string, meetingId?: string, templateId?: string): Promise<void>;
 ```
 
 

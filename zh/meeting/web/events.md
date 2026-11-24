@@ -78,6 +78,14 @@ CommonRoomEventType及对应`data`定义如下：
     static readonly ROOM_MCU_TASK = 'room_mcu_task';
     /** 房间加入失败事件，对应data为 RoomJoinFailedEventData */
     static readonly ROOM_JOIN_FAILED = 'room_join_failed';
+    /** 会议转写（字幕）开关状态改变，对应data为 RoomAsrStateChangeEventData（0.3.6 起） */
+    static readonly ROOM_ASR_STATE_CHANGED = 'room_asr_state_changed';
+    /** 转写结果（字幕原文），对应data为 AsrResultEventData（0.3.6 起） */
+    static readonly ASR_RESULT = 'asr_result';
+    /** 转写译文（实时翻译），对应data为 AsrTranslationEventData（0.3.6 起） */
+    static readonly ASR_TRANSLATION = 'asr_translation';
+    /** 会议纪要生成完成/失败，对应data为 AiSummaryReadyEventData（0.3.6 起） */
+    static readonly AI_SUMMARY_READY = 'ai_summary_ready';
 
     /** 主持人处理您的举手申请，对应data为 AdminConfirmHandupEventData */
     static readonly ADMIN_CONFIRM_HANDUP = 'admin_confirm_handup';

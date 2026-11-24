@@ -78,6 +78,14 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     static readonly ROOM_MCU_TASK = 'room_mcu_task';
     /** Failed to enter the room; data is RoomJoinFailedEventData */
     static readonly ROOM_JOIN_FAILED = 'room_join_failed';
+    /** Meeting transcription (captions) turned on or off; data is RoomAsrStateChangeEventData (since 0.3.6) */
+    static readonly ROOM_ASR_STATE_CHANGED = 'room_asr_state_changed';
+    /** Transcription result (caption text); data is AsrResultEventData (since 0.3.6) */
+    static readonly ASR_RESULT = 'asr_result';
+    /** Translated caption (live translation); data is AsrTranslationEventData (since 0.3.6) */
+    static readonly ASR_TRANSLATION = 'asr_translation';
+    /** Meeting minutes finished or failed; data is AiSummaryReadyEventData (since 0.3.6) */
+    static readonly AI_SUMMARY_READY = 'ai_summary_ready';
 
     /** The host handled your raise-hand request; data is AdminConfirmHandupEventData */
     static readonly ADMIN_CONFIRM_HANDUP = 'admin_confirm_handup';

@@ -23,6 +23,13 @@ npm info @seastart/smeeting-web-sdk version
 #### Fixed
 + Fixed an issue where calling `requestShare()` with `byAdmin = true` and an empty `adminUid` sent the screen but didn't update the meeting's sharing state
 
+### v0.3.6 - 2026-11-18
+
+#### Added
++ **Live captions and translation**: the host turns meeting transcription on and off with `adminAsrStart(translateLang?)` / `adminAsrStop()`; `isAsrEnabled()` returns the current state. Changes fire the room event `ROOM_ASR_STATE_CHANGED`; captions and translations arrive via `ASR_RESULT` and `ASR_TRANSLATION`. `RoomInfo` gains `asr_enabled`
++ **Meeting minutes**: `aiSummary(meetingId?)` returns each transcription session and its minutes (also after the meeting); the host can regenerate them with `adminAiSummaryGenerate(sessionId, meetingId?, templateId?)`. `AI_SUMMARY_READY` fires when minutes finish or fail
++ **Transcripts**: `aiTranscript(meetingId?, sessionId?)` returns the raw transcript, grouped by session with sentences in time order
+
 ### v0.3.5 - 2026-11-18
 
 #### Added

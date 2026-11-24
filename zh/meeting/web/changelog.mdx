@@ -23,6 +23,13 @@ npm info @seastart/smeeting-web-sdk version
 #### 修复
 + `requestShare()` 以 `byAdmin = true` 调用但 `adminUid` 为空时，共享画面已发出、会议的共享状态却没有更新的问题
 
+### v0.3.6 - 2026-11-18
+
+#### 新增
++ **会中字幕与实时翻译**：主持人用 `adminAsrStart(translateLang?)` / `adminAsrStop()` 开关会议转写，`isAsrEnabled()` 查当前状态。开关变化触发房间事件 `ROOM_ASR_STATE_CHANGED`，字幕原文和译文分别通过 `ASR_RESULT`、`ASR_TRANSLATION` 下发；`RoomInfo` 新增 `asr_enabled`
++ **会后纪要**：`aiSummary(meetingId?)` 查询各场转写及纪要（会后也可查），主持人可用 `adminAiSummaryGenerate(sessionId, meetingId?, templateId?)` 重新生成；纪要生成完成或失败时触发 `AI_SUMMARY_READY`
++ **转写原文**：`aiTranscript(meetingId?, sessionId?)` 查询转写原文，按场次组织，每场句子按时间排序
+
 ### v0.3.5 - 2026-11-18
 
 #### 新增

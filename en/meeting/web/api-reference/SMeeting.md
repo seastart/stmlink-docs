@@ -482,4 +482,36 @@ SMeeting is the entry point for most operations.
      * Gets the local screen-share track; undefined when not sharing the screen (since 0.3.7)
      */
     getLocalScreenTrack(): LocalScreenTrack | undefined;
+    /**
+     * Whether transcription (captions) is on in the current meeting (since 0.3.6)
+     */
+    isAsrEnabled(): boolean;
+    /**
+     * The host turns on transcription. All members get ROOM_ASR_STATE_CHANGED; captions arrive via ASR_RESULT / ASR_TRANSLATION (since 0.3.6)
+     * @param translateLang Target language for live translation (e.g. en / zh); omit to transcribe only
+     * @returns The transcription session id
+     */
+    adminAsrStart(translateLang?: string): Promise<{ session_id: string }>;
+    /**
+     * The host turns off transcription. If minutes are enabled for the app, they are generated next and AI_SUMMARY_READY fires when done (since 0.3.6)
+     */
+    adminAsrStop(): Promise<void>;
+    /**
+     * Gets the meeting's transcription sessions and minutes (also after the meeting), sorted by start time (since 0.3.6)
+     * @param meetingId Meeting id; defaults to the current meeting
+     */
+    aiSummary(meetingId?: string): Promise<MeetingAiSummary[]>;
+    /**
+     * Gets the meeting's raw transcript (also after the meeting), grouped by session with sentences sorted by begin_ms (since 0.3.6)
+     * @param meetingId Meeting id; defaults to the current meeting
+     * @param sessionId Transcription session id; omit for all sessions
+     */
+    aiTranscript(meetingId?: string, sessionId?: string): Promise<MeetingAiTranscript[]>;
+    /**
+     * The host (re)generates minutes for a transcription session; AI_SUMMARY_READY fires when done (since 0.3.6)
+     * @param sessionId Transcription session id, from aiSummary
+     * @param meetingId Meeting id; defaults to the current meeting
+     * @param templateId Minutes template id; defaults to the app's template
+     */
+    adminAiSummaryGenerate(sessionId: string, meetingId?: string, templateId?: string): Promise<void>;
 ```
