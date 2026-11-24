@@ -3,6 +3,22 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.3.0] - 2026.11.25
+
+#### 新增
++ **会前网络检测**：`MeetingKit` 新增 `networkCheck:onItem:completion:` 与 `cancelNetworkCheck`。入会前调用，不需要进入房间、不需要连接 RTC，检测逻辑与 SRTC 一致：按 `permission` → `connectivity` → `mtu` → `dns` → `server` 固定顺序逐项检测，每完成一项在主线程回调 `onItem`，最后在主线程回调汇总结果（`ok` / `warning` / `fail`，各项带机器可读的 `reason` 与可直接展示的中文 `message`）。全部正常时约 5 秒内完成，最长约 10 秒。见 [MeetingKit](/zh/meeting/ios/api-reference/MeetingKit#会前网络检测接口)、[类型定义](/zh/meeting/ios/types#seanetworkcheckresult)。
+  + **`server` 项多一个子检查 `meeting_api`**：检测会议接口是否可达，收到任何 HTTP 响应即算可达；不通时 `server` 记 `fail`、`reason` 为 `meeting_api_unreachable`（`server` 已因 RTC 子检查失败时保留 RTC 的原因）；未登录时 `meeting_api` 记 `skipped`（`server_info_unavailable`）
+  + 已登录时 `params` 可传 `nil`；未登录时须传 `appId` + `serverUrl` 或 RTC 令牌 `token`，否则返回 `SEAErrorMeetingNotLoggedIn`（`203001`）
+  + 已有检测在进行中返回 `SEAErrorConflict`（`103005`），参数非法或令牌解不开返回 `SEAErrorInvalidArgs`（`103031`），被 `cancelNetworkCheck` 或退出登录取消时完成回调以 `SEAErrorUserCancelled`（`103026`）结束，均为透传的 RTC 层码
+  + 新增会议层类型 `SEANetworkCheckParams`、`SEANetworkCheckItem`、`SEANetworkCheckResult` 与字符串常量 `SEANetworkCheckItemId`、`SEANetworkCheckStatus`、`SEANetworkCheckReason`，取值与其它端一致
+
+#### 变更
++ 依赖 `RTCEngineKit` 升级至 `3.3.0`，podspec 最低依赖由 `>= 3.2.1` 提升为 `>= 3.3.0`。如果 `Podfile` 里显式锁定了更低版本的 `RTCEngineKit`，需要一并放开，否则依赖无法解析。
+
+<Note>
+本版只新增接口，既有接口与行为不变，2.2.1 接入方无需改代码即可升级。`server` 中的 RTC 接口检测需要服务端支持会前网络检测；服务端未升级时 RTC 的 `api` 子检查为 `fail`，不影响其它项。
+</Note>
+
 ### [2.2.1] - 2026.10.08
 
 #### 变更

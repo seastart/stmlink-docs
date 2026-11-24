@@ -17,6 +17,8 @@ description: "Get the SMeeting iOS (Objective-C) MeetingKit SDK running: install
 Starting with `2.1.0`, the SDK has built-in virtual background, and the minimum system requirement is raised from iOS 10.0 to **iOS 16.0**. Both `IPHONEOS_DEPLOYMENT_TARGET` in your project and `platform :ios` in your `Podfile` must be at least 16.0; otherwise the dependency can't be resolved.
 
 The virtual background inference engine `onnxruntime-c` is pulled in transitively by the `RTCEngineKit` podspec, so you don't need to declare it in your `Podfile`.
+
+Starting with `2.3.0`, `MeetingKit` depends on `RTCEngineKit >= 3.3.0`, which CocoaPods resolves automatically. If your `Podfile` explicitly pins a lower `RTCEngineKit` version, relax it as well; otherwise the dependency can't be resolved.
 </Warning>
 
 <Note>

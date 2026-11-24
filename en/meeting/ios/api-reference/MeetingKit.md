@@ -1,9 +1,9 @@
 ---
 title: "MeetingKit"
-description: "Global singleton of the SMeeting iOS (Objective-C) SDK: login and logout, IM, meeting queries and scheduling, creating and querying room instances, local capture and preview, audio routing, virtual background, and screen capture extension APIs. Read this for account- and device-level APIs."
+description: "Global singleton of the SMeeting iOS (Objective-C) SDK: login and logout, IM, meeting queries and scheduling, creating and querying room instances, local capture and preview, audio routing, virtual background, screen capture extension, and pre-call network check APIs. Read this for account- and device-level APIs."
 ---
 
-`MeetingKit` is a singleton with only one instance per process. It carries only **account-level and device-level** capabilities: login, IM, local capture and preview, audio routing, process-side screen capture integration, and meeting queries and scheduling.
+`MeetingKit` is a singleton with only one instance per process. It carries only **account-level and device-level** capabilities: login, IM, local capture and preview, audio routing, process-side screen capture integration, the pre-call network check, and meeting queries and scheduling.
 
 All in-meeting operations and events are scoped to a room and go through a [MeetingKitRoom](/en/meeting/ios/api-reference/MeetingKitRoom) instance created with `createRoomWithDelegate:`. The same account can create and enter multiple rooms at the same time, and the media and business state of each room are independent of each other.
 
@@ -238,6 +238,61 @@ Updates room data.
 | params | Room update parameters; see [SEAMeetingParam](/en/meeting/ios/types#seameetingparam) |
 | onSuccess | Success callback |
 | onFailed | Failure callback |
+
+## Pre-call network check APIs
+
+Available since `2.3.0`; requires `RTCEngineKit >= 3.3.0`. **Call it before joining**: it doesn't require entering a room or connecting to RTC. The check logic is the same as SRTC's [networkCheck:onItem:completion:](/en/rtc/ios/api-reference/RTCEngineKit#pre-call-network-check-apis): items are checked in the fixed order `permission` → `connectivity` → `mtu` → `dns` → `server`; when everything is normal it finishes within about 5 seconds, and takes at most about 10 seconds. The meeting layer adds a `meeting_api` subcheck (whether the meeting API is reachable) to the `server` item, and uses its own `SEANetworkCheckXxx` types.
+
+### networkCheck:onItem:completion:()
+`- (SEAError)networkCheck:(nullable SEANetworkCheckParams *)params onItem:(nullable SEANetworkCheckItemBlock)onItem completion:(nullable SEANetworkCheckCompletionBlock)completion`
+
+Starts the pre-call network check.
+
+| Parameter | Description |
+| :--- | --- |
+| params | Check parameters, see [SEANetworkCheckParams](/en/meeting/ios/types#seanetworkcheckparams). When logged in, you can pass `nil` and the app ID and server address are taken from the login info; when not logged in, pass `appId` + `serverUrl` or `token` |
+| onItem | Per-item completion callback (main thread), called once per item in the order `permission` → `connectivity` → `mtu` → `dns` → `server`, with a [SEANetworkCheckItem](/en/meeting/ios/types#seanetworkcheckitem) |
+| completion | Completion callback (main thread) with `(SEANetworkCheckResult * _Nullable result, SEAError errorCode)`: on normal completion, `errorCode` is `SEAErrorOK` and `result` is non-nil (see [SEANetworkCheckResult](/en/meeting/ios/types#seanetworkcheckresult)); when cancelled by `cancelNetworkCheck` (or by logging out), `result` is `nil` and `errorCode` is `SEAErrorUserCancelled` (`103026`) |
+
+**Return value**
+
+| Return value | Description |
+| :--- | --- |
+| `SEAErrorOK` | The check has started |
+| `SEAErrorMeetingNotLoggedIn` (`203001`) | Not logged in, and `params` wasn't passed |
+| `SEAErrorConflict` (`103005`) | A check is already running; only one check can run at a time (RTC layer code passed through) |
+| `SEAErrorInvalidArgs` (`103031`) | Invalid parameters, or the token can't be decoded (RTC layer code passed through) |
+
+**Example**
+
+```objectivec
+// When logged in, just pass nil for params
+SEAError code = [[MeetingKit sharedInstance] networkCheck:nil onItem:^(SEANetworkCheckItem *item) {
+    // Main thread, called once per completed item; message can be shown to users directly
+    NSLog(@"%@ %@ %@", item.itemId, item.status, item.message);
+} completion:^(SEANetworkCheckResult * _Nullable result, SEAError errorCode) {
+    if (errorCode == SEAErrorUserCancelled) {
+        return; // Cancelled by cancelNetworkCheck or by logging out
+    }
+    if ([result.status isEqualToString:SEANetworkCheckStatusFail]) {
+        // Some item failed; prompt the user based on each item's reason / message
+    }
+}];
+```
+
+**The `meeting_api` subcheck of `server`**
+
++ It runs in parallel with the RTC checks and doesn't add to the total time; **any HTTP response counts as reachable**.
++ If the meeting API is unreachable, `server` is `fail` with `reason` `meeting_api_unreachable`; if `server` has already failed because of an RTC subcheck, the RTC `reason` is kept.
++ When not logged in, the meeting API address isn't available, so `meeting_api` is `skipped` with `reason` `server_info_unavailable`, which doesn't affect the overall status.
++ The other items' checks and reason codes are the same as SRTC's; see [SRTC iOS Types](/en/rtc/ios/types#rtcnetworkcheckitemid).
+
+### cancelNetworkCheck()
+`- (void)cancelNetworkCheck`
+
+Cancels the pre-call network check.
+
+After cancellation, `onItem` is no longer called and `completion` finishes with `SEAErrorUserCancelled` (`103026`). You can start a new check right away. Logging out also cancels a running check.
 
 ## User APIs
 ### getAgentList:keyword:onSuccess:onFailed:()

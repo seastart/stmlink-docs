@@ -1,9 +1,9 @@
 ---
 title: "RTCEngineKit"
-description: "进程级引擎单例：初始化与销毁、频道实例的创建与查询、即时通讯、摄像头采集预览、音频路由、屏幕采集进程接入、网络测速与美颜渲染"
+description: "进程级引擎单例：初始化与销毁、频道实例的创建与查询、即时通讯、摄像头采集预览、音频路由、屏幕采集进程接入、网络测速、会前网络检测与美颜渲染"
 ---
 
-`RTCEngineKit` 是一个进程内只存在一个实例的单例对象，只承载**账号级与共享硬件级**能力：摄像头采集与预览、音频路由、ReplayKit 屏幕采集、美颜渲染、网络测速、即时通讯，以及频道实例的生命周期管理。
+`RTCEngineKit` 是一个进程内只存在一个实例的单例对象，只承载**账号级与共享硬件级**能力：摄像头采集与预览、音频路由、ReplayKit 屏幕采集、美颜渲染、网络测速、会前网络检测、即时通讯，以及频道实例的生命周期管理。
 
 频道内的加入与离开、成员数据、码流发布与订阅、音频发送等能力由 [RTCEngineChannel](/zh/rtc/ios/api-reference/RTCEngineChannel) 承载，通过 `createChannelWithDelegate:` 创建。同一进程可以同时存在多个频道实例，实例之间的成员数据、码流统计与渲染互不干扰。
 
@@ -378,6 +378,64 @@ ReplayKit 采集运行在独立的 Broadcast Upload Extension 进程，属进程
 `- (void)stopSpeedTest`
 
 停止网络测速
+
+## 会前网络检测相关接口函数
+
+`3.3.0` 起提供。**入会前调用**，不需要初始化引擎，也不需要加入频道。按 `permission`（网络权限）→ `connectivity`（网络连接）→ `mtu`（最大传输单元）→ `dns`（域名解析）→ `server`（接口 / 信令 / 媒体服务器）固定顺序逐项检测，每完成一项回调一次 `onItem`，全部完成后回调 `completion`。全部正常时约 5 秒内完成，最长约 10 秒。检测项、状态与原因码的字符串取值与其它端 SDK 一致。
+
+### networkCheck:onItem:completion:()
+`- (RTCEngineError)networkCheck:(RTCNetworkCheckParams *)params onItem:(nullable RTCNetworkCheckItemBlock)onItem completion:(nullable RTCNetworkCheckCompletionBlock)completion`
+
+开始会前网络检测
+
+**参数**
+
+| 参数 | 描述 |
+| :--- | --- |
+| params | 检测参数：`appId` + `serverUrl` 与 `token` 二选一，单项超时 `timeoutMs` 默认 3000 毫秒，详情请参考 [RTCNetworkCheckParams](/zh/rtc/ios/types#rtcnetworkcheckparams) |
+| onItem | 单项完成回调（主线程），按 `permission` → `connectivity` → `mtu` → `dns` → `server` 的顺序每项回调一次，参数为 [RTCNetworkCheckItem](/zh/rtc/ios/types#rtcnetworkcheckitem) |
+| completion | 检测完成回调（主线程），参数为 `(RTCNetworkCheckResult * _Nullable result, RTCEngineError errorCode)`：正常结束时 `errorCode` 为 `RTCEngineErrorOK`、`result` 非空，详情请参考 [RTCNetworkCheckResult](/zh/rtc/ios/types#rtcnetworkcheckresult)；被 `cancelNetworkCheck` 取消时 `result` 为 `nil`、`errorCode` 为 `RTCEngineErrorUserCancelled`（`103026`） |
+
+**返回值**
+
+| 返回值 | 说明 |
+| :--- | --- |
+| `RTCEngineErrorOK` | 检测已开始 |
+| `RTCEngineErrorInvalidArgs`（`103031`） | `appId` / `serverUrl` 为空，且无法从 `token` 中解出 |
+| `RTCEngineErrorConflict`（`103005`） | 已有检测在进行中，同一时刻只允许一个检测 |
+
+**示例**
+
+```objectivec
+RTCNetworkCheckParams *params = [[RTCNetworkCheckParams alloc] init];
+// 任意一个本应用的 RTC 令牌（频道令牌 / 即时通讯令牌）均可，过期的也行
+params.token = token;
+
+RTCEngineError code = [[RTCEngineKit sharedEngine] networkCheck:params onItem:^(RTCNetworkCheckItem *item) {
+    // 主线程，每完成一项回调一次；message 可直接展示给用户
+    NSLog(@"%@ %@ %@", item.itemId, item.status, item.message);
+} completion:^(RTCNetworkCheckResult * _Nullable result, RTCEngineError errorCode) {
+    if (errorCode == RTCEngineErrorUserCancelled) {
+        return; // 被 cancelNetworkCheck 取消
+    }
+    if ([result.status isEqualToString:RTCNetworkCheckStatusFail]) {
+        // 有检测项失败，按各项的 reason / message 提示用户
+    }
+}];
+```
+
+**注意**
+
++ 只传 `token` 时，SDK 从令牌中读取 `app_id` 与 `client_api`，不用它鉴权，因此**过期的令牌也可以**；`appId` + `serverUrl` 与 `token` 都传时以 `appId` + `serverUrl` 为准。
++ `server` 项中的接口检测需要服务端支持会前网络检测；服务端未升级时 `server` 记 `fail`（`api_unreachable`），`mtu` 与信令、媒体检测记 `skipped`（`server_info_unavailable`），不影响其它项。
++ 网络检测与 `startSpeedTest:` 相互独立：网络检测逐项判断网络能否正常入会，网速测试测量上下行带宽与丢包。
+
+### cancelNetworkCheck()
+`- (void)cancelNetworkCheck`
+
+取消会前网络检测
+
+取消后不再回调 `onItem`，`completion` 以 `RTCEngineErrorUserCancelled`（`103026`）结束；取消后可立即发起新的检测。
 
 ## 视频渲染接口函数
 

@@ -19,6 +19,7 @@ description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
 
 + **判断错误类型只看 `code`**，不要按 `message` 做分支，也不要把 `message` 直接展示给终端用户；需要给用户看的提示请按 `code` 自行映射
 + 会议层与 RTC 层的低 3 位是两套独立的表，`203004`（无权限）与 `103004`（令牌不合法）含义不同，请比较完整的 6 位码
++ 会前网络检测 `networkCheck:onItem:completion:`（`2.3.0` 起）透传 RTC 层的码：已有检测在进行中 `SEAErrorConflict`（`103005`）、参数非法或令牌解不开 `SEAErrorInvalidArgs`（`103031`）、被取消 `SEAErrorUserCancelled`（`103026`）；只有未登录且未传参数时返回会议层的 `SEAErrorMeetingNotLoggedIn`（`203001`）
 + `language` 只影响会议层请求后端时的 `Accept-Language`，即后端业务码的文案语言，见 [MeetingKit.language](/zh/meeting/ios/api-reference/MeetingKit#language)；`2.2.1` 起同时作用于 RTC 层，RTC 层透传的后端业务码 `message` 也为服务端文案
 
 ### SEAError
@@ -28,7 +29,7 @@ description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
 | **枚举名** | **枚举值** | **说明** |
 | --- | :---: | --- |
 | SEAErrorOK | `0` | 无错误 |
-| SEAErrorMeetingNotLoggedIn | `203001` | 未登录会议 SDK（本端暂未产生，保留与各端对齐） |
+| SEAErrorMeetingNotLoggedIn | `203001` | 未登录会议 SDK。`2.3.0` 起由会前网络检测 `networkCheck:onItem:completion:` 在未登录且未传参数时返回 |
 | SEAErrorMeetingTokenExpired | `203002` | Token 已过期（本端暂未产生，保留与各端对齐） |
 | SEAErrorMeetingNotInMeeting | `203003` | 不在会议中（本端暂未产生，保留与各端对齐） |
 | SEAErrorMeetingUnauthorized | `203004` | 无权限，如该接口仅主持人或联席主持人可调用 |

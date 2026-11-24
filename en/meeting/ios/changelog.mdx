@@ -3,6 +3,22 @@ title: "Changelog"
 description: "Release history of the iOS SMeeting SDK (Objective-C MeetingKit) from 0.0.1-alpha.1 to 2.1.0: new APIs, fixes, and RTCEngineKit dependency upgrades per version, including the 2.0.0 multi-room MeetingKitRoom refactor and the 2.1.0 iOS 16 minimum. Read before upgrading."
 ---
 
+### [2.3.0] - 2026.11.25
+
+#### Added
++ **Pre-call network check**: `MeetingKit` adds `networkCheck:onItem:completion:` and `cancelNetworkCheck`. Call it before joining; it doesn't require entering a room or connecting to RTC. The check logic is the same as SRTC's: items are checked in the fixed order `permission` → `connectivity` → `mtu` → `dns` → `server`, `onItem` is called on the main thread as each item completes, and the overall result is delivered on the main thread (`ok` / `warning` / `fail`; each item carries a machine-readable `reason` and a Chinese `message` ready for display). When everything is normal it finishes within about 5 seconds, and takes at most about 10 seconds. See [MeetingKit](/en/meeting/ios/api-reference/MeetingKit#pre-call-network-check-apis) and [Types](/en/meeting/ios/types#seanetworkcheckresult).
+  + **The `server` item has an extra `meeting_api` subcheck**: it checks whether the meeting API is reachable, and any HTTP response counts as reachable. If unreachable, `server` is `fail` with `reason` `meeting_api_unreachable` (if `server` has already failed because of an RTC subcheck, the RTC reason is kept). When not logged in, `meeting_api` is `skipped` (`server_info_unavailable`)
+  + When logged in, `params` can be `nil`; when not logged in, pass `appId` + `serverUrl` or an RTC `token`, otherwise `SEAErrorMeetingNotLoggedIn` (`203001`) is returned
+  + A check already running returns `SEAErrorConflict` (`103005`); invalid parameters or an undecodable token return `SEAErrorInvalidArgs` (`103031`); when cancelled by `cancelNetworkCheck` or by logging out, the completion callback finishes with `SEAErrorUserCancelled` (`103026`). All of these are RTC layer codes passed through
+  + Added the meeting-layer types `SEANetworkCheckParams`, `SEANetworkCheckItem`, `SEANetworkCheckResult` and the string constants `SEANetworkCheckItemId`, `SEANetworkCheckStatus`, `SEANetworkCheckReason`, with the same values as on other platforms
+
+#### Changed
++ The `RTCEngineKit` dependency is upgraded to `3.3.0`, and the podspec minimum is raised from `>= 3.2.1` to `>= 3.3.0`. If your `Podfile` pins a lower `RTCEngineKit` version, relax it as well; otherwise the dependency can't be resolved.
+
+<Note>
+This release only adds APIs; existing APIs and behavior are unchanged. The RTC API check in `server` requires server-side support for the pre-call network check; if the server hasn't been upgraded, the RTC `api` subcheck is `fail`, and other items are unaffected.
+</Note>
+
 ### [2.1.0] - 2026.09.08
 #### Added
 + `MeetingKit` adds virtual background: `installVirtualBackground:`, `uninstallVirtualBackground`, `enabledVirtualBackground:`, `setVirtualBackgroundBlur:`, `setVirtualBackgroundImage:`, `setVirtualBackgroundInferenceInterval:`, `setVirtualBackgroundMaskSync:`, and `isVirtualBackgroundEnabled`. It performs person segmentation and then blurs or replaces the background, and **installing it doesn't require a license key**.

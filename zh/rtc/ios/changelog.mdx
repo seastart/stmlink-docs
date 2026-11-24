@@ -3,6 +3,18 @@ title: "更新日志"
 description: "iOS SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [3.3.0] - 2026.11.25
+
+#### 新增
++ **会前网络检测**：新增 `networkCheck:onItem:completion:` 与 `cancelNetworkCheck`。入会前调用，不需要初始化引擎、不需要加入频道，按 `permission`（蜂窝数据权限）→ `connectivity`（网络连接）→ `mtu` → `dns`（域名解析）→ `server`（接口 / 信令 / 媒体服务器）固定顺序逐项检测，每完成一项在主线程回调 `onItem`，最后在主线程回调汇总结果（`ok` / `warning` / `fail`，各项带机器可读的 `reason` 与可直接展示的中文 `message`）。全部正常时约 5 秒内完成，最长约 10 秒；单项超时默认 3000 毫秒。见 [RTCEngineKit](/zh/rtc/ios/api-reference/RTCEngineKit#会前网络检测相关接口函数)、[类型定义](/zh/rtc/ios/types#rtcnetworkcheckresult)。
+  + 参数传 `appId` + `serverUrl`，或传任意一个本应用的 RTC 令牌 `token`（只读取其中的 app_id 与服务器地址，过期也行）
+  + 同一时刻只允许一个检测，重复发起返回 `RTCEngineErrorConflict`（`103005`）；参数缺失返回 `RTCEngineErrorInvalidArgs`（`103031`）；被 `cancelNetworkCheck` 取消时完成回调以 `RTCEngineErrorUserCancelled`（`103026`）结束
+  + 新增类型 `RTCNetworkCheckParams`、`RTCNetworkCheckItem`、`RTCNetworkCheckResult` 与字符串常量 `RTCNetworkCheckItemId`、`RTCNetworkCheckStatus`、`RTCNetworkCheckReason`，取值与其它端一致
+
+<Note>
+`server` 中的接口检测需要服务端支持会前网络检测；服务端未升级时 `server` 记 `fail`（`api_unreachable`），`mtu` 与信令、媒体检测记 `skipped`，不影响其它项。本版只新增接口，既有接口与行为不变，3.2.1 接入方无需改代码即可升级。
+</Note>
+
 ### [3.2.1] - 2026.10.08
 
 #### 新增

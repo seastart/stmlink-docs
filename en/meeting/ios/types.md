@@ -467,6 +467,59 @@ Debug mode parameters
 | BOOL enableSaveAudioReceive | No | Save the remote audio stream; default: NO |
 
 
+### SEANetworkCheckParams
+Pre-call network check parameters (since `2.3.0`), used by [networkCheck:onItem:completion:](/en/meeting/ios/api-reference/MeetingKit#pre-call-network-check-apis). When logged in, you can omit them (pass `nil`) and the app ID and server address are taken from the login info; when not logged in, pass either `appId` + `serverUrl` or `token`. If both are passed, `appId` + `serverUrl` take precedence.
+
+| **Property** | **Required** | **Description** |
+| --- | :---: | --- |
+| NSString *appId | No | App ID (app_id), passed together with `serverUrl` |
+| NSString *serverUrl | No | The **RTC** SDK API prefix, i.e. `client_api` in the RTC token (e.g. `@"https://host/client/"`), not the meeting API address |
+| NSString *token | No | RTC token (channel token or IM token; it doesn't need to be unexpired). Used to extract `appId` / `serverUrl` when they aren't passed |
+| NSInteger timeoutMs | No | Per-item timeout in milliseconds. Default: 3000; values less than or equal to 0 use the default |
+
+
+### SEANetworkCheckItem
+Result of a single pre-call network check item (since `2.3.0`)
+
+| **Property** | **Required** | **Description** |
+| --- | :---: | --- |
+| [SEANetworkCheckItemId](#seanetworkcheckitemid) itemId | Yes | Check item ID |
+| [SEANetworkCheckStatus](#seanetworkcheckstatus) status | Yes | Check status: `pass` / `warning` / `fail` / `skipped` / `unsupported` |
+| [SEANetworkCheckReason](#seanetworkcheckreason) reason | Yes | Machine-readable reason code; an empty string for `pass` |
+| NSString *message | Yes | Human-readable description in Chinese that the app can show directly |
+| NSInteger costMs | Yes | Time spent on this item, in milliseconds |
+| NSDictionary *data | Yes | Measurements for this item; key names are the same as on other platforms, see the table below |
+
+The content of `data` depends on the check item:
+
+| **Check item** | **data** |
+| --- | --- |
+| `permission` | `{}` |
+| `connectivity` | `{netType}`: `"wifi"` / `"cellular"` / `"ethernet"` / `"unknown"` |
+| `mtu` | `{maxSize}`: the largest probe packet size (bytes) that was echoed back, e.g. `1472`; `0` if none got through |
+| `dns` | `{hosts}`: an array of resolution results for each domain, each element being `{host, ips, costMs}` |
+| `server` | Four subchecks `{meeting_api, api, signal, media}`, see below |
+
+Each subcheck of `server` is `{ok, status, reason, rttMs}`: `ok` indicates whether it's reachable; `status` is `"pass"` / `"fail"` / `"skipped"`; `reason` is the reason code, an empty string for `pass`; `rttMs` is the time spent in milliseconds.
+
++ `meeting_api`: **meeting layer only**; whether the meeting API is reachable. Any HTTP response counts as reachable. When not logged in, `status` is `skipped` and `reason` is `server_info_unavailable`
++ `api` / `signal` / `media`: passed through as is from the RTC layer, covering the check info API, the signaling server, and the media server. `signal` also carries `via` (`"tcp"` or `"ws"`); on failure `api` also carries `httpStatus` (HTTP status code) / `code` (server-side business error code). See [SRTC iOS Types](/en/rtc/ios/types#rtcnetworkcheckitem)
+
+The `toDictionary` method converts the item result to a dictionary (keys `id` / `status` / `reason` / `message` / `costMs` / `data`, the same as on other platforms) for logging or reporting.
+
+
+### SEANetworkCheckResult
+Overall pre-call network check result (since `2.3.0`)
+
+| **Property** | **Required** | **Description** |
+| --- | :---: | --- |
+| [SEANetworkCheckStatus](#seanetworkcheckstatus) status | Yes | Overall status: `fail` if any item is `fail`; otherwise `warning` if any item is `warning`; otherwise `ok` (`skipped` / `unsupported` don't affect it) |
+| `NSArray<SEANetworkCheckItem *> *items` | Yes | Item results: always 5 items in the fixed order `permission`, `connectivity`, `mtu`, `dns`, `server` |
+| NSInteger costMs | Yes | Total time spent, in milliseconds |
+
+The `toDictionary` method converts the result to a dictionary (keys `status` / `items` / `costMs`).
+
+
 ### SEAWaitingRoomMemberModel
 Waiting room member object
 
@@ -910,3 +963,49 @@ Sign-in activity status
 | --- | :---: | --- |
 | SEASignInActivityStateStarted | `1` | In progress |
 | SEASignInActivityStateFinished | `2` | Ended |
+
+### SEANetworkCheckItemId
+Pre-call network check item ID (since `2.3.0`; string constants with the same values as on other platforms)
+
+| **Constant** | **Value** | **What it checks** |
+| --- | --- | --- |
+| SEANetworkCheckItemIdPermission | `permission` | Network permission: cellular data permission; doesn't matter on Wi-Fi |
+| SEANetworkCheckItemIdConnectivity | `connectivity` | System network connection status |
+| SEANetworkCheckItemIdMtu | `mtu` | Sends non-fragmented UDP probe packets to the media server and takes the largest size echoed back |
+| SEANetworkCheckItemIdDns | `dns` | Resolves the domains of the API, signaling, and media servers |
+| SEANetworkCheckItemIdServer | `server` | Four subchecks: meeting API `meeting_api`, RTC API `api`, signaling `signal`, and media `media` |
+
+
+### SEANetworkCheckStatus
+Pre-call network check status (since `2.3.0`; string constants). Items and the overall result share the same values; the overall result is only ever `ok` / `warning` / `fail`.
+
+| **Constant** | **Value** | **Description** |
+| --- | --- | --- |
+| SEANetworkCheckStatusOk | `ok` | Overall: everything is normal |
+| SEANetworkCheckStatusPass | `pass` | Item: passed |
+| SEANetworkCheckStatusWarning | `warning` | Item / overall: usable, but with potential issues |
+| SEANetworkCheckStatusFail | `fail` | Item / overall: abnormal |
+| SEANetworkCheckStatusSkipped | `skipped` | Item: no check needed (the app can show "Not needed") |
+| SEANetworkCheckStatusUnsupported | `unsupported` | Item: not supported on this platform (the app can show "Not supported") |
+
+
+### SEANetworkCheckReason
+Pre-call network check reason codes (since `2.3.0`; string constants); an empty string when passed
+
+| **Constant** | **Value** | **Description** |
+| --- | --- | --- |
+| SEANetworkCheckReasonNoPermission | `no_permission` | Network permission not granted (doesn't occur on iOS; kept for consistency with other platforms) |
+| SEANetworkCheckReasonCellularRestricted | `cellular_restricted` | Cellular data is restricted in system settings, and the device isn't on Wi-Fi / wired network |
+| SEANetworkCheckReasonOffline | `offline` | No network connection |
+| SEANetworkCheckReasonMtuTooSmall | `mtu_too_small` | Even 1200-byte probe packets don't come back, but UDP works (the network limits large packets) |
+| SEANetworkCheckReasonUdpBlocked | `udp_blocked` | UDP is blocked: no answer from the media server, and no probe packet is echoed back |
+| SEANetworkCheckReasonDnsFailed | `dns_failed` | Some domain failed to resolve |
+| SEANetworkCheckReasonMeetingApiUnreachable | `meeting_api_unreachable` | The meeting API is unreachable: `meeting_api` received no HTTP response (meeting layer only) |
+| SEANetworkCheckReasonApiUnreachable | `api_unreachable` | The RTC check info API call failed: the server is unreachable, or it hasn't been upgraded to support the pre-call network check |
+| SEANetworkCheckReasonSignalUnreachable | `signal_unreachable` | The signaling server can't be connected (neither TCP/TLS nor WebSocket works) |
+| SEANetworkCheckReasonVendorNotSupported | `vendor_not_supported` | The media streaming vendor isn't SeaStart, so the media UDP / MTU checks aren't run (used with `skipped`) |
+| SEANetworkCheckReasonMediaUnavailable | `media_unavailable` | The server has no available media node (`server` is `fail`, `mtu` is `skipped`) |
+| SEANetworkCheckReasonServerInfoUnavailable | `server_info_unavailable` | The server-side check info isn't available, so the checks that depend on it are `skipped`; `meeting_api` also uses this code when not logged in |
+| SEANetworkCheckReasonDfNotSupported | `df_not_supported` | The system can't set Don't Fragment, so `mtu` is `unsupported` (doesn't occur on iOS; kept for consistency with other platforms) |
+| SEANetworkCheckReasonQueryFailed | `query_failed` | A system API returned nothing, so the item is `unsupported` (doesn't occur on iOS; kept for consistency with other platforms) |
+| SEANetworkCheckReasonCancelled | `cancelled` | The check was cancelled (on iOS, cancellation makes the completion callback return `SEAErrorUserCancelled` directly with no item results; kept for consistency with other platforms) |

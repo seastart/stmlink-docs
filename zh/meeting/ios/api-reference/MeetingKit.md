@@ -1,9 +1,9 @@
 ---
 title: "MeetingKit"
-description: "会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由与屏幕采集进程接入"
+description: "会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由、屏幕采集进程接入与会前网络检测"
 ---
 
-`MeetingKit` 是一个进程内只存在一个实例的单例对象，只承载**账号级与设备级**能力：登录、即时通讯、本地采集与预览、音频路由、屏幕采集进程侧接入，以及会议的查询与预约。
+`MeetingKit` 是一个进程内只存在一个实例的单例对象，只承载**账号级与设备级**能力：登录、即时通讯、本地采集与预览、音频路由、屏幕采集进程侧接入、会前网络检测，以及会议的查询与预约。
 
 会中的一切操作与事件都属于房间维度，通过 `createRoomWithDelegate:` 创建 [MeetingKitRoom](/zh/meeting/ios/api-reference/MeetingKitRoom) 实例进行。同一账号可以同时创建并加入多个房间，各房间的媒体与业务状态相互独立。
 
@@ -261,6 +261,61 @@ SDK 语言（`2.2.0` 起）
 | params | 修改房间参数，参考文档：[SEAMeetingParam](/zh/meeting/ios/types#seameetingparam) |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
+
+## 会前网络检测接口
+
+`2.3.0` 起提供，依赖 `RTCEngineKit >= 3.3.0`。**入会前调用**，不需要进入房间，也不需要连接 RTC。检测逻辑与 SRTC 的 [networkCheck:onItem:completion:](/zh/rtc/ios/api-reference/RTCEngineKit#会前网络检测相关接口函数) 一致：按 `permission` → `connectivity` → `mtu` → `dns` → `server` 固定顺序逐项检测，全部正常时约 5 秒内完成，最长约 10 秒。会议层在 `server` 项里多一个子检查 `meeting_api`（会议接口是否可达），并使用会议层自己的类型 `SEANetworkCheckXxx`。
+
+### networkCheck:onItem:completion:()
+`- (SEAError)networkCheck:(nullable SEANetworkCheckParams *)params onItem:(nullable SEANetworkCheckItemBlock)onItem completion:(nullable SEANetworkCheckCompletionBlock)completion`
+
+开始会前网络检测
+
+| 参数 | 描述 |
+| :--- | --- |
+| params | 检测参数，参考文档：[SEANetworkCheckParams](/zh/meeting/ios/types#seanetworkcheckparams)。已登录时可传 `nil`，从登录信息里取应用标识与服务器地址；未登录时须传 `appId` + `serverUrl` 或 `token` |
+| onItem | 单项完成回调（主线程），按 `permission` → `connectivity` → `mtu` → `dns` → `server` 的顺序每项回调一次，参数为 [SEANetworkCheckItem](/zh/meeting/ios/types#seanetworkcheckitem) |
+| completion | 检测完成回调（主线程），参数为 `(SEANetworkCheckResult * _Nullable result, SEAError errorCode)`：正常结束时 `errorCode` 为 `SEAErrorOK`、`result` 非空，参考文档：[SEANetworkCheckResult](/zh/meeting/ios/types#seanetworkcheckresult)；被 `cancelNetworkCheck`（或退出登录）取消时 `result` 为 `nil`、`errorCode` 为 `SEAErrorUserCancelled`（`103026`） |
+
+**返回值**
+
+| 返回值 | 说明 |
+| :--- | --- |
+| `SEAErrorOK` | 检测已开始 |
+| `SEAErrorMeetingNotLoggedIn`（`203001`） | 未登录，且 `params` 未传 |
+| `SEAErrorConflict`（`103005`） | 已有检测在进行中，同一时刻只允许一个检测（透传 RTC 层码） |
+| `SEAErrorInvalidArgs`（`103031`） | 参数非法或令牌解不开（透传 RTC 层码） |
+
+**示例**
+
+```objectivec
+// 已登录时 params 传 nil 即可
+SEAError code = [[MeetingKit sharedInstance] networkCheck:nil onItem:^(SEANetworkCheckItem *item) {
+    // 主线程，每完成一项回调一次；message 可直接展示给用户
+    NSLog(@"%@ %@ %@", item.itemId, item.status, item.message);
+} completion:^(SEANetworkCheckResult * _Nullable result, SEAError errorCode) {
+    if (errorCode == SEAErrorUserCancelled) {
+        return; // 被 cancelNetworkCheck 或退出登录取消
+    }
+    if ([result.status isEqualToString:SEANetworkCheckStatusFail]) {
+        // 有检测项失败，按各项的 reason / message 提示用户
+    }
+}];
+```
+
+**`server` 项的 `meeting_api` 子检查**
+
++ 与 RTC 检测并行进行，不额外拉长总耗时；**收到任何 HTTP 响应都算可达**。
++ 会议接口不通时 `server` 记 `fail`、`reason` 为 `meeting_api_unreachable`；`server` 已因 RTC 子检查失败时保留 RTC 的 `reason`。
++ 未登录时拿不到会议接口地址，`meeting_api` 记 `skipped`、`reason` 为 `server_info_unavailable`，不影响汇总状态。
++ 其余各项的检测内容与原因码同 SRTC，见 [SRTC iOS 类型定义](/zh/rtc/ios/types#rtcnetworkcheckitemid)。
+
+### cancelNetworkCheck()
+`- (void)cancelNetworkCheck`
+
+取消会前网络检测
+
+取消后不再回调 `onItem`，`completion` 以 `SEAErrorUserCancelled`（`103026`）结束；取消后可立即发起新的检测。退出登录时进行中的检测也会被取消。
 
 ## 用户操作接口
 ### getAgentList:keyword:onSuccess:onFailed:()

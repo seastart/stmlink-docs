@@ -467,6 +467,59 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | BOOL enableSaveAudioReceive | 否 | 保存远程音频流，默认 NO |
 
 
+### SEANetworkCheckParams
+会前网络检测参数（`2.3.0` 起），用于 [networkCheck:onItem:completion:](/zh/meeting/ios/api-reference/MeetingKit#会前网络检测接口)。已登录时可以不传（传 `nil`），从登录信息里取应用标识与服务器地址；未登录时须传 `appId` + `serverUrl`，或传 `token`，二选一；两者都传时以 `appId` + `serverUrl` 为准。
+
+| **属性** | **必填** | **属性说明** |
+| --- | :---: | --- |
+| NSString *appId | 否 | 应用标识（app_id），与 `serverUrl` 一起传 |
+| NSString *serverUrl | 否 | **RTC** 的 SDK 接口前缀，即 RTC 令牌中的 `client_api`（如 `@"https://host/client/"`），不是会议接口地址 |
+| NSString *token | 否 | RTC 令牌（频道令牌 / 即时通讯令牌均可，不要求未过期）；`appId` / `serverUrl` 未传时从中解出 |
+| NSInteger timeoutMs | 否 | 单项超时（毫秒），默认 3000，小于等于 0 时按默认值 |
+
+
+### SEANetworkCheckItem
+会前网络检测单项结果（`2.3.0` 起）
+
+| **属性** | **必填** | **属性说明** |
+| --- | :---: | --- |
+| [SEANetworkCheckItemId](#seanetworkcheckitemid) itemId | 是 | 检测项标识 |
+| [SEANetworkCheckStatus](#seanetworkcheckstatus) status | 是 | 检测状态：`pass` / `warning` / `fail` / `skipped` / `unsupported` |
+| [SEANetworkCheckReason](#seanetworkcheckreason) reason | 是 | 机器可读的原因码，`pass` 时为空串 |
+| NSString *message | 是 | 给人看的中文说明，App 可直接显示 |
+| NSInteger costMs | 是 | 本项耗时（毫秒） |
+| NSDictionary *data | 是 | 本项测量值，键名与其它端一致，见下表 |
+
+`data` 的内容按检测项区分：
+
+| **检测项** | **data** |
+| --- | --- |
+| `permission` | `{}` |
+| `connectivity` | `{netType}`：`"wifi"` / `"cellular"` / `"ethernet"` / `"unknown"` |
+| `mtu` | `{maxSize}`：能回显的最大探测包档位（字节），如 `1472`；全部不通时为 `0` |
+| `dns` | `{hosts}`：各域名的解析结果数组，每个元素为 `{host, ips, costMs}` |
+| `server` | `{meeting_api, api, signal, media}` 四个子检查，见下文 |
+
+`server` 的每个子检查都是 `{ok, status, reason, rttMs}`：`ok` 表示是否连通；`status` 取 `"pass"` / `"fail"` / `"skipped"`；`reason` 为原因码，`pass` 时为空串；`rttMs` 为耗时（毫秒）。
+
++ `meeting_api`：**会议层独有**，会议接口是否可达，收到任何 HTTP 响应即算可达；未登录时 `status` 为 `skipped`、`reason` 为 `server_info_unavailable`
++ `api` / `signal` / `media`：原样来自 RTC 层，分别是检测信息接口、信令服务器、媒体服务器。`signal` 另带 `via`（`"tcp"` 或 `"ws"`）；`api` 失败时另带 `httpStatus`（HTTP 状态码）/ `code`（服务端业务错误码），详见 [SRTC iOS 类型定义](/zh/rtc/ios/types#rtcnetworkcheckitem)
+
+`toDictionary` 方法把单项结果转为字典（键名为 `id` / `status` / `reason` / `message` / `costMs` / `data`，与其它端一致），便于打日志或上报。
+
+
+### SEANetworkCheckResult
+会前网络检测汇总结果（`2.3.0` 起）
+
+| **属性** | **必填** | **属性说明** |
+| --- | :---: | --- |
+| [SEANetworkCheckStatus](#seanetworkcheckstatus) status | 是 | 汇总状态：有 `fail` 即 `fail`；无 `fail` 但有 `warning` 即 `warning`；否则 `ok`（`skipped` / `unsupported` 不影响汇总） |
+| `NSArray<SEANetworkCheckItem *> *items` | 是 | 各项结果，固定 5 项、固定顺序：`permission`、`connectivity`、`mtu`、`dns`、`server` |
+| NSInteger costMs | 是 | 总耗时（毫秒） |
+
+`toDictionary` 方法把结果转为字典（键名为 `status` / `items` / `costMs`）。
+
+
 ### SEAWaitingRoomMemberModel
 等候室成员对象
 
@@ -910,3 +963,49 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | --- | :---: | --- |
 | SEASignInActivityStateStarted | `1` | 进行中 |
 | SEASignInActivityStateFinished | `2` | 已结束 |
+
+### SEANetworkCheckItemId
+会前网络检测项标识（`2.3.0` 起，字符串常量，取值与其它端一致）
+
+| **常量名** | **取值** | **检测内容** |
+| --- | --- | --- |
+| SEANetworkCheckItemIdPermission | `permission` | 网络权限：蜂窝数据权限，Wi-Fi 下不影响 |
+| SEANetworkCheckItemIdConnectivity | `connectivity` | 系统网络连接状态 |
+| SEANetworkCheckItemIdMtu | `mtu` | 向媒体服务器发不分片的 UDP 探测包，取能回显的最大档 |
+| SEANetworkCheckItemIdDns | `dns` | 解析接口、信令、媒体服务器的域名 |
+| SEANetworkCheckItemIdServer | `server` | 会议接口 `meeting_api`、RTC 接口 `api`、信令 `signal`、媒体 `media` 四个子检查 |
+
+
+### SEANetworkCheckStatus
+会前网络检测状态（`2.3.0` 起，字符串常量）。单项与汇总共用一套取值，汇总只会出现 `ok` / `warning` / `fail`。
+
+| **常量名** | **取值** | **描述** |
+| --- | --- | --- |
+| SEANetworkCheckStatusOk | `ok` | 汇总：全部正常 |
+| SEANetworkCheckStatusPass | `pass` | 单项：通过 |
+| SEANetworkCheckStatusWarning | `warning` | 单项 / 汇总：有隐患但可用 |
+| SEANetworkCheckStatusFail | `fail` | 单项 / 汇总：异常 |
+| SEANetworkCheckStatusSkipped | `skipped` | 单项：无需检测（App 可显示「无需检测」） |
+| SEANetworkCheckStatusUnsupported | `unsupported` | 单项：本平台不支持（App 可显示「不支持」） |
+
+
+### SEANetworkCheckReason
+会前网络检测原因码（`2.3.0` 起，字符串常量），通过时为空串
+
+| **常量名** | **取值** | **描述** |
+| --- | --- | --- |
+| SEANetworkCheckReasonNoPermission | `no_permission` | 未授予网络权限（iOS 不会出现，保留与其它端对齐） |
+| SEANetworkCheckReasonCellularRestricted | `cellular_restricted` | 蜂窝数据被系统设置限制，且当前不在 Wi-Fi / 有线网络下 |
+| SEANetworkCheckReasonOffline | `offline` | 当前没有网络连接 |
+| SEANetworkCheckReasonMtuTooSmall | `mtu_too_small` | 1200 字节的探测包都回不来，但 UDP 是通的（网络对大包有限制） |
+| SEANetworkCheckReasonUdpBlocked | `udp_blocked` | UDP 不通：媒体服务器无应答、探测包全部无回显 |
+| SEANetworkCheckReasonDnsFailed | `dns_failed` | 有域名解析失败 |
+| SEANetworkCheckReasonMeetingApiUnreachable | `meeting_api_unreachable` | 会议接口不可达：`meeting_api` 没有收到任何 HTTP 响应（会议层独有） |
+| SEANetworkCheckReasonApiUnreachable | `api_unreachable` | RTC 检测信息接口调用失败：服务器不可达，或服务端未升级、不支持会前网络检测 |
+| SEANetworkCheckReasonSignalUnreachable | `signal_unreachable` | 信令服务器连不上（TCP/TLS 与 WebSocket 都不通） |
+| SEANetworkCheckReasonVendorNotSupported | `vendor_not_supported` | 流媒体供应商不是 SeaStart，不做媒体 UDP / MTU 检测（`skipped` 时使用） |
+| SEANetworkCheckReasonMediaUnavailable | `media_unavailable` | 服务端没有可用的媒体节点（`server` 记 `fail`，`mtu` 记 `skipped`） |
+| SEANetworkCheckReasonServerInfoUnavailable | `server_info_unavailable` | 拿不到服务端检测信息，依赖它的检测记 `skipped`；未登录时 `meeting_api` 也用这个原因码 |
+| SEANetworkCheckReasonDfNotSupported | `df_not_supported` | 系统设不了不分片，`mtu` 记 `unsupported`（iOS 不会出现，保留与其它端对齐） |
+| SEANetworkCheckReasonQueryFailed | `query_failed` | 系统接口查不到，该项记 `unsupported`（iOS 不会出现，保留与其它端对齐） |
+| SEANetworkCheckReasonCancelled | `cancelled` | 检测被取消（iOS 取消时完成回调直接返回 `SEAErrorUserCancelled`、不出单项结果，保留与其它端对齐） |

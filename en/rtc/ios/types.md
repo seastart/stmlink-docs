@@ -156,6 +156,104 @@ Speed test connection status result
 | BOOL signalingConnect | No | Channel control service connectivity. YES: normal; NO: abnormal |
 
 
+### RTCNetworkCheckParams
+Pre-call network check parameters (since `3.3.0`), used by [networkCheck:onItem:completion:](/en/rtc/ios/api-reference/RTCEngineKit#pre-call-network-check-apis). Pass either `appId` + `serverUrl` or `token`; if both are passed, `appId` + `serverUrl` take precedence.
+
+| **Property** | **Required** | **Description** |
+| --- | :---: | --- |
+| NSString *appId | No | App ID (app_id), passed together with `serverUrl` |
+| NSString *serverUrl | No | SDK API prefix, i.e. `client_api` in the token (e.g. `@"https://host/sdkapi"`), passed together with `appId` |
+| NSString *token | No | Any RTC token of this app (channel token or IM token; it doesn't need to be unexpired). Used to extract `appId` / `serverUrl` when they aren't passed |
+| NSInteger timeoutMs | No | Per-item timeout in milliseconds. Default: 3000; values less than or equal to 0 use the default |
+
+
+### RTCNetworkCheckItem
+Result of a single pre-call network check item (since `3.3.0`)
+
+| **Property** | **Required** | **Description** |
+| --- | :---: | --- |
+| [RTCNetworkCheckItemId](#rtcnetworkcheckitemid) itemId | Yes | Check item ID |
+| [RTCNetworkCheckStatus](#rtcnetworkcheckstatus) status | Yes | Check status: `pass` / `warning` / `fail` / `skipped` / `unsupported` |
+| [RTCNetworkCheckReason](#rtcnetworkcheckreason) reason | Yes | Machine-readable reason code; an empty string for `pass` |
+| NSString *message | Yes | Human-readable description in Chinese that the app can show directly |
+| NSInteger costMs | Yes | Time spent on this item, in milliseconds |
+| NSDictionary *data | Yes | Measurements for this item; key names are the same as on other platforms, see the table below |
+
+The content of `data` depends on the check item:
+
+| **Check item** | **data** |
+| --- | --- |
+| `permission` | `{}` |
+| `connectivity` | `{netType}`: `"wifi"` / `"cellular"` / `"ethernet"` / `"unknown"` |
+| `mtu` | `{maxSize}`: the largest probe packet size (bytes) that was echoed back, e.g. `1472`; `0` if none got through |
+| `dns` | `{hosts}`: an array of resolution results for each domain, each element being `{host, ips, costMs}` |
+| `server` | Three subchecks `{api, signal, media}`, see below |
+
+Each subcheck of `server` is `{ok, status, reason, rttMs}`: `ok` indicates whether it's reachable; `status` is `"pass"` / `"fail"` / `"skipped"`; `reason` is the reason code, an empty string for `pass`; `rttMs` is the time spent in milliseconds. In addition:
+
++ `api`: whether the check info API is reachable. On failure, it also carries `httpStatus` (the HTTP status code) when an HTTP response was received, and `code` (the server-side business error code, e.g. the app doesn't exist or is disabled) when HTTP is 200 but the business code isn't 0
++ `signal`: whether the signaling server can be connected (TCP/TLS first, then WebSocket if that fails). It also carries `via`: the method that connected, `"tcp"` or `"ws"`, or an empty string if neither did
++ `media`: whether the media server answers over UDP
+
+The `toDictionary` method converts the item result to a dictionary (keys `id` / `status` / `reason` / `message` / `costMs` / `data`, the same as on other platforms) for logging or reporting.
+
+
+### RTCNetworkCheckResult
+Overall pre-call network check result (since `3.3.0`)
+
+| **Property** | **Required** | **Description** |
+| --- | :---: | --- |
+| [RTCNetworkCheckStatus](#rtcnetworkcheckstatus) status | Yes | Overall status: `fail` if any item is `fail`; otherwise `warning` if any item is `warning`; otherwise `ok` (`skipped` / `unsupported` don't affect it) |
+| `NSArray<RTCNetworkCheckItem *> *items` | Yes | Item results: always 5 items in the fixed order `permission`, `connectivity`, `mtu`, `dns`, `server` |
+| NSInteger costMs | Yes | Total time spent, in milliseconds |
+
+The `toDictionary` method converts the result to a dictionary (keys `status` / `items` / `costMs`).
+
+
+### RTCNetworkCheckItemId
+Pre-call network check item ID (since `3.3.0`; string constants with the same values as on other platforms)
+
+| **Constant** | **Value** | **What it checks** | **Reason codes on failure / warning** |
+| --- | --- | --- | --- |
+| RTCNetworkCheckItemIdPermission | `permission` | Network permission: cellular data permission; fails only when the device isn't on Wi-Fi / wired network | `cellular_restricted` |
+| RTCNetworkCheckItemIdConnectivity | `connectivity` | System network connection status | `offline` |
+| RTCNetworkCheckItemIdMtu | `mtu` | Sends non-fragmented UDP probe packets (1200 / 1300 / 1400 / 1472 bytes) to the media server and takes the largest size echoed back | `mtu_too_small`, `udp_blocked` |
+| RTCNetworkCheckItemIdDns | `dns` | Resolves the domains of the API, signaling, and media servers (IP addresses are skipped) | `dns_failed` |
+| RTCNetworkCheckItemIdServer | `server` | Three subchecks: API `api`, signaling `signal`, and media `media` | `api_unreachable`, `signal_unreachable`, `udp_blocked`, `media_unavailable` |
+
+
+### RTCNetworkCheckStatus
+Pre-call network check status (since `3.3.0`; string constants). Items and the overall result share the same values; the overall result is only ever `ok` / `warning` / `fail`.
+
+| **Constant** | **Value** | **Description** |
+| --- | --- | --- |
+| RTCNetworkCheckStatusOk | `ok` | Overall: everything is normal |
+| RTCNetworkCheckStatusPass | `pass` | Item: passed |
+| RTCNetworkCheckStatusWarning | `warning` | Item / overall: usable, but with potential issues |
+| RTCNetworkCheckStatusFail | `fail` | Item / overall: abnormal |
+| RTCNetworkCheckStatusSkipped | `skipped` | Item: no check needed, e.g. MTU isn't tested when the media streaming vendor isn't SeaStart |
+| RTCNetworkCheckStatusUnsupported | `unsupported` | Item: not supported on this platform |
+
+
+### RTCNetworkCheckReason
+Pre-call network check reason codes (since `3.3.0`; string constants); an empty string when passed
+
+| **Constant** | **Value** | **Description** |
+| --- | --- | --- |
+| RTCNetworkCheckReasonNoPermission | `no_permission` | Network permission not granted (doesn't occur on iOS; kept for consistency with other platforms) |
+| RTCNetworkCheckReasonCellularRestricted | `cellular_restricted` | Cellular data is restricted in system settings, and the device isn't on Wi-Fi / wired network |
+| RTCNetworkCheckReasonOffline | `offline` | No network connection |
+| RTCNetworkCheckReasonMtuTooSmall | `mtu_too_small` | Even 1200-byte probe packets don't come back, but UDP works (the network limits large packets) |
+| RTCNetworkCheckReasonUdpBlocked | `udp_blocked` | UDP is blocked: no answer from the media server, and no probe packet is echoed back |
+| RTCNetworkCheckReasonDnsFailed | `dns_failed` | Some domain failed to resolve |
+| RTCNetworkCheckReasonApiUnreachable | `api_unreachable` | The check info API call failed: the server is unreachable, or it hasn't been upgraded to support the pre-call network check |
+| RTCNetworkCheckReasonSignalUnreachable | `signal_unreachable` | The signaling server can't be connected (neither TCP/TLS nor WebSocket works) |
+| RTCNetworkCheckReasonVendorNotSupported | `vendor_not_supported` | The media streaming vendor isn't SeaStart, so the media UDP / MTU checks aren't run (used with `skipped`) |
+| RTCNetworkCheckReasonMediaUnavailable | `media_unavailable` | The server has no available media node (`server` is `fail`, `mtu` is `skipped`) |
+| RTCNetworkCheckReasonServerInfoUnavailable | `server_info_unavailable` | The server-side check info isn't available, so `mtu` and the signaling and media checks that depend on it are `skipped` |
+| RTCNetworkCheckReasonDfNotSupported | `df_not_supported` | The system can't set Don't Fragment, so `mtu` is `unsupported` |
+
+
 ### RTCStreamAudioModel
 User audio info
 

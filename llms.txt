@@ -175,7 +175,7 @@
 
 ## SRTC 音视频 SDK · iOS SDK · 接口文档
 
-- [RTCEngineKit](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineKit.md): 进程级引擎单例：初始化与销毁、频道实例的创建与查询、即时通讯、摄像头采集预览、音频路由、屏幕采集进程接入、网络测速与美颜渲染
+- [RTCEngineKit](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineKit.md): 进程级引擎单例：初始化与销毁、频道实例的创建与查询、即时通讯、摄像头采集预览、音频路由、屏幕采集进程接入、网络测速、会前网络检测与美颜渲染
 - [RTCEngineChannel](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineChannel.md): 单频道实例：加入与离开频道、成员与频道数据查询、码流发布与订阅、音频发送、屏幕共享推送与自定义流
 - [RTCEngineDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineDelegate.md): 进程级引擎事件回调协议：音频路由变更、网络测速结果与应用性能，与具体频道无关
 - [RTCEngineChannelDelegate](https://docs.stmlink.com/zh/rtc/ios/api-reference/RTCEngineChannelDelegate.md): 频道级会话事件回调协议：连接与重连、成员进出、自定义消息、音频状态、码流质量与屏幕共享，每个回调都带事件来源频道实例
@@ -434,7 +434,7 @@
 
 ## SMeeting 会议 SDK · iOS SDK · 接口列表
 
-- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): 会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由与屏幕采集进程接入
+- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): 会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由、屏幕采集进程接入与会前网络检测
 - [MeetingKitRoom](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoom.md): 会议房间实例：进出房间、本端音视频与共享、聊天与举手、主持人管理、云录制、等候室、分组讨论、签到与房间数据查询
 - [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会议组件全局事件回调协议：音频路由变更与应用性能，与加入了几个房间无关
 - [MeetingKitRoomDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoomDelegate.md): 会议房间事件回调协议：进出房间、房间设置与主持人操作、成员状态、聊天消息、云录制、屏幕共享、码流质量与签到，每个回调都带事件来源房间实例
@@ -692,7 +692,7 @@
 
 ## [EN] SRTC Audio & Video SDK · iOS SDK (Objective-C) · API reference
 
-- [RTCEngineKit](https://docs.stmlink.com/en/rtc/ios/api-reference/RTCEngineKit.md): API reference for RTCEngineKit, the process-level engine singleton in the Objective-C SRTC SDK on iOS: init and destroy, creating and querying channel instances, IM, camera capture and preview, audio routing, screen capture extension, speed tests, beauty filters, and virtual background.
+- [RTCEngineKit](https://docs.stmlink.com/en/rtc/ios/api-reference/RTCEngineKit.md): API reference for RTCEngineKit, the process-level engine singleton in the Objective-C SRTC SDK on iOS: init and destroy, creating and querying channel instances, IM, camera capture and preview, audio routing, screen capture extension, speed tests, the pre-call network check, beauty filters, and virtual background.
 - [RTCEngineChannel](https://docs.stmlink.com/en/rtc/ios/api-reference/RTCEngineChannel.md): API reference for RTCEngineChannel, a single channel instance in the Objective-C SRTC SDK on iOS: joining and leaving, user and channel data queries, publishing and subscribing to streams, audio sending, screen sharing publishing, and custom streams. Look up any per-channel method here.
 - [RTCEngineDelegate](https://docs.stmlink.com/en/rtc/ios/api-reference/RTCEngineDelegate.md): API reference for RTCEngineDelegate, the process-level engine event protocol in the Objective-C SRTC SDK on iOS: audio route changes, network speed test results, and app performance, independent of any channel. Look here for events not tied to a channel.
 - [RTCEngineChannelDelegate](https://docs.stmlink.com/en/rtc/ios/api-reference/RTCEngineChannelDelegate.md): iOS (Objective-C) channel-level event protocol: connection and reconnection, users joining and leaving, custom messages, audio status, stream quality, and screen sharing. Every callback carries the source channel instance. Read when implementing channel event handling on iOS.
@@ -927,7 +927,7 @@
 
 ## [EN] SMeeting Conferencing SDK · iOS SDK (Objective-C) · API reference
 
-- [MeetingKit](https://docs.stmlink.com/en/meeting/ios/api-reference/MeetingKit.md): Global singleton of the SMeeting iOS (Objective-C) SDK: login and logout, IM, meeting queries and scheduling, creating and querying room instances, local capture and preview, audio routing, virtual background, and screen capture extension APIs. Read this for account- and device-level APIs.
+- [MeetingKit](https://docs.stmlink.com/en/meeting/ios/api-reference/MeetingKit.md): Global singleton of the SMeeting iOS (Objective-C) SDK: login and logout, IM, meeting queries and scheduling, creating and querying room instances, local capture and preview, audio routing, virtual background, screen capture extension, and pre-call network check APIs. Read this for account- and device-level APIs.
 - [MeetingKitRoom](https://docs.stmlink.com/en/meeting/ios/api-reference/MeetingKitRoom.md): Meeting room instance of the SMeeting iOS (Objective-C) SDK: enter and exit the room, local audio, video, and sharing, chat and raise hand, host controls, cloud recording, waiting room, sub-meetings, sign-in, and room data queries. Read this for all in-meeting APIs.
 - [MeetingKitDelegate](https://docs.stmlink.com/en/meeting/ios/api-reference/MeetingKitDelegate.md): Global event callback protocol of the iOS SMeeting SDK: audio route changes and app performance, independent of how many rooms you have entered. Read this to handle device-level events; in-room events are in MeetingKitRoomDelegate.
 - [MeetingKitRoomDelegate](https://docs.stmlink.com/en/meeting/ios/api-reference/MeetingKitRoomDelegate.md): Room event callback protocol of the iOS SMeeting SDK: entering and exiting, room settings and host actions, member state, chat messages, cloud recording, screen sharing, stream quality, and sign-in. Every callback carries the source room instance. Read this when handling in-room events.

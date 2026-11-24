@@ -3,6 +3,18 @@ title: "Changelog"
 description: "iOS (Objective-C) SRTC SDK (RTCEngineKit) release history: fixes, new features, and breaking changes such as the 3.0.0 multi-channel RTCEngineChannel split, the iOS 16.0 minimum in 3.1.0, virtual background, and callback signature changes. Read before upgrading the iOS SDK."
 ---
 
+### [3.3.0] - 2026.11.25
+
+#### Added
++ **Pre-call network check**: added `networkCheck:onItem:completion:` and `cancelNetworkCheck`. Call it before joining; it doesn't require initializing the engine or joining a channel. It checks items in the fixed order `permission` (cellular data permission) → `connectivity` (network connection) → `mtu` → `dns` (DNS resolution) → `server` (API / signaling / media servers), calls `onItem` on the main thread as each item completes, and finally delivers the overall result on the main thread (`ok` / `warning` / `fail`; each item carries a machine-readable `reason` and a Chinese `message` ready for display). When everything is normal it finishes within about 5 seconds, and takes at most about 10 seconds; the per-item timeout defaults to 3000 milliseconds. See [RTCEngineKit](/en/rtc/ios/api-reference/RTCEngineKit#pre-call-network-check-apis) and [Types](/en/rtc/ios/types#rtcnetworkcheckresult).
+  + Pass `appId` + `serverUrl`, or any RTC `token` of this app (only the app_id and server address are read from it, so an expired one works too)
+  + Only one check can run at a time; starting another returns `RTCEngineErrorConflict` (`103005`). Missing parameters return `RTCEngineErrorInvalidArgs` (`103031`). When cancelled by `cancelNetworkCheck`, the completion callback finishes with `RTCEngineErrorUserCancelled` (`103026`)
+  + Added the types `RTCNetworkCheckParams`, `RTCNetworkCheckItem`, `RTCNetworkCheckResult` and the string constants `RTCNetworkCheckItemId`, `RTCNetworkCheckStatus`, `RTCNetworkCheckReason`, with the same values as on other platforms
+
+<Note>
+The API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, `server` is `fail` (`api_unreachable`), and `mtu` and the signaling and media checks are `skipped`; other items are unaffected. This release only adds APIs; existing APIs and behavior are unchanged.
+</Note>
+
 ### [3.1.2] - 2026.09.14
 #### Fixed
 + Fixed the [onRemoteMemberAudioStatus:](/en/rtc/ios/api-reference/RTCEngineChannelDelegate#enginechannelonremotememberaudiostatus) callback attributing the speaking user to the wrong person with Wangsu media streaming: on this path the server doesn't send the connection ID, so `linkId` in [RTCStreamAudioModel](/en/rtc/ios/types#rtcstreamaudiomodel) is always `0`. Looking up the user by it used to hit the first match in the list, so when you did voice activation, the highlighted user was often not the one actually speaking. The SDK now resolves the user ID from the underlying connection and only falls back to the old `linkId` lookup when that fails;

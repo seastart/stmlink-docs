@@ -1,9 +1,9 @@
 ---
 title: "RTCEngineKit"
-description: "API reference for RTCEngineKit, the process-level engine singleton in the Objective-C SRTC SDK on iOS: init and destroy, creating and querying channel instances, IM, camera capture and preview, audio routing, screen capture extension, speed tests, beauty filters, and virtual background."
+description: "API reference for RTCEngineKit, the process-level engine singleton in the Objective-C SRTC SDK on iOS: init and destroy, creating and querying channel instances, IM, camera capture and preview, audio routing, screen capture extension, speed tests, the pre-call network check, beauty filters, and virtual background."
 ---
 
-`RTCEngineKit` is a singleton with only one instance per process. It carries only **account-level and shared-hardware-level** capabilities: camera capture and preview, audio routing, ReplayKit screen capture, beauty filter rendering, network speed tests, IM (out-of-channel messaging), and the lifecycle management of channel instances.
+`RTCEngineKit` is a singleton with only one instance per process. It carries only **account-level and shared-hardware-level** capabilities: camera capture and preview, audio routing, ReplayKit screen capture, beauty filter rendering, network speed tests, the pre-call network check, IM (out-of-channel messaging), and the lifecycle management of channel instances.
 
 In-channel capabilities such as joining and leaving, user data, publishing and subscribing to streams, and sending audio are carried by [RTCEngineChannel](/en/rtc/ios/api-reference/RTCEngineChannel), which you create with `createChannelWithDelegate:`. Multiple channel instances can exist in the same process at the same time, and user data, stream statistics, and rendering don't interfere across instances.
 
@@ -332,6 +332,64 @@ Starts a network speed test (use before joining a channel).
 `- (void)stopSpeedTest`
 
 Stops the network speed test.
+
+## Pre-call network check APIs
+
+Available since `3.3.0`. **Call it before joining**: it doesn't require initializing the engine or joining a channel. It runs the checks in a fixed order, `permission` (network permission) → `connectivity` (network connection) → `mtu` (maximum transmission unit) → `dns` (DNS resolution) → `server` (API / signaling / media servers), calls `onItem` once as each item completes, and calls `completion` when all are done. When everything is normal it finishes within about 5 seconds, and takes at most about 10 seconds. The string values of check items, statuses, and reason codes are the same as in the SDKs for other platforms.
+
+### networkCheck:onItem:completion:()
+`- (RTCEngineError)networkCheck:(RTCNetworkCheckParams *)params onItem:(nullable RTCNetworkCheckItemBlock)onItem completion:(nullable RTCNetworkCheckCompletionBlock)completion`
+
+Starts the pre-call network check.
+
+**Parameters**
+
+| Parameter | Description |
+| :--- | --- |
+| params | Check parameters: pass either `appId` + `serverUrl` or `token`; the per-item timeout `timeoutMs` defaults to 3000 milliseconds. See [RTCNetworkCheckParams](/en/rtc/ios/types#rtcnetworkcheckparams) |
+| onItem | Per-item completion callback (main thread), called once per item in the order `permission` → `connectivity` → `mtu` → `dns` → `server`, with an [RTCNetworkCheckItem](/en/rtc/ios/types#rtcnetworkcheckitem) |
+| completion | Completion callback (main thread) with `(RTCNetworkCheckResult * _Nullable result, RTCEngineError errorCode)`: on normal completion, `errorCode` is `RTCEngineErrorOK` and `result` is non-nil (see [RTCNetworkCheckResult](/en/rtc/ios/types#rtcnetworkcheckresult)); when cancelled by `cancelNetworkCheck`, `result` is `nil` and `errorCode` is `RTCEngineErrorUserCancelled` (`103026`) |
+
+**Return value**
+
+| Return value | Description |
+| :--- | --- |
+| `RTCEngineErrorOK` | The check has started |
+| `RTCEngineErrorInvalidArgs` (`103031`) | `appId` / `serverUrl` are empty and can't be extracted from `token` |
+| `RTCEngineErrorConflict` (`103005`) | A check is already running; only one check can run at a time |
+
+**Example**
+
+```objectivec
+RTCNetworkCheckParams *params = [[RTCNetworkCheckParams alloc] init];
+// Any RTC token of this app (channel token / IM token) works, even an expired one
+params.token = token;
+
+RTCEngineError code = [[RTCEngineKit sharedEngine] networkCheck:params onItem:^(RTCNetworkCheckItem *item) {
+    // Main thread, called once per completed item; message can be shown to users directly
+    NSLog(@"%@ %@ %@", item.itemId, item.status, item.message);
+} completion:^(RTCNetworkCheckResult * _Nullable result, RTCEngineError errorCode) {
+    if (errorCode == RTCEngineErrorUserCancelled) {
+        return; // Cancelled by cancelNetworkCheck
+    }
+    if ([result.status isEqualToString:RTCNetworkCheckStatusFail]) {
+        // Some item failed; prompt the user based on each item's reason / message
+    }
+}];
+```
+
+**Notes**
+
++ When only `token` is passed, the SDK reads `app_id` and `client_api` from it without using it for authentication, so **an expired token also works**. If both `appId` + `serverUrl` and `token` are passed, `appId` + `serverUrl` take precedence.
++ The API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, `server` is `fail` (`api_unreachable`), and `mtu` and the signaling and media checks are `skipped` (`server_info_unavailable`); other items are unaffected.
++ The network check is independent of `startSpeedTest:`: the network check tells item by item whether the network is good enough to join, while the speed test measures uplink and downlink bandwidth and packet loss.
+
+### cancelNetworkCheck()
+`- (void)cancelNetworkCheck`
+
+Cancels the pre-call network check.
+
+After cancellation, `onItem` is no longer called and `completion` finishes with `RTCEngineErrorUserCancelled` (`103026`). You can start a new check right away.
 
 ## Video rendering APIs
 
