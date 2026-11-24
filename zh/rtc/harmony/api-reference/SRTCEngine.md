@@ -173,6 +173,62 @@ createLocalScreenTrack(preset?: ScreenPreset, audioPreset?: ScreenAudioPreset): 
 
 `startCapture()` 会弹出系统授权窗，用户同意后才出帧。
 
+### `networkCheck(options)` / `cancelNetworkCheck()`
+
+```typescript
+networkCheck(options: NetworkCheckOptions): Promise<NetworkCheckResult>
+cancelNetworkCheck(): void
+```
+
+会前网络检测（1.4.0 起）。**入会前调用**，不需要入会鉴权，依次检测 5 项：
+
+| 项 `id` | 检测内容 |
+| --- | --- |
+| `permission` | 网络权限（`ohos.permission.INTERNET`） |
+| `connectivity` | 系统默认网络是否可用，`data.netType` 为 `wifi` / `cellular` / `ethernet` / `unknown` |
+| `mtu` | 最大传输单元。HarmonyOS 的 UDP 接口不支持设置不分片，本平台固定为 `unsupported`（`df_not_supported`） |
+| `dns` | 接口、信令、媒体服务器域名解析（IP 地址跳过），`data.hosts` 为 `[{ host, ips, costMs }]` |
+| `server` | `data.api` 接口、`data.signal` 信令（TCP/TLS 不通再试 WebSocket，带 `via`）、`data.media` 媒体 UDP 三个子检查，每个为 `{ ok, status, reason, rttMs }` |
+
+```typescript
+const result: NetworkCheckResult = await srtc.networkCheck({
+  appId: 'your-app-id',
+  serverUrl: 'https://host/sdkapi/',   // 与 token 里的 client_api 相同；也可以只传 token
+  onItem: (item: NetworkCheckItem) => {
+    console.info(`${item.id} ${item.status} ${item.message}`);
+  }
+});
+// result.status：ok / warning / fail（有 fail 即 fail）
+```
+
++ 结果固定 5 项、固定顺序；每完成一项回调一次 `onItem`。
++ 网络权限缺失或断网时，其后各项快速失败，不会逐项等超时。
++ 流媒体供应商不是 SeaStart 时，媒体检测记 `skipped`（`vendor_not_supported`）。
++ 服务端未升级、没有网络检测接口时，`server` 为 `fail`（`api_unreachable`），信令与媒体检测记 `skipped`（`server_info_unavailable`）。
+
+| 错误码 | 场景 |
+| --- | --- |
+| `108005` | 已有检测在进行（同一时刻只允许一个） |
+| `108026` | 被 `cancelNetworkCheck()` 取消 |
+| `108031` | 缺少 `appId` / `serverUrl`，且 `token` 未传或无法解析 |
+
+#### `NetworkCheckOptions`
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `appId?` | `string` | 应用 ID，与 `serverUrl` 一起传；缺省时从 `token` 里取 |
+| `serverUrl?` | `string` | SDK 接口地址，即 token 里的 `client_api`，如 `https://host/sdkapi/`；缺省时从 `token` 里取 |
+| `token?` | `string` | 频道 / IM token。只取其中的应用 ID 与服务器地址，不用于鉴权，过期也可以；与显式传入的字段同时存在时以显式传入为准 |
+| `timeoutMs?` | `number` | 单项超时（毫秒），默认 `3000` |
+| `onItem?` | `(item: NetworkCheckItem) => void` | 每完成一项回调一次 |
+
+#### `NetworkCheckResult` / `NetworkCheckItem`
+
+| 接口 | 字段 |
+| --- | --- |
+| `NetworkCheckResult` | `status: NetworkCheckStatus`（`ok` / `warning` / `fail`）、`items: NetworkCheckItem[]`、`costMs` |
+| `NetworkCheckItem` | `id: NetworkCheckItemId`、`status: NetworkCheckItemStatus`（`pass` / `warning` / `fail` / `skipped` / `unsupported`）、`reason`（原因码，取值见 `NetworkCheckReason`，通过时为空串）、`message`（中文说明，可直接展示）、`costMs`、`data` |
+
 ### `enableIm(tokenString)` / `disableIm()`
 
 ```typescript
