@@ -13,6 +13,12 @@ npm info @seastart/smeeting-wx-sdk version
 
 ---
 
+### v0.1.3 - 2026-11-24
+
+#### 新增
++ **会前网络检测 `networkCheck`**：入会前调用，不需要入会，已登录时不用传参（未登录传会议 token，或 `appId` + `serverUrl`）。五项检测由 SRTC 层完成并原样透传（小程序端网络权限、MTU、域名解析及媒体 UDP 检查受平台限制记为「不支持」），会议层在服务器连接项里多检测一项会议接口是否可达；可用 `cancelNetworkCheck()` 取消。用法见 [SMeeting · 会前网络检测](/zh/meeting/wechat-miniprogram/api-reference/SMeeting#会前网络检测)
++ 底层 SRTC 依赖升级到小程序 `^0.3.1`
+
 ### v0.1.2 - 2026-11-12
 
 #### 修复

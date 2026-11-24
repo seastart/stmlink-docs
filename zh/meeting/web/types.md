@@ -979,3 +979,48 @@ export interface MeetingAiTranscript {
     sentences: AsrSentence[];
 }
 ```
+
+#### 会前网络检测相关（0.3.8 起）
+`networkCheck()` 的参数是 `MeetingNetworkCheckOptions`，返回 SRTC 层的 `NetworkCheckResult`。结果类型 `NetworkCheckResult`、`NetworkCheckItem`、`NetworkCheckSubResult` 等与 SRTC 同一套，会议包直接透传导出，定义与 SRTC 原因码见 [SRTC · 会前网络检测相关](/zh/rtc/web/types#会前网络检测相关)。小程序包导出同样的类型。
+```typescript
+/** 会议层网络检测参数（与 SRTC 层 networkCheck 同名同参，已登录时都可以不传） */
+export interface MeetingNetworkCheckOptions {
+    /** 应用 ID。已登录时可不传（取登录信息）；未登录时与 serverUrl 一起传，或只传 token */
+    appId?: string;
+    /**
+     * 服务地址，已登录时可不传。以下三种写法都可以：
+     * - 会议 token 里的 client_api（如 https://meet.example.com/meeting/client）：可推出会议接口与 SRTC 接口；
+     * - SRTC token 里的 client_api（如 https://meet.example.com/client/）；
+     * - 服务根地址（如 https://meet.example.com）。
+     * 后两种只能确定 SRTC 接口：未登录时拿不到会议接口地址，meeting_api 记 skipped（server_info_unavailable）
+     */
+    serverUrl?: string;
+    /**
+     * 会议登录 token（即 login 用的 token；SRTC token 也可以）。未登录时可只传它，SDK 从中取应用 ID 与服务地址；
+     * 同时传了 appId / serverUrl 时以显式传入的为准。检测不会用 token 鉴权，过期 token 也可以
+     */
+    token?: string;
+    /** 单项超时 ms，默认 3000 */
+    timeoutMs?: number;
+    /** 进度回调：每完成一项回调一次（按固定顺序 permission → connectivity → mtu → dns → server） */
+    onItem?: (item: NetworkCheckItem) => void;
+}
+
+/** 会议层 server 项（id 为 server）的 data：SRTC 层的 api / signal / media，外加 meeting_api */
+export interface MeetingNetworkCheckServerData extends NetworkCheckServerData {
+    /**
+     * 会议接口是否可达：任何 HTTP 响应都算可达，网络错误 / 超时算不通（reason: meeting_api_unreachable）；
+     * 未登录且只给了 SRTC 地址、拿不到会议接口地址时记 skipped（reason: server_info_unavailable）
+     */
+    meeting_api: NetworkCheckSubResult;
+}
+```
+
+会议层新增的原因码：
+
+| `reason` | 出现在 | 含义 | `message` |
+| --- | --- | --- | --- |
+| `meeting_api_unreachable` | server、`data.meeting_api` | 会议接口调不通：网络不通、服务地址不对 | 无法连接会议服务器，请检查网络或服务器地址 |
+| `server_info_unavailable` | `data.meeting_api`（skipped） | 未登录且只给了 SRTC 地址 / 服务根地址，推不出会议接口地址 | —— |
+
+`server` 已因 SRTC 子检查失败时，`reason` / `message` 保留 SRTC 的，`meeting_api` 不通只体现在 `data.meeting_api` 里。

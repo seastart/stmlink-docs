@@ -13,6 +13,12 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.8 - 2026-11-24
+
+#### 新增
++ **会前网络检测 `networkCheck`**：入会前调用，不需要入会，已登录时不用传参（未登录传会议 token，或 `appId` + `serverUrl`）。五项检测（网络权限、网络连接、MTU、域名解析、服务器连接）由 SRTC 层完成并原样透传，会议层在服务器连接项里多检测一项会议接口是否可达；`onItem` 逐项回调进度，最后返回汇总结果，每项带可直接展示给用户的说明；可用 `cancelNetworkCheck()` 取消。用法见 [SMeeting · 会前网络检测](/zh/meeting/web/api-reference/SMeeting#会前网络检测)，类型见 [会前网络检测相关](/zh/meeting/web/types#会前网络检测相关)
++ 底层 SRTC 依赖升级到 Web `^0.7.6`
+
 ### v0.3.7 - 2026-11-24
 
 #### 新增

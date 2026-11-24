@@ -28,6 +28,17 @@ SMeeting是绝大多数操作的入口。
      */
     logout(): Promise<void>;
     /**
+     * 会前网络检测：入会前调用，不需要入会；已登录时不用传参（0.1.3 起）
+     * 检测由 SRTC 层完成并透传，会议层在 server 项里多一个子检查 meeting_api（会议接口是否可达）
+     * @param options 未登录时传 appId + serverUrl，或传 token；见下方「会前网络检测」
+     * @returns 检测结果，固定 5 项、固定顺序
+     */
+    networkCheck(options?: MeetingNetworkCheckOptions): Promise<NetworkCheckResult>;
+    /**
+     * 取消正在进行的网络检测，networkCheck 随即以 SRTC 层的 107026（Cancelled）结束；没有检测在跑时无操作（0.1.3 起）
+     */
+    cancelNetworkCheck(): void;
+    /**
      * 创建会议
      * @returns 房间号
      */
@@ -311,3 +322,21 @@ SMeeting是绝大多数操作的入口。
     
 ```
 
+---
+
+### 会前网络检测
+
+`networkCheck` 在**入会前**调用，不需要入会，也不使用 token 鉴权（0.1.3 起，需 `@seastart/srtc-wx-sdk` 0.3.1 及以上，npm 安装时会自动带上）。接口、参数与 [Web SDK](/zh/meeting/web/api-reference/SMeeting#会前网络检测) 一致，参数与类型见 Web 的 [会前网络检测相关](/zh/meeting/web/types#会前网络检测相关)（小程序包同样导出这些类型）。
+
+```typescript
+const smeeting = new SMeeting({});
+// 已登录：不用传 appId / serverUrl；未登录：传会议 token，或 appId + serverUrl（会议 token 里的 client_api）
+const result = await smeeting.networkCheck({
+  token: meetingToken,
+  onItem: (item) => console.log(item.id, item.status, item.message),
+});
+```
+
++ 五项检测由 SRTC 层完成并原样透传，平台限制同 [小程序 SRTC · 会前网络检测](/zh/rtc/wechat-miniprogram/api-reference/SRTC#会前网络检测)：`permission`、`mtu`、`dns` 以及服务器连接里的媒体（UDP）子检查固定为 `unsupported`
++ 会议层在 `server` 项里多一个子检查 `meeting_api`（会议接口是否可达），不通时 `server` 记 `fail`、`reason` 为 `meeting_api_unreachable`。会议接口地址需已加入小程序的 request 合法域名，否则该子检查失败
++ 错误码：进行中再次调用抛 `107005`；被 `cancelNetworkCheck()` 取消时抛 `107026`；`token` 解不出来时抛 `107031`（透传的 SRTC 层码）；未登录且没传 `appId` / `serverUrl` / `token` 时抛会议层的 `207001`（`NotLoggedIn`）

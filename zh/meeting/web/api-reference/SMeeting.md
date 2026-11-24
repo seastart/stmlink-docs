@@ -27,6 +27,17 @@ SMeeting是绝大多数操作的入口。
      */
     logout(): Promise<void>;
     /**
+     * 会前网络检测：入会前调用，不需要入会；已登录时不用传参（0.3.8 起）
+     * 检测由 SRTC 层完成并透传，会议层在 server 项里多一个子检查 meeting_api（会议接口是否可达）
+     * @param options 未登录时传 appId + serverUrl，或传 token；见下方「会前网络检测」
+     * @returns 检测结果，固定 5 项、固定顺序
+     */
+    networkCheck(options?: MeetingNetworkCheckOptions): Promise<NetworkCheckResult>;
+    /**
+     * 取消正在进行的网络检测，networkCheck 随即以 SRTC 层的 106026（Cancelled）结束；没有检测在跑时无操作（0.3.8 起）
+     */
+    cancelNetworkCheck(): void;
+    /**
      * 创建会议
      * @returns 房间号
      */
@@ -513,5 +524,31 @@ SMeeting是绝大多数操作的入口。
     adminAiSummaryGenerate(sessionId: string, meetingId?: string, templateId?: string): Promise<void>;
 ```
 
+---
 
+### 会前网络检测
 
+`networkCheck` 在**入会前**调用，不需要入会，也不使用 token 鉴权（0.3.8 起，需 `@seastart/srtc-web-sdk` 0.7.6 及以上，npm 安装时会自动带上）。
+
+五项检测（网络权限、网络连接、MTU、域名解析、服务器连接）全部由 SRTC 层完成，结果原样透传，与 [SRTC · networkCheck](/zh/rtc/web/api-reference/SRTC#networkcheck) 同一套类型、同样的平台限制（Web 端 `permission`、`mtu`、`dns` 固定为 `unsupported`）。会议层只在服务器连接项（`server`）里多加一个子检查 `meeting_api`：会议接口是否可达。参数与类型见 [会前网络检测相关](/zh/meeting/web/types#会前网络检测相关)。
+
+```typescript
+import { SMeeting } from '@seastart/smeeting-web-sdk';
+
+const smeeting = new SMeeting({});
+// 已登录：不用传 appId / serverUrl，SDK 取登录信息
+// 未登录：传 token（login 用的会议 token），或 appId + serverUrl（会议 token 里的 client_api）
+const result = await smeeting.networkCheck({
+  token: meetingToken,
+  onItem: (item) => console.log(item.id, item.status, item.message),
+});
+if (result.status === 'fail') {
+  const bad = result.items.find((i) => i.status === 'fail');
+  showTip(bad?.message); // message 是可直接展示给用户的中文说明
+}
+```
+
++ **整次耗时**：会议接口探测与 SRTC 检测并行，不额外增加时长；单项超时默认 3 秒（`timeoutMs` 可调）。`permission` 到 `dns` 四项随 SRTC 的进度逐项回调，`server` 项等会议接口探测也结束后才回调
++ **`meeting_api` 的判定**：向会议接口发一个不带签名的请求，收到任何 HTTP 响应都算可达；网络错误或超时算不通，此时 `server` 项记 `fail`、`reason` 为 `meeting_api_unreachable`，总状态随之重算。`server` 已因 SRTC 子检查（SDK 接口、信令、媒体）失败时，保留 SRTC 的 `reason` 与 `message`
++ **服务地址**：`serverUrl` 写会议 token 里的 `client_api`（如 `https://meet.example.com/meeting/client`）最完整；也可以写 SRTC token 的 `client_api` 或服务根地址，但这两种推不出会议接口地址，未登录时 `meeting_api` 记 `skipped`（`server_info_unavailable`）。优先级：显式参数 > `token` > 登录信息
++ **错误码**：同一个实例同时只能跑一个检测，进行中再次调用抛 `106005`；被 `cancelNetworkCheck()` 取消时抛 `106026`；`token` 解不出来时抛 `106031`——这三个是透传的 SRTC 层码，与直接调 SRTC 时一致。未登录且没传 `appId` / `serverUrl`（也没传 `token`）时抛会议层的 `206001`（`NotLoggedIn`）

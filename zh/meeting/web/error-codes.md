@@ -14,7 +14,7 @@ description: "Web SMeeting SDK（0.3.0 起）的错误码：怎么按 code 区�
 | `code` | 来源 | 说明 |
 | --- | --- | --- |
 | `206xxx` | 会议层 SDK | 见下方「会议层错误码」 |
-| `106xxx` | 底层 SRTC SDK，原样透传 | 采集失败、设备权限被拒、推拉流失败等，见 [Web SRTC 错误码](/zh/rtc/web/error-codes) |
+| `106xxx` | 底层 SRTC SDK，原样透传 | 采集失败、设备权限被拒、推拉流失败等；会前网络检测 `networkCheck` 的进行中 `106005`、被取消 `106026`、token 解不出 `106031` 也走这一层，见 [Web SRTC 错误码](/zh/rtc/web/error-codes) |
 | `1000`–`99999` | 服务端业务错误，原样透传 | 会议服务端见 [服务端 API 错误码](/zh/meeting/server-api/error-codes)；给用户看时直接展示服务端返回的 `message` |
 
 错误对象的字段与 SRTC 的 `SdkError` 相同：`code`（完整码）、`baseCode`（低 3 位）、`message` / `msg`（英文详情）。包里导出了 `SdkError` 与 `MeetingErrorCode`（会议层低 3 位）。
@@ -72,7 +72,7 @@ const smeeting = new SMeeting({
 | 错误码 | `MeetingErrorCode` | 含义 | 常见原因 | 建议给用户的提示 |
 | --- | --- | --- | --- | --- |
 | `206000` | `Unknown` | 未分类错误 | 兜底码，正常不应出现，看 `message` 与日志 | —— |
-| `206001` | `NotLoggedIn` | 未登录 | 没调 `login`，或登录失败后调用了需要登录的方法 | —— |
+| `206001` | `NotLoggedIn` | 未登录 | 没调 `login`，或登录失败后调用了需要登录的方法；未登录时调 `networkCheck` 且没传 `appId` / `serverUrl` / `token` | —— |
 | `206002` | `TokenExpired` | Token 已过期 | `login` 时 Token 已超过有效期，重新签发 | 登录已过期，请重新进入 |
 | `206003` | `NotInMeeting` | 不在会议中 | 没进入会议，或已退出后调用会中方法 | —— |
 | `206004` | `Unauthorized` | 无权限 | 非主持人执行主持人操作；或房间已禁止打开摄像头 / 麦克风 / 共享 | 主持人已禁止该操作 |
