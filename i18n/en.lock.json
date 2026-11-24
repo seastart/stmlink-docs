@@ -338,8 +338,8 @@
   "en/meeting/swift/advanced/deepfilternet": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/deepfilternet.md",
-    "zh_blob": "61abb105c9e7a9eb04f65a0ebb3a0cdfe0688712",
-    "zh_commit": "cb949432f0cc10ef734d6f242be8d979ab7dfc96"
+    "zh_blob": "8ee9d5034386f9a4c990cc17e71a80150ff62c1c",
+    "zh_commit": "6a6f07badf3a02adcc705e3632f604646ebaa746"
   },
   "en/meeting/swift/advanced/device-check": {
     "reviewed": false,
