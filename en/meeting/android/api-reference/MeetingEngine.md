@@ -2510,6 +2510,47 @@ Sets the microphone capture processor; pass `null` to clear it. You can call it 
 
 Returns: `Unit`.
 
+## Pre-call network check
+
+Supported since `2.0.45`. Same name and parameters as the RTC-layer `RTCEngine.networkCheck`, with the same check items, statuses, and reason codes; the meeting layer additionally checks whether the meeting service is reachable as part of the `server` item.
+
+### networkCheck(option, callback)
+
+```kotlin
+fun networkCheck(option: NetworkCheckOption, callback: MeetingNetworkCheckCallback)
+```
+
+Runs the pre-call network check in a fixed order: `permission` (network permission) → `connectivity` (network connection) → `mtu` → `dns` (DNS resolution) → `server` (server connectivity). It calls `onItem` as each item completes and `onComplete` at the end; the whole check takes about 5 seconds. You don't need to join a meeting. After `initSdk`, the app ID and server address are taken from the Meeting token, so you can simply pass `NetworkCheckOption()`; before initialization, provide them through `option`. Only one check can run at a time, and all callbacks run on the main thread.
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| option | [`NetworkCheckOption`](/en/meeting/android/types#networkcheckoption) | Yes | Server information and per-item timeout; after initialization you can pass the default instance |
+| callback | `MeetingNetworkCheckCallback` | Yes | Check callbacks; see the table below |
+
+`MeetingNetworkCheckCallback` (`cn.seastart.meeting.callback`):
+
+| Method | Description |
+| --- | --- |
+| `onItem(item: NetworkCheckItem)` | Called once per completed item; see [NetworkCheckItem](/en/meeting/android/types#networkcheckitem) |
+| `onComplete(result: NetworkCheckResult)` | All checks completed; see [NetworkCheckResult](/en/meeting/android/types#networkcheckresult) |
+| `onFailure(errorCode: Int, message: String?)` | The check couldn't complete: `102005` a check is already running, `102026` cancelled, `102031` the app ID or server address is unavailable (not initialized and not passed in, or the token can't be parsed), `202011` the SDK has been released. Only one of this and `onComplete` is called |
+
+The `data` of the `server` item has one more sub-check than the RTC layer, `meeting_api` (`ok`, `status`, `reason`, `rttMs`, `httpStatus`); the meeting service counts as reachable once it returns any HTTP response. If it's unreachable, the item is marked `fail` with the reason code `meeting_api_unreachable` (if RTC has already failed the item, RTC's reason code is kept), and the overall status is recalculated.
+
+Returns: `Unit`; results are delivered through the callback.
+
+<Note>
+The RTC API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, that item is `fail` (`api_unreachable`), and `mtu` plus the signaling and media checks are `skipped`; other items are unaffected.
+</Note>
+
+### cancelNetworkCheck()
+
+```kotlin
+fun cancelNetworkCheck()
+```
+
+Cancels the running network check; the cancelled check calls `onFailure(102026)`. Does nothing when no check is running. No parameters; returns `Unit`.
+
 ## Virtual background
 
 Supported since `2.0.39`. First initialize the SDK and install the person segmentation model, then set blur or a background image, and finally turn the effect on. After camera capture or a switch succeeds, or after a successful reconnection, the meeting layer reapplies the cached configuration; `release()` clears the cache and releases the underlying resources.

@@ -1,9 +1,19 @@
 ---
 title: "Changelog"
-description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.44, including breaking API changes. Read this before upgrading the SDK."
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.45, including breaking API changes. Read this before upgrading the SDK."
 ---
 
 > This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.45 (2026-11-24)
+
+### Added
+
++ Added the pre-call network check `MeetingEngine.networkCheck()` and `cancelNetworkCheck()`: callable before joining, it checks network permission, connectivity, MTU, DNS resolution, and server connectivity in turn and reports each result as it completes; the server connectivity item also checks whether the meeting service is reachable. See [Pre-call network check](/en/meeting/android/api-reference/MeetingEngine#pre-call-network-check) and [Network check models](/en/meeting/android/types#network-check-models).
+
+### Changed
+
++ Upgraded the SRTC dependency to `2.0.40`.
 
 ## 2.0.44 (2026-11-20)
 

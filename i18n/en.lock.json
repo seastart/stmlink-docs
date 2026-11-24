@@ -44,8 +44,8 @@
   "en/meeting/android/api-reference/MeetingEngine": {
     "reviewed": false,
     "source": "zh/meeting/android/api-reference/MeetingEngine.md",
-    "zh_blob": "7b439a29a05a1132ad4865bf1cf8d05fcd2bbac5",
-    "zh_commit": "697bf1d0dfaf5fc14149e6f46b83d4a3ddf96c96"
+    "zh_blob": "e8ef91cc06ba338952b5d3b3643381482961381f",
+    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
   },
   "en/meeting/android/api-reference/MeetingEngineEvent": {
     "reviewed": false,
@@ -140,8 +140,8 @@
   "en/meeting/android/changelog": {
     "reviewed": false,
     "source": "zh/meeting/android/changelog.mdx",
-    "zh_blob": "4e4e27cd58fa0ab17e08ae2e6a68575ad3a2b002",
-    "zh_commit": "4ceee6b2bb22de650052369fbe85518ea871c5a4"
+    "zh_blob": "e27d4123f29812d1814cd601b71f9fd3bcf0b60b",
+    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
   },
   "en/meeting/android/enums": {
     "reviewed": true,
@@ -158,8 +158,8 @@
   "en/meeting/android/integration": {
     "reviewed": false,
     "source": "zh/meeting/android/integration.md",
-    "zh_blob": "42f45d4439db7efe87de3e8176654677ca496b4f",
-    "zh_commit": "4ceee6b2bb22de650052369fbe85518ea871c5a4"
+    "zh_blob": "a1b2076873136b05bd46ca81db4a8dac43fb4fa9",
+    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
   },
   "en/meeting/android/media-quality": {
     "reviewed": false,
@@ -200,8 +200,8 @@
   "en/meeting/android/types": {
     "reviewed": false,
     "source": "zh/meeting/android/types.md",
-    "zh_blob": "524723cea990dd59cd5a1cb88e833de3bae08075",
-    "zh_commit": "84c0091f4d5b4daf6ad53052edc29f452f0a64fb"
+    "zh_blob": "9961c3a1b631ca99ecaa4d18e467131589d66b45",
+    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
   },
   "en/meeting/error-codes": {
     "reviewed": false,

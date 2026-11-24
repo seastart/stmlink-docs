@@ -537,3 +537,84 @@ Used when creating a new casting meeting; all fields are ignored by the server w
 | selfRole | `MemberRoleType?` | `null` | Role of the casting initiator |
 | screenRole | `MemberRoleType?` | `null` | Role of the large screen that registered the cast code |
 | owner | `CastMeetingOwner?` | `null` | Ownership policy for the new meeting |
+
+## Network check models
+
+Available since `2.0.45`, used by the [pre-call network check](/en/meeting/android/api-reference/MeetingEngine#pre-call-network-check). Fields and values match the [SRTC Android network check types](/en/rtc/android/types#networkcheckoptions), but these are the meeting layer's own types.
+
+### NetworkCheckOption
+
+Full class name: `cn.seastart.meeting.options.NetworkCheckOption`. All fields are optional; after `initSdk`, just pass the default instance. Before initialization, provide the server information in one of two ways: `appId` + `serverUrl`, or a `token` from which both can be extracted. Precedence: explicit fields > `token` > the Meeting token from initialization. The check itself doesn't use the token for authentication.
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| appId | `String?` | `null` | App ID |
+| serverUrl | `String?` | `null` | Server API prefix; either RTC's `client_api` (such as `https://host/client/`) or Meeting's `client_api` (such as `https://host/meeting/client`) works |
+| token | `String?` | `null` | Meeting token or RTC token, used only to extract `appId` and `serverUrl` |
+| timeoutMs | `Int` | `3000` | Per-item timeout in milliseconds; values of 0 or less use the default |
+
+### NetworkCheckItem
+
+Full class name: `cn.seastart.meeting.info.NetworkCheckItem`. Result of a single check item.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| id | `String` | Check item; see `NetworkCheckItemId` |
+| status | `String` | Check status: `pass` / `warning` / `fail` / `skipped` / `unsupported`; see `NetworkCheckStatus` |
+| reason | `String` | Machine-readable reason code, empty for `pass`; see `NetworkCheckReason` |
+| message | `String` | Chinese description that can be shown to users directly |
+| costMs | `Long` | Time spent on this item, in milliseconds |
+| data | `Map<String, Any?>` | Measured values for this item, such as `netType` for `connectivity` and `maxSize` for `mtu`; `server` contains four sub-checks, `api`, `signal`, `media`, and `meeting_api`, each with `ok`, `status`, `reason`, and `rttMs` |
+
+### NetworkCheckResult
+
+Full class name: `cn.seastart.meeting.info.NetworkCheckResult`. Overall check result.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| status | `String` | Overall status: `fail` if any item fails; otherwise `warning` if any item warns; otherwise `ok` |
+| items | `List<NetworkCheckItem>` | Always 5 items, in the order `permission`, `connectivity`, `mtu`, `dns`, `server` |
+| costMs | `Long` | Total time, in milliseconds |
+
+### Network check constants
+
+All in the `cn.seastart.meeting.enumerate` package.
+
+`NetworkCheckItemId` (check items):
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `PERMISSION` | `permission` | Network permission |
+| `CONNECTIVITY` | `connectivity` | Network connection |
+| `MTU` | `mtu` | Maximum transmission unit |
+| `DNS` | `dns` | DNS resolution |
+| `SERVER` | `server` | Server connectivity (API / signaling / media / meeting service) |
+
+`NetworkCheckStatus` (check status):
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `OK` | `ok` | Overall: everything is normal |
+| `PASS` | `pass` | Item: passed |
+| `WARNING` | `warning` | At risk but usable |
+| `FAIL` | `fail` | Failed |
+| `SKIPPED` | `skipped` | Item: no check needed |
+| `UNSUPPORTED` | `unsupported` | Item: not supported on the current device |
+
+`NetworkCheckReason` (reason codes):
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `NO_PERMISSION` | `no_permission` | Network permission not granted |
+| `CELLULAR_RESTRICTED` | `cellular_restricted` | The system restricts background or cellular data |
+| `OFFLINE` | `offline` | No network connection |
+| `MTU_TOO_SMALL` | `mtu_too_small` | 1200-byte probe packets don't get through, but the media server is reachable |
+| `UDP_BLOCKED` | `udp_blocked` | Media UDP is blocked |
+| `DNS_FAILED` | `dns_failed` | DNS resolution failed |
+| `API_UNREACHABLE` | `api_unreachable` | The check information API is unreachable (including when the server doesn't support the pre-call network check) |
+| `SERVER_INFO_UNAVAILABLE` | `server_info_unavailable` | Server check information is unavailable; checks that depend on it are `skipped` |
+| `SIGNAL_UNREACHABLE` | `signal_unreachable` | The signaling server is unreachable |
+| `VENDOR_NOT_SUPPORTED` | `vendor_not_supported` | Media checks aren't needed for the current streaming engine |
+| `MEDIA_UNAVAILABLE` | `media_unavailable` | The server has no available media node |
+| `DF_NOT_SUPPORTED` | `df_not_supported` | The system doesn't allow setting Don't Fragment, so the MTU check isn't available |
+| `MEETING_API_UNREACHABLE` | `meeting_api_unreachable` | The meeting service is unreachable |
