@@ -216,16 +216,16 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/advanced/virtual-background": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/advanced/virtual-background.md",
-    "zh_blob": "c8f50b702dcf33e07e37f4248af6a5aa2e876b93",
-    "zh_commit": "1b97b3e765838a247eabbeb6ceb1e76357926007"
+    "zh_blob": "66d30a8ace42f4fc6d7d2166035b730af4886392",
+    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/meeting/ios/api-reference/MeetingKit": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/api-reference/MeetingKit.md",
-    "zh_blob": "f21614ca8b3adc2adb9b6ece983a3ee6158b7dd4",
-    "zh_commit": "1b97b3e765838a247eabbeb6ceb1e76357926007"
+    "zh_blob": "1605ee564c52e720cd2284b85fafc9e338aa9f0a",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/meeting/ios/api-reference/MeetingKitDelegate": {
     "reviewed": true,
@@ -240,10 +240,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/api-reference/MeetingKitRoom": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/api-reference/MeetingKitRoom.md",
-    "zh_blob": "541c13bd9c2e60691f52069461aad75cfa707e01",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "2775749965f012f53af866a2477801b8af91b354",
+    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/meeting/ios/api-reference/MeetingKitRoomDelegate": {
     "reviewed": true,
@@ -252,16 +252,16 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/changelog.mdx",
-    "zh_blob": "28909a1e884708186335a7d6f185edc6d9093483",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "66267f21aec4efb49db74b80747d480c0fd41073",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/meeting/ios/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/error-codes.md",
-    "zh_blob": "70aee0d5ff200552837744bcf7c86635d408fd51",
-    "zh_commit": "f7bd646151854c2c6e8c1ec8a6fffa668c4f0677"
+    "zh_blob": "de91ec73d14e33ddf54c8308bf91382bd96afba7",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/meeting/ios/faq": {
     "reviewed": true,
@@ -270,16 +270,16 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/quickstart": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/quickstart.md",
-    "zh_blob": "7f5406c80a1b2e192ea3eeda28a71a5f86f08967",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "b36c4d0a80dc8d182d25503647f304d9bcd7a1a9",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/meeting/ios/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/types.md",
-    "zh_blob": "656efae9b25318cfc771cfee0f16a78a029871dc",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "64d230d181fe68fb5f5c3dc84869f23f379fab30",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/meeting/key-concepts": {
     "reviewed": true,
@@ -1098,22 +1098,22 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/rtc/ios/advanced/virtual-background": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/advanced/virtual-background.md",
-    "zh_blob": "39e4f7179a079c0618d1090dba98bf50d0a5e03c",
-    "zh_commit": "b8b8e7cd80eca74a01cc8a3993b00aa50b144307"
+    "zh_blob": "558bb5f4474787a0d0f8ca9c87789538cc71241e",
+    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/rtc/ios/api-reference/RTCEngineChannel": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/api-reference/RTCEngineChannel.md",
-    "zh_blob": "00f960b01c4fcaf56b6cc5f7624635e22cb76975",
-    "zh_commit": "6f354157bbe22b21a8c90045b11d059ce2b0c90f"
+    "zh_blob": "f5a5622d99cc16f7707cdbac2926d801289898e4",
+    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/rtc/ios/api-reference/RTCEngineChannelDelegate": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/api-reference/RTCEngineChannelDelegate.md",
-    "zh_blob": "3e56e35a1c8df199b22e3827f5f806976c46919e",
-    "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
+    "zh_blob": "e9f4e8ac002afb25649c800fb61d0c3e27ba350c",
+    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/rtc/ios/api-reference/RTCEngineDelegate": {
     "reviewed": true,
@@ -1122,28 +1122,28 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/rtc/ios/api-reference/RTCEngineIMDelegate": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/api-reference/RTCEngineIMDelegate.md",
-    "zh_blob": "07176e1f71ef1a7026dc85ad8ff29e7ba9bac72c",
-    "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
+    "zh_blob": "fe8f1094b95ff47b1fd3eb1825ae80d6360c4268",
+    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/rtc/ios/api-reference/RTCEngineKit": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/api-reference/RTCEngineKit.md",
-    "zh_blob": "4b12e720f5aed67496b9ddaf2aa5314e72669876",
-    "zh_commit": "d6942391ef6fe801070b1430bc67034b8d726457"
+    "zh_blob": "db433c4f3cbbe26f0364ff2a2a5e1faf1bd13135",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/rtc/ios/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/changelog.mdx",
-    "zh_blob": "3b598af0d12f3e4f89841ce60d3c87c5b1cf3971",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "27632b247deb9d09bda2b014a1a0307d054d2bbf",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/rtc/ios/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/error-codes.md",
-    "zh_blob": "ffb14361feff540a5e16750e33fb8980e6d7168f",
-    "zh_commit": "f7bd646151854c2c6e8c1ec8a6fffa668c4f0677"
+    "zh_blob": "281a6dea7b28914d396fb479590fcd4aa04577d6",
+    "zh_commit": "a0bc36240709a80d6b899bd909dc4bf9e471135b"
   },
   "en/rtc/ios/faq": {
     "reviewed": true,
@@ -1170,10 +1170,10 @@
     "zh_commit": "c0bced1c3c09c7523d2ce2f66fa4aac2814c5131"
   },
   "en/rtc/ios/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/ios/types.md",
-    "zh_blob": "26bed9ef00a09e94c384709f03664323f210defc",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "e007a19249b83115a823319b672989350f30c8ae",
+    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/rtc/key-concepts": {
     "reviewed": true,
