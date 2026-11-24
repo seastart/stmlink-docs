@@ -43,6 +43,8 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     static readonly USER_EXIT = 'user_exit';
     /** A user's camera state changed (changed by yourself/others, or by the host); data is UserCameraStateChangeEventData */
     static readonly USER_CAMREA_STATE_CHANGED = "user_camera_state_changed";
+    /** A user's extra screen-share stream (EXTRA_SCREEN) started or stopped; data is UserExtraScreenChangeEventData. For scenarios where several people publish EXTRA_SCREEN at once; receivers use it to subscribe or release */
+    static readonly USER_EXTRA_SCREEN_CHANGED = "user_extra_screen_changed";
     /** A user's mic state changed (changed by yourself/others, or by the host); data is UserMicStateChangeEventData */
     static readonly USER_MIC_STATE_CHANGED = "user_mic_state_changed";
     /** A user's display name changed (changed by yourself/others, or by the host); data is UserNameChangeEventData */
@@ -58,6 +60,8 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     static readonly ROOM_CAMREA_STATE_CHANGED = 'room_camera_state_changed';
     /** The room's mic-disabled state changed; data is RoomMicStateChangeEventData */
     static readonly ROOM_MIC_STATE_CHANGED = 'room_mic_state_changed';
+    /** The room's share-disabled state changed; data is RoomShareStateChangeEventData */
+    static readonly ROOM_SHARE_STATE_CHANGED = 'room_share_state_changed';
     /** The room's chat-disabled state changed; data is RoomChatDisabledChangeEventData */
     static readonly ROOM_CHAT_DISABLED_CHANGED = 'room_chat_disabled_changed';
     /** The room's screenshot-disabled state changed; data is RoomScreenshotDisabledChangeEventData */
@@ -87,6 +91,27 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     /** Meeting minutes finished or failed; data is AiSummaryReadyEventData (since 0.3.6) */
     static readonly AI_SUMMARY_READY = 'ai_summary_ready';
 
+    /** In-meeting sign-in; data is SignInActivityEventData */
+    static readonly SIGN_IN_ACTIVITY = 'sign_in_activity';
+    /** In-meeting sign-in ended (manually or automatically); data is SignInFinishEventData */
+    static readonly SIGN_IN_FINISH = 'sign_in_finish';
+    /** A user entered the waiting room; data is UserEnterWaitingRoomEventData */
+    static readonly USER_ENTER_WAITING_ROOM = 'user_enter_waiting_room';
+    /** A user left the waiting room; data is UserExitWaitingRoomEventData */
+    static readonly USER_EXIT_WAITING_ROOM = 'user_exit_waiting_room';
+    /** The waiting-room-disabled state changed; data is AdminUpdateWaitingRoomDisabledEventData */
+    static readonly ADMIN_UPDATE_WAITING_ROOM_DISABLED = 'admin_update_waiting_room_disabled';
+    /** The host moved you into the waiting room (sent privately to that member); no data */
+    static readonly ADMIN_MOVE_IN_WAITING_ROOM = 'admin_move_in_waiting_room';
+    /** The host started breakout groups; data is AdminStartSubMeetingEventData */
+    static readonly ADMIN_START_SUB_MEETING = 'admin_start_sub_meeting';
+    /** The host ended breakout groups; data is AdminStopSubMeetingEventData */
+    static readonly ADMIN_STOP_SUB_MEETING = 'admin_stop_sub_meeting';
+    /** A user was moved between groups, or between a group and the main meeting; data is AdminMoveSubMeetingUserEventData */
+    static readonly ADMIN_MOVE_SUB_MEETING_USER = 'admin_move_sub_meeting_user';
+    /** In-meeting roll call; data is RollCallNamedEventData */
+    static readonly ROLL_CALL_NAMED = 'roll_call_named';
+
     /** The host handled your raise-hand request; data is AdminConfirmHandupEventData */
     static readonly ADMIN_CONFIRM_HANDUP = 'admin_confirm_handup';
     /** The host asks you to unmute your mic; data is AdminRequestOpenMicEventData */
@@ -114,11 +139,264 @@ export class RoomEventType extends CommonRoomEventType {
      static readonly TRACK_MUTED = 'track_muted';
      /** Track data resumed */
      static readonly TRACK_UNMUTED = 'track_unmuted';
+     /** The active speaker list changed; data is ActiveSpeakersEventData (full snapshot, sorted by level descending). Only fired by the SeaStart SFU engine */
+     static readonly ACTIVE_SPEAKERS_CHANGED = 'active_speakers_changed';
 }
 
 ```
 
-### Data for transcription and minutes events (since 0.3.6)
+## Data of room events
+
+The `data` types of the `CommonRoomEventType` / `RoomEventType` events, grouped by purpose. For `UserInfo`, `ShareType`, `CameraState`, `MicState`, `Role`, `HandupType`, `UserHandupStep`, `ChatMsgType`, `McuTaskType`, `McuTaskStatus`, `DisconnectReason` and similar types, see [Data types](/en/meeting/web/types).
+
+### Disconnecting and leaving
+
+```typescript
+/** DISCONNECTED: you were forced out of the meeting */
+export interface DisconnectEventData {
+    /** Reason for leaving */
+    reason: DisconnectReason;
+    /** Error */
+    error?: any;
+}
+
+/** USER_EXIT: another user left the meeting */
+export interface UserExitEventData {
+    /** User id */
+    uid: string;
+    /** Reason for leaving */
+    reason: DisconnectReason;
+}
+
+/** ROOM_JOIN_FAILED: joining the room failed */
+export interface RoomJoinFailedEventData {
+    /** User id */
+    uid: string;
+    /** User nickname */
+    name: string;
+    /** Error description */
+    err_desc: string;
+    /** Failure type */
+    failed_type: string;
+}
+```
+
+### Member state
+
+```typescript
+/** USER_CAMREA_STATE_CHANGED: a user's camera state changed */
+export interface UserCameraStateChangeEventData {
+    /** User */
+    uid: string;
+    /** Camera state */
+    camera_state: CameraState;
+    /** Whether a host made the change */
+    by_admin: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** USER_EXTRA_SCREEN_CHANGED: a user's extra screen-share stream (EXTRA_SCREEN) started or stopped */
+export interface UserExtraScreenChangeEventData {
+    /** User */
+    uid: string;
+    /** Whether the stream is being published */
+    active: boolean;
+}
+
+/** USER_MIC_STATE_CHANGED: a user's mic state changed */
+export interface UserMicStateChangeEventData {
+    /** User */
+    uid: string;
+    /** Mic state */
+    mic_state: MicState;
+    /** Whether a host made the change */
+    by_admin: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** USER_NAME_CHANGED: a user's nickname changed */
+export interface UserNameChangeEventData {
+    /** User */
+    uid: string;
+    /** Nickname */
+    nickname: string;
+    /** Whether a host made the change */
+    by_admin: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** USER_ROLE_CHANGED: a user's role changed */
+export interface UserRoleChangeEventData {
+    /** User */
+    uid: string;
+    /** Role */
+    role: Role;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** USER_CHAT_DISABLED_CHANGED: a user's chat-disabled state changed */
+export interface UserChatDisabledChangeEventData {
+    /** User */
+    uid: string;
+    /** Whether chat is disabled */
+    chat_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** USER_HANDUP: raise-hand events (hosts only) */
+export interface UserHandupEventData {
+    /** User */
+    uid: string;
+    /** Raise-hand type */
+    type: HandupType;
+    /** Raise-hand step */
+    step: UserHandupStep;
+}
+
+/** ACTIVE_SPEAKERS_CHANGED: the active speaker list changed (full snapshot). Only fired by the SeaStart SFU engine */
+export interface ActiveSpeakersEventData {
+    /** Server timestamp (unix ms), for ordering and diagnostics */
+    ts: number;
+    /** Users currently speaking, sorted by level from high to low */
+    speakers: ActiveSpeakerInfo[];
+}
+
+export interface ActiveSpeakerInfo {
+    /** User id */
+    uid: string;
+    /** Audio track id; tells tracks apart when one user publishes several audio tracks */
+    trackId: string;
+    /** Current volume, normalized linear 0–1 (0 is silence, 1 is 0 dBov), quantized to steps of 1/8, so it can drive a level meter directly; for dB use 20 * Math.log10(level) */
+    level: number;
+}
+```
+
+### Meeting settings
+
+```typescript
+/** ROOM_CAMREA_STATE_CHANGED: the room's camera-disabled state changed */
+export interface RoomCameraStateChangeEventData {
+    /** Whether video is disabled in the room */
+    camera_disabled: boolean;
+    /** Whether members are prevented from turning their video back on */
+    self_unmute_camera_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_MIC_STATE_CHANGED: the room's mic-disabled state changed */
+export interface RoomMicStateChangeEventData {
+    /** Whether mics are disabled in the room */
+    mic_disabled: boolean;
+    /** Whether members are prevented from unmuting themselves */
+    self_unmute_mic_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_SHARE_STATE_CHANGED: the room's share-disabled state changed */
+export interface RoomShareStateChangeEventData {
+    /** Whether sharing is disabled in the room */
+    share_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_CHAT_DISABLED_CHANGED: the room's chat-disabled state changed */
+export interface RoomChatDisabledChangeEventData {
+    /** Whether chat is disabled in the room */
+    chat_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_SCREENSHOT_DISABLED_CHANGED: the room's screenshot-disabled state changed */
+export interface RoomScreenshotDisabledChangeEventData {
+    /** Whether screenshots are disabled in the room */
+    screenshot_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_WATERMARK_DISABLED_CHANGED: the room's watermark-disabled state changed */
+export interface RoomWatermarkDisabledChangeEventData {
+    /** Whether the watermark is disabled in the room */
+    watermark_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_LOCKED_CHANGED: the room's locked state changed */
+export interface RoomLockedChangeEventData {
+    /** Whether the room is locked */
+    locked: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+```
+
+### Sharing, messages and recording
+
+```typescript
+/** ROOM_SHARE_START: sharing started in the room */
+export interface RoomShareStartEventData {
+    /** Sharing user */
+    uid: string;
+    /** Share type */
+    share_type: ShareType;
+}
+
+/** ROOM_SHARE_STOP: sharing stopped in the room */
+export interface RoomShareStopEventData {
+    /** User who was sharing */
+    uid: string;
+    /** Share type that was in use */
+    share_type: ShareType;
+    /** Whether a host stopped it */
+    by_admin: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ROOM_CHAT_MSG: room chat message */
+export interface RoomChatMsgEventData {
+    /** Message type */
+    msg_type: ChatMsgType;
+    /** Message content */
+    msg: string;
+    /** Sender */
+    uid?: string;
+    /** Whether it is a private message */
+    private: boolean;
+}
+
+/** ROOM_CUSTOM_MSG: room custom message */
+export interface RoomCustomMsgEventData {
+    /** Message content */
+    msg: string;
+    /** Sender */
+    uid?: string;
+    /** Whether it is a private message */
+    private: boolean;
+}
+
+/** ROOM_MCU_TASK: room MCU task message */
+export interface RoomMcuTaskEventData {
+    /** Task type */
+    task_type: McuTaskType;
+    /** Task status */
+    task_status: McuTaskStatus;
+    /** Error description */
+    err_desc: string;
+}
+```
+
+### Transcription and minutes (since 0.3.6)
 
 Transcription works in two passes: while someone is speaking, several partial results with `is_final = false` arrive (low latency, may be inaccurate); when the sentence ends, one final result with `is_final = true` arrives (punctuated, more accurate). For captions, join the partial results per `uid` into a temporary "speaking" line and replace it with the final sentence when it arrives.
 
@@ -172,10 +450,132 @@ export interface AiSummaryReadyEventData {
 }
 ```
 
-### Data for the host share request event (since 0.3.7)
+### Sign-in, waiting room, breakout groups and roll call
 
 ```typescript
-/** ADMIN_REQUEST_OPEN_SHARE: the host asks you to share your screen */
+/** SIGN_IN_ACTIVITY: in-meeting sign-in */
+export interface SignInActivityEventData {
+    /** Host user id */
+    host_id: string;
+    /** Host nickname */
+    host_name: string;
+    /** Round */
+    epoch: number;
+    /** Start time */
+    begin_at: number;
+    /** Planned duration */
+    dur: number;
+    /** End time */
+    end_at: number;
+    /** Sign-in description */
+    desc: string;
+}
+
+/** SIGN_IN_FINISH: in-meeting sign-in ended (manually or automatically) */
+export interface SignInFinishEventData {
+    /** Host user id */
+    host_id: string;
+    /** Host nickname */
+    host_name: string;
+    /** Round */
+    epoch: number;
+}
+
+/** USER_ENTER_WAITING_ROOM: a user entered the waiting room */
+export interface UserEnterWaitingRoomEventData {
+    /** User id */
+    uid: string;
+    /** User nickname */
+    name: string;
+    /** User avatar */
+    avatar: string;
+}
+
+/** USER_EXIT_WAITING_ROOM: a user left the waiting room */
+export interface UserExitWaitingRoomEventData {
+    /** User id */
+    uid: string;
+    /** User nickname */
+    name: string;
+    /** User avatar */
+    avatar: string;
+}
+
+/** ADMIN_UPDATE_WAITING_ROOM_DISABLED: the waiting-room-disabled state changed */
+export interface AdminUpdateWaitingRoomDisabledEventData {
+    /** Whether the waiting room is disabled */
+    waiting_room_disabled: boolean;
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ADMIN_START_SUB_MEETING: the host started breakout groups */
+export interface AdminStartSubMeetingEventData {
+    /** Meeting id */
+    meeting_id: string;
+    /** Meeting title */
+    title: string;
+    /** User id list */
+    uids: string[];
+}
+
+/** ADMIN_STOP_SUB_MEETING: the host ended breakout groups */
+export interface AdminStopSubMeetingEventData {
+    /** Parent meeting id */
+    parent: string;
+}
+
+/** ADMIN_MOVE_SUB_MEETING_USER: a user was moved between groups, or between a group and the main meeting */
+export interface AdminMoveSubMeetingUserEventData {
+    /** Current meeting ID */
+    from_meeting_id: string;
+    /** Current meeting title */
+    from_meeting_title: string;
+    /** Target meeting ID */
+    to_meeting_id: string;
+    /** Target meeting title */
+    to_meeting_title: string;
+}
+
+/** ROLL_CALL_NAMED: in-meeting roll call */
+export interface RollCallNamedEventData {
+    /** Roll call id */
+    id: string;
+    /** User ID */
+    sid: string;
+    /** Current time */
+    time: number;
+}
+```
+
+### Host requests
+
+```typescript
+/** ADMIN_CONFIRM_HANDUP: the host handled your raise-hand request */
+export interface AdminConfirmHandupEventData {
+    /** Raise-hand type */
+    type: HandupType;
+    /** Whether it was approved */
+    approve: boolean;
+    /** Operator user id */
+    op_uid?: string;
+    /** Target user id */
+    target_id: string;
+}
+
+/** ADMIN_REQUEST_OPEN_MIC: the host asks you to unmute your mic */
+export interface AdminRequestOpenMicEventData {
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ADMIN_REQUEST_OPEN_CAMERA: the host asks you to turn on your camera */
+export interface AdminRequestOpenCameraEventData {
+    /** Operator user id */
+    op_uid?: string;
+}
+
+/** ADMIN_REQUEST_OPEN_SHARE: the host asks you to share your screen (since 0.3.7) */
 export interface AdminRequestOpenShareEventData {
     /** User id of the requesting host (may be an empty string when sent by the server); pass it back as adminUid of requestShare to accept */
     op_uid?: string;
@@ -238,5 +638,98 @@ interface ImCustomMsgEventData {
     uid: string;
     /** Sender's name */
     name: string;
+}
+```
+
+`data` of the other out-of-meeting message events:
+
+```typescript
+/** Common fields (sender) of out-of-meeting message event data */
+export interface ImBaseEventData {
+    /** Session ID */
+    sid: string;
+    /** User ID */
+    uid: string;
+    /** User name */
+    name: string;
+    /** User avatar */
+    avatar?: string;
+}
+
+/** DISCONNECTED: your out-of-meeting message connection was forcibly closed */
+export interface ImDisconnectEventData {
+    /** Disconnect reason */
+    reason: ImDisconnectReason;
+    /** Error */
+    error?: any;
+}
+
+export enum ImDisconnectReason {
+    /** Error */
+    Error = -1,
+    /** Left on your own */
+    Self = 1,
+    /** Kicked */
+    Kicked = 2,
+    /** Heartbeat timeout */
+    Timeout = 4,
+}
+
+/** CALL_CALLING: you are being called into a meeting */
+export interface ImCallCallingEventData extends ImBaseEventData {
+    content: {
+        /** Room number */
+        room_no: string;
+        /** Meeting ID */
+        meeting_id: string;
+        /** Meeting title */
+        title: string;
+        /** Whether joining is forced */
+        force_join: boolean;
+    };
+}
+
+/** MEETING_REMIND: meeting reminder */
+export interface ImMeetingRemindEventData extends ImBaseEventData {
+    content: {
+        /** Room number */
+        room_no: string;
+        /** Meeting ID */
+        meeting_id: string;
+        /** Meeting title */
+        title: string;
+        /** Creator */
+        creator_name: string;
+        /** Planned duration */
+        plan_dur: number;
+        /** Planned start time */
+        plan_time: number;
+        /** Whether joining is forced */
+        force_join: boolean;
+    };
+}
+
+/** ADMIN_MOVE_OUT_WAITING_ROOM: you were moved out of the waiting room (sent privately to that member) */
+export interface ImAdminMoveOutWaitingRoomEventData extends ImBaseEventData {
+    content: {
+        /** Main meeting ID */
+        parent: string;
+        /** Breakout meeting ID */
+        meeting_id: string;
+        /** Group name */
+        title: string;
+    };
+}
+
+/** USER_HELP_SUB_MEETING: a breakout group asks for help (sent privately to the host / co-hosts) */
+export interface ImUserHelpSubMeetingEventData extends ImBaseEventData {
+    content: {
+        /** Main meeting ID */
+        parent: string;
+        /** Breakout meeting ID */
+        meeting_id: string;
+        /** Group name */
+        title: string;
+    };
 }
 ```
