@@ -1,7 +1,19 @@
 ---
 title: "Changelog"
-description: "Release history of the C SDK (librtc), including the 0.3.0 per-instance device type setting, the 0.2.0 content-time sample writing and connection leak fixes, the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
+description: "Release history of the C SDK (librtc), including the 0.4.0 automatic log upload, the 0.3.0 per-instance device type setting, the 0.2.0 content-time sample writing and connection leak fixes, the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
 ---
+
+### [0.4.0] - 2026.11.24
+
+#### New
++ **SDK logs are uploaded to the server automatically**. After joining a channel, the SDK uploads that channel's logs (tagged with the channel name and uid) to the server-side log service in batches in the background. Technical support can look them up directly by channel and user, so troubleshooting join failures, disconnections, subscription problems and the like no longer requires collecting logs from the on-site server. On by default, uploading INFO and above; failed uploads are discarded and do not affect audio and video. Use [rtc_set_log_upload](/en/rtc/capi/api-reference/engine#rtc_set_log_upload) to turn it off or change the level
+
+#### Changes
++ Each locally printed log line now carries two extra fields, `channel=...` and `uid=...`, so logs can be told apart by channel when one process is in several channels
+
+<Note>
+Struct layouts and existing function signatures are the same as 0.3.0; only one function is added, so just replace the library and header files. If your deployment should not let the SDK reach the log service, call `rtc_set_log_upload(0, RTC_LOG_INFO)` after upgrading to turn upload off.
+</Note>
 
 ### [0.3.0] - 2026.11.24
 

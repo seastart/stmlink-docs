@@ -1,6 +1,6 @@
 ---
 title: "Instance and channel"
-description: "C SDK instance lifecycle (rtc_create / rtc_destroy and when it is safe to free callback context), joining and leaving channels, rtc_get_last_error, auto-subscribe, log level, language, and every callback registration function with its threading rules."
+description: "C SDK instance lifecycle (rtc_create / rtc_destroy and when it is safe to free callback context), joining and leaving channels, rtc_get_last_error, auto-subscribe, log level and log upload, language, and every callback registration function with its threading rules."
 ---
 
 This page covers creating and destroying SDK instances, joining and leaving channels, and every callback registration function.
@@ -22,6 +22,26 @@ Sets the global log level. It applies to the whole process; we recommend calling
 | Parameter | Description |
 | --- | --- |
 | `level` | `RTC_LOG_DEBUG`(0) / `RTC_LOG_INFO`(1) / `RTC_LOG_WARN`(2) / `RTC_LOG_ERROR`(3); any other value is treated as `INFO` |
+
+It only affects local output (printed to stderr) and is independent of log upload below.
+
+### rtc_set_log_upload
+
+```c
+void rtc_set_log_upload(int enable, int level);
+```
+
+Sets whether SDK logs are uploaded to the server (since 0.4.0). It applies to the whole process. Upload is on by default and covers `RTC_LOG_INFO` and above.
+
+When enabled, each time the instance joins a channel, the SDK uploads that channel's logs (tagged with the channel name and uid) to the server-side log service in batches in the background. Technical support can then look them up by channel and user, so you no longer need to collect logs from the on-site server when troubleshooting. Failed uploads are discarded without retry and do not affect audio and video.
+
+| Parameter | Description |
+| --- | --- |
+| `enable` | Non-zero to upload, 0 to stop uploading |
+| `level` | Upload level, same values as `rtc_set_log_level`; any other value is treated as `INFO` |
+
+- The switch only applies to channels joined afterwards; the level takes effect immediately, including for instances already in a channel
+- If the deployment has no log service or it is unreachable, the SDK prints one upload-failure warning per minute locally; call `rtc_set_log_upload(0, RTC_LOG_INFO)` to turn upload off
 
 ---
 

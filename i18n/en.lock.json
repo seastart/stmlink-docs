@@ -1028,8 +1028,8 @@
   "en/rtc/capi/api-reference/engine": {
     "reviewed": false,
     "source": "zh/rtc/capi/api-reference/engine.md",
-    "zh_blob": "815273e7e8586d6e59ffcd6cd9e483aaaf098356",
-    "zh_commit": "4c801ab3d0ae40df2b6543e1ae040ff2c15b1c6f"
+    "zh_blob": "9042eb9ea50c4f750d5afee1e52918645e750189",
+    "zh_commit": "99aff7e8d082636c2d185b8d950c7ec30575484d"
   },
   "en/rtc/capi/api-reference/publish": {
     "reviewed": false,
@@ -1052,8 +1052,8 @@
   "en/rtc/capi/changelog": {
     "reviewed": false,
     "source": "zh/rtc/capi/changelog.mdx",
-    "zh_blob": "e5d38527d4e3014f7ebadbfa305acebff103c3e3",
-    "zh_commit": "4c801ab3d0ae40df2b6543e1ae040ff2c15b1c6f"
+    "zh_blob": "93b7ca944e8816ff8c798d8be4a84f8ea10eb420",
+    "zh_commit": "99aff7e8d082636c2d185b8d950c7ec30575484d"
   },
   "en/rtc/capi/error-codes": {
     "reviewed": false,
