@@ -277,6 +277,10 @@ Pauses/resumes publishing the local audio stream to this channel.
 | enabled | YES: turn audio on; NO: turn audio off |
 | --- | --- |
 
+**Return value**
+
+Returns `RTCEngineErrorMicNoAuthorized` without microphone permission (since `3.2.0`; previously `RTCEngineErrorDeviceNoAuthorized`).
+
 
 ### setAudioPriorityWithUserId:enabled:()
 `- (RTCEngineError)setAudioPriorityWithUserId:(NSString *)userId enabled:(BOOL)enabled`
@@ -395,6 +399,8 @@ Starts a custom stream.
 
 This API must specify basic stream information such as the track, resolution, and bitrate to publish. Only tracks declared through this API can publish custom streams via `publishCustomStreamWithStreamData:`; when your app finishes publishing the custom stream, call `stopCustomStreamWithTrackId:` to close the corresponding track.
 
+Tracks `0`–`2` don't support custom streams; passing one returns `RTCEngineErrorInvalidArgs` (since `3.2.0`; previously `RTCEngineErrorForbidden`).
+
 **Parameters**
 
 | streamTrackModel | Stream information; see [RTCEngineStreamTrackModel](/en/rtc/ios/types#rtcenginestreamtrackmodel) |
@@ -405,6 +411,8 @@ This API must specify basic stream information such as the track, resolution, an
 `- (RTCEngineError)stopCustomStreamWithTrackId:(RTCTrackIdentifierFlags)trackId`
 
 Stops a custom stream.
+
+Tracks `0`–`2` don't support custom streams; passing one returns `RTCEngineErrorInvalidArgs` (since `3.2.0`; previously `RTCEngineErrorForbidden`).
 
 **Parameters**
 
@@ -418,6 +426,8 @@ Stops a custom stream.
 Publishes custom stream data.
 
 Use this API to push custom stream data to the track ID declared in `startCustomStreamWithStreamTrackModel:`.
+
+Tracks `0`–`2` don't support custom streams; passing one returns `RTCEngineErrorInvalidArgs` (since `3.2.0`; previously `RTCEngineErrorForbidden`).
 
 **Parameters**
 

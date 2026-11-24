@@ -1,15 +1,97 @@
 ---
 title: "Error codes"
-description: "The SEAError enum of the iOS SMeeting SDK (Objective-C): every case with its value and meaning, covering server API errors passed through (1xxx, 2xxx, 10xxx) and SDK system, common, network, and client errors (100xxx, 103xxx). Read when handling or troubleshooting an error code."
+description: "The SEAError enum of the iOS SMeeting SDK (Objective-C): since 2.2.0, meeting-layer client errors are 203xxx (same codes and meanings as the Swift SDK), RTC layer errors are passed through as 103xxx, and backend business codes (1000–99999) are passed through as is. Read when handling or troubleshooting an error code or upgrading from 2.1.x."
 ---
 
+`SEAError` is the `code` of the failure callback `SEAFailedBlock`, and also the type of `errCode` in callbacks such as `onError` and `onImDisconnected`. `0` (`SEAErrorOK`) means success; anything non-zero is an error.
+
+<Note>
+The values on this page apply since **2.2.0**. Since 2.2.0, the meeting layer's own errors use the `203` range, and the RTC layer error codes passed through were renumbered along with `RTCEngineKit 3.2.0`. For the mapping between old codes (2.1.0 and earlier) and new ones, see the [Changelog](/en/meeting/ios/changelog). For the numbering rules shared by all platforms, see [Error code format and unified table](/en/meeting/error-codes).
+</Note>
+
+### Value rules
+
+| Category | Values | Source | `message` |
+| --- | --- | --- | --- |
+| Backend business codes | `1000`–`99999` | Returned by the backend and passed through by the SDK as is | The `msg` returned by the backend; language follows `language` |
+| Meeting-layer client codes | `203xxx` | Produced by MeetingKit itself: iOS prefix `203` + low 3 digits of the unified table, with the same codes and meanings as the Swift SDK | English |
+| RTC layer codes passed through | `103xxx` | Produced by RTCEngineKit, with the same values as `RTCEngineError`; the meeting layer doesn't rewrap them | English, including the RTC code |
+
++ **Branch on `code` only**. Don't branch on `message`, and don't show `message` directly to end users; map `code` to your own user-facing prompts
++ The meeting layer and the RTC layer have two separate low-3-digit tables: `203004` (unauthorized) and `103004` (invalid token) mean different things, so compare the full 6-digit code
++ The pre-call network check `networkCheck:onItem:completion:` (since `2.3.0`) passes through RTC layer codes: `SEAErrorConflict` (`103005`) when a check is already running, `SEAErrorInvalidArgs` (`103031`) for invalid parameters or an undecodable token, and `SEAErrorUserCancelled` (`103026`) when cancelled. Only when not logged in and no parameters are passed does it return the meeting-layer `SEAErrorMeetingNotLoggedIn` (`203001`)
++ `language` only affects the `Accept-Language` sent with meeting-layer requests to the backend, i.e. the language of backend business code messages; see [MeetingKit.language](/en/meeting/ios/api-reference/MeetingKit#language). Since `2.2.1`, it also applies to the RTC layer, so the `message` of backend business codes passed through from the RTC layer is also the server-side message
+
 ### SEAError
-Error codes
+
+#### Meeting-layer client error codes
 
 | **Enum name** | **Value** | **Description** |
 | --- | :---: | --- |
 | SEAErrorOK | `0` | No error |
-| **API errors** | | |
+| SEAErrorMeetingNotLoggedIn | `203001` | Not logged in to the meeting SDK. Since `2.3.0`, returned by the pre-call network check `networkCheck:onItem:completion:` when not logged in and no parameters are passed |
+| SEAErrorMeetingTokenExpired | `203002` | Token has expired (not produced on this platform yet; kept for consistency with other platforms) |
+| SEAErrorMeetingNotInMeeting | `203003` | Not in a meeting (not produced on this platform yet; kept for consistency with other platforms) |
+| SEAErrorMeetingUnauthorized | `203004` | Unauthorized, e.g. the API can only be called by the host or a co-host |
+| SEAErrorNotAuthorized | `203004` | Deprecated; same-value alias of `SEAErrorMeetingUnauthorized` (old value `103005`) |
+| SEAErrorMeetingTokenInvalid | `203005` | Invalid token format; the meeting token can't be decoded |
+| SEAErrorMeetingAlreadyInMeeting | `203006` | Already in a meeting; exit first (the room instance is joining or has joined) |
+| SEAErrorMeetingNetworkError | `203007` | Network error: can't connect, non-200 HTTP, etc.; the HTTP status is in `message` |
+| SEAErrorMeetingDeviceError | `203008` | Device error (reserved; capture and permission failures pass through RTC layer codes) |
+| SEAErrorMeetingInternalError | `203009` | SDK internal error, e.g. failed to write a downloaded file to disk |
+| SEAErrorMeetingUserNotFound | `203010` | The user isn't in the meeting (not produced on this platform yet; kept for consistency with other platforms) |
+| SEAErrorMeetingInvalidState | `203011` | The current state doesn't allow the operation, e.g. the room instance has been destroyed |
+| SEAErrorMeetingInvalidArgument | `203012` | Invalid argument (not produced on this platform yet; kept for consistency with other platforms) |
+| SEAErrorMeetingRemoteTrackUnavailable | `203209` | Remote track unavailable: the user is in the meeting but doesn't have the video stream to subscribe to |
+| SEAErrorMeetingRequestTimeout | `203353` | Request timed out |
+| SEAErrorMeetingRequestCancelled | `203354` | Request was cancelled |
+| SEAErrorMeetingEmptyResponseBody | `203355` | Empty response body |
+| SEAErrorMeetingResponseParseFailed | `203356` | Failed to parse the response: not a JSON object, missing the `code` field, or unexpected structure |
+
+<Warning>
+`SEAErrorNotAuthorized` and `SEAErrorMediaNotInitialized` are deprecated and have the same values as `SEAErrorMeetingUnauthorized` and `SEAErrorNotInitialized` respectively. Writing a pair of same-value constants in a `switch` causes a duplicate `case` error; referencing a deprecated constant produces a deprecation warning, and projects with `-Werror` enabled fail to compile, so use the new names.
+</Warning>
+
+#### RTC layer error codes passed through
+
+Values are the same as `RTCEngineError` in `RTCEngineKit`; see [SRTC iOS error codes](/en/rtc/ios/error-codes). Values in parentheses are the old values in 2.1.0 and earlier.
+
+| **Enum name** | **Value** | **Description** |
+| --- | :---: | --- |
+| SEAErrorNotJoinedChannel | `103001` | Not in a channel (old `103002`) |
+| SEAErrorStreamNotFound | `103003` | Stream doesn't exist (old `103004`) |
+| SEAErrorSdkTokenInvalid | `103004` | Invalid token (old `100008`) |
+| SEAErrorConflict | `103005` | Conflict from a repeated operation (old `100007`) |
+| SEAErrorNetError | `103006` | RTC layer network error, including non-200 HTTP (old `100009`). Meeting-layer network failures no longer use this code; see `203007` |
+| SEAErrorTimeout | `103007` | Timed out (old `100005`) |
+| SEAErrorProtocolParsingError | `103011` | Protocol parsing error (old `100004`) |
+| SEAErrorMediaNetError | `103012` | Media network error (old `100010`) |
+| SEAErrorNotInitialized | `103024` | Not initialized / the current state doesn't allow it (old `100002`) |
+| SEAErrorMediaNotInitialized | `103024` | Deprecated; same-value alias of `SEAErrorNotInitialized` (old `100003`) |
+| SEAErrorSystemError | `103025` | Internal system error (old `100001`) |
+| SEAErrorUserCancelled | `103026` | Cancelled by the user (old `100012`) |
+| SEAErrorVirtualBackgroundAlreadyInstalled | `103027` | Virtual background is already installed (returned as `100007` in old versions) |
+| SEAErrorVirtualBackgroundNotInstalled | `103028` | Virtual background isn't installed (returned as `100007` in old versions) |
+| SEAErrorVirtualBackgroundModelNotFound | `103029` | Virtual background model doesn't exist or is invalid (returned as `100011` in old versions) |
+| SEAErrorVirtualBackgroundSessionFailed | `103030` | Failed to create the virtual background inference session (returned as `100001` in old versions) |
+| SEAErrorInvalidArgs | `103031` | Invalid arguments (old `100006`) |
+| SEAErrorDeviceNoAuthorized | `103042` | No device access permission, used when camera and microphone can't be told apart (old `103001`); no longer returned, `103231` / `103251` are reported instead |
+| SEAErrorForbidden | `103043` | Operation not allowed (old `103003`) |
+| SEAErrorSwitchAudioRouteFail | `103044` | Failed to switch the audio route (old `103005`) |
+| SEAErrorNotFound | `103204` | The user isn't in the channel (old `100011`) |
+| SEAErrorCameraNoAuthorized | `103231` | No camera permission (returned as `103001` in old versions) |
+| SEAErrorMicNoAuthorized | `103251` | No microphone permission (returned as `103001` in old versions) |
+
+#### Backend business codes
+
+Returned by the backend and passed through by the SDK as is; `message` is the `msg` returned by the backend, in the language set by `language`. For the complete list and meanings, see [Server API error codes](/en/meeting/server-api/error-codes).
+
+<Note>
+Since 2.2.0, the SDK no longer produces codes such as `SEAErrorApiTokenDisabled` (`10042`) or `SEAErrorApiRepeatFound` (`10003`) to indicate local errors; these constants appear only when the backend actually returns those codes.
+</Note>
+
+| **Enum name** | **Value** | **Description** |
+| --- | :---: | --- |
 | SEAErrorRtcApiHeaderNotAppId | `1001` | Missing APPID in request headers |
 | SEAErrorRtcApiHeaderInvalidAppId | `1002` | Invalid APPID in request headers |
 | SEAErrorRtcApiHeaderInvalidSignature | `1003` | Invalid signature in request headers |
@@ -77,25 +159,3 @@ Error codes
 | SEAErrorApiNetworkFailed | `10051` | Network error |
 | SEAErrorApiNetworkTimeout | `10055` | Request timed out |
 | SEAErrorApiInvalidParameter | `10070` | Invalid request parameters |
-| **System errors** | | |
-| SEAErrorSystemError | `100001` | Internal system error |
-| SEAErrorNotInitialized | `100002` | Not initialized |
-| SEAErrorMediaNotInitialized | `100003` | The media module isn't initialized yet |
-| SEAErrorProtocolParsingError | `100004` | Protocol parsing error |
-| **Common errors** | | |
-| SEAErrorTimeout | `100005` | Timed out |
-| SEAErrorInvalidArgs | `100006` | Invalid arguments |
-| SEAErrorConflict | `100007` | Conflict from a repeated operation |
-| SEAErrorSdkTokenInvalid | `100008` | The SDK token is invalid |
-| **Network errors** | | |
-| SEAErrorNetError | `100009` | Network error |
-| SEAErrorMediaNetError | `100010` | Media network error |
-| SEAErrorNotFound | `100011` | Target doesn't exist |
-| **Client errors** | | |
-| SEAErrorDeviceNoAuthorized | `103001` | No permission to access the device |
-| SEAErrorNotJoinedChannel | `103002` | Not in the channel |
-| SEAErrorForbidden | `103003` | Operation not allowed |
-| SEAErrorStreamNotFound | `103004` | Stream doesn't exist |
-| SEAErrorNotAuthorized | `103005` | No permission to perform the operation |
-
-

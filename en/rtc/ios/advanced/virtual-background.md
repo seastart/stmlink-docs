@@ -30,9 +30,13 @@ Return values:
 | **Return value** | **Description** |
 | --- | --- |
 | RTCEngineErrorOK | Installed successfully |
-| RTCEngineErrorConflict | The component is already installed; this call is discarded |
-| RTCEngineErrorNotFound | The model file doesn't exist; check `modelPath` |
-| RTCEngineErrorSystemError | Failed to create the inference session; this is a runtime environment issue |
+| RTCEngineErrorVirtualBackgroundAlreadyInstalled (`103027`) | The component is already installed; this call is discarded |
+| RTCEngineErrorVirtualBackgroundModelNotFound (`103029`) | The model file doesn't exist or is invalid; check `modelPath` |
+| RTCEngineErrorVirtualBackgroundSessionFailed (`103030`) | Failed to create the inference session; this is a runtime environment issue |
+
+<Note>
+These dedicated error codes are returned since `3.2.0`. In `3.1.x`, the three cases returned `RTCEngineErrorConflict`, `RTCEngineErrorNotFound`, and `RTCEngineErrorSystemError` respectively; rewrite the corresponding branches when upgrading. See the [Changelog](/en/rtc/ios/changelog).
+</Note>
 
 ### Step 2: **Set the background effect**
 
@@ -61,7 +65,7 @@ After installing, it's **off** by default and must be turned on explicitly. When
 BOOL enabled = [[RTCEngineKit sharedEngine] isVirtualBackgroundEnabled];
 ```
 
-Calling the switch when the component isn't installed returns `RTCEngineErrorConflict`. Turning it off clears the inter-frame state, so the next time it's turned on it converges again from the first frame and doesn't flash a stale mask.
+Calling the switch when the component isn't installed returns `RTCEngineErrorVirtualBackgroundNotInstalled` (`103028`; `RTCEngineErrorConflict` in `3.1.x`). Turning it off clears the inter-frame state, so the next time it's turned on it converges again from the first frame and doesn't flash a stale mask.
 
 ### Step 4: **Keep frame rate on low-end devices (optional)**
 

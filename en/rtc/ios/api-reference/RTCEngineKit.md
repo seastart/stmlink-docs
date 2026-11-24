@@ -71,6 +71,42 @@ It first destroys all live channel instances and waits for them to finish leavin
 
 Gets the RTCEngineKit version.
 
+### language
+`@property (class, nonatomic, copy, nullable) NSString *language`
+
+SDK language (since `3.2.1`; class property)
+
+A BCP 47 language tag such as `@"zh-CN"` or `@"en"` (forms like `zh_CN` are normalized to `zh-CN`). `nil` or an empty string means following the system language (`[NSLocale preferredLanguages].firstObject`).
+
++ Only affects the `Accept-Language` request header sent to the backend: the backend returns business error messages in that language; see [lastServerErrorMessage](#lastservererrormessage)
++ Error codes and logs produced by the SDK itself don't change with the language
++ Applies process-wide, can be set at any time, and takes effect for subsequent requests; we recommend setting it before joining a channel or enabling IM
+
+```objectivec
+RTCEngineKit.language = @"en";
+```
+
+### currentLanguage
+`@property (class, nonatomic, copy, readonly) NSString *currentLanguage`
+
+The language actually in effect (since `3.2.1`; read-only class property)
+
+Priority: `language` if set; otherwise the system's preferred language; `@"zh"` if that can't be obtained.
+
+### lastServerErrorMessage
+`@property (class, nonatomic, copy, readonly, nullable) NSString *lastServerErrorMessage`
+
+The server-side message of the most recent backend business error (since `3.2.1`; read-only class property)
+
+APIs such as `joinChannelWithToken:` and `enableImWithToken:delegate:` only return an error code. When the return value is a backend business code in `1000`–`99999`, read this property **immediately** to get the message returned by the server, in the language set by [language](#language). It's `nil` when the most recent call didn't end with a backend business error.
+
+```objectivec
+RTCEngineError code = [channel joinChannelWithToken:token];
+if (code >= 1000 && code <= 99999) {
+    NSString *message = RTCEngineKit.lastServerErrorMessage; // e.g. "该会话不在线" / "Session is not online"
+}
+```
+
 ### decrypt:()
 `+ (nullable NSString *)decrypt:(nullable NSString *)value`
 
@@ -150,16 +186,24 @@ Starting with `2.5.7`, if the camera specified by `frontCamera` can't create an 
 | --- | --- |
 | view | The view that displays the video |
 
+**Return value**
+
+Returns `RTCEngineErrorCameraNoAuthorized` without camera permission (since `3.2.0`; previously `RTCEngineErrorDeviceNoAuthorized`).
+
 
 ### updateLocalView:()
 `- (RTCEngineError)updateLocalView:(VIEW_CLASS *)view`
 
 Updates the local camera preview view.
 
+Returns `RTCEngineErrorCameraNoAuthorized` without camera permission (since `3.2.0`; previously `RTCEngineErrorDeviceNoAuthorized`).
+
 ### stopLocalPreview()
 `- (RTCEngineError)stopLocalPreview`
 
 Stops the camera preview.
+
+Returns `RTCEngineErrorCameraNoAuthorized` without camera permission (since `3.2.0`; previously `RTCEngineErrorDeviceNoAuthorized`).
 
 ### switchCamera()
 `- (RTCEngineError)switchCamera`
@@ -167,6 +211,8 @@ Stops the camera preview.
 Switches the camera.
 
 The SDK switches only if the target camera can create an input. If the target camera is unavailable, it keeps the current actual capture device and doesn't switch to an invalid input.
+
+Returns `RTCEngineErrorNotInitialized` if called while camera capture isn't on (since `3.2.0`; previously `RTCEngineErrorForbidden`).
 
 ### setLocalPreviewMirror:()
 `- (RTCEngineError)setLocalPreviewMirror:(BOOL)mirror`
@@ -553,9 +599,9 @@ Before using background blur or background replacement, call this method to load
 
 | RTCEngineErrorOK | Installed successfully |
 | --- | --- |
-| RTCEngineErrorConflict | The component is already installed; this call is discarded |
-| RTCEngineErrorNotFound | The model file doesn't exist |
-| RTCEngineErrorSystemError | Failed to create the inference session |
+| RTCEngineErrorVirtualBackgroundAlreadyInstalled | The component is already installed; this call is discarded (since `3.2.0`; previously `RTCEngineErrorConflict`) |
+| RTCEngineErrorVirtualBackgroundModelNotFound | The model file doesn't exist or is invalid (since `3.2.0`; previously `RTCEngineErrorNotFound`) |
+| RTCEngineErrorVirtualBackgroundSessionFailed | Failed to create the inference session (since `3.2.0`; previously `RTCEngineErrorSystemError`) |
 
 
 ### uninstallVirtualBackground()
@@ -570,7 +616,7 @@ When you no longer use virtual background, call this method to release the infer
 
 Turns virtual background on or off.
 
-Returns `RTCEngineErrorConflict` if called when the component isn't installed. When off, it's a zero-overhead pass-through that runs no inference, and the inter-frame state is cleared, so the next time it's turned on it converges again from the first frame.
+Returns `RTCEngineErrorVirtualBackgroundNotInstalled` if called when the component isn't installed (since `3.2.0`; previously `RTCEngineErrorConflict`). When off, it's a zero-overhead pass-through that runs no inference, and the inter-frame state is cleared, so the next time it's turned on it converges again from the first frame.
 
 **Parameters**
 

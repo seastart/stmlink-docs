@@ -19,6 +19,99 @@ description: "Release history of the iOS SMeeting SDK (Objective-C MeetingKit) f
 This release only adds APIs; existing APIs and behavior are unchanged. The RTC API check in `server` requires server-side support for the pre-call network check; if the server hasn't been upgraded, the RTC `api` subcheck is `fail`, and other items are unaffected.
 </Note>
 
+### [2.2.1] - 2026.10.08
+
+#### Changed
++ **`language` also sets the RTC layer**: setting `MeetingKit.language` also sets `RTCEngineKit.language`, so meeting-layer and RTC layer requests to the backend use the same `Accept-Language`. The 2.2.0 limitation that "RTC layer requests don't carry a language yet" is lifted.
++ **Backend business codes passed through from the RTC layer carry the server-side message**: when the RTC layer returns a backend business code in `1000`–`99999`, the error description now uses the message returned by the server (language follows `language`); previously it was the generic `Server rejected the request`.
++ The `RTCEngineKit` dependency is upgraded to `3.2.1`, and the podspec minimum is raised from `>= 3.2.0` to `>= 3.2.1`.
+
+<Note>
+No public APIs were removed or changed, so 2.2.0 integrations need no code changes. If your project explicitly pins `RTCEngineKit 3.2.0`, MeetingKit still runs, but RTC layer requests carry no language; we recommend upgrading to `3.2.1` as well.
+</Note>
+
+### [2.2.0] - 2026.10.08
+<Warning>
+**This release has breaking changes. Read this whole section before upgrading**: errors produced by the meeting layer itself now use `203`-range error codes (same codes and meanings as the Swift SDK), RTC layer error codes passed through are renumbered along with `RTCEngineKit 3.2.0`, and error messages are now in English. Any code that branches on the **numeric value** of `SEAError`, on old constants such as `SEAErrorNetError`, or on the Chinese text of `message` needs to be adjusted. The one place to check first: **meeting-layer network failures no longer return `SEAErrorNetError`**, so a "network error" prompt written as `code == SEAErrorNetError` will stop working entirely after the upgrade.
+</Warning>
+
+#### Must read before upgrading
++ **Meeting-layer errors use the 203 range**: errors produced by the meeting layer itself are now the iOS prefix `203` + low 3 digits of the unified table (`203001`–`203012`, `203209`, `203353`–`203356`), with the same codes and meanings as the Swift SDK. For the meaning of each code, see [Error codes](/en/meeting/ios/error-codes) and [Error code format and unified table](/en/meeting/error-codes).
++ **Meeting-layer network failures no longer return `SEAErrorNetError` (`100009`)**: request failures / non-200 HTTP now return `SEAErrorMeetingNetworkError` (`203007`); timeouts `203353`; cancellations `203354`; an empty response body `203355`; a response that isn't JSON or lacks the `code` field `203356`. The value of the `SEAErrorNetError` constant also changed to `103006`, and it now only means an RTC layer network error.
++ **Backend business failures pass through the backend business code**: previously, when the backend rejected a request, the callback always returned `100009`; now it returns the backend's business code as is (e.g. `2101` meeting doesn't exist, `2115` wrong password), with `message` set to the backend's `msg`, in the language set by `language`.
++ **Meeting token decoding failure**: when the token passed to `loginWithToken:...` can't be decoded, the code changes from `SEAErrorApiTokenDisabled` (`10042`) to `SEAErrorMeetingTokenInvalid` (`203005`).
++ **Entering twice / destroyed instance**: calling `enterRoom:onSuccess:onFailed:` while joining or already joined changes from `SEAErrorApiRepeatFound` (`10003`) to `SEAErrorMeetingAlreadyInMeeting` (`203006`); when the room instance has been destroyed, it changes to `SEAErrorMeetingInvalidState` (`203011`).
++ **APIs that only the host / co-host can call**: when called by a non-admin, the code changes from `SEAErrorNotAuthorized` (`103005`) to `SEAErrorMeetingUnauthorized` (`203004`).
++ **Device permissions**: `SEAErrorDeviceNoAuthorized` no longer occurs; missing camera permission now returns `SEAErrorCameraNoAuthorized` (`103231`), and missing microphone permission returns `SEAErrorMicNoAuthorized` (`103251`).
++ **RTC layer codes renumbered**: RTC layer error codes passed through (formerly `100001`–`100012`, `103001`–`103005`) are now `103` + low 3 digits of the unified table along with `RTCEngineKit 3.2.0`, with the same values as `RTCEngineError`. Enum names are unchanged but values changed, so you need to recompile. Note that old numbers are **reused for other meanings** in the new table (e.g. `103005` is now `SEAErrorConflict` and `103001` is now `SEAErrorNotJoinedChannel`), so checks hardcoded with numeric literals will be misaligned across the board. The `errCode` of `onError` and `onImDisconnected` is affected in the same way.
++ **`startRemoteView:streamType:view:` / `stopRemoteView:streamType:`**: when the user is in the meeting but doesn't have the video stream to subscribe to, the return value changes from the RTC layer's `RTCEngineErrorStreamNotFound` (`103004`) to `SEAErrorMeetingRemoteTrackUnavailable` (`203209`).
++ **Virtual background return values**: for `installVirtualBackground:`, installing twice changes from `SEAErrorConflict` to `SEAErrorVirtualBackgroundAlreadyInstalled` (`103027`), a missing model file from `SEAErrorNotFound` to `SEAErrorVirtualBackgroundModelNotFound` (`103029`), and inference session creation failure from `SEAErrorSystemError` to `SEAErrorVirtualBackgroundSessionFailed` (`103030`); calling `enabledVirtualBackground:` before installation changes from `SEAErrorConflict` to `SEAErrorVirtualBackgroundNotInstalled` (`103028`).
++ **Error messages are now in English**: `message`s produced by the SDK itself are always in English (those passed through from the RTC layer include the RTC code) and are meant only for developers and logs. For prompts to end users, map `code` yourself; don't show `message` directly.
+
+#### Added
++ `MeetingKit` adds the `language` property (a BCP 47 language tag such as `@"zh-CN"` or `@"en"`; `nil` or an empty string means following the system) and the read-only `currentLanguage`. Priority: **developer setting > system's preferred language > `zh`**. Meeting-layer requests to the backend carry `Accept-Language`, so backend business error messages (`1000`–`99999`) come back in Chinese or English; the SDK's own errors are always in English and unaffected. It applies process-wide and isn't reset by login / logout; we recommend setting it before login.
++ `SEAError` adds the meeting-layer error codes `SEAErrorMeetingXxx` (`203xxx`) and the new RTC layer codes `SEAErrorUserCancelled`, `SEAErrorVirtualBackgroundXxx`, `SEAErrorSwitchAudioRouteFail`, `SEAErrorCameraNoAuthorized`, and `SEAErrorMicNoAuthorized`.
+
+#### Changed
++ `SEAErrorNotAuthorized` is deprecated and is now a same-value alias of `SEAErrorMeetingUnauthorized` (`203004`); `SEAErrorMediaNotInitialized` is deprecated and is now a same-value alias of `SEAErrorNotInitialized` (`103024`). **Writing a pair of same-value constants in a `switch` causes a duplicate `case` error**; referencing a deprecated constant produces a deprecation warning, and projects with `-Werror` (or `Treat Warnings as Errors`) enabled fail to compile, so use the new names.
++ `language` doesn't apply to the RTC layer yet: `RTCEngineKit 3.2.0` doesn't provide a language setting, so the RTC layer's own requests carry no `Accept-Language`.
++ The `RTCEngineKit` dependency is upgraded to `3.2.0`, and the podspec minimum is raised from `>= 3.1.0` to `>= 3.2.0`.
+
+#### Fixed
++ Fixed a crash when the `code` field of a backend response is `null` (or an object or array); it now calls back with `203356` (response parse failure).
+
+#### Old code → new code mapping
+Errors produced by the meeting layer itself:
+
+| Scenario | 2.1.0 and earlier | 2.2.0 |
+| --- | --- | --- |
+| Meeting request failed (can't connect, non-200 HTTP, etc.) | `100009` `SEAErrorNetError` | `203007` `SEAErrorMeetingNetworkError` |
+| Meeting request timed out | `100009` | `203353` `SEAErrorMeetingRequestTimeout` |
+| Meeting request cancelled | `100009` | `203354` `SEAErrorMeetingRequestCancelled` |
+| Empty response body | `100009` | `203355` `SEAErrorMeetingEmptyResponseBody` |
+| Response isn't JSON / lacks the `code` field / `code` is `null` | `100009` (crashed when `code` was `null`) | `203356` `SEAErrorMeetingResponseParseFailed` |
+| Backend business failure | `100009` | The backend's original business code (e.g. `2101`, `2115`) |
+| Meeting token can't be decoded | `10042` `SEAErrorApiTokenDisabled` | `203005` `SEAErrorMeetingTokenInvalid` |
+| `enterRoom:` called again (joining / already joined) | `10003` `SEAErrorApiRepeatFound` | `203006` `SEAErrorMeetingAlreadyInMeeting` |
+| `enterRoom:` called after the room instance was destroyed | `10003` `SEAErrorApiRepeatFound` | `203011` `SEAErrorMeetingInvalidState` |
+| Admin API called by a non-host / non-co-host | `103005` `SEAErrorNotAuthorized` | `203004` `SEAErrorMeetingUnauthorized` |
+| `signInExportDetail:` download failed | `100011` `SEAErrorNotFound` | `203007` / `203353` / `203354` / `203009` depending on the cause; the backend code when the backend rejects it |
+| `startRemoteView:` / `stopRemoteView:` when the user doesn't have this video stream | `103004` `RTCEngineErrorStreamNotFound` | `203209` `SEAErrorMeetingRemoteTrackUnavailable` |
+
+RTC layer errors passed through (enum names unchanged; values are the same as `RTCEngineError` in `RTCEngineKit 3.2.0`):
+
+| Enum | 2.1.0 and earlier | 2.2.0 |
+| --- | --- | --- |
+| SEAErrorNotJoinedChannel | `103002` | `103001` |
+| SEAErrorStreamNotFound | `103004` | `103003` |
+| SEAErrorSdkTokenInvalid | `100008` | `103004` |
+| SEAErrorConflict | `100007` | `103005` |
+| SEAErrorNetError | `100009` | `103006` |
+| SEAErrorTimeout | `100005` | `103007` |
+| SEAErrorProtocolParsingError | `100004` | `103011` |
+| SEAErrorMediaNetError | `100010` | `103012` |
+| SEAErrorNotInitialized | `100002` | `103024` |
+| SEAErrorMediaNotInitialized (deprecated) | `100003` | `103024` |
+| SEAErrorSystemError | `100001` | `103025` |
+| SEAErrorUserCancelled (new) | `100012` | `103026` |
+| SEAErrorVirtualBackgroundAlreadyInstalled (new) | `100007` | `103027` |
+| SEAErrorVirtualBackgroundNotInstalled (new) | `100007` | `103028` |
+| SEAErrorVirtualBackgroundModelNotFound (new) | `100011` | `103029` |
+| SEAErrorVirtualBackgroundSessionFailed (new) | `100001` | `103030` |
+| SEAErrorInvalidArgs | `100006` | `103031` |
+| SEAErrorDeviceNoAuthorized | `103001` | `103042` (no longer returned) |
+| SEAErrorForbidden | `103003` | `103043` |
+| SEAErrorSwitchAudioRouteFail (new) | `103005` | `103044` |
+| SEAErrorNotFound | `100011` | `103204` |
+| SEAErrorCameraNoAuthorized (new) | `103001` | `103231` |
+| SEAErrorMicNoAuthorized (new) | `103001` | `103251` |
+
+Backend business codes (`1000`–`99999`, including `SEAErrorApiXxx`, `SEAErrorMeetingApiXxx`, `SEAErrorRtcApiXxx`) keep their values and are still passed through as is; their messages now come back in Chinese or English according to `language`.
+
+<Note>
+No existing public APIs or callback signatures of `MeetingKit` and `MeetingKitRoom` were removed or changed, and the platform minimum is unchanged (iOS 16.0). What you need to check is **code that judges errors by numeric value, by old constant semantics, or by Chinese message text**, as well as any `switch` that contains a pair of same-value constants.
+</Note>
+
 ### [2.1.0] - 2026.09.08
 #### Added
 + `MeetingKit` adds virtual background: `installVirtualBackground:`, `uninstallVirtualBackground`, `enabledVirtualBackground:`, `setVirtualBackgroundBlur:`, `setVirtualBackgroundImage:`, `setVirtualBackgroundInferenceInterval:`, `setVirtualBackgroundMaskSync:`, and `isVirtualBackgroundEnabled`. It performs person segmentation and then blurs or replaces the background, and **installing it doesn't require a license key**.

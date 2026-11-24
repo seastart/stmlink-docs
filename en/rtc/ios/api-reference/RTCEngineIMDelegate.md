@@ -45,8 +45,8 @@ When the reason is anything other than `RTCImDisconnectReasonError`, the connect
 
 | reason | Disconnect reason |
 | --- | --- |
-| errCode | Error code |
-| errMsg | Error message |
+| errCode | Error code: SDK local errors are `103xxx`; backend business codes (`1000`–`99999`) are passed through as is. See [Error codes](/en/rtc/ios/error-codes) |
+| errMsg | Error message from the backend, for logging only; branch on `errCode` |
 
 
 ## Message callbacks

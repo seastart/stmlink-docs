@@ -30,9 +30,9 @@ Return values:
 | **Return value** | **Description** |
 | --- | --- |
 | SEAErrorOK | Installed successfully |
-| SEAErrorConflict | The component is already installed; this call is discarded |
-| SEAErrorNotFound | The model file doesn't exist; check `modelPath` |
-| SEAErrorSystemError | Failed to create the inference session; this is a runtime environment problem |
+| SEAErrorVirtualBackgroundAlreadyInstalled | The component is already installed; this call is discarded (`103027`; `SEAErrorConflict` before `2.2.0`) |
+| SEAErrorVirtualBackgroundModelNotFound | The model file doesn't exist or is invalid; check `modelPath` (`103029`; `SEAErrorNotFound` before `2.2.0`) |
+| SEAErrorVirtualBackgroundSessionFailed | Failed to create the inference session; this is a runtime environment problem (`103030`; `SEAErrorSystemError` before `2.2.0`) |
 
 ### Step 2: **Set the background effect**
 
@@ -61,7 +61,7 @@ After installation, it's **off** by default and must be turned on explicitly. Wh
 BOOL enabled = [[MeetingKit sharedInstance] isVirtualBackgroundEnabled];
 ```
 
-Calling the switch before the component is installed returns `SEAErrorConflict`. Turning it off clears the inter-frame state, so the next time it's turned on it converges again from the first frame and doesn't flash a stale mask.
+Calling the switch before the component is installed returns `SEAErrorVirtualBackgroundNotInstalled` (`103028`; `SEAErrorConflict` before `2.2.0`). Turning it off clears the inter-frame state, so the next time it's turned on it converges again from the first frame and doesn't flash a stale mask.
 
 ### Step 4: **Keep the frame rate up on low-end devices (optional)**
 

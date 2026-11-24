@@ -22,6 +22,29 @@ Creates the MeetingKit instance (singleton).
 
 Gets the MeetingKit version number.
 
+### language
+`@property (nonatomic, copy, nullable) NSString *language`
+
+SDK language (since `2.2.0`)
+
+A BCP 47 language tag such as `@"zh-CN"` or `@"en"` (forms like `zh_CN` are normalized to `zh-CN`). `nil` or an empty string means following the system language (`[NSLocale preferredLanguages].firstObject`).
+
++ Only affects the `Accept-Language` request header sent to the backend: the backend returns business error messages in that language (the `message` of backend codes `1000`–`99999`)
++ Error `message`s produced by the SDK itself are always in English and don't change with the language
++ Applies process-wide and isn't reset by login / logout; we recommend setting it before login
++ Since `2.2.1`, it also sets the underlying [RTCEngineKit.language](/en/rtc/ios/api-reference/RTCEngineKit#language), so the meeting layer and the RTC layer use the same language; in `2.2.0`, RTC layer requests carry no language
+
+```objectivec
+[MeetingKit sharedInstance].language = @"en";
+```
+
+### currentLanguage
+`@property (nonatomic, copy, readonly) NSString *currentLanguage`
+
+The language actually in effect (since `2.2.0`; read-only)
+
+Priority: `language` if set; otherwise the system's preferred language; `@"zh"` if that can't be obtained.
+
 ### addDelegate:()
 `- (void)addDelegate:(id <MeetingKitDelegate>)delegate`
 
@@ -406,9 +429,9 @@ We recommend calling it before entering the room and turning on the camera. Afte
 | Return value | Description |
 | :--- | --- |
 | SEAErrorOK | Installed successfully |
-| SEAErrorConflict | The component is already installed; this call is discarded |
-| SEAErrorNotFound | The model file doesn't exist; check `modelPath` |
-| SEAErrorSystemError | Failed to create the inference session; this is a runtime environment problem |
+| SEAErrorVirtualBackgroundAlreadyInstalled | The component is already installed; this call is discarded (`103027`; `SEAErrorConflict` before `2.2.0`) |
+| SEAErrorVirtualBackgroundModelNotFound | The model file doesn't exist or is invalid; check `modelPath` (`103029`; `SEAErrorNotFound` before `2.2.0`) |
+| SEAErrorVirtualBackgroundSessionFailed | Failed to create the inference session; this is a runtime environment problem (`103030`; `SEAErrorSystemError` before `2.2.0`) |
 
 
 ### uninstallVirtualBackground()
@@ -423,7 +446,7 @@ Releases the inference session and related buffers.
 
 Virtual background switch.
 
-After installation, it's off by default and must be turned on explicitly. When off, frames pass straight through with zero overhead, and no inference runs. Calling it before the component is installed returns `SEAErrorConflict`.
+After installation, it's off by default and must be turned on explicitly. When off, frames pass straight through with zero overhead, and no inference runs. Calling it before the component is installed returns `SEAErrorVirtualBackgroundNotInstalled` (`103028`; `SEAErrorConflict` before `2.2.0`).
 
 | Parameter | Description |
 | :--- | --- |

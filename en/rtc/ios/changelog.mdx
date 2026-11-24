@@ -15,6 +15,75 @@ description: "iOS (Objective-C) SRTC SDK (RTCEngineKit) release history: fixes, 
 The API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, `server` is `fail` (`api_unreachable`), and `mtu` and the signaling and media checks are `skipped`; other items are unaffected. This release only adds APIs; existing APIs and behavior are unchanged.
 </Note>
 
+### [3.2.1] - 2026.10.08
+
+#### Added
++ **SDK language**: added the class property `RTCEngineKit.language` (a BCP 47 language tag such as `@"zh-CN"` or `@"en"`; `nil` or an empty string = follow the system's preferred language) and the read-only `RTCEngineKit.currentLanguage` (`language` if set; otherwise the system's preferred language; `@"zh"` if that can't be obtained). RTC requests to the backend carry the corresponding `Accept-Language`, so backend business error messages (`1000`–`99999`) come back in Chinese or English; the SDK's own error codes are unaffected. In 3.2.0 and earlier, RTC layer requests carried no language.
++ **Backend business error messages**: added the class property `RTCEngineKit.lastServerErrorMessage`. APIs such as `joinChannelWithToken:` and `enableImWithToken:delegate:` only return an error code; when the return value is a backend business code in `1000`–`99999`, read this property **immediately** to get the message returned by the server (language follows `language`). It's `nil` when the most recent call didn't end with a backend business error.
+
+#### Changed
++ The underlying librtc was upgraded. **The SDK's public error code values are unchanged** (still `103` + low 3 digits), so you don't need to change your error handling code.
+
+<Note>
+Public APIs are only added, with nothing removed or changed, so 3.2.0 integrations can upgrade without code changes. `language` is a process-wide setting; we recommend setting it before joining a channel or enabling IM:
+
+```objectivec
+RTCEngineKit.language = @"en";
+```
+</Note>
+
+### [3.2.0] - 2026.10.08
+<Warning>
+**This release has breaking changes. Read this whole section before upgrading**: `RTCEngineError` has been renumbered according to the [cross-platform unified table](/en/rtc/error-codes) (version 2) as "iOS prefix `103` + low 3 digits". **All enum names are kept but their values changed**, so your project must be **recompiled** with the 3.2.0 headers. Any code that hardcodes error code numbers (e.g. `100008`, `103001`), or stores / reports error codes and compares them by number, needs to be adjusted. Code that branches on enum names only needs recompiling, except for the cases below where "a different enum is now returned", whose branches you must change.
+</Warning>
+
+#### Changed
++ **All error codes renumbered**: full code = `103` + the low 3 digits of the unified table, e.g. `RTCEngineErrorNetError` changed from `100009` to `103006` (`006` = connection failed). `0` still means success; `103000`–`103999` are SDK local errors; `1000`–`99999` are backend business codes, passed through with unchanged values. See "Old code → new code mapping" below for the full mapping;
++ **Missing permission split into camera and microphone codes**: without camera permission, `startLocalPreview:view:`, `updateLocalView:`, and `stopLocalPreview` return the new `RTCEngineErrorCameraNoAuthorized` (`103231`); without microphone permission, `enabledSendAudio:` returns the new `RTCEngineErrorMicNoAuthorized` (`103251`). `RTCEngineErrorDeviceNoAuthorized` is kept as a definition (its value changed to `103042`), but **the SDK no longer returns it**. Code that checks `RTCEngineErrorDeviceNoAuthorized` for missing permission still compiles, but **will never match again**; check the two new enums above instead;
++ **Virtual background returns specific reasons**: added `RTCEngineErrorVirtualBackgroundAlreadyInstalled` (`103027`, installed twice), `RTCEngineErrorVirtualBackgroundNotInstalled` (`103028`, `enabledVirtualBackground:` called before installation), `RTCEngineErrorVirtualBackgroundModelNotFound` (`103029`, the model file doesn't exist or is invalid), and `RTCEngineErrorVirtualBackgroundSessionFailed` (`103030`, failed to create the inference session). These four cases previously returned `RTCEngineErrorConflict`, `RTCEngineErrorConflict`, `RTCEngineErrorNotFound`, and `RTCEngineErrorSystemError` respectively; rewrite branches that check the old enums. See [Virtual background](/en/rtc/ios/advanced/virtual-background);
++ **Passing track `0`–`2` for a custom stream** (`startCustomStreamWithStreamTrackModel:`, `stopCustomStreamWithTrackId:`, `publishCustomStreamWithStreamData:…`) now returns `RTCEngineErrorInvalidArgs` (`103031`) instead of `RTCEngineErrorForbidden`;
++ **Calling `switchCamera` while camera capture isn't on** now returns `RTCEngineErrorNotInitialized` (`103024`) instead of `RTCEngineErrorForbidden`. From now on, `RTCEngineErrorForbidden` (`103043`) only means the current identity / role isn't allowed to perform the operation;
++ **Unified conversion of underlying status codes**: status codes returned by the SDK's internal librtc in `1`–`999` get the `103` prefix before being exposed, and backend business codes in `1000`–`99999` are passed through as is. Return values, block callbacks, and delegate callbacks follow the same rules, and the `errCode` of `engineChannel:onDisconnected:errCode:errMsg:` and `onImDisconnected:errCode:errMsg:` is converted the same way. `errMsg` comes from the backend and is for logging only; branch on `errCode`;
++ **`RTCEngineErrorMediaNotInitialized` is marked deprecated** and has the same value `103024` as `RTCEngineErrorNotInitialized`. Writing both in a `switch` fails to compile with a duplicate `case`; in projects with `-Werror` enabled (or with `-Wdeprecated-declarations` treated as an error), any reference to it fails to compile because of the deprecation warning, so use `RTCEngineErrorNotInitialized` throughout.
+
+#### Old code → new code mapping
+
+| Enum | 3.1.2 and earlier | 3.2.0 | Unified table name |
+| --- | :---: | :---: | --- |
+| RTCEngineErrorOK | `0` | `0` | |
+| RTCEngineErrorNotJoinedChannel | `103002` | `103001` | NotInChannel |
+| RTCEngineErrorStreamNotFound | `103004` | `103003` | TrackNotFound |
+| RTCEngineErrorSdkTokenInvalid | `100008` | `103004` | TokenInvalid |
+| RTCEngineErrorConflict | `100007` | `103005` | AlreadyJoined |
+| RTCEngineErrorNetError | `100009` | `103006` | ConnectionFailed |
+| RTCEngineErrorTimeout | `100005` | `103007` | ConnectionTimeout |
+| RTCEngineErrorProtocolParsingError | `100004` | `103011` | MessageDecodeFailed |
+| RTCEngineErrorMediaNetError | `100010` | `103012` | WebrtcError |
+| RTCEngineErrorNotInitialized | `100002` | `103024` | InvalidState |
+| RTCEngineErrorMediaNotInitialized (deprecated) | `100003` | `103024` | InvalidState |
+| RTCEngineErrorSystemError | `100001` | `103025` | InternalError |
+| RTCEngineErrorUserCancelled | `100012` | `103026` | Cancelled |
+| RTCEngineErrorVirtualBackgroundAlreadyInstalled (new) | Previously returned `100007` | `103027` | VirtualBackgroundAlreadyInstalled |
+| RTCEngineErrorVirtualBackgroundNotInstalled (new) | Previously returned `100007` | `103028` | VirtualBackgroundNotInstalled |
+| RTCEngineErrorVirtualBackgroundModelNotFound (new) | Previously returned `100011` | `103029` | VirtualBackgroundModelNotFound |
+| RTCEngineErrorVirtualBackgroundSessionFailed (new) | Previously returned `100001` | `103030` | VirtualBackgroundSessionFailed |
+| RTCEngineErrorInvalidArgs | `100006` | `103031` | InvalidArgument |
+| RTCEngineErrorDeviceNoAuthorized (no longer returned by the SDK) | `103001` | `103042` | PermissionDenied |
+| RTCEngineErrorForbidden | `103003` | `103043` | Forbidden |
+| RTCEngineErrorSwitchAudioRouteFail | `103005` | `103044` | AudioRouteSwitchFailed |
+| RTCEngineErrorNotFound | `100011` | `103204` | UserNotFound |
+| RTCEngineErrorCameraNoAuthorized (new) | Previously returned `103001` | `103231` | CameraPermissionDenied |
+| RTCEngineErrorMicNoAuthorized (new) | Previously returned `103001` | `103251` | MicPermissionDenied |
+
+Backend business codes (`1000`–`99999`) get no prefix and keep their values. For the meaning and suggested handling of each code, see [Error codes](/en/rtc/ios/error-codes).
+
+#### Known limitations
++ The RTC layer doesn't support the `language` setting yet: requests to the backend carry no `Accept-Language`, so the language of backend business error `errMsg` follows the backend default. This will be available after the underlying library is upgraded (provided in 3.2.1).
+
+<Note>
+Apart from the values of `RTCEngineError` and the new enums above, public APIs and callback signatures are unchanged, and the minimum system requirement is still iOS 16.0. Upgrade steps: update the Pod to `3.2.0` and recompile → search globally for hardcoded `100001`–`100012` and `103001`–`103005` values and replace them with enums → change checks on `RTCEngineErrorDeviceNoAuthorized` to `RTCEngineErrorCameraNoAuthorized` / `RTCEngineErrorMicNoAuthorized` → rewrite the return-value branches for virtual background, custom streams, and `switchCamera` → remove references to `RTCEngineErrorMediaNotInitialized`.
+</Note>
+
 ### [3.1.2] - 2026.09.14
 #### Fixed
 + Fixed the [onRemoteMemberAudioStatus:](/en/rtc/ios/api-reference/RTCEngineChannelDelegate#enginechannelonremotememberaudiostatus) callback attributing the speaking user to the wrong person with Wangsu media streaming: on this path the server doesn't send the connection ID, so `linkId` in [RTCStreamAudioModel](/en/rtc/ios/types#rtcstreamaudiomodel) is always `0`. Looking up the user by it used to hit the first match in the list, so when you did voice activation, the highlighted user was often not the one actually speaking. The SDK now resolves the user ID from the underlying connection and only falls back to the old `linkId` lookup when that fails;

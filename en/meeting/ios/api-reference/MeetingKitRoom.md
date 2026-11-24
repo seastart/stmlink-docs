@@ -363,7 +363,7 @@ Supported since `2.0.0`. On iOS, the camera is a single shared piece of hardware
 
 
 ### startRemoteView:streamType:view:()
-`- (void)startRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType view:(VIEW_CLASS *)view`
+`- (RTCEngineError)startRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType view:(VIEW_CLASS *)view`
 
 Starts playing a remote user's video.
 
@@ -375,9 +375,17 @@ Starts playing a remote user's video and binds the video rendering resources.
 | streamType | Video stream type; see [SEAVideoStreamType](/en/meeting/ios/types#seavideostreamtype) |
 | view | Video rendering view |
 
+| Return value | Description |
+| :--- | --- |
+| RTCEngineErrorOK | Call succeeded |
+| SEAErrorMeetingRemoteTrackUnavailable | The user is in the meeting but doesn't have this video stream (`203209`; the RTC layer's `RTCEngineErrorStreamNotFound` before `2.2.0`). You can subscribe again after the user's video status changes |
+| Others | Error codes passed through from the RTC layer; see [Error codes](/en/meeting/ios/error-codes) |
+
+The return type is `RTCEngineError`, and `203209` isn't in that enum, so cast to `SEAError` to compare: `(SEAError)ret == SEAErrorMeetingRemoteTrackUnavailable`.
+
 
 ### stopRemoteView:streamType:()
-`- (void)stopRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType`
+`- (RTCEngineError)stopRemoteView:(NSString *)userId streamType:(SEAVideoStreamType)streamType`
 
 Stops playing a remote user's video.
 
@@ -387,6 +395,12 @@ Stops playing a remote user's video and releases the video rendering resources.
 | :--- | --- |
 | userId | Remote user ID |
 | streamType | Video stream type; see [SEAVideoStreamType](/en/meeting/ios/types#seavideostreamtype) |
+
+| Return value | Description |
+| :--- | --- |
+| RTCEngineErrorOK | Call succeeded |
+| SEAErrorMeetingRemoteTrackUnavailable | The user doesn't have this video stream (`203209`; the RTC layer's `RTCEngineErrorStreamNotFound` before `2.2.0`); the SDK has already unsubscribed when the track was removed |
+| Others | Error codes passed through from the RTC layer; see [Error codes](/en/meeting/ios/error-codes) |
 
 
 ### stopAllRemoteViewWithUserId:()
