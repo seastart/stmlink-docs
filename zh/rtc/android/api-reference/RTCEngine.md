@@ -276,6 +276,38 @@ fun setAudioCaptureProcessor(processor: AudioCaptureProcessor?)
 参数说明：`processor`，实现 [`AudioCaptureProcessor`](/zh/rtc/android/types#audiocaptureprocessor) 的处理器，如 AI 降噪插件的 `DeepFilterNetProcessor`，见 [AI 降噪](/zh/rtc/android/advanced/deepfilternet)。  
 返回值说明：无（`Unit`）。
 
+## 会前网络检测
+
+### networkCheck(options, listener)
+
+```kotlin
+fun networkCheck(options: NetworkCheckOptions, listener: RTCNetworkCheckListener)
+```
+
+方法说明：会前网络检测，自 2.0.40 起提供。按 `permission`（网络权限）→ `connectivity`（网络连接）→ `mtu` → `dns`（域名解析）→ `server`（接口 / 信令 / 媒体服务器）固定顺序逐项检测，每完成一项回调 `onItem`，最后回调 `onComplete`。入会前调用，`create()` 之后即可使用，不需要 `initSDK()`、也不需要入会；回调都在主线程。同一时刻只允许一个检测。  
+参数说明：
+- `options`：[`NetworkCheckOptions`](/zh/rtc/android/types#networkcheckoptions)，提供服务器信息（`appId` + `serverUrl`，或一个可解出二者的 `token`）与单项超时。
+- `listener`：`RTCNetworkCheckListener`，检测回调：
+  - `onItem(item: NetworkCheckItem)`：每完成一项回调一次。
+  - `onComplete(result: NetworkCheckResult)`：全部检测完成。
+  - `onFail(code: Int, message: String)`：检测未能完成，`code` 为 `ALREADY_JOINED`（已有检测在进行）、`INVALID_ARGUMENT`（缺少 `appId` / `serverUrl` 且 `token` 解不出）或 `CANCELLED`（被取消），见 [错误码](/zh/rtc/android/error-codes)。与 `onComplete` 二者只回调其一。
+
+返回值说明：无（`Unit`）。
+
+<Note>
+`server` 中的接口检测需要服务端支持会前网络检测；服务端未升级时该项为 `fail`（`api_unreachable`），`mtu` 与信令、媒体检测记 `skipped`，不影响其它项。
+</Note>
+
+### cancelNetworkCheck()
+
+```kotlin
+fun cancelNetworkCheck()
+```
+
+方法说明：取消正在进行的网络检测，被取消的检测回调 `onFail(CANCELLED)`；没有检测在进行时无操作。自 2.0.40 起提供。  
+参数说明：无。  
+返回值说明：无（`Unit`）。
+
 ## 媒体质量
 
 ### getMetric()

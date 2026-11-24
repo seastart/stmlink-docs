@@ -5,6 +5,16 @@ description: "Android SRTC 音视频 SDK 版本更新记录"
 
 > 本页根据 `rtc-android` 仓库的版本配置和提交记录整理。可通过 `RTCEngine.version()` 获取运行中的实际 SDK 版本。
 
+### [2.0.40] - 2026.11.24
+
+#### 新增
+
++ 新增会前网络检测 `RTCEngine.networkCheck` 与 `cancelNetworkCheck`：入会前即可调用，依次检测网络权限、网络连接、MTU、域名解析和服务器连接五项，逐项回调结果，见 [RTCEngine](/zh/rtc/android/api-reference/RTCEngine#networkcheck-options-listener) 与 [类型定义](/zh/rtc/android/types#networkcheckoptions)。
+
+#### 修复
+
++ 修复部分情况下订阅远端画面后一直不出画面的问题。
+
 ### [2.0.39] - 2026.11.16
 
 #### 新增
