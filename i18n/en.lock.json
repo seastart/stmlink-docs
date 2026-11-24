@@ -1226,8 +1226,8 @@
   "en/rtc/python/changelog": {
     "reviewed": false,
     "source": "zh/rtc/python/changelog.mdx",
-    "zh_blob": "406037a5ae57dddad93b3cb8c8e21a29b83eb941",
-    "zh_commit": "7436b2a12f27b5b1d867b8ae6ee0dc95dda4578e"
+    "zh_blob": "0778357faea02b91aab0a29382b7f1038df42f23",
+    "zh_commit": "5cc4ec34898e3757080903d98fe3df21b108a613"
   },
   "en/rtc/python/error-codes": {
     "reviewed": false,

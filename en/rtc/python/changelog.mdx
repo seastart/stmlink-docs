@@ -3,6 +3,26 @@ title: "Changelog"
 description: "Release history of the SRTC Python SDK (PyPI package srtc): what each version added or changed, and whether you can upgrade directly. Read before upgrading."
 ---
 
+### [0.2.4] - 2026.11.24
+The bundled C library is upgraded to 0.4.0. **No API changes, so you can upgrade directly.**
+
+#### New
++ **SDK logs are uploaded to the server automatically**: after joining a channel, the SDK's internal (C library) logs are tagged with the channel name and uid and uploaded to the server-side log service in batches in the background. Technical support can look them up directly by channel and user, so troubleshooting join failures, disconnections, subscription problems and the like no longer requires collecting logs from the server. On by default, uploading INFO and above; failed uploads are discarded and do not affect sending or receiving audio and video. Logs you write yourself through Python `logging` are not uploaded
+
+#### Changes
++ Each log line the C library prints to stderr now carries two extra fields, `channel=...` and `uid=...`, so logs can be told apart by channel when one process is in several channels
+
+### [0.2.3] - 2026.11.21
+The bundled C library is upgraded to 0.2.0. **No API changes, so you can upgrade directly.**
+
+#### Fixes
++ **Network connections leaked when joining or reconnecting failed**: when the media connection couldn't be established while joining (for example, the media node was at capacity or the connection timed out), or a reconnect after a disconnection failed, the connections already created were not closed. Each failure left behind UDP ports and memory, piling up in long-running services. Everything is now released on failure, and a failed join also tells the server to leave, so it no longer occupies a concurrency slot until the heartbeat times out
++ **No notification after the media connection failed to reconnect**: when the media connection dropped and reconnecting finally failed, `on_disconnected` wasn't fired, so the program thought it was still in the channel while it could no longer send or receive audio and video. The SDK now leaves the channel and fires `on_disconnected(ERROR, error)`; you can rejoin with a new token as described in [Handling disconnects](/en/rtc/python/api-reference/events#handling-disconnects)
++ **Remote audio occasionally stalled for about 4 seconds, then burst in**: when the sender lost one audio packet on the uplink, the receiver used to pause for about 4 seconds and then get the backlog all at once, noticeably affecting speech recognition and recording. Packet loss now only skips that frame, with no stall
++ **No data after resubscribing once the network recovered**: if an unsubscribe request didn't reach the server because of a network problem, subscribing to the same track again reported success but `on_audio_frame` / `on_video_frame` never arrived. The SDK now sends the missing unsubscribe first and then subscribes again
++ **Unsubscribing and then subscribing to the same track at the same moment didn't take effect**: the two operations used to cancel each other out. They are now executed in order
++ **Couldn't resubscribe after a subscription timed out**: you can now retry directly after a timeout
+
 ### [0.2.2] - 2026.11.05
 The bundled C library is upgraded to 0.1.2. **No API changes, so you can upgrade directly.**
 
