@@ -30,6 +30,9 @@ https://<your-domain>/meeting/server/v1/...        Meeting service (creating mee
 https://<your-domain>/meeting/stm/srvapi/v1/...    User system (sync, grants)
 ```
 
+Both groups use the same signature authentication; see [Server API overview](/en/meeting/server-api/overview). For the full fields and return values of the user-system endpoints, see
+[User sync](/en/meeting/server-api/member). This page covers only what the integration needs.
+
 <Note>
 In a standard deployment, the meeting service sits under the `/meeting/` gateway prefix. **Don't leave this prefix out**—the root path `/server/v1/...` on the same domain goes to the SRTC audio and video service, and requests sent there won't find the meeting endpoints.
 

@@ -524,8 +524,8 @@
   "en/meeting/ui-sdk/server-integration": {
     "reviewed": false,
     "source": "zh/meeting/ui-sdk/server-integration.md",
-    "zh_blob": "60719215f2b3175336878e668c86699050b5e06f",
-    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+    "zh_blob": "dec80492f893ff6d33a195a8ebf7a40e16fb01a4",
+    "zh_commit": "722396ce962bf41e3fcaa806706161ac0c0b838d"
   },
   "en/meeting/ui-sdk/web": {
     "reviewed": true,
