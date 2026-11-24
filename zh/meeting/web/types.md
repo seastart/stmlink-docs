@@ -425,6 +425,8 @@ export interface RoomInfo {
     co_hosts: string[];
     /** 自定义扩展，json串表示的键值对 */
     extend_info: string;
+    /** 会议转写（字幕）是否开启；旧版服务端无此字段（0.3.6 起） */
+    asr_enabled?: boolean;
 }
 ```
 
@@ -881,3 +883,99 @@ export enum McuTaskStatus {
 }
 ```
 
+
+#### 会议转写与纪要（0.3.6 起）
+`aiSummary()` 返回 `MeetingAiSummary[]`，`aiTranscript()` 返回 `MeetingAiTranscript[]`。中途关闭再开启转写会产生多场，两者的场次划分一致。
+```typescript
+/** 纪要状态 */
+export enum AiSummaryStatus {
+    /** 排队中 */
+    Queued = 0,
+    /** 生成中 */
+    Generating = 1,
+    /** 已完成 */
+    Done = 2,
+    /** 失败 */
+    Failed = 3,
+}
+
+/** 会议纪要（一场转写对应一份） */
+export interface AiSummary {
+    /** 纪要id */
+    summary_id: string;
+    /** 转写场次id */
+    session_id: string;
+    /** 纪要模板id */
+    template_id: string;
+    /** 纪要状态 */
+    status: AiSummaryStatus;
+    /** 纪要正文，Markdown 格式 */
+    content: string;
+    /** 生成所用模型 */
+    model: string;
+    /** 失败原因（状态为失败时）；重新生成失败时 content 仍保留上一次成功的内容 */
+    error: string;
+    /** 完成时间，unix时间戳(秒) */
+    finished_at: number;
+    /** 创建时间，unix时间戳(秒) */
+    created_at: number;
+    /** 最后变更时间，unix时间戳(秒) */
+    updated_at: number;
+}
+
+/** 会议的一场转写及其纪要 */
+export interface MeetingAiSummary {
+    /** 转写场次id */
+    session_id: string;
+    /** 转写开始时间，unix时间戳(秒) */
+    started_at: number;
+    /** 转写结束时间，unix时间戳(秒)，进行中为0 */
+    ended_at: number;
+    /** 场次状态，1转写中, 2已结束 */
+    status: number;
+    /** 转写句子数 */
+    sentence_count: number;
+    /** 纪要状态，-1未生成, 其余同 AiSummaryStatus */
+    summary_status: number;
+    /** 最新纪要，尚未生成时为 null */
+    summary: AiSummary | null;
+}
+
+/** 转写的一句定稿原文 */
+export interface AsrSentence {
+    /** 句子id，与 ASR_TRANSLATION 事件的 sentence_id 对应 */
+    sentence_id: string;
+    /** 转写场次id */
+    session_id: string;
+    /** 说话人用户id */
+    uid: string;
+    /** 说话人会中昵称 */
+    name: string;
+    /** 原文 */
+    sentence: string;
+    /** 句首时刻，相对场次开始(started_at)的毫秒 */
+    begin_ms: number;
+    /** 句尾时刻，相对场次开始(started_at)的毫秒 */
+    end_ms: number;
+    /** 译文，未开启实时翻译时为空 */
+    trans_text: string;
+    /** 译文语言，如 en */
+    trans_lang: string;
+    /** 产生时间，unix时间戳(秒) */
+    created_at: number;
+}
+
+/** 会议的一场转写及其原文 */
+export interface MeetingAiTranscript {
+    /** 转写场次id */
+    session_id: string;
+    /** 转写开始时间，unix时间戳(秒) */
+    started_at: number;
+    /** 转写结束时间，unix时间戳(秒)，进行中为0 */
+    ended_at: number;
+    /** 场次状态，1转写中, 2已结束 */
+    status: number;
+    /** 定稿句子，按 begin_ms 升序 */
+    sentences: AsrSentence[];
+}
+```

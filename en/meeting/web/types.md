@@ -425,6 +425,8 @@ export interface RoomInfo {
     co_hosts: string[];
     /** Custom extension, key-value pairs as a JSON string */
     extend_info: string;
+    /** Whether meeting transcription (captions) is on; absent on older servers (since 0.3.6) */
+    asr_enabled?: boolean;
 }
 ```
 
@@ -881,3 +883,99 @@ export enum McuTaskStatus {
 }
 ```
 
+
+#### Meeting transcription and minutes (since 0.3.6)
+`aiSummary()` returns `MeetingAiSummary[]` and `aiTranscript()` returns `MeetingAiTranscript[]`. Turning transcription off and on again during a meeting creates multiple sessions; both methods split sessions the same way.
+```typescript
+/** Minutes status */
+export enum AiSummaryStatus {
+    /** Queued */
+    Queued = 0,
+    /** Generating */
+    Generating = 1,
+    /** Done */
+    Done = 2,
+    /** Failed */
+    Failed = 3,
+}
+
+/** Meeting minutes (one per transcription session) */
+export interface AiSummary {
+    /** Minutes id */
+    summary_id: string;
+    /** Transcription session id */
+    session_id: string;
+    /** Minutes template id */
+    template_id: string;
+    /** Minutes status */
+    status: AiSummaryStatus;
+    /** Minutes body, in Markdown */
+    content: string;
+    /** Model used to generate it */
+    model: string;
+    /** Failure reason (when failed); if regeneration fails, content keeps the last successful result */
+    error: string;
+    /** Finished time, unix timestamp (seconds) */
+    finished_at: number;
+    /** Created time, unix timestamp (seconds) */
+    created_at: number;
+    /** Last updated time, unix timestamp (seconds) */
+    updated_at: number;
+}
+
+/** One transcription session of a meeting and its minutes */
+export interface MeetingAiSummary {
+    /** Transcription session id */
+    session_id: string;
+    /** Transcription start time, unix timestamp (seconds) */
+    started_at: number;
+    /** Transcription end time, unix timestamp (seconds); 0 while in progress */
+    ended_at: number;
+    /** Session status: 1 transcribing, 2 ended */
+    status: number;
+    /** Number of transcribed sentences */
+    sentence_count: number;
+    /** Minutes status: -1 not generated, otherwise same as AiSummaryStatus */
+    summary_status: number;
+    /** Latest minutes; null if not generated yet */
+    summary: AiSummary | null;
+}
+
+/** One finalized transcribed sentence */
+export interface AsrSentence {
+    /** Sentence id, matches sentence_id in the ASR_TRANSLATION event */
+    sentence_id: string;
+    /** Transcription session id */
+    session_id: string;
+    /** Speaker user id */
+    uid: string;
+    /** Speaker's in-meeting nickname */
+    name: string;
+    /** Original text */
+    sentence: string;
+    /** Sentence start, in ms relative to the session start (started_at) */
+    begin_ms: number;
+    /** Sentence end, in ms relative to the session start (started_at) */
+    end_ms: number;
+    /** Translation; empty when live translation is off */
+    trans_text: string;
+    /** Translation language, e.g. en */
+    trans_lang: string;
+    /** Created time, unix timestamp (seconds) */
+    created_at: number;
+}
+
+/** One transcription session of a meeting and its transcript */
+export interface MeetingAiTranscript {
+    /** Transcription session id */
+    session_id: string;
+    /** Transcription start time, unix timestamp (seconds) */
+    started_at: number;
+    /** Transcription end time, unix timestamp (seconds); 0 while in progress */
+    ended_at: number;
+    /** Session status: 1 transcribing, 2 ended */
+    status: number;
+    /** Finalized sentences, sorted by begin_ms */
+    sentences: AsrSentence[];
+}
+```

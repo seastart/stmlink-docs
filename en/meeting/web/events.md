@@ -118,6 +118,70 @@ export class RoomEventType extends CommonRoomEventType {
 
 ```
 
+### Data for transcription and minutes events (since 0.3.6)
+
+Transcription works in two passes: while someone is speaking, several partial results with `is_final = false` arrive (low latency, may be inaccurate); when the sentence ends, one final result with `is_final = true` arrives (punctuated, more accurate). For captions, join the partial results per `uid` into a temporary "speaking" line and replace it with the final sentence when it arrives.
+
+```typescript
+/** ROOM_ASR_STATE_CHANGED: meeting transcription (captions) turned on or off */
+export interface RoomAsrStateChangeEventData {
+    /** Whether it is on */
+    enabled: boolean;
+    /** Error description when turning on failed */
+    err_desc: string;
+}
+
+/** ASR_RESULT: transcription result (caption text) */
+export interface AsrResultEventData {
+    /** Speaker user id */
+    uid: string;
+    /** Speaker nickname */
+    name: string;
+    /** Text: a partial result when not final, the full sentence when final */
+    text: string;
+    /** Whether this is the final sentence */
+    is_final: boolean;
+    /** Raw recognition mode, e.g. 2pass-online / 2pass-offline */
+    mode: string;
+}
+
+/** ASR_TRANSLATION: translated caption (live translation), only for final sentences; arrives after the matching ASR_RESULT */
+export interface AsrTranslationEventData {
+    /** Transcription session id */
+    session_id: string;
+    /** Sentence id */
+    sentence_id: string;
+    /** Speaker user id */
+    uid: string;
+    /** Speaker nickname */
+    name: string;
+    /** Original text */
+    text: string;
+    /** Translated text */
+    trans_text: string;
+    /** Translation language, e.g. en / zh */
+    lang: string;
+}
+
+/** AI_SUMMARY_READY: meeting minutes finished or failed; get the content with aiSummary() */
+export interface AiSummaryReadyEventData {
+    /** Transcription session id */
+    session_id: string;
+    /** Minutes status: 2 done, 3 failed */
+    status: number;
+}
+```
+
+### Data for the host share request event (since 0.3.7)
+
+```typescript
+/** ADMIN_REQUEST_OPEN_SHARE: the host asks you to share your screen */
+export interface AdminRequestOpenShareEventData {
+    /** User id of the requesting host (may be an empty string when sent by the server); pass it back as adminUid of requestShare to accept */
+    op_uid?: string;
+}
+```
+
 ## Out-of-meeting message events
 
 After enabling out-of-meeting messages with `smeeting.enableIm()`, listen for them via `smeeting.onNotifyImEvent`:

@@ -118,6 +118,70 @@ export class RoomEventType extends CommonRoomEventType {
 
 ```
 
+### 转写与纪要事件的 data（0.3.6 起）
+
+转写结果为两遍模式：说话过程中先陆续推送若干条 `is_final = false` 的增量片段（低延迟、可能不准），一句话说完再推送一条 `is_final = true` 的整句定稿（带标点、更准确）。展示字幕时，建议按 `uid` 把增量片段拼成「正在说」的临时行，收到定稿后用整句替换。
+
+```typescript
+/** ROOM_ASR_STATE_CHANGED：会议转写（字幕）开关状态改变 */
+export interface RoomAsrStateChangeEventData {
+    /** 是否开启 */
+    enabled: boolean;
+    /** 开启失败时的错误描述 */
+    err_desc: string;
+}
+
+/** ASR_RESULT：转写结果（字幕原文） */
+export interface AsrResultEventData {
+    /** 说话人用户id */
+    uid: string;
+    /** 说话人昵称 */
+    name: string;
+    /** 文本：非定稿时是增量片段，定稿时是整句 */
+    text: string;
+    /** 是否整句定稿 */
+    is_final: boolean;
+    /** 识别引擎原始模式，如 2pass-online / 2pass-offline */
+    mode: string;
+}
+
+/** ASR_TRANSLATION：转写译文（实时翻译），只针对定稿句，到达时间晚于对应的 ASR_RESULT */
+export interface AsrTranslationEventData {
+    /** 转写场次id */
+    session_id: string;
+    /** 句子id */
+    sentence_id: string;
+    /** 说话人用户id */
+    uid: string;
+    /** 说话人昵称 */
+    name: string;
+    /** 原文 */
+    text: string;
+    /** 译文 */
+    trans_text: string;
+    /** 译文语言，如 en / zh */
+    lang: string;
+}
+
+/** AI_SUMMARY_READY：会议纪要生成完成或失败，纪要内容用 aiSummary() 获取 */
+export interface AiSummaryReadyEventData {
+    /** 转写场次id */
+    session_id: string;
+    /** 纪要状态，2完成, 3失败 */
+    status: number;
+}
+```
+
+### 主持人请求共享事件的 data（0.3.7 起）
+
+```typescript
+/** ADMIN_REQUEST_OPEN_SHARE：主持人请求您共享屏幕 */
+export interface AdminRequestOpenShareEventData {
+    /** 发起请求的主持人用户id（服务端发起时可能为空串），同意时作为 requestShare 的 adminUid 传回 */
+    op_uid?: string;
+}
+```
+
 ## 会外消息事件
 
 调用 `smeeting.enableIm()` 启用会外消息后，会外消息事件通过 `smeeting.onNotifyImEvent` 监听：
