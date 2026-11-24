@@ -1,6 +1,6 @@
 ---
 title: "实例与频道"
-description: "SRTC C SDK 实例生命周期、加入/离开频道、日志级别、语言与各类回调的注册接口"
+description: "SRTC C SDK 实例生命周期、加入/离开频道、日志级别与日志上报、语言与各类回调的注册接口"
 ---
 
 本页覆盖 SDK 实例的创建销毁、频道进出，以及全部回调的注册接口。
@@ -22,6 +22,26 @@ void rtc_set_log_level(int level);
 | 参数 | 说明 |
 | --- | --- |
 | `level` | `RTC_LOG_DEBUG`(0) / `RTC_LOG_INFO`(1) / `RTC_LOG_WARN`(2) / `RTC_LOG_ERROR`(3)，传入其它值按 `INFO` 处理 |
+
+只影响本地打印（输出到 stderr），与下面的日志上报互不影响。
+
+### rtc_set_log_upload
+
+```c
+void rtc_set_log_upload(int enable, int level);
+```
+
+设置是否把 SDK 日志上报到服务端（0.4.0 起），进程级生效。默认开启、上报 `RTC_LOG_INFO` 及以上级别。
+
+开启后，每次加入频道，SDK 会把本频道的日志（带频道名与 uid）在后台分批上报到服务端日志服务，技术支持可按频道和用户查到，排查问题时不必再从现场服务器收集日志。上报失败时直接丢弃，不重试，不影响音视频业务。
+
+| 参数 | 说明 |
+| --- | --- |
+| `enable` | 非 0 上报，0 不上报 |
+| `level` | 上报级别，取值同 `rtc_set_log_level`，传入其它值按 `INFO` 处理 |
+
+- 开关只对之后加入的频道生效；级别对已在频道里的实例也立即生效
+- 部署环境没有日志服务、或访问不到时，SDK 每分钟在本地打印一条上报失败的警告，可调用 `rtc_set_log_upload(0, RTC_LOG_INFO)` 关闭上报
 
 ---
 

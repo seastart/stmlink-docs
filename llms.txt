@@ -211,7 +211,7 @@
 - [快速开始](https://docs.stmlink.com/zh/rtc/capi/quickstart.md): SRTC C SDK 快速集成，10 分钟跑通加入频道、接收远端音视频与推流
 - [类型定义](https://docs.stmlink.com/zh/rtc/capi/types.md): SRTC C SDK 的结构体、编码常量、枚举取值与回调签名一览
 - [错误码](https://docs.stmlink.com/zh/rtc/capi/error-codes.md): SRTC C SDK 接口返回值的取值、含义与排查建议
-- [更新日志](https://docs.stmlink.com/zh/rtc/capi/changelog.md): C SDK（librtc）版本更新记录，含 0.3.0 新增按实例设置设备类型、0.2.0 新增按内容时刻写入样本与连接泄漏修复、0.1.1 事件回调保序修复、 0.1.0 错误码重排、0.0.9 删除 rtc_user_info_t.link_id 等需要改代码或重新编译的变更。升级 C SDK 前先读这页。
+- [更新日志](https://docs.stmlink.com/zh/rtc/capi/changelog.md): C SDK（librtc）版本更新记录，含 0.4.0 新增日志自动上报、0.3.0 新增按实例设置设备类型、0.2.0 新增按内容时刻写入样本与连接泄漏修复、0.1.1 事件回调保序修复、 0.1.0 错误码重排、0.0.9 删除 rtc_user_info_t.link_id 等需要改代码或重新编译的变更。升级 C SDK 前先读这页。
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式） · 进阶实践
 
@@ -221,7 +221,7 @@
 
 ## SRTC 音视频 SDK · C SDK（服务端/嵌入式） · 接口文档
 
-- [实例与频道](https://docs.stmlink.com/zh/rtc/capi/api-reference/engine.md): SRTC C SDK 实例生命周期、加入/离开频道、日志级别、语言与各类回调的注册接口
+- [实例与频道](https://docs.stmlink.com/zh/rtc/capi/api-reference/engine.md): SRTC C SDK 实例生命周期、加入/离开频道、日志级别与日志上报、语言与各类回调的注册接口
 - [订阅与收流](https://docs.stmlink.com/zh/rtc/capi/api-reference/subscribe.md): SRTC C SDK 订阅远端音视频轨道、取消订阅与主动请求关键帧
 - [发布与推流](https://docs.stmlink.com/zh/rtc/capi/api-reference/publish.md): SRTC C SDK 本地轨道的创建、发布、推送编码数据与关键帧请求响应
 - [用户信息查询](https://docs.stmlink.com/zh/rtc/capi/api-reference/users.md): SRTC C SDK 查询频道内用户列表与单个用户信息，以及对应的内存释放规则
