@@ -3,6 +3,17 @@ title: "更新日志"
 description: "Swift SRTC 音视频 SDK 版本更新记录"
 ---
 
+### [1.9.0] - 2026.11.24
+#### 新增
++ **本地网络质量 `didUpdateLocalQuality`**：SDK 在本端按 WebRTC 统计计算上下行的往返时延、丢包、抖动和档位，约每 2 秒回调一次 `LocalQualitySnapshot`，**SeaStart 与网宿（CDN）两种引擎都有**。网宿频道此前拿不到任何网络质量数据，现在可以做信号塔与网络详情面板。`Channel.getLocalQuality()` 可读最近一次采样。见 [通话质量](/zh/rtc/swift/advanced/call-quality#本地网络质量)、[类型定义](/zh/rtc/swift/types#localqualitysnapshot)。
+
+#### 修复
++ **SeaStart 引擎重新订阅后可能收不到数据**：退订请求没送达服务端（或同一时间先退后订）时，服务端旧订阅仍在，重订返回「已订阅」被当成成功，表现为订阅成功但一帧画面、一点声音都没有（常见于成员重新入会、合成画面重建）。现在会先补发退订再重订，失败的退订也会在下一轮补发。
+
+<Note>
+API 只新增不删改，1.8.0 的接入代码可直接编译，平台下限不变（iOS 16 / macOS 12.3）。`SRTCBroadcastKit` 本次为 **1.0.22**，代码无变化，仅随 SDK 同步递增版本号。
+</Note>
+
 ### [1.8.0] - 2026.11.16
 #### 新增
 + **AI 降噪插件 `SRTCDeepFilterNet`**：同一个包里新增的可选产品，基于 DeepFilterNet3，与 Web 降噪插件同一份算法和模型。挂到 `audioCaptureProcessor` 上即生效，支持运行时调整强度（0–100）与旁路；设备不支持时抛 `featureNotSupported`，运行中算力不足会自动暂停并回调 `onOverload`。见 [AI 降噪](/zh/rtc/swift/advanced/deepfilternet)。

@@ -37,7 +37,7 @@ SDK 以预编译 XCFramework 形式分发，包含 iOS 真机、iOS 模拟器、
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.10.0"),
 ],
 targets: [
     .target(
@@ -63,9 +63,9 @@ targets: [
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.10.0"),
     // 版本必须与 SMeeting 内部锁定的 SRTC 版本一致
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.8.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.9.0"),
 ],
 ```
 
@@ -103,7 +103,7 @@ import SRTC
 | iOS 全屏共享 | `SRTCBroadcastPicker`（唤起系统广播选择器） |
 | iOS 音频路由 | `AudioRoute`、`AudioRouteTarget`、`AudioRouteInfo`、`AudioCallState` |
 | 虚拟背景 | `SRTCNativeImage`（背景图，`UIImage` / `NSImage` 的别名）、`SRTCVirtualBackgroundEffect`（仅 iOS） |
-| 通话质量事件 | `QualityReport`、`ConnectionQualityChange`、`ActiveSpeakersSnapshot`、`LayerSwitchedInfo` |
+| 通话质量事件 | `QualityReport`、`ConnectionQualityChange`、`LocalQualitySnapshot`、`ActiveSpeakersSnapshot`、`LayerSwitchedInfo` |
 | 断开原因 | `DisconnectReason` |
 
 ---

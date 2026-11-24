@@ -358,6 +358,43 @@ SDK 只能控制「内置扬声器还是听筒」。`asRoute` 可映射回 `Audi
 
 ---
 
+### LocalQualitySnapshot
+
+本地网络质量的一轮采样（1.9.0 起），由 `didUpdateLocalQuality` 抛出、`Channel.getLocalQuality()` 读取。SDK 在本端按 WebRTC 统计计算，SeaStart / 网宿两种引擎都有。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `timestamp` | `Int64` | 采样完成时的 Unix 毫秒时间戳 |
+| `uplink` | `LocalDirectionQuality` | 上行（本端发布） |
+| `downlink` | `LocalDirectionQuality` | 下行（本端订阅） |
+| `overall` | `LocalQualityLevel` | 上下行较差的一档；一侧为 `unknown` 时取另一侧，两侧都没有才是 `unknown` |
+| `rttMs` | `Double?` | 上下行往返时延中可得的较大值，毫秒 |
+| `lossRate` | `Double?` | 上下行丢包率中可得的较大值，0~1 的**比例** |
+
+#### LocalDirectionQuality
+
+单方向的本地质量。数值不可得时为 `nil`，不会用 0 冒充实测值。
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `level` | `LocalQualityLevel` | 方向内各连接的最差档 |
+| `rttMs` | `Double?` | 往返时延，毫秒，方向内取最大 |
+| `lossRate` | `Double?` | 本轮采样窗口的丢包率，0~1，方向内取单轨最大 |
+| `jitterMs` | `Double?` | 抖动，毫秒，方向内取最大 |
+
+#### LocalQualityLevel
+
+| 值 | 含义 |
+| --- | --- |
+| `unknown` | 没有可靠判定：该方向没有已连通的连接（例如没发布任何轨道），或这一轮拿不到数值 |
+| `excellent` | 往返时延 < 100ms 且丢包 < 2% |
+| `good` | 往返时延 < 200ms 且丢包 < 5% |
+| `poor` | 往返时延 < 400ms 且丢包 < 15% |
+| `bad` | 往返时延 ≥ 400ms 或丢包 ≥ 15% |
+| `lost` | 该方向有连接断开（ICE 失败）；主动关闭不算，记为 `unknown` |
+
+---
+
 ### ConnectionQualityChange
 
 | 字段 | 类型 | 说明 |

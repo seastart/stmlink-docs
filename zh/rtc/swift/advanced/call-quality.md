@@ -14,6 +14,8 @@ SFU 会周期性下发一组控制面消息，SDK 把它们转成四个 `Channel
 | `didChangeActiveSpeakers` | 活跃说话人全量快照 | 说话人高亮、语音激励布局 |
 | `didSwitchLayer` | 大小流切层结果 | 排查画质突变 |
 
+另有一个**两种引擎都有**的 `didUpdateLocalQuality`（1.9.0 起），由 SDK 在本端计算，见下方 [本地网络质量](#本地网络质量)。
+
 <Note>
 质量与切层三个事件**仅 SeaStart（SFU）引擎有**。它们走的是订阅 PeerConnection 上的信令 DataChannel，而网宿（CDN）引擎没有这条通道，因此走 CDN 时收不到，`getConnectionQuality()` 也返回 `nil`。`didChangeActiveSpeakers` 例外：网宿频道里由 SDK 本地计算远端说话人（只覆盖已订阅的音频），两种引擎都会触发。用 `Channel.streamVendor` 判断当前引擎，见 [类型定义](/zh/rtc/swift/types#streamvendor)。
 </Note>
@@ -89,6 +91,31 @@ if let evaluation = channel.getConnectionQuality() {
 <Note>
 断线重连后 SDK 会清空质量缓存（最近评估、跳档基线、说话人快照），避免恢复后 UI 上残留旧的 `poor` 等级。所以重连后 `getConnectionQuality()` 会短暂返回 `nil`，直到新报告到达 —— 这是有意的，UI 上按「暂无数据」处理即可。
 </Note>
+
+---
+
+### 本地网络质量
+
+`didUpdateLocalQuality`（1.9.0 起）由 SDK 在本端按 WebRTC 统计计算，约每 2 秒一次，**SeaStart 与网宿（CDN）两种引擎都触发**。网宿频道没有服务端质量报告，信号塔、网络详情面板只能用它。
+
+```swift
+func channel(_ channel: Channel, didUpdateLocalQuality snapshot: LocalQualitySnapshot) {
+    // 后台线程回调，更新 UI 先切主线程
+    DispatchQueue.main.async {
+        signalBars.update(level: snapshot.overall)          // 上下行较差的一档
+        latencyLabel.text = snapshot.rttMs.map { "\(Int($0.rounded()))ms" } ?? "--ms"
+    }
+}
+```
+
+进页面时先用 `channel.getLocalQuality()` 读一次最近的采样，入会后第一轮采样（约 2 秒）完成前或离开频道后返回 `nil`。
+
+几点说明：
+
++ 测的是**本端到接入点**这一段（往返时延来自 ICE 连接检测），不含对端那一侧，表达的是「我这边网络怎么样」。
++ 档位按往返时延与丢包各自定档后取较差的，阈值见 [`LocalQualityLevel`](/zh/rtc/swift/types#localqualitylevel)。
++ **没有发布、也没有订阅任何轨道时，两个方向都是 `unknown`**：此时没有媒体连接可测，不是故障。例如独自在频道里且关着麦克风和摄像头。
++ 它与 SFU 下发的 `didReceiveQualityReport` 相互独立，SeaStart 频道两者都有，数值口径不同，不要混着比。
 
 ---
 

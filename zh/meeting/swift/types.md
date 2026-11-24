@@ -388,6 +388,7 @@ result.meta      // MetaRes
 | `AdminConfirmHandupEventData` | `type: HandupType`、`approve`、`opUid`、`targetId` |
 | `AdminRequestOpenMicEventData` | `opUid` |
 | `AdminRequestOpenCameraEventData` | `opUid` |
+| `AdminRequestOpenShareEventData` | `opUid`（发起请求的主持人，同意时作为 `adminUid` 传回；服务端发起时为空串） |
 
 #### 等候室与分组讨论
 
@@ -564,8 +565,7 @@ result.meta      // MetaRes
 | `mix` | `2` | 合流模式 |
 | `mixAndRecord` | `3` | 合流并录制 |
 | `audio` | `4` | 录音模式 |
-| `live` | `8` | **已废弃，将在下一版本删除**：服务端已不支持类型 8，传了返回参数错误。直播请用 `mix` 开合流任务，再由服务端调媒体输出接口拉流或推流 |
-| `unknown` | `-1` | 本版本 SDK 不认识的取值（仅用于解码，不要拿来发请求） |
+| `unknown` | `-1` | 本版本 SDK 不认识的取值（仅用于解码，不要拿来发请求）；1.10.0 起历史数据里的直播流（`8`）也落到这里 |
 
 #### McuTaskStatus
 
@@ -669,6 +669,9 @@ result.meta      // MetaRes
 | `ActiveSpeakerInfo` | `uid`、`trackId`、`level`（0~1 线性音量，按 1/8 分档）、`isLocal`（是否为自己，1.6.0 起） |
 | `ActiveSpeakersSnapshot` | `ts`、`speakers: [ActiveSpeakerInfo]`（已按音量降序，无人说话时为空） |
 | `LayerSwitchedInfo` | `subKey`、`fromTrackId`、`toTrackId`、`reason`（如 `bwe_down` / `bwe_up`）、`latencyMs` |
+| `LocalQualitySnapshot` | `timestamp`、`uplink` / `downlink: LocalDirectionQuality`、`overall`（较差档，一侧 `unknown` 时取另一侧）、`rttMs`、`lossRate`（上下行可得的较大值），1.10.0 起 |
+| `LocalDirectionQuality` | `level`、`rttMs`（毫秒）、`lossRate`（0~1）、`jitterMs`（毫秒），不可得时为 `nil` |
+| `LocalQualityLevel` | `unknown` / `excellent` / `good` / `poor` / `bad` / `lost`，阈值见 [SRTC 类型定义](/zh/rtc/swift/types#localqualitylevel) |
 
 字段的取值范围与用法见 [SRTC · 通话质量与活跃说话人](/zh/rtc/swift/advanced/call-quality)。
 

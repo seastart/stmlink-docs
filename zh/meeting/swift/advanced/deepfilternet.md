@@ -18,7 +18,7 @@ description: "在会议里给麦克风开启 AI 降噪：加 srtc-swift-sdk 的 
 ```swift
 dependencies: [
     .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.8.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.9.0"),
 ],
 targets: [
     .target(

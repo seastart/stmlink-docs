@@ -122,6 +122,7 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:adminDidConfirmHandup:)` | 主持人处理了举手申请 | `AdminConfirmHandupEventData` |
 | `meeting(_:adminDidRequestOpenMic:)` | 主持人邀请你开麦 | `AdminRequestOpenMicEventData` |
 | `meeting(_:adminDidRequestOpenCamera:)` | 主持人邀请你开摄像头 | `AdminRequestOpenCameraEventData` |
+| `meeting(_:adminDidRequestOpenShare:)` | 主持人请你共享屏幕（1.10.0 起）。同意时调 `requestShare(byAdmin: true, adminUid: data.opUid)`（iOS 全屏共享为 `publishBroadcastShare(byAdmin:adminUid:)`），不同意忽略即可，服务端没有拒绝接口 | `AdminRequestOpenShareEventData` |
 
 处理方式见 [举手与开启请求](/zh/meeting/swift/advanced/handup)。
 
@@ -192,11 +193,14 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:connectionQualityDidChange:)` | 质量等级发生跳档（断言式） | `ConnectionQualityChange` |
 | `meeting(_:activeSpeakersDidChange:)` | 活跃说话人变化 | `ActiveSpeakersSnapshot` |
 | `meeting(_:didSwitchLayer:)` | 大小流切层完成 | `LayerSwitchedInfo` |
+| `meeting(_:didUpdateLocalQuality:)` | 本地网络质量采样完成，约每 2 秒一次（1.10.0 起，**网宿 CDN 会议也有**） | `LocalQualitySnapshot` |
 
 质量走**双轨**，按用途选一条即可，不要两条都拿去驱动同一个 UI：
 
 + `didReceiveQualityReport` 是每次上报都触发的原始数值（丢包、RTT、抖动、码率、MOS），适合信号塔图标与详细诊断面板
 + `connectionQualityDidChange` 只在等级跳档时触发，适合「当前网络不佳」提示和主动降级决策
+
+这两个由 SFU 下发，**流媒体厂商为网宿 CDN 的会议收不到**。`didUpdateLocalQuality` 是 SDK 在本端按 WebRTC 统计算的上下行往返时延、丢包和档位，两种流媒体都有，CDN 会议的信号塔只能用它；进页面时可先用 `getLocalQuality()` 读一次最近的采样。档位与字段见 [SRTC 通话质量](/zh/rtc/swift/advanced/call-quality#本地网络质量)。
 
 `activeSpeakersDidChange` 给的是**全量快照**（已按音量降序排好），直接覆盖 UI 即可，不需要自己合并增量。无人说话时 `speakers` 为空数组。自 1.6.0 起自己也在快照里（`isLocal == true`，开麦且在说话时出现），与远端同一量纲；不想要可设 `meeting.activeSpeakerOptions.includeLocal = false`。
 

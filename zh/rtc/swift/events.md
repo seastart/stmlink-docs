@@ -75,8 +75,11 @@ final class RoomController: ChannelDelegate {
 | `channel(_:didChangeConnectionQuality:)` | 质量等级发生跳档（断言式） | `ConnectionQualityChange` |
 | `channel(_:didChangeActiveSpeakers:)` | 活跃说话人变化 | `ActiveSpeakersSnapshot` |
 | `channel(_:didSwitchLayer:)` | 大小流切层完成 | `LayerSwitchedInfo` |
+| `channel(_:didUpdateLocalQuality:)` | 本地网络质量采样完成，约每 2 秒一次（1.9.0 起，**两种引擎都有**） | `LocalQualitySnapshot` |
 
 质量走**双轨**，按用途选一条：`didReceiveQualityReport` 是每个上报周期都触发的原始数值，适合信号塔与诊断面板；`didChangeConnectionQuality` 只在跳档时触发，适合「网络不佳」提示与主动降级。**别用前者驱动提示或降级**，等级抖动时会反复闪烁。
+
+前两个由 SFU 下发，**只有 SeaStart 引擎有**。`didUpdateLocalQuality` 是 SDK 在本端按 WebRTC 统计算的，网宿（CDN）频道也有，CDN 频道做信号塔只能用它，见 [通话质量](/zh/rtc/swift/advanced/call-quality#本地网络质量)。
 
 `didChangeActiveSpeakers` 给的是**全量快照**（已按音量降序），业务侧直接覆盖 UI，不需要自己合并增量；无人说话时为空数组。
 

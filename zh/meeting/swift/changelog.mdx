@@ -3,6 +3,18 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.10.0] - 2026.11.24
+#### 新增
++ **本地网络质量 `meeting(_:didUpdateLocalQuality:)`**：约每 2 秒回调一次 `LocalQualitySnapshot`（上下行往返时延、丢包、抖动与档位），流媒体为网宿 CDN 的会议也有，可直接做信号塔与网络详情面板；`getLocalQuality()` 读最近一次采样。见 [事件](/zh/meeting/swift/events)。
++ **主持人请求共享屏幕 `meeting(_:adminDidRequestOpenShare:)`**：同意时调 `requestShare(byAdmin: true, adminUid: data.opUid)`（iOS 全屏共享为 `publishBroadcastShare(byAdmin:adminUid:)`），不同意忽略即可。
+
+#### 变更
++ 依赖的 SRTC 升至 **1.9.0**（含 SeaStart 引擎重新订阅收不到数据的修复）。自己声明的 `srtc-swift-sdk` 依赖（全屏共享扩展、AI 降噪插件）请同步改为 `exact: "1.9.0"`，否则依赖解析失败。
+
+<Warning>
+**破坏性变更**：`McuTaskType.live`（直播流，原始值 8）已移除，服务端已不再支持该任务类型。代码里用到 `.live` 的升级后**编译失败**，删掉对应分支即可；历史数据里的 8 会解码为 `.unknown`。直播请改用合流任务（`.mix`）配合服务端媒体输出接口。
+</Warning>
+
 ### [1.9.0] - 2026.11.18
 #### 新增
 + **`audioCaptureProcessor`**：麦克风采集处理器，可挂 SRTC 的 AI 降噪插件 `SRTCDeepFilterNet`，见 [AI 降噪（DeepFilterNet）](/zh/meeting/swift/advanced/deepfilternet)。SDK 对处理器是弱引用，业务方要自己持有。
