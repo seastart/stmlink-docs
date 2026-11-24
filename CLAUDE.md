@@ -163,9 +163,14 @@ navigation.languages（中文/英文）
 | 产品 | 目录 | 源码仓 | 生成的页 |
 | --- | --- | --- | --- |
 | SRTC | `zh/rtc/server-api/` | `rtc-backend` | `channel` / `mcu` / `talkrec` / `agent` / `im` / `white-board` / `asr` / `ai` / `stream` + `error-codes` |
-| SMeeting | `zh/meeting/server-api/` | `meeting-backend` | `user-auth` / `meet` / `meet-admin` / `mcu` / `stream` + `error-codes` |
+| SMeeting | `zh/meeting/server-api/` | `meeting-backend` | `user-auth` / `meet` / `meet-admin` / `mcu` / `stream` / `member` + `error-codes` |
 
 页面清单不是写死的 —— 分组来自 `router.go` 的 gin group，新增分组会自动多出一页。
+
+SMeeting 的 `member`（用户同步：`member/sync`、`member/grant` 等）来自另一套路由 `app/demo/srvapi`，
+由 meeting-backend 的 main 挂在 `/stm` 下。脚本里用 `Project.extra_apps` 登记（app 目录 + 挂载前缀），
+多跑一遍生成器并把接口页并进同一个「接口文档」分组；要与 meeting-backend Makefile 的 `apidoc` 目标
+（`APIDOC_DEMO_ARGS`，产出 `openapi/demo-srvapi.json`）保持一致。
 
 ```bash
 python3 scripts/sync-server-api.py            # 两个都同步

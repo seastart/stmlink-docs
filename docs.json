@@ -664,7 +664,8 @@
                       "zh/meeting/server-api/meet",
                       "zh/meeting/server-api/meet-admin",
                       "zh/meeting/server-api/mcu",
-                      "zh/meeting/server-api/stream"
+                      "zh/meeting/server-api/stream",
+                      "zh/meeting/server-api/member"
                     ]
                   },
                   "zh/meeting/server-api/error-codes"
@@ -1243,7 +1244,8 @@
                       "en/meeting/server-api/meet",
                       "en/meeting/server-api/meet-admin",
                       "en/meeting/server-api/mcu",
-                      "en/meeting/server-api/stream"
+                      "en/meeting/server-api/stream",
+                      "en/meeting/server-api/member"
                     ]
                   },
                   "en/meeting/server-api/error-codes"

@@ -1092,7 +1092,7 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 <ParamField body="conferee_details" type="array<object>">
   参会人员详情列表（新接口）
   <Expandable title="元素字段">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       用户ID，即你系统里的用户唯一标识
     </ParamField>
 

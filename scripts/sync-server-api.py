@@ -72,6 +72,10 @@ class Project:
     src_repo: str       # 页头「请勿手工编辑」提示里指向的仓名
     groups: str = ''    # 分组中文标题表(json)，相对 backend；空表示用生成器内置的 rtc 那份
     skip: str = ''      # 不进对外文档的分组或路由
+    # 同一后端里另外几套对外路由：[(app 目录, 挂载前缀)]。各跑一遍生成器，接口页并进同一个
+    # 「接口文档」分组（错误码页是同一份 errcode 生成的，取主 app 那份即可）。
+    # 要与后端 Makefile 的 apidoc 目标保持一致
+    extra_apps: list = field(default_factory=list)
     manual_head: list = field(default_factory=list)
     manual_guides: dict | None = None
     tail: list = field(default_factory=list)
@@ -130,6 +134,8 @@ PROJECTS = [
         # im/agent 是原样转发到 RTC 的通配代理，真正的接口文档在 SRTC 那边，
         # 生成器只能从 *api 通配符里产出一个空壳，不如交给手写页说清楚指向。
         skip='callback,/server/v1/im/*api,/server/v1/agent/*api',
+        # 用户体系（同步用户、换免登录 token）在 app/demo/srvapi，由 main 挂在 /stm 下
+        extra_apps=[('demo/srvapi', '/stm')],
         manual_head=['zh/meeting/server-api/overview'],
         manual_guides={
             'group': '接入指南',
@@ -152,12 +158,12 @@ def check_env(proj):
         sys.exit(f'找不到后端 {proj.backend}\n请设置 {proj.key.upper()}_BACKEND 环境变量')
 
 
-def generate(proj, out_dir, lang):
+def generate(proj, out_dir, lang, app='srvapi', prefix=''):
     """跑生成器。GOWORK=off 是必须的 —— rtc-backend 的 go.work 不含 tools 目录，
     生成器是独立 module（刻意不让 x/tools 进主 go.mod）。
 
     en 模式额外在 out_dir 写 tm-missing.json（缺译清单，没有缺失时是 {}）。"""
-    args = ['go', 'run', '.', '-root', str(proj.backend), '-app', 'srvapi',
+    args = ['go', 'run', '.', '-root', str(proj.backend), '-app', app,
             '-split', '-docbase', proj.doc_base(lang), '-srcrepo', proj.src_repo,
             # Mintlify 的 ParamField/ResponseField 组件：说明文字占整行宽度。
             # 不用 markdown 表格是因为 Mintlify 把表格列等宽均分（5 列各 150px），
@@ -167,7 +173,9 @@ def generate(proj, out_dir, lang):
             '-out', str(out_dir)]
     if proj.groups:
         args += ['-groups', str(proj.backend / proj.groups)]
-    if proj.skip:
+    if prefix:
+        args += ['-prefix', prefix]
+    if proj.skip and app == 'srvapi':
         args += ['-skip', proj.skip]
     if lang == 'en':
         args += ['-lang', 'en']
@@ -323,6 +331,38 @@ def save_missing(proj, out_dir):
     return len(json.loads(text))
 
 
+def merge_extra(proj, out_dir, lang, app, prefix):
+    """跑一遍额外 app 的生成器，把它的接口页、导航项、缺译串并进主 app 的产物目录。
+
+    错误码页两边都由同一份 errcode 生成，内容相同，保留主 app 的；分组页重名说明两套
+    路由用了同一个 gin group 名，会互相覆盖，直接报错。"""
+    extra_dir = Path(tempfile.mkdtemp(prefix=f'srvapi-{proj.key}-{lang}-extra-'))
+    try:
+        generate(proj, extra_dir, lang, app, prefix)
+        main_frag = json.loads((out_dir / 'nav-fragment.json').read_text(encoding='utf-8'),
+                               object_pairs_hook=collections.OrderedDict)
+        extra_frag = json.loads((extra_dir / 'nav-fragment.json').read_text(encoding='utf-8'))
+        for name in sorted(p.name for p in extra_dir.glob('*.md')):
+            if name == 'error-codes.md':
+                continue
+            if (out_dir / name).exists():
+                sys.exit(f'{app} 的 {name} 与主 app 的分组页重名，会互相覆盖')
+            shutil.copy2(extra_dir / name, out_dir / name)
+        main_frag['pages'] += [pg for pg in extra_frag['pages'] if not pg.endswith('/error-codes')]
+        (out_dir / 'nav-fragment.json').write_text(
+            json.dumps(main_frag, ensure_ascii=False, indent=2), encoding='utf-8')
+        # en：缺译清单合并，交给同一份 <产品>.missing.json
+        src = extra_dir / 'tm-missing.json'
+        if src.is_file():
+            dst = out_dir / 'tm-missing.json'
+            merged = json.loads(dst.read_text(encoding='utf-8')) if dst.is_file() else {}
+            merged.update(json.loads(src.read_text(encoding='utf-8')))
+            dst.write_text(json.dumps(merged, ensure_ascii=False, indent=2, sort_keys=True) + '\n',
+                           encoding='utf-8')
+    finally:
+        shutil.rmtree(extra_dir, ignore_errors=True)
+
+
 def run_lang(proj, lang, write_pages=True):
     """跑一遍生成器并落盘。返回 (本次写入的页面数, 清理的孤儿页, zh 导航项数, en 缺失条数)。
 
@@ -333,6 +373,8 @@ def run_lang(proj, lang, write_pages=True):
     pages, removed, nav, missing = [], [], None, None
     try:
         generate(proj, out_dir, lang)
+        for app, prefix in proj.extra_apps:
+            merge_extra(proj, out_dir, lang, app, prefix)
         if lang == 'en':
             missing = save_missing(proj, out_dir)
         if write_pages:

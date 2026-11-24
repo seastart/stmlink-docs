@@ -1299,8 +1299,8 @@ Request example:
 
 **Response parameters**
 
-<ResponseField name="<key>" type="string">
-  Keys are dynamic; see the description above
+<ResponseField name="task_id" type="string">
+  Recording task ID, used to query the recording task details and the recording file list
 </ResponseField>
 
 
@@ -1309,7 +1309,9 @@ Response example:
 ```json
 {
   "code": 0,
-  "data": {}
+  "data": {
+    "task_id": ""
+  }
 }
 ```
 

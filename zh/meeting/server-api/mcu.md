@@ -1299,8 +1299,8 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 
 **响应参数**
 
-<ResponseField name="<键>" type="string">
-  键为动态值，见上方说明
+<ResponseField name="task_id" type="string">
+  录像任务ID，查录像任务详情、录像文件列表时用
 </ResponseField>
 
 
@@ -1309,7 +1309,9 @@ record_id / seq / offset_ms 等新增字段用于精确定位与多片连播。
 ```json
 {
   "code": 0,
-  "data": {}
+  "data": {
+    "task_id": ""
+  }
 }
 ```
 

@@ -494,6 +494,7 @@
 - [会中控制](https://docs.stmlink.com/zh/meeting/server-api/meet-admin.md): 会议进行中主持人可做的操作：全体音视频管控、成员角色与踢人、举手处理、呼叫入会
 - [会议录制与直播](https://docs.stmlink.com/zh/meeting/server-api/mcu.md): 整场会议的云端录制与点播地址；直播拉流与推流见「媒体输出」
 - [媒体输出](https://docs.stmlink.com/zh/meeting/server-api/stream.md): 拉流地址（HTTP-FLV / RTSP）与推流任务（RTMP / RTMPS）：画面取合成画面或任意一人，声音取会议混音或任意一人，可自由组合
+- [用户同步](https://docs.stmlink.com/zh/meeting/server-api/member.md): 把业务系统的用户同步进我们部署的会议用户体系，以及换免登录 token、查在线状态、删除用户；服务端极简对接与通讯录场景使用，接口前缀为 /stm/srvapi/v1
 
 ## 产品与部署 · 概览
 
@@ -949,6 +950,7 @@
 - [In-meeting controls](https://docs.stmlink.com/en/meeting/server-api/meet-admin.md): Actions the host can take during a meeting: audio and video controls for everyone, member roles and removal, raise-hand handling, and calling users into the meeting
 - [Meeting recording and live streaming](https://docs.stmlink.com/en/meeting/server-api/mcu.md): Cloud recording of the whole meeting and playback URLs; for live pulling and pushing, see \"Media output\"
 - [Media output](https://docs.stmlink.com/en/meeting/server-api/stream.md): Pull URLs (HTTP-FLV / RTSP) and push tasks (RTMP / RTMPS): video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination
+- [User sync](https://docs.stmlink.com/en/meeting/server-api/member.md): Sync users from your business system into the meeting user directory we deploy, get login-free tokens, check online status, and delete users. Used by server-side low-code integration and contact-list scenarios. The endpoint prefix is /stm/srvapi/v1
 
 ## [EN] Product & deployment · Overview
 

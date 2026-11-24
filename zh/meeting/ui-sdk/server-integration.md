@@ -34,6 +34,9 @@ https://<你的域名>/meeting/server/v1/...        会议服务（建会、会�
 https://<你的域名>/meeting/stm/srvapi/v1/...    用户体系（同步、授权）
 ```
 
+两组接口的签名鉴权方式相同，见[服务端 API 概览](/zh/meeting/server-api/overview)。用户体系各接口的完整字段与返回值见
+[用户同步](/zh/meeting/server-api/member)，下文只讲对接时用得到的部分。
+
 <Note>
 标准部署下会议服务挂在 `/meeting/` 网关前缀之下，**别把这段前缀漏掉** —— 同域名的根路径
 `/server/v1/...` 走的是 SRTC 音视频服务，请求发过去会找不到会议接口。

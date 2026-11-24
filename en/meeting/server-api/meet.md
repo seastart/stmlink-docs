@@ -1170,7 +1170,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 <ParamField body="conferee_details" type="array<object>">
   Invitee details list (new API)
   <Expandable title="Element fields">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       User ID, i.e. the user's unique ID in your system
     </ParamField>
 
@@ -1506,7 +1506,7 @@ Update a meeting
 <ParamField body="conferee_details" type="array<object>">
   Invitee details list (new API)
   <Expandable title="Element fields">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       User ID, i.e. the user's unique ID in your system
     </ParamField>
 
@@ -1796,7 +1796,7 @@ Update invitees during the meeting
 <ParamField body="conferee_details" type="array<object>">
   Invitee details list (new API)
   <Expandable title="Element fields">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       User ID, i.e. the user's unique ID in your system
     </ParamField>
 

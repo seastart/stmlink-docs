@@ -1170,7 +1170,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 <ParamField body="conferee_details" type="array<object>">
   邀请人员详情列表（新接口）
   <Expandable title="元素字段">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       用户ID，即你系统里的用户唯一标识
     </ParamField>
 
@@ -1506,7 +1506,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 <ParamField body="conferee_details" type="array<object>">
   邀请人员详情列表（新接口）
   <Expandable title="元素字段">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       用户ID，即你系统里的用户唯一标识
     </ParamField>
 
@@ -1796,7 +1796,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 <ParamField body="conferee_details" type="array<object>">
   参会人员详情列表（新接口）
   <Expandable title="元素字段">
-    <ParamField body="user_id" type="string">
+    <ParamField body="user_id" type="string" required>
       用户ID，即你系统里的用户唯一标识
     </ParamField>
 
