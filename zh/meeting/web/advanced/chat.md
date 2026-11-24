@@ -53,8 +53,8 @@ async function sendChatFile(file: File) {
   const meetingId = smeeting.getRoomInfo()?.id;
   if (!meetingId) throw new Error('不在会议中');
 
-  // 1. 换预签名上传地址。ext 是不带点的扩展名，决定存储里的文件后缀
-  const ext = file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : '';
+  // 1. 换预签名上传地址。ext 是不带点的扩展名，决定存储里的文件后缀；必填，没有扩展名时传 bin
+  const ext = (file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : '') || 'bin';
   const put = await smeeting.presignedPutObject(PresignedPutObjectType.Chat, meetingId, ext);
   // put.url  上传地址（带签名，2 小时内有效）
   // put.key  文件在存储里的 key，消息里发的就是它
@@ -90,7 +90,7 @@ presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string)
 | --- | --- |
 | `type` | 资源类别，聊天文件传 `PresignedPutObjectType.Chat` |
 | `meetingId` | 当前会议 ID（`getRoomInfo().id`） |
-| `ext` | 扩展名，不带点，如 `pdf`、`png`；没有扩展名传空串 |
+| `ext` | 扩展名，不带点，如 `pdf`、`png`；**必填**，不能传空串，没有扩展名的文件传 `bin` 之类即可（原始文件名放在消息的 `name` 里） |
 
 `PresignedPutObjectType` 的取值：
 
