@@ -5,6 +5,16 @@ description: "Android SRTC SDK release history by version: new features, fixes, 
 
 > This page is compiled from the version configuration and commit history of the `rtc-android` repository. Call `RTCEngine.version()` to get the actual SDK version at runtime.
 
+### [2.0.40] - 2026.11.24
+
+#### Added
+
++ Added the pre-call network check `RTCEngine.networkCheck` and `cancelNetworkCheck`: callable before joining, it checks network permission, connectivity, MTU, DNS resolution, and server connectivity in turn and reports each result as it completes. See [RTCEngine](/en/rtc/android/api-reference/RTCEngine#networkcheck-options-listener) and [Types](/en/rtc/android/types#networkcheckoptions).
+
+#### Fixed
+
++ Fixed an issue where, in some cases, a subscribed remote video never appeared.
+
 ### [2.0.39] - 2026.11.16
 
 #### Added

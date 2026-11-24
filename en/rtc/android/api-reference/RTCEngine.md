@@ -276,6 +276,38 @@ Description: Sets the microphone capture processor; pass `null` to clear it. Ava
 Parameters: `processor`, a processor implementing [`AudioCaptureProcessor`](/en/rtc/android/types#audiocaptureprocessor), such as the AI noise suppression plugin's `DeepFilterNetProcessor`; see [AI noise suppression](/en/rtc/android/advanced/deepfilternet).  
 Returns: None (`Unit`).
 
+## Pre-call network check
+
+### networkCheck(options, listener)
+
+```kotlin
+fun networkCheck(options: NetworkCheckOptions, listener: RTCNetworkCheckListener)
+```
+
+Description: Pre-call network check, available since 2.0.40. Runs the checks in a fixed order, `permission` (network permission) → `connectivity` (network connection) → `mtu` → `dns` (DNS resolution) → `server` (API / signaling / media servers), calls `onItem` as each one completes, and finally calls `onComplete`. Call it before joining: it's available right after `create()`, without `initSDK()` or joining a channel. All callbacks run on the main thread. Only one check can run at a time.  
+Parameters:
+- `options`: [`NetworkCheckOptions`](/en/rtc/android/types#networkcheckoptions), providing the server information (`appId` + `serverUrl`, or a `token` from which both can be extracted) and the per-item timeout.
+- `listener`: `RTCNetworkCheckListener`, the check callbacks:
+  - `onItem(item: NetworkCheckItem)`: called once each item completes.
+  - `onComplete(result: NetworkCheckResult)`: all checks are complete.
+  - `onFail(code: Int, message: String)`: the check couldn't complete. `code` is `ALREADY_JOINED` (a check is already running), `INVALID_ARGUMENT` (`appId` / `serverUrl` missing and no usable `token`), or `CANCELLED` (cancelled); see [Error codes](/en/rtc/android/error-codes). Only one of `onFail` and `onComplete` is called.
+
+Returns: None (`Unit`).
+
+<Note>
+The API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, that check is `fail` (`api_unreachable`), and `mtu` and the signaling and media checks are `skipped`; other items are unaffected.
+</Note>
+
+### cancelNetworkCheck()
+
+```kotlin
+fun cancelNetworkCheck()
+```
+
+Description: Cancels the running network check; the cancelled check calls `onFail(CANCELLED)`. Does nothing if no check is running. Available since 2.0.40.  
+Parameters: None.  
+Returns: None (`Unit`).
+
 ## Media quality
 
 ### getMetric()

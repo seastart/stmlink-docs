@@ -208,3 +208,79 @@ Package path: `cn.seastart.rtc.audio.AudioProcessingConstraints`, available sinc
 | autoGainControl | Boolean? | Automatic gain control; not yet handled on Android, keeps the SDK default. |
 
 `false` requires the feature off; `true` or `null` leaves the SDK default unchanged.
+
+## NetworkCheckOptions
+
+Package path: `cn.seastart.rtc.netcheck.NetworkCheckOptions`, available since 2.0.40. Input for the [pre-call network check](/en/rtc/android/api-reference/RTCEngine#networkcheck-options-listener). Provide the server information in one of two ways: pass `appId` + `serverUrl` directly, or pass a join / IM token for the SDK to extract them from. If both are given, `appId` / `serverUrl` take precedence. The check itself doesn't use the token for authentication.
+
+| Property | Data type | Description |
+| --- | --- | --- |
+| appId | String? | App ID. |
+| serverUrl | String? | SDK API prefix, i.e. `client_api` in the token (such as `https://host/client/`). |
+| token | String? | Optional join or IM token, used only to extract `appId` and `serverUrl`. |
+| timeoutMs | Int | Per-item timeout in milliseconds, default `3000`. |
+
+## NetworkCheckItem
+
+Package path: `cn.seastart.rtc.netcheck.NetworkCheckItem`, available since 2.0.40. Result of a single check item.
+
+| Property | Data type | Description |
+| --- | --- | --- |
+| id | String | Check item; see `NetworkCheckItemId`. |
+| status | String | Check status: `pass` / `warning` / `fail` / `skipped` / `unsupported`; see `NetworkCheckStatus`. |
+| reason | String | Machine-readable reason code, empty for `pass`; see `NetworkCheckReason`. |
+| message | String | Chinese description that can be shown to users directly. |
+| costMs | Long | Time spent on this item, in milliseconds. |
+| data | Map\<String, Any?\> | Measured values for this item, such as `netType` for `connectivity`, `maxSize` for `mtu`, `hosts` for `dns`, and the `api` / `signal` / `media` sub-checks for `server` (each with `ok`, `status`, `reason`, and `rttMs`). |
+
+## NetworkCheckResult
+
+Package path: `cn.seastart.rtc.netcheck.NetworkCheckResult`, available since 2.0.40. Overall check result.
+
+| Property | Data type | Description |
+| --- | --- | --- |
+| status | String | Overall status: `fail` if any item fails; otherwise `warning` if any item warns; otherwise `ok`. |
+| items | List\<NetworkCheckItem\> | Always 5 items, in the order `permission`, `connectivity`, `mtu`, `dns`, `server`. |
+| costMs | Long | Total time, in milliseconds. |
+
+## Network check constants
+
+Available since 2.0.40, all in the `cn.seastart.rtc.netcheck` package.
+
+`NetworkCheckItemId` (check items):
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `PERMISSION` | `permission` | Network permission |
+| `CONNECTIVITY` | `connectivity` | Network connection |
+| `MTU` | `mtu` | Maximum transmission unit |
+| `DNS` | `dns` | DNS resolution |
+| `SERVER` | `server` | Server connectivity (API / signaling / media) |
+
+`NetworkCheckStatus` (check status):
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `OK` | `ok` | Overall: everything is normal |
+| `PASS` | `pass` | Item: passed |
+| `WARNING` | `warning` | At risk but usable |
+| `FAIL` | `fail` | Failed |
+| `SKIPPED` | `skipped` | Item: no check needed |
+| `UNSUPPORTED` | `unsupported` | Item: not supported on the current device |
+
+`NetworkCheckReason` (reason codes):
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `NO_PERMISSION` | `no_permission` | Network permission not granted |
+| `CELLULAR_RESTRICTED` | `cellular_restricted` | The system restricts background or cellular data |
+| `OFFLINE` | `offline` | No network connection |
+| `MTU_TOO_SMALL` | `mtu_too_small` | 1200-byte probe packets don't get through, but the media server is reachable |
+| `UDP_BLOCKED` | `udp_blocked` | Media UDP is blocked |
+| `DNS_FAILED` | `dns_failed` | DNS resolution failed |
+| `API_UNREACHABLE` | `api_unreachable` | The check information API is unreachable (including when the server doesn't support the pre-call network check) |
+| `SERVER_INFO_UNAVAILABLE` | `server_info_unavailable` | Server check information is unavailable; checks that depend on it are `skipped` |
+| `SIGNAL_UNREACHABLE` | `signal_unreachable` | The signaling server is unreachable |
+| `VENDOR_NOT_SUPPORTED` | `vendor_not_supported` | Media checks aren't needed for the current streaming engine |
+| `MEDIA_UNAVAILABLE` | `media_unavailable` | The server has no available media node |
+| `DF_NOT_SUPPORTED` | `df_not_supported` | The system doesn't allow setting Don't Fragment, so the MTU check isn't available |

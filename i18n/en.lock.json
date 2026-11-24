@@ -890,8 +890,8 @@
   "en/rtc/android/api-reference/RTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/android/api-reference/RTCEngine.md",
-    "zh_blob": "ed051cba73ccac1416a106eb5a57b355f842c1ed",
-    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+    "zh_blob": "86d88aee1d75c8b5e02f7ff6a7e7fb67be7b2a51",
+    "zh_commit": "f5676c23c41d16378b568cacec5ec2971e86dea6"
   },
   "en/rtc/android/api-reference/RTCEngineEvent": {
     "reviewed": true,
@@ -938,8 +938,8 @@
   "en/rtc/android/changelog": {
     "reviewed": false,
     "source": "zh/rtc/android/changelog.mdx",
-    "zh_blob": "21f5d98a5676923c3e1671e25258db41b975ab86",
-    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+    "zh_blob": "0345de749260d2587c6e16f3111d93529f513f23",
+    "zh_commit": "f5676c23c41d16378b568cacec5ec2971e86dea6"
   },
   "en/rtc/android/enums": {
     "reviewed": false,
@@ -956,8 +956,8 @@
   "en/rtc/android/integration": {
     "reviewed": false,
     "source": "zh/rtc/android/integration.md",
-    "zh_blob": "568cf9670ba5bbe0ea160f6ca4098400068775de",
-    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+    "zh_blob": "31b9ad33a53f9d2daa6fd838d5b510a257bccb3e",
+    "zh_commit": "f5676c23c41d16378b568cacec5ec2971e86dea6"
   },
   "en/rtc/android/media-quality": {
     "reviewed": false,
@@ -1004,8 +1004,8 @@
   "en/rtc/android/types": {
     "reviewed": false,
     "source": "zh/rtc/android/types.md",
-    "zh_blob": "fc147e18dcf6fae16fd71bfa09790bd40a7884b1",
-    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+    "zh_blob": "c41d45f5ae07ced641d1bb2c7b75c48f5330ee90",
+    "zh_commit": "f5676c23c41d16378b568cacec5ec2971e86dea6"
   },
   "en/rtc/capi/advanced/custom-msg": {
     "reviewed": true,
