@@ -3,6 +3,20 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.11.0] - 2026.11.24
+#### 新增
++ **会前网络检测 `networkCheck`**：入会前调用、不需要入会，按 `permission` → `connectivity` → `mtu` → `dns` → `server` 固定顺序逐项检测 5 项，每完成一项在主线程回调 `onItem`，最后返回 `MeetingNetworkCheckResult`（`ok` / `warning` / `fail`，各项带机器可读的 `reason` 与可直接展示的中文 `message`）。五项检测由 SRTC 完成，会议层在 `server` 项多一个子检查 `meetingApi`（会议接口是否可达）。全部正常时约 1~5 秒。见 [SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine#会前网络检测)、[类型定义](/zh/meeting/swift/types#会前网络检测)。
+  + 已登录直接调 `networkCheck(timeoutMs:onItem:)`，地址从登录信息取；未登录用 `networkCheck(appId:serverUrl:...)` 或 `networkCheck(token:...)` 显式传入
+  + `cancelNetworkCheck()` 取消进行中的检测
+  + 新增类型 `MeetingNetworkCheckResult`、`MeetingNetworkCheckItem`、`MeetingNetworkCheckItemId`、`MeetingNetworkCheckStatus`、`MeetingNetworkCheckItemStatus`、`MeetingNetworkCheckData`、`MeetingNetworkCheckSubCheck`、`MeetingNetworkCheckHost`，均可 `Codable` 编码
+
+#### 变更
++ 依赖的 SRTC 升至 **1.10.0**。自己声明的 `srtc-swift-sdk` 依赖（全屏共享扩展、AI 降噪插件）请同步改为 `exact: "1.10.0"`，否则依赖解析失败。
+
+<Note>
+`server` 中的接口检测需要服务端支持会前网络检测；服务端未升级时 SRTC 的 `api` 子检查为 `fail`，不影响其它项。API 只新增不删改，1.10.0 的接入代码可直接编译，平台下限不变（iOS 16 / macOS 12.3）。
+</Note>
+
 ### [1.10.0] - 2026.11.24
 #### 新增
 + **本地网络质量 `meeting(_:didUpdateLocalQuality:)`**：约每 2 秒回调一次 `LocalQualitySnapshot`（上下行往返时延、丢包、抖动与档位），流媒体为网宿 CDN 的会议也有，可直接做信号塔与网络详情面板；`getLocalQuality()` 读最近一次采样。见 [事件](/zh/meeting/swift/events)。

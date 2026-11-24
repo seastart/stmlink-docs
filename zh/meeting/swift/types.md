@@ -640,6 +640,65 @@ result.meta      // MetaRes
 
 ---
 
+### 会前网络检测
+
+1.11.0 起提供，由 [`networkCheck`](/zh/meeting/swift/api-reference/SMeetingEngine#会前网络检测) 返回。
+会议层不暴露 SRTC，所以另起一套 `MeetingNetworkCheck*`，结构与 SRTC 的 [`NetworkCheck*`](/zh/rtc/swift/types#networkcheckresult) 一一对应，
+只多 `server` 项的 `meetingApi` 子检查。全部遵循 `Codable`，`JSONEncoder` 编码后可直接上报或打日志。
+
+#### MeetingNetworkCheckResult
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `status` | `MeetingNetworkCheckStatus` | 总体结论：`ok` / `warning` / `fail`，有一项 `fail` 即 `fail` |
+| `items` | `[MeetingNetworkCheckItem]` | 固定 5 项，按 `permission` → `connectivity` → `mtu` → `dns` → `server` 排列 |
+| `costMs` | `Int` | 总耗时，毫秒 |
+
+另有 `item(_ id: MeetingNetworkCheckItemId) -> MeetingNetworkCheckItem?` 按 id 取单项。
+
+#### MeetingNetworkCheckItem
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | `MeetingNetworkCheckItemId` | `permission` / `connectivity` / `mtu` / `dns` / `server` |
+| `status` | `MeetingNetworkCheckItemStatus` | `pass` / `warning` / `fail` / `skipped`（无需检测）/ `unsupported`（当前平台不支持） |
+| `reason` | `String` | 机器可读的原因码，`pass` 时为空串；SRTC 各项的取值见 [SRTC 类型定义](/zh/rtc/swift/types#networkcheckitemid)，会议层补充的见下表 |
+| `message` | `String` | 可直接展示给用户的中文说明 |
+| `costMs` | `Int` | 本项耗时，毫秒 |
+| `data` | `MeetingNetworkCheckData` | 本项的测量值 |
+
+#### MeetingNetworkCheckData
+
+每项只填自己的字段，其余为 `nil`，编码时省略。
+
+| 字段 | 类型 | 所属项 | 说明 |
+| --- | --- | --- | --- |
+| `netType` | `String?` | `connectivity` | `wifi` / `cellular` / `ethernet` / `unknown` |
+| `maxSize` | `Int?` | `mtu` | 能回显的最大载荷档位（字节） |
+| `hosts` | `[MeetingNetworkCheckHost]?` | `dns` | 各主机解析结果：`host`、`ips`、`costMs` |
+| `meetingApi` | `MeetingNetworkCheckSubCheck?` | `server` | 会议接口是否可达，**会议层独有**，JSON 键为 `meeting_api` |
+| `api` / `signal` / `media` | `MeetingNetworkCheckSubCheck?` | `server` | 来自 SRTC：检测信息接口、信令、媒体 |
+
+#### MeetingNetworkCheckSubCheck
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `ok` | `Bool` | 是否连通（即 `status == .pass`） |
+| `status` | `MeetingNetworkCheckItemStatus` | 子检查状态，`skipped` / `unsupported` 不计为失败 |
+| `reason` | `String` | 原因码，`pass` 时为空串 |
+| `rttMs` | `Int` | 耗时，毫秒，未执行为 `0` |
+| `via` | `String?` | 仅 `signal`：`tcp` 或 `ws` |
+| `httpStatus` / `code` | `Int?` | 仅 `api` 失败时：HTTP 状态码 / 后端业务错误码 |
+
+会议层补充的原因码：
+
+| `reason` | 出现在 | 含义 |
+| --- | --- | --- |
+| `meeting_api_unreachable` | `server`、`data.meetingApi` | 会议接口连不上：网络不通或服务器地址不对 |
+| `server_info_unavailable` | `data.meetingApi`（`skipped`） | 未登录且由 `serverUrl` 推不出会议接口地址 |
+
+---
+
 ### 来自 SRTC 的类型
 
 以下类型定义在底层 SRTC 模块，使用时需要 `import SRTC`：`LogLevel`、`CameraPreset`、`MicPreset`、`ScreenPreset`、`DeviceInfo`、`DisconnectReason`、`ImDisconnectReason`、`AnyCodable`、`SRTCVideoView`、`SRTCVideoRenderer`、`ScreenCaptureSources`、`DisplaySource`、`WindowSource`、`LocalCameraTrack`、`LocalScreenTrack`、`RemoteVideoTrack`、`Track`、`SRTCBroadcastPicker`。

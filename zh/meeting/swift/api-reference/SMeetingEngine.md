@@ -447,6 +447,75 @@ await meeting.disableIm()
 
 ---
 
+### 会前网络检测
+
+1.11.0 起提供，需搭配 SRTC 1.10.0。**入会前调用**，不需要入会，也不需要连 RTC。与 SRTC 的
+[`networkCheck`](/zh/rtc/swift/api-reference/SRTCEngine#会前网络检测) 同名同参：
+`permission` → `connectivity` → `mtu` → `dns` → `server` 五项检测由 SRTC 完成、结果原样转成会议层类型，
+会议层只在 `server` 项的 `data` 里多一个子检查 `meetingApi`（JSON 键 `meeting_api`，会议接口是否可达），整体状态随之重算。
+全部正常时约 1~5 秒。
+
+#### `networkCheck(timeoutMs:onItem:)`
+
+已登录时用：RTC 的 `app_id` 与服务地址从登录信息里取（已 `enableIm()` 用 IM token 里的，否则由会议接口地址推出），不用传参。
+
+```swift
+let result = try await meeting.networkCheck { item in
+    // 主线程，按 permission → connectivity → mtu → dns → server 逐项回调
+    print(item.id, item.status, item.message)
+}
+if result.status == .fail {
+    // 各项的 message 是可直接展示给用户的中文说明
+}
+```
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `timeoutMs` | `Int` | 否 | 单项超时，毫秒，默认 `3000`；同时用作 `meeting_api` 的请求超时 |
+| `onItem` | `(@Sendable (MeetingNetworkCheckItem) -> Void)?` | 否 | 每完成一项回调一次，在主线程执行；`server` 项等 `meeting_api` 合入后才回调 |
+
+**返回值：** [`MeetingNetworkCheckResult`](/zh/meeting/swift/types#meetingnetworkcheckresult)（`async throws`）
+
+**可能抛出：** `SMeetingError.notLoggedIn`（未登录）、`SRTCError.invalidArgument`（推不出 RTC 地址，请改用下面显式传参的重载）、`.alreadyJoined`（已有检测在进行）、`.cancelled`（被取消）
+
+#### `networkCheck(appId:serverUrl:timeoutMs:onItem:)`
+
+未登录时用：显式传 RTC 的应用 ID 与服务地址，其余同上。
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `appId` | `String` | 是 | 应用 ID |
+| `serverUrl` | `String` | 是 | **RTC** 服务地址，即 RTC / IM token 里的 `client_api`（如 `https://host/client/`），不是会议接口地址 |
+| `timeoutMs` | `Int` | 否 | 同上 |
+| `onItem` | `(@Sendable (MeetingNetworkCheckItem) -> Void)?` | 否 | 同上 |
+
+已登录时 `meeting_api` 探测登录用的会议接口；未登录时由 `serverUrl` 推出会议接口地址，推不出则 `meeting_api` 记 `skipped`（`server_info_unavailable`）。
+
+#### `networkCheck(token:timeoutMs:onItem:)`
+
+手上有 RTC 频道 token 或 IM token 时的便捷写法：只取其中的 `app_id` 与 `client_api`，不用它鉴权，**过期的 token 也可以**。token 解不开时抛 `SRTCError.invalidArgument`。
+
+#### `cancelNetworkCheck()`
+
+取消本实例进行中的检测，进行中的 `networkCheck` 随即抛 `SRTCError.cancelled`；没有检测在进行时无操作。
+
+#### 判定与错误
+
++ **`meeting_api` 的判定**：签名调一次只读的会议接口，**收到任何 HTTP 响应都算可达**；网络错误或超时算不通，此时 `server` 记 `fail`、`reason` 为 `meeting_api_unreachable`。`server` 已因 SRTC 子检查失败时保留 SRTC 的 `reason`。
++ **耗时**：`meeting_api` 与 SRTC 检测并行，不额外拉长总耗时。
++ 其余各项的检测内容、原因码与平台限制同 SRTC，见 [SRTC 类型定义](/zh/rtc/swift/types#networkcheckitemid)。
+
+| 错误 | 低位码 | 场景 |
+| --- | :---: | --- |
+| `SRTCError.alreadyJoined` | `005` | 已有检测在进行（同一时刻只允许一个） |
+| `SRTCError.cancelled` | `026` | 被 `cancelNetworkCheck()` 或调用方任务取消 |
+| `SRTCError.invalidArgument` | `031` | 参数为空、token 解不开，或已登录但推不出 RTC 地址 |
+| `SMeetingError.notLoggedIn` | `001` | 未登录，且用的是不传参的重载 |
+
+前三个是透传的 SRTC 层错误，与直接调 SRTC 时同码；只有未登录用会议层的 `SMeetingError`。
+
+---
+
 ### 虚拟背景
 
 **仅 iOS**：`1.7.0` 起 macOS 上没有这组成员，双端共用的代码请包进 `#if os(iOS)`。属**设备级配置**（作用于进程内唯一的共享摄像头采集链路），设置同时作用于全部会议。会中切换摄像头、关掉摄像头再打开、断线重连后都不需要业务层重新下发。用法与调优见 [虚拟背景](/zh/meeting/swift/advanced/virtual-background)。

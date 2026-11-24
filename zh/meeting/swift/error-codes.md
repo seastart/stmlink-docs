@@ -122,6 +122,7 @@ do {
 要点：
 
 + 除了 `SMeetingError`，RTC 层的 `SRTCError` 也会原样抛出，两类都要处理
++ 会前网络检测 `networkCheck`（1.11.0 起）同样透传 SRTC 层的码：已有检测在跑 `alreadyJoined`(005)、被取消 `cancelled`(026)、参数非法 `invalidArgument`(031)；只有未登录且用不传参的重载时抛会议层的 `notLoggedIn`(001)
 + 面向最终用户的提示请按 `baseCode` 映射成自己的文案；写日志时用 `error.localizedDescription`，它带错误码
 + `SMeetingError` 遵循 `Equatable`，可以直接和具体 case 比较；它以库演进模式分发，后续版本可能新增 case，`switch` 里请保留 `default` 分支
 
