@@ -542,8 +542,8 @@
   "en/meeting/web/advanced/chat": {
     "reviewed": false,
     "source": "zh/meeting/web/advanced/chat.md",
-    "zh_blob": "8bbfe99fa1dbe0b986e38e31fb6f7c43dfa11b2b",
-    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
+    "zh_blob": "08934251e55732dacfca13b7972163429235c2ac",
+    "zh_commit": "b3f5bf53e6e7df72e962f388c217f179286b42c5"
   },
   "en/meeting/web/advanced/deepfilternet": {
     "reviewed": false,

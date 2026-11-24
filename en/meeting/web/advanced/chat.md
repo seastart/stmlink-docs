@@ -53,8 +53,8 @@ async function sendChatFile(file: File) {
   const meetingId = smeeting.getRoomInfo()?.id;
   if (!meetingId) throw new Error('Not in a meeting');
 
-  // 1. Get a signed upload URL. ext is the extension without the dot and sets the file suffix in storage
-  const ext = file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : '';
+  // 1. Get a signed upload URL. ext is the extension without the dot and sets the file suffix in storage; it's required, so pass bin when there is none
+  const ext = (file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : '') || 'bin';
   const put = await smeeting.presignedPutObject(PresignedPutObjectType.Chat, meetingId, ext);
   // put.url  Upload URL (signed, valid for 2 hours)
   // put.key  Key of the file in storage; this is what the message carries
@@ -90,7 +90,7 @@ presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string)
 | --- | --- |
 | `type` | Resource category; pass `PresignedPutObjectType.Chat` for chat files |
 | `meetingId` | Current meeting ID (`getRoomInfo().id`) |
-| `ext` | Extension without the dot, such as `pdf` or `png`; pass an empty string if there is none |
+| `ext` | Extension without the dot, such as `pdf` or `png`. **Required** and can't be an empty string; for files without an extension pass something like `bin` (the original file name goes in the message's `name`) |
 
 Values of `PresignedPutObjectType`:
 
