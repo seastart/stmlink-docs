@@ -91,7 +91,7 @@ flowchart LR
 | | Endpoint registration | Direct IP |
 | --- | --- | --- |
 | How | Create an account in the console; the endpoint registers to the device gateway with it | Register the endpoint's IP and port in the console |
-| Platform sees online status | ✅ | ❌ |
+| Platform sees online status | ✅ | ✅ Probed periodically by the gateway; not possible if the endpoint is behind NAT |
 | Device dials in | Meeting ID only | Must dial `meetingID@gatewayIP` |
 | Network requirement | **The device can reach the gateway**—works when the device is behind NAT | **The gateway must be able to reach the device's IP** |
 | Recommendation | ✅ Preferred | Devices that don't support registration, or have a fixed IP |

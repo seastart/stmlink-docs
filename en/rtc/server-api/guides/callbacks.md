@@ -126,6 +126,7 @@ Devices joining through the device gateway report their own actual type (for exa
 ### `agent_online` / `agent_offline` — Device online / offline
 
 Tells you whether a device is online **outside the channel**: a phone or GB28181 camera is online once it registers with the device gateway, and offline once it unregisters or disconnects.
+A direct IP phone or endpoint is probed periodically by the device gateway: it's online when a probe succeeds, and offline after several probes fail in a row.
 This is unrelated to whether it's in a channel (for joining and leaving a channel, see `user_join` / `user_leave`).
 
 ```json
@@ -140,13 +141,23 @@ This is unrelated to whether it's in a channel (for joining and leaving a channe
 
 + `id` is the device ID in [List devices](/en/rtc/server-api/agent#list-devices); `gw` is the gateway the device is on
 + `type`: `2` SIP, `3` H.323, `4` GB28181 surveillance
-+ `contact` identifies the device: the registration username for SIP, the short number for H.323, and the device number for GB28181 (`sip_no`, not a channel number)
-+ `reason`: `1` the device unregistered, `4` heartbeat timeout
++ `contact` identifies the device: the registration username for SIP, the short number for H.323, and the device number for GB28181 (`sip_no`, not a channel number);
+  for a direct IP device, it's the address you registered (`ip:port`)
++ `reason`: `1` the device unregistered, `4` heartbeat timeout, `7` unreachable by probe (direct IP devices only)
 + `heartbeat_at` is the time of the last heartbeat. An offline event caused by heartbeat timeout waits for the timeout to be determined, so it's sent **5–7 minutes after the actual disconnect**.
   When you need the actual disconnect time, use this field
 
-Only **registration-mode** devices (`regsip`, `regh323`, `gb28181`) have an online status and send these two events;
-with direct IP and RTSP stream pull, we connect to the device ourselves, so there is no online or offline.
+**Registration-mode** devices (`regsip`, `regh323`, `gb28181`) send these two events based on their registration status.
+For **direct IP** devices (`ipsip`, `iph323`), the device gateway probes them periodically to determine their online status: for H.323 it tries to connect to the endpoint's TCP call port
+(`1720` if no port is given), and for SIP it sends the endpoint an `OPTIONS` request (`5060` if no port is given; for a direct-dial address in the form `number@IP:port`, the address after `@` is probed). If it connects or gets a response, the device is online;
+after several failed probes in a row (3 by default, one every 30 seconds), `agent_offline` is sent with `reason` `7`.
+An endpoint that's in a call is treated as online and isn't probed. RTSP stream pull still has no online or offline status.
+
+Probing direct IP devices has a few limitations:
+
++ The device gateway must be able to reach the endpoint's IP directly. An endpoint behind NAT that the gateway can't reach can't be probed and is reported as offline
++ A few endpoints don't respond to `OPTIONS` from unknown sources (allowlists, security policies) and are also reported as offline. Verify with the actual endpoint model before going live
++ Offline notifications are delayed by about "probe interval × failure count", roughly 1.5 minutes by default
 
 Each status change is sent only once: periodic registration refreshes and GB28181 Keepalives don't send `agent_online` again;
 when heartbeats resume after going offline, an online event is sent again. Devices don't belong to a particular app, so every app that subscribes to this event receives it.
