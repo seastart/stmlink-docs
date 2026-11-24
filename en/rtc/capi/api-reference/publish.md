@@ -134,6 +134,33 @@ The SDK copies the data you pass in, so you can reuse or free the `data` buffer 
 
 ---
 
+## rtc_write_sample_ts
+
+```c
+int rtc_write_sample_ts(void* track_handle, uint8_t* data, int length, int64_t capture_time_us);
+```
+
+New in 0.2.0. Does the same as `rtc_write_sample`, except that instead of a timestamp increment you pass the frame's **content time** (when it was captured or composited). The SDK converts it to the RTP timestamp and generates RTCP SR from the content time.
+
+Suited to scenarios where audio and video are captured separately and encoding time varies (such as server-side compositing or transcoding): when the subscriber aligns audio and video using SR, it uses the content time rather than the send time, so jitter from encoding time and send queuing doesn't affect A/V sync, and you don't need to shape the send pacing yourself for that.
+
+| Parameter | Description |
+| --- | --- |
+| `data` | Same as `rtc_write_sample` |
+| `length` | Same as `rtc_write_sample` |
+| `capture_time_us` | The frame's content time, in microseconds of the **platform monotonic clock**, i.e. C++'s `std::chrono::steady_clock`: `CLOCK_MONOTONIC` on Linux / Android, `CLOCK_UPTIME_RAW` on macOS / iOS, `QueryPerformanceCounter` on Windows |
+
+**Returns**: same as `rtc_write_sample`; returns `RTC_ERROR` if `rtc_write_sample` and `rtc_write_sample_ts` are mixed on the same track.
+
+<Warning>
+- **One or the other per track**: from the moment a track is published, write to it with only one of the two functions.
+- **All tracks in the same process that call this function must use the same clock** for audio and video to align. If the clock you pass differs from the monotonic clock above by more than 60 seconds, the SDK falls back to converting from the time the first frame was written: A/V alignment is unaffected, but the absolute SR time lags by the first-frame write delay.
+- **Write each track from one thread, in increasing time order**. A time that goes backwards, repeats, or jumps forward by more than 1 hour is treated as a clock anomaly: the RTP timestamp keeps increasing, and the conversion baseline is re-established from that frame. If you resume writing after a pause, the RTP timestamp advances by the real interval.
+- As with `rtc_write_sample`, the SDK doesn't control send pacing—each frame is sent as soon as it's written.
+</Warning>
+
+---
+
 ## rtc_set_keyframe_request_callback
 
 ```c

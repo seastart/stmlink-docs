@@ -197,6 +197,30 @@ If a user wants to "hear everyone," the right approach is `rtc_set_auto_subscrib
 
 ---
 
+## Device type
+
+### rtc_set_device_type
+
+```c
+void rtc_set_device_type(void* handle, int device_type);
+```
+
+Sets the device type this instance reports when it joins a channel (since 0.3.0). This is the value other members see in `rtc_user_info_t.device_type` and the `device_type` in server callbacks. Defaults to `80` (agent joining on the server side) if not called.
+
+| Parameter | Description |
+| --- | --- |
+| `device_type` | Device type number; see the `device_type` description in the [Callback events guide](/en/rtc/server-api/guides/callbacks). `<= 0` restores the default `80` |
+
+<Warning>
+Must be called **before** `rtc_join_channel` / `rtc_join_channel_sync`. The device type is reported only once, at join time; setting it after joining has no effect on the current session (automatic reconnection keeps the same session, so it doesn't change either). To change the type, leave and join again.
+</Warning>
+
+<Tip>
+It applies per instance: multiple instances in the same process can each set their own. For example, a device gateway that creates one instance per connected device can report each device's kind (`82` for SIP devices, `83` for H.323 devices, `84` for GB28181 cameras, and so on), so your application can tell where each member comes from.
+</Tip>
+
+---
+
 ## Callback registration
 
 Every callback carries your context through the `context` parameter; the SDK passes it back unchanged without interpreting it.
@@ -316,6 +340,9 @@ rtc_set_track_sample_callback(rtc, on_sample, ctx);
 
 // 2) Then configure auto-subscribe
 rtc_set_auto_subscribe(rtc, 1, 1);
+
+// (Optional) set the device type reported at join; defaults to 80 if not called
+// rtc_set_device_type(rtc, 82);
 
 // 3) Finally join the channel
 rtc_join_channel_sync(rtc, token, 10000);

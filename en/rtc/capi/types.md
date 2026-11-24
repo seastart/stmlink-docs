@@ -78,7 +78,7 @@ typedef struct {
 | `channel` | `char[128]` | Name of the channel the user is in |
 | `sid` | `char[128]` | Session ID |
 | `props` | `const char*` | Custom business properties as a JSON string; may be `NULL` |
-| `device_type` | `int` | Device type |
+| `device_type` | `int` | Device type; see the [Callback events guide](/en/rtc/server-api/guides/callbacks) for the numbers. Members joined with the C SDK default to `80`, which you can change with [rtc_set_device_type](/en/rtc/capi/api-reference/engine#rtc_set_device_type) |
 | `is_audience` | `int` | `1`=audience (doesn't appear in other users' user lists), `0`=regular user |
 | `join_at` / `leave_at` / `updated_at` | `int64_t` | Join / leave / update timestamps |
 | `stream_tracks` | `rtc_track_info_t*` | Array of tracks this user has published |

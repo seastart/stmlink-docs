@@ -1022,14 +1022,14 @@
   "en/rtc/capi/api-reference/engine": {
     "reviewed": false,
     "source": "zh/rtc/capi/api-reference/engine.md",
-    "zh_blob": "c5abd8d8656a48e896627e18f511d47521f04e9f",
-    "zh_commit": "c50d4917399a4860aa6d2eaa949f155fc59adf79"
+    "zh_blob": "815273e7e8586d6e59ffcd6cd9e483aaaf098356",
+    "zh_commit": "4c801ab3d0ae40df2b6543e1ae040ff2c15b1c6f"
   },
   "en/rtc/capi/api-reference/publish": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/api-reference/publish.md",
-    "zh_blob": "c5b10bfa4ef3f267f2c5891cf281d5f30396841c",
-    "zh_commit": "141aeb204c831dd68a1d0612c66bf339e3c2e8aa"
+    "zh_blob": "1ffb40b1612bf84e57f4747c08200a04b574e6c5",
+    "zh_commit": "276ea8ac75ade03df3714fe97e025f1248eb91ca"
   },
   "en/rtc/capi/api-reference/subscribe": {
     "reviewed": true,
@@ -1046,8 +1046,8 @@
   "en/rtc/capi/changelog": {
     "reviewed": false,
     "source": "zh/rtc/capi/changelog.mdx",
-    "zh_blob": "63b56bbf1e071db1093a56765c78a9dd414fd280",
-    "zh_commit": "5c67033211ab9914a6322fced171b5472948ed6e"
+    "zh_blob": "e5d38527d4e3014f7ebadbfa305acebff103c3e3",
+    "zh_commit": "4c801ab3d0ae40df2b6543e1ae040ff2c15b1c6f"
   },
   "en/rtc/capi/error-codes": {
     "reviewed": false,
@@ -1068,10 +1068,10 @@
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
   "en/rtc/capi/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/capi/types.md",
-    "zh_blob": "7f86904ba87466d0ab22e921a5ae2a17c045bb2b",
-    "zh_commit": "c24389c2fe2b294a03c7d9f1ef39446e9290bfda"
+    "zh_blob": "91937b71816fba4dc63bf5c96b8028a5e4b5be2e",
+    "zh_commit": "4c801ab3d0ae40df2b6543e1ae040ff2c15b1c6f"
   },
   "en/rtc/error-codes": {
     "reviewed": false,
