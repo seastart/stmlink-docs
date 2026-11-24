@@ -14,6 +14,8 @@ The SFU periodically sends a set of control-plane messages, which the SDK turns 
 | `didChangeActiveSpeakers` | A full snapshot of active speakers | Speaker highlighting, voice-activated layout |
 | `didSwitchLayer` | Result of a simulcast layer switch | Troubleshooting sudden changes in video quality |
 
+There's also `didUpdateLocalQuality` (since 1.9.0), which is **available on both engines** and computed locally by the SDK; see [Local network quality](#local-network-quality) below.
+
 <Note>
 The quality and layer events **exist only on the SeaStart (SFU) engine**. They travel over the signaling DataChannel on the subscribing PeerConnection, and the Wangsu (CDN) engine has no such path, so with CDN you don't receive them and `getConnectionQuality()` also returns `nil`. `didChangeActiveSpeakers` is the exception: on Wangsu channels the SDK computes remote speakers locally (covering subscribed audio only), so it fires on both engines. Use `Channel.streamVendor` to tell the current engine—see [Types](/en/rtc/swift/types#streamvendor).
 </Note>
@@ -89,6 +91,31 @@ It returns `nil` when no report has been received yet (which is different from "
 <Note>
 After a reconnect, the SDK clears the quality cache (latest evaluation, level-change baseline, speaker snapshot), so the UI doesn't keep showing a stale `poor` level after recovery. So after a reconnect, `getConnectionQuality()` briefly returns `nil` until a new report arrives—this is intentional; just treat it as "no data yet" in the UI.
 </Note>
+
+---
+
+### Local network quality
+
+`didUpdateLocalQuality` (since 1.9.0) is computed by the SDK locally from WebRTC statistics, about every 2 seconds, and **fires on both the SeaStart and Wangsu (CDN) engines**. Wangsu channels have no server-side quality reports, so signal-strength icons and network details panels can only use it.
+
+```swift
+func channel(_ channel: Channel, didUpdateLocalQuality snapshot: LocalQualitySnapshot) {
+    // Called on a background thread; switch to the main thread before updating the UI
+    DispatchQueue.main.async {
+        signalBars.update(level: snapshot.overall)          // The worse level of uplink and downlink
+        latencyLabel.text = snapshot.rttMs.map { "\(Int($0.rounded()))ms" } ?? "--ms"
+    }
+}
+```
+
+When entering a screen, read the latest sample once with `channel.getLocalQuality()`. It returns `nil` before the first sampling round completes after joining (about 2 seconds) or after you leave the channel.
+
+A few notes:
+
++ It measures the segment **from your device to the access point** (round-trip time comes from ICE connectivity checks) and doesn't include the remote side; it tells you "how my network is doing".
++ Round-trip time and packet loss are each mapped to a level, and the worse one is used; for thresholds see [`LocalQualityLevel`](/en/rtc/swift/types#localqualitylevel).
++ **When you're neither publishing nor subscribing to any track, both directions are `unknown`**: there's no media connection to measure, and it isn't a fault—for example, when you're alone in the channel with the microphone and camera off.
++ It's independent of `didReceiveQualityReport` sent by the SFU. SeaStart channels have both, but their values are measured differently, so don't compare them directly.
 
 ---
 

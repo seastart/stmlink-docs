@@ -358,6 +358,43 @@ A simplified level evaluation snapshot, used by `getConnectionQuality()` and the
 
 ---
 
+### LocalQualitySnapshot
+
+One sample of local network quality (since 1.9.0), delivered by `didUpdateLocalQuality` and read with `Channel.getLocalQuality()`. The SDK computes it locally from WebRTC statistics, on both the SeaStart and Wangsu engines.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `timestamp` | `Int64` | Unix timestamp in milliseconds when the sample completed |
+| `uplink` | `LocalDirectionQuality` | Uplink (what you publish) |
+| `downlink` | `LocalDirectionQuality` | Downlink (what you subscribe to) |
+| `overall` | `LocalQualityLevel` | The worse level of uplink and downlink; if one side is `unknown`, the other side is used, and it's `unknown` only when neither side has a level |
+| `rttMs` | `Double?` | The larger of the available uplink and downlink round-trip times, in milliseconds |
+| `lossRate` | `Double?` | The larger of the available uplink and downlink packet loss rates, as a **ratio** from 0 to 1 |
+
+#### LocalDirectionQuality
+
+Local quality in one direction. A value that isn't available is `nil`; 0 is never used in place of a measured value.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `level` | `LocalQualityLevel` | The worst level among the connections in this direction |
+| `rttMs` | `Double?` | Round-trip time in milliseconds, the maximum in this direction |
+| `lossRate` | `Double?` | Packet loss rate in this sampling window, 0 to 1, the maximum of any single track in this direction |
+| `jitterMs` | `Double?` | Jitter in milliseconds, the maximum in this direction |
+
+#### LocalQualityLevel
+
+| Value | Meaning |
+| --- | --- |
+| `unknown` | No reliable assessment: this direction has no connected connection (for example, you haven't published any track), or no values were available in this round |
+| `excellent` | Round-trip time < 100ms and packet loss < 2% |
+| `good` | Round-trip time < 200ms and packet loss < 5% |
+| `poor` | Round-trip time < 400ms and packet loss < 15% |
+| `bad` | Round-trip time ≥ 400ms or packet loss ≥ 15% |
+| `lost` | A connection in this direction is disconnected (ICE failed); an intentional close doesn't count and is reported as `unknown` |
+
+---
+
 ### ConnectionQualityChange
 
 | Field | Type | Description |

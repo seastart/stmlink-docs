@@ -3,6 +3,18 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.10.0] - 2026.11.24
+#### Added
++ **Local network quality `meeting(_:didUpdateLocalQuality:)`**: delivers a `LocalQualitySnapshot` (uplink and downlink round-trip time, packet loss, jitter, and level) about every 2 seconds, also in meetings whose media streaming runs on Wangsu CDN, so you can build signal bar icons and network details panels directly; `getLocalQuality()` reads the latest sample. See [Events](/en/meeting/swift/events).
++ **Host asks you to share the screen `meeting(_:adminDidRequestOpenShare:)`**: to accept, call `requestShare(byAdmin: true, adminUid: data.opUid)` (for iOS full-screen sharing, `publishBroadcastShare(byAdmin:adminUid:)`); to decline, just ignore it.
+
+#### Changed
++ The SRTC dependency is upgraded to **1.9.0** (including the fix for receiving no data after resubscribing on the SeaStart engine). If you declare your own `srtc-swift-sdk` dependency (full-screen sharing extension, AI noise suppression plugin), change it to `exact: "1.9.0"` as well; otherwise dependency resolution fails.
+
+<Warning>
+**Breaking change**: `McuTaskType.live` (live stream, raw value 8) has been removed because the server no longer supports this task type. Code that uses `.live` **fails to compile** after upgrading; just delete the corresponding branch. A value of 8 in historical data decodes as `.unknown`. For live streaming, use a stream mixing task (`.mix`) together with the server-side media output endpoints instead.
+</Warning>
+
 ### [1.9.0] - 2026.11.18
 #### Added
 + **`audioCaptureProcessor`**: the microphone capture processor, which can take the SRTC AI noise suppression plugin `SRTCDeepFilterNet`; see [AI noise suppression (DeepFilterNet)](/en/meeting/swift/advanced/deepfilternet). The SDK holds the processor weakly, so keep your own reference.

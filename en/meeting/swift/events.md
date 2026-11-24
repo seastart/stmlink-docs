@@ -122,6 +122,7 @@ System messages the host sends from the backend also arrive via `didReceiveChatM
 | `meeting(_:adminDidConfirmHandup:)` | The host handled a raise-hand request | `AdminConfirmHandupEventData` |
 | `meeting(_:adminDidRequestOpenMic:)` | The host asks you to turn on your microphone | `AdminRequestOpenMicEventData` |
 | `meeting(_:adminDidRequestOpenCamera:)` | The host asks you to turn on your camera | `AdminRequestOpenCameraEventData` |
+| `meeting(_:adminDidRequestOpenShare:)` | The host asks you to share your screen (since 1.10.0). To accept, call `requestShare(byAdmin: true, adminUid: data.opUid)` (for iOS full-screen sharing, `publishBroadcastShare(byAdmin:adminUid:)`); to decline, just ignore it—the server has no decline endpoint | `AdminRequestOpenShareEventData` |
 
 For how to handle them, see [Raise hand and turn-on requests](/en/meeting/swift/advanced/handup).
 
@@ -192,11 +193,14 @@ Both callbacks exist only on iOS (their declarations are wrapped in `#if os(iOS)
 | `meeting(_:connectionQualityDidChange:)` | The quality level jumps to a different tier (assertion-style) | `ConnectionQualityChange` |
 | `meeting(_:activeSpeakersDidChange:)` | The active speakers change | `ActiveSpeakersSnapshot` |
 | `meeting(_:didSwitchLayer:)` | A simulcast layer switch completes | `LayerSwitchedInfo` |
+| `meeting(_:didUpdateLocalQuality:)` | A local network quality sample completes, about every 2 seconds (since 1.10.0, **also in Wangsu CDN meetings**) | `LocalQualitySnapshot` |
 
 Quality is reported through **two separate feeds**; pick one based on what you need, and don't use both to drive the same UI:
 
 + `didReceiveQualityReport` fires on every report with the raw values (packet loss, RTT, jitter, bitrate, MOS), suitable for signal bar icons and detailed diagnostics panels
 + `connectionQualityDidChange` fires only when the level jumps to a different tier, suitable for "your network is poor" hints and proactive downgrade decisions
+
+These two are sent by the SFU, and **meetings whose media streaming vendor is Wangsu CDN don't receive them**. `didUpdateLocalQuality` carries uplink and downlink round-trip time, packet loss, and level computed by the SDK locally from WebRTC statistics; it's available with both media streaming vendors, and in CDN meetings it's the only source for a signal bar icon. When entering a screen, you can read the latest sample once with `getLocalQuality()`. For levels and fields, see [SRTC call quality](/en/rtc/swift/advanced/call-quality#local-network-quality).
 
 `activeSpeakersDidChange` gives a **full snapshot** (already sorted by volume in descending order), so just overwrite your UI with it; you don't need to merge increments yourself. When no one is speaking, `speakers` is an empty array. Since 1.6.0 you are in the snapshot too (`isLocal == true`, present while your mic is on and you are speaking), on the same scale as remote speakers; to leave yourself out, set `meeting.activeSpeakerOptions.includeLocal = false`.
 

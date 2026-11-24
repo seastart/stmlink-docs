@@ -37,7 +37,7 @@ The meeting layer is built on top of the audio and video layer, but you only nee
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.10.0"),
 ],
 targets: [
     .target(
@@ -63,9 +63,9 @@ You need this step only for **iOS full-screen screen sharing** (sharing the enti
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.10.0"),
     // The version must match the SRTC version pinned inside SMeeting
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.8.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.9.0"),
 ],
 ```
 
@@ -103,7 +103,7 @@ import SRTC
 | Full-screen sharing on iOS | `SRTCBroadcastPicker` (brings up the system broadcast picker) |
 | Audio routing on iOS | `AudioRoute`, `AudioRouteTarget`, `AudioRouteInfo`, `AudioCallState` |
 | Virtual background | `SRTCNativeImage` (the background image, an alias of `UIImage` / `NSImage`), `SRTCVirtualBackgroundEffect` (iOS only) |
-| Call quality events | `QualityReport`, `ConnectionQualityChange`, `ActiveSpeakersSnapshot`, `LayerSwitchedInfo` |
+| Call quality events | `QualityReport`, `ConnectionQualityChange`, `LocalQualitySnapshot`, `ActiveSpeakersSnapshot`, `LayerSwitchedInfo` |
 | Disconnect reason | `DisconnectReason` |
 
 ---

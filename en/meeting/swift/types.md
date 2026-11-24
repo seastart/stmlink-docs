@@ -388,6 +388,7 @@ result.meta      // MetaRes
 | `AdminConfirmHandupEventData` | `type: HandupType`, `approve`, `opUid`, `targetId` |
 | `AdminRequestOpenMicEventData` | `opUid` |
 | `AdminRequestOpenCameraEventData` | `opUid` |
+| `AdminRequestOpenShareEventData` | `opUid` (the host who sent the request, passed back as `adminUid` when you accept; an empty string when the request comes from the server) |
 
 #### Waiting room and sub-meetings
 
@@ -564,8 +565,7 @@ If you're not sure which one to use, don't pass it, and let the server decide ba
 | `mix` | `2` | Stream mixing mode |
 | `mixAndRecord` | `3` | Stream mixing and recording |
 | `audio` | `4` | Audio recording mode |
-| `live` | `8` | **Deprecated; will be removed in the next release**: the server no longer supports type 8 and returns a parameter error if it's passed. For live streaming, start a stream mixing task with `mix`, then have your server pull or push it via the media output endpoints |
-| `unknown` | `-1` | A value this SDK version doesn't recognize (only for decoding; don't use it in requests) |
+| `unknown` | `-1` | A value this SDK version doesn't recognize (only for decoding; don't use it in requests); since 1.10.0, live stream (`8`) values in historical data also decode to this |
 
 #### McuTaskStatus
 
@@ -669,6 +669,9 @@ For why there are only two switchable states, see [Audio routing](/en/meeting/sw
 | `ActiveSpeakerInfo` | `uid`, `trackId`, `level` (linear volume, 0–1, quantized in steps of 1/8), `isLocal` (whether it's you, since 1.6.0) |
 | `ActiveSpeakersSnapshot` | `ts`, `speakers: [ActiveSpeakerInfo]` (already sorted by volume in descending order; empty when no one is speaking) |
 | `LayerSwitchedInfo` | `subKey`, `fromTrackId`, `toTrackId`, `reason` (such as `bwe_down` / `bwe_up`), `latencyMs` |
+| `LocalQualitySnapshot` | `timestamp`, `uplink` / `downlink: LocalDirectionQuality`, `overall` (the worse level; if one side is `unknown`, the other side is used), `rttMs`, `lossRate` (the larger of the available uplink and downlink values), since 1.10.0 |
+| `LocalDirectionQuality` | `level`, `rttMs` (milliseconds), `lossRate` (0 to 1), `jitterMs` (milliseconds); `nil` when not available |
+| `LocalQualityLevel` | `unknown` / `excellent` / `good` / `poor` / `bad` / `lost`; for thresholds see [SRTC types](/en/rtc/swift/types#localqualitylevel) |
 
 For value ranges and usage of the fields, see [SRTC · Call quality and active speakers](/en/rtc/swift/advanced/call-quality).
 

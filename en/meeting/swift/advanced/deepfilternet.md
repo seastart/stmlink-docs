@@ -18,7 +18,7 @@ The plugin lives in the `srtc-swift-sdk` distribution repository, so declare an 
 ```swift
 dependencies: [
     .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.8.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.9.0"),
 ],
 targets: [
     .target(

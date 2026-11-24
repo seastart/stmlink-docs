@@ -13,7 +13,6 @@ Recording and compositing are both done on the server; the client only sends com
 | `.mix` | Stream mixing, compositing multiple videos into one stream for viewers to pull |
 | `.mixAndRecord` | Stream mixing plus recording |
 | `.audio` | Audio recording |
-| `.live` | Deprecated; will be removed in the next release: the server no longer supports it. For live streaming, use `.mix` plus the server-side media output endpoints |
 
 You can also use `MeetingCreateReq.autoRecord` when creating the meeting so that recording starts automatically once the meeting begins.
 

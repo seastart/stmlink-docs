@@ -75,8 +75,11 @@ The most common entry point for your app is `didAddTrack`, because that's usuall
 | `channel(_:didChangeConnectionQuality:)` | The quality level changed (state change) | `ConnectionQualityChange` |
 | `channel(_:didChangeActiveSpeakers:)` | Active speakers changed | `ActiveSpeakersSnapshot` |
 | `channel(_:didSwitchLayer:)` | A simulcast layer switch completed | `LayerSwitchedInfo` |
+| `channel(_:didUpdateLocalQuality:)` | A local network quality sample completed, about every 2 seconds (since 1.9.0, **on both engines**) | `LocalQualitySnapshot` |
 
 Quality uses **two event streams**; pick one by purpose: `didReceiveQualityReport` delivers raw values every report cycle, suited for signal-strength icons and diagnostics panels; `didChangeConnectionQuality` fires only when the level changes, suited for "poor network" prompts and proactive downgrading. **Don't use the former to drive prompts or downgrading**—it flashes repeatedly when the level jitters.
+
+The first two are sent by the SFU and **exist only on the SeaStart engine**. `didUpdateLocalQuality` is computed by the SDK locally from WebRTC statistics and is also available on Wangsu (CDN) channels; on a CDN channel it's the only way to build a signal-strength icon. See [Call quality](/en/rtc/swift/advanced/call-quality#local-network-quality).
 
 `didChangeActiveSpeakers` delivers a **full snapshot** (already sorted by volume in descending order), so your app just overwrites the UI without merging increments itself; when nobody is speaking, it's an empty array.
 
