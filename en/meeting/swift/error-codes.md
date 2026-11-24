@@ -122,6 +122,7 @@ do {
 Key points:
 
 + Besides `SMeetingError`, the RTC layer's `SRTCError` is also thrown unchanged; handle both
++ The pre-call network check `networkCheck` (since 1.11.0) also passes SRTC-layer codes through: a check already running is `alreadyJoined` (005), cancelled is `cancelled` (026), invalid parameters are `invalidArgument` (031); only when not logged in and using the overload without parameters does it throw the meeting layer's `notLoggedIn` (001)
 + For messages shown to end users, map `baseCode` to your own text; use `error.localizedDescription` when writing logs, because it includes the error code
 + `SMeetingError` conforms to `Equatable`, so you can compare it directly with a specific case; it's distributed with library evolution enabled, and later versions may add cases, so keep a `default` branch in your `switch`
 

@@ -640,6 +640,65 @@ Values match the server; any other value from the backend decodes to `.unknown`.
 
 ---
 
+### Pre-call network check
+
+Available since 1.11.0, returned by [`networkCheck`](/en/meeting/swift/api-reference/SMeetingEngine#pre-call-network-check).
+The meeting layer doesn't expose SRTC, so it defines its own `MeetingNetworkCheck*` types that map one-to-one to SRTC's [`NetworkCheck*`](/en/rtc/swift/types#networkcheckresult),
+with only the extra `meetingApi` subcheck on the `server` item. All of them are `Codable`, so you can encode them with `JSONEncoder` and report or log them directly.
+
+#### MeetingNetworkCheckResult
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `status` | `MeetingNetworkCheckStatus` | Overall result: `ok` / `warning` / `fail`; `fail` if any item is `fail` |
+| `items` | `[MeetingNetworkCheckItem]` | Always 5 items, in the order `permission` → `connectivity` → `mtu` → `dns` → `server` |
+| `costMs` | `Int` | Total duration in milliseconds |
+
+There is also `item(_ id: MeetingNetworkCheckItemId) -> MeetingNetworkCheckItem?` to get an item by id.
+
+#### MeetingNetworkCheckItem
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `MeetingNetworkCheckItemId` | `permission` / `connectivity` / `mtu` / `dns` / `server` |
+| `status` | `MeetingNetworkCheckItemStatus` | `pass` / `warning` / `fail` / `skipped` (no check needed) / `unsupported` (not supported on this platform) |
+| `reason` | `String` | Machine-readable reason code, an empty string on `pass`; for SRTC's values see [SRTC types](/en/rtc/swift/types#networkcheckitemid), and for the ones added by the meeting layer see the table below |
+| `message` | `String` | A Chinese description you can show to users directly |
+| `costMs` | `Int` | Duration of this item in milliseconds |
+| `data` | `MeetingNetworkCheckData` | Measurements for this item |
+
+#### MeetingNetworkCheckData
+
+Each item fills in only its own fields; the rest are `nil` and omitted when encoded.
+
+| Field | Type | Item | Description |
+| --- | --- | --- | --- |
+| `netType` | `String?` | `connectivity` | `wifi` / `cellular` / `ethernet` / `unknown` |
+| `maxSize` | `Int?` | `mtu` | The largest payload size that was echoed back (bytes) |
+| `hosts` | `[MeetingNetworkCheckHost]?` | `dns` | Resolution result per host: `host`, `ips`, `costMs` |
+| `meetingApi` | `MeetingNetworkCheckSubCheck?` | `server` | Whether the meeting API is reachable; **meeting layer only**, JSON key `meeting_api` |
+| `api` / `signal` / `media` | `MeetingNetworkCheckSubCheck?` | `server` | From SRTC: the check info API, signaling, and media |
+
+#### MeetingNetworkCheckSubCheck
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `ok` | `Bool` | Whether it's reachable (that is, `status == .pass`) |
+| `status` | `MeetingNetworkCheckItemStatus` | Subcheck status; `skipped` / `unsupported` don't count as failures |
+| `reason` | `String` | Reason code, an empty string on `pass` |
+| `rttMs` | `Int` | Duration in milliseconds, `0` if not run |
+| `via` | `String?` | `signal` only: `tcp` or `ws` |
+| `httpStatus` / `code` | `Int?` | `api` failures only: HTTP status code / server business error code |
+
+Reason codes added by the meeting layer:
+
+| `reason` | Appears in | Meaning |
+| --- | --- | --- |
+| `meeting_api_unreachable` | `server`, `data.meetingApi` | The meeting API can't be reached: no network, or the server address is wrong |
+| `server_info_unavailable` | `data.meetingApi` (`skipped`) | Not logged in, and the meeting API address can't be derived from `serverUrl` |
+
+---
+
 ### Types from SRTC
 
 The following types are defined in the underlying SRTC module and require `import SRTC` to use: `LogLevel`, `CameraPreset`, `MicPreset`, `ScreenPreset`, `DeviceInfo`, `DisconnectReason`, `ImDisconnectReason`, `AnyCodable`, `SRTCVideoView`, `SRTCVideoRenderer`, `ScreenCaptureSources`, `DisplaySource`, `WindowSource`, `LocalCameraTrack`, `LocalScreenTrack`, `RemoteVideoTrack`, `Track`, `SRTCBroadcastPicker`.

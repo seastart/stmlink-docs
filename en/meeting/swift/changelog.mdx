@@ -3,6 +3,20 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.11.0] - 2026.11.24
+#### Added
++ **Pre-call network check `networkCheck`**: call it before joining, no meeting needed. It checks 5 items in the fixed order `permission` → `connectivity` → `mtu` → `dns` → `server`, calls `onItem` on the main thread as each item completes, and finally returns a `MeetingNetworkCheckResult` (`ok` / `warning` / `fail`, each item with a machine-readable `reason` and a Chinese `message` you can show directly). SRTC runs the five checks; the meeting layer adds a `meetingApi` subcheck (whether the meeting API is reachable) to the `server` item. When everything is normal it takes about 1–5 seconds. See [SMeetingEngine](/en/meeting/swift/api-reference/SMeetingEngine#pre-call-network-check) and [Types](/en/meeting/swift/types#pre-call-network-check).
+  + When logged in, call `networkCheck(timeoutMs:onItem:)` directly; addresses come from the login information. When not logged in, pass them explicitly with `networkCheck(appId:serverUrl:...)` or `networkCheck(token:...)`
+  + `cancelNetworkCheck()` cancels a running check
+  + New types `MeetingNetworkCheckResult`, `MeetingNetworkCheckItem`, `MeetingNetworkCheckItemId`, `MeetingNetworkCheckStatus`, `MeetingNetworkCheckItemStatus`, `MeetingNetworkCheckData`, `MeetingNetworkCheckSubCheck`, `MeetingNetworkCheckHost`, all `Codable`
+
+#### Changed
++ The SRTC dependency is upgraded to **1.10.0**. If you declare your own `srtc-swift-sdk` dependency (full-screen sharing extension, AI noise suppression plugin), change it to `exact: "1.10.0"` as well; otherwise dependency resolution fails.
+
+<Note>
+The API check in `server` requires a server that supports the pre-call network check; on a server that hasn't been upgraded, SRTC's `api` subcheck is `fail`, without affecting the other items. The API only adds and doesn't remove or change anything, so 1.10.0 integration code compiles as is, and the minimum platforms are unchanged (iOS 16 / macOS 12.3).
+</Note>
+
 ### [1.10.0] - 2026.11.24
 #### Added
 + **Local network quality `meeting(_:didUpdateLocalQuality:)`**: delivers a `LocalQualitySnapshot` (uplink and downlink round-trip time, packet loss, jitter, and level) about every 2 seconds, also in meetings whose media streaming runs on Wangsu CDN, so you can build signal bar icons and network details panels directly; `getLocalQuality()` reads the latest sample. See [Events](/en/meeting/swift/events).

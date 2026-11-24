@@ -447,6 +447,75 @@ await meeting.disableIm()
 
 ---
 
+### Pre-call network check
+
+Available since 1.11.0, requires SRTC 1.10.0. **Call it before joining**; you don't need to join a meeting or connect to RTC. It has the same name and parameters as SRTC's
+[`networkCheck`](/en/rtc/swift/api-reference/SRTCEngine#pre-call-network-check):
+SRTC runs the five checks `permission` → `connectivity` → `mtu` → `dns` → `server` and its results are converted to meeting-layer types as is.
+The meeting layer only adds one subcheck, `meetingApi` (JSON key `meeting_api`, whether the meeting API is reachable), to the `data` of the `server` item, and recomputes the overall status accordingly.
+When everything is normal it takes about 1–5 seconds.
+
+#### `networkCheck(timeoutMs:onItem:)`
+
+Use this when logged in: the RTC `app_id` and server address come from the login information (from the IM token if `enableIm()` has been called; otherwise derived from the meeting API address), so you don't pass any.
+
+```swift
+let result = try await meeting.networkCheck { item in
+    // Main thread, called item by item in the order permission → connectivity → mtu → dns → server
+    print(item.id, item.status, item.message)
+}
+if result.status == .fail {
+    // Each item's message is a Chinese description you can show to users directly
+}
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `timeoutMs` | `Int` | No | Per-item timeout in milliseconds, default `3000`; also used as the request timeout of `meeting_api` |
+| `onItem` | `(@Sendable (MeetingNetworkCheckItem) -> Void)?` | No | Called once per completed item, on the main thread; the `server` item is reported only after `meeting_api` is merged in |
+
+**Returns:** [`MeetingNetworkCheckResult`](/en/meeting/swift/types#meetingnetworkcheckresult) (`async throws`)
+
+**Throws:** `SMeetingError.notLoggedIn` (not logged in), `SRTCError.invalidArgument` (the RTC address can't be derived; use the overload below that takes explicit parameters), `.alreadyJoined` (a check is already running), `.cancelled` (cancelled)
+
+#### `networkCheck(appId:serverUrl:timeoutMs:onItem:)`
+
+Use this when not logged in: pass the RTC app ID and server address explicitly. Everything else is the same as above.
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `appId` | `String` | Yes | App ID |
+| `serverUrl` | `String` | Yes | The **RTC** server address, that is, `client_api` in the RTC / IM token (such as `https://host/client/`), not the meeting API address |
+| `timeoutMs` | `Int` | No | Same as above |
+| `onItem` | `(@Sendable (MeetingNetworkCheckItem) -> Void)?` | No | Same as above |
+
+When logged in, `meeting_api` probes the meeting API used for login; when not logged in, the meeting API address is derived from `serverUrl`, and if it can't be derived, `meeting_api` is `skipped` (`server_info_unavailable`).
+
+#### `networkCheck(token:timeoutMs:onItem:)`
+
+A shortcut when you already have an RTC channel token or IM token: only its `app_id` and `client_api` are used, not for authentication, so **an expired token also works**. Throws `SRTCError.invalidArgument` if the token can't be decoded.
+
+#### `cancelNetworkCheck()`
+
+Cancels the check running on this instance; the running `networkCheck` then throws `SRTCError.cancelled`. Does nothing if no check is running.
+
+#### Rules and errors
+
++ **How `meeting_api` is judged**: it makes one signed call to a read-only meeting API, and **any HTTP response counts as reachable**; a network error or timeout counts as unreachable, in which case `server` is `fail` with `reason` `meeting_api_unreachable`. If `server` has already failed because of an SRTC subcheck, SRTC's `reason` is kept.
++ **Duration**: `meeting_api` runs in parallel with the SRTC checks, so it doesn't add to the total duration.
++ What the other items check, their reason codes, and platform limitations are the same as in SRTC; see [SRTC types](/en/rtc/swift/types#networkcheckitemid).
+
+| Error | Low code | When |
+| --- | :---: | --- |
+| `SRTCError.alreadyJoined` | `005` | A check is already running (only one at a time) |
+| `SRTCError.cancelled` | `026` | Cancelled by `cancelNetworkCheck()` or by the caller's task |
+| `SRTCError.invalidArgument` | `031` | Empty parameters, a token that can't be decoded, or logged in but the RTC address can't be derived |
+| `SMeetingError.notLoggedIn` | `001` | Not logged in, using the overload without parameters |
+
+The first three are SRTC-layer errors passed through, with the same codes as when you call SRTC directly; only "not logged in" uses the meeting layer's `SMeetingError`.
+
+---
+
 ### Virtual background
 
 **iOS only**: starting with `1.7.0`, these members don't exist on macOS; wrap code shared by both platforms in `#if os(iOS)`. This is a **device-level setting** (it applies to the single shared camera capture pipeline in the process), and it applies to all meetings at once. After switching cameras, turning the camera off and on again, or reconnecting after a disconnect during the meeting, your app doesn't need to apply it again. For usage and tuning, see [Virtual background](/en/meeting/swift/advanced/virtual-background).

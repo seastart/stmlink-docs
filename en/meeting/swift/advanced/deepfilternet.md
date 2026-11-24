@@ -13,12 +13,12 @@ The plugin is a separate, optional product; apps that don't use AI noise suppres
 
 ### Integration
 
-The plugin lives in the `srtc-swift-sdk` distribution repository, so declare an additional `srtc-swift-sdk` dependency in your project, pinned with `exact:` to the SRTC version that matches SMeeting (SMeeting 1.10.0 pairs with SRTC `1.9.0`), and add `SRTCDeepFilterNet` to your App target:
+The plugin lives in the `srtc-swift-sdk` distribution repository, so declare an additional `srtc-swift-sdk` dependency in your project, pinned with `exact:` to the SRTC version that matches SMeeting (SMeeting 1.11.0 pairs with SRTC `1.10.0`), and add `SRTCDeepFilterNet` to your App target:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.10.0"),
-    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.9.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.11.0"),
+    .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.10.0"),
 ],
 targets: [
     .target(
@@ -31,7 +31,7 @@ targets: [
 ]
 ```
 
-The same applies to Xcode projects: add `srtc-swift-sdk` under Package Dependencies, choose the Exact Version rule with `1.9.0`, and check `SRTCDeepFilterNet` only for the App target.
+The same applies to Xcode projects: add `srtc-swift-sdk` under Package Dependencies, choose the Exact Version rule with `1.10.0`, and check `SRTCDeepFilterNet` only for the App target.
 
 <Warning>
 The `srtc-swift-sdk` version must match the SRTC version that SMeeting pins; otherwise dependency resolution fails. Check this dependency whenever you upgrade SMeeting. Don't add this product to the screen sharing extension target.
