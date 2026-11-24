@@ -13,11 +13,11 @@ description: "在会议里给麦克风开启 AI 降噪：加 srtc-swift-sdk 的 
 
 ### 集成
 
-插件在 `srtc-swift-sdk` 分发仓里，需要在工程里再声明一条 `srtc-swift-sdk` 依赖，版本用 `exact:` 锁到与 SMeeting 配套的 SRTC 版本（SMeeting 1.9.0 配 SRTC `1.8.0`），并把 `SRTCDeepFilterNet` 挂到 App target：
+插件在 `srtc-swift-sdk` 分发仓里，需要在工程里再声明一条 `srtc-swift-sdk` 依赖，版本用 `exact:` 锁到与 SMeeting 配套的 SRTC 版本（SMeeting 1.10.0 配 SRTC `1.9.0`），并把 `SRTCDeepFilterNet` 挂到 App target：
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.9.0"),
+    .package(url: "https://github.com/seastart/smeeting-swift-sdk.git", from: "1.10.0"),
     .package(url: "https://github.com/seastart/srtc-swift-sdk.git", exact: "1.9.0"),
 ],
 targets: [
@@ -31,7 +31,7 @@ targets: [
 ]
 ```
 
-Xcode 工程同理：在 Package Dependencies 里加 `srtc-swift-sdk`，规则选 Exact Version `1.8.0`，只给 App target 勾选 `SRTCDeepFilterNet`。
+Xcode 工程同理：在 Package Dependencies 里加 `srtc-swift-sdk`，规则选 Exact Version `1.9.0`，只给 App target 勾选 `SRTCDeepFilterNet`。
 
 <Warning>
 `srtc-swift-sdk` 的版本必须与 SMeeting 锁定的 SRTC 版本一致，否则依赖解析直接失败。升级 SMeeting 时一并检查这条依赖。屏幕共享扩展 target 不要挂这个产品。
