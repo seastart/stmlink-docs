@@ -23,6 +23,19 @@ buildInfo(): BuildInfo;
 getEnvInfo(): EnvWxInfo;
 
 /**
+ * 会前网络检测：入会前调用，不需要加入频道、不使用 token 鉴权（v0.3.1 起）
+ * 依次检测网络权限、网络连接、MTU、域名解析、服务器连接 5 项，每完成一项回调一次 onItem
+ * @param options appId + serverUrl（即 token 里的 client_api），或直接传 token
+ * @returns 检测结果，固定 5 项、固定顺序
+ */
+networkCheck(options: NetworkCheckOptions): Promise<NetworkCheckResult>;
+
+/**
+ * 取消正在进行的网络检测，networkCheck 随即以 107026（Cancelled）结束；没有检测在跑时无操作
+ */
+cancelNetworkCheck(): void;
+
+/**
  * 频道事件通知回调
  */
 onNotifyChannelEvent?: ((event: ChannelEvent) => void) | null;
@@ -184,3 +197,20 @@ enableIm(token: string): Promise<string>;
 disableIm(): Promise<void>;
 ```
 
+### 会前网络检测
+
+`networkCheck` 的参数与结果类型见 [会前网络检测相关](/zh/rtc/wechat-miniprogram/types#会前网络检测相关)，接口与 [Web SDK](/zh/rtc/web/api-reference/SRTC#networkcheck) 一致。
+
+```typescript
+const srtc = new SRTC({});
+const result = await srtc.networkCheck({
+  appId: 'your_app_id',
+  serverUrl: 'https://rtc.example.com/client/', // 即 token 里的 client_api
+  onItem: (item) => console.log(item.id, item.status, item.message),
+});
+```
+
+- 小程序端的平台限制：`permission`、`mtu`、`dns` 三项固定为 `unsupported`；服务器连接项里的媒体（UDP）子检查同样记 `unsupported`，信令只测 WebSocket。所以小程序上 `server` 通过只说明 SDK 接口与信令可达。
+- SDK 接口地址与信令地址需已加入小程序的 request / socket 合法域名，否则对应子检查失败。
+- 需要服务端提供网络检测接口；服务端版本较老、没有该接口时，服务器连接项记 `fail`（`api_unreachable`），信令、媒体子检查记 `skipped`。
+- 同一个实例同时只能跑一个检测，进行中再次调用抛 `107005`；被 `cancelNetworkCheck` 取消时抛 `107026`；缺 `appId` / `serverUrl` 且 `token` 解不出来时抛 `107031`。

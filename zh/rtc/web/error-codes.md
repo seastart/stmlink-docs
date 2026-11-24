@@ -67,7 +67,7 @@ const srtc = new SRTC({
 | `106001` | `NotInChannel` | 不在频道内 | 未加入频道，或已离开频道后又调用发布 / 订阅等频道接口 | —— |
 | `106002` | `TokenExpired` | Token 已过期 | 加入频道或启用 IM 时 Token 已超过有效期，重新签发 | —— |
 | `106003` | `TrackNotFound` | 流轨道不存在 | 按 uid + id / desc 找不到远端轨道：对方未发布或已取消发布 | —— |
-| `106005` | `AlreadyJoined` | 已加入 | 重复启用 IM、重复加入白板 | —— |
+| `106005` | `AlreadyJoined` | 已加入 | 重复启用 IM、重复加入白板；网络检测还在进行时再次调用 `networkCheck` | —— |
 | `106006` | `ConnectionFailed` | 连接失败 | 网络请求失败或 HTTP 非 200（状态见 `message`），或 SFU 接口多次重试仍失败 | 网络异常，请检查网络后重试 |
 | `106007` | `ConnectionTimeout` | 连接超时 | 加入频道时媒体连接迟迟建不起来，检查 UDP 是否放通 | 网络异常，请检查网络后重试 |
 | `106009` | `SignalingConnectFailed` | 信令连接失败 | 信令服务不可达，检查网络与防火墙 | 网络异常，请检查网络后重试 |
@@ -83,8 +83,8 @@ const srtc = new SRTC({
 | `106022` | `EngineNotSupported` | 流媒体引擎不支持 | 服务端下发了当前 SDK 版本不认识的流媒体引擎，升级 SDK | —— |
 | `106024` | `InvalidState` | 当前状态不允许该操作 | 调用顺序不对，如实例已销毁、本地用户信息尚未就绪 | —— |
 | `106025` | `InternalError` | SDK 内部错误 | 如处理器插件没有产出轨道。请带上日志联系我们 | —— |
-| `106026` | `Cancelled` | 操作被取消 | 调用过程中离开了频道 | —— |
-| `106031` | `InvalidArgument` | 参数非法 | 必填参数为空、传入的 `MediaStreamTrack` 类型不符等 | —— |
+| `106026` | `Cancelled` | 操作被取消 | 调用过程中离开了频道；网络检测被 `cancelNetworkCheck` 取消 | —— |
+| `106031` | `InvalidArgument` | 参数非法 | 必填参数为空、传入的 `MediaStreamTrack` 类型不符；`networkCheck` 缺 `appId` / `serverUrl` 且 `token` 解不出来等 | —— |
 | `106032` | `FeatureNotSupported` | 当前浏览器不支持该能力 | 屏幕共享、画中画、联播、本地录制（MediaRecorder）等 | 当前浏览器不支持该功能，请使用最新版 Chrome / Edge |
 | `106033` | `TrackNotCaptured` | 轨道未采集 | 没调 `startCapture`（或已停止）就发布、播放或设置处理器 | —— |
 | `106034` | `MaxSubscribeLimitReached` | 超过订阅上限 | 已订阅的音频 / 视频轨道数达到流媒体引擎的上限 | —— |

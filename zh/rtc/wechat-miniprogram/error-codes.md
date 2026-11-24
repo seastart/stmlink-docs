@@ -58,7 +58,7 @@ const srtc = new SRTC({
 | `107001` | `NotInChannel` | 不在频道内 | 未加入频道，或已离开频道后又调用发布、订阅、`changePusherOptions` 开麦 / 开摄像头 | —— |
 | `107002` | `TokenExpired` | Token 已过期 | 加入频道或启用 IM 时 Token 已超过有效期，重新签发 | —— |
 | `107003` | `TrackNotFound` | 流轨道不存在 | 按 uid + id / desc 找不到远端轨道：对方未发布或已取消发布 | —— |
-| `107005` | `AlreadyJoined` | 已加入 | 重复启用 IM | —— |
+| `107005` | `AlreadyJoined` | 已加入 | 重复启用 IM；网络检测还在进行时再次调用 `networkCheck` | —— |
 | `107006` | `ConnectionFailed` | 连接失败 | `wx.request` 失败或 HTTP 非 200（状态见 `message`）；检查服务域名是否已加入小程序的 request 合法域名 | 网络异常，请检查网络后重试 |
 | `107009` | `SignalingConnectFailed` | 信令连接失败 | 信令服务不可达；检查 socket 合法域名 | 网络异常，请检查网络后重试 |
 | `107010` | `SignalingSubscribeFailed` | 信令订阅失败 | 同上 | 网络异常，请检查网络后重试 |
@@ -66,7 +66,8 @@ const srtc = new SRTC({
 | `107020` | `MaxPublishLimitReached` | 超过发布上限 | 已发布的音频 / 视频轨道数达到上限 | —— |
 | `107024` | `InvalidState` | 当前状态不允许该操作 | 调用顺序不对，如实例已销毁、本地用户信息尚未就绪 | —— |
 | `107025` | `InternalError` | SDK 内部错误 | 请带上日志联系我们 | —— |
-| `107031` | `InvalidArgument` | 参数非法 | 必填参数为空、参数类型不符 | —— |
+| `107026` | `Cancelled` | 操作被取消 | 网络检测被 `cancelNetworkCheck` 取消 | —— |
+| `107031` | `InvalidArgument` | 参数非法 | 必填参数为空、参数类型不符；`networkCheck` 缺 `appId` / `serverUrl` 且 `token` 解不出来 | —— |
 | `107034` | `MaxSubscribeLimitReached` | 超过订阅上限 | 已订阅的音频 / 视频轨道数达到上限 | —— |
 | `107035` | `PublishDescConflict` | 发布描述冲突 | 同一个 `desc` 已被其它轨道占用，换一个 `desc` 或先取消发布 | —— |
 | `107037` | `PlayViewNotFound` | 播放节点不存在 | `freshPlayerStyle` 查询不到节点，页面渲染完成后再调用 | —— |

@@ -739,6 +739,124 @@ export interface EnvWebInfo {
 
 ---
 
+### 会前网络检测相关
+
+`srtc.networkCheck()` 的参数与结果类型。
+
+#### NetworkCheckOptions
+
+```typescript
+export interface NetworkCheckOptions {
+  /** 应用 ID，与 serverUrl 一起使用；也可以只传 token 由 SDK 从中解出 */
+  appId?: string;
+  /** SDK 接口地址，即入会 token 里的 client_api（如 https://rtc.example.com/client/） */
+  serverUrl?: string;
+  /**
+   * 入会 / IM token（可选）。已有 token 时可只传它，SDK 从中取应用 ID 与 SDK 接口地址；
+   * 同时传了 appId / serverUrl 时以显式传入的为准。检测不会用 token 鉴权，过期的 token 也可以
+   */
+  token?: string;
+  /** 单项超时 ms，默认 3000 */
+  timeoutMs?: number;
+  /** 进度回调：每完成一项回调一次（按固定顺序） */
+  onItem?: (item: NetworkCheckItem) => void;
+}
+```
+
+#### NetworkCheckResult
+
+```typescript
+export interface NetworkCheckResult {
+  /** 总状态：有 fail 即 fail；无 fail 但有 warning 即 warning；否则 ok（skipped / unsupported 不参与） */
+  status: 'ok' | 'warning' | 'fail';
+  /** 固定 5 项、固定顺序：permission、connectivity、mtu、dns、server */
+  items: NetworkCheckItem[];
+  /** 总耗时 ms */
+  costMs: number;
+}
+```
+
+#### NetworkCheckItem
+
+```typescript
+/** 检测项 id */
+export type NetworkCheckItemId = 'permission' | 'connectivity' | 'mtu' | 'dns' | 'server';
+
+/**
+ * 单项 / 子检查状态：pass 通过；warning 有隐患但不影响使用；fail 不通过；
+ * skipped 无需检测；unsupported 当前平台不支持该检测
+ */
+export type NetworkCheckItemStatus = 'pass' | 'warning' | 'fail' | 'skipped' | 'unsupported';
+
+export interface NetworkCheckItem {
+  /** 检测项 id */
+  id: NetworkCheckItemId;
+  /** 检测状态 */
+  status: NetworkCheckItemStatus;
+  /** 机器可读的原因码，pass 时为空串 */
+  reason: string;
+  /** 给人看的中文说明，可直接展示给用户 */
+  message: string;
+  /** 本项耗时 ms */
+  costMs: number;
+  /**
+   * 各项的测量值：
+   * - permission / mtu / dns：{}
+   * - connectivity：{ netType: NetworkCheckNetType }
+   * - server：NetworkCheckServerData
+   */
+  data: Record<string, any>;
+}
+
+/** 网络类型 */
+export type NetworkCheckNetType = 'wifi' | 'cellular' | 'ethernet' | 'unknown';
+```
+
+#### NetworkCheckServerData
+
+服务器连接项（`id` 为 `server`）的 `data`，包含 SDK 接口、信令、媒体 3 个子检查。
+
+```typescript
+export interface NetworkCheckSubResult {
+  /** 是否连通 */
+  ok: boolean;
+  /** 子检查状态（skipped / unsupported 时 ok 为 false，但不计为失败） */
+  status: NetworkCheckItemStatus;
+  /** 机器可读原因码，pass 时为空 */
+  reason: string;
+  /** 耗时 ms（未执行时为 0） */
+  rttMs: number;
+}
+
+export interface NetworkCheckServerData {
+  /**
+   * SDK 接口是否可达。失败时 httpStatus 为非 200 的 HTTP 状态码（服务端版本较老、没有该接口时为 404），
+   * code 为服务端返回的业务错误码（如 app_id 不存在）
+   */
+  api: NetworkCheckSubResult & { code?: number; httpStatus?: number };
+  /** 信令是否可连；JS 只能走 WebSocket，via 恒为 'ws' */
+  signal: NetworkCheckSubResult & { via: 'tcp' | 'ws' };
+  /** 媒体（SFU UDP）是否可达 */
+  media: NetworkCheckSubResult;
+}
+```
+
+#### 原因码
+
+| `reason` | 出现在 | 含义 | `message` |
+| --- | --- | --- | --- |
+| `offline` | connectivity | 当前没有网络连接 | 当前没有网络连接 |
+| `api_unreachable` | server、`data.api` | SDK 接口调不通：网络不通、服务地址不对、服务端版本较老没有检测接口，或服务端返回业务错误 | 无法连接服务器，请检查网络或服务器地址 |
+| `signal_unreachable` | server、`data.signal` | 信令 WebSocket 连不上 | 无法连接信令服务器，请联系网络管理员放行 |
+| `udp_blocked` | server、`data.media` | 媒体服务器 UDP 不通 | 无法连接媒体服务器（UDP 被拦截），请联系网络管理员放行 |
+| `media_unavailable` | server、`data.media` | 服务端暂无可用的媒体节点 | 服务器暂无可用的媒体节点，请稍后重试 |
+| `vendor_not_supported` | `data.media`（skipped） | 服务端流媒体不是 seastart，没有可探测的媒体节点 | —— |
+| `server_info_unavailable` | `data.signal`、`data.media`（skipped） | SDK 接口没调通，拿不到信令 / 媒体地址 | —— |
+
+信令与媒体都失败时，server 项的 `reason` 取信令的原因。
+
+---
+
 ### 日志与编译信息
 
 ```typescript

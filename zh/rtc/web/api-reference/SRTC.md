@@ -43,6 +43,50 @@ getEnvInfo(): EnvWebInfo
 
 ---
 
+### networkCheck
+
+会前网络检测：**入会前**调用，不需要加入频道，也不使用 token 鉴权。依次检测 5 项（网络权限、网络连接、MTU、域名解析、服务器连接），每完成一项回调一次 `onItem`，最后返回汇总结果。单项超时默认 3 秒（`timeoutMs` 可调）；服务器连接项内部先测 SDK 接口、再并行测信令与媒体，整次检测最坏约 3 个单项超时（默认约 9 秒）。
+
+```typescript
+networkCheck(options: NetworkCheckOptions): Promise<NetworkCheckResult>
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `options` | `NetworkCheckOptions` | 是 | 检测参数：`appId` + `serverUrl`（即 token 里的 `client_api`），或直接传 `token`，详见 [NetworkCheckOptions](/zh/rtc/web/types#networkcheckoptions) |
+
+**返回值：** `Promise<NetworkCheckResult>`，固定 5 项、固定顺序，详见 [会前网络检测相关](/zh/rtc/web/types#会前网络检测相关)
+
+```typescript
+const srtc = new SRTC({});
+const result = await srtc.networkCheck({
+  appId: 'your_app_id',
+  serverUrl: 'https://rtc.example.com/client/', // 即 token 里的 client_api
+  onItem: (item) => console.log(item.id, item.status, item.message),
+});
+if (result.status === 'fail') {
+  const bad = result.items.find((i) => i.status === 'fail');
+  showTip(bad?.message); // message 是可直接展示给用户的中文说明
+}
+```
+
+- Web 端的平台限制：浏览器没有可查询的网络权限、拿不到原始 UDP，也不能单独解析域名，所以 `permission`、`mtu`、`dns` 三项固定为 `unsupported`（域名解析失败会体现在服务器连接项上）；信令只测 WebSocket。
+- 服务端流媒体不是 seastart 时，服务器连接项里的媒体子检查记 `skipped`（`vendor_not_supported`）。
+- 需要服务端提供网络检测接口；服务端版本较老、没有该接口时，服务器连接项记 `fail`（`api_unreachable`，`data.api.httpStatus` 为 `404`），信令、媒体子检查记 `skipped`。
+- 同一个实例同时只能跑一个检测，进行中再次调用抛 `106005`；被 [cancelNetworkCheck](#cancelnetworkcheck) 取消时抛 `106026`；缺 `appId` / `serverUrl` 且 `token` 解不出来时抛 `106031`。`destroy()` 会自动取消进行中的检测。
+
+---
+
+### cancelNetworkCheck
+
+取消正在进行的网络检测，`networkCheck` 随即以 `106026`（`Cancelled`）结束；没有检测在跑时调用无任何效果。
+
+```typescript
+cancelNetworkCheck(): void
+```
+
+---
+
 ### onNotifyChannelEvent
 
 频道内事件回调，建议在 `join` 前注册。
