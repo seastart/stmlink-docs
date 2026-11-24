@@ -13,6 +13,16 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.7 - 2026-11-24
+
+#### Added
++ Added `getLocalCameraTrack()` / `getLocalScreenTrack()` to get the local camera and screen-share tracks, alongside the existing `getLocalMicTrack()`
++ Added `subscribeRemoteAudioMixTrack()` to get the remote audio mix (everyone except you); use it with `createLocalCompositeRecorder()` for local recording. There is only one mix per meeting: if it is already playing, the same track is returned and nothing is subscribed twice
++ Added the room event `ADMIN_REQUEST_OPEN_SHARE`: the host asks you to share your screen. To accept, call `requestShare()` with `byAdmin = true` and `adminUid = data.op_uid`
+
+#### Fixed
++ Fixed an issue where calling `requestShare()` with `byAdmin = true` and an empty `adminUid` sent the screen but didn't update the meeting's sharing state
+
 ### v0.3.5 - 2026-11-18
 
 #### Added

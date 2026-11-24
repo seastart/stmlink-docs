@@ -85,6 +85,9 @@ CommonRoomEventType及对应`data`定义如下：
     static readonly ADMIN_REQUEST_OPEN_MIC = 'admin_request_open_mic';
     /** 主持人请求您开摄像头，对应data为 AdminRequestOpenCameraEventData */
     static readonly ADMIN_REQUEST_OPEN_CAMERA = 'admin_request_open_camera';
+    /** 主持人请求您共享屏幕，对应data为 AdminRequestOpenShareEventData（op_uid=发起的主持人）。
+     *  同意时调 requestShare(shareType, preset, audioPreset, container, true, data.op_uid)；不同意忽略即可（0.3.7 起） */
+    static readonly ADMIN_REQUEST_OPEN_SHARE = 'admin_request_open_share';
 
 ```
 

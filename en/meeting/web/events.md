@@ -85,6 +85,9 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     static readonly ADMIN_REQUEST_OPEN_MIC = 'admin_request_open_mic';
     /** The host asks you to turn on your camera; data is AdminRequestOpenCameraEventData */
     static readonly ADMIN_REQUEST_OPEN_CAMERA = 'admin_request_open_camera';
+    /** The host asks you to share your screen; data is AdminRequestOpenShareEventData (op_uid = the requesting host).
+     *  To accept, call requestShare(shareType, preset, audioPreset, container, true, data.op_uid); to decline, just ignore it (since 0.3.7) */
+    static readonly ADMIN_REQUEST_OPEN_SHARE = 'admin_request_open_share';
 
 ```
 

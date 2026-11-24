@@ -13,6 +13,16 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.7 - 2026-11-24
+
+#### 新增
++ 新增 `getLocalCameraTrack()` / `getLocalScreenTrack()`：取本地摄像头、屏幕共享轨道，与已有的 `getLocalMicTrack()` 配齐
++ 新增 `subscribeRemoteAudioMixTrack()`：取远端混音流（除自己以外所有人的声音），可配合 `createLocalCompositeRecorder()` 做本地录制。混音流会中只有一份，已在播放时返回同一条轨，不会重复订阅
++ 新增房间事件 `ADMIN_REQUEST_OPEN_SHARE`：主持人请求您共享屏幕，同意时以 `byAdmin = true`、`adminUid = data.op_uid` 调用 `requestShare()` 即可
+
+#### 修复
++ `requestShare()` 以 `byAdmin = true` 调用但 `adminUid` 为空时，共享画面已发出、会议的共享状态却没有更新的问题
+
 ### v0.3.5 - 2026-11-18
 
 #### 新增

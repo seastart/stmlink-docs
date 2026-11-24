@@ -434,6 +434,11 @@ SMeeting is the entry point for most operations.
      */
     toggleRemoteAudioMute(mute: boolean, opt?: AudioOutputOptions): Promise<void>;
     /**
+     * Subscribes to the remote audio mix (everyone in the meeting except you, mixed into one track) without playing it; useful for local recording.
+     * There is only one mix per meeting: if it is already playing, the same track is returned and nothing is subscribed twice. Don't unsubscribe it yourself (since 0.3.7)
+     */
+    subscribeRemoteAudioMixTrack(): Promise<RemoteAudioMixTrack>;
+    /**
      * Start playing the remote composite video
      * @param container Playback container
      * @returns
@@ -465,4 +470,16 @@ SMeeting is the entry point for most operations.
      * Whether the mic is open as the meeting mic (requestOpenMic defaults to publish: true); same meaning as isCameraOpened (since 0.3.5)
      */
     isMicOpened(): boolean;
+    /**
+     * Gets the local mic track, e.g. to read the capture volume with getVolume() or get the underlying MediaStreamTrack; undefined when the mic is off
+     */
+    getLocalMicTrack(): LocalMicTrack | undefined;
+    /**
+     * Gets the local camera track (including a publish: false preview); undefined when the camera is off (since 0.3.7)
+     */
+    getLocalCameraTrack(): LocalCameraTrack | undefined;
+    /**
+     * Gets the local screen-share track; undefined when not sharing the screen (since 0.3.7)
+     */
+    getLocalScreenTrack(): LocalScreenTrack | undefined;
 ```

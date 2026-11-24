@@ -431,6 +431,11 @@ SMeeting是绝大多数操作的入口。
      */
     toggleRemoteAudioMute(mute: boolean, opt?: AudioOutputOptions): Promise<void>;
     /**
+     * 订阅远端混音流（会中除自己以外所有人的声音混成一路），不播放，可用于本地录制等需要会议声音的场景。
+     * 混音流会中只有一份，已在播放时返回同一条轨、不重复订阅；取到后不要自行退订（0.3.7 起）
+     */
+    subscribeRemoteAudioMixTrack(): Promise<RemoteAudioMixTrack>;
+    /**
      * 开始播放远端合成视频
      * @param container 播放容器
      * @returns
@@ -462,6 +467,18 @@ SMeeting是绝大多数操作的入口。
      * 麦克风是否作为会议麦克风打开（requestOpenMic 默认 publish: true），含义同 isCameraOpened（0.3.5 起）
      */
     isMicOpened(): boolean;
+    /**
+     * 获取本地麦克风轨道，可读采集音量 getVolume() 或取底层 MediaStreamTrack；未开麦时为 undefined
+     */
+    getLocalMicTrack(): LocalMicTrack | undefined;
+    /**
+     * 获取本地摄像头轨道（含 publish: false 只预览的情况）；未开摄像头时为 undefined（0.3.7 起）
+     */
+    getLocalCameraTrack(): LocalCameraTrack | undefined;
+    /**
+     * 获取本地屏幕共享轨道；未在共享屏幕时为 undefined（0.3.7 起）
+     */
+    getLocalScreenTrack(): LocalScreenTrack | undefined;
 ```
 
 
