@@ -460,3 +460,72 @@ A capture processor's requirements for WebRTC's built-in 3A, available since 1.8
 | `autoGainControl` | `Bool?` | Automatic gain control |
 
 `false` requires the feature off; `true` or `nil` leaves the SDK default unchanged. It applies only to WebRTC's software processing; the system's own voice processing on iOS / macOS is unaffected. For usage, see [AI noise suppression](/en/rtc/swift/advanced/deepfilternet#declaring-3a-requirements-in-a-custom-processor).
+
+---
+
+### NetworkCheckResult
+
+The result of the pre-call network check (since 1.10.0), returned by [`networkCheck`](/en/rtc/swift/api-reference/SRTCEngine#pre-call-network-check). All types in this section are `Codable`; field names encoded by `JSONEncoder` match the other platforms, so you can report or log them as is.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `status` | `NetworkCheckStatus` | Overall result: `fail` if any item is `fail`; `warning` if no item is `fail` but some are `warning`; otherwise `ok` |
+| `items` | `[NetworkCheckItem]` | Always 5 items, in the fixed order `permission` / `connectivity` / `mtu` / `dns` / `server` |
+| `costMs` | `Int` | Total duration in milliseconds |
+
+There is also a method `item(_ id: NetworkCheckItemId) -> NetworkCheckItem?` that gets an item by id.
+
+#### NetworkCheckItem
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `NetworkCheckItemId` | The check item |
+| `status` | `NetworkCheckItemStatus` | Result of this item |
+| `reason` | `String` | Machine-readable reason code, an empty string on `pass`; values are listed below |
+| `message` | `String` | Human-readable description in Chinese that the app can display directly |
+| `costMs` | `Int` | Duration of this item in milliseconds |
+| `data` | `NetworkCheckData` | Measurements for this item |
+
+#### NetworkCheckItemId
+
+| Value | What it checks | `reason` on failure / warning |
+| --- | --- | --- |
+| `permission` | iOS: cellular data permission, which fails only when the device is currently on a cellular network; macOS has no such concept and always reports `pass` | `cellular_restricted` |
+| `connectivity` | The system network connection state | `offline` |
+| `mtu` | Sends don't-fragment probe packets (1200 / 1300 / 1400 / 1472 bytes) to the media server and takes the largest size that is echoed back | `mtu_too_small`, `udp_blocked`; `unsupported` (`df_not_supported`) when the system can't set don't-fragment |
+| `dns` | Resolves the domain names of the API, signaling, and media servers (IP addresses are skipped) | `dns_failed` |
+| `server` | Three sub-checks: API (`api`), signaling (`signal`), and media (`media`) | `api_unreachable`, `signal_unreachable`, `udp_blocked`, `media_unavailable` |
+
+When the stream vendor isn't SeaStart, `mtu` and the media check are `skipped` (`vendor_not_supported`); when the server information can't be obtained (the server hasn't been upgraded), `mtu` and the signaling and media checks are `skipped` (`server_info_unavailable`).
+
+#### NetworkCheckStatus / NetworkCheckItemStatus
+
+| Type | Values |
+| --- | --- |
+| `NetworkCheckStatus` | `ok`, `warning`, `fail` |
+| `NetworkCheckItemStatus` | `pass` (passed), `warning` (a potential issue that doesn't affect use), `fail` (failed), `skipped` (no check needed), `unsupported` (not supported on the current platform) |
+
+#### NetworkCheckData
+
+Each item fills in only its own fields; the rest are `nil` and omitted when encoded.
+
+| Field | Type | Item | Description |
+| --- | --- | --- | --- |
+| `netType` | `String?` | `connectivity` | `"wifi"` / `"cellular"` / `"ethernet"` / `"unknown"` |
+| `maxSize` | `Int?` | `mtu` | The largest size echoed back, in bytes; `nil` if none got through |
+| `hosts` | `[NetworkCheckHost]?` | `dns` | Resolution result for each domain: `host` (domain name), `ips` (resolved IPs, empty on failure), `costMs` (duration) |
+| `api` | `NetworkCheckSubCheck?` | `server` | Whether the API server is reachable |
+| `signal` | `NetworkCheckSubCheck?` | `server` | Whether the signaling server can be connected (TCP/TLS, falling back to WebSocket) |
+| `media` | `NetworkCheckSubCheck?` | `server` | Whether the media server responds over UDP |
+
+#### NetworkCheckSubCheck
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `ok` | `Bool` | Whether it's reachable (i.e. `status == .pass`) |
+| `status` | `NetworkCheckItemStatus` | Sub-check status; `ok` is `false` for `skipped` / `unsupported`, but they don't count as failures |
+| `reason` | `String` | Reason code, an empty string on `pass` |
+| `rttMs` | `Int` | Duration in milliseconds; 0 if not run |
+| `via` | `String?` | `signal` only: the method that connected (or was last tried), `"tcp"` or `"ws"` |
+| `httpStatus` | `Int?` | `api` failures only: the HTTP status code |
+| `code` | `Int?` | `api` failures only: the business error code returned by the server (such as app not found / disabled) |

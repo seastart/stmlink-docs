@@ -328,6 +328,52 @@ Background blur and background replacement are mutually exclusive, and the later
 
 ---
 
+### Pre-call network check
+
+#### `networkCheck(appId:serverUrl:timeoutMs:onItem:)`
+
+Pre-call network check, available since 1.10.0. Runs the checks in a fixed order, `permission` (network permission) → `connectivity` (network connection) → `mtu` → `dns` (DNS resolution) → `server` (API / signaling / media servers), calls `onItem` (on the main thread) as each one completes, and returns the result when all are done. **Call it before joining**: it doesn't require joining a channel or token authentication. When everything is normal, it takes about 1–5 seconds.
+
+```swift
+let result = try await srtc.networkCheck(appId: appId, serverUrl: clientApi) { item in
+    print(item.id, item.status, item.message)
+}
+print(result.status)   // .ok / .warning / .fail
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `appId` | `String` | Yes | App ID (the same as `app_id` in the token) |
+| `serverUrl` | `String` | Yes | RTC server address, i.e. `client_api` in the token (such as `https://host/client/`) |
+| `timeoutMs` | `Int` | No | Per-item timeout in milliseconds, default `3000` |
+| `onItem` | `(@Sendable (NetworkCheckItem) -> Void)?` | No | Called once each item completes, on the main thread |
+
+**Returns:** [`NetworkCheckResult`](/en/rtc/swift/types#networkcheckresult) (`async throws`)
+
+**May throw:** `SRTCError.invalidArgument` (empty parameter), `.alreadyJoined` (a check is already running; only one can run at a time), `.cancelled` (cancelled by `cancelNetworkCheck()` or by cancelling the caller's task)
+
+<Note>
+The API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, that check is `fail` (`api_unreachable`), and `mtu` and the signaling and media checks are `skipped`; other items are unaffected.
+</Note>
+
+---
+
+#### `networkCheck(token:timeoutMs:onItem:)`
+
+A convenience form for when you already have a join or IM token: it takes `app_id` and `client_api` from the token; everything else is the same as above. The token is only read for the addresses, not used for authentication, so **an expired token works too**. Throws `SRTCError.invalidArgument` if the token can't be decoded. Available since 1.10.0.
+
+```swift
+let result = try await srtc.networkCheck(token: token)
+```
+
+---
+
+#### `cancelNetworkCheck()`
+
+Cancels the running network check; the pending `networkCheck` then throws `SRTCError.cancelled`. Does nothing if no check is running. Available since 1.10.0.
+
+---
+
 ### Related pages
 
 + [Key concepts](/en/rtc/swift/key-concepts)

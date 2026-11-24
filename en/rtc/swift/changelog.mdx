@@ -3,6 +3,17 @@ title: "Changelog"
 description: "Release history of the SRTC Swift SDK and its SRTCBroadcastKit companion: new features, behavior changes, fixes, breaking changes, and system requirement bumps for each version. Read before upgrading to see what changed and whether your code needs updates."
 ---
 
+### [1.10.0] - 2026.11.24
+#### Added
++ **Pre-call network check `networkCheck`**: callable before joining without join authentication, it checks 5 items in a fixed order, `permission` (cellular data permission) → `connectivity` (whether the device is online) → `mtu` → `dns` → `server` (API / signaling / media), calls `onItem` on the main thread as each item completes, and finally returns a `NetworkCheckResult` (`ok` / `warning` / `fail`; each item carries a machine-readable `reason` and a Chinese `message` ready for display). When everything is normal, it takes about 1–5 seconds; the per-item timeout defaults to 3000 milliseconds. See [SRTCEngine](/en/rtc/swift/api-reference/SRTCEngine#pre-call-network-check) and [Types](/en/rtc/swift/types#networkcheckresult).
+  + `SRTCEngine.networkCheck(appId:serverUrl:timeoutMs:onItem:)`; if you already have a token, you can also use `networkCheck(token:timeoutMs:onItem:)` (it only takes the app_id and server address from the token, so an expired token works too)
+  + `cancelNetworkCheck()` cancels the running check, which then throws `cancelled`; only one check can run at a time, and a repeated call throws `alreadyJoined`
+  + New types `NetworkCheckResult`, `NetworkCheckItem`, `NetworkCheckItemId`, `NetworkCheckStatus`, `NetworkCheckItemStatus`, `NetworkCheckData`, `NetworkCheckSubCheck`, and `NetworkCheckHost`, all `Codable`
+
+<Note>
+The API check in `server` requires server-side support for the pre-call network check. If the server hasn't been upgraded, that check is `fail` (`api_unreachable`), and `mtu` and the signaling and media checks are `skipped`; other items are unaffected. APIs are only added, not removed or changed, so 1.9.0 integration code compiles as is, and the platform minimums are unchanged (iOS 16 / macOS 12.3). `SRTCBroadcastKit` is **1.0.23** in this release; its code is unchanged and only its version number is bumped along with the SDK.
+</Note>
+
 ### [1.9.0] - 2026.11.24
 #### Added
 + **Local network quality `didUpdateLocalQuality`**: the SDK computes uplink and downlink round-trip time, packet loss, jitter, and level locally from WebRTC statistics, and delivers a `LocalQualitySnapshot` about every 2 seconds, **on both the SeaStart and Wangsu (CDN) engines**. Wangsu channels previously had no network quality data at all; you can now build signal-strength icons and network details panels for them. `Channel.getLocalQuality()` reads the latest sample. See [Call quality](/en/rtc/swift/advanced/call-quality#local-network-quality) and [Types](/en/rtc/swift/types#localqualitysnapshot).

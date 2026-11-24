@@ -1352,8 +1352,8 @@
   "en/rtc/swift/api-reference/SRTCEngine": {
     "reviewed": false,
     "source": "zh/rtc/swift/api-reference/SRTCEngine.md",
-    "zh_blob": "35bc677a61d954106a0b58ab8d661b13a32d6ca9",
-    "zh_commit": "564b02225ae19cdfc973326de0a5c1061aadedd9"
+    "zh_blob": "f46a9a0d83cb2d67d80d46a4cff747dc9b223582",
+    "zh_commit": "3031e33a45a011571b40e32038dde19111cfb43e"
   },
   "en/rtc/swift/api-reference/media-tracks": {
     "reviewed": false,
@@ -1364,8 +1364,8 @@
   "en/rtc/swift/changelog": {
     "reviewed": false,
     "source": "zh/rtc/swift/changelog.mdx",
-    "zh_blob": "e2e619758791dbe0a266115d6bdea49c94ab7d32",
-    "zh_commit": "cb949432f0cc10ef734d6f242be8d979ab7dfc96"
+    "zh_blob": "ede91b85812e0a9f50eea069249806c0253bacd5",
+    "zh_commit": "3031e33a45a011571b40e32038dde19111cfb43e"
   },
   "en/rtc/swift/error-codes": {
     "reviewed": false,
@@ -1382,8 +1382,8 @@
   "en/rtc/swift/integration": {
     "reviewed": false,
     "source": "zh/rtc/swift/integration.md",
-    "zh_blob": "93d5d4f024da2328d79513698b9a02fe92697302",
-    "zh_commit": "cb949432f0cc10ef734d6f242be8d979ab7dfc96"
+    "zh_blob": "a5ab5c721af87ce14d636b0adcd0d953416895f7",
+    "zh_commit": "3031e33a45a011571b40e32038dde19111cfb43e"
   },
   "en/rtc/swift/key-concepts": {
     "reviewed": true,
@@ -1400,8 +1400,8 @@
   "en/rtc/swift/types": {
     "reviewed": false,
     "source": "zh/rtc/swift/types.md",
-    "zh_blob": "ed2504b47f1562dcdb6c85f77d61117e3670e2c9",
-    "zh_commit": "cb949432f0cc10ef734d6f242be8d979ab7dfc96"
+    "zh_blob": "2fb76a2a8fcdf4177c7d156881fa5681f01d0089",
+    "zh_commit": "3031e33a45a011571b40e32038dde19111cfb43e"
   },
   "en/rtc/token": {
     "reviewed": true,
