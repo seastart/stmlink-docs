@@ -796,6 +796,7 @@
 
 ## [EN] SMeeting Conferencing SDK · Web SDK · Advanced
 
+- [In-meeting chat and file messages](https://docs.stmlink.com/en/meeting/web/advanced/chat.md): Group and private in-meeting chat, sending chat files (presignedPutObject for a signed URL → PUT the file yourself → sendRoomChatMessage with the key), the JSON format of file messages, receiving and downloading (presignedGetObject), and fetching history with roomChatMsgList
 - [AI noise suppression (DeepFilterNet)](https://docs.stmlink.com/en/meeting/web/advanced/deepfilternet.md): Turn on AI noise suppression for the microphone in Web meetings: install @seastart/srtc-plugin-deepfilternet and hand it to the meeting layer with setAudioProcessor, which attaches it whenever the mic opens and detaches it when the mic closes
 - [Device checks (pre-meeting / in-meeting preview)](https://docs.stmlink.com/en/meeting/web/advanced/device-check.md): Check the camera, microphone, and speaker before or during a meeting: list devices with getDevices, capture without publishing via publish: false on requestOpenCamera / requestOpenMic, read the mic level with getVolume, decide whether to close with isCameraOpened / isMicOpened, and test speakers with <audio> + setSinkId
 

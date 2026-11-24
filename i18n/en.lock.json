@@ -539,6 +539,12 @@
     "zh_blob": "430ad225ac89638845544330368ff0d955b264f4",
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
+  "en/meeting/web/advanced/chat": {
+    "reviewed": false,
+    "source": "zh/meeting/web/advanced/chat.md",
+    "zh_blob": "8bbfe99fa1dbe0b986e38e31fb6f7c43dfa11b2b",
+    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
+  },
   "en/meeting/web/advanced/deepfilternet": {
     "reviewed": false,
     "source": "zh/meeting/web/advanced/deepfilternet.md",
@@ -554,8 +560,8 @@
   "en/meeting/web/api-reference/SMeeting": {
     "reviewed": false,
     "source": "zh/meeting/web/api-reference/SMeeting.md",
-    "zh_blob": "9f16496e75e7a924908ec98633fbcdf198af62c7",
-    "zh_commit": "bf54fda6b7bdfb16c7e84f923f29b14d7f1da6a3"
+    "zh_blob": "0709a057aa709d3e99413c1da01ba3da12ce0dac",
+    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
   },
   "en/meeting/web/changelog": {
     "reviewed": false,
@@ -582,16 +588,16 @@
     "zh_commit": "87a30b8bad2becfd0b3313f728dd2f05a0613d2a"
   },
   "en/meeting/web/quickstart": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/web/quickstart.md",
-    "zh_blob": "87deb5de6c1d6a182cae8cd9856cd46082bf68ba",
-    "zh_commit": "5210fb8780d5407ce288086724a8313de2d625ac"
+    "zh_blob": "dd44667cbf864520873017a83f18decc981da0e2",
+    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
   },
   "en/meeting/web/types": {
     "reviewed": false,
     "source": "zh/meeting/web/types.md",
-    "zh_blob": "14b093f6e214a607a0e66b70f26c9b2de2417b06",
-    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
+    "zh_blob": "edca7deb2b8bbed05482e9f0fdf96415e0f33990",
+    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
   },
   "en/meeting/web/whiteboard": {
     "reviewed": true,

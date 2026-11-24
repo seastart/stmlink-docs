@@ -220,22 +220,24 @@ await smeeting.stopShare()
 ### Send a chat message
 ```typescript
 /**
-     * Send a chat message, to one member or to everyone
-     * @param msg_type Message type: 1 text, 2 file, 3 image, 4 voice
-     * @param msg Message content
-     * @param target_id Message recipient; empty means everyone in the room receives it
-     */
-await smeeting.sendRoomChatMessage(msg: string, target_id: string, msg_type: ChatMsgType = ChatMsgType.Text)
+ * Send a chat message, to one member or to everyone
+ * @param msg Message content
+ * @param msgType Message type: 1 text, 2 file, 3 image, 4 voice; defaults to text
+ * @param targetId Message recipient; empty means everyone in the room receives it
+ */
+await smeeting.sendRoomChatMessage(msg: string, msgType: ChatMsgType = ChatMsgType.Text, targetId?: string)
 ```
+
+To send a file, upload it first and then send the message; for the message format, receiving, and downloading, see [In-meeting chat and file messages](/en/meeting/web/advanced/chat).
 
 ### Send a custom message
 ```typescript
 /**
  * Send a custom message, to one member or to everyone
  * @param content Message content
- * @param target_id Message recipient; empty means everyone in the room receives it
+ * @param targetId Message recipient; empty means everyone in the room receives it
  */
-await smeeting.sendRoomCustomMessage(content: string, target_id: string)
+await smeeting.sendRoomCustomMessage(content: string, targetId?: string)
 ```
 
 ### Raise and lower a hand

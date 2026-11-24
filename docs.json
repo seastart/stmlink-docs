@@ -1054,6 +1054,7 @@
                   {
                     "group": "Advanced",
                     "pages": [
+                      "en/meeting/web/advanced/chat",
                       "en/meeting/web/advanced/deepfilternet",
                       "en/meeting/web/advanced/device-check"
                     ]

@@ -127,11 +127,43 @@ SMeeting is the entry point for most operations.
     updateName(name: string): Promise<void>;
     /**
      * Send a chat message, to one member or to everyone
-     * @param msg Message content
-     * @param msg_type Message type
-     * @param target_id Message recipient; empty means everyone in the room receives it
+     * To send a file, first upload it with presignedPutObject(PresignedPutObjectType.Chat, ...), then send a JSON string of {key, name, size} as msg;
+     * see "In-meeting chat and file messages" /en/meeting/web/advanced/chat
+     * @param msg Message content; a JSON string for file / image / voice messages
+     * @param msgType Message type, defaults to ChatMsgType.Text
+     * @param targetId Message recipient; empty means everyone in the room receives it
      */
     sendRoomChatMessage(msg: string, msgType?: ChatMsgType, targetId?: string): Promise<void>;
+    /**
+     * Chat message history (paged)
+     * @param meeting_id Meeting ID
+     * @param page Page number
+     * @param perPage Items per page
+     */
+    roomChatMsgList(meeting_id: string, page: number, perPage: number): Promise<{
+        data: ChatMsgInfo[];
+        _meta: MetaRes;
+    }>;
+    /**
+     * Resource - presigned upload: get a signed upload URL (valid for 2 hours), then PUT the file binary to it yourself
+     * @param type Resource category; pass PresignedPutObjectType.Chat for chat files
+     * @param meetingId Meeting ID
+     * @param ext Extension without the dot
+     * @returns url upload URL; key resource key (for sending the message / getting a download URL); ext extension
+     */
+    presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string): Promise<{
+        url: string;
+        key: string;
+        ext: string;
+    }>;
+    /**
+     * Resource - presigned download: get a signed download URL (valid for 2 hours)
+     * @param resKey Resource key, one of the two (for chat files, the key in the message)
+     * @param id Resource ID, one of the two
+     */
+    presignedGetObject(resKey?: string, id?: string): Promise<{
+        url: string;
+    }>;
     /**
      * Send a custom message, to one member or to everyone
      * @param content Message content

@@ -168,6 +168,43 @@ export enum ChatMsgType {
 }
 ```
 
+#### Chat message ChatMsgInfo
+```typescript
+/**
+ * Chat message history (returned by roomChatMsgList)
+ */
+export interface ChatMsgInfo {
+    /** Message id */
+    id: string;
+    /** Meeting ID */
+    meeting_id: string;
+    /** Message content (a JSON string for files / images, etc.) */
+    msg: string;
+    /** Message type */
+    msg_type: ChatMsgType;
+    /** Sender id */
+    sender_id: string;
+    /** Sender name */
+    sender_name: string;
+    /** Creation time (timestamp in seconds) */
+    created_at: number;
+}
+```
+
+#### Presigned upload resource category PresignedPutObjectType
+```typescript
+export enum PresignedPutObjectType {
+    /** Attachment */
+    Attach = 'attach',
+    /** Background image */
+    Background = 'background',
+    /** User */
+    User = 'user',
+    /** Chat */
+    Chat = 'chat'
+}
+```
+
 #### Reason a user exited the room DisconnectReason
 ```typescript
 /**
