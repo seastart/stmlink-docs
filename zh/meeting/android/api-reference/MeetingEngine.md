@@ -2510,6 +2510,47 @@ fun setAudioCaptureProcessor(processor: AudioCaptureProcessor?)
 
 返回值：`Unit`。
 
+## 会前网络检测
+
+自 `2.0.45` 起支持。与 RTC 层 `RTCEngine.networkCheck` 同名同参，检测项、状态与原因码一致；会议层在 `server` 一项里额外检测会议服务是否可达。
+
+### networkCheck(option, callback)
+
+```kotlin
+fun networkCheck(option: NetworkCheckOption, callback: MeetingNetworkCheckCallback)
+```
+
+会前网络检测，按 `permission`（网络权限）→ `connectivity`（网络连接）→ `mtu` → `dns`（域名解析）→ `server`（服务器连接）固定顺序逐项检测，每完成一项回调 `onItem`，最后回调 `onComplete`，整体约 5 秒。不需要入会；已调用 `initSdk` 时应用 ID 与服务器地址取自 Meeting token，直接传 `NetworkCheckOption()` 即可；未初始化时通过 `option` 提供。同一时刻只允许一个检测，回调都在主线程。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| option | [`NetworkCheckOption`](/zh/meeting/android/types#networkcheckoption) | 是 | 服务器信息与单项超时，已初始化时可传默认实例 |
+| callback | `MeetingNetworkCheckCallback` | 是 | 检测回调，见下表 |
+
+`MeetingNetworkCheckCallback`（`cn.seastart.meeting.callback`）：
+
+| 方法 | 说明 |
+| --- | --- |
+| `onItem(item: NetworkCheckItem)` | 每完成一项回调一次，见 [NetworkCheckItem](/zh/meeting/android/types#networkcheckitem) |
+| `onComplete(result: NetworkCheckResult)` | 全部检测完成，见 [NetworkCheckResult](/zh/meeting/android/types#networkcheckresult) |
+| `onFailure(errorCode: Int, message: String?)` | 检测未能完成：`102005` 已有检测在进行，`102026` 被取消，`102031` 拿不到应用 ID 或服务器地址（未初始化且未传入，或 token 解不出），`202011` SDK 已释放。与 `onComplete` 二者只回调其一 |
+
+`server` 一项的 `data` 比 RTC 层多一个 `meeting_api` 子检查（`ok`、`status`、`reason`、`rttMs`、`httpStatus`），会议服务收到任何 HTTP 响应即算可达；不可达时该项记 `fail`，原因码为 `meeting_api_unreachable`（RTC 已判该项失败时保留 RTC 的原因码），汇总状态随之重算。
+
+返回值：`Unit`，结果由回调返回。
+
+<Note>
+`server` 中的 RTC 接口检测需要服务端支持会前网络检测；服务端未升级时该项为 `fail`（`api_unreachable`），`mtu` 与信令、媒体检测记 `skipped`，不影响其它项。
+</Note>
+
+### cancelNetworkCheck()
+
+```kotlin
+fun cancelNetworkCheck()
+```
+
+取消正在进行的网络检测，被取消的检测回调 `onFailure(102026)`；没有检测在进行时无操作。无参数，返回值为 `Unit`。
+
 ## 虚拟背景
 
 自 `2.0.39` 起支持。先初始化 SDK 并装载人像分割模型，再设置虚化或背景图片，最后开启效果。摄像头采集或切换成功、断线重连成功后，会议层会重新下发缓存配置；`release()` 清理缓存并释放底层资源。

@@ -1,9 +1,19 @@
 ---
 title: "更新日志"
-description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.44 的新增能力、修复、依赖升级与兼容性说明"
+description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.45 的新增能力、修复、依赖升级与兼容性说明"
 ---
 
 > 本页记录 Android SMeeting SDK 的主要版本变化。依赖版本见[集成](/zh/meeting/android/integration)，运行时可通过 `MeetingEngine.version()` 查询实际版本。
+
+## 2.0.45（2026-11-24）
+
+### 新增
+
++ 新增会前网络检测 `MeetingEngine.networkCheck()` 与 `cancelNetworkCheck()`：入会前即可调用，依次检测网络权限、网络连接、MTU、域名解析和服务器连接五项，逐项回调结果；服务器连接一项同时检测会议服务是否可达，见[会前网络检测](/zh/meeting/android/api-reference/MeetingEngine#会前网络检测)与[网络检测模型](/zh/meeting/android/types#网络检测模型)。
+
+### 变更
+
++ SRTC 依赖升级到 `2.0.40`。
 
 ## 2.0.44（2026-11-20）
 

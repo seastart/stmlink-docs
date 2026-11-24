@@ -537,3 +537,84 @@ SRTC 频道属性转换得到的当前房间快照。
 | selfRole | `MemberRoleType?` | `null` | 投屏发起者角色 |
 | screenRole | `MemberRoleType?` | `null` | 注册投屏码的大屏角色 |
 | owner | `CastMeetingOwner?` | `null` | 新建会议归属策略 |
+
+## 网络检测模型
+
+自 `2.0.45` 起提供，用于[会前网络检测](/zh/meeting/android/api-reference/MeetingEngine#会前网络检测)。字段与取值和 [SRTC Android 网络检测类型](/zh/rtc/android/types#networkcheckoptions) 一致，但都是会议层自己的类型。
+
+### NetworkCheckOption
+
+完整类名：`cn.seastart.meeting.options.NetworkCheckOption`。全部字段可空；已调用 `initSdk` 时直接传默认实例。未初始化时二选一提供服务器信息：`appId` + `serverUrl`，或一个可解出二者的 `token`。优先级为显式字段 > `token` > 初始化时的 Meeting token。检测本身不使用 token 鉴权。
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| appId | `String?` | `null` | 应用 ID |
+| serverUrl | `String?` | `null` | 服务器接口前缀，填 RTC 的 `client_api`（如 `https://host/client/`）或 Meeting 的 `client_api`（如 `https://host/meeting/client`）均可 |
+| token | `String?` | `null` | Meeting token 或 RTC token，仅用于解出 `appId` 与 `serverUrl` |
+| timeoutMs | `Int` | `3000` | 单项检测超时（毫秒），不大于 0 时取默认值 |
+
+### NetworkCheckItem
+
+完整类名：`cn.seastart.meeting.info.NetworkCheckItem`。单项检测结果。
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| id | `String` | 检测项，取值见 `NetworkCheckItemId` |
+| status | `String` | 检测状态：`pass` / `warning` / `fail` / `skipped` / `unsupported`，见 `NetworkCheckStatus` |
+| reason | `String` | 机器可读的原因码，`pass` 时为空串，取值见 `NetworkCheckReason` |
+| message | `String` | 可直接展示给用户的中文说明 |
+| costMs | `Long` | 本项耗时（毫秒） |
+| data | `Map<String, Any?>` | 本项测量值，如 `connectivity` 的 `netType`、`mtu` 的 `maxSize`；`server` 含 `api`、`signal`、`media`、`meeting_api` 四个子检查，各含 `ok`、`status`、`reason`、`rttMs` |
+
+### NetworkCheckResult
+
+完整类名：`cn.seastart.meeting.info.NetworkCheckResult`。整体检测结果。
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| status | `String` | 汇总状态：有 `fail` 即 `fail`；无 `fail` 但有 `warning` 即 `warning`；否则 `ok` |
+| items | `List<NetworkCheckItem>` | 固定 5 项，顺序为 `permission`、`connectivity`、`mtu`、`dns`、`server` |
+| costMs | `Long` | 总耗时（毫秒） |
+
+### 网络检测常量
+
+均在 `cn.seastart.meeting.enumerate` 包下。
+
+`NetworkCheckItemId`（检测项）：
+
+| 常量 | 值 | 说明 |
+| --- | --- | --- |
+| `PERMISSION` | `permission` | 网络权限 |
+| `CONNECTIVITY` | `connectivity` | 网络连接 |
+| `MTU` | `mtu` | 最大传输单元 |
+| `DNS` | `dns` | 域名解析 |
+| `SERVER` | `server` | 服务器连接（接口 / 信令 / 媒体 / 会议服务） |
+
+`NetworkCheckStatus`（检测状态）：
+
+| 常量 | 值 | 说明 |
+| --- | --- | --- |
+| `OK` | `ok` | 汇总：全部正常 |
+| `PASS` | `pass` | 单项：通过 |
+| `WARNING` | `warning` | 有风险但可用 |
+| `FAIL` | `fail` | 失败 |
+| `SKIPPED` | `skipped` | 单项：无需检测 |
+| `UNSUPPORTED` | `unsupported` | 单项：当前设备不支持 |
+
+`NetworkCheckReason`（原因码）：
+
+| 常量 | 值 | 说明 |
+| --- | --- | --- |
+| `NO_PERMISSION` | `no_permission` | 未授予网络权限 |
+| `CELLULAR_RESTRICTED` | `cellular_restricted` | 系统限制了后台或蜂窝数据 |
+| `OFFLINE` | `offline` | 当前没有网络连接 |
+| `MTU_TOO_SMALL` | `mtu_too_small` | 1200 字节探测包不通，但媒体服务器可达 |
+| `UDP_BLOCKED` | `udp_blocked` | 媒体 UDP 不通 |
+| `DNS_FAILED` | `dns_failed` | 域名解析失败 |
+| `API_UNREACHABLE` | `api_unreachable` | 检测信息接口不可达（含服务端未支持会前网络检测） |
+| `SERVER_INFO_UNAVAILABLE` | `server_info_unavailable` | 拿不到服务端检测信息，依赖它的检测记 `skipped` |
+| `SIGNAL_UNREACHABLE` | `signal_unreachable` | 信令服务器不可达 |
+| `VENDOR_NOT_SUPPORTED` | `vendor_not_supported` | 当前流媒体引擎无需进行媒体检测 |
+| `MEDIA_UNAVAILABLE` | `media_unavailable` | 服务端没有可用的媒体节点 |
+| `DF_NOT_SUPPORTED` | `df_not_supported` | 系统不允许设置不分片，MTU 检测不可用 |
+| `MEETING_API_UNREACHABLE` | `meeting_api_unreachable` | 会议服务不可达 |
