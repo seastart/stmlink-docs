@@ -38,7 +38,7 @@ The table lists only the fields **specific** to each type. For the full request 
 All types require `display_name` (display name) and `gw` (device gateway); `remark` is optional.
 For types other than `rtsp`, also note: registration mode requires the device to register with the gateway itself, while with direct IP we connect to the device.
 Which one to choose depends on whether we can reach the network the device is on.
-To be notified when a registration-mode device comes online or goes offline, subscribe to the `agent_online` / `agent_offline` callbacks; see the [Callback events guide](/en/rtc/server-api/guides/callbacks).
+To be notified when a registration-mode or direct IP device comes online or goes offline, subscribe to the `agent_online` / `agent_offline` callbacks (the online status of a direct IP device is determined by periodic probes from the device gateway); see the [Callback events guide](/en/rtc/server-api/guides/callbacks).
 
 When updating a device, `type` **must match the type the device was registered with**; you can't use it to turn a SIP device into an RTSP one.
 To change the integration type, delete the device and register it again.

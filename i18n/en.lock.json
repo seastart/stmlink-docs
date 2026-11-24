@@ -764,8 +764,8 @@
   "en/product/device-access/overview": {
     "reviewed": false,
     "source": "zh/product/device-access/overview.md",
-    "zh_blob": "2f2f06e82faea5b987f89129bcf3c20df24e4c05",
-    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
+    "zh_blob": "4b64df9b5ebe19e882842883a1617c000a543c8d",
+    "zh_commit": "1d8f0496d6397f611b198e53fd90698c059807c4"
   },
   "en/product/device-access/phone-lines": {
     "reviewed": false,
@@ -782,8 +782,8 @@
   "en/product/device-access/sip-h323": {
     "reviewed": false,
     "source": "zh/product/device-access/sip-h323.md",
-    "zh_blob": "da9ae2eba6a2c7b05c90afeaf2cd8bfed3eada49",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "49c2315cde09add43c3143fe134d10319b732d03",
+    "zh_commit": "1d8f0496d6397f611b198e53fd90698c059807c4"
   },
   "en/product/overview": {
     "reviewed": false,
@@ -1262,14 +1262,14 @@
   "en/rtc/server-api/guides/agents": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/agents.md",
-    "zh_blob": "924fcd8ac3f1ac885d9a1044ed62ccb949f1d561",
-    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
+    "zh_blob": "c16c2b68cc28e5450714c3f3ac87229935bc4d48",
+    "zh_commit": "1d8f0496d6397f611b198e53fd90698c059807c4"
   },
   "en/rtc/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/callbacks.md",
-    "zh_blob": "853cc9bdeaf663ebc4d10c17944f6f2db1883436",
-    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
+    "zh_blob": "8e78c4fb0746123311c58d74a5f282f1f4de737f",
+    "zh_commit": "1d8f0496d6397f611b198e53fd90698c059807c4"
   },
   "en/rtc/server-api/guides/media-output": {
     "reviewed": false,

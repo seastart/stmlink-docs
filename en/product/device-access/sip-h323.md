@@ -86,7 +86,9 @@ Go to **Device management** → **SIP** (or **H323**) → **Direct IP** → **Ad
 | Display name | The name shown after the endpoint enters the meeting |
 | Device gateway | Which gateway calls this endpoint |
 
-Direct IP devices have no online status, so `--` in the list is normal.
+Direct IP devices don't report their status, so the device gateway probes them periodically: for H.323 it tries to connect to the endpoint's call port, and for SIP it sends the endpoint an `OPTIONS` request.
+If it connects or gets a response, the device is online; after about 1.5 minutes without a response, it shows as offline (an endpoint in a call always counts as online). Right after you add a device, before the gateway has probed it, the list shows `--`.
+An endpoint the gateway can't reach (behind NAT), or one that doesn't respond to `OPTIONS` from unknown sources, always shows as offline. For such endpoints, registration mode is a better fit.
 
 ---
 
