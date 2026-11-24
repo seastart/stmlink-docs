@@ -197,6 +197,30 @@ void rtc_set_auto_subscribe(void* handle, int auto_audio, int auto_video);
 
 ---
 
+## 设备类型
+
+### rtc_set_device_type
+
+```c
+void rtc_set_device_type(void* handle, int device_type);
+```
+
+设置本实例入会时上报的设备类型（0.3.0 起）。其他成员查询到的 `rtc_user_info_t.device_type`、服务端回调里的 `device_type` 都是这个值。不调用时默认 `80`（服务端代理入会）。
+
+| 参数 | 说明 |
+| --- | --- |
+| `device_type` | 设备类型编号，取值见 [回调事件接入指南](/zh/rtc/server-api/guides/callbacks) 中的 `device_type` 说明；`<= 0` 表示恢复默认 `80` |
+
+<Warning>
+必须在 `rtc_join_channel` / `rtc_join_channel_sync` **之前**调用。设备类型只在入会时上报一次，入会后再设置对当前会话不生效（断线自动重连沿用同一会话，也不会改变）；要换类型需离开后重新加入。
+</Warning>
+
+<Tip>
+按实例生效：同一进程里的多个实例可以各设各的。例如设备网关为每台接入设备创建一个实例时，可按设备种类分别上报（SIP 设备 `82`、H323 设备 `83`、GB28181 监控 `84` 等），业务侧据此区分成员来源。
+</Tip>
+
+---
+
 ## 回调注册
 
 所有回调都通过 `context` 参数携带业务上下文，SDK 原样回传，不做任何解释。
@@ -316,6 +340,9 @@ rtc_set_track_sample_callback(rtc, on_sample, ctx);
 
 // 2) 再配置自动订阅
 rtc_set_auto_subscribe(rtc, 1, 1);
+
+// （可选）设置入会上报的设备类型，不调用默认 80
+// rtc_set_device_type(rtc, 82);
 
 // 3) 最后加入频道
 rtc_join_channel_sync(rtc, token, 10000);

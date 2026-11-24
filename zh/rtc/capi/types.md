@@ -78,7 +78,7 @@ typedef struct {
 | `channel` | `char[128]` | 所在频道名 |
 | `sid` | `char[128]` | 会话 ID |
 | `props` | `const char*` | 自定义业务属性，JSON 字符串；可能为 `NULL` |
-| `device_type` | `int` | 设备类型 |
+| `device_type` | `int` | 设备类型，编号见 [回调事件接入指南](/zh/rtc/server-api/guides/callbacks)；C SDK 入会的成员默认 `80`，可用 [rtc_set_device_type](/zh/rtc/capi/api-reference/engine#rtc_set_device_type) 修改 |
 | `is_audience` | `int` | `1`=观众（不出现在他人成员列表里），`0`=普通用户 |
 | `join_at` / `leave_at` / `updated_at` | `int64_t` | 加入 / 离开 / 更新时间戳 |
 | `stream_tracks` | `rtc_track_info_t*` | 该用户已发布的轨道数组 |
