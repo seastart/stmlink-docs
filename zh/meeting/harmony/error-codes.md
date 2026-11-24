@@ -143,6 +143,8 @@ onRoomJoinFailed: (meeting, data) => {
 
 1.1.0 起 `smeeting` 直接转出 `SRTCError` / `SRTCErrorKind`，只依赖 `smeeting` 的业务代码也能 `instanceof SRTCError`。
 
+会前网络检测 `networkCheck`（1.7.0 起）同样透传 SRTC 层的码：已有检测在跑 `108005`、被取消 `108026`、参数非法 `108031`；只有未登录且没传 `appId` / `serverUrl` 时抛会议层的 `208001`。
+
 完整清单见 [SRTC 错误码](/zh/rtc/harmony/error-codes)。
 
 <Warning>

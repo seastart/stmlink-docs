@@ -29,7 +29,6 @@ const meeting: SMeetingEngine = new SMeetingEngine(LogLevel.info);
 | 成员 | 类型 | 说明 |
 | --- | --- | --- |
 | `SMeetingEngine.version` | `string`（静态只读） | SDK 版本，等同 `SMEETING_VERSION` |
-| `srtc` | `SRTCEngine`（只读） | 底层 RTC 引擎，可直接使用 |
 | `delegates` | `MulticastDelegate<SMeetingDelegate>` | 事件回调容器 |
 | `logLevel` | `LogLevel` | 读写 |
 | `dispose()` | `void` | **必须调用**，摘掉全局单例上的监听 |
@@ -263,6 +262,75 @@ getStats(): Promise<RtcStatsSnapshot>
 <Note>
 与「会中查询」那一组不同，**不在会中时 `getStats()` 返回空快照而不抛错** —— 诊断能力不该让业务流程失败。
 </Note>
+
+---
+
+### 会前网络检测
+
+```typescript
+networkCheck(options?: MeetingNetworkCheckOptions): Promise<MeetingNetworkCheckResult>
+cancelNetworkCheck(): void
+```
+
+1.7.0 起提供，需搭配 SRTC 1.4.0。**入会前调用**，不需要入会，也不需要连 RTC。与 SRTC 的
+[`networkCheck`](/zh/rtc/harmony/api-reference/SRTCEngine#networkcheckoptions) 同名同参：
+`permission` → `connectivity` → `mtu` → `dns` → `server` 五项检测由 SRTC 完成、结果原样透传，
+会议层只在 `server` 项的 `data` 里多一个子检查 `meeting_api`（会议接口是否可达），整体状态随之重算。
+
+```typescript
+import { SMeetingEngine, MeetingNetworkCheckResult, MeetingNetworkCheckItem, NetworkCheckStatus } from 'smeeting';
+
+// 已登录：不用传 appId / serverUrl，SDK 从登录信息里取
+const result: MeetingNetworkCheckResult = await meeting.networkCheck({
+  onItem: (item: MeetingNetworkCheckItem) => {
+    console.info(`${item.id} ${item.status} ${item.message}`);
+  }
+});
+if (result.status === NetworkCheckStatus.fail) {
+  // 各项的 message 是可直接展示给用户的中文说明
+}
+```
+
++ **参数来源**：`appId` / `serverUrl` 不传时从登录信息取（已启用 IM 用 IM token，在会中用频道 token，都没有时向会议后端申请一次 IM token，只取地址、不建连接）。**未登录时必须显式传**，`serverUrl` 是 SRTC 的 SDK 接口地址（RTC / IM token 里的 `client_api`，如 `https://host/sdkapi/`），不是会议接口地址。
++ **`meeting_api` 的判定**：已登录时调一次只读的会议接口，收到任何 HTTP 响应都算可达；网络错误或超时算不通，此时 `server` 记 `fail`、`reason` 为 `meeting_api_unreachable`。`server` 已因 SRTC 子检查失败时保留 SRTC 的 `reason`。未登录时不知道会议接口地址，`meeting_api` 记 `skipped`（`server_info_unavailable`）。
++ **耗时**：`meeting_api` 与 SRTC 检测并行，不额外拉长总耗时；单项超时默认 3000 毫秒（`timeoutMs` 可调，同时用作 `meeting_api` 的请求超时）。`onItem` 每完成一项回调一次，`server` 项等 `meeting_api` 合入后才回调。
++ **平台限制**同 SRTC：`mtu` 项在 HarmonyOS 固定为 `unsupported`（`df_not_supported`）。
+
+| 错误码 | 场景 |
+| --- | --- |
+| `108005` | 已有检测在进行（同一实例同一时刻只允许一个） |
+| `108026` | 被 `cancelNetworkCheck()` 取消 |
+| `108031` | `appId` / `serverUrl` 非法，或已登录但解不出服务器地址 |
+| `208001` | 未登录，且没传 `appId` / `serverUrl` |
+
+前三个是透传的 SRTC 层码（`SRTCError`），与直接调 SRTC 时一致；只有未登录用会议层的 `SMeetingError.notLoggedIn`。
+
+#### `MeetingNetworkCheckOptions`
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `appId?` | `string` | 应用 ID。已登录可不传；未登录必须传 |
+| `serverUrl?` | `string` | SRTC 的 SDK 接口地址（RTC / IM token 里的 `client_api`）。已登录可不传；未登录必须传 |
+| `timeoutMs?` | `number` | 单项超时（毫秒），默认 `3000` |
+| `onItem?` | `(item: MeetingNetworkCheckItem) => void` | 每完成一项回调一次 |
+
+#### `MeetingNetworkCheckResult` / `MeetingNetworkCheckItem`
+
+结构与 SRTC 的 `NetworkCheckResult` / `NetworkCheckItem` 一致：
+
+| 接口 | 字段 |
+| --- | --- |
+| `MeetingNetworkCheckResult` | `status: NetworkCheckStatus`（`ok` / `warning` / `fail`，有 fail 即 fail）、`items`（固定 5 项、固定顺序）、`costMs` |
+| `MeetingNetworkCheckItem` | `id: NetworkCheckItemId`、`status: NetworkCheckItemStatus`（`pass` / `warning` / `fail` / `skipped` / `unsupported`）、`reason`（原因码，通过时为空串）、`message`（中文说明）、`costMs`、`data` |
+
+`server` 项的 `data` 有 `api`、`signal`、`media`（来自 SRTC）与 `meeting_api` 四个子检查，每个都是 `{ ok, status, reason, rttMs }`。
+项 id、状态、SRTC 原因码这些枚举（`NetworkCheckItemId`、`NetworkCheckItemStatus`、`NetworkCheckStatus`、`NetworkCheckReason`）由 `smeeting` 直接转出；
+会议层补充的原因码在 `MeetingNetworkCheckReason`：
+
+| `reason` | 出现在 | 含义 |
+| --- | --- | --- |
+| `meeting_api_unreachable` | `server`、`data.meeting_api` | 会议接口连不上：网络不通或服务器地址不对 |
+| `server_info_unavailable` | `data.meeting_api`（`skipped`） | 未登录，不知道会议接口地址 |
 
 ---
 
