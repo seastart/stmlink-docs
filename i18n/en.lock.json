@@ -302,14 +302,14 @@
   "en/meeting/server-api/guides/agent-and-im": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/agent-and-im.md",
-    "zh_blob": "ced92f806576a91f6c6c9beb12e0fae71c389d77",
-    "zh_commit": "9e1f635de783870477025dff71b362eed6786403"
+    "zh_blob": "0e39398c139d0b3046cb2fb4a48929e29441c859",
+    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
   },
   "en/meeting/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/callbacks.md",
-    "zh_blob": "222177558d91c79b1c1cacc1c58ea954bd7c2fee",
-    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+    "zh_blob": "15ec50b47850fe7f8fde9c85ca223a5abf8c99ba",
+    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
   },
   "en/meeting/server-api/guides/media-output": {
     "reviewed": false,
@@ -752,14 +752,14 @@
   "en/product/device-access/gb28181": {
     "reviewed": false,
     "source": "zh/product/device-access/gb28181.md",
-    "zh_blob": "bcf46574a8e59204612ebc558ad7f267493f77fc",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "133defdd872b9f6f065f0601c4ec00dc6af8463a",
+    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
   },
   "en/product/device-access/overview": {
     "reviewed": false,
     "source": "zh/product/device-access/overview.md",
-    "zh_blob": "deb3dd00d59a935339b239af59106d9129284923",
-    "zh_commit": "a558acd7a3b2e60045f52cd94f072a3af63fd200"
+    "zh_blob": "2f2f06e82faea5b987f89129bcf3c20df24e4c05",
+    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
   },
   "en/product/device-access/phone-lines": {
     "reviewed": false,
@@ -1254,16 +1254,16 @@
     "zh_commit": "32b93e7c10e1bd84a4c5e9a8ab9ae3dd7e0ca503"
   },
   "en/rtc/server-api/guides/agents": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/server-api/guides/agents.md",
-    "zh_blob": "ebb8f38990ef4fe9a4ed8b851e00b3c950e80433",
-    "zh_commit": "7d15b7e905bbad59375d66eacdfa3d7fb24c8783"
+    "zh_blob": "924fcd8ac3f1ac885d9a1044ed62ccb949f1d561",
+    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
   },
   "en/rtc/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/callbacks.md",
-    "zh_blob": "c0522ad20ed4e68607fc6aac345994b8c2f5e4c8",
-    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+    "zh_blob": "853cc9bdeaf663ebc4d10c17944f6f2db1883436",
+    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
   },
   "en/rtc/server-api/guides/media-output": {
     "reviewed": false,
