@@ -220,22 +220,24 @@ await smeeting.stopShare()
 ### 发送聊天消息
 ```typescript
 /**
-     * 发送聊天消息，可单发和群发
-     * @param msg_type 消息类型 1文本  2文件 3图片 4语音
-     * @param msg 消息内容
-     * @param target_id 消息接收者 为空时表示全房间接收
-     */
-await smeeting.sendRoomChatMessage(msg: string, target_id: string, msg_type: ChatMsgType = ChatMsgType.Text)
+ * 发送聊天消息，可单发和群发
+ * @param msg 消息内容
+ * @param msgType 消息类型 1文本 2文件 3图片 4语音，默认文本
+ * @param targetId 消息接收者 为空时表示全房间接收
+ */
+await smeeting.sendRoomChatMessage(msg: string, msgType: ChatMsgType = ChatMsgType.Text, targetId?: string)
 ```
+
+发文件要先上传再发消息，消息格式与收发、下载见 [聊天与文件消息](/zh/meeting/web/advanced/chat)。
 
 ### 发送自定义消息
 ```typescript
 /**
  * 发送自定义消息，可单发和群发
  * @param content 消息内容
- * @param target_id 消息接收者 为空时表示全房间接收
+ * @param targetId 消息接收者 为空时表示全房间接收
  */
-await smeeting.sendRoomCustomMessage(content: string, target_id: string)
+await smeeting.sendRoomCustomMessage(content: string, targetId?: string)
 ```
 
 ### 举手、取消举手

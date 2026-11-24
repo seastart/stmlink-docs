@@ -168,6 +168,43 @@ export enum ChatMsgType {
 }
 ```
 
+#### 聊天消息 ChatMsgInfo
+```typescript
+/**
+ * 聊天历史消息（roomChatMsgList 返回）
+ */
+export interface ChatMsgInfo {
+    /** 消息id */
+    id: string;
+    /** 会议ID */
+    meeting_id: string;
+    /** 消息内容（文件/图片等为JSON字符串） */
+    msg: string;
+    /** 消息类型 */
+    msg_type: ChatMsgType;
+    /** 发送者id */
+    sender_id: string;
+    /** 发送者名称 */
+    sender_name: string;
+    /** 创建时间（秒级时间戳） */
+    created_at: number;
+}
+```
+
+#### 预签名上传资源类别 PresignedPutObjectType
+```typescript
+export enum PresignedPutObjectType {
+    /** 附件 */
+    Attach = 'attach',
+    /** 背景图 */
+    Background = 'background',
+    /** 用户 */
+    User = 'user',
+    /** 聊天 */
+    Chat = 'chat'
+}
+```
+
 #### 用户离开房间的原因 DisconnectReason
 ```typescript
 /**

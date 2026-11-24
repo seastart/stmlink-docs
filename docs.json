@@ -431,6 +431,7 @@
                   {
                     "group": "进阶实践",
                     "pages": [
+                      "zh/meeting/web/advanced/chat",
                       "zh/meeting/web/advanced/deepfilternet",
                       "zh/meeting/web/advanced/device-check"
                     ]

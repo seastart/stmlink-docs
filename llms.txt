@@ -303,6 +303,7 @@
 
 ## SMeeting 会议 SDK · Web SDK · 进阶实践
 
+- [聊天与文件消息](https://docs.stmlink.com/zh/meeting/web/advanced/chat.md): 会中群聊 / 私聊、发送聊天文件（presignedPutObject 换签名地址 → 自己 PUT 上传 → sendRoomChatMessage 发 key）、文件消息的 JSON 格式、收消息与下载（presignedGetObject）、拉历史消息 roomChatMsgList
 - [AI 降噪（DeepFilterNet）](https://docs.stmlink.com/zh/meeting/web/advanced/deepfilternet.md): 在 Web 会议里给麦克风开启 AI 降噪：安装 @seastart/srtc-plugin-deepfilternet，用 setAudioProcessor 交给会议层，开麦自动挂载、关麦自动卸载
 - [设备检测（会前 / 会中预览）](https://docs.stmlink.com/zh/meeting/web/advanced/device-check.md): 在入会前或会中做摄像头、麦克风、扬声器检测：getDevices 枚举设备，requestOpenCamera / requestOpenMic 传 publish: false 只采集不推流，getVolume 读麦克风音量，isCameraOpened / isMicOpened 判断要不要关，扬声器用 <audio> + setSinkId 试听
 

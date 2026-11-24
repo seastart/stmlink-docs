@@ -127,11 +127,43 @@ SMeeting是绝大多数操作的入口。
     updateName(name: string): Promise<void>;
     /**
      * 发送聊天消息，可单发和群发
-     * @param msg 消息内容
-     * @param msg_type 消息类型
-     * @param target_id 消息接收者 为空时表示全房间接收
+     * 发文件时先用 presignedPutObject(PresignedPutObjectType.Chat, ...) 上传，再把 {key, name, size} 的 JSON 字符串作为 msg 发出，
+     * 详见「聊天与文件消息」/zh/meeting/web/advanced/chat
+     * @param msg 消息内容，文件 / 图片 / 语音类消息为 JSON 字符串
+     * @param msgType 消息类型，默认 ChatMsgType.Text
+     * @param targetId 消息接收者 为空时表示全房间接收
      */
     sendRoomChatMessage(msg: string, msgType?: ChatMsgType, targetId?: string): Promise<void>;
+    /**
+     * 聊天历史消息（分页）
+     * @param meeting_id 会议ID
+     * @param page 页码
+     * @param perPage 每页数量
+     */
+    roomChatMsgList(meeting_id: string, page: number, perPage: number): Promise<{
+        data: ChatMsgInfo[];
+        _meta: MetaRes;
+    }>;
+    /**
+     * 资源-预签名上传：换一个带签名的上传地址（2 小时有效），拿到后自己 PUT 文件二进制上去
+     * @param type 资源类别，聊天文件传 PresignedPutObjectType.Chat
+     * @param meetingId 会议ID
+     * @param ext 扩展名，不带点
+     * @returns url 上传地址；key 资源Key（发消息 / 换下载地址用）；ext 扩展名
+     */
+    presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string): Promise<{
+        url: string;
+        key: string;
+        ext: string;
+    }>;
+    /**
+     * 资源-预签名下载：换一个带签名的下载地址（2 小时有效）
+     * @param resKey 资源Key 二选一（聊天文件传消息里的 key）
+     * @param id 资源ID 二选一
+     */
+    presignedGetObject(resKey?: string, id?: string): Promise<{
+        url: string;
+    }>;
     /**
      * 发送自定义消息，可单发和群发
      * @param content 消息内容
