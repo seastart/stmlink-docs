@@ -56,6 +56,8 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 | `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (a secondary screen pushed by a client) |
 | `share_state_change` | The meeting's sharing status changes (sharing starts / stops) |
 | `device_invite_failed` | A device invited by the platform failed to enter (busy, declined, no answer, unreachable, stream pull failed, entry refused, and so on) |
+| `user_online` | A user comes online: a person establishes an IM connection, or a device registers with the device gateway / becomes reachable by probing, regardless of whether they're in a meeting (not sent by default; the deployer must enable it) |
+| `user_offline` | A user goes offline: a person's IM connection closes, or a device unregisters / times out on heartbeat / becomes unreachable by probing, regardless of whether they're in a meeting (not sent by default; the deployer must enable it) |
 
 ### `user_enter` — User enters the meeting
 
@@ -282,6 +284,69 @@ Sent when a device invited with [Invite devices to the channel](/en/rtc/server-a
 </Warning>
 
 Calls to users have no failure callback; for how to detect failures, see [Invite and remove](/en/meeting/server-api/guides/invite-and-kickout#how-to-detect-a-failed-invitation).
+
+### `user_online` / `user_offline` — User comes online / goes offline
+
+Tells you whether a user is **online**, regardless of whether they're in a meeting (for entering and exiting meetings, see `user_enter` / `user_exit`). People and devices share these two events, distinguished by `is_agent`:
+
++ **People**: a person comes online when the client enables out-of-meeting messages (for example, by calling `smeeting.enableIm()` on Web) and establishes an IM connection, and goes offline when they disconnect, are kicked, or time out on heartbeat
++ **Devices**: SIP / H.323 endpoints and GB28181 devices connected through the device gateway come online when they register with the device gateway, and go offline when they unregister or time out on heartbeat;
+  direct-IP endpoints are probed periodically by the device gateway: online when reachable, offline when unreachable
+
+A person comes online:
+
+```json
+{
+  "user_id": "1001",
+  "is_agent": false,
+  "device_type": 3,
+  "device_id": "aacc",
+  "sid": "co63jg6g54hu3b0xhtie",
+  "name": "",
+  "contact": ""
+}
+```
+
+A device goes offline (`user_offline` has two more fields than `user_online`, `reason` and `heartbeat_at`, at the same level as the other fields):
+
+```json
+{
+  "user_id": "_agent_sz8nk8",
+  "is_agent": true,
+  "device_type": 84,
+  "device_id": "sz8nk8",
+  "sid": "",
+  "name": "Front gate camera",
+  "contact": "34020000001320000001",
+  "reason": 4,
+  "heartbeat_at": 1718250917
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `user_id` | string | For a person, your user ID; for a device, `_agent_` + device ID, matching the `user_id` in `user_enter` after the device enters a meeting (when a GB28181 device enters by channel, the in-meeting `user_id` also ends with `_<channel ID>`) |
+| `is_agent` | boolean | `true` for a device, `false` for a person |
+| `device_type` | integer | For a person, the client type: `1` Windows, `2` Android, `3` iOS, `4` Linux, `5` macOS, `6` WebRTC, `7` WeChat Mini Program, `8` HarmonyOS; for a device, `80` + device type: `82` SIP, `83` H.323, `84` GB28181 |
+| `device_id` | string | For a person, the unique device ID reported by the client; for a device, the device ID, that is, `id` in [List devices](/en/rtc/server-api/agent#list-devices) |
+| `sid` | string | The person's IM session ID, different for each client of the same user; empty for a device |
+| `name` | string | The device name; empty for a person |
+| `contact` | string | The device identifier: the registered username for SIP, the short number for H.323, the device number for GB28181, and the registered address for direct-IP devices; empty for a person |
+| `reason` | integer | `user_offline` only. Why the user went offline: `1` disconnected / device unregistered, `2` kicked, `3` replaced by another login, `4` heartbeat timeout, `7` device unreachable by probing (direct-IP devices only) |
+| `heartbeat_at` | integer | `user_offline` only. The Unix timestamp (seconds) of the device's last heartbeat; `0` for a person |
+
++ **Multi-device sign-in counts per connection**: when the same person enables out-of-meeting messages on several clients, each client sends its own online and offline event, distinguished by `sid`.
+  To tell whether the person is still online, aggregate the `sid`s of all clients by `user_id` yourself; a single `user_offline` doesn't mean the person is offline
++ **Devices count per status change**: periodic registration refreshes and heartbeats don't resend online; an event is sent only when the device actually switches between online and offline, and a device that resumes heartbeats after going offline sends online again
++ An offline caused by heartbeat timeout waits for the timeout to be determined, so it's sent **5–7 minutes after the actual disconnection**; when you need the actual disconnection time, use `heartbeat_at`
++ Devices don't belong to any single app, so every app subscribed to these events receives the same device's online and offline events
+
+<Warning>
+  These two events are **not sent by default**: the deployer must append
+  `im_connect`, `im_disconnect` (people online / offline) and `agent_online`, `agent_offline` (devices online / offline) to `rtc.callback_events` in the SMeeting server configuration.
+  If you only need people or only devices, appending the corresponding two is enough. After the deployer enables them, you still need to subscribe to these two events when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications).
+  For private deployments, ask your deployer to enable it; for SaaS, contact us.
+</Warning>
 
 ## Idempotency and retry
 

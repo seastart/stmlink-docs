@@ -308,8 +308,8 @@
   "en/meeting/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/callbacks.md",
-    "zh_blob": "363843b5f2a5739c09821716780cb2190e787731",
-    "zh_commit": "4d9b079a118161abbcfc204f4c34900ba618bdbe"
+    "zh_blob": "9b65816bb6bde675b6c57f378c5e605f09294234",
+    "zh_commit": "daa36d541174f3a279670fc1c71beddc85fb0972"
   },
   "en/meeting/server-api/guides/invite-and-kickout": {
     "reviewed": false,
