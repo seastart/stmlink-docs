@@ -67,6 +67,7 @@ description: "服务端 API 响应体中 code 的取值"
 | `1074` | StreamPushNotFound | 推流任务不存在 |
 | `1075` | StreamPushUrlInvalid | 推流地址无效 |
 | `1076` | StreamPushGatewayFailed | 直播推流网关拒绝了推流请求 |
+| `1080` | NetCheckTooFrequent | 网络检测过于频繁，请稍后再试 |
 
 ## 框架通用错误码
 

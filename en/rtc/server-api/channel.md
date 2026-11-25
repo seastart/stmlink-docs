@@ -1494,7 +1494,7 @@ Request example:
 </ResponseField>
 
 <ResponseField name="leave_reason" type="integer">
-  Leave reason
+  Leave reason: 0 not left, 1 left voluntarily, 2 kicked out, 3 replaced by another login, 4 heartbeat timeout, 5 channel destroyed, 6 switched to audience, 7 device disconnected abnormally (a terminal that joined via the device gateway hung up unexpectedly)
 </ResponseField>
 
 

@@ -1494,7 +1494,7 @@ token 与 channel+uid 绑定且有有效期，不要缓存复用，每次入会�
 </ResponseField>
 
 <ResponseField name="leave_reason" type="integer">
-  退出原因
+  退出原因 0未退出,1主动离开,2被踢,3被顶号,4心跳超时,5频道销毁,6身份变成观众,7设备异常断开(经设备网关入会的终端非正常挂断)
 </ResponseField>
 
 

@@ -67,6 +67,7 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1074` | StreamPushNotFound | Push task not found |
 | `1075` | StreamPushUrlInvalid | Invalid push URL |
 | `1076` | StreamPushGatewayFailed | The live push gateway rejected the push request |
+| `1080` | NetCheckTooFrequent | Too many network checks, please try again later |
 
 ## Common framework error codes
 

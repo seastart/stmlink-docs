@@ -383,7 +383,8 @@
                       "zh/rtc/server-api/white-board",
                       "zh/rtc/server-api/asr",
                       "zh/rtc/server-api/ai",
-                      "zh/rtc/server-api/stream"
+                      "zh/rtc/server-api/stream",
+                      "zh/rtc/server-api/network"
                     ]
                   },
                   "zh/rtc/server-api/error-codes",
@@ -667,6 +668,7 @@
                       "zh/meeting/server-api/meet-admin",
                       "zh/meeting/server-api/mcu",
                       "zh/meeting/server-api/stream",
+                      "zh/meeting/server-api/network",
                       "zh/meeting/server-api/member"
                     ]
                   },
@@ -1007,7 +1009,8 @@
                       "en/rtc/server-api/white-board",
                       "en/rtc/server-api/asr",
                       "en/rtc/server-api/ai",
-                      "en/rtc/server-api/stream"
+                      "en/rtc/server-api/stream",
+                      "en/rtc/server-api/network"
                     ]
                   },
                   "en/rtc/server-api/error-codes",
@@ -1249,6 +1252,7 @@
                       "en/meeting/server-api/meet-admin",
                       "en/meeting/server-api/mcu",
                       "en/meeting/server-api/stream",
+                      "en/meeting/server-api/network",
                       "en/meeting/server-api/member"
                     ]
                   },
