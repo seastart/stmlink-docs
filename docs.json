@@ -655,7 +655,8 @@
                       "zh/meeting/server-api/guides/recording",
                       "zh/meeting/server-api/guides/media-output",
                       "zh/meeting/server-api/guides/callbacks",
-                      "zh/meeting/server-api/guides/agent-and-im"
+                      "zh/meeting/server-api/guides/agent-and-im",
+                      "zh/meeting/server-api/guides/invite-and-kickout"
                     ]
                   },
                   {

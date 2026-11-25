@@ -965,6 +965,10 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
 
+把人员或设备移出会议。
+
+经设备网关入会的设备也用本接口移出：target_id 填设备在会中的用户 ID（带 _agent_ 前缀）。
+
 **请求参数**
 
 <ParamField body="room_no" type="string">
@@ -1085,6 +1089,15 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 
 鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
 
+把被叫人同步进参会人员（白名单），并给他们的各端推送呼叫。被叫人凭这次呼叫在 30 分钟内入会：
+- 普通呼叫（force_join=false）：进入密码会议免输密码，锁定、等候室等其它限制照常
+- 强制呼叫（force_join=true）：免密码，并且不受会议锁定、等候室、「主持人入会前不允许他人加入」限制，直接进会
+
+返回 offline_user_ids：呼叫当时即时通讯不在线、一定收不到这次呼叫的被叫人（在线状态查不到时按在线处理，不误报）。
+收到但没接、拒接的不在其中，可用「60 秒内没收到该用户的 user_enter 回调」判断。
+
+人员与设备的邀请、强制入会、移出和失败通知的对照，见「邀请入会与移出」指南。
+
 **请求参数**
 
 <ParamField body="room_no" type="string">
@@ -1130,7 +1143,7 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 </ParamField>
 
 <ParamField body="force_join" type="boolean">
-  是否强制加入(调呼叫入会时参数才有效)
+  是否强制加入（仅呼叫入会时有效）。true 时被叫人各端自动入会，且凭这次呼叫 30 分钟内入会不受密码、会议锁定、等候室、主持人入会前不允许他人加入的限制；false 时只免密码
 </ParamField>
 
 
@@ -1159,8 +1172,8 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 
 **响应参数**
 
-<ResponseField name="data" type="string">
-  返回数据
+<ResponseField name="offline_user_ids" type="array<string>">
+  呼叫当时即时通讯不在线、一定收不到呼叫的被叫人用户ID；都在线（或在线状态暂时查不到）时为空数组。 在线的人收到但没接、拒接不在其中，可用「60 秒内没收到 user_enter 回调」判断
 </ResponseField>
 
 
@@ -1169,7 +1182,11 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 ```json
 {
   "code": 0,
-  "data": ""
+  "data": {
+    "offline_user_ids": [
+      ""
+    ]
+  }
 }
 ```
 

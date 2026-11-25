@@ -163,6 +163,36 @@ IP 直连设备的探测有几点限制：
 每次状态翻转只推一次：设备周期性的注册刷新、国标 Keepalive 不会重复推 `agent_online`；
 离线后恢复心跳会再推一次上线。设备不归属某个应用，所以订阅了本事件的每个应用都会收到。
 
+### `agent_invite_failed` — 设备邀请失败
+
+经[邀请设备入会](/zh/rtc/server-api/agent#邀请设备入会)邀请的设备没能入会时推送：
+
+```json
+{
+  "no": "021890611",
+  "type": 2,
+  "contact": "192.168.0.18:5060",
+  "name": "大会议室",
+  "uid": "_agent_co63jg6g54hu3b0xhtie",
+  "reason": "busy",
+  "code": 0,
+  "msg": "SIP/2.0 486 Busy Here"
+}
+```
+
++ `no` / `type` / `contact`：邀请时的目标房间号、设备类型（`2` SIP、`3` H323、`4` GB28181、`5` RTSP 等）与设备标识
++ `name`：设备名称
++ `uid`：设备在频道中的 uid（`_agent_` 开头）。已登记在[设备列表](/zh/rtc/server-api/agent#设备列表)里的设备才有，临时直呼的设备为空
++ `code`：`reason` 为 `join_refused` 时是入会被拒的错误码（例如 `agent_join` 回调被你拒绝时返回的码），其它情况为 `0`
++ `msg`：原始说明，如 SIP 状态行、H323 释放原因、拉流错误、服务端提示，排查时用
+
+`reason` 取值：`busy` 终端忙、`rejected` 终端拒接、`no_answer` 无应答、`unreachable` 呼不通 / 连不上、
+`stream_failed` 拉流失败、`join_refused` 入会被拒（设备呼通了但入会被拒，重试后仍失败）、`error` 其它。
+
++ **只对平台邀请的设备推送**，设备自己呼入的失败不推
++ 同一次邀请最多推一次；入会成功后再掉线不算邀请失败，那走 `user_leave`（`reason` 为 `7`）
++ 需要**设备网关新版本**才会上报，老版本的设备网关不报
+
 ### `mcu_task` — 录制/合流任务状态变化
 
 ```json

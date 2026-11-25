@@ -144,6 +144,7 @@ PROJECTS = [
                 'zh/meeting/server-api/guides/media-output',
                 'zh/meeting/server-api/guides/callbacks',
                 'zh/meeting/server-api/guides/agent-and-im',
+                'zh/meeting/server-api/guides/invite-and-kickout',
             ],
         },
         tail=['zh/meeting/server-api/error-codes'],

@@ -965,6 +965,10 @@ Response example:
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
+Removes a user or device from the meeting.
+
+Devices that joined through the device gateway are removed with this API too: set target_id to the device's in-meeting user ID (prefixed with _agent_).
+
 **Request parameters**
 
 <ParamField body="room_no" type="string">
@@ -1085,6 +1089,15 @@ Response example:
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
+Adds the callees to the participant list (allowlist) and pushes a call to all of their clients. Callees who enter within 30 minutes of this call:
+- Regular call (force_join=false): skip the password of a password-protected meeting; lock, waiting room, and other restrictions still apply
+- Forced call (force_join=true): skip the password and are not blocked by meeting lock, the waiting room, or "no one may join before the host"; they enter the meeting directly
+
+Returns offline_user_ids: callees whose IM was offline at the time of the call and who therefore cannot receive it (if online status cannot be determined, the callee is treated as online, so there are no false reports).
+Callees who received the call but did not answer or declined are not included; detect them by "no user_enter callback for that user within 60 seconds".
+
+For a side-by-side comparison of inviting, forcing entry, removing, and failure notifications for users and devices, see the "Invite and remove participants" guide.
+
 **Request parameters**
 
 <ParamField body="room_no" type="string">
@@ -1130,7 +1143,7 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 </ParamField>
 
 <ParamField body="force_join" type="boolean">
-  Whether to force entry (takes effect only when calling users into the meeting)
+  Whether to force entry (takes effect only when calling users into the meeting). When true, the callee's clients enter automatically, and entering within 30 minutes of this call is not blocked by the password, meeting lock, waiting room, or "no one may join before the host"; when false, only the password is skipped
 </ParamField>
 
 
@@ -1159,8 +1172,8 @@ Request example:
 
 **Response parameters**
 
-<ResponseField name="data" type="string">
-  Response data
+<ResponseField name="offline_user_ids" type="array<string>">
+  User IDs of callees whose IM was offline at the time of the call and who therefore cannot receive it; an empty array when everyone is online (or online status is temporarily unavailable). Online callees who received the call but did not answer or declined are not included; detect them by "no user_enter callback within 60 seconds"
 </ResponseField>
 
 
@@ -1169,7 +1182,11 @@ Response example:
 ```json
 {
   "code": 0,
-  "data": ""
+  "data": {
+    "offline_user_ids": [
+      ""
+    ]
+  }
 }
 ```
 

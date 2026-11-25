@@ -1830,7 +1830,7 @@ Update invitees during the meeting
 </ParamField>
 
 <ParamField body="force_join" type="boolean">
-  Whether to force entry (takes effect only when calling users into the meeting)
+  Whether to force entry (takes effect only when calling users into the meeting). When true, the callee's clients enter automatically, and entering within 30 minutes of this call is not blocked by the password, meeting lock, waiting room, or "no one may join before the host"; when false, only the password is skipped
 </ParamField>
 
 

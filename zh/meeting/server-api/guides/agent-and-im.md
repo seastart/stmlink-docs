@@ -43,6 +43,8 @@ SIP / H323 / GB28181 等设备的接入，以及会议外的 IM 消息，SMeetin
 `agents` 里每台设备的 `type` 与 `contact` 从[设备列表](/zh/rtc/server-api/agent)取，国标设备的
 `contact` 格式是 `设备编号:通道编号`，各字段说明见[邀请设备入会](/zh/rtc/server-api/agent#邀请设备入会)。
 
+设备入会能放过哪些会议限制、怎么移出、邀请失败怎么知道，以及与邀请人员（`call-users`）的对照，见[邀请入会与移出](/zh/meeting/server-api/guides/invite-and-kickout)。
+
 每台设备还可以带四个可选开关，决定入会后先发什么、放不放会议声音：`camera_enabled`（发摄像头画面，默认 `true`）、
 `mic_enabled`（设备麦克风的声音进会，默认 `true`）、`share_enabled`（直接共享画面，默认 `false`）、
 `speaker_enabled`（会议声音从设备喇叭放出，SIP/H.323 默认 `true`，国标默认取设备网关配置、一般为 `false`）。

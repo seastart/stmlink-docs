@@ -55,6 +55,7 @@ Content-Type: application/json; charset=utf-8
 | `user_camera_state_change` | 用户打开或关闭摄像头 |
 | `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（客户端推送的副屏） |
 | `share_state_change` | 会议的共享状态变化（开始共享 / 结束共享） |
+| `device_invite_failed` | 平台邀请的设备没能入会（终端忙、拒接、无应答、呼不通、拉流失败、入会被拒等） |
 
 ### `user_enter` — 用户进入会议
 
@@ -238,6 +239,50 @@ Content-Type: application/json; charset=utf-8
 + 新共享者接管已掉线者的共享时，先推一条原共享者的结束，再推一条新共享者的开始
 + 申请到共享就推送「开始」，不等客户端真正推出屏幕画面
 + SIP/H.323 终端的辅流共享也是会议共享：终端本地按共享键发起时推送本事件（平台不能远程开启这类终端的共享），`user_id` 为该设备
+
+### `device_invite_failed` — 设备邀请失败
+
+经[邀请设备入会](/zh/rtc/server-api/agent#邀请设备入会)（`agent/invite`）邀请的设备没能入会时推送：
+
+```json
+{
+  "meeting_id": "sny038",
+  "room_no": "021890611",
+  "device": { "type": 2, "contact": "192.168.0.18:5060", "name": "大会议室" },
+  "reason": "busy",
+  "code": 0,
+  "msg": "SIP/2.0 486 Busy Here"
+}
+```
+
++ `meeting_id`：按 `room_no` 找到的当前会议；找不到（如会议已删除）时为空，照样推送
++ `room_no`：邀请时填的房间号
++ `device`：被邀请的设备，`type` 为设备类型（`2` SIP、`3` H.323、`4` 国标、`5` RTSP 等），`contact` 为邀请时的设备标识，`name` 为设备名称
++ `code`：`reason` 为 `join_refused` 时是入会被拒的错误码（如会议已结束），其它情况为 `0`
++ `msg`：原始说明，如 SIP 状态行、H.323 释放原因、拉流错误、服务端提示，排查时用
+
+`reason` 取值：
+
+| 值 | 含义 | 典型来源 |
+| --- | --- | --- |
+| `busy` | 终端忙 | SIP 486 / 600，H.323 用户忙 |
+| `rejected` | 终端拒接 | SIP 603 / 403，H.323 拒绝 |
+| `no_answer` | 无应答 | SIP 408 / 480、振铃超时，H.323 无应答 |
+| `unreachable` | 呼不通 / 连不上 | 网络不可达、SIP 404 / 5xx、H.323 连接失败 |
+| `stream_failed` | 拉流失败 | RTSP / 国标 / 文件打不开或没有数据 |
+| `join_refused` | 入会被拒 | 设备呼通了，但会议拒绝它入会（如会议已结束），重试后仍失败 |
+| `error` | 其它 | 兜底 |
+
++ **只对平台邀请的设备推送**，设备自己呼入（终端拨会议号进来）的失败不推
++ 同一次邀请最多推一次；设备入会成功后再掉线不算邀请失败，那走 `user_exit`（`reason` 为 `7`）
++ 已在别的会议里的设备被邀请切过来、在新会议入会被拒，同样按 `join_refused` 推送
+
+<Warning>
+  本事件需要**设备网关新版本**才会上报；并且需要部署方在 SMeeting 服务端配置的 `rtc.callback_events` 里追加
+  `agent_invite_failed` 才会推送（默认不开）。私有化部署请联系部署方开启，SaaS 请联系我们。
+</Warning>
+
+人员呼叫的失败没有回调，判断方法见[邀请入会与移出](/zh/meeting/server-api/guides/invite-and-kickout#邀请失败怎么知道)。
 
 ## 幂等与重试
 

@@ -487,6 +487,7 @@
 - [媒体输出接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/media-output.md): 把会议里的画面和声音送出去：HTTP-FLV / RTSP 拉流地址与 RTMP / RTMPS 推流任务。画面取合成画面或任意一人、声音取会议混音或任意一人，可自由组合；含合流任务依赖、协议限制、推流状态与告警、旧接口迁移
 - [回调事件接入指南](https://docs.stmlink.com/zh/meeting/server-api/guides/callbacks.md): 会议、成员、录制状态变化时 SMeeting 通知你的业务后端：怎么接、怎么验签、每个事件的字段结构
 - [设备接入与 IM](https://docs.stmlink.com/zh/meeting/server-api/guides/agent-and-im.md): SMeeting 的设备接入与 IM 接口直接沿用 SRTC 的同名接口，本页说明怎么调
+- [邀请入会与移出](https://docs.stmlink.com/zh/meeting/server-api/guides/invite-and-kickout.md): 从你的业务后端把人员（App / Web 用户）或会议室终端、监控等设备拉进会议、强制入会、移出会议，以及怎么知道邀请失败了：人员与设备两条路的接口、参数和限制对照
 
 ## SMeeting 会议 SDK · 服务端 API · 接口文档
 

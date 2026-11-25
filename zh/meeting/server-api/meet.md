@@ -1830,7 +1830,7 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="force_join" type="boolean">
-  是否强制加入(调呼叫入会时参数才有效)
+  是否强制加入（仅呼叫入会时有效）。true 时被叫人各端自动入会，且凭这次呼叫 30 分钟内入会不受密码、会议锁定、等候室、主持人入会前不允许他人加入的限制；false 时只免密码
 </ParamField>
 
 
