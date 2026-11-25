@@ -1250,7 +1250,8 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="extend_info" type="object">
-  扩展字段
+  扩展字段，任意 JSON 对象，原样保存并随会议信息下发给每位参会人（全体可见，不要放敏感信息）。目前约定的键：watermark，屏幕水印的文字模板，可用变量 &#123;nickname&#125; 会中昵称、&#123;uid&#125; 用户 ID、&#123;room_no&#125; 会议号、&#123;date&#125; 日期、&#123;time&#125; 时间、&#123;terminal&#125; 终端类型，用 \n 换行；不传或为空时显示昵称；各端只在入会时读取；水印是否显示仍由 watermark_disabled 控制。用法与完整变量表见「服务端极简对接」的「自定义水印内容」
+  示例：`{"watermark":"{nickname} {date} {time}"}`
 </ParamField>
 
 <ParamField body="meeting_mode" type="integer">
@@ -1381,7 +1382,9 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   "creator_name": "",
   "enter_before_host_disabled": false,
   "entry_mute_policy": 0,
-  "extend_info": {},
+  "extend_info": {
+    "watermark": "{nickname} {date} {time}"
+  },
   "force_join": false,
   "layout_data": {
     "div_list": [
@@ -1570,7 +1573,8 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 </ParamField>
 
 <ParamField body="extend_info" type="object">
-  扩展字段
+  扩展字段，任意 JSON 对象，原样保存并随会议信息下发给每位参会人（全体可见，不要放敏感信息）。目前约定的键：watermark，屏幕水印的文字模板，可用变量 &#123;nickname&#125; 会中昵称、&#123;uid&#125; 用户 ID、&#123;room_no&#125; 会议号、&#123;date&#125; 日期、&#123;time&#125; 时间、&#123;terminal&#125; 终端类型，用 \n 换行；不传或为空时显示昵称；各端只在入会时读取；水印是否显示仍由 watermark_disabled 控制。修改时整体替换原值，原有的键要保留需一并传入。用法与完整变量表见「服务端极简对接」的「自定义水印内容」
+  示例：`{"watermark":"{nickname} {date} {time}"}`
 </ParamField>
 
 <ParamField body="meeting_mode" type="integer">
@@ -1699,7 +1703,9 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
   "creator": "",
   "enter_before_host_disabled": false,
   "entry_mute_policy": 0,
-  "extend_info": {},
+  "extend_info": {
+    "watermark": "{nickname} {date} {time}"
+  },
   "force_join": false,
   "layout_data": {
     "div_list": [

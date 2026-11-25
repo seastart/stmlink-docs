@@ -1250,7 +1250,8 @@ Authentication: required (see [Overview](/en/meeting/server-api/overview))
 </ParamField>
 
 <ParamField body="extend_info" type="object">
-  Extension field
+  Extension field: any JSON object, stored as is and delivered with the meeting info to every participant (visible to all, so do not put sensitive data in it). Reserved key: watermark, the text template of the on-screen watermark. Available variables: &#123;nickname&#125; in-meeting display name, &#123;uid&#125; user ID, &#123;room_no&#125; meeting number, &#123;date&#125; date, &#123;time&#125; time, &#123;terminal&#125; terminal type; use \n for a line break. If omitted or empty, the nickname is shown. Clients read it only when joining. Whether the watermark is shown is still controlled by watermark_disabled. For usage and the full variable table, see "Custom watermark text" in "Server-side low-code integration"
+  Example: `{"watermark":"{nickname} {date} {time}"}`
 </ParamField>
 
 <ParamField body="meeting_mode" type="integer">
@@ -1381,7 +1382,9 @@ Request example:
   "creator_name": "",
   "enter_before_host_disabled": false,
   "entry_mute_policy": 0,
-  "extend_info": {},
+  "extend_info": {
+    "watermark": "{nickname} {date} {time}"
+  },
   "force_join": false,
   "layout_data": {
     "div_list": [
@@ -1570,7 +1573,8 @@ Update a meeting
 </ParamField>
 
 <ParamField body="extend_info" type="object">
-  Extension field
+  Extension field: any JSON object, stored as is and delivered with the meeting info to every participant (visible to all, so do not put sensitive data in it). Reserved key: watermark, the text template of the on-screen watermark. Available variables: &#123;nickname&#125; in-meeting display name, &#123;uid&#125; user ID, &#123;room_no&#125; meeting number, &#123;date&#125; date, &#123;time&#125; time, &#123;terminal&#125; terminal type; use \n for a line break. If omitted or empty, the nickname is shown. Clients read it only when joining. Whether the watermark is shown is still controlled by watermark_disabled. An update replaces the whole value; pass any existing keys you want to keep. For usage and the full variable table, see "Custom watermark text" in "Server-side low-code integration"
+  Example: `{"watermark":"{nickname} {date} {time}"}`
 </ParamField>
 
 <ParamField body="meeting_mode" type="integer">
@@ -1699,7 +1703,9 @@ Request example:
   "creator": "",
   "enter_before_host_disabled": false,
   "entry_mute_policy": 0,
-  "extend_info": {},
+  "extend_info": {
+    "watermark": "{nickname} {date} {time}"
+  },
   "force_join": false,
   "layout_data": {
     "div_list": [
