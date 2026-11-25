@@ -272,6 +272,7 @@ Meeting list item. For the Java type, read properties through getters.
 | `waitingRoomDisabled` | `Boolean?` | Whether the waiting room is disabled |
 | `enterBeforeHostDisabled` | `Boolean?` | Whether entering before the host is prohibited |
 | `conferee` | `List<String>` | Invitee UID list |
+| `extendInfo` | `String?` | Custom meeting extension info, that is, the `extend_info` passed when the meeting was created or updated, as a JSON string. Empty if not set. Available since `2.0.47` |
 
 ## Device and invitation models
 
