@@ -938,8 +938,8 @@
   "en/rtc/android/changelog": {
     "reviewed": false,
     "source": "zh/rtc/android/changelog.mdx",
-    "zh_blob": "0345de749260d2587c6e16f3111d93529f513f23",
-    "zh_commit": "7423ff1e98fcec2310bab03b0498a215aa1974b7"
+    "zh_blob": "657df144e29c76cc53448c3af6d2ac42808e3319",
+    "zh_commit": "084972a3df20ecaa98a611c52d6edd9e660aa99c"
   },
   "en/rtc/android/enums": {
     "reviewed": false,
@@ -956,8 +956,8 @@
   "en/rtc/android/integration": {
     "reviewed": false,
     "source": "zh/rtc/android/integration.md",
-    "zh_blob": "31b9ad33a53f9d2daa6fd838d5b510a257bccb3e",
-    "zh_commit": "7423ff1e98fcec2310bab03b0498a215aa1974b7"
+    "zh_blob": "56ef7975608092138897e31226e9918e9d2ff20a",
+    "zh_commit": "084972a3df20ecaa98a611c52d6edd9e660aa99c"
   },
   "en/rtc/android/media-quality": {
     "reviewed": false,
