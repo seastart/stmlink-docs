@@ -149,6 +149,17 @@ description: "Meeting, member, device, message, sharing, recording, roll call, a
 | MuteState2 | 2 | Mute on entry disabled (follows the client's initial audio state) |
 | MuteState3 | 3 | Mute beyond 6 people (members entering after there are more than 6 people are muted) |
 
+### PresignedPutObjectType
+
+Resource type for presigned uploads, used by [`presignedPutObject`](/en/meeting/android/api-reference/MeetingEngine#presignedputobject-type-meetingid-ext-callback).
+
+| Enum name | Value | Description |
+| --- | --- | --- |
+| ATTACH | `"attach"` | Meeting materials (attachments); requires a meeting ID |
+| BACKGROUND | `"background"` | Meeting background image; requires a meeting ID |
+| USER | `"user"` | User resource (such as an avatar); not tied to a meeting, pass `null` for the meeting ID |
+| CHAT | `"chat"` | In-meeting chat file; requires a meeting ID |
+
 ### RollCallMethod
 
 | Enum name | Value | Description |

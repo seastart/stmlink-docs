@@ -44,8 +44,8 @@
   "en/meeting/android/api-reference/MeetingEngine": {
     "reviewed": false,
     "source": "zh/meeting/android/api-reference/MeetingEngine.md",
-    "zh_blob": "e8ef91cc06ba338952b5d3b3643381482961381f",
-    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
+    "zh_blob": "67653480189032598f8b0006e1f62224d4ec1510",
+    "zh_commit": "8f3c039876625709a4ad4d51092a37b4f27cf415"
   },
   "en/meeting/android/api-reference/MeetingEngineEvent": {
     "reviewed": false,
@@ -140,14 +140,14 @@
   "en/meeting/android/changelog": {
     "reviewed": false,
     "source": "zh/meeting/android/changelog.mdx",
-    "zh_blob": "e27d4123f29812d1814cd601b71f9fd3bcf0b60b",
-    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
+    "zh_blob": "7f50472f1a3fb360e8fa39b503c2b71028277ef5",
+    "zh_commit": "8f3c039876625709a4ad4d51092a37b4f27cf415"
   },
   "en/meeting/android/enums": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/android/enums.md",
-    "zh_blob": "5a3b821f22cbe6a80b57834524f215a7f647e06c",
-    "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
+    "zh_blob": "78588279a5e83b6c68f2a5cf4dac661528081f9a",
+    "zh_commit": "8f3c039876625709a4ad4d51092a37b4f27cf415"
   },
   "en/meeting/android/error-codes": {
     "reviewed": false,
@@ -158,8 +158,8 @@
   "en/meeting/android/integration": {
     "reviewed": false,
     "source": "zh/meeting/android/integration.md",
-    "zh_blob": "a1b2076873136b05bd46ca81db4a8dac43fb4fa9",
-    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
+    "zh_blob": "2c27d7ad47121469016a1a2449d483d6efd550e0",
+    "zh_commit": "8f3c039876625709a4ad4d51092a37b4f27cf415"
   },
   "en/meeting/android/media-quality": {
     "reviewed": false,
@@ -200,8 +200,8 @@
   "en/meeting/android/types": {
     "reviewed": false,
     "source": "zh/meeting/android/types.md",
-    "zh_blob": "9961c3a1b631ca99ecaa4d18e467131589d66b45",
-    "zh_commit": "96cee3c653f3d031ef18767c5824609327201649"
+    "zh_blob": "905bbffd2685706655c0af7ebff39201ac103051",
+    "zh_commit": "8f3c039876625709a4ad4d51092a37b4f27cf415"
   },
   "en/meeting/error-codes": {
     "reviewed": false,

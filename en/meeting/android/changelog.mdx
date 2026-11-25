@@ -1,9 +1,15 @@
 ---
 title: "Changelog"
-description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.45, including breaking API changes. Read this before upgrading the SDK."
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.46, including breaking API changes. Read this before upgrading the SDK."
 ---
 
 > This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.46 (2026-11-25)
+
+### Added
+
++ Added the presigned resource methods `MeetingEngine.presignedPutObject()` and `presignedGetObject()`: request an upload URL and have your app upload the file directly, then exchange the resource key for a download URL. Useful for chat files and similar scenarios. See [Presigned resource URLs](/en/meeting/android/api-reference/MeetingEngine#presigned-resource-urls).
 
 ## 2.0.45 (2026-11-24)
 

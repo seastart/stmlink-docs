@@ -538,6 +538,18 @@ Used when creating a new casting meeting; all fields are ignored by the server w
 | screenRole | `MemberRoleType?` | `null` | Role of the large screen that registered the cast code |
 | owner | `CastMeetingOwner?` | `null` | Ownership policy for the new meeting |
 
+## Presigned resource models
+
+### PresignedPutObjectInfo
+
+Success result of [`presignedPutObject`](/en/meeting/android/api-reference/MeetingEngine#presignedputobject-type-meetingid-ext-callback), available since `2.0.46`.
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| url | `String` | `""` | Presigned upload URL; valid for a limited time and only for this PUT. Don't pass or persist it |
+| key | `String` | `""` | Resource key; pass it to others after the upload succeeds, and use it with `presignedGetObject` to get a download URL |
+| ext | `String` | `""` | File extension confirmed by the server, without the dot |
+
 ## Network check models
 
 Available since `2.0.45`, used by the [pre-call network check](/en/meeting/android/api-reference/MeetingEngine#pre-call-network-check). Fields and values match the [SRTC Android network check types](/en/rtc/android/types#networkcheckoptions), but these are the meeting layer's own types.

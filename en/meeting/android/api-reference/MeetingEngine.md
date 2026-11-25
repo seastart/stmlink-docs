@@ -2021,6 +2021,72 @@ Parameters:
 
 Returns: None (`Unit`).
 
+## Presigned resource URLs
+
+Supported since `2.0.46`. Use these to upload chat files, meeting materials, and similar resources directly to object storage: request an upload URL, have your app PUT the file to it, and from then on pass around only the resource key; when you need to download, exchange the key for a download URL. Both methods only require `initSdk`; you don't need to be in a meeting.
+
+### presignedPutObject(type, meetingId, ext, callback)
+
+```kotlin
+fun presignedPutObject(
+    type: PresignedPutObjectType,
+    meetingId: String?,
+    ext: String,
+    callback: MeetingValueResultCallback<PresignedPutObjectInfo>
+)
+```
+
+Requests an object storage upload URL. With the result, your app sends an HTTP PUT to `url`: the request body is the file's binary content, with the header `Content-Type: application/octet-stream` (not multipart). After the upload succeeds, pass `key` to others; don't pass or persist `url` (the signed URL expires).
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| type | [`PresignedPutObjectType`](/en/meeting/android/enums#presignedputobjecttype) | Yes | Resource type; use `CHAT` for chat files |
+| meetingId | `String?` | No | Meeting ID; the `USER` type isn't tied to a meeting, so pass `null` |
+| ext | `String` | Yes | File extension without the dot; pass `"bin"` for files without an extension. If empty, the callback receives `onFailure(202012)` |
+| callback | `MeetingValueResultCallback<PresignedPutObjectInfo>` | Yes | On success, returns the upload URL, resource key, and extension; see [PresignedPutObjectInfo](/en/meeting/android/types#presignedputobjectinfo) |
+
+When the deployment has file features turned off, the callback receives `onFailure(2125)` (file features disabled); hide the send-file entry in that case. The SDK doesn't limit file size; enforce a per-file limit in your app.
+
+Returns: `Unit`; the result is delivered through the callback.
+
+### presignedGetObject(resKey, id, callback)
+
+```kotlin
+fun presignedGetObject(
+    resKey: String?,
+    id: String?,
+    callback: MeetingValueResultCallback<String>
+)
+```
+
+Exchanges a resource key for a download URL. The signed URL expires, so get a fresh one before each download and don't cache it.
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| resKey | `String?` | Yes | Resource key, such as the `key` returned by `presignedPutObject` or the `key` in a chat file message. If empty, the callback receives `onFailure(202012)` |
+| id | `String?` | No | Resource ID. The server doesn't support it yet; pass `null` and always pass `resKey` |
+| callback | `MeetingValueResultCallback<String>` | Yes | On success, returns the download URL |
+
+Returns: `Unit`; the result is delivered through the callback.
+
+```kotlin
+// Send a chat file: request a URL → PUT the file → send a file message carrying the key
+engine.presignedPutObject(PresignedPutObjectType.CHAT, meetingId, "pdf",
+    object : MeetingValueResultCallback<PresignedPutObjectInfo> {
+        override fun onSuccess(value: PresignedPutObjectInfo) {
+            // Your app sends a PUT to value.url (Content-Type: application/octet-stream);
+            // on success, put value.key in the message and send it with sendRoomChatMessage(..., ChatMsgType.File, ...)
+        }
+        override fun onFailure(errorCode: Int, message: String?) { }
+    })
+
+// Download: exchange the key for a fresh URL every time
+engine.presignedGetObject(key, null, object : MeetingValueResultCallback<String> {
+    override fun onSuccess(value: String) { /* download with value */ }
+    override fun onFailure(errorCode: Int, message: String?) { }
+})
+```
+
 ## Replying to device requests
 
 ### confirmOpenCameraAgree(targetId, view, preOpt, callback)
