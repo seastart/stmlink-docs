@@ -1,7 +1,17 @@
 ---
 title: "Changelog"
-description: "Release history of the C SDK (librtc), including the 0.4.0 automatic log upload, the 0.3.0 per-instance device type setting, the 0.2.0 content-time sample writing and connection leak fixes, the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
+description: "Release history of the C SDK (librtc), including the 0.5.1 package fixes, the 0.4.0 automatic log upload, the 0.3.0 per-instance device type setting, the 0.2.0 content-time sample writing and connection leak fixes, the 0.1.1 fix for event callback ordering, the 0.1.0 error code renumbering, the 0.0.9 removal of rtc_user_info_t.link_id that requires recompiling, and the 0.0.11 rtc_destroy callback fixes. Read this page before upgrading the C SDK."
 ---
+
+### [0.5.1] - 2026.11.25
+
+#### Fixes
++ **`librtc.so` missing after extracting the Linux packages on Windows**: the packages used to contain macOS `._*` metadata files and extended headers, so some Windows extraction tools put the library into a folder such as `GNUSparseFile.0` and left only a set of 1 KB `._` files outside. Packages now contain only the library files, the header and `BUILD_INFO`, and extract the same way on every platform
++ **The static library `librtc.a` in the Linux packages was unusable**: in the Linux amd64 / arm64 packages of 0.4.0 and earlier, `librtc.a` was only about 100 bytes and contained no code, so static linking failed with missing `rtc_*` symbols. It is now the complete static library. The shared library `librtc.so` and the Windows package were not affected
+
+<Note>
+APIs and structs are identical to 0.4.0; just replace the library files. If you only use `librtc.so` and could already extract it, there is no need to upgrade.
+</Note>
 
 ### [0.4.0] - 2026.11.24
 

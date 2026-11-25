@@ -1052,8 +1052,8 @@
   "en/rtc/capi/changelog": {
     "reviewed": false,
     "source": "zh/rtc/capi/changelog.mdx",
-    "zh_blob": "93b7ca944e8816ff8c798d8be4a84f8ea10eb420",
-    "zh_commit": "99aff7e8d082636c2d185b8d950c7ec30575484d"
+    "zh_blob": "e5e57f4cc9c9aa9af84988c4d0393094dde389bd",
+    "zh_commit": "984fe845cb6002495bc9c4d0d262cf4c6b38714b"
   },
   "en/rtc/capi/error-codes": {
     "reviewed": false,
