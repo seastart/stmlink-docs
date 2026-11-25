@@ -55,6 +55,8 @@ Content-Type: application/json; charset=utf-8
 | `user_camera_state_change` | 用户打开或关闭摄像头 |
 | `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（客户端推送的副屏） |
 | `share_state_change` | 会议的共享状态变化（开始共享 / 结束共享） |
+| `user_online` | 用户上线：真人客户端连上 IM，或设备（SIP / H.323 终端、国标监控）注册到设备网关，与是否在会无关 |
+| `user_offline` | 用户下线：真人客户端 IM 断开，或设备注销 / 心跳超时 / 探测不可达，与是否在会无关 |
 
 ### `user_enter` — 用户进入会议
 
@@ -236,6 +238,41 @@ Content-Type: application/json; charset=utf-8
 + 新共享者接管已掉线者的共享时，先推一条原共享者的结束，再推一条新共享者的开始
 + 申请到共享就推送「开始」，不等客户端真正推出屏幕画面
 + SIP/H.323 终端的辅流共享也是会议共享：终端本地按共享键发起时推送本事件（平台不能远程开启这类终端的共享），`user_id` 为该设备
+
+### `user_online` / `user_offline` — 用户上线 / 下线
+
+感知**会议外**的在线状态，真人和设备共用一个事件，用 `is_agent` 区分（进出会议看 `user_enter` / `user_exit`）。
+
+本事件需要部署方开启后才会推送，需要时请联系我们。
+
+真人上线：
+
+```json
+{ "user_id": "1001", "is_agent": false, "device_type": 3, "device_id": "aacc", "sid": "co63jg6g54hu3b0xhtie", "name": "", "contact": "" }
+```
+
+设备上线：
+
+```json
+{ "user_id": "_agent_sz8nk8", "is_agent": true, "device_type": 84, "device_id": "sz8nk8", "sid": "", "name": "大门监控", "contact": "34020000001320000001" }
+```
+
+`user_offline` 多两个字段：
+
+```json
+{ "user_id": "_agent_sz8nk8", "is_agent": true, "device_type": 84, "device_id": "sz8nk8", "sid": "", "name": "大门监控", "contact": "34020000001320000001", "reason": 4, "heartbeat_at": 1718250917 }
+```
+
++ `is_agent`：`false` 真人，`true` 设备
++ `user_id`：真人为你的用户 ID；设备为 `_agent_` + 设备 ID，与设备入会后 `user_enter` 里的 `user_id` 一致
++ `device_type`：真人为 `1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 微信小程序、`8` 鸿蒙；
+  设备为 `82` SIP、`83` H323、`84` GB28181 监控
++ 真人**按端推送**：同一个 `user_id` 在多端登录时每一端各推一次，用 `sid` 区分是哪一端；要判断「这个人还在不在线」，
+  请自己按 `user_id` 汇总各端状态
++ 设备按状态翻转只推一次，`name` / `contact` 只对设备有值（`contact` 为 SIP 用户名、H323 短号码、国标设备编号或 IP 直连地址）
++ `reason`：`1` 主动断开（设备为主动注销）、`2` 被踢、`3` 被顶号、`4` 心跳超时、`7` 探测不可达（仅 IP 直连设备）
++ `heartbeat_at` 只对设备有值，是最后一次心跳时间：心跳超时的离线**比真实断线晚 5~7 分钟**才推送，需要真实断线时刻时以它为准
++ 设备不归属某个应用，订阅了本事件的每个应用都会收到
 
 ## 幂等与重试
 
