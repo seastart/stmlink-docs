@@ -96,6 +96,36 @@ When the host calls you through the call API, the SDK notifies you through this 
 | roomNo | Room number |
 | title | Meeting title |
 
+<Note>
+Once you implement `onCallReceived:nickname:roomNo:title:meetingId:forceJoin:()` below, which also carries `meetingId` / `forceJoin`, the SDK no longer calls this method.
+</Note>
+
+### onCallReceived:nickname:roomNo:title:meetingId:forceJoin:()
+`- (void)onCallReceived:(NSString *)callerId nickname:(nullable NSString *)nickname roomNo:(NSString *)roomNo title:(NSString *)title meetingId:(nullable NSString *)meetingId forceJoin:(BOOL)forceJoin`
+
+Called when a call request arrives, with the meeting ID and the force-join flag. Available since 2.5.0.
+
+Fires at the same time as `onCallReceived:nickname:roomNo:title:()` and additionally carries the meeting ID `meetingId` and the force-join flag `forceJoin`. Once you implement this method, the old one is no longer called.
+
+`forceJoin` maps to the `force_join` parameter of the server [call users](/en/meeting/server-api/meet-admin#call-users-into-the-meeting) API and defaults to `NO`. `YES` means the administrator requires the callee to join directly. We recommend:
+
++ Don't show the answering UI; show a short notice and join the target meeting directly. Ignore it if you're already in that meeting
++ If you're in another meeting, leave it first (leave only yourself, don't end the meeting), then join
++ If the same meeting's force call arrives repeatedly within a short time, handle only the first one
++ iOS can't bring the app to the foreground automatically while it's in the background; post a local notification and join after the user taps it or returns to the app
+
+A callee joining through this call skips the meeting password (handled by the server); waiting room, lock, and other rules still apply.
+
+**Parameters**
+
+| callerId | Caller ID |
+| --- | --- |
+| nickname | Caller nickname |
+| roomNo | Room number |
+| title | Meeting title |
+| meetingId | Meeting ID |
+| forceJoin | Whether to force join; defaults to `NO` |
+
 
 ## Waiting room callbacks
 ### onWaitingRoomMoveInRoom:title:()

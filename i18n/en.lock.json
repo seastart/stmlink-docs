@@ -234,10 +234,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/api-reference/MeetingKitIMDelegate": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/api-reference/MeetingKitIMDelegate.md",
-    "zh_blob": "abbdf4ec32dccb00a5bbfc80a9e52589ae0d7487",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "67b0a8b6ced245d1e75df8e64acad8cc3dbee13f",
+    "zh_commit": "bf772df89d1c7e6cd15c10075bd4498cb239b97b"
   },
   "en/meeting/ios/api-reference/MeetingKitRoom": {
     "reviewed": false,
@@ -254,8 +254,8 @@
   "en/meeting/ios/changelog": {
     "reviewed": false,
     "source": "zh/meeting/ios/changelog.mdx",
-    "zh_blob": "317a87b401d7ea83395d640f593be508f9bb979e",
-    "zh_commit": "f67e4c646969654f344f6c0dfee2bf3825a214bc"
+    "zh_blob": "d498589b19c01a44b5bf28f83218c844c549001f",
+    "zh_commit": "bf772df89d1c7e6cd15c10075bd4498cb239b97b"
   },
   "en/meeting/ios/error-codes": {
     "reviewed": false,

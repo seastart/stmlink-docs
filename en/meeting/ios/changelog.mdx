@@ -3,6 +3,15 @@ title: "Changelog"
 description: "Release history of the iOS SMeeting SDK (Objective-C MeetingKit) from 0.0.1-alpha.1 to 2.1.0: new APIs, fixes, and RTCEngineKit dependency upgrades per version, including the 2.0.0 multi-room MeetingKitRoom refactor and the 2.1.0 iOS 16 minimum. Read before upgrading."
 ---
 
+### [2.5.0] - 2026.11.25
+
+#### Added
++ **Force-join flag in call events**: `MeetingKitIMDelegate` adds the optional callback `onCallReceived:nickname:roomNo:title:meetingId:forceJoin:`, which carries the meeting ID `meetingId` and `forceJoin` in addition to the original callback. `forceJoin` maps to the `force_join` parameter of the server call users API; `YES` means the administrator requires the callee to join directly, so the app can skip the answering UI and join the meeting. See [MeetingKitIMDelegate](/en/meeting/ios/api-reference/MeetingKitIMDelegate#oncallreceivednicknameroomnotitlemeetingidforcejoin).
+
+<Note>
+Once you implement the new callback, the SDK no longer calls the old `onCallReceived:nickname:roomNo:title:`; if you don't, the old method is still called and existing API signatures are unchanged. The `RTCEngineKit` dependency is still `>= 3.3.0`, so 2.4.0 integrations can upgrade without code changes.
+</Note>
+
 ### [2.4.0] - 2026.11.25
 
 #### Added
