@@ -392,8 +392,8 @@
   "en/meeting/swift/advanced/resources": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/resources.md",
-    "zh_blob": "f34a3c3c102500640e69cab2eafaa36ca873c40d",
-    "zh_commit": "341a58a2d093e855e18c8dd45d7fa89666657282"
+    "zh_blob": "577c1ce351d0742b9eccf0236c376cf76af89555",
+    "zh_commit": "fc24d565bb88fb4a297032adc9d909980d438508"
   },
   "en/meeting/swift/advanced/screen-sharing": {
     "reviewed": false,
@@ -446,8 +446,8 @@
   "en/meeting/swift/api-reference/admin-actions": {
     "reviewed": false,
     "source": "zh/meeting/swift/api-reference/admin-actions.md",
-    "zh_blob": "ad8ef12baa87f35594a32a3afac149821b07f57c",
-    "zh_commit": "341a58a2d093e855e18c8dd45d7fa89666657282"
+    "zh_blob": "9067a5150868eba635b21203c470f6abbbf2a6d8",
+    "zh_commit": "fc24d565bb88fb4a297032adc9d909980d438508"
   },
   "en/meeting/swift/api-reference/devices": {
     "reviewed": true,
@@ -500,8 +500,8 @@
   "en/meeting/swift/types": {
     "reviewed": false,
     "source": "zh/meeting/swift/types.md",
-    "zh_blob": "b748ebf0d682f5e50bfcdbfc66cb7ea1646a1bae",
-    "zh_commit": "038051d4ba36581e3193225588ac16b345f973e1"
+    "zh_blob": "9ee1cd112a842ba902b7e97c60989f81649f275d",
+    "zh_commit": "fc24d565bb88fb4a297032adc9d909980d438508"
   },
   "en/meeting/token": {
     "reviewed": true,
@@ -626,8 +626,8 @@
   "en/meeting/windows/api-reference/smeeting-engine": {
     "reviewed": false,
     "source": "zh/meeting/windows/api-reference/smeeting-engine.md",
-    "zh_blob": "00c775b024f7ec09e99c1606789c2ed8abb6b71b",
-    "zh_commit": "341a58a2d093e855e18c8dd45d7fa89666657282"
+    "zh_blob": "26561fd29811f60275c8b67cbe0d41936ec5bed4",
+    "zh_commit": "fc24d565bb88fb4a297032adc9d909980d438508"
   },
   "en/meeting/windows/api-reference/smeeting-events": {
     "reviewed": true,
@@ -666,10 +666,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/windows/api-reference/smeeting-types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/windows/api-reference/smeeting-types.md",
-    "zh_blob": "59b2e48c0534cd70ab141912352ca567f64cb1d2",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "ac817d6825785b543eca9414d342e4f3f5f71e76",
+    "zh_commit": "fc24d565bb88fb4a297032adc9d909980d438508"
   },
   "en/meeting/windows/changelog": {
     "reviewed": false,
@@ -1484,8 +1484,8 @@
   "en/rtc/web/changelog": {
     "reviewed": false,
     "source": "zh/rtc/web/changelog.mdx",
-    "zh_blob": "b955bbc84d75c9f62e112f501f4d7b25077c583b",
-    "zh_commit": "ca922eaea4c4c73bfda9062130b76915ca76d847"
+    "zh_blob": "a2727d62eb87a6f15b675038189f9162e58348c4",
+    "zh_commit": "f31899894620a2296bb51019256f44ff5642b7ff"
   },
   "en/rtc/web/channel-messages": {
     "reviewed": true,

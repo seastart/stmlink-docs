@@ -175,18 +175,6 @@ Meeting attachment:
 | name | std::string | Name |
 | key | std::string | Key |
 
-### SMeetingResourcesModel
-
-Resource model:
-
-| Field | Type | Description |
-| --- | --- | --- |
-| meeting_id | std::string | Meeting ID |
-| parent_id | std::string | Parent resource ID |
-| res_type | std::string | Resource type |
-| res_key | std::string | Resource key |
-| res_name | std::string | Resource name |
-
 ### CustomPublishTrack
 
 Custom publish track:

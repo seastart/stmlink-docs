@@ -467,24 +467,6 @@ Gets a download URL. Pass `resKey`; the server doesn't support `id` yet.
 
 **Returns:** `String` (a signed download URL)
 
-#### `resourcesList(req:)`
-
-| Parameter | Type | Required | Description |
-| --- | --- | :---: | --- |
-| `req` | `ResourceListReq` | Yes | Query conditions |
-
-**Returns:** `PageResult<ResourceInfo>`
-
-#### `resourcesCreate(req:)`
-
-Registers a resource.
-
-| Parameter | Type | Required | Description |
-| --- | --- | :---: | --- |
-| `req` | `ResourceCreateReq` | Yes | Resource information |
-
-**Returns:** None
-
 ---
 
 ### Sign-in

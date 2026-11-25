@@ -501,7 +501,7 @@ virtual void disableIm(Callback back = NULL) = 0;
 
 ---
 
-## Cloud storage and resource management APIs
+## Cloud storage APIs
 
 ### Presigned upload
 ```cpp
@@ -538,104 +538,18 @@ virtual StatusCode presignedGetObject(std::string id, std::string res_key, Callb
 
 `StatusCode` - Error code
 
-### List resources
-```cpp
-virtual StatusCode resourcesList(std::string parent_id, std::string meeting_id, std::string res_name, int page, Callback back = NULL) = 0;
-```
-
-**Parameters**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| parent_id | std::string | Parent resource ID |
-| meeting_id | std::string | Meeting ID |
-| res_name | std::string | Resource name |
-| page | int | Page number |
-| back | Callback | Asynchronous callback |
-
-**Returns**
-
-`StatusCode` - Error code
-
-### Create a resource
-```cpp
-virtual StatusCode resourcesCreate(SMeetingResourcesModel* mode, Callback back = NULL) = 0;
-```
-
-**Parameters**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| mode | SMeetingResourcesModel* | Resource model |
-| back | Callback | Asynchronous callback |
-
-**Returns**
-
-`StatusCode` - Error code
-
-### Rename a resource
-```cpp
-virtual StatusCode resourcesRename(std::string id, std::string res_key, std::string res_name, Callback back = NULL) = 0;
-```
-
-**Parameters**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| id | std::string | Resource ID |
-| res_key | std::string | Resource key |
-| res_name | std::string | New resource name |
-| back | Callback | Asynchronous callback |
-
-**Returns**
-
-`StatusCode` - Error code
-
-### Move a resource
-```cpp
-virtual StatusCode resourcesMoveto(std::string id, std::string res_key, std::string parent_id, Callback back = NULL) = 0;
-```
-
-**Parameters**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| id | std::string | Resource ID |
-| res_key | std::string | Resource key |
-| parent_id | std::string | Target parent resource ID |
-| back | Callback | Asynchronous callback |
-
-**Returns**
-
-`StatusCode` - Error code
-
-### Delete a resource
-```cpp
-virtual StatusCode resourcesRemove(std::string id, std::string res_key, Callback back = NULL) = 0;
-```
-
-**Parameters**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| id | std::string | Resource ID |
-| res_key | std::string | Resource key |
-| back | Callback | Asynchronous callback |
-
-**Returns**
-
-`StatusCode` - Error code
-
-### Set the meeting background
+### Get the meeting background URL
 ```cpp
 virtual StatusCode resourcesMeetingBg(std::string id, Callback back = NULL) = 0;
 ```
 
+Gets a signed download URL for a meeting's background image. On success, the callback data is `{"url": "..."}`.
+
 **Parameters**
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| id | std::string | Resource ID |
+| id | std::string | Meeting ID |
 | back | Callback | Asynchronous callback |
 
 **Returns**

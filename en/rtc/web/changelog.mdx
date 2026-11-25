@@ -19,6 +19,15 @@ npm info @seastart/srtc-web-sdk version
 
 ### Recent updates
 
+### v0.7.6 - 2026-11-24
+
++ **New pre-call network check `networkCheck`**: call it before joining, without joining a channel. It checks 5 items in order: network permission, network connection, MTU, DNS resolution, and server connectivity (SDK API, signaling, media). `onItem` reports progress item by item, and the call finally returns a summary, with each item carrying a description you can show to users directly. Call `cancelNetworkCheck()` to cancel. On the Web, the network permission, MTU, and DNS resolution items are reported as "not supported" due to browser limitations. The check requires the server to provide the network check API; with an older server version, the server connectivity item fails. See [SRTC · networkCheck (Chinese)](/zh/rtc/web/api-reference/SRTC#networkcheck) for usage and [Pre-call network check types (Chinese)](/zh/rtc/web/types#会前网络检测相关) for the types
+
+### v0.7.5 - 2026-11-23
+
++ **Runtime environment and peripherals visible in the log center**: after joining, the SDK reports the browser, operating system, and peripheral list (including device names), and also records microphone / camera switches and changes to the playback device for remote audio, making on-site issues such as echo or no sound easier to troubleshoot
++ **Fixed missing video or audio after resubscribing**: when an unsubscribe request didn't reach the server because of network issues, subscribing to the same stream again no longer ends up "subscribed but with no data"
+
 ### v0.7.4 - 2026-11-19
 
 + **`getVolume()` now works**: on local audio tracks (microphone and others), `getVolume()` used to always return 0. It now returns the input volume from 0 to 100 (0 below about -45 dBFS, 100 above about -10 dBFS), ready to drive a microphone level meter. See [Media tracks](/en/rtc/web/api-reference/media-tracks)

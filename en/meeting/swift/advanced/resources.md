@@ -1,6 +1,6 @@
 ---
 title: "Meeting materials"
-description: "Upload and download meeting materials with the SMeeting Swift SDK using presigned URLs: get an upload URL, PUT the file directly, register it as a resource, get a signed download URL, and query the resource list and folders. Read when your meetings need attachments, background images, or avatars."
+description: "Upload and download meeting materials with the SMeeting Swift SDK using presigned URLs: get an upload URL, PUT the file directly, keep the returned resource key, and exchange it for a signed download URL. Read when your meetings need attachments, background images, or avatars."
 ---
 
 ### Overview
@@ -8,10 +8,10 @@ description: "Upload and download meeting materials with the SMeeting Swift SDK 
 Meeting materials (attachments, background images, avatars, and so on) use a "presigned direct upload" model:
 
 ```text
-Ask the SDK for an upload URL  →  Your app PUTs the file directly to that URL  →  Register the resKey as a resource
+Ask the SDK for an upload URL  →  Your app PUTs the file directly to that URL  →  Keep the returned resource key
 ```
 
-The file itself doesn't go through the SDK; the SDK only issues URLs and maintains resource records.
+The file itself doesn't go through the SDK; the SDK only issues signed upload and download URLs.
 
 ---
 
@@ -36,7 +36,7 @@ let (url, key, ext) = try await meeting.presignedPutObject(
 | `.user` | `user` | User-related resources, such as avatars |
 | `.chat` | `chat` | Chat files (since 1.12.0); see [In-meeting messages](/en/meeting/swift/advanced/messaging#send-file-messages) for usage |
 
-The returned `key` is the resource key of this file; you use it for both registering and downloading later.
+The returned `key` is the resource key of this file. After the upload succeeds, keep it or pass it on (for example, send it in a chat file message), and use it to get a download URL.
 
 #### 2. Upload the file directly
 
@@ -46,17 +46,6 @@ request.httpMethod = "PUT"
 let (_, response) = try await URLSession.shared.upload(for: request, from: fileData)
 ```
 
-#### 3. Register the resource
-
-```swift
-var req = ResourceCreateReq(resName: "Meeting materials.pdf", resType: "pdf")
-req.meetingId = meetingId
-req.resKey = key
-try await meeting.resourcesCreate(req: req)
-```
-
-`ResourceCreateReq` also has a `parentId` field for putting the resource into a folder.
-
 ---
 
 ### Download
@@ -64,30 +53,13 @@ try await meeting.resourcesCreate(req: req)
 First get a signed download URL, then download it yourself:
 
 ```swift
-// By resource key (such as the key in a chat file message, or the vodKey of a recording file)
-let url = try await meeting.presignedGetObject(resKey: detail.vodKey)
+// By resource key (such as the key returned by presignedPutObject, or the key in a chat file message)
+let url = try await meeting.presignedGetObject(resKey: key)
 ```
 
-Pass `resKey`; the server doesn't support the `id` parameter yet.
+Pass `resKey`; the server doesn't support the `id` parameter yet. Signed URLs expire, so don't cache them for long; get a new one when you need it.
 
----
-
-### Query the resource list
-
-```swift
-var req = ResourceListReq(page: 1, perPage: 20)
-req.meetingId = meetingId
-req.resType = "pdf"
-
-let page = try await meeting.resourcesList(req: req)
-for item in page.data {
-    print(item.resName, item.resSize)
-}
-```
-
-Filters supported by `ResourceListReq`: `parentId` (folder), `meetingId`, `resName` (fuzzy name match), `resType`.
-
-In the returned `ResourceInfo`, `isFolder` set to `true` means this is a folder node; you can use its `id` as the `parentId` for querying the next level.
+Recording files don't go through this flow: take the playback URL directly from `records[].addr` returned by `mcuRecordDetail`. See [Recording and composite layout](/en/meeting/swift/advanced/recording).
 
 ---
 

@@ -77,36 +77,6 @@ let page = PageParam(page: 1, perPage: 20)
 | `page` | `Int` | Page number; defaults to `1` |
 | `perPage` | `Int` | Items per page; defaults to `20` |
 
-#### ResourceListReq
-
-```swift
-var req = ResourceListReq(page: 1, perPage: 20)
-req.meetingId = meetingId
-```
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `page` / `perPage` | `Int` | Pagination |
-| `parentId` | `String?` | Parent folder ID |
-| `meetingId` | `String?` | Meeting ID |
-| `resName` | `String?` | Filter by resource name |
-| `resType` | `String?` | Filter by resource type |
-
-#### ResourceCreateReq
-
-```swift
-var req = ResourceCreateReq(resName: "Meeting materials.pdf", resType: "pdf")
-req.resKey = key
-```
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `resName` | `String` | Resource name (required when constructing) |
-| `resType` | `String` | Resource type (required when constructing) |
-| `resKey` | `String?` | Resource key, from `presignedPutObject` |
-| `meetingId` | `String?` | The meeting it belongs to |
-| `parentId` | `String?` | Parent folder ID |
-
 #### Layout and recording parameters
 
 `McuStartReq`, `LayoutData`, `Watermark`, `Tag`, `Cell`, `DivList`, and `Attachment` all provide initializers whose optional parameters have default values; they're also `Codable`, so you can decode them from JSON delivered by your backend with `JSONDecoder`. For the mapping between fields and JSON keys, see [Recording and composite layout](/en/meeting/swift/advanced/recording).
@@ -269,19 +239,6 @@ for (channelNo, channelName) in agent.connSubjects {
 ```
 
 Except for `type`, missing fields decode to empty values, so bad data from one device no longer makes the whole device list fail to decode.
-
-#### ResourceInfo
-
-A resource, returned by `resourcesList(...)`.
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `id` | `String` | Resource ID |
-| `isFolder` | `Bool` | Whether it's a folder |
-| `parentId` | `String` | Parent folder ID |
-| `resName` / `resType` / `resKey` / `resSize` | `String` / `String` / `String` / `Int` | Name, type, storage key, size |
-| `userId` / `meetingId` | `String` | The user / meeting it belongs to |
-| `createdAt` / `updatedAt` | `String` | Creation / update time |
 
 #### SignInfo / SignDetailInfo
 
