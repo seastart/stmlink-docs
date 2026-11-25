@@ -34,6 +34,7 @@ let (url, key, ext) = try await meeting.presignedPutObject(
 | `.attach` | `attach` | Meeting attachments |
 | `.background` | `background` | Meeting background images |
 | `.user` | `user` | User-related resources, such as avatars |
+| `.chat` | `chat` | Chat files (since 1.12.0); see [In-meeting messages](/en/meeting/swift/advanced/messaging#send-file-messages) for usage |
 
 The returned `key` is the resource key of this file; you use it for both registering and downloading later.
 

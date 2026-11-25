@@ -637,6 +637,7 @@ Values match the server; any other value from the backend decodes to `.unknown`.
 | `attach` | `attach` | Meeting attachment |
 | `background` | `background` | Background image |
 | `user` | `user` | User resource |
+| `chat` | `chat` | Chat file (since 1.12.0) |
 
 ---
 

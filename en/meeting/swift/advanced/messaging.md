@@ -27,11 +27,58 @@ try await meeting.sendRoomChatMessage("Hi everyone")
 // Private message
 try await meeting.sendRoomChatMessage("Just between us", targetId: user.uid)
 
-// Non-text messages: upload the file to your own storage first, then send its URL as the message content
-try await meeting.sendRoomChatMessage(imageURL, type: .pic)
+// Non-text messages: msg is still a string; see the next section for file messages
+try await meeting.sendRoomChatMessage(content, type: .file)
 ```
 
 `ChatMsgType` values: `.text` (default), `.file`, `.pic`, `.sound`. The SDK doesn't upload or download the file itself; it only delivers the message content, and how to render it is up to your UI.
+
+---
+
+### Send file messages
+
+Since 1.12.0, `PresignedPutObjectType.chat` lets you upload chat files straight to the meeting's object storage. It takes three steps:
+
+1. Call `presignedPutObject(type: .chat, ...)` to get a signed upload URL
+2. `PUT` the file to that URL yourself (the SDK doesn't do this step)
+3. Serialize `{key, name, size}` into a JSON string and send it with `sendRoomChatMessage(_:type: .file)`
+
+```swift
+func sendChatFile(fileURL: URL) async throws {
+    guard let meetingId = meeting.getRoomInfo()?.id else { return }
+    let data = try Data(contentsOf: fileURL)
+
+    // 1. Get an upload URL. ext has no leading dot and is required; pass bin when there is no extension
+    let ext = fileURL.pathExtension.isEmpty ? "bin" : fileURL.pathExtension.lowercased()
+    let object = try await meeting.presignedPutObject(type: .chat, meetingId: meetingId, ext: ext)
+
+    // 2. PUT the file yourself, with the raw file bytes as the body
+    var request = URLRequest(url: URL(string: object.url)!)
+    request.httpMethod = "PUT"
+    request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+    let (_, response) = try await URLSession.shared.upload(for: request, from: data)
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
+
+    // 3. Send the message: the content is a JSON string of the file info
+    let payload: [String: String] = [
+        "key": object.key,                 // Required; the receiver uses it to get a download URL
+        "name": fileURL.lastPathComponent, // Original file name, for display and saving
+        "size": "1.20MB",                  // Display size; official Demo format: two decimals, no space, whole bytes below 1KB such as "512B"
+    ]
+    let content = String(data: try JSONSerialization.data(withJSONObject: payload), encoding: .utf8)!
+    try await meeting.sendRoomChatMessage(content, type: .file)
+}
+```
+
+The receiver parses the JSON in `msg` and, when downloading, gets a URL from the `key` on demand:
+
+```swift
+let url = try await meeting.presignedGetObject(resKey: key)
+```
+
+`{key, name, size}` is the format used by the official Web Demo and Swift Demo. The SDK doesn't validate it, so you can also agree on your own format across your clients.
+
+> When the deployment has file features turned off, `presignedPutObject` throws error code `2125` (file features are disabled); hide the send-file entry in that case. The SDK doesn't limit file size, so enforce a per-file limit in your app.
 
 ---
 

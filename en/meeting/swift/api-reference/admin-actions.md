@@ -450,7 +450,7 @@ Gets an upload URL.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
-| `type` | `PresignedPutObjectType` | Yes | `.attach` / `.background` / `.user` |
+| `type` | `PresignedPutObjectType` | Yes | `.attach` / `.background` / `.user` / `.chat` (chat files, since 1.12.0) |
 | `meetingId` | `String` | Yes | Meeting ID |
 | `ext` | `String` | Yes | File extension, for example `pdf` |
 
