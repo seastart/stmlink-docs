@@ -71,6 +71,8 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 
 `role`: `0` regular member, `1` host, `2` co-host.
 
+Sent only after the user has actually connected to the meeting (joined its audio/video channel). Users held in the waiting room, or whose join fails partway, do not trigger it.
+
 When the same `user_id` enters the meeting on multiple devices, the event fires once for each device.
 
 ### `user_exit` — User exits the meeting
