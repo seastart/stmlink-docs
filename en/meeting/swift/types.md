@@ -375,7 +375,7 @@ Data for the business events (call, reminder, release from the waiting room, sub
 | Type | Fields |
 | --- | --- |
 | `ImBaseEventData` | `sid`, `uid`, `name`, `avatar: String?` |
-| `ImCallCallingEventData` | `base`, `content: ImCallContent` (`roomNo`, `meetingId`, `title`) |
+| `ImCallCallingEventData` | `base`, `content: ImCallContent` (`roomNo`, `meetingId`, `title`, `forceJoin` (administrator forced join, defaults to `false`, since 1.13.0)) |
 | `ImMeetingRemindEventData` | `base`, `content: ImMeetingRemindContent` (`roomNo`, `meetingId`, `title`, `creatorName`, `planDur` (minutes), `planTime` (Unix timestamp in seconds), `creatorId` (creator's user ID, since 1.5.0)) |
 | `ImAdminMoveOutWaitingRoomEventData` | `base`, `content: ImMoveOutWaitingRoomContent` (`parent`, `meetingId`, `title`) |
 | `ImUserHelpSubMeetingEventData` | `base`, `content: ImHelpSubMeetingContent` (`parent`, `meetingId`, `title`) |

@@ -69,6 +69,8 @@ func meeting(_ meeting: SMeetingEngine, imCallCalling data: ImCallCallingEventDa
 }
 ```
 
+`data.content.forceJoin` (since 1.13.0) is `true` for a **forced join** that an administrator started through the server API `meet-admin/call-users` with `force_join`: we recommend skipping the incoming call UI and entering the target meeting directly; if the user is already in another meeting, call `exitRoom` first and then enter (this only removes the user, it doesn't end that meeting); if the user is already in the target meeting, ignore it. For 30 minutes after this call the user can enter a password-protected meeting without the password; the waiting room, locking, and other rules still apply. While the app is in the background the system doesn't allow bringing it to the foreground directly, so you can post a local notification and enter the meeting once the user comes back.
+
 #### Meeting reminders
 
 ```swift

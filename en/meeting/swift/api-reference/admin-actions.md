@@ -467,6 +467,26 @@ Gets a download URL. Pass `resKey`; the server doesn't support `id` yet.
 
 **Returns:** `String` (a signed download URL)
 
+#### `updateBgAndAttach(meetingId:background:attachments:)`
+
+Updates the meeting background and attachments (since 1.13.0). It **replaces everything** rather than appending: the attachment list you pass is the final list.
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `meetingId` | `String` | Yes | Meeting ID |
+| `background` | `String` | Yes | Background image resource key (the `key` returned by `presignedPutObject(type: .background, ...)`); pass an empty string for no background |
+| `attachments` | `[Attachment]` | Yes | Attachment list; each item has `name` (display name) and `key` (the `key` returned by `presignedPutObject(type: .attach, ...)`) |
+
+#### `meetingBackgroundUrl(meetingId:)`
+
+Gets the meeting background image URL (since 1.13.0).
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `meetingId` | `String` | Yes | Meeting ID |
+
+**Returns:** `String` (a temporary signed URL; get it when you need it and don't cache it for long)
+
 ---
 
 ### Sign-in

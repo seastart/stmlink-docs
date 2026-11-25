@@ -3,6 +3,15 @@ title: "Changelog"
 description: "Release history of the SMeeting Swift conferencing SDK: new APIs, fixes, and changes per version, the SRTC version each release pins, the matching srtc-swift-sdk version for the iOS full-screen sharing extension, and breaking changes such as the iOS 16 / macOS 14 minimum. Read before upgrading."
 ---
 
+### [1.13.0] - 2026.11.25
+#### Added
++ **Call events carry a forced-join flag**: `ImCallContent` adds `forceJoin` (JSON key `force_join`, defaults to `false`). It is `true` when an administrator calls through the server API `meet-admin/call-users` with `force_join=true`; we recommend skipping the incoming call UI and entering the target meeting directly (leaving any other meeting first). See [Out-of-meeting messages](/en/meeting/swift/advanced/im#someone-is-calling-you).
++ **Meeting background and attachments**: adds `updateBgAndAttach(meetingId:background:attachments:)` (replaces everything) and `meetingBackgroundUrl(meetingId:)`, with the same names and meanings as the HarmonyOS SDK. See [Meeting materials](/en/meeting/swift/advanced/resources).
+
+<Note>
+The API only adds and doesn't remove or change anything, the SRTC dependency stays at 1.10.0, and the minimum platforms are unchanged (iOS 16 / macOS 12.3).
+</Note>
+
 ### [1.12.0] - 2026.11.25
 #### Added
 + **`PresignedPutObjectType.chat`** (raw value `chat`): the presigned upload category for chat files, matching `PresignedPutObjectType.Chat` on Web. The recommended way to send a chat file: call `presignedPutObject(type: .chat, ...)` to get an upload URL → `PUT` the file yourself → send a JSON string of `{key, name, size}` with `sendRoomChatMessage(_:type: .file)`; the receiver gets a download URL with `presignedGetObject(resKey:)`. See [In-meeting messages](/en/meeting/swift/advanced/messaging#send-file-messages).

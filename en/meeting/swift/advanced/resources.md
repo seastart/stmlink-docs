@@ -63,6 +63,19 @@ Recording files don't go through this flow: take the playback URL directly from 
 
 ---
 
+### Meeting background and attachments (since 1.13.0)
+
+```swift
+try await meeting.updateBgAndAttach(meetingId: meetingId, background: backgroundKey, attachments: [
+    Attachment(name: "Agenda.pdf", key: attachKey),
+])
+let bgUrl = try await meeting.meetingBackgroundUrl(meetingId: meetingId)
+```
+
+`updateBgAndAttach` **replaces everything** rather than appending: the array you pass is the final attachment list, so to add one attachment, pass the existing ones along with it.
+
+---
+
 ### Related pages
 
 + [Recording and composite layout](/en/meeting/swift/advanced/recording)
