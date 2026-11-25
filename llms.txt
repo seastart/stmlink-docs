@@ -945,6 +945,7 @@
 - [Media output guide](https://docs.stmlink.com/en/meeting/server-api/guides/media-output.md): Send a meeting's video and audio out: HTTP-FLV / RTSP pull URLs and RTMP / RTMPS push tasks. Video from the composite video or any one user, audio from the meeting's mixed audio or any one user, in any combination; covers the stream mixing dependency, protocol limits, push status and alarms, and migrating from the old endpoints
 - [Callback events guide](https://docs.stmlink.com/en/meeting/server-api/guides/callbacks.md): How SMeeting notifies your backend when meetings, members, or recordings change: request format, signature verification, response requirements, the fields of each event, and idempotency. Read this when setting up callbacks.
 - [Device integration and IM](https://docs.stmlink.com/en/meeting/server-api/guides/agent-and-im.md): SMeeting reuses the SRTC device integration and IM endpoints as-is. Explains the two differences when calling them through SMeeting (domain and signing credentials) and why a device's target is the room number room_no, not the meeting_id.
+- [Invite and remove](https://docs.stmlink.com/en/meeting/server-api/guides/invite-and-kickout.md): Bring users (App / Web) or devices such as meeting room endpoints and cameras into a meeting from your backend, force entry, remove them, and find out when an invitation fails: APIs, parameters, and limits for users and devices side by side
 
 ## [EN] SMeeting Conferencing SDK · Server API · API reference
 

@@ -1237,7 +1237,8 @@
                       "en/meeting/server-api/guides/recording",
                       "en/meeting/server-api/guides/media-output",
                       "en/meeting/server-api/guides/callbacks",
-                      "en/meeting/server-api/guides/agent-and-im"
+                      "en/meeting/server-api/guides/agent-and-im",
+                      "en/meeting/server-api/guides/invite-and-kickout"
                     ]
                   },
                   {

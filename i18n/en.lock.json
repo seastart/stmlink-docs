@@ -302,14 +302,20 @@
   "en/meeting/server-api/guides/agent-and-im": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/agent-and-im.md",
-    "zh_blob": "0e39398c139d0b3046cb2fb4a48929e29441c859",
-    "zh_commit": "daf6986b0310029b64d4f8b8cf91b0dd81992371"
+    "zh_blob": "ff6cfc51f405a8e615422e67e80cd113bd018047",
+    "zh_commit": "4d9b079a118161abbcfc204f4c34900ba618bdbe"
   },
   "en/meeting/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/meeting/server-api/guides/callbacks.md",
-    "zh_blob": "3ab70c9fe238a57b6b5d0907d8f6b41fb93d7503",
-    "zh_commit": "3703632e6eb00ea3417e2b730c9bc3f6205d159a"
+    "zh_blob": "363843b5f2a5739c09821716780cb2190e787731",
+    "zh_commit": "4d9b079a118161abbcfc204f4c34900ba618bdbe"
+  },
+  "en/meeting/server-api/guides/invite-and-kickout": {
+    "reviewed": false,
+    "source": "zh/meeting/server-api/guides/invite-and-kickout.md",
+    "zh_blob": "c4b0a9e0d73506aff9f2b2e765f064130b751d49",
+    "zh_commit": "4d9b079a118161abbcfc204f4c34900ba618bdbe"
   },
   "en/meeting/server-api/guides/media-output": {
     "reviewed": false,
@@ -368,8 +374,8 @@
   "en/meeting/swift/advanced/im": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/im.md",
-    "zh_blob": "cae6869115193a363f9f408925cec93af86936fd",
-    "zh_commit": "aca509d581bd763b224b038498e40428dfa41f0b"
+    "zh_blob": "75491064a32a52ae395e2f8bf326cc20e59e9f0f",
+    "zh_commit": "4d9b079a118161abbcfc204f4c34900ba618bdbe"
   },
   "en/meeting/swift/advanced/media-control": {
     "reviewed": false,
@@ -1268,8 +1274,8 @@
   "en/rtc/server-api/guides/callbacks": {
     "reviewed": false,
     "source": "zh/rtc/server-api/guides/callbacks.md",
-    "zh_blob": "f40478d6f44534b20d9a640274fda3e4e4b3a4b7",
-    "zh_commit": "4fe1be283fa86d9e2c79b94d71fe67eba421c3da"
+    "zh_blob": "8a0b32b0efafcad4190ba22882f7933f06d28f4b",
+    "zh_commit": "4d9b079a118161abbcfc204f4c34900ba618bdbe"
   },
   "en/rtc/server-api/guides/media-output": {
     "reviewed": false,

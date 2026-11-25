@@ -162,6 +162,36 @@ Probing direct IP devices has a few limitations:
 Each status change is sent only once: periodic registration refreshes and GB28181 Keepalives don't send `agent_online` again;
 when heartbeats resume after going offline, an online event is sent again. Devices don't belong to a particular app, so every app that subscribes to this event receives it.
 
+### `agent_invite_failed` — Device invitation failed
+
+Sent when a device invited with [Invite devices to the channel](/en/rtc/server-api/agent#invite-devices-to-the-channel) failed to enter:
+
+```json
+{
+  "no": "021890611",
+  "type": 2,
+  "contact": "192.168.0.18:5060",
+  "name": "Main conference room",
+  "uid": "_agent_co63jg6g54hu3b0xhtie",
+  "reason": "busy",
+  "code": 0,
+  "msg": "SIP/2.0 486 Busy Here"
+}
+```
+
++ `no` / `type` / `contact`: the target room number, device type (`2` SIP, `3` H.323, `4` GB28181, `5` RTSP, and so on), and device identifier from the invitation
++ `name`: the device name
++ `uid`: the device's uid in the channel (starts with `_agent_`). Only devices registered in the [device list](/en/rtc/server-api/agent#list-devices) have one; it's empty for ad hoc devices called directly
++ `code`: when `reason` is `join_refused`, the error code for the refused entry (for example, the code you returned when rejecting the `agent_join` callback); `0` otherwise
++ `msg`: the original description, such as a SIP status line, an H.323 release reason, a stream pull error, or a server message, for troubleshooting
+
+`reason` values: `busy` endpoint busy, `rejected` endpoint declined, `no_answer` no answer, `unreachable` can't call / can't connect,
+`stream_failed` stream pull failed, `join_refused` entry refused (the call went through but entry was refused, and retries still failed), `error` other.
+
++ **Sent only for devices invited by the platform**; failures of devices dialing in by themselves are not sent
++ At most once per invitation; a device that entered successfully and then dropped off is not an invitation failure, that goes through `user_leave` (`reason` `7`)
++ Requires **a newer device gateway version**; older device gateways don't report it
+
 ### `mcu_task` — Recording or stream mixing task status changes
 
 ```json

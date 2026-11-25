@@ -55,6 +55,7 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 | `user_camera_state_change` | A user turns the camera on or off |
 | `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (a secondary screen pushed by a client) |
 | `share_state_change` | The meeting's sharing status changes (sharing starts / stops) |
+| `device_invite_failed` | A device invited by the platform failed to enter (busy, declined, no answer, unreachable, stream pull failed, entry refused, and so on) |
 
 ### `user_enter` — User enters the meeting
 
@@ -237,6 +238,50 @@ Both start and stop of sharing use this event, for screen sharing and whiteboard
 + When a new sharer takes over from a sharer who has dropped off, a stop for the previous sharer is sent first, then a start for the new one
 + "Start" is sent as soon as sharing is granted, without waiting for the client to actually push the screen
 + Dual-stream content sharing from a SIP/H.323 endpoint is meeting sharing too: when the endpoint presses its local share button, this event is sent (the platform can't start sharing on these endpoints remotely) and `user_id` is that device
+
+### `device_invite_failed` — Device invitation failed
+
+Sent when a device invited with [Invite devices to the channel](/en/rtc/server-api/agent#invite-devices-to-the-channel) (`agent/invite`) failed to enter:
+
+```json
+{
+  "meeting_id": "sny038",
+  "room_no": "021890611",
+  "device": { "type": 2, "contact": "192.168.0.18:5060", "name": "Main conference room" },
+  "reason": "busy",
+  "code": 0,
+  "msg": "SIP/2.0 486 Busy Here"
+}
+```
+
++ `meeting_id`: the current meeting found by `room_no`; empty if none is found (for example, the meeting was deleted), and the event is still sent
++ `room_no`: the room number given in the invitation
++ `device`: the invited device. `type` is the device type (`2` SIP, `3` H.323, `4` GB28181, `5` RTSP, and so on), `contact` is the device identifier from the invitation, and `name` is the device name
++ `code`: when `reason` is `join_refused`, the error code for the refused entry (for example, the meeting has ended); `0` otherwise
++ `msg`: the original description, such as a SIP status line, an H.323 release reason, a stream pull error, or a server message, for troubleshooting
+
+`reason` values:
+
+| Value | Meaning | Typical source |
+| --- | --- | --- |
+| `busy` | Endpoint busy | SIP 486 / 600, H.323 user busy |
+| `rejected` | Endpoint declined | SIP 603 / 403, H.323 rejected |
+| `no_answer` | No answer | SIP 408 / 480, ringing timeout, H.323 no answer |
+| `unreachable` | Can't call / can't connect | Network unreachable, SIP 404 / 5xx, H.323 connection failed |
+| `stream_failed` | Stream pull failed | RTSP / GB28181 / file can't be opened or has no data |
+| `join_refused` | Entry refused | The call went through, but the meeting refused the device (for example, the meeting has ended), and retries still failed |
+| `error` | Other | Fallback |
+
++ **Sent only for devices invited by the platform**; failures of devices dialing in by themselves (the endpoint dials the meeting number) are not sent
++ At most once per invitation; a device that entered successfully and then dropped off is not an invitation failure, that goes through `user_exit` (`reason` `7`)
++ A device already in another meeting that is invited over and refused entry to the new meeting is also sent as `join_refused`
+
+<Warning>
+  This event requires **a newer device gateway version** to be reported, and it's sent only after the deployer appends
+  `agent_invite_failed` to `rtc.callback_events` in the SMeeting server configuration (off by default). For private deployments, ask your deployer to enable it; for SaaS, contact us.
+</Warning>
+
+Calls to users have no failure callback; for how to detect failures, see [Invite and remove](/en/meeting/server-api/guides/invite-and-kickout#how-to-detect-a-failed-invitation).
 
 ## Idempotency and retry
 

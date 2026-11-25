@@ -43,6 +43,8 @@ passing `meeting_id` fails because no meeting can be found.
 Take each device's `type` and `contact` in `agents` from the [device list](/en/rtc/server-api/agent). For GB28181 devices,
 `contact` uses the format `deviceId:channelId`. For all fields, see [Invite devices to the channel](/en/rtc/server-api/agent#invite-devices-to-the-channel).
 
+For which meeting restrictions a device bypasses, how to remove it, how to detect a failed invitation, and how all this compares with calling users (`call-users`), see [Invite and remove](/en/meeting/server-api/guides/invite-and-kickout).
+
 Each device can also carry four optional switches that decide what it sends first after entering and whether it plays the meeting audio: `camera_enabled` (send the camera picture, default `true`),
 `mic_enabled` (the device microphone's audio goes into the meeting, default `true`), `share_enabled` (start sharing right away, default `false`), and
 `speaker_enabled` (the meeting audio plays through the device speaker; SIP/H.323 default `true`, GB28181 defaults to the device gateway configuration, usually `false`).
