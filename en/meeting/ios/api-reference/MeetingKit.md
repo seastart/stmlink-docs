@@ -1,6 +1,6 @@
 ---
 title: "MeetingKit"
-description: "Global singleton of the SMeeting iOS (Objective-C) SDK: login and logout, IM, meeting queries and scheduling, creating and querying room instances, local capture and preview, audio routing, virtual background, screen capture extension, and pre-call network check APIs. Read this for account- and device-level APIs."
+description: "Global singleton of the SMeeting iOS (Objective-C) SDK: login and logout, IM, meeting queries and scheduling, creating and querying room instances, presigned upload and download of resources such as chat files, local capture and preview, audio routing, virtual background, screen capture extension, and pre-call network check APIs. Read this for account- and device-level APIs."
 ---
 
 `MeetingKit` is a singleton with only one instance per process. It carries only **account-level and device-level** capabilities: login, IM, local capture and preview, audio routing, process-side screen capture integration, the pre-call network check, and meeting queries and scheduling.
@@ -261,6 +261,68 @@ Updates room data.
 | params | Room update parameters; see [SEAMeetingParam](/en/meeting/ios/types#seameetingparam) |
 | onSuccess | Success callback |
 | onFailed | Failure callback |
+
+## Resource APIs
+
+Available since `2.4.0`. Files don't pass through the SDK: first call `presignedPutObject:meetingId:ext:onSuccess:onFailed:` to get a signed upload URL and upload with your own HTTP PUT; store and send only the resource key `key`, and when you need to download, call `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` to get a fresh download URL.
+
+### presignedPutObject:meetingId:ext:onSuccess:onFailed:()
+`- (void)presignedPutObject:(SEAResourceType)type meetingId:(NSString *)meetingId ext:(NSString *)ext onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+Presigned upload: requests an upload URL from the meeting layer for uploading directly to storage.
+
+| Parameter | Description |
+| :--- | --- |
+| type | Resource type; pass `SEAResourceTypeChat` for chat files. See [SEAResourceType](/en/meeting/ios/types#searesourcetype) |
+| meetingId | Meeting ID |
+| ext | File extension, required, without the dot (e.g. `@"pdf"`); pass `@"bin"` if the file has no extension |
+| onSuccess | Success callback; `data` is [SEAPresignedPutObjectModel](/en/meeting/ios/types#seapresignedputobjectmodel) |
+| onFailed | Failure callback; `SEAErrorMeetingApiFileDisabled` (`2125`) when the deployment has disabled the file feature |
+
+After you get the result:
+
++ Upload the file bytes to `url` with an HTTP **PUT**, with the header `Content-Type: application/octet-stream` (not a multipart form).
++ Store and send `key` in your business logic, not `url`: the upload URL is signed and expires in about 2 hours.
++ Sending a chat file: after a successful upload, call [sendRoomChatMessage:messageType:targetId:onSuccess:onFailed:()](/en/meeting/ios/api-reference/MeetingKitRoom#sendroomchatmessagemessagetypetargetidonsuccessonfailed) with `SEAMessageTypeFile`, and use the JSON string `{"key":"<key>","name":"original file name","size":"1.20MB"}` as the message, which interoperates with other platforms.
+
+**Example**
+
+```objectivec
+[[MeetingKit sharedInstance] presignedPutObject:SEAResourceTypeChat meetingId:meetingId ext:@"pdf" onSuccess:^(id _Nullable data) {
+    SEAPresignedPutObjectModel *model = (SEAPresignedPutObjectModel *)data;
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:model.url]];
+    request.HTTPMethod = @"PUT";
+    [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
+    [[[NSURLSession sharedSession] uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *body, NSURLResponse *response, NSError *error) {
+        if (error || ((NSHTTPURLResponse *)response).statusCode / 100 != 2) {
+            return; // Upload failed
+        }
+        // After a successful upload, send a file message that carries the key, not the url
+        NSString *message = [NSString stringWithFormat:@"{\"key\":\"%@\",\"name\":\"%@\",\"size\":\"%@\"}", model.key, fileName, sizeText];
+        [room sendRoomChatMessage:message messageType:SEAMessageTypeFile targetId:nil onSuccess:nil onFailed:nil];
+    }] resume];
+} onFailed:^(SEAError code, NSString * _Nonnull message) {
+    // SEAErrorMeetingApiFileDisabled(2125): the deployment has disabled the file feature
+}];
+```
+
+<Note>
+The example builds `message` by string concatenation only to show the fields. In real code, generate it with `NSJSONSerialization` so that characters such as quotes in the file name don't break the JSON.
+</Note>
+
+### presignedGetObjectWithResKey:resId:onSuccess:onFailed:()
+`- (void)presignedGetObjectWithResKey:(nullable NSString *)resKey resId:(nullable NSString *)resId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+Presigned download: exchanges a resource key for a temporary download URL.
+
+| Parameter | Description |
+| :--- | --- |
+| resKey | Resource key, i.e. the `key` returned by presigned upload (the `key` in a chat file message). Required; if empty, no request is sent and the failure callback is invoked immediately with `SEAErrorMeetingInvalidArgument` (`203012`) |
+| resId | Resource record ID, a reserved parameter. **The backend doesn't support it yet; pass `resKey`**, and pass `nil` here |
+| onSuccess | Success callback; `data` is the download URL as an `NSString` |
+| onFailed | Failure callback |
+
+The download URL is signed and expires in about 2 hours. Request a new one before each download and don't cache it.
 
 ## Pre-call network check APIs
 

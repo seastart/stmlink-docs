@@ -222,10 +222,10 @@
     "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
   },
   "en/meeting/ios/api-reference/MeetingKit": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/api-reference/MeetingKit.md",
-    "zh_blob": "1605ee564c52e720cd2284b85fafc9e338aa9f0a",
-    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
+    "zh_blob": "eeb0371c26e127d7ed0d0b00e7dee581ed37f60b",
+    "zh_commit": "a915d76fe144dfd609d13c2b27339059d0ed2b48"
   },
   "en/meeting/ios/api-reference/MeetingKitDelegate": {
     "reviewed": true,
@@ -240,10 +240,10 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/api-reference/MeetingKitRoom": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/api-reference/MeetingKitRoom.md",
-    "zh_blob": "2775749965f012f53af866a2477801b8af91b354",
-    "zh_commit": "e781bb84acf335b83a716f90ec3652a6e7b745dc"
+    "zh_blob": "46d17056e4c544989007d66bfa71e1d972e3e959",
+    "zh_commit": "a915d76fe144dfd609d13c2b27339059d0ed2b48"
   },
   "en/meeting/ios/api-reference/MeetingKitRoomDelegate": {
     "reviewed": true,
@@ -252,16 +252,16 @@
     "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
   },
   "en/meeting/ios/changelog": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/changelog.mdx",
-    "zh_blob": "66267f21aec4efb49db74b80747d480c0fd41073",
-    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
+    "zh_blob": "317a87b401d7ea83395d640f593be508f9bb979e",
+    "zh_commit": "a915d76fe144dfd609d13c2b27339059d0ed2b48"
   },
   "en/meeting/ios/error-codes": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/error-codes.md",
-    "zh_blob": "de91ec73d14e33ddf54c8308bf91382bd96afba7",
-    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
+    "zh_blob": "333f4bfe80d23366d062d5ed0ac62395b26e80ca",
+    "zh_commit": "a915d76fe144dfd609d13c2b27339059d0ed2b48"
   },
   "en/meeting/ios/faq": {
     "reviewed": true,
@@ -276,10 +276,10 @@
     "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
   },
   "en/meeting/ios/types": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/ios/types.md",
-    "zh_blob": "64d230d181fe68fb5f5c3dc84869f23f379fab30",
-    "zh_commit": "c2f08feec8e476f8414ae3ca39fb6d21d21749d6"
+    "zh_blob": "5008d6c83f6a3e6205801af8024fa8a2c6bef705",
+    "zh_commit": "a915d76fe144dfd609d13c2b27339059d0ed2b48"
   },
   "en/meeting/key-concepts": {
     "reviewed": true,

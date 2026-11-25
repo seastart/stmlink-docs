@@ -3,6 +3,24 @@ title: "Changelog"
 description: "Release history of the iOS SMeeting SDK (Objective-C MeetingKit) from 0.0.1-alpha.1 to 2.1.0: new APIs, fixes, and RTCEngineKit dependency upgrades per version, including the 2.0.0 multi-room MeetingKitRoom refactor and the 2.1.0 iOS 16 minimum. Read before upgrading."
 ---
 
+### [2.4.0] - 2026.11.25
+
+#### Added
++ **Presigned resource upload / download**: `MeetingKit` adds `presignedPutObject:meetingId:ext:onSuccess:onFailed:` and `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` for uploading resources such as chat files directly to storage. See [MeetingKit](/en/meeting/ios/api-reference/MeetingKit#resource-apis).
+  + Presigned upload returns [SEAPresignedPutObjectModel](/en/meeting/ios/types#seapresignedputobjectmodel) (`url` / `key` / `ext`) in the success callback; the caller uploads the file bytes to `url` with an HTTP PUT (`Content-Type: application/octet-stream`, not multipart). Store and send the `key` in your business logic
+  + Presigned download returns the download URL string in the success callback. The URL is signed and expires in about 2 hours; request a new one before each download and don't cache it
+  + `resId` is a reserved parameter that **the backend doesn't support yet; pass `resKey`**. If `resKey` is empty, the failure callback is invoked immediately with `SEAErrorMeetingInvalidArgument` (`203012`)
+  + Chat file message convention: after uploading, send the JSON string `{"key":"<key>","name":"original file name","size":"1.20MB"}` as an `SEAMessageTypeFile` message, consistent with other platforms
++ Added the enum [SEAResourceType](/en/meeting/ios/types#searesourcetype) (`Attach` / `Background` / `User` / `Chat`); pass `SEAResourceTypeChat` for chat files.
++ Added the backend business code `SEAErrorMeetingApiFileDisabled` (`2125`): presigned upload returns it when the deployment has disabled the file feature.
+
+#### Fixed
++ In `MeetingKitRoom`, `getMoreOnlineMemberList:onSuccess:onFailed:` requested the chat message list API from the second page on, so later pages of online members couldn't be fetched. It now requests the online member list API.
+
+<Note>
+This release only adds APIs and fixes; existing API signatures are unchanged and the `RTCEngineKit` dependency is still `>= 3.3.0`, so 2.3.0 integrations can upgrade without code changes.
+</Note>
+
 ### [2.3.0] - 2026.11.25
 
 #### Added

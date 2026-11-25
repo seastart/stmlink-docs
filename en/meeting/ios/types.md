@@ -467,6 +467,16 @@ Debug mode parameters
 | BOOL enableSaveAudioReceive | No | Save the remote audio stream; default: NO |
 
 
+### SEAPresignedPutObjectModel
+Presigned upload result object, returned in the success callback of [presignedPutObject:meetingId:ext:onSuccess:onFailed:()](/en/meeting/ios/api-reference/MeetingKit#presignedputobjectmeetingidextonsuccessonfailed) (since `2.4.0`)
+
+| **Property** | **Description** |
+| --- | --- |
+| url | [Meaning] Presigned upload URL; upload the file bytes with an HTTP PUT (`Content-Type: application/octet-stream`). It is signed and expires in about 2 hours; don't store it |
+| key | [Meaning] Resource key; this is what your business logic should store and send. To download, pass it as `resKey` to `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` to get a download URL |
+| ext | [Meaning] File extension (without the dot, echoed by the backend) |
+
+
 ### SEANetworkCheckParams
 Pre-call network check parameters (since `2.3.0`), used by [networkCheck:onItem:completion:](/en/meeting/ios/api-reference/MeetingKit#pre-call-network-check-apis). When logged in, you can omit them (pass `nil`) and the app ID and server address are taken from the login info; when not logged in, pass either `appId` + `serverUrl` or `token`. If both are passed, `appId` + `serverUrl` take precedence.
 
@@ -804,6 +814,17 @@ Message type
 | SEAMessageTypePicture | `3` | Image message |
 | SEAMessageTypeVoice | `4` | Voice message |
 | SEAMessageTypeCustom | `5` | Custom message |
+
+
+### SEAResourceType
+Resource type, the `type` of `presignedPutObject:meetingId:ext:onSuccess:onFailed:`, which decides the storage directory for the file (since `2.4.0`)
+
+| **Enum** | **Value** | **Description** |
+| --- | :---: | --- |
+| SEAResourceTypeAttach | `1` | Meeting materials (attachments) |
+| SEAResourceTypeBackground | `2` | Meeting background image |
+| SEAResourceTypeUser | `3` | User resources (such as avatars) |
+| SEAResourceTypeChat | `4` | Chat files |
 
 
 ### SEAHandupType

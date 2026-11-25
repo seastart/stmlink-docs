@@ -41,7 +41,7 @@ The values on this page apply since **2.2.0**. Since 2.2.0, the meeting layer's 
 | SEAErrorMeetingInternalError | `203009` | SDK internal error, e.g. failed to write a downloaded file to disk |
 | SEAErrorMeetingUserNotFound | `203010` | The user isn't in the meeting (not produced on this platform yet; kept for consistency with other platforms) |
 | SEAErrorMeetingInvalidState | `203011` | The current state doesn't allow the operation, e.g. the room instance has been destroyed |
-| SEAErrorMeetingInvalidArgument | `203012` | Invalid argument (not produced on this platform yet; kept for consistency with other platforms) |
+| SEAErrorMeetingInvalidArgument | `203012` | Invalid argument, e.g. presigned download called without `resKey` |
 | SEAErrorMeetingRemoteTrackUnavailable | `203209` | Remote track unavailable: the user is in the meeting but doesn't have the video stream to subscribe to |
 | SEAErrorMeetingRequestTimeout | `203353` | Request timed out |
 | SEAErrorMeetingRequestCancelled | `203354` | Request was cancelled |
@@ -148,6 +148,7 @@ Since 2.2.0, the SDK no longer produces codes such as `SEAErrorApiTokenDisabled`
 | SEAErrorMeetingApiByInviteOnly | `2116` | This meeting is for invitees only. Contact the host |
 | SEAErrorMeetingApiWaitingRoomEnable | `2118` | The meeting has the waiting room enabled; you can enter only after the host or a co-host admits you |
 | SEAErrorMeetingApiEnterBeforeHostDisabled | `2120` | Entering the meeting before the host is not allowed |
+| SEAErrorMeetingApiFileDisabled | `2125` | The file feature is disabled (presigned upload returns this code when the deployment has disabled the file feature) |
 | SEAErrorApiFailed | `10000` | Unclassified general error |
 | SEAErrorApiDatabaseFailed | `10001` | Database error |
 | SEAErrorApiRecordNotFound | `10002` | Record not found |

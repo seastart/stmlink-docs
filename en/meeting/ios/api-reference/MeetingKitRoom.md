@@ -197,6 +197,8 @@ After the chat message is sent, the SDK notifies users in the room through the [
 | onSuccess | Success callback |
 | onFailed | Failure callback |
 
+To send a file message (`SEAMessageTypeFile`), first upload the file with [presignedPutObject:meetingId:ext:onSuccess:onFailed:()](/en/meeting/ios/api-reference/MeetingKit#presignedputobjectmeetingidextonsuccessonfailed), then send the JSON string `{"key":"<key>","name":"original file name","size":"1.20MB"}` as `message`; the receiver calls `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` with the `key` to get a download URL.
+
 
 ### sendRoomCustomMessage:targetId:onSuccess:onFailed:()
 `- (void)sendRoomCustomMessage:(NSString *)message targetId:(nullable NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
