@@ -56,6 +56,8 @@ Content-Type: application/json; charset=utf-8
 | `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（客户端推送的副屏） |
 | `share_state_change` | 会议的共享状态变化（开始共享 / 结束共享） |
 | `device_invite_failed` | 平台邀请的设备没能入会（终端忙、拒接、无应答、呼不通、拉流失败、入会被拒等） |
+| `user_online` | 用户上线：真人建立 IM 连接，或设备注册到设备网关 / 探测可达，与是否在会无关（默认不推送，需部署方开启） |
+| `user_offline` | 用户下线：真人 IM 断开，或设备注销 / 心跳超时 / 探测不可达，与是否在会无关（默认不推送，需部署方开启） |
 
 ### `user_enter` — 用户进入会议
 
@@ -283,6 +285,69 @@ Content-Type: application/json; charset=utf-8
 </Warning>
 
 人员呼叫的失败没有回调，判断方法见[邀请入会与移出](/zh/meeting/server-api/guides/invite-and-kickout#邀请失败怎么知道)。
+
+### `user_online` / `user_offline` — 用户上线 / 下线
+
+感知用户**在不在线**，与是否在会无关（进出会议看 `user_enter` / `user_exit`）。真人与设备共用这两个事件，用 `is_agent` 区分：
+
++ **真人**：客户端启用会外消息（如 Web 端调用 `smeeting.enableIm()`）建立 IM 连接即上线，主动断开、被踢或心跳超时即下线
++ **设备**：经设备网关接入的 SIP / H.323 终端、国标设备注册到设备网关即上线，注销或心跳超时即下线；
+  IP 直连的终端由设备网关定时探测，探测得通即上线、探测不通即下线
+
+真人上线：
+
+```json
+{
+  "user_id": "1001",
+  "is_agent": false,
+  "device_type": 3,
+  "device_id": "aacc",
+  "sid": "co63jg6g54hu3b0xhtie",
+  "name": "",
+  "contact": ""
+}
+```
+
+设备下线（`user_offline` 比 `user_online` 多 `reason`、`heartbeat_at` 两个字段，与其余字段平铺在同一层）：
+
+```json
+{
+  "user_id": "_agent_sz8nk8",
+  "is_agent": true,
+  "device_type": 84,
+  "device_id": "sz8nk8",
+  "sid": "",
+  "name": "大门监控",
+  "contact": "34020000001320000001",
+  "reason": 4,
+  "heartbeat_at": 1718250917
+}
+```
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `user_id` | string | 真人为你的用户 ID；设备为 `_agent_` + 设备 ID，与该设备入会后 `user_enter` 里的 `user_id` 对应（国标设备按通道入会时，入会的 `user_id` 末尾还会再加 `_通道编号`） |
+| `is_agent` | boolean | `true` 为设备，`false` 为真人 |
+| `device_type` | integer | 真人为端类型：`1` Windows、`2` Android、`3` iOS、`4` Linux、`5` macOS、`6` WebRTC、`7` 微信小程序、`8` 鸿蒙；设备为 `80` + 设备类型：`82` SIP、`83` H.323、`84` 国标 |
+| `device_id` | string | 真人为客户端上报的设备唯一 ID；设备为设备 ID，即[设备列表](/zh/rtc/server-api/agent#设备列表)里的 `id` |
+| `sid` | string | 真人的 IM 会话 ID，同一用户每一端各不相同；设备为空 |
+| `name` | string | 设备名称；真人为空 |
+| `contact` | string | 设备标识：SIP 为注册用户名，H.323 为短号码，国标为设备编号，IP 直连设备为登记的地址；真人为空 |
+| `reason` | integer | 仅 `user_offline`。下线原因：`1` 主动断开 / 设备主动注销、`2` 被踢、`3` 被顶号、`4` 心跳超时、`7` 设备探测不可达（仅 IP 直连设备） |
+| `heartbeat_at` | integer | 仅 `user_offline`。设备最后一次心跳的秒级时间戳；真人为 `0` |
+
++ **多端登录时按连接计**：同一个真人在多端启用会外消息，每一端各推一次上线、各推一次下线，用 `sid` 区分是哪一端。
+  判断「这个人是否还在线」要自己按 `user_id` 汇总各端的 `sid`，不能收到一条 `user_offline` 就认为他已离线
++ **设备按状态翻转计**：设备周期性的注册刷新、心跳不会重复推上线，只有在线 / 离线真正切换时推一次；离线后恢复心跳会再推一次上线
++ 心跳超时的下线要等超时判定，**比真实断线晚 5~7 分钟**才推送，需要真实断线时刻时以 `heartbeat_at` 为准
++ 设备不归属某个应用，所以订阅了本事件的每个应用都会收到同一台设备的上下线
+
+<Warning>
+  这两个事件**默认不推送**：需要部署方在 SMeeting 服务端配置的 `rtc.callback_events` 里追加
+  `im_connect`、`im_disconnect`（真人上下线）以及 `agent_online`、`agent_offline`（设备上下线）。
+  只要真人或只要设备时，追加对应的两项即可。部署方开启后，你仍需在[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)时订阅这两个事件。
+  私有化部署请联系部署方开启，SaaS 请联系我们。
+</Warning>
 
 ## 幂等与重试
 
