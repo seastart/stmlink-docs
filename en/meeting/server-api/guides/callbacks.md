@@ -56,8 +56,14 @@ A non-200 status, a non-JSON body, or a non-zero `code` counts as a failure.
 | `user_extra_screen_state_change` | A user starts or stops pushing an extra screen (a secondary screen pushed by a client) |
 | `share_state_change` | The meeting's sharing status changes (sharing starts / stops) |
 | `device_invite_failed` | A device invited by the platform failed to enter (busy, declined, no answer, unreachable, stream pull failed, entry refused, and so on) |
-| `user_online` | A user comes online: a person establishes an IM connection, or a device registers with the device gateway / becomes reachable by probing, regardless of whether they're in a meeting (not sent by default; the deployer must enable it) |
-| `user_offline` | A user goes offline: a person's IM connection closes, or a device unregisters / times out on heartbeat / becomes unreachable by probing, regardless of whether they're in a meeting (not sent by default; the deployer must enable it) |
+| `user_online` | A user comes online: a person establishes an IM connection, or a device registers with the device gateway / becomes reachable by probing, regardless of whether they're in a meeting |
+| `user_offline` | A user goes offline: a person's IM connection closes, or a device unregisters / times out on heartbeat / becomes unreachable by probing, regardless of whether they're in a meeting |
+
+<Note>
+  Subscribing is all it takes: the server enables the underlying events it needs based on the `events` you subscribe to when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications), with no configuration by the deployer.
+  This applies from SMeeting server v1.8.0. In earlier versions, `device_invite_failed`, `user_online` / `user_offline`, `mcu_record_done`, and `mcu_alarm`
+  are sent only after the deployer appends the corresponding underlying events to `rtc.callback_events` in the server configuration (`agent_invite_failed`; `im_connect`, `im_disconnect`, `agent_online`, `agent_offline`; `mcu_record`; `mcu_alarm` respectively).
+</Note>
 
 ### `user_enter` — User enters the meeting
 
@@ -279,8 +285,8 @@ Sent when a device invited with [Invite devices to the channel](/en/rtc/server-a
 + A device already in another meeting that is invited over and refused entry to the new meeting is also sent as `join_refused`
 
 <Warning>
-  This event requires **a newer device gateway version** to be reported, and it's sent only after the deployer appends
-  `agent_invite_failed` to `rtc.callback_events` in the SMeeting server configuration (off by default). For private deployments, ask your deployer to enable it; for SaaS, contact us.
+  This event requires **a newer device gateway version** to be reported; subscribe to it when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications) and that's it.
+  For SMeeting server versions earlier than v1.8.0, the deployer also needs to append `agent_invite_failed` to `rtc.callback_events` in the server configuration.
 </Warning>
 
 Calls to users have no failure callback; for how to detect failures, see [Invite and remove](/en/meeting/server-api/guides/invite-and-kickout#how-to-detect-a-failed-invitation).
@@ -342,10 +348,9 @@ A device goes offline (`user_offline` has two more fields than `user_online`, `r
 + Devices don't belong to any single app, so every app subscribed to these events receives the same device's online and offline events
 
 <Warning>
-  These two events are **not sent by default**: the deployer must append
-  `im_connect`, `im_disconnect` (people online / offline) and `agent_online`, `agent_offline` (devices online / offline) to `rtc.callback_events` in the SMeeting server configuration.
-  If you only need people or only devices, appending the corresponding two is enough. After the deployer enables them, you still need to subscribe to these two events when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications).
-  For private deployments, ask your deployer to enable it; for SaaS, contact us.
+  Subscribe to these two events when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications) and that's it.
+  For SMeeting server versions earlier than v1.8.0, the deployer also needs to append
+  `im_connect`, `im_disconnect` (people online / offline) and `agent_online`, `agent_offline` (devices online / offline) to `rtc.callback_events` in the server configuration; if you only need people or only devices, appending the corresponding two is enough.
 </Warning>
 
 ## Idempotency and retry

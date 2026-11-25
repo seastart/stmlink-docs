@@ -114,11 +114,12 @@ Subscribe to the [`device_invite_failed` callback](/en/meeting/server-api/guides
 with the failure reason `reason` and the original description `msg`.
 
 <Warning>
-  This callback is sent only when all three are in place:
+  This callback is sent only when both are in place:
 
   + **A newer device gateway version**: older device gateways don't report invitation failures
-  + **Enabled by the deployer**: `agent_invite_failed` must be appended to `rtc.callback_events` in the SMeeting server configuration (off by default)
-  + **Your subscription**: include `device_invite_failed` in `events` when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications)
+  + **Your subscription**: include `device_invite_failed` in `events` when you [Configure event notifications](/en/meeting/server-api/meet#configure-event-notifications); the server enables the underlying events it needs automatically
+
+  For SMeeting server versions earlier than v1.8.0, the deployer also needs to append `agent_invite_failed` to `rtc.callback_events` in the server configuration.
 
   It's sent only for devices invited by the platform; failures of devices dialing in by themselves are not sent.
 </Warning>
