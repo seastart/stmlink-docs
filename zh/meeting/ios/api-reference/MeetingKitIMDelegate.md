@@ -96,6 +96,36 @@ description: "会议外消息通道的回调协议：连接状态、来电呼叫
 | roomNo | 房间号码 |
 | title | 会议标题 |
 
+<Note>
+实现了下方带 `meetingId` / `forceJoin` 的 `onCallReceived:nickname:roomNo:title:meetingId:forceJoin:()` 后，SDK 不再回调本方法。
+</Note>
+
+### onCallReceived:nickname:roomNo:title:meetingId:forceJoin:()
+`- (void)onCallReceived:(NSString *)callerId nickname:(nullable NSString *)nickname roomNo:(NSString *)roomNo title:(NSString *)title meetingId:(nullable NSString *)meetingId forceJoin:(BOOL)forceJoin`
+
+通话请求的回调（含会议标识与强制入会标记），2.5.0 起提供。
+
+与 `onCallReceived:nickname:roomNo:title:()` 时机相同，多带会议标识 `meetingId` 与强制入会标记 `forceJoin`。实现本方法后不再回调旧方法。
+
+`forceJoin` 对应服务端 [呼叫成员](/zh/meeting/server-api/meet-admin#会议时呼叫人员入会) 接口的 `force_join` 参数，缺省为 `NO`。为 `YES` 表示管理员要求被叫直接入会，建议：
+
++ 不弹接听界面，提示一句后直接进入目标会议；已在该会议中则忽略
++ 正在其它会议中时，先离开当前会议（只退出自己，不结束会议）再进入
++ 短时间内重复收到同一会议的强制呼叫只处理第一次
++ 应用在后台时 iOS 无法自动切到前台，可发本地通知，用户点通知或回到前台后再入会
+
+被叫凭这次呼叫进入密码会议免密（服务端处理），等候室、锁定等规则照旧。
+
+**参数**
+
+| callerId | 主叫标识 |
+| --- | --- |
+| nickname | 主叫昵称 |
+| roomNo | 房间号码 |
+| title | 会议标题 |
+| meetingId | 会议标识 |
+| forceJoin | 是否强制入会，缺省为 `NO` |
+
 
 ## 等候室相关回调
 ### onWaitingRoomMoveInRoom:title:()

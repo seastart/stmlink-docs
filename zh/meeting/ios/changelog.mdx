@@ -3,6 +3,15 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.5.0] - 2026.11.25
+
+#### 新增
++ **呼叫事件带出强制入会标记**：`MeetingKitIMDelegate` 新增可选回调 `onCallReceived:nickname:roomNo:title:meetingId:forceJoin:`，比原回调多带会议标识 `meetingId` 与 `forceJoin`。`forceJoin` 对应服务端呼叫成员接口的 `force_join` 参数，为 `YES` 时表示管理员要求被叫直接入会，App 可不弹接听界面、直接进入会议。见 [MeetingKitIMDelegate](/zh/meeting/ios/api-reference/MeetingKitIMDelegate#oncallreceivednicknameroomnotitlemeetingidforcejoin)。
+
+<Note>
+实现新回调后 SDK 不再回调旧的 `onCallReceived:nickname:roomNo:title:`；不实现则照旧回调旧方法，既有接口签名不变。依赖 `RTCEngineKit` 仍为 `>= 3.3.0`，2.4.0 接入方无需改代码即可升级。
+</Note>
+
 ### [2.4.0] - 2026.11.25
 
 #### 新增
