@@ -1,9 +1,15 @@
 ---
 title: "更新日志"
-description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.45 的新增能力、修复、依赖升级与兼容性说明"
+description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.46 的新增能力、修复、依赖升级与兼容性说明"
 ---
 
 > 本页记录 Android SMeeting SDK 的主要版本变化。依赖版本见[集成](/zh/meeting/android/integration)，运行时可通过 `MeetingEngine.version()` 查询实际版本。
+
+## 2.0.46（2026-11-25）
+
+### 新增
+
++ 新增资源预签名接口 `MeetingEngine.presignedPutObject()` 与 `presignedGetObject()`：申请上传地址后由应用直接上传文件，之后凭资源 key 换取下载地址，可用于聊天文件等场景，见[资源预签名](/zh/meeting/android/api-reference/MeetingEngine#资源预签名)。
 
 ## 2.0.45（2026-11-24）
 

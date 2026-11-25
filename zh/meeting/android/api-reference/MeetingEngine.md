@@ -2021,6 +2021,72 @@ fun cancelHandUp(code: HandUpType)
 
 返回值说明：无（`Unit`）。
 
+## 资源预签名
+
+自 `2.0.46` 起支持。用于聊天文件、会议资料等走对象存储直传：先申请上传地址，由应用自己把文件 PUT 上去，之后只传递资源 key，需要下载时再用 key 换下载地址。两个接口只需完成 `initSdk`，不要求在会中。
+
+### presignedPutObject(type, meetingId, ext, callback)
+
+```kotlin
+fun presignedPutObject(
+    type: PresignedPutObjectType,
+    meetingId: String?,
+    ext: String,
+    callback: MeetingValueResultCallback<PresignedPutObjectInfo>
+)
+```
+
+申请一个对象存储的上传地址。拿到结果后由应用对 `url` 发起 HTTP PUT：请求体为文件二进制，请求头 `Content-Type: application/octet-stream`（不是 multipart）。上传成功后对外传递 `key`，不要传递或持久化 `url`（签名地址会过期）。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| type | [`PresignedPutObjectType`](/zh/meeting/android/enums#presignedputobjecttype) | 是 | 资源类型，聊天文件用 `CHAT` |
+| meetingId | `String?` | 否 | 会议 ID；`USER` 类型与会议无关，传 `null` |
+| ext | `String` | 是 | 文件扩展名，不带点；无扩展名时传 `"bin"`。为空时回调 `onFailure(202012)` |
+| callback | `MeetingValueResultCallback<PresignedPutObjectInfo>` | 是 | 成功返回上传地址、资源 key 与扩展名，见 [PresignedPutObjectInfo](/zh/meeting/android/types#presignedputobjectinfo) |
+
+部署关闭了文件功能时回调 `onFailure(2125)`（文件功能已关闭），此时应隐藏发文件入口。SDK 不限制文件大小，单个文件上限请在业务侧控制。
+
+返回值：`Unit`，结果由回调返回。
+
+### presignedGetObject(resKey, id, callback)
+
+```kotlin
+fun presignedGetObject(
+    resKey: String?,
+    id: String?,
+    callback: MeetingValueResultCallback<String>
+)
+```
+
+用资源 key 换取下载地址。签名地址有过期时间，每次下载前现换，不要缓存。
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| resKey | `String?` | 是 | 资源 key，如 `presignedPutObject` 返回的 `key` 或聊天文件消息里的 `key`。为空时回调 `onFailure(202012)` |
+| id | `String?` | 否 | 资源 ID。目前服务端不支持，传 `null` 即可，请始终传 `resKey` |
+| callback | `MeetingValueResultCallback<String>` | 是 | 成功返回下载地址 |
+
+返回值：`Unit`，结果由回调返回。
+
+```kotlin
+// 发送聊天文件：申请地址 → PUT 文件 → 发送带 key 的文件消息
+engine.presignedPutObject(PresignedPutObjectType.CHAT, meetingId, "pdf",
+    object : MeetingValueResultCallback<PresignedPutObjectInfo> {
+        override fun onSuccess(value: PresignedPutObjectInfo) {
+            // 应用自行对 value.url 发起 PUT（Content-Type: application/octet-stream），
+            // 成功后把 value.key 放进消息，用 sendRoomChatMessage(..., ChatMsgType.File, ...) 发出
+        }
+        override fun onFailure(errorCode: Int, message: String?) { }
+    })
+
+// 下载：每次用 key 现换地址
+engine.presignedGetObject(key, null, object : MeetingValueResultCallback<String> {
+    override fun onSuccess(value: String) { /* 用 value 下载 */ }
+    override fun onFailure(errorCode: Int, message: String?) { }
+})
+```
+
 ## 设备开启请求回复
 
 ### confirmOpenCameraAgree(targetId, view, preOpt, callback)

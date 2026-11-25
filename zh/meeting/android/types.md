@@ -538,6 +538,18 @@ SRTC 频道属性转换得到的当前房间快照。
 | screenRole | `MemberRoleType?` | `null` | 注册投屏码的大屏角色 |
 | owner | `CastMeetingOwner?` | `null` | 新建会议归属策略 |
 
+## 资源预签名模型
+
+### PresignedPutObjectInfo
+
+[`presignedPutObject`](/zh/meeting/android/api-reference/MeetingEngine#presignedputobject-type-meetingid-ext-callback) 的成功结果，自 `2.0.46` 起提供。
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| url | `String` | `""` | 预签名上传地址，有效期有限，只用于本次 PUT，不要传递或持久化 |
+| key | `String` | `""` | 资源 key，上传成功后对外传递，下载时用它调 `presignedGetObject` 换地址 |
+| ext | `String` | `""` | 服务端确认的文件扩展名，不带点 |
+
 ## 网络检测模型
 
 自 `2.0.45` 起提供，用于[会前网络检测](/zh/meeting/android/api-reference/MeetingEngine#会前网络检测)。字段与取值和 [SRTC Android 网络检测类型](/zh/rtc/android/types#networkcheckoptions) 一致，但都是会议层自己的类型。

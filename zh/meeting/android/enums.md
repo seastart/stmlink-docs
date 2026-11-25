@@ -149,6 +149,17 @@ description: "Android SMeeting 的会议、成员、设备、消息、共享、�
 | MuteState2 | 2 | 关闭入会静音（跟随客户端初始音频状态） |
 | MuteState3 | 3 | 超 6 人静音（超过 6 人后入会静音） |
 
+### PresignedPutObjectType
+
+资源预签名上传的资源类型，供 [`presignedPutObject`](/zh/meeting/android/api-reference/MeetingEngine#presignedputobject-type-meetingid-ext-callback) 使用。
+
+| 枚举名 | 值 | 说明 |
+| --- | --- | --- |
+| ATTACH | `"attach"` | 会议资料（附件），需传会议 ID |
+| BACKGROUND | `"background"` | 会议背景图，需传会议 ID |
+| USER | `"user"` | 用户资源（如头像），与会议无关，会议 ID 传 `null` |
+| CHAT | `"chat"` | 会中聊天文件，需传会议 ID |
+
 ### RollCallMethod
 
 | 枚举名 | 值 | 说明 |
