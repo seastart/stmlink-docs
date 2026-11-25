@@ -1175,3 +1175,235 @@ description: "会议进行中主持人可做的操作：全体音视频管控、
 
 ---
 
+## 主持人更新会议等候室开关
+
+`POST /server/v1/meet-admin/update-waiting-room-disabled`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+会中开启或关闭等候室。
+
++ 开启后，主持人、联席主持人和会议创建者以外的人入会会先进入等候室，由主持人放行
++ 关闭时，等候室里的人会被全部放行入会
++ 会前也可以调用，会议开始后生效；已结束的会议返回错误码 2103
+
+**请求参数**
+
+<ParamField body="room_no" type="string">
+  房间号，与会议ID二选一
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  会议ID，与房间号二选一
+</ParamField>
+
+<ParamField body="waiting_room_disabled" type="boolean" required>
+  是否关闭等候室 false:开启 true:关闭。关闭时等候室里的人会全部被放行入会
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "room_no": "",
+  "waiting_room_disabled": false
+}
+```
+
+**响应参数**
+
+<ResponseField name="data" type="string">
+  返回数据
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
+## 查询等候室成员
+
+`POST /server/v1/meet-admin/waiting-room-users`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+查询当前在等候室里等待的成员，按进入等候室的时间先后排序。
+
+**请求参数**
+
+<ParamField body="room_no" type="string">
+  房间号，与会议ID二选一
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  会议ID，与房间号二选一
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "room_no": ""
+}
+```
+
+**响应参数**
+
+<ResponseField name="user_id" type="string">
+  用户ID
+</ResponseField>
+
+<ResponseField name="nickname" type="string">
+  昵称
+</ResponseField>
+
+<ResponseField name="enter_at" type="integer">
+  进入等候室的时间，秒级时间戳
+  示例：`1718194667`
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "enter_at": 1718194667,
+      "nickname": "",
+      "user_id": ""
+    }
+  ]
+}
+```
+
+---
+
+## 把会中成员移入等候室
+
+`POST /server/v1/meet-admin/move-in-waiting-room`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+把会中成员移入等候室：该成员会被移出会议、进入等候室，等主持人放行后才能重新入会。
+
++ 会议未开启等候室时返回错误码 2127，先用「更新会议等候室开关」开启
++ 主持人、联席主持人和会议创建者不能移入等候室，返回错误码 2128
++ 目标不在会中返回错误码 2111
+
+**请求参数**
+
+<ParamField body="room_no" type="string">
+  房间号，与会议ID二选一
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  会议ID，与房间号二选一
+</ParamField>
+
+<ParamField body="user_id" type="string" required>
+  要移入等候室的用户ID，必须在会中，且不能是主持人或联席主持人
+  示例：`1001`
+</ParamField>
+
+<ParamField body="nickname" type="string">
+  在等候室显示的昵称，不传则沿用其会中昵称
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "nickname": "",
+  "room_no": "",
+  "user_id": "1001"
+}
+```
+
+**响应参数**
+
+<ResponseField name="data" type="string">
+  返回数据
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
+## 把等候室成员放行入会
+
+`POST /server/v1/meet-admin/move-out-waiting-room`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+把等候室成员放行入会，被放行的成员会收到可以入会的通知。
+
++ 传 user_id 只放行这一人，该用户不在等候室时返回错误
++ 不传 user_id 则放行等候室里的全部成员
+
+**请求参数**
+
+<ParamField body="room_no" type="string">
+  房间号，与会议ID二选一
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  会议ID，与房间号二选一
+</ParamField>
+
+<ParamField body="user_id" type="string">
+  要放行的用户ID，不传则放行等候室里的全部成员
+  示例：`1001`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "room_no": "",
+  "user_id": "1001"
+}
+```
+
+**响应参数**
+
+<ResponseField name="data" type="string">
+  返回数据
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+

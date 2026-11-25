@@ -51,6 +51,8 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `2124` | TargetCameraDisabled | This member's account is not allowed to turn on the camera |
 | `2125` | FileDisabled | File features are disabled |
 | `2126` | AgentShareNeedTerminal | SIP/H.323 endpoints cannot start sharing remotely; press the content-sharing key on the endpoint instead |
+| `2127` | WaitingRoomDisabled | The waiting room is not enabled for this meeting |
+| `2128` | WaitingRoomHostExempt | Hosts and co-hosts cannot be moved to the waiting room |
 | `2131` | CastCodeInvalid | Cast code is invalid or has expired |
 | `2132` | CastToSelf | Cannot cast to your own device |
 | `2141` | AiNotHost | Only the host or a co-host can do this |

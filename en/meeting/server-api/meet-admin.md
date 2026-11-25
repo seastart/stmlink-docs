@@ -1175,3 +1175,235 @@ Response example:
 
 ---
 
+## Update meeting waiting room switch
+
+`POST /server/v1/meet-admin/update-waiting-room-disabled`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Enable or disable the waiting room during a meeting.
+
++ When enabled, anyone other than the host, co-hosts and the meeting creator enters the waiting room first and joins after the host admits them
++ When disabled, everyone in the waiting room is admitted to the meeting
++ Can also be called before the meeting starts and takes effect once it starts; for an ended meeting, error code 2103 is returned
+
+**Request parameters**
+
+<ParamField body="room_no" type="string">
+  Room number. Provide either this or the meeting ID
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  Meeting ID. Provide either this or the room number
+</ParamField>
+
+<ParamField body="waiting_room_disabled" type="boolean" required>
+  Whether to disable the waiting room. false: enabled, true: disabled. When disabled, everyone in the waiting room is admitted
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "room_no": "",
+  "waiting_room_disabled": false
+}
+```
+
+**Response parameters**
+
+<ResponseField name="data" type="string">
+  Response data
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
+## List waiting room members
+
+`POST /server/v1/meet-admin/waiting-room-users`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+List the members currently waiting in the waiting room, ordered by the time they entered it.
+
+**Request parameters**
+
+<ParamField body="room_no" type="string">
+  Room number. Provide either this or the meeting ID
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  Meeting ID. Provide either this or the room number
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "room_no": ""
+}
+```
+
+**Response parameters**
+
+<ResponseField name="user_id" type="string">
+  User ID
+</ResponseField>
+
+<ResponseField name="nickname" type="string">
+  Display name
+</ResponseField>
+
+<ResponseField name="enter_at" type="integer">
+  Time the member entered the waiting room, Unix timestamp in seconds
+  Example: `1718194667`
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "enter_at": 1718194667,
+      "nickname": "",
+      "user_id": ""
+    }
+  ]
+}
+```
+
+---
+
+## Move a member to the waiting room
+
+`POST /server/v1/meet-admin/move-in-waiting-room`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Move an in-meeting member to the waiting room: the member is removed from the meeting and placed in the waiting room, and can rejoin only after the host admits them.
+
++ If the waiting room is not enabled for the meeting, error code 2127 is returned; enable it first with "Update meeting waiting room switch"
++ The host, co-hosts and the meeting creator cannot be moved to the waiting room; error code 2128 is returned
++ If the target is not in the meeting, error code 2111 is returned
+
+**Request parameters**
+
+<ParamField body="room_no" type="string">
+  Room number. Provide either this or the meeting ID
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  Meeting ID. Provide either this or the room number
+</ParamField>
+
+<ParamField body="user_id" type="string" required>
+  User ID to move to the waiting room; must be in the meeting and cannot be the host or a co-host
+  Example: `1001`
+</ParamField>
+
+<ParamField body="nickname" type="string">
+  Nickname shown in the waiting room; defaults to the member's in-meeting nickname
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "nickname": "",
+  "room_no": "",
+  "user_id": "1001"
+}
+```
+
+**Response parameters**
+
+<ResponseField name="data" type="string">
+  Response data
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
+## Admit waiting room members
+
+`POST /server/v1/meet-admin/move-out-waiting-room`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Admit members from the waiting room to the meeting; admitted members are notified that they can join.
+
++ With user_id, only that member is admitted; an error is returned if the member is not in the waiting room
++ Without user_id, everyone in the waiting room is admitted
+
+**Request parameters**
+
+<ParamField body="room_no" type="string">
+  Room number. Provide either this or the meeting ID
+</ParamField>
+
+<ParamField body="meeting_id" type="string">
+  Meeting ID. Provide either this or the room number
+</ParamField>
+
+<ParamField body="user_id" type="string">
+  User ID to admit; if omitted, everyone in the waiting room is admitted
+  Example: `1001`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "room_no": "",
+  "user_id": "1001"
+}
+```
+
+**Response parameters**
+
+<ResponseField name="data" type="string">
+  Response data
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": ""
+}
+```
+
+---
+
