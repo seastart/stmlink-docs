@@ -467,6 +467,16 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | BOOL enableSaveAudioReceive | 否 | 保存远程音频流，默认 NO |
 
 
+### SEAPresignedPutObjectModel
+预签名上传结果对象，由 [presignedPutObject:meetingId:ext:onSuccess:onFailed:()](/zh/meeting/ios/api-reference/MeetingKit#presignedputobjectmeetingidextonsuccessonfailed) 成功回调返回（`2.4.0` 起）
+
+| **属性名称** | **描述** |
+| --- | --- |
+| url | 【字段含义】预签名上传地址，用 HTTP PUT 上传文件二进制（`Content-Type: application/octet-stream`）；带签名、约 2 小时过期，不要保存 |
+| key | 【字段含义】资源标识，业务里保存、发送的应是它；下载时作为 `resKey` 传给 `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` 换取下载地址 |
+| ext | 【字段含义】文件扩展名（不带点，后端回显） |
+
+
 ### SEANetworkCheckParams
 会前网络检测参数（`2.3.0` 起），用于 [networkCheck:onItem:completion:](/zh/meeting/ios/api-reference/MeetingKit#会前网络检测接口)。已登录时可以不传（传 `nil`），从登录信息里取应用标识与服务器地址；未登录时须传 `appId` + `serverUrl`，或传 `token`，二选一；两者都传时以 `appId` + `serverUrl` 为准。
 
@@ -804,6 +814,17 @@ description: "iOS SMeeting 会议 SDK 完整类型与结构体定义"
 | SEAMessageTypePicture | `3` | 图片消息 |
 | SEAMessageTypeVoice | `4` | 语音消息 |
 | SEAMessageTypeCustom | `5` | 自定义消息 |
+
+
+### SEAResourceType
+资源类型，`presignedPutObject:meetingId:ext:onSuccess:onFailed:` 的 `type`，决定文件落在存储的哪个目录（`2.4.0` 起）
+
+| **枚举类型** | **枚举值** | **描述** |
+| --- | :---: | --- |
+| SEAResourceTypeAttach | `1` | 会议资料（附件） |
+| SEAResourceTypeBackground | `2` | 会议背景图 |
+| SEAResourceTypeUser | `3` | 用户资源（如头像） |
+| SEAResourceTypeChat | `4` | 聊天文件 |
 
 
 ### SEAHandupType

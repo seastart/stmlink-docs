@@ -197,6 +197,8 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
 
+发送文件消息（`SEAMessageTypeFile`）时，先用 [presignedPutObject:meetingId:ext:onSuccess:onFailed:()](/zh/meeting/ios/api-reference/MeetingKit#presignedputobjectmeetingidextonsuccessonfailed) 上传文件，再把 JSON 字符串 `{"key":"<key>","name":"原始文件名","size":"1.20MB"}` 作为 `message` 发出；接收方用 `key` 调 `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` 换下载地址。
+
 
 ### sendRoomCustomMessage:targetId:onSuccess:onFailed:()
 `- (void)sendRoomCustomMessage:(NSString *)message targetId:(nullable NSString *)targetId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`

@@ -434,7 +434,7 @@
 
 ## SMeeting 会议 SDK · iOS SDK · 接口列表
 
-- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): 会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由、屏幕采集进程接入与会前网络检测
+- [MeetingKit](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKit.md): 会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、聊天文件等资源的预签名上传下载、本地采集预览、音频路由、屏幕采集进程接入与会前网络检测
 - [MeetingKitRoom](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoom.md): 会议房间实例：进出房间、本端音视频与共享、聊天与举手、主持人管理、云录制、等候室、分组讨论、签到与房间数据查询
 - [MeetingKitDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitDelegate.md): 会议组件全局事件回调协议：音频路由变更与应用性能，与加入了几个房间无关
 - [MeetingKitRoomDelegate](https://docs.stmlink.com/zh/meeting/ios/api-reference/MeetingKitRoomDelegate.md): 会议房间事件回调协议：进出房间、房间设置与主持人操作、成员状态、聊天消息、云录制、屏幕共享、码流质量与签到，每个回调都带事件来源房间实例

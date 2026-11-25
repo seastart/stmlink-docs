@@ -3,6 +3,24 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.4.0] - 2026.11.25
+
+#### 新增
++ **资源预签名上传 / 下载**：`MeetingKit` 新增 `presignedPutObject:meetingId:ext:onSuccess:onFailed:` 与 `presignedGetObjectWithResKey:resId:onSuccess:onFailed:`，用于聊天文件等资源直传存储。见 [MeetingKit](/zh/meeting/ios/api-reference/MeetingKit#资源接口)。
+  + 预签名上传成功回调 [SEAPresignedPutObjectModel](/zh/meeting/ios/types#seapresignedputobjectmodel)（`url` / `key` / `ext`），由调用方自行 HTTP PUT 文件二进制到 `url`（`Content-Type: application/octet-stream`，不是 multipart）；业务里保存、发送的应是 `key`
+  + 预签名下载成功回调下载地址字符串。地址带签名、约 2 小时过期，每次下载前现换，不要缓存
+  + `resId` 为预留参数，**后端暂不支持，请传 `resKey`**；`resKey` 为空时直接失败回调 `SEAErrorMeetingInvalidArgument`（`203012`）
+  + 聊天文件消息约定：上传后以 `SEAMessageTypeFile` 发送 JSON 字符串 `{"key":"<key>","name":"原始文件名","size":"1.20MB"}`，与其它端一致
++ 新增枚举 [SEAResourceType](/zh/meeting/ios/types#searesourcetype)（`Attach` / `Background` / `User` / `Chat`），聊天文件传 `SEAResourceTypeChat`。
++ 新增后端业务码 `SEAErrorMeetingApiFileDisabled`（`2125`）：部署关闭了文件功能时预签名上传返回该码。
+
+#### 修复
++ `MeetingKitRoom` 的 `getMoreOnlineMemberList:onSuccess:onFailed:` 翻第二页起误请求了聊天消息列表接口，导致拿不到后续在线成员，现已改为请求在线成员列表接口。
+
+<Note>
+本版只新增接口与修复，既有接口签名不变，依赖 `RTCEngineKit` 仍为 `>= 3.3.0`，2.3.0 接入方无需改代码即可升级。
+</Note>
+
 ### [2.3.0] - 2026.11.25
 
 #### 新增

@@ -1,6 +1,6 @@
 ---
 title: "MeetingKit"
-description: "会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、本地采集预览、音频路由、屏幕采集进程接入与会前网络检测"
+description: "会议组件全局入口单例：登录登出、即时通讯、会议查询与预约、房间实例的创建与查询、聊天文件等资源的预签名上传下载、本地采集预览、音频路由、屏幕采集进程接入与会前网络检测"
 ---
 
 `MeetingKit` 是一个进程内只存在一个实例的单例对象，只承载**账号级与设备级**能力：登录、即时通讯、本地采集与预览、音频路由、屏幕采集进程侧接入、会前网络检测，以及会议的查询与预约。
@@ -261,6 +261,68 @@ SDK 语言（`2.2.0` 起）
 | params | 修改房间参数，参考文档：[SEAMeetingParam](/zh/meeting/ios/types#seameetingparam) |
 | onSuccess | 成功回调 |
 | onFailed | 失败回调 |
+
+## 资源接口
+
+`2.4.0` 起提供。文件不经过 SDK 中转：先用 `presignedPutObject:meetingId:ext:onSuccess:onFailed:` 换一个带签名的上传地址，调用方自己 HTTP PUT 上传；业务里只保存、发送资源标识 `key`，需要下载时再用 `presignedGetObjectWithResKey:resId:onSuccess:onFailed:` 现换下载地址。
+
+### presignedPutObject:meetingId:ext:onSuccess:onFailed:()
+`- (void)presignedPutObject:(SEAResourceType)type meetingId:(NSString *)meetingId ext:(NSString *)ext onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+预签名上传：向会议层申请一个直传存储的上传地址
+
+| 参数 | 描述 |
+| :--- | --- |
+| type | 资源类型，聊天文件传 `SEAResourceTypeChat`，参考文档：[SEAResourceType](/zh/meeting/ios/types#searesourcetype) |
+| meetingId | 会议标识 |
+| ext | 文件扩展名，必填、不带点（如 `@"pdf"`），没有扩展名时传 `@"bin"` |
+| onSuccess | 成功回调，`data` 为 [SEAPresignedPutObjectModel](/zh/meeting/ios/types#seapresignedputobjectmodel) |
+| onFailed | 失败回调；部署关闭了文件功能时为 `SEAErrorMeetingApiFileDisabled`（`2125`） |
+
+拿到结果后：
+
++ 用 HTTP **PUT** 把文件二进制传到 `url`，请求头 `Content-Type: application/octet-stream`（不是 multipart 表单）。
++ 业务里保存、发送的是 `key`，不要保存 `url`：上传地址带签名，约 2 小时过期。
++ 发送聊天文件：上传成功后以 `SEAMessageTypeFile` 调用 [sendRoomChatMessage:messageType:targetId:onSuccess:onFailed:()](/zh/meeting/ios/api-reference/MeetingKitRoom#sendroomchatmessagemessagetypetargetidonsuccessonfailed)，消息内容为 JSON 字符串 `{"key":"<key>","name":"原始文件名","size":"1.20MB"}`，与其它端互通。
+
+**示例**
+
+```objectivec
+[[MeetingKit sharedInstance] presignedPutObject:SEAResourceTypeChat meetingId:meetingId ext:@"pdf" onSuccess:^(id _Nullable data) {
+    SEAPresignedPutObjectModel *model = (SEAPresignedPutObjectModel *)data;
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:model.url]];
+    request.HTTPMethod = @"PUT";
+    [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
+    [[[NSURLSession sharedSession] uploadTaskWithRequest:request fromFile:fileURL completionHandler:^(NSData *body, NSURLResponse *response, NSError *error) {
+        if (error || ((NSHTTPURLResponse *)response).statusCode / 100 != 2) {
+            return; // 上传失败
+        }
+        // 上传成功后发送文件消息，内容里放 key 而不是 url
+        NSString *message = [NSString stringWithFormat:@"{\"key\":\"%@\",\"name\":\"%@\",\"size\":\"%@\"}", model.key, fileName, sizeText];
+        [room sendRoomChatMessage:message messageType:SEAMessageTypeFile targetId:nil onSuccess:nil onFailed:nil];
+    }] resume];
+} onFailed:^(SEAError code, NSString * _Nonnull message) {
+    // SEAErrorMeetingApiFileDisabled(2125)：部署关闭了文件功能
+}];
+```
+
+<Note>
+示例中的 `message` 用字符串拼接只为演示字段，实际请用 `NSJSONSerialization` 生成，避免文件名中的引号等字符破坏 JSON。
+</Note>
+
+### presignedGetObjectWithResKey:resId:onSuccess:onFailed:()
+`- (void)presignedGetObjectWithResKey:(nullable NSString *)resKey resId:(nullable NSString *)resId onSuccess:(nullable SEASuccessBlock)onSuccess onFailed:(nullable SEAFailedBlock)onFailed`
+
+预签名下载：用资源标识换取一个临时下载地址
+
+| 参数 | 描述 |
+| :--- | --- |
+| resKey | 资源标识，即预签名上传返回的 `key`（聊天文件消息里的 `key`），必填；为空时不发请求，直接失败回调 `SEAErrorMeetingInvalidArgument`（`203012`） |
+| resId | 资源记录 ID，预留参数。**后端暂不支持，请传 `resKey`**，此处传 `nil` 即可 |
+| onSuccess | 成功回调，`data` 为下载地址 `NSString` |
+| onFailed | 失败回调 |
+
+下载地址带签名，约 2 小时过期，每次下载前现换，不要缓存。
 
 ## 会前网络检测接口
 

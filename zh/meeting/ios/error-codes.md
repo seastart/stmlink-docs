@@ -41,7 +41,7 @@ description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
 | SEAErrorMeetingInternalError | `203009` | SDK 内部错误，如下载文件落盘失败 |
 | SEAErrorMeetingUserNotFound | `203010` | 会议中没有该成员（本端暂未产生，保留与各端对齐） |
 | SEAErrorMeetingInvalidState | `203011` | 当前状态不允许该操作，如房间实例已销毁 |
-| SEAErrorMeetingInvalidArgument | `203012` | 参数非法（本端暂未产生，保留与各端对齐） |
+| SEAErrorMeetingInvalidArgument | `203012` | 参数非法，如预签名下载未传 `resKey` |
 | SEAErrorMeetingRemoteTrackUnavailable | `203209` | 远端轨道不可用：成员在会议中，但没有要订阅的这路视频 |
 | SEAErrorMeetingRequestTimeout | `203353` | 请求超时 |
 | SEAErrorMeetingRequestCancelled | `203354` | 请求被取消 |
@@ -148,6 +148,7 @@ description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
 | SEAErrorMeetingApiByInviteOnly | `2116` | 会议仅限受邀人加入,请联系主持人 |
 | SEAErrorMeetingApiWaitingRoomEnable | `2118` | 会议开启等候室，需要管理员确认后入会 |
 | SEAErrorMeetingApiEnterBeforeHostDisabled | `2120` | 会议禁止在主持人之前加入 |
+| SEAErrorMeetingApiFileDisabled | `2125` | 文件功能已关闭（部署关闭了文件功能时，预签名上传返回该码） |
 | SEAErrorApiFailed | `10000` | 未归类的通用错误 |
 | SEAErrorApiDatabaseFailed | `10001` | 数据库错误或异常 |
 | SEAErrorApiRecordNotFound | `10002` | 数据记录未找到 |
