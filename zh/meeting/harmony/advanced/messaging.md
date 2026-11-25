@@ -1,6 +1,6 @@
 ---
 title: "聊天与自定义消息"
-description: "群发与私聊、四种消息类型、自定义消息、禁言控制"
+description: "群发与私聊、四种消息类型、发文件消息（presignedPutObject 换地址 → 自己 PUT → 发 key）、自定义消息、禁言控制"
 ---
 
 ### 发消息
@@ -16,10 +16,10 @@ await meeting.sendRoomChatMessage('大家好');
 // 私聊
 await meeting.sendRoomChatMessage('单独说一句', ChatMsgType.text, targetUid);
 
-// 发图片（自己先上传，这里发的是元信息）
+// 发文件（先上传，这里发的是元信息，见下文「发文件消息」）
 await meeting.sendRoomChatMessage(
-  JSON.stringify({ url: uploadedUrl, w: 800, h: 600 }),
-  ChatMsgType.pic
+  JSON.stringify({ key: put.key, name: '需求文档.pdf', size: '1.20MB' }),
+  ChatMsgType.file
 );
 ```
 
@@ -33,12 +33,73 @@ await meeting.sendRoomChatMessage(
 
 <Note>
 **SDK 不传文件。** `file` / `pic` / `sound` 类型只是给消息打个标记，
-实际内容要你自己上传（可以用 SDK 的预签名接口，见
-[资源与附件](/zh/meeting/harmony/advanced/resources)），然后把 URL 或元信息
-序列化成字符串发出去。
+实际内容要你自己上传（发文件见下一节），然后把元信息序列化成字符串发出去。
 
 也就是说 `msg` 的结构由你和自己的客户端约定，SDK 不解析它。
 </Note>
+
+---
+
+### 发文件消息
+
+1.8.0 起 `PresignedPutObjectType` 有 `chat` 类别，聊天文件按三步发：
+
+1. `presignedPutObject(PresignedPutObjectType.chat, 会议 ID, 扩展名)` 换带签名的上传地址
+2. 自己把文件 `PUT` 到这个地址（SDK 不做这一步）
+3. 把 `{key, name, size}` 序列化成 JSON 字符串，用 `sendRoomChatMessage(msg, ChatMsgType.file)` 发出去
+
+```typescript
+import { http } from '@kit.NetworkKit';
+import { ChatMsgType, PresignedPutObjectType, PresignedPutObjectResult, SMeetingEngine } from 'smeeting';
+
+async function sendChatFile(meeting: SMeetingEngine, fileName: string, data: ArrayBuffer): Promise<void> {
+  const meetingId: string = meeting.getRoomInfo()?.id ?? '';
+
+  // 1. 换预签名上传地址。ext 不带点、必填，没有扩展名时传 bin
+  const dot: number = fileName.lastIndexOf('.');
+  const ext: string = (dot > 0 ? fileName.substring(dot + 1).toLowerCase() : '') || 'bin';
+  const put: PresignedPutObjectResult =
+    await meeting.presignedPutObject(PresignedPutObjectType.chat, meetingId, ext);
+
+  // 2. 自己 PUT 文件二进制。Content-Type 固定 application/octet-stream（签名按它算）
+  const client: http.HttpRequest = http.createHttp();
+  try {
+    const rsp: http.HttpResponse = await client.request(put.url, {
+      method: http.RequestMethod.PUT,
+      header: { 'Content-Type': 'application/octet-stream' },
+      extraData: data
+    });
+    if (rsp.responseCode < 200 || rsp.responseCode >= 300) {
+      throw new Error(`上传失败: ${rsp.responseCode}`);
+    }
+  } finally {
+    client.destroy();
+  }
+
+  // 3. 发文件消息：发 key，不发上传地址（地址带签名、会过期）
+  const msg: string = JSON.stringify({
+    key: put.key,
+    name: fileName,
+    size: formatSize(data.byteLength)   // 展示用，如 "1.20MB"；formatSize 自己实现，格式见下表
+  });
+  await meeting.sendRoomChatMessage(msg, ChatMsgType.file);
+}
+```
+
+文件消息的 `msg` 推荐与 Web 等其它端保持一致，否则对方能收到消息但解析不出文件：
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `key` | string | `presignedPutObject` 返回的 `key`，接收方凭它换下载地址 |
+| `name` | string | 原始文件名，用于展示和另存 |
+| `size` | string | 展示用的文件大小：两位小数加单位、不带空格，如 `1.20MB`、`42.40KB`；不足 1KB 为整数字节，如 `512B` |
+
+接收方解析出 `key` 后，用 `presignedGetObject(undefined, key)` 现换下载地址（地址有时效，别缓存地址本身）。
+
+<Warning>
+部署关闭了文件功能时，`presignedPutObject` 会抛 `SMeetingError`（`kind` 为 `apiError`、`code` 为 `2125`，文件功能已关闭），
+此时应隐藏发文件入口。SDK 不限制文件大小，单个文件上限请在业务侧控制。
+</Warning>
 
 ---
 
@@ -159,5 +220,5 @@ ArkTS 的 `@State` 只观测第一层赋值 —— 消息列表永远用「建�
 ### 相关阅读
 
 + [SMeetingEngine](/zh/meeting/harmony/api-reference/SMeetingEngine)
-+ [资源与附件](/zh/meeting/harmony/advanced/resources) —— 文件上传
++ [资源与附件](/zh/meeting/harmony/advanced/resources) —— 会议资源上传
 + [事件参考](/zh/meeting/harmony/events)

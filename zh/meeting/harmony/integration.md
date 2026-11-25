@@ -30,7 +30,7 @@ HarmonyOS 的 HAR 没有依赖传递性，SMeeting 把 `srtc` 声明为 `peerDep
 
 ```bash
 curl -O https://repo.open.seastart.cn/repository/vcs-releases/srtc-harmony-1.4.0.har
-curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.7.0.har
+curl -O https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.8.0.har
 ```
 
 放进模块的 `libs/` 目录，去掉文件名里的 `-harmony`：
@@ -40,15 +40,15 @@ your-project/
 └── entry/
     ├── libs/
     │   ├── srtc-1.4.0.har
-    │   └── smeeting-1.7.0.har
+    │   └── smeeting-1.8.0.har
     ├── oh-package.json5
     └── src/main/module.json5
 ```
 
 <Note>
-两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.7.0 依赖 SRTC 1.4.0（HAR 里以 `peerDependencies` 钉住 `srtc@1.4.0`），请搭配使用；升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
+两个 SDK **独立编号**，版本号不需要对齐。当前 SMeeting 1.8.0 依赖 SRTC 1.4.0（HAR 里以 `peerDependencies` 钉住 `srtc@1.4.0`），请搭配使用；升级 SMeeting 时请按本页说明确认它对应的 SRTC 版本。
 
-SMeeting 1.7.0 的 HAR 校验值（sha256）：`7065bacda0e56406ab169099384b2272ce0090bdca7a2efa23f07b2b583ce8ca`，可用 `shasum -a 256 smeeting-harmony-1.7.0.har` 核对；SRTC 1.4.0 为 `7705280ae8c0c61b61d769fdff071cd00d93e4567e2ebef507132d5c9434ced3`。
+SMeeting 1.8.0 的 HAR 校验值（sha256）：`2b33f0ed3d30b762ed5ec3472b4a3000dac313f1f9aa533086bd6d49d52a7a25`，可用 `shasum -a 256 smeeting-harmony-1.8.0.har` 核对；SRTC 1.4.0 为 `7705280ae8c0c61b61d769fdff071cd00d93e4567e2ebef507132d5c9434ced3`。
 </Note>
 
 ---
@@ -60,7 +60,7 @@ SMeeting 1.7.0 的 HAR 校验值（sha256）：`7065bacda0e56406ab169099384b2272
 ```json5
 {
   "dependencies": {
-    "smeeting": "file:./libs/smeeting-1.7.0.har",
+    "smeeting": "file:./libs/smeeting-1.8.0.har",
     "srtc": "file:./libs/srtc-1.4.0.har"
   }
 }

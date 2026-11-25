@@ -182,6 +182,7 @@ MCU 合流布局，共 20 种：
 | `attach` | `'attach'` | 会议附件 |
 | `background` | `'background'` | 会议背景 |
 | `user` | `'user'` | 用户资源 |
+| `chat` | `'chat'` | 会中聊天文件（1.8.0 起） |
 
 ---
 

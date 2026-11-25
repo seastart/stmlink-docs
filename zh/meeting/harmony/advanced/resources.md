@@ -49,6 +49,7 @@ await meeting.resourcesCreate({
 | `attach` | 会议附件 |
 | `background` | 会议背景图 |
 | `user` | 用户资源 |
+| `chat` | 会中聊天文件（1.8.0 起），用法见[聊天与自定义消息](/zh/meeting/harmony/advanced/messaging#发文件消息) |
 
 ---
 

@@ -246,7 +246,7 @@ const put = await meeting.presignedPutObject(
 await meeting.resourcesCreate(req);
 ```
 
-`PresignedPutObjectType`：`attach`（附件）/ `background`（会议背景）/ `user`（用户资源）。
+`PresignedPutObjectType`：`attach`（附件）/ `background`（会议背景）/ `user`（用户资源）/ `chat`（会中聊天文件，1.8.0 起）。
 
 下载同理，用 `presignedGetObject` 换一个带签名的临时地址。
 

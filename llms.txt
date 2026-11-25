@@ -458,7 +458,7 @@
 - [举手](https://docs.stmlink.com/zh/meeting/harmony/advanced/handup.md): 四种举手类型、状态流转、主持人处理与 UI 状态同步
 - [等候室](https://docs.stmlink.com/zh/meeting/harmony/advanced/waiting-room.md): 开启等候室、放行成员、成员被移入等候室时的处理
 - [子会议](https://docs.stmlink.com/zh/meeting/harmony/advanced/sub-meetings.md): 创建与分组、启停子会议、跨组移动成员、成员求助
-- [聊天与自定义消息](https://docs.stmlink.com/zh/meeting/harmony/advanced/messaging.md): 群发与私聊、四种消息类型、自定义消息、禁言控制
+- [聊天与自定义消息](https://docs.stmlink.com/zh/meeting/harmony/advanced/messaging.md): 群发与私聊、四种消息类型、发文件消息（presignedPutObject 换地址 → 自己 PUT → 发 key）、自定义消息、禁言控制
 - [IM 通道](https://docs.stmlink.com/zh/meeting/harmony/advanced/im.md): 会议 IM 的四类事件、base + content 结构、呼叫与会议提醒、连接状态
 - [屏幕共享](https://docs.stmlink.com/zh/meeting/harmony/advanced/screen-sharing.md): 发起共享、订阅别人的共享画面、白板共享、以及授权窗相关的坑
 - [录制与 MCU](https://docs.stmlink.com/zh/meeting/harmony/advanced/recording.md): 启动录制与混流、布局配置、任务状态监听与异常处理

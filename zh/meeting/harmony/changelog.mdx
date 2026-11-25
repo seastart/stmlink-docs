@@ -3,6 +3,14 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.8.0] - 2026.11.25
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.8.0.har`（SHA-256 `2b33f0ed3d30b762ed5ec3472b4a3000dac313f1f9aa533086bd6d49d52a7a25`），依赖 SRTC 1.4.0（与 1.7.0 相同）。接口只新增不删改，1.7.0 的接入代码可直接编译；只需替换 `smeeting` 的 HAR 并同步模块级 `oh-package.json5` 里的文件名。
+
+#### 新增
+
++ **`PresignedPutObjectType.chat`（`'chat'`）**：会中聊天文件的预签名上传类别。`presignedPutObject(PresignedPutObjectType.chat, 会议 ID, 扩展名)` 换上传地址，自己 `PUT` 文件后，把 `{key, name, size}` 的 JSON 字符串用 `sendRoomChatMessage(msg, ChatMsgType.file)` 发出，与 Web 等其它端的文件消息格式一致。见 [聊天与自定义消息](/zh/meeting/harmony/advanced/messaging#发文件消息)。
+
 ### [1.7.0] - 2026.11.24
 
 制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.7.0.har`（SHA-256 `7065bacda0e56406ab169099384b2272ce0090bdca7a2efa23f07b2b583ce8ca`），依赖 SRTC 1.4.0。接口只新增不删改，1.6.x 的接入代码可直接编译；同时替换 `srtc` 与 `smeeting` 两个 HAR 并同步模块级、工程级 `oh-package.json5` 里的文件名即可。
