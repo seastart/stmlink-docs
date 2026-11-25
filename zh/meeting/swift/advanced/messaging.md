@@ -27,11 +27,58 @@ try await meeting.sendRoomChatMessage("大家好")
 // 私聊
 try await meeting.sendRoomChatMessage("单独说一句", targetId: user.uid)
 
-// 非文本消息：先把文件上传到你们的存储，再把地址作为消息内容发出去
-try await meeting.sendRoomChatMessage(imageURL, type: .pic)
+// 非文本消息：msg 仍是字符串，文件消息的做法见下一节
+try await meeting.sendRoomChatMessage(content, type: .file)
 ```
 
 `ChatMsgType` 可选值：`.text`（默认）、`.file`、`.pic`、`.sound`。SDK 不负责文件本身的上传与下载，只负责传递这条消息内容，具体渲染由你的 UI 决定。
+
+---
+
+### 发送文件消息
+
+1.12.0 起提供 `PresignedPutObjectType.chat`，聊天文件可直接传到会议的对象存储。分三步：
+
+1. `presignedPutObject(type: .chat, ...)` 换一个带签名的上传地址
+2. 自己把文件 `PUT` 到这个地址（SDK 不做这一步）
+3. 把 `{key, name, size}` 序列化成 JSON 字符串，用 `sendRoomChatMessage(_:type: .file)` 发出
+
+```swift
+func sendChatFile(fileURL: URL) async throws {
+    guard let meetingId = meeting.getRoomInfo()?.id else { return }
+    let data = try Data(contentsOf: fileURL)
+
+    // 1. 换上传地址。ext 不带点、必填，没有扩展名时传 bin
+    let ext = fileURL.pathExtension.isEmpty ? "bin" : fileURL.pathExtension.lowercased()
+    let object = try await meeting.presignedPutObject(type: .chat, meetingId: meetingId, ext: ext)
+
+    // 2. 自己把文件 PUT 上去，body 直接放文件二进制
+    var request = URLRequest(url: URL(string: object.url)!)
+    request.httpMethod = "PUT"
+    request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+    let (_, response) = try await URLSession.shared.upload(for: request, from: data)
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
+
+    // 3. 发消息：内容是文件信息的 JSON 字符串
+    let payload: [String: String] = [
+        "key": object.key,                 // 必填，接收方凭它换下载地址
+        "name": fileURL.lastPathComponent, // 原始文件名，用于展示和另存
+        "size": "1.20MB",                  // 展示用的大小，官方 Demo 格式：两位小数、不带空格，不足 1KB 显示整数字节如 "512B"
+    ]
+    let content = String(data: try JSONSerialization.data(withJSONObject: payload), encoding: .utf8)!
+    try await meeting.sendRoomChatMessage(content, type: .file)
+}
+```
+
+接收方解析 `msg` 里的 JSON，下载时用 `key` 现换地址：
+
+```swift
+let url = try await meeting.presignedGetObject(resKey: key)
+```
+
+`{key, name, size}` 是与官方 Web Demo、Swift Demo 一致的格式，SDK 不校验，你也可以与自己的各端另行约定。
+
+> 部署关闭了文件功能时，`presignedPutObject` 抛出错误码 `2125`（文件功能已关闭），此时应隐藏发文件入口。SDK 不限制文件大小，单个文件上限请在业务侧控制。
 
 ---
 

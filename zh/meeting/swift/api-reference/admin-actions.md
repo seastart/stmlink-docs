@@ -450,7 +450,7 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 
 | 参数名 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `type` | `PresignedPutObjectType` | 是 | `.attach` / `.background` / `.user` |
+| `type` | `PresignedPutObjectType` | 是 | `.attach` / `.background` / `.user` / `.chat`（聊天文件，1.12.0 起） |
 | `meetingId` | `String` | 是 | 会议 ID |
 | `ext` | `String` | 是 | 文件扩展名，例如 `pdf` |
 

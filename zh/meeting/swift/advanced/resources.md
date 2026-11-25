@@ -34,6 +34,7 @@ let (url, key, ext) = try await meeting.presignedPutObject(
 | `.attach` | `attach` | 会议附件 |
 | `.background` | `background` | 会议背景图 |
 | `.user` | `user` | 用户相关资源，例如头像 |
+| `.chat` | `chat` | 聊天文件（1.12.0 起），用法见 [会中消息](/zh/meeting/swift/advanced/messaging#发送文件消息) |
 
 返回的 `key` 就是这个文件的资源键，后面登记和下载都用它。
 

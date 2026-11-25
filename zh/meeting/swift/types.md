@@ -637,6 +637,7 @@ result.meta      // MetaRes
 | `attach` | `attach` | 会议附件 |
 | `background` | `background` | 背景图 |
 | `user` | `user` | 用户资源 |
+| `chat` | `chat` | 聊天文件（1.12.0 起） |
 
 ---
 

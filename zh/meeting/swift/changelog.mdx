@@ -3,6 +3,14 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.12.0] - 2026.11.25
+#### 新增
++ **`PresignedPutObjectType.chat`**（原始值 `chat`）：聊天文件的预签名上传类别，与 Web 端 `PresignedPutObjectType.Chat` 对齐。发聊天文件的推荐做法：`presignedPutObject(type: .chat, ...)` 换上传地址 → 自己 `PUT` 文件 → 把 `{key, name, size}` 的 JSON 字符串用 `sendRoomChatMessage(_:type: .file)` 发出；接收方用 `presignedGetObject(resKey:)` 换下载地址。见 [会中消息](/zh/meeting/swift/advanced/messaging#发送文件消息)。
+
+<Note>
+API 只新增不删改，依赖的 SRTC 仍为 1.10.0，平台下限不变（iOS 16 / macOS 12.3）。部署关闭了文件功能时 `presignedPutObject` 报 `2125`（文件功能已关闭），应隐藏发文件入口。
+</Note>
+
 ### [1.11.0] - 2026.11.24
 #### 新增
 + **会前网络检测 `networkCheck`**：入会前调用、不需要入会，按 `permission` → `connectivity` → `mtu` → `dns` → `server` 固定顺序逐项检测 5 项，每完成一项在主线程回调 `onItem`，最后返回 `MeetingNetworkCheckResult`（`ok` / `warning` / `fail`，各项带机器可读的 `reason` 与可直接展示的中文 `message`）。五项检测由 SRTC 完成，会议层在 `server` 项多一个子检查 `meetingApi`（会议接口是否可达）。全部正常时约 1~5 秒。见 [SMeetingEngine](/zh/meeting/swift/api-reference/SMeetingEngine#会前网络检测)、[类型定义](/zh/meeting/swift/types#会前网络检测)。
