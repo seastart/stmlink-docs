@@ -169,8 +169,8 @@ SMeeting是绝大多数操作的入口。
     }>;
     /**
      * 资源-预签名下载：换一个带签名的下载地址（2 小时有效）
-     * @param resKey 资源Key 二选一（聊天文件传消息里的 key）
-     * @param id 资源ID 二选一
+     * @param resKey 资源Key（聊天文件传消息里的 key）
+     * @param id 资源ID（服务端目前不支持，请传 resKey）
      */
     presignedGetObject(resKey?: string, id?: string): Promise<{
         url: string;

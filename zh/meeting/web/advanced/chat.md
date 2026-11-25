@@ -72,7 +72,7 @@ async function sendChatFile(file: File) {
   const msg = JSON.stringify({
     key: put.key,          // 必填，接收方凭它换下载地址
     name: file.name,       // 原始文件名，用于展示和下载另存
-    size: formatSize(file.size), // 展示用的大小，如 "1.2 MB"
+    size: formatSize(file.size), // 展示用的大小，如 "1.20MB"（官方 Demo 的格式：两位小数、不带空格，不足 1KB 显示整数字节如 "512B"）
   });
   await smeeting.sendRoomChatMessage(msg, ChatMsgType.File);
 }
@@ -114,7 +114,7 @@ presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string)
 {
   "key": "chat/2611/meeting-xxxx/a1b2c3d4e5f6.pdf",
   "name": "需求文档.pdf",
-  "size": "1.2 MB"
+  "size": "1.20MB"
 }
 ```
 
@@ -122,7 +122,7 @@ presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string)
 | --- | --- | --- |
 | `key` | string | `presignedPutObject` 返回的 `key`，**不要发 `url`**：上传地址带签名且会过期 |
 | `name` | string | 原始文件名 |
-| `size` | string | 展示用的文件大小 |
+| `size` | string | 展示用的文件大小，官方 Demo 格式为两位小数加单位、不带空格，如 `1.20MB`、`42.40KB`，不足 1KB 为 `512B` |
 
 需要更多信息（如图片宽高、语音时长）可以自己加字段，接收方忽略不认识的字段即可。
 
@@ -191,7 +191,7 @@ async function downloadChatFile(file: { key: string, name: string }) {
 presignedGetObject(resKey?: string, id?: string): Promise<{ url: string }>
 ```
 
-聊天文件只有 `key`，传第一个参数即可；`id` 是会议资料（`resourcesList` 返回的资源 ID）用的。
+传 `key`（第一个参数）即可。`id` 参数目前服务端不支持，请始终传 `resKey`。
 
 ---
 
