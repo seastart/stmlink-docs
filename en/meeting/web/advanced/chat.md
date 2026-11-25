@@ -72,7 +72,7 @@ async function sendChatFile(file: File) {
   const msg = JSON.stringify({
     key: put.key,          // Required; the receiver uses it to get a download URL
     name: file.name,       // Original file name, for display and save-as
-    size: formatSize(file.size), // Display size, e.g. "1.2 MB"
+    size: formatSize(file.size), // Display size, e.g. "1.20MB" (the official demo format: two decimals, no space; under 1 KB as whole bytes, e.g. "512B")
   });
   await smeeting.sendRoomChatMessage(msg, ChatMsgType.File);
 }
@@ -114,7 +114,7 @@ The structure of `msg` is agreed between you and your own clients; the SDK doesn
 {
   "key": "chat/2611/meeting-xxxx/a1b2c3d4e5f6.pdf",
   "name": "requirements.pdf",
-  "size": "1.2 MB"
+  "size": "1.20MB"
 }
 ```
 
@@ -122,7 +122,7 @@ The structure of `msg` is agreed between you and your own clients; the SDK doesn
 | --- | --- | --- |
 | `key` | string | The `key` returned by `presignedPutObject`. **Don't send the `url`**: the upload URL is signed and expires |
 | `name` | string | Original file name |
-| `size` | string | Display file size |
+| `size` | string | Display file size. The official demos use two decimals plus the unit with no space, such as `1.20MB` or `42.40KB`, and whole bytes under 1 KB, such as `512B` |
 
 Add your own fields if you need more (such as image dimensions or voice duration); receivers just ignore fields they don't recognize.
 
@@ -191,7 +191,7 @@ async function downloadChatFile(file: { key: string, name: string }) {
 presignedGetObject(resKey?: string, id?: string): Promise<{ url: string }>
 ```
 
-Chat files only have a `key`, so pass just the first argument; `id` is for meeting materials (the resource ID returned by `resourcesList`).
+Pass the `key` (the first argument). The server doesn't support the `id` parameter yet, so always pass `resKey`.
 
 ---
 

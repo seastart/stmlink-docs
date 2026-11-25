@@ -542,8 +542,8 @@
   "en/meeting/web/advanced/chat": {
     "reviewed": false,
     "source": "zh/meeting/web/advanced/chat.md",
-    "zh_blob": "08934251e55732dacfca13b7972163429235c2ac",
-    "zh_commit": "b3f5bf53e6e7df72e962f388c217f179286b42c5"
+    "zh_blob": "f6c634915efbbe4581e435d96458ebd89963784e",
+    "zh_commit": "1e1b90d7e67983d4bcf28713519685f818a724c2"
   },
   "en/meeting/web/advanced/deepfilternet": {
     "reviewed": false,
@@ -560,8 +560,8 @@
   "en/meeting/web/api-reference/SMeeting": {
     "reviewed": false,
     "source": "zh/meeting/web/api-reference/SMeeting.md",
-    "zh_blob": "0709a057aa709d3e99413c1da01ba3da12ce0dac",
-    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
+    "zh_blob": "b008c0615e2c88e031dcd3ba2c336bc4b02eb9eb",
+    "zh_commit": "1e1b90d7e67983d4bcf28713519685f818a724c2"
   },
   "en/meeting/web/changelog": {
     "reviewed": false,

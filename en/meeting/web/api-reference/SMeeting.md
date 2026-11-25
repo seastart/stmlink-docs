@@ -158,8 +158,8 @@ SMeeting is the entry point for most operations.
     }>;
     /**
      * Resource - presigned download: get a signed download URL (valid for 2 hours)
-     * @param resKey Resource key, one of the two (for chat files, the key in the message)
-     * @param id Resource ID, one of the two
+     * @param resKey Resource key (for chat files, the key in the message)
+     * @param id Resource ID (not supported by the server yet; pass resKey)
      */
     presignedGetObject(resKey?: string, id?: string): Promise<{
         url: string;
