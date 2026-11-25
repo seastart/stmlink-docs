@@ -3,6 +3,14 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.9.0] - 2026.11.25
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.9.0.har`（SHA-256 `69ee7722dd19353fa8185b6dcc23d636c5ae0b259e369b683f2945894afcd7e8`），依赖 SRTC 1.4.0（与 1.8.0 相同）。接口只新增不删改，1.8.0 的接入代码可直接编译；只需替换 `smeeting` 的 HAR 并同步模块级 `oh-package.json5` 里的文件名。
+
+#### 新增
+
++ **呼叫事件带上强制入会标记**：`onImCallCalling` 的 `ImCallContent` 新增 `forceJoin`（对应 `force_join`，缺省 `false`）。服务端调 `meet-admin/call-users` 带 `force_join=true` 时为 `true`，业务侧应不弹接听页、直接入会（正在别的会议里先退出）。处理建议见 [IM 与呼叫](/zh/meeting/harmony/advanced/im#被呼叫入会)。
+
 ### [1.8.0] - 2026.11.25
 
 制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.8.0.har`（SHA-256 `2b33f0ed3d30b762ed5ec3472b4a3000dac313f1f9aa533086bd6d49d52a7a25`），依赖 SRTC 1.4.0（与 1.7.0 相同）。接口只新增不删改，1.7.0 的接入代码可直接编译；只需替换 `smeeting` 的 HAR 并同步模块级 `oh-package.json5` 里的文件名。

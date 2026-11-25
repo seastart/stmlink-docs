@@ -43,7 +43,7 @@ onImCallCalling: (m, data) => {
 ```typescript
 onImCallCalling: (m, data) => {
   // data.content: ImCallContent
-  //   roomNo / meetingId / title
+  //   roomNo / meetingId / title / forceJoin（1.9.0 起）
   this.showIncomingCall(data.base.name, data.content.title, async () => {
     await m.enterRoom({
       nickname: myNickname,
@@ -54,6 +54,15 @@ onImCallCalling: (m, data) => {
 ```
 
 `content` 里直接给了 `meetingId` 和 `roomNo`，接受呼叫就是拿它去 `enterRoom`。
+
+**强制入会**（1.9.0 起）：服务端调 `meet-admin/call-users` 带 `force_join=true` 发起的呼叫，`content.forceJoin` 为 `true`（缺省 `false`），
+发送者昵称固定为「管理员」。约定的处理方式是不弹接听页、直接入会：
+
+- 已经在 `meetingId` 这场会议里：忽略。
+- 正在别的会议里（含等候室、正在入会中）：先 `exitRoom()` 只退出自己（不结束会议、不弹确认），再进入目标会议。
+- 被叫人在 30 分钟内凭这次呼叫进入密码会议免密（服务端处理），`enterRoom` 不用传密码；等候室、锁定等规则照旧。
+- 短时间内同一 `meetingId` 的强制呼叫可能重复到达，建议 10 秒内只处理第一次。
+- App 在后台时发本地通知，用户点通知或回到前台再入会。鸿蒙退到后台约 3 秒进程即被冻结，冻结后收不到呼叫。
 
 <Note>
 这是**会议外**的事件 —— 用户此时不在任何会议里，所以要在 App 全局
