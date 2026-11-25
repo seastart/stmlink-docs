@@ -83,7 +83,7 @@ See [Meeting management](/en/meeting/server-api/meet#create-a-meeting) for the f
 }
 ```
 
-+ **`extend_info`** is where you attach the business document. It is a free-form object that we only store and return. Put the tendering number in it, and when you receive callbacks later you can look up your own business record
++ **`extend_info`** is where you attach the business document. It is a free-form object that we only store and return. Put the tendering number in it, and when you receive callbacks later you can look up your own business record. There is also one reserved key, `watermark`, for customizing the on-screen watermark; see [Custom watermark text](#custom-watermark-text) below
 + **`conferee_details`** specifies the invitee whitelist. Combined with `attend_type: 3` (invitees only), it keeps unrelated people out. The people listed don't need to exist in advance: `user_id` is the identity, so even with only a `user_id` and no matching user in the system, that person can still enter the meeting. But then this whitelist entry has no name, and the invitee list can't show it until the person enters the meeting. **So include `real_name` or `nickname` in each entry whenever possible**—if you do, the user is created along the way.
 + **The host** is determined by `creator`, and **co-hosts** go in `co_hosts` (an array). Both also take the `user_id`, the same value as in the whitelist; you don't need to sync the user first and get a different ID back. If `creator` is omitted, the server marks no one as host, and no one in the meeting gets meeting control permissions—remember to include it when creating the meeting
 + **You usually don't need to pass `role` in `conferee_details`**: it has no effect with built-in roles, and host / co-host are specified with the two fields above. Only projects that have enabled [custom roles](/en/meeting/key-concepts#custom-roles) (for example, tendering and bidding that distinguishes experts and witnesses) rely on it to assign each person an identity
@@ -99,6 +99,43 @@ The returned **`room_no`** is the room number used in step 3, and `meeting_id` i
 <Warning>
 **Don't use password meetings with `attend_type` set to `2` or `4`.** The launch URL in step 3 doesn't support passing a password, so users would have to type it manually again after landing on the meeting page, which defeats the purpose of low-code integration. Use `1` (unrestricted) or `3` (invitees only).
 </Warning>
+
+### Custom watermark text
+
+By default, the meeting UI tiles the participant's nickname across the screen as a watermark. To show something else (for example, "name + date + time"), add a `watermark` key to `extend_info` when you create the meeting or [update the meeting before it starts](/en/meeting/server-api/meet#update-a-meeting-before-it-starts). Its value is a text template:
+
+```json
+{
+  "extend_info": {
+    "bid_no": "ZB-2026-0731",
+    "watermark": "{nickname} {date} {time}\n{terminal}"
+  }
+}
+```
+
+The template can use the following variables. Each person sees the text with the variables replaced by **their own** values:
+
+| Variable | Meaning | Example |
+| --- | --- | --- |
+| `{nickname}` | Your in-meeting display name | Alice |
+| `{uid}` | Your user ID (the `user_id`) | 310101199001011234 |
+| `{room_no}` | Meeting number | 803707296 |
+| `{date}` | Current local date, `YYYY-MM-DD` | 2026-11-25 |
+| `{time}` | Current local time, `HH:mm` (24-hour) | 14:05 |
+| `{terminal}` | Terminal type of this client, always in English | Web / Windows / macOS / Android / iOS / HarmonyOS |
+
++ **If `watermark` is omitted or an empty string**, the watermark shows the nickname, the same as before
++ Use `\n` for a line break. Up to 3 lines are shown and extra lines are dropped; after replacement, each line is truncated beyond 40 characters
++ Variable names are case-sensitive and only the lowercase forms in the table are recognized. A misspelled variable (such as `{abc}`) is shown as is, so typos are easy to spot
++ If the template contains `{date}` or `{time}`, the watermark refreshes every minute
++ No variables for personal information such as mobile numbers are provided. **The template itself is visible to all participants** (it is delivered with the meeting info to every client), so do not put sensitive data in it
++ **Clients read the template only once, when entering the meeting**: if you change `extend_info` during the meeting, people already in it must re-enter to see the new text
++ **Whether the watermark is shown is still controlled by `watermark_disabled`**; `watermark` only decides the text. The host turning the watermark on or off during the meeting still takes effect immediately
++ When you update a meeting, `extend_info` is **replaced as a whole**. Pass existing business keys (such as `bid_no` above) along with it, or they will be lost
+
+<Note>
+The watermark is drawn by the meeting UI we provide; the SDK itself doesn't draw one. If you switch to building your own UI with the SMeeting SDK, read `watermark` from `extend_info` in the meeting info and render it yourself following the conventions above.
+</Note>
 
 ## Step 2: Get a login-free token
 
