@@ -63,6 +63,19 @@ let url = try await meeting.presignedGetObject(resKey: key)
 
 ---
 
+### 会议背景与附件（1.13.0 起）
+
+```swift
+try await meeting.updateBgAndAttach(meetingId: meetingId, background: backgroundKey, attachments: [
+    Attachment(name: "议程.pdf", key: attachKey),
+])
+let bgUrl = try await meeting.meetingBackgroundUrl(meetingId: meetingId)
+```
+
+`updateBgAndAttach` 是**整体覆盖**，不是追加 —— 传进去的数组就是最终的附件列表，要加一个附件得把现有的一起传。
+
+---
+
 ### 相关页面
 
 + [录制与合屏布局](/zh/meeting/swift/advanced/recording)

@@ -375,7 +375,7 @@ result.meta      // MetaRes
 | 类型 | 字段 |
 | --- | --- |
 | `ImBaseEventData` | `sid`、`uid`、`name`、`avatar: String?` |
-| `ImCallCallingEventData` | `base`、`content: ImCallContent`（`roomNo`、`meetingId`、`title`） |
+| `ImCallCallingEventData` | `base`、`content: ImCallContent`（`roomNo`、`meetingId`、`title`、`forceJoin`（管理员强制入会，缺省 `false`，1.13.0 起）） |
 | `ImMeetingRemindEventData` | `base`、`content: ImMeetingRemindContent`（`roomNo`、`meetingId`、`title`、`creatorName`、`planDur`（分钟）、`planTime`（秒级时间戳）、`creatorId`（创建者用户 ID，1.5.0 起）） |
 | `ImAdminMoveOutWaitingRoomEventData` | `base`、`content: ImMoveOutWaitingRoomContent`（`parent`、`meetingId`、`title`） |
 | `ImUserHelpSubMeetingEventData` | `base`、`content: ImHelpSubMeetingContent`（`parent`、`meetingId`、`title`） |

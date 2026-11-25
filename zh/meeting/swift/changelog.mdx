@@ -3,6 +3,15 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.13.0] - 2026.11.25
+#### 新增
++ **呼叫事件带上强制入会标记**：`ImCallContent` 新增 `forceJoin`（JSON 键 `force_join`，缺省 `false`）。管理员经服务端 `meet-admin/call-users` 带 `force_join=true` 呼叫时为 `true`，建议不弹来电界面、直接进入目标会议（在别的会议里先退出自己）。见 [会议外消息](/zh/meeting/swift/advanced/im#有人呼叫你)。
++ **会议背景与附件**：新增 `updateBgAndAttach(meetingId:background:attachments:)`（整体覆盖）与 `meetingBackgroundUrl(meetingId:)`，与鸿蒙版同名同义。见 [会议资料](/zh/meeting/swift/advanced/resources)。
+
+<Note>
+API 只新增不删改，依赖的 SRTC 仍为 1.10.0，平台下限不变（iOS 16 / macOS 12.3）。
+</Note>
+
 ### [1.12.0] - 2026.11.25
 #### 新增
 + **`PresignedPutObjectType.chat`**（原始值 `chat`）：聊天文件的预签名上传类别，与 Web 端 `PresignedPutObjectType.Chat` 对齐。发聊天文件的推荐做法：`presignedPutObject(type: .chat, ...)` 换上传地址 → 自己 `PUT` 文件 → 把 `{key, name, size}` 的 JSON 字符串用 `sendRoomChatMessage(_:type: .file)` 发出；接收方用 `presignedGetObject(resKey:)` 换下载地址。见 [会中消息](/zh/meeting/swift/advanced/messaging#发送文件消息)。

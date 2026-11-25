@@ -467,6 +467,26 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 
 **返回值：** `String`（带签名的下载地址）
 
+#### `updateBgAndAttach(meetingId:background:attachments:)`
+
+更新会议背景与附件（1.13.0 起）。**整体覆盖**，不是追加：传入的附件列表就是最终列表。
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `meetingId` | `String` | 是 | 会议 ID |
+| `background` | `String` | 是 | 背景图资源键（`presignedPutObject(type: .background, ...)` 返回的 `key`），传空串表示不设置 |
+| `attachments` | `[Attachment]` | 是 | 附件列表，每项 `name`（展示名）+ `key`（`presignedPutObject(type: .attach, ...)` 返回的 `key`） |
+
+#### `meetingBackgroundUrl(meetingId:)`
+
+获取会议背景图地址（1.13.0 起）。
+
+| 参数名 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `meetingId` | `String` | 是 | 会议 ID |
+
+**返回值：** `String`（带签名的临时地址，需要时现取，不要长期缓存）
+
 ---
 
 ### 签到

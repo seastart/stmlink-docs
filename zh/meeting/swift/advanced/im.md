@@ -69,6 +69,8 @@ func meeting(_ meeting: SMeetingEngine, imCallCalling data: ImCallCallingEventDa
 }
 ```
 
+`data.content.forceJoin`（1.13.0 起）为 `true` 表示管理员经服务端 `meet-admin/call-users` 带 `force_join` 发起的**强制入会**：建议不弹来电界面，直接进入目标会议；已在别的会议里时先 `exitRoom` 再进入（只退出自己，不结束会议），已在目标会议里则忽略。这次呼叫 30 分钟内进入密码会议免密，等候室、锁定等规则照旧。App 在后台时系统不允许直接拉起前台，可发本地通知，等用户回到前台再入会。
+
 #### 会议提醒
 
 ```swift
