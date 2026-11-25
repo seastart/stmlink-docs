@@ -458,11 +458,11 @@ Gets an upload URL.
 
 #### `presignedGetObject(id:resKey:)`
 
-Gets a download URL; provide either of the two parameters.
+Gets a download URL. Pass `resKey`; the server doesn't support `id` yet.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
-| `id` | `String?` | No | Resource ID |
+| `id` | `String?` | No | Resource ID (not supported by the server yet; pass `resKey`) |
 | `resKey` | `String?` | No | Resource key |
 
 **Returns:** `String` (a signed download URL)

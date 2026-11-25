@@ -392,8 +392,8 @@
   "en/meeting/swift/advanced/resources": {
     "reviewed": false,
     "source": "zh/meeting/swift/advanced/resources.md",
-    "zh_blob": "9b3b80dfe3d881b04477568464c3a95342f2108a",
-    "zh_commit": "bf88a60fbb312a0746b68e1dc0954cd2ce4f1846"
+    "zh_blob": "f34a3c3c102500640e69cab2eafaa36ca873c40d",
+    "zh_commit": "c58db31cb81e25123de38b41519c231e55214802"
   },
   "en/meeting/swift/advanced/screen-sharing": {
     "reviewed": false,
@@ -446,8 +446,8 @@
   "en/meeting/swift/api-reference/admin-actions": {
     "reviewed": false,
     "source": "zh/meeting/swift/api-reference/admin-actions.md",
-    "zh_blob": "131d0277b4458cdbdaedd1e5f4b7312c7adf15ff",
-    "zh_commit": "bf88a60fbb312a0746b68e1dc0954cd2ce4f1846"
+    "zh_blob": "ad8ef12baa87f35594a32a3afac149821b07f57c",
+    "zh_commit": "c58db31cb81e25123de38b41519c231e55214802"
   },
   "en/meeting/swift/api-reference/devices": {
     "reviewed": true,
@@ -624,10 +624,10 @@
     "zh_commit": "ebde94fc86a2eed0abdfce48a4913463243b74ac"
   },
   "en/meeting/windows/api-reference/smeeting-engine": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/meeting/windows/api-reference/smeeting-engine.md",
-    "zh_blob": "08a61baaea92a7edbe6d2480345132e9b66caf1f",
-    "zh_commit": "2e978afa1df0bd403c97362448447b9b45b8d987"
+    "zh_blob": "00c775b024f7ec09e99c1606789c2ed8abb6b71b",
+    "zh_commit": "c58db31cb81e25123de38b41519c231e55214802"
   },
   "en/meeting/windows/api-reference/smeeting-events": {
     "reviewed": true,

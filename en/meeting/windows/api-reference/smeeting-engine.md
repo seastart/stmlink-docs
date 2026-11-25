@@ -530,8 +530,8 @@ virtual StatusCode presignedGetObject(std::string id, std::string res_key, Callb
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| id | std::string | Resource ID |
-| res_key | std::string | Resource key |
+| id | std::string | Resource ID (not supported by the server yet; pass an empty string) |
+| res_key | std::string | Resource key (for chat files, the key in the message) |
 | back | Callback | Asynchronous callback |
 
 **Returns**

@@ -64,14 +64,11 @@ try await meeting.resourcesCreate(req: req)
 First get a signed download URL, then download it yourself:
 
 ```swift
-// By resource ID
-let url = try await meeting.presignedGetObject(id: resource.id)
-
-// Or by resource key (such as the vodKey of a recording file)
+// By resource key (such as the key in a chat file message, or the vodKey of a recording file)
 let url = try await meeting.presignedGetObject(resKey: detail.vodKey)
 ```
 
-Provide one of the two parameters.
+Pass `resKey`; the server doesn't support the `id` parameter yet.
 
 ---
 
