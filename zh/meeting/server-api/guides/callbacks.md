@@ -56,8 +56,14 @@ Content-Type: application/json; charset=utf-8
 | `user_extra_screen_state_change` | 用户开始或停止推送额外屏幕（客户端推送的副屏） |
 | `share_state_change` | 会议的共享状态变化（开始共享 / 结束共享） |
 | `device_invite_failed` | 平台邀请的设备没能入会（终端忙、拒接、无应答、呼不通、拉流失败、入会被拒等） |
-| `user_online` | 用户上线：真人建立 IM 连接，或设备注册到设备网关 / 探测可达，与是否在会无关（默认不推送，需部署方开启） |
-| `user_offline` | 用户下线：真人 IM 断开，或设备注销 / 心跳超时 / 探测不可达，与是否在会无关（默认不推送，需部署方开启） |
+| `user_online` | 用户上线：真人建立 IM 连接，或设备注册到设备网关 / 探测可达，与是否在会无关 |
+| `user_offline` | 用户下线：真人 IM 断开，或设备注销 / 心跳超时 / 探测不可达，与是否在会无关 |
+
+<Note>
+  订阅即生效：服务端会按你在[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)时订阅的 `events` 自动开启所需的底层事件，无需部署方配置。
+  这一行为从 SMeeting 服务端 v1.8.0 起生效；此前的版本中，`device_invite_failed`、`user_online` / `user_offline`、`mcu_record_done`、`mcu_alarm`
+  还需要部署方在服务端配置 `rtc.callback_events` 里追加对应的底层事件（分别是 `agent_invite_failed`，`im_connect`、`im_disconnect`、`agent_online`、`agent_offline`，`mcu_record`，`mcu_alarm`）才会推送。
+</Note>
 
 ### `user_enter` — 用户进入会议
 
@@ -280,8 +286,8 @@ Content-Type: application/json; charset=utf-8
 + 已在别的会议里的设备被邀请切过来、在新会议入会被拒，同样按 `join_refused` 推送
 
 <Warning>
-  本事件需要**设备网关新版本**才会上报；并且需要部署方在 SMeeting 服务端配置的 `rtc.callback_events` 里追加
-  `agent_invite_failed` 才会推送（默认不开）。私有化部署请联系部署方开启，SaaS 请联系我们。
+  本事件需要**设备网关新版本**才会上报，通过[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)订阅即可。
+  SMeeting 服务端 v1.8.0 之前的版本，还需要部署方在服务端配置的 `rtc.callback_events` 里追加 `agent_invite_failed`。
 </Warning>
 
 人员呼叫的失败没有回调，判断方法见[邀请入会与移出](/zh/meeting/server-api/guides/invite-and-kickout#邀请失败怎么知道)。
@@ -343,10 +349,9 @@ Content-Type: application/json; charset=utf-8
 + 设备不归属某个应用，所以订阅了本事件的每个应用都会收到同一台设备的上下线
 
 <Warning>
-  这两个事件**默认不推送**：需要部署方在 SMeeting 服务端配置的 `rtc.callback_events` 里追加
-  `im_connect`、`im_disconnect`（真人上下线）以及 `agent_online`、`agent_offline`（设备上下线）。
-  只要真人或只要设备时，追加对应的两项即可。部署方开启后，你仍需在[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)时订阅这两个事件。
-  私有化部署请联系部署方开启，SaaS 请联系我们。
+  通过[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)订阅这两个事件即可。
+  SMeeting 服务端 v1.8.0 之前的版本，还需要部署方在服务端配置的 `rtc.callback_events` 里追加
+  `im_connect`、`im_disconnect`（真人上下线）以及 `agent_online`、`agent_offline`（设备上下线）；只要真人或只要设备时，追加对应的两项即可。
 </Warning>
 
 ## 幂等与重试

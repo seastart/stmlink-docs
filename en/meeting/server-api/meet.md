@@ -12,7 +12,9 @@ description: "Meeting scheduling before and after the meeting: create, update, c
 
 Authentication: required (see [Overview](/en/meeting/server-api/overview))
 
-Configure callback settings
+Sets the callback URL for event notifications and the events to subscribe to.
+
+Subscribing automatically enables the underlying events required, with no configuration by the deployer. Each call fully overwrites the previous settings.
 
 **Request parameters**
 

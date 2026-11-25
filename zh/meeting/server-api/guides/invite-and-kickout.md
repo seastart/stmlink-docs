@@ -114,11 +114,12 @@ description: "从你的业务后端把人员（App / Web 用户）或会议室�
 带失败原因 `reason` 与原始说明 `msg`。
 
 <Warning>
-  这个回调需要三方面都就位才会推送：
+  这个回调需要两方面都就位才会推送：
 
   + **设备网关新版本**：老版本的设备网关不上报邀请失败
-  + **部署方开启**：在 SMeeting 服务端配置的 `rtc.callback_events` 里追加 `agent_invite_failed`（默认不开）
-  + **你订阅**：[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)时 `events` 里带上 `device_invite_failed`
+  + **你订阅**：[设置事件通知](/zh/meeting/server-api/meet#设置事件通知)时 `events` 里带上 `device_invite_failed`，服务端会自动开启所需的底层事件
+
+  SMeeting 服务端 v1.8.0 之前的版本，还需要部署方在服务端配置的 `rtc.callback_events` 里追加 `agent_invite_failed`。
 
   只对平台邀请的设备推送，设备自己呼入失败不推。
 </Warning>
