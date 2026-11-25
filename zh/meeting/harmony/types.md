@@ -330,7 +330,6 @@ MCU 合流布局，共 20 种：
 | 接口 | 字段 |
 | --- | --- |
 | `McuRecordConfig` | `appId`、`layout: LayoutType`、`watermarkType`、`windowTagType`、`createdAt`、`updatedAt` |
-| `ResourceInfo` | `id`、`userId`、`meetingId`、`parentId`、`isFolder`、`resType`、`resKey`、`resName`、`resSize`、`createdAt`、`updatedAt` |
 | `Attachment` | `name`、`key` |
 | `PresignedPutObjectResult` | `url`、`key`、`ext` |
 | `McuRecordDetail` | `id`（任务 ID）、`opUid`、`opName`、`channel`、`title`、`roomNo`、`taskType?: McuTaskType`、`taskStatus: McuTaskStatus`、`errDesc`、`beganAt`、`endedAt`、`recordCount`、`totalDuration`、`totalSize`、`records?: McuRecordFile[]`、`tags`、`createdAt`、`updatedAt`、`now`；已废弃：`vodKey?`、`vodSize?`、`mcuAt?`、`mcuDur?` |
@@ -402,13 +401,10 @@ MCU 合流布局，共 20 种：
 | 接口 | 字段 |
 | --- | --- |
 | `PageParam` | `page`、`perPage`（`defaultPageParam()` 给默认值） |
-| `ResourceListReq` | `page`、`perPage`、`parentId?`、`meetingId?`、`resName?`、`resType?` |
-| `ResourceCreateReq` | `resName`、`resType`、`meetingId?`、`parentId?`、`resKey?` |
 | `McuStartReq` | `taskType`、`title`、`userName`、`layoutData` |
 
 序列化辅助函数：`meetingCreateReqToJson`、`meetingEnterReqToJson`、
-`pageParamToJson`、`resourceListReqToJson`、`resourceCreateReqToJson`、
-`mcuStartReqToJson`。
+`pageParamToJson`、`mcuStartReqToJson`。
 
 ---
 

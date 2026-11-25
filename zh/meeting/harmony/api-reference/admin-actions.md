@@ -225,8 +225,6 @@ signInDetail(epoch: number, nickname?: string): Promise<SignDetailInfo[]>
 ## 资源与附件
 
 ```typescript
-resourcesList(req: ResourceListReq): Promise<PageResult<ResourceInfo>>
-resourcesCreate(req: ResourceCreateReq): Promise<void>
 presignedPutObject(type: PresignedPutObjectType, meetingId: string, ext: string): Promise<PresignedPutObjectResult>
 presignedGetObject(id?: string, resKey?: string): Promise<string>
 updateBgAndAttach(meetingId: string, background: string, attachments: Attachment[]): Promise<void>
@@ -241,9 +239,7 @@ const put = await meeting.presignedPutObject(
   PresignedPutObjectType.attach, meetingId, 'pdf');
 
 // 2. 用返回的地址自己 PUT 文件（SDK 不代理文件传输）
-
-// 3. 登记为会议资源
-await meeting.resourcesCreate(req);
+//    上传成功后保存 put.key，下载、设为会议附件都用它
 ```
 
 `PresignedPutObjectType`：`attach`（附件）/ `background`（会议背景）/ `user`（用户资源）/ `chat`（会中聊天文件，1.8.0 起）。

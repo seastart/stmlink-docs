@@ -501,7 +501,7 @@ virtual void disableIm(Callback back = NULL) = 0;
 
 ---
 
-## 云存储与资源管理接口
+## 云存储接口
 
 ### 预签名上传
 ```cpp
@@ -538,104 +538,18 @@ virtual StatusCode presignedGetObject(std::string id, std::string res_key, Callb
 
 `StatusCode` - 错误码
 
-### 资源列表
-```cpp
-virtual StatusCode resourcesList(std::string parent_id, std::string meeting_id, std::string res_name, int page, Callback back = NULL) = 0;
-```
-
-**参数**
-
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| parent_id | std::string | 父资源 ID |
-| meeting_id | std::string | 会议 ID |
-| res_name | std::string | 资源名称 |
-| page | int | 页码 |
-| back | Callback | 异步回调函数 |
-
-**返回值**
-
-`StatusCode` - 错误码
-
-### 创建资源
-```cpp
-virtual StatusCode resourcesCreate(SMeetingResourcesModel* mode, Callback back = NULL) = 0;
-```
-
-**参数**
-
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| mode | SMeetingResourcesModel* | 资源模型 |
-| back | Callback | 异步回调函数 |
-
-**返回值**
-
-`StatusCode` - 错误码
-
-### 重命名资源
-```cpp
-virtual StatusCode resourcesRename(std::string id, std::string res_key, std::string res_name, Callback back = NULL) = 0;
-```
-
-**参数**
-
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| id | std::string | 资源 ID |
-| res_key | std::string | 资源键 |
-| res_name | std::string | 新资源名称 |
-| back | Callback | 异步回调函数 |
-
-**返回值**
-
-`StatusCode` - 错误码
-
-### 移动资源
-```cpp
-virtual StatusCode resourcesMoveto(std::string id, std::string res_key, std::string parent_id, Callback back = NULL) = 0;
-```
-
-**参数**
-
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| id | std::string | 资源 ID |
-| res_key | std::string | 资源键 |
-| parent_id | std::string | 目标父资源 ID |
-| back | Callback | 异步回调函数 |
-
-**返回值**
-
-`StatusCode` - 错误码
-
-### 删除资源
-```cpp
-virtual StatusCode resourcesRemove(std::string id, std::string res_key, Callback back = NULL) = 0;
-```
-
-**参数**
-
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| id | std::string | 资源 ID |
-| res_key | std::string | 资源键 |
-| back | Callback | 异步回调函数 |
-
-**返回值**
-
-`StatusCode` - 错误码
-
-### 设置会议背景
+### 获取会议背景地址
 ```cpp
 virtual StatusCode resourcesMeetingBg(std::string id, Callback back = NULL) = 0;
 ```
 
+换取某场会议背景图的带签名下载地址，成功时回调数据为 `{"url": "..."}`。
+
 **参数**
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| id | std::string | 资源 ID |
+| id | std::string | 会议 ID |
 | back | Callback | 异步回调函数 |
 
 **返回值**

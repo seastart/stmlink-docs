@@ -77,36 +77,6 @@ let page = PageParam(page: 1, perPage: 20)
 | `page` | `Int` | 页码，默认 `1` |
 | `perPage` | `Int` | 每页条数，默认 `20` |
 
-#### ResourceListReq
-
-```swift
-var req = ResourceListReq(page: 1, perPage: 20)
-req.meetingId = meetingId
-```
-
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| `page` / `perPage` | `Int` | 分页 |
-| `parentId` | `String?` | 父目录 ID |
-| `meetingId` | `String?` | 会议 ID |
-| `resName` | `String?` | 资源名过滤 |
-| `resType` | `String?` | 资源类型过滤 |
-
-#### ResourceCreateReq
-
-```swift
-var req = ResourceCreateReq(resName: "会议材料.pdf", resType: "pdf")
-req.resKey = key
-```
-
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| `resName` | `String` | 资源名（构造时必填） |
-| `resType` | `String` | 资源类型（构造时必填） |
-| `resKey` | `String?` | 资源键，来自 `presignedPutObject` |
-| `meetingId` | `String?` | 归属会议 |
-| `parentId` | `String?` | 父目录 ID |
-
 #### 布局与录制参数
 
 `McuStartReq`、`LayoutData`、`Watermark`、`Tag`、`Cell`、`DivList`、`Attachment` 都提供了构造器，可选参数带默认值；它们同时是 `Codable` 的，也可以用 `JSONDecoder` 从后端下发的 JSON 解出来。字段与 JSON 键的对照表见 [录制与合屏布局](/zh/meeting/swift/advanced/recording)。
@@ -269,19 +239,6 @@ for (channelNo, channelName) in agent.connSubjects {
 ```
 
 除 `type` 外，其余字段缺失时按空值解码，单台设备的脏数据不会让整页列表解码失败。
-
-#### ResourceInfo
-
-资源，由 `resourcesList(...)` 返回。
-
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| `id` | `String` | 资源 ID |
-| `isFolder` | `Bool` | 是否为目录 |
-| `parentId` | `String` | 父目录 ID |
-| `resName` / `resType` / `resKey` / `resSize` | `String` / `String` / `String` / `Int` | 名称、类型、存储键、大小 |
-| `userId` / `meetingId` | `String` | 归属用户 / 会议 |
-| `createdAt` / `updatedAt` | `String` | 创建 / 更新时间 |
 
 #### SignInfo / SignDetailInfo
 

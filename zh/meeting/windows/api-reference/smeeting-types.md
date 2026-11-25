@@ -175,18 +175,6 @@ description: "Windows SMeeting SDK C++ 枚举类型与数据结构参考"
 | name | std::string | 名称 |
 | key | std::string | 键 |
 
-### SMeetingResourcesModel
-
-资源模型：
-
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| meeting_id | std::string | 会议 ID |
-| parent_id | std::string | 父资源 ID |
-| res_type | std::string | 资源类型 |
-| res_key | std::string | 资源键 |
-| res_name | std::string | 资源名称 |
-
 ### CustomPublishTrack
 
 自定义发布轨道：

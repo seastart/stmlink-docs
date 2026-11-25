@@ -1,14 +1,14 @@
 ---
 title: "资源与附件"
-description: "预签名直传上传文件、资源列表与目录、会议背景与附件"
+description: "预签名直传上传与下载文件（换地址 + 自己 PUT）、会议背景与附件"
 ---
 
-会议资源（附件、背景图、录制产物）走**预签名直传** —— SDK 不代理文件传输，
-只负责给你换签名地址和登记元数据。
+会议资源（附件、背景图、聊天文件）走**预签名直传** —— SDK 不代理文件传输，
+只负责给你换带签名的上传 / 下载地址。
 
 ---
 
-### 上传是三步
+### 上传是两步
 
 ```typescript
 import { PresignedPutObjectType, PresignedPutObjectResult } from 'smeeting';
@@ -20,26 +20,19 @@ const put: PresignedPutObjectResult = await meeting.presignedPutObject(
   'pdf'                            // 扩展名
 );
 // put.url  上传地址
-// put.key  资源 key，第 3 步要用
+// put.key  资源 key，上传成功后保存 / 传递它，下载时用
 // put.ext  扩展名
 
 // 2. 自己 PUT 文件上去（SDK 不做这一步）
 //    用 @ohos.net.http 或 request 上传到 put.url
-
-// 3. 登记为会议资源
-await meeting.resourcesCreate({
-  meetingId: meetingId,
-  resName: '需求文档.pdf',
-  resType: 'pdf',
-  resKey: put.key
-});
 ```
 
 <Warning>
 **第 2 步是你自己的活。** SDK 只给地址，不传文件 —— 这样大文件不占 SDK 的内存，
 也不受它的超时策略限制。
 
-漏掉第 3 步的后果是：文件传上去了但会议里看不到（没登记）。
+上传成功后没有「登记」这一步：要让别人看到这个文件，把 `put.key` 交给对应的业务接口，
+如会议附件用下文的 `updateBgAndAttach`，聊天文件随消息发出。
 </Warning>
 
 `PresignedPutObjectType`：
@@ -67,37 +60,6 @@ const url: string = await meeting.presignedGetObject(undefined, resKey);
 
 ---
 
-### 资源列表
-
-```typescript
-const page = await meeting.resourcesList({
-  page: 1,
-  perPage: 20,
-  meetingId: meetingId,
-  parentId: folderId,      // 按目录过滤
-  resName: '需求',          // 按名字搜
-  resType: 'pdf'
-});
-```
-
-`ResourceInfo` 字段：
-
-| 字段 | 说明 |
-| --- | --- |
-| `id` / `userId` / `meetingId` / `parentId` | 标识与归属 |
-| `isFolder` | **是否是目录** |
-| `resType` / `resKey` / `resName` / `resSize` | 资源本体 |
-| `createdAt` / `updatedAt` | 时间 |
-
-<Note>
-资源是**树形**的 —— `isFolder` 为 `true` 的是目录，用 `parentId` 组织层级。
-做文件浏览器 UI 时按 `parentId` 逐层查，不要一次拉全量。
-</Note>
-
-创建目录也是 `resourcesCreate`，只是不带 `resKey`。
-
----
-
 ### 会议背景与附件
 
 ```typescript
@@ -121,39 +83,8 @@ const bgUrl: string = await meeting.meetingBackgroundUrl(meetingId);
 
 ---
 
-### 一个最小的附件列表
-
-```typescript
-@State resources: ResourceInfo[] = [];
-
-async loadResources(parentId?: string): Promise<void> {
-  const page = await this.meeting.resourcesList({
-    page: 1, perPage: 50, meetingId: this.meetingId, parentId: parentId
-  });
-  this.resources = page.list;         // 建新数组赋值
-}
-
-build() {
-  ForEach(this.resources, (r: ResourceInfo) => {
-    Row() {
-      Text(r.resName)
-      if (r.isFolder) {
-        Button('打开').onClick(() => { this.loadResources(r.id); })
-      } else {
-        Button('下载').onClick(async () => {
-          const url = await this.meeting.presignedGetObject(undefined, r.resKey);
-          // 用 url 下载
-        })
-      }
-    }
-  }, (r: ResourceInfo) => r.id)
-}
-```
-
----
-
 ### 相关阅读
 
 + [会控接口](/zh/meeting/harmony/api-reference/admin-actions)
-+ [录制与 MCU](/zh/meeting/harmony/advanced/recording) —— 录制产物也在资源里
++ [录制与 MCU](/zh/meeting/harmony/advanced/recording) —— 录制文件不走这里，从录制详情取播放地址
 + [聊天与自定义消息](/zh/meeting/harmony/advanced/messaging) —— 发文件消息

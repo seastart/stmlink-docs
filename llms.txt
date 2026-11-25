@@ -407,7 +407,7 @@
 - [等候室](https://docs.stmlink.com/zh/meeting/swift/advanced/waiting-room.md): SMeeting Swift SDK 的等候室开关、候场成员管理与相关事件
 - [分组讨论](https://docs.stmlink.com/zh/meeting/swift/advanced/sub-meetings.md): SMeeting Swift SDK 的子会议（分组讨论）创建、分配成员、开始结束与成员端响应
 - [录制与合屏布局](https://docs.stmlink.com/zh/meeting/swift/advanced/recording.md): SMeeting Swift SDK 的服务端录制、合流任务控制、布局配置与录制状态事件
-- [会议资料](https://docs.stmlink.com/zh/meeting/swift/advanced/resources.md): SMeeting Swift SDK 的资源上传下载：预签名地址获取、资源登记与资源列表查询
+- [会议资料](https://docs.stmlink.com/zh/meeting/swift/advanced/resources.md): SMeeting Swift SDK 的资源上传下载：换预签名上传地址后自己 PUT 文件、凭资源键换下载地址
 - [签到与点名](https://docs.stmlink.com/zh/meeting/swift/advanced/sign-in.md): SMeeting Swift SDK 的会中签到活动创建、签到、统计查询，以及点名事件与应答
 - [会议外消息](https://docs.stmlink.com/zh/meeting/swift/advanced/im.md): SMeeting Swift SDK 的会议外消息通道：启用与停用、呼叫与会议提醒等事件
 
@@ -462,7 +462,7 @@
 - [IM 通道](https://docs.stmlink.com/zh/meeting/harmony/advanced/im.md): 会议 IM 的四类事件、base + content 结构、呼叫与会议提醒、连接状态
 - [屏幕共享](https://docs.stmlink.com/zh/meeting/harmony/advanced/screen-sharing.md): 发起共享、订阅别人的共享画面、白板共享、以及授权窗相关的坑
 - [录制与 MCU](https://docs.stmlink.com/zh/meeting/harmony/advanced/recording.md): 启动录制与混流、布局配置、任务状态监听与异常处理
-- [资源与附件](https://docs.stmlink.com/zh/meeting/harmony/advanced/resources.md): 预签名直传上传文件、资源列表与目录、会议背景与附件
+- [资源与附件](https://docs.stmlink.com/zh/meeting/harmony/advanced/resources.md): 预签名直传上传与下载文件（换地址 + 自己 PUT）、会议背景与附件
 - [签到](https://docs.stmlink.com/zh/meeting/harmony/advanced/sign-in.md): 发起签到、成员签到、查询统计与明细
 - [音频路由](https://docs.stmlink.com/zh/meeting/harmony/advanced/audio-routing.md): 扬声器与听筒切换、持久设置与临时设置的优先级、蓝牙与有线耳机、系统来电
 - [设备管理](https://docs.stmlink.com/zh/meeting/harmony/advanced/device-management.md): 枚举摄像头与麦克风、切换设备、热插拔监听与设备选择器

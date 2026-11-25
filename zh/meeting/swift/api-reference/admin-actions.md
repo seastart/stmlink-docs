@@ -467,24 +467,6 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 
 **返回值：** `String`（带签名的下载地址）
 
-#### `resourcesList(req:)`
-
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | :---: | --- |
-| `req` | `ResourceListReq` | 是 | 查询条件 |
-
-**返回值：** `PageResult<ResourceInfo>`
-
-#### `resourcesCreate(req:)`
-
-登记一条资源。
-
-| 参数名 | 类型 | 必填 | 说明 |
-| --- | --- | :---: | --- |
-| `req` | `ResourceCreateReq` | 是 | 资源信息 |
-
-**返回值：** 无
-
 ---
 
 ### 签到

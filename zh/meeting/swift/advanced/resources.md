@@ -1,6 +1,6 @@
 ---
 title: "会议资料"
-description: "SMeeting Swift SDK 的资源上传下载：预签名地址获取、资源登记与资源列表查询"
+description: "SMeeting Swift SDK 的资源上传下载：换预签名上传地址后自己 PUT 文件、凭资源键换下载地址"
 ---
 
 ### 概述
@@ -8,10 +8,10 @@ description: "SMeeting Swift SDK 的资源上传下载：预签名地址获取�
 会议资料（附件、背景图、头像等）走「预签名直传」模型：
 
 ```text
-向 SDK 要一个上传地址  →  你的 App 直接 PUT 文件到该地址  →  把 resKey 登记为一条资源
+向 SDK 要一个上传地址  →  你的 App 直接 PUT 文件到该地址  →  保存返回的资源键 key
 ```
 
-文件本身不经过 SDK，SDK 只负责发放地址和维护资源记录。
+文件本身不经过 SDK，SDK 只负责发放带签名的上传 / 下载地址。
 
 ---
 
@@ -36,7 +36,7 @@ let (url, key, ext) = try await meeting.presignedPutObject(
 | `.user` | `user` | 用户相关资源，例如头像 |
 | `.chat` | `chat` | 聊天文件（1.12.0 起），用法见 [会中消息](/zh/meeting/swift/advanced/messaging#发送文件消息) |
 
-返回的 `key` 就是这个文件的资源键，后面登记和下载都用它。
+返回的 `key` 就是这个文件的资源键，上传成功后保存或传给对方（例如随聊天文件消息发出），下载时用它换地址。
 
 #### 2. 直传文件
 
@@ -46,17 +46,6 @@ request.httpMethod = "PUT"
 let (_, response) = try await URLSession.shared.upload(for: request, from: fileData)
 ```
 
-#### 3. 登记资源
-
-```swift
-var req = ResourceCreateReq(resName: "会议材料.pdf", resType: "pdf")
-req.meetingId = meetingId
-req.resKey = key
-try await meeting.resourcesCreate(req: req)
-```
-
-`ResourceCreateReq` 还有一个 `parentId` 字段，用于把资源放进某个目录。
-
 ---
 
 ### 下载
@@ -64,30 +53,13 @@ try await meeting.resourcesCreate(req: req)
 先换取一个带签名的下载地址，再自行下载：
 
 ```swift
-// 按资源键（例如聊天文件消息里的 key、录制文件的 vodKey）
-let url = try await meeting.presignedGetObject(resKey: detail.vodKey)
+// 按资源键（例如 presignedPutObject 返回的 key、聊天文件消息里的 key）
+let url = try await meeting.presignedGetObject(resKey: key)
 ```
 
-请传 `resKey`；`id` 参数目前服务端不支持。
+请传 `resKey`；`id` 参数目前服务端不支持。签名地址有有效期，不要长期缓存，需要时重新换。
 
----
-
-### 查询资源列表
-
-```swift
-var req = ResourceListReq(page: 1, perPage: 20)
-req.meetingId = meetingId
-req.resType = "pdf"
-
-let page = try await meeting.resourcesList(req: req)
-for item in page.data {
-    print(item.resName, item.resSize)
-}
-```
-
-`ResourceListReq` 支持的过滤条件：`parentId`（目录）、`meetingId`、`resName`（名称模糊匹配）、`resType`。
-
-返回的 `ResourceInfo` 中 `isFolder` 为 `true` 表示这是一个目录节点，可以用它的 `id` 作为下一级查询的 `parentId`。
+录制文件不走这里：从 `mcuRecordDetail` 返回的 `records[].addr` 直接取播放地址，见 [录制与合屏布局](/zh/meeting/swift/advanced/recording)。
 
 ---
 

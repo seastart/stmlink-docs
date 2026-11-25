@@ -193,15 +193,13 @@ if (this.meeting.mcuTrack !== undefined) {
 
 ### 录制文件在哪
 
-录制产物走**资源**体系，用 `resourcesList` 查、`presignedGetObject` 换下载地址。
-见[资源与附件](/zh/meeting/harmony/advanced/resources)。
-
-另外，1.1.0 起 `mcuRecordDetail` 返回的 `records[].addr` 是录制文件分片的预签名播放地址（有效期 2 小时，过期后重新查询详情）。
+录制文件从**录制详情**取：`mcuRecordDetail` 返回的 `records` 就是本次录制的文件列表（1.1.0 起），
+按 `seq` 排序即播放顺序，每个文件的 `addr` 是预签名播放地址，直接拿去播放或下载。
+地址有效期 2 小时，过期后重新调 `mcuRecordDetail` 换新的，不要长期缓存，字段见上文[查询](#查询)。
 
 ---
 
 ### 相关阅读
 
 + [会控接口](/zh/meeting/harmony/api-reference/admin-actions)
-+ [资源与附件](/zh/meeting/harmony/advanced/resources)
 + [视频渲染](/zh/meeting/harmony/advanced/video-rendering)
