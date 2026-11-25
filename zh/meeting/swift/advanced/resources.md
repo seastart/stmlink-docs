@@ -64,14 +64,11 @@ try await meeting.resourcesCreate(req: req)
 先换取一个带签名的下载地址，再自行下载：
 
 ```swift
-// 按资源 ID
-let url = try await meeting.presignedGetObject(id: resource.id)
-
-// 或按资源键（例如录制文件的 vodKey）
+// 按资源键（例如聊天文件消息里的 key、录制文件的 vodKey）
 let url = try await meeting.presignedGetObject(resKey: detail.vodKey)
 ```
 
-两个参数二选一。
+请传 `resKey`；`id` 参数目前服务端不支持。
 
 ---
 

@@ -458,11 +458,11 @@ description: "SMeeting Swift SDK 管理类接口参考：房间管控、成员�
 
 #### `presignedGetObject(id:resKey:)`
 
-获取下载地址，两个参数二选一。
+获取下载地址。请传 `resKey`；`id` 目前服务端不支持。
 
 | 参数名 | 类型 | 必填 | 说明 |
 | --- | --- | :---: | --- |
-| `id` | `String?` | 否 | 资源 ID |
+| `id` | `String?` | 否 | 资源 ID（服务端目前不支持，请传 `resKey`） |
 | `resKey` | `String?` | 否 | 资源键 |
 
 **返回值：** `String`（带签名的下载地址）

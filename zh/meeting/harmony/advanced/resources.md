@@ -56,10 +56,10 @@ await meeting.resourcesCreate({
 ### 下载
 
 ```typescript
-const url: string = await meeting.presignedGetObject(resourceId, resKey);
+const url: string = await meeting.presignedGetObject(undefined, resKey);
 ```
 
-返回一个**带签名的临时地址**，用它去下载。两个参数都是可选的，按你手上有什么传。
+返回一个**带签名的临时地址**，用它去下载。请传 `resKey`（第二个参数）；第一个参数 `id` 目前服务端不支持，传 `undefined` 即可。
 
 <Note>
 签名地址有有效期。不要缓存这个 URL 长期使用，需要时重新换一个。
@@ -141,7 +141,7 @@ build() {
         Button('打开').onClick(() => { this.loadResources(r.id); })
       } else {
         Button('下载').onClick(async () => {
-          const url = await this.meeting.presignedGetObject(r.id, r.resKey);
+          const url = await this.meeting.presignedGetObject(undefined, r.resKey);
           // 用 url 下载
         })
       }

@@ -530,8 +530,8 @@ virtual StatusCode presignedGetObject(std::string id, std::string res_key, Callb
 
 | 参数 | 类型 | 说明 |
 | --- | --- | --- |
-| id | std::string | 资源 ID |
-| res_key | std::string | 资源键 |
+| id | std::string | 资源 ID（服务端目前不支持，传空串即可） |
+| res_key | std::string | 资源键（聊天文件传消息里的 key） |
 | back | Callback | 异步回调函数 |
 
 **返回值**
