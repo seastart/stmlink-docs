@@ -272,6 +272,7 @@ SRTC 频道属性转换得到的当前房间快照。
 | `waitingRoomDisabled` | `Boolean?` | 是否禁用等候室 |
 | `enterBeforeHostDisabled` | `Boolean?` | 是否禁止主持人前入会 |
 | `conferee` | `List<String>` | 受邀成员 UID 列表 |
+| `extendInfo` | `String?` | 会议自定义扩展信息，即创建或修改会议时传入的 `extend_info`，为 JSON 字符串，未设置时为空。自 `2.0.47` 起提供 |
 
 ## 设备与邀请模型
 
