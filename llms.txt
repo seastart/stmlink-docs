@@ -516,6 +516,17 @@
 - [RTSP 视频流](https://docs.stmlink.com/zh/product/device-access/rtsp.md): 把任意能输出 RTSP 地址的网络摄像头、编码器、NVR、流媒体服务器接进会议：后台登记流地址、UDP/TCP 怎么选、常见品牌的地址格式，以及邀请进会的方法
 - [设备接入常见问题](https://docs.stmlink.com/zh/product/device-access/faq.md): 设备接入的排障清单：终端注册不上、拨号呼不进、进会后黑屏或单向无声、国标摄像头离线或邀请失败、RTSP 没画面、设备入会被拒。按现象查原因和处理办法
 
+## 产品与部署 · AI 能力
+
+- [AI 能力概览](https://docs.stmlink.com/zh/product/ai/overview.md): 一页看懂平台的全部 AI 能力：实时字幕与转写、实时翻译、会议纪要、同声传译、AI 语音客服、自研智能体、AI 降噪与虚拟背景。每项能做什么、依赖哪类模型、在哪配置，以及两个前提：可完全私有化离线部署、大模型可以用客户自己的。售前选型先读这页
+- [实时字幕与转写](https://docs.stmlink.com/zh/product/ai/transcription.md): 会中实时字幕与语音转写：按说话人分开识别、中文边说边出字幕、英文整句出、实时翻译字幕、应用级热词、会后查看整场转写原文，以及谁来开启、在哪配置、各端怎么拿到结果。评估字幕与转写需求时读这页
+- [会议纪要](https://docs.stmlink.com/zh/product/ai/summary.md): 会后自动生成会议纪要：转写结束后用客户自己的大模型把整场逐字稿整理成 Markdown 纪要（概要、讨论要点、决议、待办），纪要模板可自定义，一个转写场次一份、可重新生成，谁能查看、在哪查看，以及需要配置哪些东西。评估纪要需求时读这页
+- [同声传译](https://docs.stmlink.com/zh/product/ai/interpretation.md): 会中同声传译：主持人一键开启，每人设「我的语言」，听到的是别人讲话的译音、原声自动压低，可选只听原声；目前中英互译、仅 Web 端可听。讲清工作原理、实测延迟、需要配置的模型与反向代理、各端支持情况和已知限制。客户要「会议同传」时先读这页
+- [AI 语音客服与智能体](https://docs.stmlink.com/zh/product/ai/voice-agent.md): 让 AI 在通话里和人实时语音对话的三条路：媒体网关内置的 AI 语音客服（开箱即用、网页体验页、可配提示词 / 开场白 / 音色、可插话打断、并发与时长上限）、用 Python SDK 或 pipecat 自己开发智能体、把电话线路接给 AI。做 AI 客服、AI 助手、AI 电话前读这页选路线
+- [音视频 AI 处理](https://docs.stmlink.com/zh/product/ai/media-ai.md): 终端本地运行的音视频 AI 处理：AI 降噪（RNNoise、DeepFilterNet）、虚拟背景（背景虚化 / 替换）、美颜，各自在哪些端、哪个 SDK 提供，一张能力 × 端的支持表，附各端接入文档链接。回答客户「某端能不能降噪 / 换背景」时查这页
+- [AI 服务与方案（模型接入）](https://docs.stmlink.com/zh/product/ai/models.md): 管理后台「AI 服务与方案」怎么用：AI 服务登记语音识别 / 大模型 / 语音合成（接入方式、一键模板、测试与试听、密钥加密存储），AI 方案把服务组合起来（按语言选识别与音色、语速、同传原声音量、语音客服提示词），应用选方案；支持哪些接入方式，以及内置的开源离线模型和许可证。部署配置 AI 前读这页
+- [AI 部署与资源规划](https://docs.stmlink.com/zh/product/ai/deploy.md): 私有化部署 AI 能力要装哪些服务、各占多少 CPU 和内存、用什么端口：中文 / 英文 FunASR 语音识别、离线语音合成、客户自备的大模型，CPU 即可、GPU 可选；离线包怎么提供、服务之间谁访问谁、反向代理要放行的路径、Redis 余量与版本要求。做 AI 部署规划和开墙申请前读这页
+
 ## 产品与部署 · 终端产品
 
 - [软 SIP / H.323 终端](https://docs.stmlink.com/zh/product/terminals/softsip.md): 装在安卓大屏、一体机、盒子上的 SIP / H.323 软终端 App：把普通安卓设备变成标准视频会议终端，与硬件终端点对点呼叫、注册到 SIP 服务器或网守、接入我们的会议，支持屏幕共享与电子白板。介绍功能、使用流程与获取方式

@@ -701,6 +701,19 @@
                 ]
               },
               {
+                "group": "AI 能力",
+                "pages": [
+                  "zh/product/ai/overview",
+                  "zh/product/ai/transcription",
+                  "zh/product/ai/summary",
+                  "zh/product/ai/interpretation",
+                  "zh/product/ai/voice-agent",
+                  "zh/product/ai/media-ai",
+                  "zh/product/ai/models",
+                  "zh/product/ai/deploy"
+                ]
+              },
+              {
                 "group": "终端产品",
                 "pages": [
                   "zh/product/terminals/softsip",
