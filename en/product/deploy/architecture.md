@@ -74,7 +74,7 @@ flowchart TB
 | MCU | When you need **cloud recording**, **video compositing**, **re-streaming**, or **connected SIP / H.323 endpoints need to see the meeting's video** |
 | Device gateway | When connecting SIP / H.323 endpoints, GB28181 cameras, or RTSP streams; see [Room Connector](/en/product/device-access/overview) |
 | Voice recording gateway | When you need per-speaker segmented recording (audit trails for push-to-talk and dispatch) |
-| Speech recognition gateway | When you need live captions or meeting minutes; the recognition engine is deployed separately |
+| Speech recognition gateway | When you need live captions, meeting minutes, simultaneous interpretation, or the AI voice agent; for deploying recognition and synthesis services and the LLM, see [AI deployment and resource planning](/en/product/ai/deploy) |
 | Log center | When you need to view client logs and call quality data centrally |
 | Monitoring center | When you need to monitor server and service status |
 

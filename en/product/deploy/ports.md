@@ -103,6 +103,7 @@ The following ports are used only on the server itself or the internal network. 
 | 8700 / 8701 / 8702 / 8720 / 8721 / 8722 / 8729 / 8730 | Internal service APIs, exposed only through 443 |
 | 1883 / 8083 / 11883 | MQTT internal ports |
 | 5432 / 6379 / 9000 / 8123 | Database, Redis, log database |
+| 10095 / 10096 / 10097 | Speech recognition and speech synthesis services (AI capabilities), for internal platform access only |
 | 8797 / 8798 | Monitoring center |
 | 22 | SSH; we recommend restricting source IPs |
 
@@ -116,7 +117,8 @@ On internal-only networks, the following features need **outbound** access from 
 | --- | --- |
 | Event callbacks | The callback URL of the customer's business system (443 / 80) |
 | Storing recordings in object storage | OSS / S3 endpoint (443) |
-| Speech recognition | Recognition engine service (default 10096) |
+| Speech recognition, speech synthesis (AI capabilities) | Recognition services (FunASR; Chinese default 10095, English default 10097) and offline speech synthesis (default 10096); see [AI deployment and resource planning](/en/product/ai/deploy) |
+| LLM (AI capabilities) | The address of the customer's own LLM service |
 | Push to a live streaming platform (media gateway) | RTMP (1935) or RTMPS (443) of the live streaming platform / CDN |
 | Device gateway pulling camera streams | Cameras (554) |
 

@@ -1299,6 +1299,19 @@
                 ]
               },
               {
+                "group": "AI capabilities",
+                "pages": [
+                  "en/product/ai/overview",
+                  "en/product/ai/transcription",
+                  "en/product/ai/summary",
+                  "en/product/ai/interpretation",
+                  "en/product/ai/voice-agent",
+                  "en/product/ai/media-ai",
+                  "en/product/ai/models",
+                  "en/product/ai/deploy"
+                ]
+              },
+              {
                 "group": "Endpoint apps",
                 "pages": [
                   "en/product/terminals/softsip",

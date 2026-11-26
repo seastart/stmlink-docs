@@ -716,8 +716,56 @@
   "en/product/admin-console": {
     "reviewed": false,
     "source": "zh/product/admin-console.md",
-    "zh_blob": "3e38661988bcbe52d3309152531df77230c816aa",
-    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
+    "zh_blob": "0229d050c13754cd93e7937522a08cee8201c6ea",
+    "zh_commit": "d78cc61d8b6d77905e305139d06ecd60bc8f2cd3"
+  },
+  "en/product/ai/deploy": {
+    "reviewed": false,
+    "source": "zh/product/ai/deploy.md",
+    "zh_blob": "55794e3616f43a541c86dec19c92f164e814b1ca",
+    "zh_commit": "4244412cf01c7183ad266a310957f030fe4abe2c"
+  },
+  "en/product/ai/interpretation": {
+    "reviewed": false,
+    "source": "zh/product/ai/interpretation.md",
+    "zh_blob": "29e562ac5be1cc6256d1af98733ad2c0d038cfdf",
+    "zh_commit": "4244412cf01c7183ad266a310957f030fe4abe2c"
+  },
+  "en/product/ai/media-ai": {
+    "reviewed": false,
+    "source": "zh/product/ai/media-ai.md",
+    "zh_blob": "3436be7470bac6631a092b079b4fb2e71eb798d0",
+    "zh_commit": "089c1c0de29b8c1d42fe5b044425bb7f2e86c199"
+  },
+  "en/product/ai/models": {
+    "reviewed": false,
+    "source": "zh/product/ai/models.md",
+    "zh_blob": "50eee57f42a8195890cf0f94d9d765781dd2eedc",
+    "zh_commit": "089c1c0de29b8c1d42fe5b044425bb7f2e86c199"
+  },
+  "en/product/ai/overview": {
+    "reviewed": false,
+    "source": "zh/product/ai/overview.md",
+    "zh_blob": "eae64ed2f050840b87eb13b27bd2ef2333dc1771",
+    "zh_commit": "4244412cf01c7183ad266a310957f030fe4abe2c"
+  },
+  "en/product/ai/summary": {
+    "reviewed": false,
+    "source": "zh/product/ai/summary.md",
+    "zh_blob": "f12aad7130c74c068ac6e9525618ab75a4d69827",
+    "zh_commit": "089c1c0de29b8c1d42fe5b044425bb7f2e86c199"
+  },
+  "en/product/ai/transcription": {
+    "reviewed": false,
+    "source": "zh/product/ai/transcription.md",
+    "zh_blob": "263db0eb05884568911dbdd41175ac19c8729d32",
+    "zh_commit": "089c1c0de29b8c1d42fe5b044425bb7f2e86c199"
+  },
+  "en/product/ai/voice-agent": {
+    "reviewed": false,
+    "source": "zh/product/ai/voice-agent.md",
+    "zh_blob": "7973181234ca2330efd58ac7d90a0d5fb4c0721f",
+    "zh_commit": "089c1c0de29b8c1d42fe5b044425bb7f2e86c199"
   },
   "en/product/demos": {
     "reviewed": false,
@@ -728,8 +776,8 @@
   "en/product/deploy/architecture": {
     "reviewed": false,
     "source": "zh/product/deploy/architecture.md",
-    "zh_blob": "9db373e26049561a7aad52eabfd38dcc81b2f350",
-    "zh_commit": "11789ae6d45a2de1781e0a2988b240e3d9ce2a2e"
+    "zh_blob": "954413bcc282e07d93f006d49e4498ba04e68afe",
+    "zh_commit": "d78cc61d8b6d77905e305139d06ecd60bc8f2cd3"
   },
   "en/product/deploy/multi-node": {
     "reviewed": false,
@@ -752,8 +800,8 @@
   "en/product/deploy/ports": {
     "reviewed": false,
     "source": "zh/product/deploy/ports.md",
-    "zh_blob": "7b1d12f0903361cc3bff922bd2bbcc1b6513880e",
-    "zh_commit": "cb1919619be16561b37edba7b177e462c160e013"
+    "zh_blob": "64db42f5d8e81c2d686e01ca93838233e814f89a",
+    "zh_commit": "d78cc61d8b6d77905e305139d06ecd60bc8f2cd3"
   },
   "en/product/device-access/faq": {
     "reviewed": false,
@@ -794,8 +842,8 @@
   "en/product/overview": {
     "reviewed": false,
     "source": "zh/product/overview.md",
-    "zh_blob": "78ab4b580e7e6ef0b63dbe05194d133cf54108ac",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "d629bc256cd2e90042e377ec2cc39cbeae330780",
+    "zh_commit": "d78cc61d8b6d77905e305139d06ecd60bc8f2cd3"
   },
   "en/product/terminals/softsip": {
     "reviewed": false,

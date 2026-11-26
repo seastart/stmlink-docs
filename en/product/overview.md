@@ -1,6 +1,6 @@
 ---
 title: "Product overview"
-description: "Everything STMLink offers on one page: SRTC and SMeeting SDKs, Room Connector for meeting-room hardware, cloud and per-speaker voice recording, speech recognition, the admin console, endpoint apps, and self-hosted and cross-domain solution (CDS) deployment. Start here if you don't write code."
+description: "Everything STMLink offers: SRTC and SMeeting SDKs, Room Connector, cloud and voice recording, AI capabilities (captions, minutes, interpretation, voice agent—self-hosted with your own LLM), the admin console, endpoint apps, and self-hosted and CDS deployment. Start here if you don't code."
 ---
 
 We provide a complete **self-hostable** real-time audio and video platform: from low-level audio and video capabilities,
@@ -29,14 +29,29 @@ For product highlights and industry solutions, you can also visit our [website](
   <Card title="Voice recording" icon="microphone" href="/en/rtc/server-api/talkrec">
     Per-speaker segmented audio recording for push-to-talk, dispatch, law enforcement, and other scenarios that need an audit trail
   </Card>
-  <Card title="Speech recognition and meeting minutes" icon="closed-captioning" href="/en/rtc/server-api/asr">
-    Live captions and transcription during the meeting, and minutes after it
-  </Card>
-  <Card title="AI voice / video agents" icon="robot" href="/en/rtc/python/quickstart">
-    Use the Python SDK to plug speech recognition, LLMs, and speech synthesis into calls for AI customer service and AI assistants
-  </Card>
   <Card title="Interactive whiteboard" icon="pen" href="/en/rtc/whiteboard">
     Real-time multi-user whiteboard collaboration and document annotation
+  </Card>
+</Columns>
+
+---
+
+## AI capabilities
+
+Recognition and synthesis can run offline on CPU, and the LLM is the customer's own, so the whole stack can be self-hosted. For the full picture, see [AI capabilities overview](/en/product/ai/overview).
+
+<Columns cols={2}>
+  <Card title="Live captions and meeting minutes" icon="closed-captioning" href="/en/product/ai/transcription">
+    Per-speaker captions and live translation during the meeting; automatic minutes and the full transcript afterward
+  </Card>
+  <Card title="Simultaneous interpretation" icon="language" href="/en/product/ai/interpretation">
+    Each person picks their own language and hears interpretation audio of others, with the original voice turned down automatically; currently Chinese ↔ English
+  </Card>
+  <Card title="AI voice agent and custom agents" icon="robot" href="/en/product/ai/voice-agent">
+    A built-in web voice agent ready to use; or build your own agent with the Python SDK and connect phone lines
+  </Card>
+  <Card title="AI noise suppression and virtual background" icon="wand-magic-sparkles" href="/en/product/ai/media-ai">
+    AI noise suppression, background blur / replacement, and beauty filter running locally on the device, with support per platform at a glance
   </Card>
 </Columns>
 
@@ -93,6 +108,6 @@ Besides the SDKs, we also offer endpoint apps you can install directly on device
 
 | I am | Start here |
 | --- | --- |
-| Presales, project manager | This page → [Room Connector](/en/product/device-access/overview) → [Components and architecture](/en/product/deploy/architecture) |
+| Presales, project manager | This page → [Room Connector](/en/product/device-access/overview) → [AI capabilities overview](/en/product/ai/overview) → [Components and architecture](/en/product/deploy/architecture) |
 | Implementation, operations | [Network and port requirements](/en/product/deploy/ports) → [Room Connector](/en/product/device-access/overview) |
 | Developer | [SRTC or SMeeting?](/en/choose) → the Quickstart for your platform |
