@@ -1,6 +1,6 @@
 ---
 title: "产品全景"
-description: "一页看懂我们能提供什么：SRTC 音视频 SDK、SMeeting 会议 SDK、会议室连接器（硬件设备接入）、云录制与语音录制、语音识别、管理后台、终端产品、私有化与光闸部署。不写代码的同学从这里开始"
+description: "一页看懂我们能提供什么：SRTC 音视频 SDK、SMeeting 会议 SDK、会议室连接器（硬件设备接入）、云录制与语音录制、AI 能力（实时字幕、会议纪要、同声传译、AI 语音客服，可私有化、接客户自己的大模型）、管理后台、终端产品、私有化与光闸部署。不写代码的同学从这里开始"
 ---
 
 我们提供一整套**可私有化部署**的实时音视频平台：从底层的音视频能力，到开箱即用的会议，
@@ -28,14 +28,29 @@ description: "一页看懂我们能提供什么：SRTC 音视频 SDK、SMeeting 
   <Card title="语音录制" icon="microphone" href="/zh/rtc/server-api/talkrec">
     按人分段录音，适合对讲、调度、执法等需要留痕的场景
   </Card>
-  <Card title="语音识别与会议纪要" icon="closed-captioning" href="/zh/rtc/server-api/asr">
-    会中实时字幕、发言转写，会后生成纪要
-  </Card>
-  <Card title="AI 语音 / 视频智能体" icon="robot" href="/zh/rtc/python/quickstart">
-    用 Python SDK 把语音识别、大模型、语音合成接进通话，做 AI 客服、AI 助手
-  </Card>
   <Card title="互动白板" icon="pen" href="/zh/rtc/whiteboard">
     多人实时协作白板与文档批注
+  </Card>
+</Columns>
+
+---
+
+## AI 能力
+
+识别、合成可用 CPU 离线运行，大模型接客户自己的，整套可以私有化部署。总览见 [AI 能力概览](/zh/product/ai/overview)。
+
+<Columns cols={2}>
+  <Card title="实时字幕与会议纪要" icon="closed-captioning" href="/zh/product/ai/transcription">
+    会中按说话人出字幕、实时翻译，会后自动生成纪要、查看转写原文
+  </Card>
+  <Card title="同声传译" icon="language" href="/zh/product/ai/interpretation">
+    每人选自己的语言，听别人讲话的译音，原声自动压低；目前中英互译
+  </Card>
+  <Card title="AI 语音客服与智能体" icon="robot" href="/zh/product/ai/voice-agent">
+    内置网页语音客服开箱即用；也可用 Python SDK 自己开发智能体、接电话线路
+  </Card>
+  <Card title="AI 降噪与虚拟背景" icon="wand-magic-sparkles" href="/zh/product/ai/media-ai">
+    终端本地运行的 AI 降噪、背景虚化 / 替换、美颜，各端支持情况一览
   </Card>
 </Columns>
 
@@ -92,6 +107,6 @@ description: "一页看懂我们能提供什么：SRTC 音视频 SDK、SMeeting 
 
 | 我是 | 建议从这里开始 |
 | --- | --- |
-| 售前、项目经理 | 本页 → [会议室连接器](/zh/product/device-access/overview) → [组件与架构](/zh/product/deploy/architecture) |
+| 售前、项目经理 | 本页 → [会议室连接器](/zh/product/device-access/overview) → [AI 能力概览](/zh/product/ai/overview) → [组件与架构](/zh/product/deploy/architecture) |
 | 实施、运维 | [网络与端口要求](/zh/product/deploy/ports) → [设备接入](/zh/product/device-access/overview) |
 | 开发者 | [SRTC 还是 SMeeting？](/zh/choose) → 对应平台的快速开始 |
