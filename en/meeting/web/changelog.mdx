@@ -13,6 +13,16 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.10 - 2026-11-26
+
+#### Added
++ **Waiting for the host**: when a meeting has "members can't join before the host" turned on and none of the host, co-hosts or creator has joined yet, `enterRoom` returns `2120`. Show a "waiting for the host" page instead of an error. New out-of-meeting messages: `CommonImEventType.HOST_ENTERED` (the host has joined; call `enterRoom` again with the original password, and if the meeting also has the waiting room on you will get `2118` next) and `WAITING_MEETING_END` (the meeting being waited for has ended or been canceled; show a notice and leave the waiting page). See [Events · Out-of-meeting message events](/en/meeting/web/events#out-of-meeting-message-events) for the data. Call `exitWaitingRoom()` when leaving either kind of waiting page
++ These two messages no longer come through `IM_CUSTOM_MSG`. If you checked the `action` of `IM_CUSTOM_MSG` yourself, switch to the two event types above after upgrading
+
+<Note>
+Requires meeting server support: older servers don't send these two messages and don't record who is waiting on `2120`.
+</Note>
+
 ### v0.3.9 - 2026-11-25
 
 #### Added

@@ -103,6 +103,27 @@ The following errors come from RTC `2.0.33`, take effect with Meeting `2.0.37`, 
 | `CAMERA_OPEN_TIMEOUT` | `102243` | Timed out opening the camera |
 | `CAMERA_SESSION_TIMEOUT` | `102244` | Timed out creating the camera session |
 
+## Server codes for waiting on join
+
+The following two codes are returned by the Meeting server on join and passed through by the SDK as is. They are not part of `MeetingErrorCode` and mean the user should be shown a waiting page, not that the join failed. Switch the UI accordingly instead of showing an error to the user. Public constants are available since `2.0.48`; full class name: `cn.seastart.meeting.error.MeetingServerErrorCode`.
+
+| Constant | Value | Description | App handling |
+| --- | --- | --- | --- |
+| `ENTER_WAITING_ROOM` | `2118` | The meeting has the waiting room on; the user waits there until the host admits them | Show the waiting room page and wait for [`onMoveOutWaitingRoom()`](/en/meeting/android/api-reference/MeetingImEvent#onmoveoutwaitingroom-uid-moveoutwaitingroom) |
+| `ENTER_BEFORE_HOST` | `2120` | The meeting has "no one may join before the host" on, and none of the host, co-hosts, or creator has joined (since `2.0.48`) | Show a "waiting for the host" page; after [`onHostEntered()`](/en/meeting/android/api-reference/MeetingImEvent#onhostentered-uid-notice), join again with the original password |
+
+In both waiting states, [`onWaitingMeetingEnd()`](/en/meeting/android/api-reference/MeetingImEvent#onwaitingmeetingend-uid-notice) is called if the meeting ends or is cancelled; call [`exitWaitingRoom()`](/en/meeting/android/api-reference/MeetingEngine#exitwaitingroom-callback) when the user leaves the waiting page.
+
+```kotlin
+override fun onFailure(errorCode: Int, message: String?) {
+    when (errorCode) {
+        MeetingServerErrorCode.ENTER_WAITING_ROOM -> showWaitingRoomPage()
+        MeetingServerErrorCode.ENTER_BEFORE_HOST -> showWaitingForHostPage()
+        else -> showError(errorCode, message)
+    }
+}
+```
+
 ## Recommended handling
 
 ```kotlin

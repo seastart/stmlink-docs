@@ -1,9 +1,21 @@
 ---
 title: "Changelog"
-description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.47, including breaking API changes. Read this before upgrading the SDK."
+description: "New features, fixes, dependency upgrades, and compatibility notes for the Android SMeeting SDK from 2.0.27-alpha.7 to 2.0.48, including breaking API changes. Read this before upgrading the SDK."
 ---
 
 > This page records the main version changes of the Android SMeeting SDK. For dependency versions, see [Integration](/en/meeting/android/integration); at runtime, you can query the actual version with `MeetingEngine.version()`.
+
+## 2.0.48 (2026-11-26)
+
+### Added
+
++ Added support for the meeting setting "no one may join before the host": when none of the host, co-hosts, or creator has joined, joining returns error code `2120`, and your app should show a "waiting for the host" page instead of reporting an error. Added the public constants `MeetingServerErrorCode.ENTER_BEFORE_HOST` (`2120`) and `ENTER_WAITING_ROOM` (`2118`, waiting room). See [Server codes for waiting on join](/en/meeting/android/error-codes#server-codes-for-waiting-on-join).
++ Added [`onHostEntered()`](/en/meeting/android/api-reference/MeetingImEvent#onhostentered-uid-notice) and [`onWaitingMeetingEnd()`](/en/meeting/android/api-reference/MeetingImEvent#onwaitingmeetingend-uid-notice) to `MeetingImEvent`. They notify users still on a waiting page (waiting for the host or in the waiting room) when the host joins, and when the meeting ends or is cancelled, respectively. The parameter is [`ImContent.WaitingMeetingNotice`](/en/meeting/android/types#imcontent-waitingmeetingnotice). Both methods have empty default implementations; apps that implement `MeetingImEvent` directly in Java need to add these two methods or extend `MeetingImSimpleEvent` instead.
+
+### Changed
+
++ The host-joined and waiting-meeting-ended notifications are now dispatched through the dedicated callbacks above and are no longer passed through `onImMessage()`.
++ [`exitWaitingRoom()`](/en/meeting/android/api-reference/MeetingEngine#exitwaitingroom-callback) can now also be called after joining returns `2120` to leave the waiting page; the current user is removed from both the waiting room and the waiting-for-host list.
 
 ## 2.0.47 (2026-11-25)
 

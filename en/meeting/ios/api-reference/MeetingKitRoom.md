@@ -902,7 +902,7 @@ Stops cloud recording (host or co-host only).
 
 Requests to exit the waiting room.
 
-After the user exits the waiting room, the SDK notifies the room's host and co-hosts through the [meetingRoom:onRoomUserExitWaitingRoom:nickname:()](/en/meeting/ios/api-reference/MeetingKitRoomDelegate) callback in `MeetingKitRoomDelegate`.
+Can be called in both waiting states: in the waiting room, or waiting for the host (entry returned `2120`). Call it when the user leaves the waiting page. After the user exits the waiting room, the SDK notifies the room's host and co-hosts through the [meetingRoom:onRoomUserExitWaitingRoom:nickname:()](/en/meeting/ios/api-reference/MeetingKitRoomDelegate) callback in `MeetingKitRoomDelegate`.
 
 | Parameter | Description |
 | :--- | --- |

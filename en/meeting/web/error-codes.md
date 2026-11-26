@@ -100,3 +100,14 @@ Failures related to capture, permissions, and publishing / subscribing are throw
 | `106006` / `106007` / `106014` / `106015` / `106300`–`106303` | Network / media connection failure | Network error. Check your connection and try again |
 
 See [SRTC Web error codes](/en/rtc/web/error-codes) for the full list.
+
+### Server codes that need special handling
+
+When `enterRoom` returns one of these two codes, joining didn't fail: the user is waiting. Go to a waiting page instead of showing an error:
+
+| `code` | Meaning | Suggested handling |
+| --- | --- | --- |
+| `2118` | The meeting has the waiting room on; the user is in the waiting room until the host admits them | Stay on the waiting page; call `enterRoom` again after the out-of-meeting message `ADMIN_MOVE_OUT_WAITING_ROOM` |
+| `2120` | The meeting has "members can't join before the host" on, and none of the host, co-hosts or creator has joined yet | Stay on the waiting page; after the out-of-meeting message `HOST_ENTERED` (since v0.3.10), call `enterRoom` again with the original password. If the meeting also has the waiting room on, you will get `2118` next |
+
+Call `enableIm()` first in both cases, otherwise the notifications won't arrive. `WAITING_MEETING_END` means the meeting has ended or been canceled; show a notice and leave the waiting page. Call `exitWaitingRoom()` when the user leaves on their own.

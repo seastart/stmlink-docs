@@ -3,6 +3,22 @@ title: "Changelog"
 description: "Release history of the iOS SMeeting SDK (Objective-C MeetingKit) from 0.0.1-alpha.1 to 2.1.0: new APIs, fixes, and RTCEngineKit dependency upgrades per version, including the 2.0.0 multi-room MeetingKitRoom refactor and the 2.1.0 iOS 16 minimum. Read before upgrading."
 ---
 
+### [2.6.0] - 2026.11.26
+
+#### Added
++ **Waiting-page notifications**: `MeetingKitIMDelegate` adds two optional callbacks that notify users who are still on a waiting page (waiting for the host, or in the waiting room):
+  + `onHostEntered:roomNo:title:`: called when the host, a co-host, or the creator enters a meeting that has "Disallow joining before the host" enabled and that previously rejected your entry. Re-enter with the original password when you receive it; if the meeting also has the waiting room enabled, re-entering returns `SEAErrorMeetingApiWaitingRoomEnable` (`2118`) and you move to the waiting room. See [MeetingKitIMDelegate](/en/meeting/ios/api-reference/MeetingKitIMDelegate#onhostenteredroomnotitle).
+  + `onWaitingMeetingEnd:roomNo:title:`: called when the meeting you are waiting for is ended or canceled. Show "The meeting has ended" and leave the waiting page. See [MeetingKitIMDelegate](/en/meeting/ios/api-reference/MeetingKitIMDelegate#onwaitingmeetingendroomnotitle).
++ **Local preview outside a meeting**: `MeetingKit` adds `startLocalPreview:view:` / `stopLocalPreview` to preview the camera before entering a meeting (for example on a waiting page). It only captures and previews locally and doesn't publish to the meeting. Call `stopLocalPreview` before entering; after entering, the room's `requestOpenCamera` turns the camera on again and publishes it. See [MeetingKit](/en/meeting/ios/api-reference/MeetingKit#startlocalpreviewview).
+
+#### Changed
++ **`SEAErrorMeetingApiEnterBeforeHostDisabled` (`2120`) semantics**: returned on entry when the meeting has "Disallow joining before the host" enabled and none of the host, co-hosts, or creator has entered. The app should show a "Waiting for the host" page instead of treating it as a failure, and re-enter after `onHostEntered:roomNo:title:`. See [Error codes](/en/meeting/ios/error-codes).
++ `exitWaitingRoom:onSuccess:` can be called in both waiting states (waiting room and waiting for the host); call it when the user leaves the waiting page.
+
+<Note>
+The new callbacks are all `@optional`, existing API signatures are unchanged, and the `RTCEngineKit` dependency is still `>= 3.3.0`. 2.5.0 integrations can upgrade directly; to support waiting for the host, handle `2120` as described above and implement `onHostEntered:roomNo:title:`.
+</Note>
+
 ### [2.5.0] - 2026.11.25
 
 #### Added

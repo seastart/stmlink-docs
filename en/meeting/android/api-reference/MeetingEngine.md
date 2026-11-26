@@ -1177,13 +1177,13 @@ Returns: None (the asynchronous result is delivered through the callback).
 fun exitWaitingRoom(callback: MeetingResultCallback)
 ```
 
-Description: Exits the current waiting room before the SRTC join has completed.
+Description: Exits the current waiting page before the SRTC join has completed. It can be called after joining returns `MeetingServerErrorCode.ENTER_WAITING_ROOM` (`2118`, moved into the waiting room) or `ENTER_BEFORE_HOST` (`2120`, waiting for the host, since `2.0.48`); the current user is removed from both the waiting room and the waiting-for-host list.
 
 Parameters:
 
 | Parameter | Description |
 | --- | --- |
-| `callback` | Exit result callback; returns `WAITING_ROOM_CONTEXT_MISSING` when the waiting room context is missing. |
+| `callback` | Exit result callback; returns `WAITING_ROOM_CONTEXT_MISSING` when the waiting context is missing. |
 
 Returns: None (the asynchronous result is delivered through the callback).
 

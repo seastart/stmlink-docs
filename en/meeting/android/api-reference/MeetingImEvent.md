@@ -1,13 +1,13 @@
 ---
 title: "MeetingImEvent"
-description: "Receive Meeting IM connection, reconnection, raw message, call, meeting reminder, waiting room, and sub-meeting help events, registered through MeetingEngine.imEvent. Read this when you use enableIm() for out-of-meeting messages."
+description: "Receive Meeting IM connection, reconnection, raw message, call, meeting reminder, waiting room, waiting-for-host, and sub-meeting help events, registered through MeetingEngine.imEvent. Read this when you use enableIm() for out-of-meeting messages."
 ---
 
 `MeetingImEvent` receives ongoing state and business messages that share the lifecycle of the IM connection in the Engine, and is registered through `MeetingEngine.imEvent`. You can extend `MeetingImSimpleEvent` and override only what you need.
 
 ## Usage notes
 
-+ The IM connection is independent of the current meeting; out-of-meeting messages such as meeting reminders, waiting room moves, and sub-meeting help requests are also dispatched through this interface.
++ The IM connection is independent of the current meeting; out-of-meeting messages such as meeting reminders, waiting room moves, waiting-for-host notifications, and sub-meeting help requests are also dispatched through this interface.
 
 + Call `enableIm()` first to establish the connection; an intentional disconnect caused by `disableIm()` or `release()` doesn't trigger `onImDisconnected()`.
 + Callbacks stay on the actual IM source thread; switch to the main thread before updating the UI.
@@ -175,5 +175,39 @@ Parameters:
 | --- | --- |
 | `uid` | UID of the member asking for help. |
 | `userHelpSubMeeting` | Main meeting and sub-meeting information, including the sub-meeting title. |
+
+Returns: None (`Unit`).
+
+### onHostEntered(uid, notice)
+
+```kotlin
+fun onHostEntered(uid: String, notice: ImContent.WaitingMeetingNotice) = Unit
+```
+
+Description: Available since `2.0.48`, with an empty default implementation. The current user got `MeetingServerErrorCode.ENTER_BEFORE_HOST` (`2120`) when joining and is waiting for the host; the host (or a co-host or the creator) has now joined the meeting. Join again with the original password; if the meeting also has the waiting room on, joining again returns `2118` and moves the user into the waiting room.
+
+Parameters:
+
+| Parameter | Description |
+| --- | --- |
+| `uid` | Sender UID. |
+| `notice` | Target meeting ID, room number, and title. See [`ImContent.WaitingMeetingNotice`](/en/meeting/android/types#imcontent-waitingmeetingnotice). |
+
+Returns: None (`Unit`).
+
+### onWaitingMeetingEnd(uid, notice)
+
+```kotlin
+fun onWaitingMeetingEnd(uid: String, notice: ImContent.WaitingMeetingNotice) = Unit
+```
+
+Description: Available since `2.0.48`, with an empty default implementation. The current user is in the waiting room or waiting for the host, and the meeting being waited for has ended or been cancelled; the app should leave the waiting page.
+
+Parameters:
+
+| Parameter | Description |
+| --- | --- |
+| `uid` | Sender UID. |
+| `notice` | Target meeting ID, room number, and title. See [`ImContent.WaitingMeetingNotice`](/en/meeting/android/types#imcontent-waitingmeetingnotice). |
 
 Returns: None (`Unit`).

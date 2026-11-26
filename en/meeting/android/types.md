@@ -455,6 +455,16 @@ Meeting list item. For the Java type, read properties through getters.
 | `meetingId` | `String` | Target meeting ID |
 | `title` | `String` | Target meeting title |
 
+### ImContent.WaitingMeetingNotice
+
+Available since `2.0.48`, used by [`onHostEntered()`](/en/meeting/android/api-reference/MeetingImEvent#onhostentered-uid-notice) and [`onWaitingMeetingEnd()`](/en/meeting/android/api-reference/MeetingImEvent#onwaitingmeetingend-uid-notice).
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `meetingId` | `String` | Target meeting ID |
+| `roomNo` | `String?` | Room number |
+| `title` | `String?` | Meeting title |
+
 ### ImContent.UserHelpSubMeeting
 
 | Property | Type | Description |

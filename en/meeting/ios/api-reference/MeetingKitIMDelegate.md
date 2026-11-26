@@ -141,6 +141,37 @@ When the host moves people from the waiting room into the meeting, the SDK notif
 | --- | --- |
 | title | Meeting title |
 
+### onHostEntered:roomNo:title:()
+`- (void)onHostEntered:(NSString *)meetingId roomNo:(NSString *)roomNo title:(nullable NSString *)title`
+
+Called when the host has entered the meeting. Available since 2.6.0 (optional).
+
+If the meeting has "Disallow joining before the host" enabled and your `enterRoom` call was rejected (error code `SEAErrorMeetingApiEnterBeforeHostDisabled` = `2120`; the app should show a "Waiting for the host" page), the SDK calls this when the host, a co-host, or the creator enters the meeting.
+
+Re-enter with the original password when you receive it. If the meeting also has the waiting room enabled, re-entering returns `SEAErrorMeetingApiWaitingRoomEnable` (`2118`) and you move to the waiting room until admitted.
+
+**Parameters**
+
+| meetingId | Meeting ID |
+| --- | --- |
+| roomNo | Room number |
+| title | Meeting title |
+
+
+### onWaitingMeetingEnd:roomNo:title:()
+`- (void)onWaitingMeetingEnd:(NSString *)meetingId roomNo:(NSString *)roomNo title:(nullable NSString *)title`
+
+Called when the meeting you are waiting for has ended. Available since 2.6.0 (optional).
+
+If the meeting is ended or canceled while you are in the waiting room or waiting for the host, the SDK notifies you through this callback. Show "The meeting has ended" and leave the waiting page.
+
+**Parameters**
+
+| meetingId | Meeting ID |
+| --- | --- |
+| roomNo | Room number |
+| title | Meeting title |
+
 
 ## Sub-meeting callbacks
 ### onSubMettingAskingHelp:meetingId:title:()

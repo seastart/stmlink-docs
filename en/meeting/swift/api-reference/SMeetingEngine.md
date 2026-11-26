@@ -273,6 +273,7 @@ try await meeting.enterRoom(req)
 + `SMeetingError.notLoggedIn`
 + `SMeetingError.alreadyInMeeting`—already in a meeting; call `exitRoom()` first
 + `SMeetingError.apiError(code:message:)`—wrong password, meeting doesn't exist, entry restricted, and so on
+  + `code == SMeetingError.waitingRoomCode` (`2118`): moved into the waiting room; `code == SMeetingError.enterBeforeHostCode` (`2120`): must wait for the host to join. Neither is a failure—show a waiting page; see [Waiting room](/en/meeting/swift/advanced/waiting-room) (constants since 1.14.0)
 + Errors thrown when the underlying connection fails to be set up
 
 On success, the SDK subscribes to remote audio automatically; video is subscribed on demand.

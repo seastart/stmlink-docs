@@ -653,6 +653,10 @@ CommonImEventType and the corresponding `data`:
     static readonly ADMIN_MOVE_OUT_WAITING_ROOM = 'admin_move_out_waiting_room';
     /** A breakout group asks for help; data is ImUserHelpSubMeetingEventData */
     static readonly USER_HELP_SUB_MEETING = 'user_help_sub_meeting';
+    /** The host has joined; sent privately to members blocked by 2120 who are waiting for the host; data is ImHostEnteredEventData (since v0.3.10) */
+    static readonly HOST_ENTERED = 'host_entered';
+    /** The meeting has ended or been canceled; sent privately to members still in the waiting room or waiting for the host; data is ImWaitingMeetingEndEventData (since v0.3.10) */
+    static readonly WAITING_MEETING_END = 'waiting_meeting_end';
     /** Custom business message (action is not one of the built-in types above); data is ImCustomMsgEventData (since v0.3.2) */
     static readonly IM_CUSTOM_MSG = 'im_custom_msg';
 ```
@@ -750,6 +754,30 @@ export interface ImAdminMoveOutWaitingRoomEventData extends ImBaseEventData {
         /** Breakout meeting ID */
         meeting_id: string;
         /** Group name */
+        title: string;
+    };
+}
+
+/** HOST_ENTERED: the host has joined (sent privately to members waiting for the host). Call enterRoom again with the original password; if the meeting also has the waiting room on, you will get 2118 next */
+export interface ImHostEnteredEventData extends ImBaseEventData {
+    content: {
+        /** Meeting ID */
+        meeting_id: string;
+        /** Room number */
+        room_no: string;
+        /** Meeting title */
+        title: string;
+    };
+}
+
+/** WAITING_MEETING_END: the meeting has ended or been canceled (sent privately to members in the waiting room or waiting for the host). Show a notice and leave the waiting page */
+export interface ImWaitingMeetingEndEventData extends ImBaseEventData {
+    content: {
+        /** Meeting ID */
+        meeting_id: string;
+        /** Room number */
+        room_no: string;
+        /** Meeting title */
         title: string;
     };
 }

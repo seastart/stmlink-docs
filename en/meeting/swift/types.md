@@ -378,6 +378,8 @@ Data for the business events (call, reminder, release from the waiting room, sub
 | `ImCallCallingEventData` | `base`, `content: ImCallContent` (`roomNo`, `meetingId`, `title`, `forceJoin` (administrator forced join, defaults to `false`, since 1.13.0)) |
 | `ImMeetingRemindEventData` | `base`, `content: ImMeetingRemindContent` (`roomNo`, `meetingId`, `title`, `creatorName`, `planDur` (minutes), `planTime` (Unix timestamp in seconds), `creatorId` (creator's user ID, since 1.5.0)) |
 | `ImAdminMoveOutWaitingRoomEventData` | `base`, `content: ImMoveOutWaitingRoomContent` (`parent`, `meetingId`, `title`) |
+| `ImHostEnteredEventData` | `base`, `content: ImWaitingMeetingContent` (`meetingId`, `roomNo`, `title`), since 1.14.0 |
+| `ImWaitingMeetingEndEventData` | `base`, `content: ImWaitingMeetingContent` (`meetingId`, `roomNo`, `title`), since 1.14.0 |
 | `ImUserHelpSubMeetingEventData` | `base`, `content: ImHelpSubMeetingContent` (`parent`, `meetingId`, `title`) |
 | `ImDisconnectEventData` | `reason: String?` (text description), `disconnectReason: ImDisconnectReason`, `errorCode: Int?`, `errorMessage: String?` (the last three since 1.5.0) |
 | `ImConnectEventData` | `uid` (local user ID), `sid` (local IM session ID) (since 1.5.0) |

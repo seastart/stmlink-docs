@@ -147,7 +147,7 @@ Since 2.2.0, the SDK no longer produces codes such as `SEAErrorApiTokenDisabled`
 | SEAErrorMeetingApiPasswordFailed | `2115` | Incorrect password |
 | SEAErrorMeetingApiByInviteOnly | `2116` | This meeting is for invitees only. Contact the host |
 | SEAErrorMeetingApiWaitingRoomEnable | `2118` | The meeting has the waiting room enabled; you can enter only after the host or a co-host admits you |
-| SEAErrorMeetingApiEnterBeforeHostDisabled | `2120` | Entering the meeting before the host is not allowed |
+| SEAErrorMeetingApiEnterBeforeHostDisabled | `2120` | The meeting has "Disallow joining before the host" enabled and none of the host, co-hosts, or creator has entered. Show a "Waiting for the host" page instead of an error, and re-enter after [onHostEntered:roomNo:title:()](/en/meeting/ios/api-reference/MeetingKitIMDelegate#onhostenteredroomnotitle) |
 | SEAErrorMeetingApiFileDisabled | `2125` | The file feature is disabled (presigned upload returns this code when the deployment has disabled the file feature) |
 | SEAErrorApiFailed | `10000` | Unclassified general error |
 | SEAErrorApiDatabaseFailed | `10001` | Database error |

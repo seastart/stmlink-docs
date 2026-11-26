@@ -243,6 +243,8 @@ You need to call `enableIm()` first; see [Out-of-meeting messages](/en/meeting/s
 | `meeting(_:imCallCalling:)` | Someone in a meeting is calling you | `ImCallCallingEventData` |
 | `meeting(_:imMeetingRemind:)` | Meeting start reminder | `ImMeetingRemindEventData` |
 | `meeting(_:imAdminMoveOutWaitingRoom:)` | You were admitted from the waiting room | `ImAdminMoveOutWaitingRoomEventData` |
+| `meeting(_:imHostEntered:)` | You are waiting for the host (entry returned `2120`) and the host / co-host / creator joined (since 1.14.0) | `ImHostEnteredEventData` |
+| `meeting(_:imWaitingMeetingEnd:)` | You are on a waiting page (waiting for the host or in the waiting room) and the meeting ended or was cancelled (since 1.14.0) | `ImWaitingMeetingEndEventData` |
 | `meeting(_:imUserHelpSubMeeting:)` | A sub-meeting is asking for help | `ImUserHelpSubMeetingEventData` |
 | `meetingImIsReconnecting(_:)` | The out-of-meeting message path starts reconnecting | None |
 | `meetingImDidReconnect(_:)` | The out-of-meeting message path reconnected successfully | None |
@@ -262,7 +264,7 @@ These connection events and the meeting connection events above belong to two in
 The SDK also exposes two enums that list the string identifier of each event:
 
 + `RoomEventType`—in-meeting event identifiers, such as `user_enter` and `room_share_start`; since 1.5.0 there is also `roomHostMoved` (`room_host_moved`), corresponding to `roomHostDidMove`
-+ `ImEventType`—out-of-meeting message event identifiers, such as `call_calling`; since 1.5.0 there are also `connected` and `message`, corresponding to `imDidConnect` and `imDidReceiveMessage`
++ `ImEventType`—out-of-meeting message event identifiers, such as `call_calling`; since 1.5.0 there are also `connected` and `message`, corresponding to `imDidConnect` and `imDidReceiveMessage`; since 1.14.0 there are also `hostEntered` (`host_entered`) and `waitingMeetingEnd` (`waiting_meeting_end`)
 
 On the Swift side, events are dispatched through the `SMeetingDelegate` methods above. You don't need these two enums in a normal integration; they're useful only when you need logging instrumentation or want to align event naming with other platforms.
 

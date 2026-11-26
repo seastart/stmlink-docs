@@ -41,6 +41,17 @@ Since **1.4.0**, error codes are adjusted according to the cross-platform unifie
 
 `message` is an English description for developers and logs. **For messages shown to end users, map `code` / `baseCode` yourself**—don't show `message` directly.
 
+#### Server codes that need special handling
+
+The following two server codes are thrown by `enterRoom` (`apiError`) and **are not failures**. The SDK provides constants for them (since 1.14.0); check with `error.code == SMeetingError.xxxCode`:
+
+| Constant | Code | Meaning | Recommended handling |
+| --- | :---: | --- | --- |
+| `SMeetingError.waitingRoomCode` | `2118` | The meeting has the waiting room on; the user was moved into it | Show a waiting page; enter again after `imAdminMoveOutWaitingRoom` arrives |
+| `SMeetingError.enterBeforeHostCode` | `2120` | The meeting has "no one may join before the host" on, and none of the host / co-host / creator has joined | Show a "waiting for the host" page; enter again with the original password after `imHostEntered` arrives |
+
+Call `exitWaitingRoom` when leaving either kind of waiting page; if the meeting ends or is cancelled while waiting, `imWaitingMeetingEnd` arrives. See [Waiting room](/en/meeting/swift/advanced/waiting-room).
+
 ---
 
 ### Error code format

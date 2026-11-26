@@ -10,6 +10,7 @@ Out-of-meeting messages (IM) are a **notification path independent of the meetin
 + Someone in a meeting is calling you
 + A scheduled meeting is about to start
 + You've been admitted from the waiting room
++ The host you're waiting for has joined, or the meeting you're waiting for has ended (since 1.14.0)
 + A sub-meeting you're responsible for is asking for help
 
 In-meeting chat messages don't go through this path—those are [In-meeting messages](/en/meeting/swift/advanced/messaging), which work only during the meeting.
@@ -50,7 +51,7 @@ try await meeting.enableIm()
 
 ### Events
 
-The four business events below each carry a `base` (`ImBaseEventData`) and a `content`:
+The business events below each carry a `base` (`ImBaseEventData`) and a `content`:
 
 | `ImBaseEventData` field | Description |
 | --- | --- |
@@ -89,6 +90,25 @@ func meeting(_ meeting: SMeetingEngine, imAdminMoveOutWaitingRoom data: ImAdminM
     // data.content.meetingId is the target meeting, which you can enter
 }
 ```
+
+#### Waiting page messages
+
+Since 1.14.0. Members who stay on a waiting page after entry returned `2120` (waiting for the host) or `2118` (waiting room) receive the two messages below; for usage see [Waiting room - Wait for the host to join](/en/meeting/swift/advanced/waiting-room#wait-for-the-host-to-join):
+
+```swift
+// Any of the host / co-host / creator joined (sent only to members waiting for the host)
+func meeting(_ meeting: SMeetingEngine, imHostEntered data: ImHostEnteredEventData) {
+    // data.content.meetingId / roomNo / title
+    // If it's the meeting being waited for, call enterRoom again with the original password; if the meeting also has the waiting room on, you'll get 2118 next
+}
+
+// The meeting ended or was cancelled (sent to members waiting for the host and in the waiting room)
+func meeting(_ meeting: SMeetingEngine, imWaitingMeetingEnd data: ImWaitingMeetingEndEventData) {
+    // Show "The meeting has ended" and leave the waiting page
+}
+```
+
+The same account may wait for different meetings one after another, so check `meetingId` / `roomNo` to tell whether it's the meeting currently being waited for. These two messages go to the named events and are no longer dispatched to `imCustomMsg`.
 
 #### A sub-meeting asks for help
 

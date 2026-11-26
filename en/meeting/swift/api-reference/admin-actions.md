@@ -304,7 +304,7 @@ Admits a member from the waiting room into the meeting. Omit both parameters to 
 
 #### `exitWaitingRoom(meetingId:roomNo:)`
 
-The member exits the waiting room on their own; provide either of the two parameters. **Requires being logged in.**
+The member exits the waiting room on their own; provide either of the two parameters. **Requires being logged in.** It also removes the user from the waiting-for-host list (added when entry returned `2120`), so call it when leaving either kind of waiting page.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |

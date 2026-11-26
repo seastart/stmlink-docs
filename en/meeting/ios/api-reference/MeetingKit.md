@@ -406,6 +406,31 @@ Gets more of the device list (next page).
 | onFailed | Failure callback |
 
 ## Local capture APIs
+### startLocalPreview:view:()
+`- (RTCEngineError)startLocalPreview:(BOOL)frontCamera view:(VIEW_CLASS *)view`
+
+Starts the local camera preview. Available since 2.6.0.
+
+Can be called before entering a meeting (outside a meeting, for example on the waiting room or waiting-for-host page). It only captures and previews locally and doesn't publish to the meeting. Call [stopLocalPreview()](#stoplocalpreview) before entering; after entering, the room's `requestOpenCamera` turns the camera on again and publishes it.
+
+| Parameter | Description |
+| :--- | --- |
+| frontCamera | YES: front camera; NO: rear camera |
+| view | View that hosts the video |
+
+Return value: `RTCEngineErrorCameraNoAuthorized` (`103231`) if camera permission isn't granted.
+
+
+### stopLocalPreview()
+`- (RTCEngineError)stopLocalPreview`
+
+Stops the local camera preview. Available since 2.6.0.
+
+Use it together with [startLocalPreview:view:()](#startlocalpreviewview): call it when leaving the out-of-meeting preview page or before entering a meeting.
+
+Return value: `RTCEngineErrorCameraNoAuthorized` (`103231`) if camera permission isn't granted.
+
+
 ### updateLocalView:()
 `- (void)updateLocalView:(VIEW_CLASS *)view`
 
