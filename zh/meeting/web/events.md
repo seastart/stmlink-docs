@@ -90,6 +90,10 @@ CommonRoomEventType及对应`data`定义如下：
     static readonly ASR_TRANSLATION = 'asr_translation';
     /** 会议纪要生成完成/失败，对应data为 AiSummaryReadyEventData（0.3.6 起） */
     static readonly AI_SUMMARY_READY = 'ai_summary_ready';
+    /** 同声传译开关状态改变，对应data为 RoomInterpStateChangeEventData（0.3.9 起） */
+    static readonly ROOM_INTERP_STATE_CHANGED = 'room_interp_state_changed';
+    /** 成员的同传语言（我的语言）改变，对应data为 UserInterpLangChangeEventData（0.3.9 起） */
+    static readonly USER_INTERP_LANG_CHANGED = 'user_interp_lang_changed';
 
     /** 会中签到活动，对应data为 SignInActivityEventData */
     static readonly SIGN_IN_ACTIVITY = 'sign_in_activity';
@@ -437,8 +441,13 @@ export interface AsrTranslationEventData {
     text: string;
     /** 译文 */
     trans_text: string;
-    /** 译文语言，如 en / zh */
+    /** 译文语言，如 en / zh。同传开启时同一句按在会成员的语言各来一条，字幕取 lang 等于我的语言的那条 */
     lang: string;
+    /**
+     * 译文的合成语音地址（绝对 URL，SDK 已拼好），只有同声传译开启且合成成功时才有，10 分钟后过期（0.3.9 起）。
+     * Web SDK 内置的同传播放器会按规则自动播放，业务一般不用处理
+     */
+    audio_url: string;
 }
 
 /** AI_SUMMARY_READY：会议纪要生成完成或失败，纪要内容用 aiSummary() 获取 */
@@ -447,6 +456,30 @@ export interface AiSummaryReadyEventData {
     session_id: string;
     /** 纪要状态，2完成, 3失败 */
     status: number;
+}
+```
+
+### 同声传译（0.3.9 起）
+
+同传的用法与内置播放器的播放规则见 [SMeeting · 同声传译](/zh/meeting/web/api-reference/SMeeting#同声传译)。入会时的同传状态看 `isInterpEnabled()` 与 `getRoomInfo()`，之后按下面两个事件增量更新；断线重连后有变化时 SDK 会补发。
+
+```typescript
+/** ROOM_INTERP_STATE_CHANGED：同声传译开关状态改变 */
+export interface RoomInterpStateChangeEventData {
+    /** 是否开启 */
+    enabled: boolean;
+    /** 播译音时说话人原声压低到的音量（0~1，0 为静音） */
+    duck_volume: number;
+    /** 被动关闭时的原因（如转写已停止） */
+    err_desc: string;
+}
+
+/** USER_INTERP_LANG_CHANGED：成员的同传语言（我的语言）改变 */
+export interface UserInterpLangChangeEventData {
+    /** 成员用户id */
+    uid: string;
+    /** 生效的语言，如 zh / en（成员恢复默认时为会议默认语言） */
+    lang: string;
 }
 ```
 

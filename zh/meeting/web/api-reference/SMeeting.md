@@ -522,6 +522,48 @@ SMeeting是绝大多数操作的入口。
      * @param templateId 纪要模板 id，不传用应用设置的模板
      */
     adminAiSummaryGenerate(sessionId: string, meetingId?: string, templateId?: string): Promise<void>;
+    /**
+     * 当前会议是否开启了同声传译（0.3.9 起）
+     */
+    isInterpEnabled(): boolean;
+    /**
+     * 主持人 / 联席主持人开启同声传译，转写没开时自动先开。开启后所有成员收到 ROOM_INTERP_STATE_CHANGED，
+     * 译文与译音通过 ASR_TRANSLATION（lang、audio_url）下发，内置播放器自动播放「我的语言」的译音（0.3.9 起）
+     * @returns 转写场次 id，以及播译音时说话人原声压低到的音量（0~1）
+     */
+    startInterp(): Promise<{ session_id: string, duck_volume: number }>;
+    /**
+     * 主持人 / 联席主持人关闭同声传译，转写照常进行（0.3.9 起）
+     */
+    stopInterp(): Promise<void>;
+    /**
+     * 设置我的同传语言：决定我说话按哪种语言识别、别人的话翻译成哪种语言给我听。
+     * 同传没开时也可设置，开启后生效；所有成员随后收到 USER_INTERP_LANG_CHANGED（0.3.9 起）
+     * @param lang 语言码，如 zh / en（zh-CN 这类带地区的按 zh 处理）；空串表示恢复默认语言
+     */
+    setMyInterpLang(lang: string): Promise<void>;
+    /**
+     * 我的同传语言，没设过的按会议默认语言（默认 zh）；不在会中返回空串（0.3.9 起）
+     */
+    getMyInterpLang(): string;
+    /**
+     * 某成员生效的同传语言，没设过的按会议默认语言（默认 zh）（0.3.9 起）
+     * @param uid 成员用户 id
+     */
+    getUserInterpLang(uid: string): string;
+    /**
+     * 从服务端刷新并返回同传状态与成员语言表。入会后 SDK 已自动取过一次、之后按消息增量维护，一般不用主动调（0.3.9 起）
+     */
+    getInterpLangs(): Promise<InterpLangs>;
+    /**
+     * 只听原声：开启后不播任何同传译音（正在播的立即停止），字幕不受影响。用户偏好，离会后保留（0.3.9 起）
+     * @param listenOriginal true 只听原声，false 收听我的语言的译音
+     */
+    setInterpListenOriginal(listenOriginal: boolean): void;
+    /**
+     * 是否只听原声（0.3.9 起）
+     */
+    isInterpListenOriginal(): boolean;
 ```
 
 ---
@@ -552,3 +594,49 @@ if (result.status === 'fail') {
 + **`meeting_api` 的判定**：向会议接口发一个不带签名的请求，收到任何 HTTP 响应都算可达；网络错误或超时算不通，此时 `server` 项记 `fail`、`reason` 为 `meeting_api_unreachable`，总状态随之重算。`server` 已因 SRTC 子检查（SDK 接口、信令、媒体）失败时，保留 SRTC 的 `reason` 与 `message`
 + **服务地址**：`serverUrl` 写会议 token 里的 `client_api`（如 `https://meet.example.com/meeting/client`）最完整；也可以写 SRTC token 的 `client_api` 或服务根地址，但这两种推不出会议接口地址，未登录时 `meeting_api` 记 `skipped`（`server_info_unavailable`）。优先级：显式参数 > `token` > 登录信息
 + **错误码**：同一个实例同时只能跑一个检测，进行中再次调用抛 `106005`；被 `cancelNetworkCheck()` 取消时抛 `106026`；`token` 解不出来时抛 `106031`——这三个是透传的 SRTC 层码，与直接调 SRTC 时一致。未登录且没传 `appId` / `serverUrl`（也没传 `token`）时抛会议层的 `206001`（`NotLoggedIn`）
+
+---
+
+### 同声传译
+
+同声传译（0.3.9 起，需 `@seastart/srtc-web-sdk` 0.7.7 及以上，npm 安装时会自动带上）依附在会议转写上：主持人开启后，每句话定稿后由服务端翻译成在会成员的各种语言并合成语音，每个成员听到的是自己「我的语言」的译音。服务端要先在管理后台「AI 能力 → AI 服务与方案」给应用配好方案（大模型必配，语音合成不配时只有译文字幕、没有译音）。
+
+```typescript
+import { CommonRoomEventType } from '@seastart/smeeting-web-sdk';
+
+// 每个成员：设置自己的语言（同传没开时也可以先设）
+await smeeting.setMyInterpLang('en');
+
+// 主持人：开启 / 关闭
+await smeeting.startInterp();
+await smeeting.stopInterp();
+
+smeeting.onNotifyRoomEvent = (evt) => {
+  switch (evt.type) {
+    case CommonRoomEventType.ROOM_INTERP_STATE_CHANGED:
+      // { enabled, duck_volume, err_desc }：刷新同传开关的界面状态
+      break;
+    case CommonRoomEventType.ASR_TRANSLATION:
+      // 同传开启时同一句按在会成员的语言各来一条，字幕只取我的语言那条
+      if (evt.data.lang === smeeting.getMyInterpLang()) {
+        showSubtitle(evt.data.uid, evt.data.trans_text);
+      }
+      break;
+  }
+};
+
+// 用户选择「只听原声」：不播译音，字幕不受影响
+smeeting.setInterpListenOriginal(true);
+```
+
++ **译音自动播放**：Web SDK 内置同传播放器，不需要业务处理 `audio_url`。只播放「语言等于我的语言、有译音、没选只听原声、不是我自己说的」句子；所有说话人共用一个队列依次播放，不会两段译音叠在一起；等待中超过 4 句时丢弃最旧的
++ **原声压低**：播放某人的译音期间，把这个人的原声压到 `duck_volume`（来自 AI 方案，默认 0.2，`0` 为静音），播完恢复；只影响本端听到的声音
++ **立即停止的情况**：关闭同传、切到只听原声、修改我的语言、离会时，当前译音立即停止、队列清空、原声恢复；说话人离会时丢掉他排队中的句子
++ **字幕与译音的关系**：译音是在译文基础上合成的，字幕照常走 `ASR_TRANSLATION`；同一句在有人用其他语言时会收到多条 `ASR_TRANSLATION`，按 `lang` 过滤
++ **断线重连**：重连后 SDK 自动从服务端刷新同传开关与成员语言表，有变化的补发 `ROOM_INTERP_STATE_CHANGED` / `USER_INTERP_LANG_CHANGED`
++ **入会时的状态**：`isInterpEnabled()`、`getRoomInfo()` 的 `interp_enabled` / `interp_duck_volume` / `interp_langs` / `interp_default_lang`，见 [类型定义 · 房间信息](/zh/meeting/web/types#房间信息)
++ **只有字幕、听不到译音**：先确认 AI 方案配了语音合成；再确认部署时的反向代理放行了 `/aiapi/interp-audio/` 路径（译音从这个路径下载，网页跨域读取），见 [内外网与多线路](/zh/product/deploy/networks#部署时要准备什么)
+
+<Warning>
+同传开启时每句会下发多条不同 `lang` 的译文，不认识 `lang` 字段的旧版客户端会把它们都当字幕显示。会议的各端（Web、App、桌面端）都升级到支持同传的版本后再开放这个功能。
+</Warning>

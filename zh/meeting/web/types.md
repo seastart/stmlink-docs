@@ -427,6 +427,14 @@ export interface RoomInfo {
     extend_info: string;
     /** 会议转写（字幕）是否开启；旧版服务端无此字段（0.3.6 起） */
     asr_enabled?: boolean;
+    /** 同声传译是否开启；旧版服务端无此字段（0.3.9 起） */
+    interp_enabled?: boolean;
+    /** 播译音时说话人原声压低到的音量（0~1，0 为静音）（0.3.9 起） */
+    interp_duck_volume?: number;
+    /** 设过同传语言的成员：uid → 语言。SDK 入会后从服务端取全量、按 USER_INTERP_LANG_CHANGED 增量维护（0.3.9 起） */
+    interp_langs?: Record<string, string>;
+    /** 没设同传语言的成员按此语言算，默认 zh（0.3.9 起） */
+    interp_default_lang?: string;
 }
 ```
 
@@ -977,6 +985,22 @@ export interface MeetingAiTranscript {
     status: number;
     /** 定稿句子，按 begin_ms 升序 */
     sentences: AsrSentence[];
+}
+```
+
+#### 同声传译相关（0.3.9 起）
+`getInterpLangs()` 的返回值。事件数据 `RoomInterpStateChangeEventData`、`UserInterpLangChangeEventData` 见[事件](/zh/meeting/web/events)。
+```typescript
+/** 会议的同声传译状态与成员语言表 */
+export interface InterpLangs {
+    /** 同声传译是否开启 */
+    enabled: boolean;
+    /** 播译音时说话人原声压低到的音量（0~1），未开启时为 0 */
+    duck_volume: number;
+    /** 没设语言的成员按此语言算，如 zh */
+    default_lang: string;
+    /** 设过语言的成员：uid → 语言 */
+    langs: Record<string, string>;
 }
 ```
 

@@ -13,6 +13,19 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.9 - 2026-11-25
+
+#### 新增
++ **会议同声传译**：主持人 / 联席主持人用 `startInterp()` / `stopInterp()` 开关同传（转写没开时自动先开），每个成员用 `setMyInterpLang(lang)` 设置「我的语言」，服务端把每句话翻译成在会成员的语言并合成语音。Web SDK 内置同传播放器，自动依次播放我的语言的译音，播放期间把说话人原声压低（音量来自 AI 方案，默认 20%），播完恢复；`setInterpListenOriginal(true)` 切到只听原声，字幕不受影响。用法见 [SMeeting · 同声传译](/zh/meeting/web/api-reference/SMeeting#同声传译)
++ 新增房间事件 `ROOM_INTERP_STATE_CHANGED`（同传开关变化）、`USER_INTERP_LANG_CHANGED`（成员语言变化），见[事件](/zh/meeting/web/events)；断线重连后有变化时自动补发
++ 新增 `isInterpEnabled()`、`getMyInterpLang()`、`getUserInterpLang(uid)`、`getInterpLangs()`、`isInterpListenOriginal()`；`RoomInfo` 新增 `interp_enabled`、`interp_duck_volume`、`interp_langs`、`interp_default_lang`
++ `ASR_TRANSLATION` 新增 `audio_url`（译音地址，同传开启且合成成功时才有）。同传开启时同一句会按在会成员的语言各来一条，显示字幕时请按 `lang` 过滤为我的语言
++ 底层 SRTC 依赖升级到 Web `^0.7.7`
+
+<Warning>
+同传开启时每句会下发多条不同 `lang` 的译文，未按 `lang` 过滤的旧版客户端会把它们都当字幕显示。请会议的各端都升级后再开放同传；现场有反向代理时需放行 `/aiapi/interp-audio/` 路径，否则只有字幕、听不到译音。
+</Warning>
+
 ### v0.3.8 - 2026-11-24
 
 #### 新增

@@ -25,7 +25,7 @@
 - [集成](https://docs.stmlink.com/zh/rtc/web/integration.md): Web SRTC 音视频 SDK 环境配置与 SDK 安装指南
 - [快速开始](https://docs.stmlink.com/zh/rtc/web/quickstart.md): Web SRTC 音视频 SDK 快速集成，10 分钟跑通基础功能
 - [核心概念](https://docs.stmlink.com/zh/rtc/web/key-concepts.md): Web SRTC 音视频 SDK 核心概念与架构说明
-- [频道消息](https://docs.stmlink.com/zh/rtc/web/channel-messages.md): Web SRTC 音视频 SDK 频道外消息通道使用说明
+- [频道消息](https://docs.stmlink.com/zh/rtc/web/channel-messages.md): Web SRTC 音视频 SDK 的频道外 IM 消息通道（启用、收发、重连与断开），以及同声传译相关的频道内消息 interp_enabled / interp_lang / asr_trans 的字段与译音播放做法
 - [网络质量](https://docs.stmlink.com/zh/rtc/web/network-quality.md): Web SRTC 音视频 SDK 流媒体网络质量监测接口说明
 - [事件参考](https://docs.stmlink.com/zh/rtc/web/events.md): Web SRTC 音视频 SDK 事件列表与触发时机说明
 - [类型定义](https://docs.stmlink.com/zh/rtc/web/types.md): Web SRTC 音视频 SDK 主要类型与结构体定义
@@ -504,7 +504,7 @@
 ## 产品与部署 · 概览
 
 - [产品全景](https://docs.stmlink.com/zh/product/overview.md): 一页看懂我们能提供什么：SRTC 音视频 SDK、SMeeting 会议 SDK、会议室连接器（硬件设备接入）、云录制与语音录制、语音识别、管理后台、终端产品、私有化与光闸部署。不写代码的同学从这里开始
-- [管理后台功能一览](https://docs.stmlink.com/zh/product/admin-console.md): 平台自带的管理后台能做什么：用量统计、频道与会议管理、会中管控、录制布局与录像、设备接入、通讯录、视频点播、授权、账号权限、媒体节点与网关运维。按菜单逐项说明并附截图，评估产品和交付培训时读
+- [管理后台功能一览](https://docs.stmlink.com/zh/product/admin-console.md): 平台自带的管理后台能做什么：用量统计、频道与会议管理、会中管控、录制布局与录像、设备接入、通讯录、视频点播、授权、AI 服务与方案、账号权限、媒体节点与网关运维。按菜单逐项说明并附截图，评估产品和交付培训时读
 - [在线体验](https://docs.stmlink.com/zh/product/demos.md): 想先上手试一试：会议演示（预约、即时会议、会控、成员权限、邀请成员与设备、聊天、布局、历史会议）和 RTC 演示（一对一呼叫、多人会议、语音对讲、多频道、远程监控）各能体验什么，附界面截图，以及如何获取体验地址与账号
 
 ## 产品与部署 · 设备接入（会议室连接器）

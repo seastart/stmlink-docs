@@ -322,6 +322,43 @@ export declare const MicPresets: {
 
 ---
 
+### 插播音频相关
+
+`playAudioClip` 的参数与返回值类型。
+
+```typescript
+/**
+ * 插播音频的数据来源：
+ * - ArrayBuffer / Blob：完整的音频文件内容（wav / mp3 等浏览器能解码的格式）
+ * - string：音频 URL（需允许跨域读取）
+ */
+export type AudioClipSource = ArrayBuffer | Blob | string;
+
+export interface AudioClipOptions {
+  /** 插播音量，范围 0 ~ 1，默认 1 */
+  volume?: number;
+  /**
+   * 输出设备 ID。仅在本地混音流未在播放、插播走独立 <audio> 时使用；
+   * 不传则沿用混音流上次 startPlay 指定的设备。
+   * 本地混音流正在播放时，插播始终跟随混音的输出设备
+   */
+  deviceId?: string;
+  /** 被浏览器自动播放策略拦截时不弹 SDK 内置引导弹窗，直接以 PlayFailed 拒绝 */
+  disableAutoPlayDialog?: boolean;
+}
+
+export interface AudioClipHandle {
+  /** 音频时长（秒）；独立 <audio> 播放且拿不到音频元数据时为 NaN */
+  readonly duration: number;
+  /** 立即停止插播，可重复调用；ended 随之 resolve */
+  stop(): void;
+  /** 播放结束（自然播完、调用 stop、播放中出错）时 resolve，不会 reject */
+  readonly ended: Promise<void>;
+}
+```
+
+---
+
 ### 视频采集、播放、发布相关
 
 ```typescript

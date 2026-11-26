@@ -461,6 +461,85 @@ getRemoteTrack(uid: string, id?: string, desc?: string): RemoteAudioTrack | Remo
 
 ---
 
+### setRemoteUserVolume
+
+设置某个远端用户的收听音量，只影响本端听到的大小，不影响其他成员。典型用法是同声传译：播放译音时把说话人原声压低，播完再恢复。
+
+```typescript
+setRemoteUserVolume(uid: string, volume: number, rampMs?: number): boolean
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `uid` | `string` | 是 | 远端用户 ID |
+| `volume` | `number` | 是 | 音量，范围 0 ~ 1，`0` 为静音、`1` 为原音量；超出范围按边界截断，非数字抛 `InvalidArgument` |
+| `rampMs` | `number` | 否 | 音量渐变时长（ms），默认 `150`，传 `0` 立即生效 |
+
+**返回值**：是否生效。频道使用服务端混音、或已离开频道时返回 `false`（打 warn 日志，不抛错）。
+
++ 对该用户的**所有音频轨**生效（麦克风 + 屏幕共享的系统声音），之后该用户新发布的音轨自动套用；该用户离开频道后设置清除，重新入会恢复原音量
++ 用 [`subscribeRemoteAudioMixTrack`](#subscriberemoteaudiomixtrack) 播放时按人调整，带渐变、不爆音，混音流重新订阅后设置不丢；用 `subscribeRemoteAudioTrack` 逐路播放时作用于该轨的播放音量（无渐变）
++ 服务端混音（混音流只有一路）与视频合成流无法按人调整，此时返回 `false`
++ 参数校验先于上述判断：参数非法一律抛错
+
+> 未加入频道时在 `srtc` 实例上调用会抛出 `NotInChannel`。
+
+---
+
+### getRemoteUserVolume
+
+获取某个远端用户的收听音量。
+
+```typescript
+getRemoteUserVolume(uid: string): number
+```
+
+**返回值**：0 ~ 1；未设置过（或该用户已离开）返回 `1`。
+
+---
+
+### playAudioClip
+
+往本端的声音输出里插播一段音频（如同声传译的译音）。只有本端听得到，不会发布到频道。
+
+```typescript
+playAudioClip(data: AudioClipSource, opt?: AudioClipOptions): Promise<AudioClipHandle>
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | :---: | --- |
+| `data` | `ArrayBuffer \| Blob \| string` | 是 | 音频文件内容（wav / mp3 等浏览器能解码的格式），或音频 URL（需允许跨域读取） |
+| `opt` | `AudioClipOptions` | 否 | 插播音量、输出设备、是否禁用自动播放弹窗，见 [类型定义 · 插播音频](/zh/rtc/web/types#插播音频相关) |
+
+**返回值**：插播句柄 `AudioClipHandle`，含 `duration`（时长，秒）、`stop()`（立即停止，可重复调用）、`ended`（播完或被停止时 resolve，不会 reject）。
+
++ 用 [`subscribeRemoteAudioMixTrack`](#subscriberemoteaudiomixtrack) 得到的混音流正在播放时，插播并入混音，与远端人声从同一个扬声器输出（跟随混音的输出设备）
++ 其他情况（服务端混音、逐路播放、混音流尚未 `startPlay`）用独立的 `<audio>` 播放，输出设备取 `opt.deviceId`，未传则沿用混音流上次 `startPlay` 指定的设备
++ 浏览器拦截自动播放时弹出 SDK 自带的引导弹窗，用户点击后开始播放；`opt.disableAutoPlayDialog: true` 时不弹窗，直接以 `PlayFailed` 拒绝
++ **不排队**：多次调用会叠加同时播放，排队或打断由业务自行处理
++ 离开频道时，进行中的插播全部停止（`ended` 随之 resolve）
+
+**异常**：
+
+| 错误码 | 场景 |
+| --- | --- |
+| `NotInChannel` | 已离开频道后调用；或音频下载 / 解码期间离开频道（此时不会出声） |
+| `PlayFailed` | 下载失败（跨域、断网、HTTP 非 200）、解码失败、播放失败，或禁用弹窗时被自动播放策略拦截 |
+| `InvalidArgument` | `data` 不是 `ArrayBuffer` / `Blob` / `string`，或 `opt.volume` 不是数字 |
+
+```typescript
+const mix = await srtc.subscribeRemoteAudioMixTrack();
+await mix.startPlay();
+
+// 播放译音期间把说话人原声压到 20%，播完恢复
+srtc.setRemoteUserVolume(speakerUid, 0.2);
+const clip = await srtc.playAudioClip(audioUrl);
+await clip.ended;
+srtc.setRemoteUserVolume(speakerUid, 1);
+```
+
+---
+
 ### enableIm
 
 启用频道外 IM 消息功能。

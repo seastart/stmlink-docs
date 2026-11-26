@@ -29,6 +29,7 @@ Channel 对象的频道级方法与 `srtc` 实例上的同名方法**语义完�
 | 发布 | `publishLocalTrack(track, opt?)`、`unpublishLocalTrack(track)`、`getPublishInfo(track)` |
 | 订阅 | `subscribeRemoteAudioMixTrack` / `subscribeRemoteAudioTrack` / `subscribeRemoteVideoTrack` / `subscribeRemoteVideoMcuTrack` / `unsubscribeRemoteTrack` |
 | 质量统计 | `getStreamMetric()`、`getNetworkStats()`、`getConnectionQuality()` |
+| 收听控制 | `setRemoteUserVolume(uid, volume, rampMs?)`、`getRemoteUserVolume(uid)`、`playAudioClip(data, opt?)` |
 | 事件 | `onNotifyEvent` 回调属性、`on()` / `once()` / `off()` 类型化监听 |
 | 离会 | `leave()` |
 
