@@ -2656,3 +2656,216 @@ Response example:
 
 ---
 
+## Start meeting simultaneous interpretation
+
+`POST /server/v1/meet/interp-start`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Start simultaneous interpretation for a meeting in progress: each finalized sentence is translated into the language of each member in the meeting and synthesized into speech, so participants hear interpretation in their own language. Returns session_id and duck_volume.
+
++ Interpretation builds on real-time transcription: if transcription is not on yet, it is started automatically, and the returned session_id is the transcription session
++ Members set their own language with "Set a member's interpretation language"; members who have not set one count as Chinese. Each sentence is translated only into "languages of members in the meeting − the speaker's language"
++ After it starts, clients receive the channel message interp_enabled, and the translated text and audio are delivered through asr_trans (lang, audio_url); duck_volume is the volume the speaker's original voice is lowered to while interpretation audio plays (0~1)
++ Repeated calls are idempotent and can be used to switch the AI profile during a meeting; interpretation stops when transcription stops
+
+The AI profile configured for the app must include a large language model, otherwise an error is returned; if the profile has no speech synthesis, only the translated text is delivered.
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID; the meeting must be in progress
+</ParamField>
+
+<ParamField body="profile" type="string">
+  AI profile name (configured under "AI Services & Profiles" in the admin console); if omitted, the profile in the app's AI settings is used (max length 64)
+  Example: `default`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": "",
+  "profile": "default"
+}
+```
+
+**Response parameters**
+
+<ResponseField name="session_id" type="string">
+  Recognition session ID (interpretation runs on the transcription session)
+</ResponseField>
+
+<ResponseField name="duck_volume" type="number">
+  Volume the speaker's original voice is lowered to while interpretation audio plays (0~1, 0 = muted), from the AI profile
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": {
+    "duck_volume": 0,
+    "session_id": ""
+  }
+}
+```
+
+---
+
+## Stop meeting simultaneous interpretation
+
+`POST /server/v1/meet/interp-stop`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Stop simultaneous interpretation for a meeting; real-time transcription continues as before. Returns success even if interpretation is not on.
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## Set a member's interpretation language
+
+`POST /server/v1/meet/interp-set-lang`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Set a participant's interpretation language ("My language"): it decides which language the participant's speech is recognized in, and which language other people's speech is translated into for them.
+
++ Can be set while the meeting is in progress; if interpretation is not on yet, the setting is kept and takes effect when it starts; cleared when the meeting ends
++ After it is set, clients receive the channel message interp_lang (uid, lang)
++ For members who mix Chinese and English when speaking, Chinese is recommended
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID; the meeting must be in progress
+</ParamField>
+
+<ParamField body="user_id" type="string" required>
+  Member's user ID
+</ParamField>
+
+<ParamField body="lang" type="string">
+  Language code (zh / en, etc.; regional codes such as zh-CN are treated as zh); empty restores the default language (Chinese) (max length 16)
+  Example: `en`
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "lang": "en",
+  "meeting_id": "",
+  "user_id": ""
+}
+```
+
+**Response parameters**
+
+`data` is null
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## Get meeting interpretation status and member languages
+
+`POST /server/v1/meet/interp-langs`
+
+Authentication: required (see [Overview](/en/meeting/server-api/overview))
+
+Get the interpretation status and member language table of a meeting in progress.
+
++ enabled is whether interpretation is on; duck_volume is the volume the speaker's original voice is lowered to while interpretation audio plays (0 when off)
++ langs only contains members who have set a language (uid → language); the others use default_lang
+
+**Request parameters**
+
+<ParamField body="meeting_id" type="string" required>
+  Meeting ID
+</ParamField>
+
+
+Request example:
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**Response parameters**
+
+<ResponseField name="enabled" type="boolean">
+  Whether simultaneous interpretation is on
+</ResponseField>
+
+<ResponseField name="duck_volume" type="number">
+  Volume the speaker's original voice is lowered to while interpretation audio plays (0~1); 0 when interpretation is off
+</ResponseField>
+
+<ResponseField name="default_lang" type="string">
+  Language used for members who have not set one, e.g. zh
+</ResponseField>
+
+<ResponseField name="langs" type="object">
+  Members who have set a language: uid → language
+</ResponseField>
+
+
+Response example:
+
+```json
+{
+  "code": 0,
+  "data": {
+    "default_lang": "",
+    "duck_volume": 0,
+    "enabled": false,
+    "langs": {}
+  }
+}
+```
+
+---
+

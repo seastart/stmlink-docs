@@ -2656,3 +2656,216 @@ description: "会前会后的会议编排：创建、修改、取消、查询，
 
 ---
 
+## 开启会议同声传译
+
+`POST /server/v1/meet/interp-start`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+对进行中的会议开启同声传译：每句话定稿后翻译成在会成员各自的语言并合成语音，参会者听到的是自己语言的译音。返回 session_id 与 duck_volume。
+
++ 同传依附在实时转写上：会议还没开转写时自动开启，返回的 session_id 即转写场次
++ 成员用「设置同传语言」设自己的语言，没设的按中文；每句只翻译成「在会成员的语言 − 说话人的语言」
++ 开启后客户端收到频道消息 interp_enabled，译文与译音通过 asr_trans（lang、audio_url）下发；duck_volume 是播译音时说话人原声压低到的音量（0~1）
++ 重复调用幂等，可用于会中更换 AI 方案；关闭转写时同传随之关闭
+
+需要平台为应用配置的 AI 方案包含大模型，否则返回对应错误；方案没配语音合成时只下发译文。
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID，必须是进行中的会议
+</ParamField>
+
+<ParamField body="profile" type="string">
+  AI 方案名（运营后台「AI 服务与方案」里配置），不传用应用 AI 设置的方案（最大长度 64）
+  示例：`default`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": "",
+  "profile": "default"
+}
+```
+
+**响应参数**
+
+<ResponseField name="session_id" type="string">
+  识别场次ID(同传依附在转写场次上)
+</ResponseField>
+
+<ResponseField name="duck_volume" type="number">
+  播译音时说话人原声压到的音量(0~1, 0=静音), 来自 AI 方案
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "duck_volume": 0,
+    "session_id": ""
+  }
+}
+```
+
+---
+
+## 关闭会议同声传译
+
+`POST /server/v1/meet/interp-stop`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+关闭会议的同声传译，实时转写照常进行。没开启时也返回成功。
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 设置成员的同传语言
+
+`POST /server/v1/meet/interp-set-lang`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+设置参会成员的同传语言（「我的语言」）：决定他说话时按哪种语言识别，以及别人的话翻译成哪种语言给他听。
+
++ 会议进行中即可设置，同传没开也会记住，开启时生效；会议结束后清除
++ 设置后客户端收到频道消息 interp_lang（uid、lang）
++ 中英夹杂说话的成员建议设中文
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID，必须是进行中的会议
+</ParamField>
+
+<ParamField body="user_id" type="string" required>
+  成员的用户ID
+</ParamField>
+
+<ParamField body="lang" type="string">
+  语言码（zh / en 等，zh-CN 这类带地区的按 zh 处理），空表示恢复默认语言（中文）（最大长度 16）
+  示例：`en`
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "lang": "en",
+  "meeting_id": "",
+  "user_id": ""
+}
+```
+
+**响应参数**
+
+`data` 为 null
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": null
+}
+```
+
+---
+
+## 查询会议同传状态与成员语言
+
+`POST /server/v1/meet/interp-langs`
+
+鉴权：需要（见[概览](/zh/meeting/server-api/overview)）
+
+查询进行中会议的同传状态与成员语言表。
+
++ enabled 为同传是否开启，duck_volume 为播译音时说话人原声压低到的音量（未开启时为 0）
++ langs 只含设过语言的成员（uid → 语言），没设的按 default_lang
+
+**请求参数**
+
+<ParamField body="meeting_id" type="string" required>
+  会议ID
+</ParamField>
+
+
+请求示例：
+
+```json
+{
+  "meeting_id": ""
+}
+```
+
+**响应参数**
+
+<ResponseField name="enabled" type="boolean">
+  同声传译是否开启
+</ResponseField>
+
+<ResponseField name="duck_volume" type="number">
+  播译音时说话人原声压到的音量(0~1), 未开启时为0
+</ResponseField>
+
+<ResponseField name="default_lang" type="string">
+  没设语言的成员按此语言算, 如 zh
+</ResponseField>
+
+<ResponseField name="langs" type="object">
+  设过语言的成员: uid → 语言
+</ResponseField>
+
+
+响应示例：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "default_lang": "",
+    "duck_volume": 0,
+    "enabled": false,
+    "langs": {}
+  }
+}
+```
+
+---
+

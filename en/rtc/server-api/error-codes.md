@@ -60,6 +60,8 @@ A `code` of `0` in the response body means success. Any other value means failur
 | `1064` | AiSummaryGenerating | The summary is being generated |
 | `1065` | AiSummaryNotFound | Summary not found |
 | `1066` | AiTemplateNotFound | Summary template not found |
+| `1067` | AiConfigVersionConflict | The AI configuration has been modified by someone else; please refresh and save again |
+| `1068` | AiProfileNotFound | AI profile not found |
 | `1070` | StreamOutGatewayNotFound | No stream output gateway available |
 | `1071` | StreamOutGatewayFailed | Stream output gateway failed to issue the stream URL |
 | `1072` | LivePushGatewayNotFound | No live push gateway available |
