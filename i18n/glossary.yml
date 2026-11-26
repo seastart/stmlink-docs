@@ -570,6 +570,44 @@ product:
     en: installer / offline installation package
   - zh: 统一入口 / 统一存储 / 媒体节点 / 媒体网关
     en: unified entry point / unified storage / media node / media gateway
+  # —— AI 能力（zh/product/ai/，2026-11-26 首译，用户已确认 2026-11-26）——
+  - zh: AI 能力（导航分组）
+    en: AI capabilities
+  - zh: AI 服务与方案 / AI 服务 / AI 方案
+    en: AI services and profiles / AI service / AI profile
+    note: 用户已确认 2026-11-26。管理后台菜单「AI 能力 → AI 服务与方案」写 **AI capabilities → AI services and profiles**；「方案」不写 plan / scheme
+  - zh: 应用 AI 设置
+    en: App AI settings
+  - zh: 一键模板
+    en: one-click template
+  - zh: 大模型
+    en: LLM
+    note: 每页首次出现写 "large language model (LLM)"，后文用 LLM
+  - zh: 语音合成
+    en: speech synthesis
+    note: 指服务类别时也可写 TTS（如 HTTP template TTS、OpenAI-compatible TTS）；语音识别见 SRTC 节「语音转写 / 语音识别」
+  - zh: 实时字幕 / 实时翻译（字幕）
+    en: live captions / live translation
+    note: 正文泛指字幕时写 captions，不写 subtitles
+  - zh: 热词
+    en: hot words
+  - zh: 场次（转写场次）
+    en: session
+    note: 指一次开启到关闭语音转写的过程；与「频道」不是一回事，频道仍译 channel（见 forbidden）
+  - zh: 会议纪要 / 纪要模板 / 纪要记录（后台菜单）
+    en: meeting minutes / Minutes templates / Minutes records
+  - zh: 同声传译 / 我的语言 / 只听原声
+    en: simultaneous interpretation / My language / Original audio only
+    note: 用户已确认 2026-11-26。「我的语言」「只听原声」是会议客户端界面上的开关名，首字母大写；网页会议客户端有英文界面，不附中文原文
+  - zh: AI 语音客服
+    en: AI voice agent
+    note: 用户已确认 2026-11-26。不直译 customer service
+  - zh: 自研智能体 / 自己开发智能体
+    en: custom agents / Build your own agent
+    note: 用户已确认 2026-11-26
+  - zh: 风远离线 TTS（一键模板名）
+    en: Freewind offline TTS
+    note: 用户已确认 2026-11-26。我方自带的离线语音合成；「风远」作我方公司名时译 Freewind
 
 # ---------------------------------------------------------------------------
 # 6. 禁止译法 —— 审校专项检查项，出现即改
