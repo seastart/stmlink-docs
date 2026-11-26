@@ -48,7 +48,7 @@ description: "一页看懂平台的全部 AI 能力：实时字幕与转写、�
 
 ## 一句话是怎么变成字幕、纪要和译音的
 
-```mermaid
+```mermaid actions={false}
 flowchart LR
     U["参会人<br/>说话"] --> S["音视频服务<br/>（媒体转发）"]
     S --> G["语音识别网关"]

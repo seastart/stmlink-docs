@@ -44,7 +44,7 @@ AI 能力在平台之外**多装几个服务**：语音识别、语音合成，�
 
 ## 服务之间谁访问谁
 
-```mermaid
+```mermaid actions={false}
 flowchart LR
     GW["媒体网关<br/>（识别 / 语音客服）"] --> ASR["FunASR<br/>中文 10095 / 英文 10097"]
     GW --> LLM["大模型<br/>客户自备"]

@@ -29,7 +29,7 @@ description: "会中同声传译：主持人一键开启，每人设「我的语
 
 ## 工作原理
 
-```mermaid
+```mermaid actions={false}
 sequenceDiagram
     participant A as 中方发言人
     participant G as 语音识别
