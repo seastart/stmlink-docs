@@ -13,6 +13,25 @@ npm info @seastart/smeeting-web-sdk version
 
 ---
 
+### v0.3.9 - 2026-11-25
+
+#### Added
++ **Simultaneous interpretation for meetings**: the host / co-host turns interpretation on and off with `startInterp()` / `stopInterp()` (transcription is turned on first automatically if it isn't on), and each member sets "my language" with `setMyInterpLang(lang)`. The server translates each sentence into the languages of the members in the meeting and synthesizes speech. The Web SDK has a built-in interpretation player that plays interpretation audio in my language one after another, lowering the speaker's original voice while it plays (the volume comes from the AI profile, default 20%) and restoring it afterward; `setInterpListenOriginal(true)` switches to listening to the original voice only, without affecting captions. See [SMeeting · Simultaneous interpretation](/en/meeting/web/api-reference/SMeeting#simultaneous-interpretation) for usage
++ Added the room events `ROOM_INTERP_STATE_CHANGED` (interpretation turned on/off) and `USER_INTERP_LANG_CHANGED` (a member's language changed), see [Events](/en/meeting/web/events); re-emitted automatically after reconnecting if anything changed
++ Added `isInterpEnabled()`, `getMyInterpLang()`, `getUserInterpLang(uid)`, `getInterpLangs()`, and `isInterpListenOriginal()`; `RoomInfo` adds `interp_enabled`, `interp_duck_volume`, `interp_langs`, and `interp_default_lang`
++ `ASR_TRANSLATION` adds `audio_url` (interpretation audio URL, present only when interpretation is on and synthesis succeeded). When interpretation is on, each sentence arrives once per language of the members in the meeting; filter by `lang` to my language when showing captions
++ The underlying SRTC dependency is upgraded to Web `^0.7.7`
+
+<Warning>
+When interpretation is on, each sentence is delivered as multiple translations with different `lang` values, and older clients that don't filter by `lang` show all of them as captions. Upgrade all meeting clients before enabling interpretation; if there's a reverse proxy on site, allow the `/aiapi/interp-audio/` path, otherwise you get captions only and no interpretation audio.
+</Warning>
+
+### v0.3.8 - 2026-11-24
+
+#### Added
++ **Pre-call network check `networkCheck`**: call it before entering a meeting, without entering; no parameters are needed when logged in (when not logged in, pass the meeting token, or `appId` + `serverUrl`). The five checks (network permission, network connection, MTU, DNS resolution, server connectivity) are done by the SRTC layer and passed through as is; the meeting layer additionally checks in the server connectivity item whether the meeting API is reachable. `onItem` reports progress item by item, and the call finally returns a summary, with each item carrying a description you can show to users directly. Call `cancelNetworkCheck()` to cancel. See [SMeeting · Pre-call network check](/en/meeting/web/api-reference/SMeeting#pre-call-network-check) for usage and [Pre-call network check types](/en/meeting/web/types#pre-call-network-check-types-since-0-3-8) for the types
++ The underlying SRTC dependency is upgraded to Web `^0.7.6`
+
 ### v0.3.7 - 2026-11-24
 
 #### Added

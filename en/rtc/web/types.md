@@ -322,6 +322,43 @@ export declare const MicPresets: {
 
 ---
 
+### Audio clip types
+
+Parameter and return types of `playAudioClip`.
+
+```typescript
+/**
+ * Data source of an audio clip:
+ * - ArrayBuffer / Blob: complete audio file content (wav, mp3, or another format the browser can decode)
+ * - string: audio URL (cross-origin reads must be allowed)
+ */
+export type AudioClipSource = ArrayBuffer | Blob | string;
+
+export interface AudioClipOptions {
+  /** Clip volume, from 0 to 1, default 1 */
+  volume?: number;
+  /**
+   * Output device ID. Used only when the local mixed audio track isn't playing and the clip plays through a separate <audio>;
+   * if not passed, uses the device specified in the last startPlay of the mixed audio track.
+   * While the local mixed audio track is playing, the clip always follows the mix's output device
+   */
+  deviceId?: string;
+  /** When blocked by the browser's autoplay policy, don't show the SDK's built-in prompt dialog; reject with PlayFailed instead */
+  disableAutoPlayDialog?: boolean;
+}
+
+export interface AudioClipHandle {
+  /** Audio length (seconds); NaN when playing through a separate <audio> and the audio metadata isn't available */
+  readonly duration: number;
+  /** Stops the clip immediately; safe to call repeatedly; ended resolves accordingly */
+  stop(): void;
+  /** Resolves when playback ends (finished naturally, stop called, or an error during playback); never rejects */
+  readonly ended: Promise<void>;
+}
+```
+
+---
+
 ### Video capture, playback, and publishing
 
 ```typescript
@@ -736,6 +773,124 @@ export interface EnvWebInfo {
   devicePixelRatio: number;
 }
 ```
+
+---
+
+### Pre-call network check types
+
+Parameter and result types of `srtc.networkCheck()`.
+
+#### NetworkCheckOptions
+
+```typescript
+export interface NetworkCheckOptions {
+  /** App ID, used together with serverUrl; or pass only token and let the SDK extract it */
+  appId?: string;
+  /** SDK API address, i.e. the client_api in the join token (such as https://rtc.example.com/client/) */
+  serverUrl?: string;
+  /**
+   * Join / IM token (optional). If you already have a token, you can pass only it, and the SDK extracts the app ID and SDK API address from it;
+   * if appId / serverUrl are also passed, the explicitly passed values win. The check doesn't authenticate with the token, so an expired token also works
+   */
+  token?: string;
+  /** Per-item timeout in ms, default 3000 */
+  timeoutMs?: number;
+  /** Progress callback: called once each time an item completes (in a fixed order) */
+  onItem?: (item: NetworkCheckItem) => void;
+}
+```
+
+#### NetworkCheckResult
+
+```typescript
+export interface NetworkCheckResult {
+  /** Overall status: fail if any item fails; warning if no fail but any warning; otherwise ok (skipped / unsupported don't count) */
+  status: 'ok' | 'warning' | 'fail';
+  /** Always 5 items in a fixed order: permission, connectivity, mtu, dns, server */
+  items: NetworkCheckItem[];
+  /** Total time in ms */
+  costMs: number;
+}
+```
+
+#### NetworkCheckItem
+
+```typescript
+/** Check item id */
+export type NetworkCheckItemId = 'permission' | 'connectivity' | 'mtu' | 'dns' | 'server';
+
+/**
+ * Item / sub-check status: pass passed; warning has a potential issue but doesn't affect use; fail failed;
+ * skipped not needed; unsupported not supported on the current platform
+ */
+export type NetworkCheckItemStatus = 'pass' | 'warning' | 'fail' | 'skipped' | 'unsupported';
+
+export interface NetworkCheckItem {
+  /** Check item id */
+  id: NetworkCheckItemId;
+  /** Check status */
+  status: NetworkCheckItemStatus;
+  /** Machine-readable reason code; empty string on pass */
+  reason: string;
+  /** Chinese description for people, can be shown to users directly */
+  message: string;
+  /** Time taken by this item in ms */
+  costMs: number;
+  /**
+   * Measurements of each item:
+   * - permission / mtu / dns: {}
+   * - connectivity: { netType: NetworkCheckNetType }
+   * - server: NetworkCheckServerData
+   */
+  data: Record<string, any>;
+}
+
+/** Network type */
+export type NetworkCheckNetType = 'wifi' | 'cellular' | 'ethernet' | 'unknown';
+```
+
+#### NetworkCheckServerData
+
+The `data` of the server connectivity item (`id` is `server`), containing 3 sub-checks: SDK API, signaling, and media.
+
+```typescript
+export interface NetworkCheckSubResult {
+  /** Whether it's reachable */
+  ok: boolean;
+  /** Sub-check status (ok is false when skipped / unsupported, but it doesn't count as a failure) */
+  status: NetworkCheckItemStatus;
+  /** Machine-readable reason code; empty on pass */
+  reason: string;
+  /** Time taken in ms (0 when not run) */
+  rttMs: number;
+}
+
+export interface NetworkCheckServerData {
+  /**
+   * Whether the SDK API is reachable. On failure, httpStatus is the non-200 HTTP status code (404 when an older server version lacks the API),
+   * and code is the business error code returned by the server (such as app_id not found)
+   */
+  api: NetworkCheckSubResult & { code?: number; httpStatus?: number };
+  /** Whether signaling can connect; JS can only use WebSocket, so via is always 'ws' */
+  signal: NetworkCheckSubResult & { via: 'tcp' | 'ws' };
+  /** Whether media (SFU UDP) is reachable */
+  media: NetworkCheckSubResult;
+}
+```
+
+#### Reason codes
+
+| `reason` | Appears in | Meaning | `message` |
+| --- | --- | --- | --- |
+| `offline` | connectivity | No network connection | 当前没有网络连接 (No network connection) |
+| `api_unreachable` | server, `data.api` | The SDK API can't be reached: no network, wrong server address, an older server version without the check API, or the server returned a business error | 无法连接服务器，请检查网络或服务器地址 (Can't connect to the server; check the network or server address) |
+| `signal_unreachable` | server, `data.signal` | Can't connect to the signaling WebSocket | 无法连接信令服务器，请联系网络管理员放行 (Can't connect to the signaling server; ask your network administrator to allow it) |
+| `udp_blocked` | server, `data.media` | UDP to the media server is blocked | 无法连接媒体服务器（UDP 被拦截），请联系网络管理员放行 (Can't connect to the media server (UDP blocked); ask your network administrator to allow it) |
+| `media_unavailable` | server, `data.media` | The server has no media node available | 服务器暂无可用的媒体节点，请稍后重试 (No media node available on the server; try again later) |
+| `vendor_not_supported` | `data.media` (skipped) | The server's streaming media isn't seastart, so there's no media node to probe | — |
+| `server_info_unavailable` | `data.signal`, `data.media` (skipped) | The SDK API call failed, so the signaling / media addresses aren't available | — |
+
+When both signaling and media fail, the server item's `reason` is the signaling reason.
 
 ---
 

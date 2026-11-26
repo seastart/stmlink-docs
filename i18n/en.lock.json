@@ -566,14 +566,14 @@
   "en/meeting/web/api-reference/SMeeting": {
     "reviewed": false,
     "source": "zh/meeting/web/api-reference/SMeeting.md",
-    "zh_blob": "b008c0615e2c88e031dcd3ba2c336bc4b02eb9eb",
-    "zh_commit": "1e1b90d7e67983d4bcf28713519685f818a724c2"
+    "zh_blob": "dfb458103ffdbe4933e09637f965efb47d0d59b2",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/meeting/web/changelog": {
     "reviewed": false,
     "source": "zh/meeting/web/changelog.mdx",
-    "zh_blob": "d6a9e58226b2dde54c904b830a9f39319784963e",
-    "zh_commit": "bf54fda6b7bdfb16c7e84f923f29b14d7f1da6a3"
+    "zh_blob": "58c5f5ac05d60b15e6aa47f6e4eb0f2d24f86207",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/meeting/web/error-codes": {
     "reviewed": false,
@@ -584,8 +584,8 @@
   "en/meeting/web/events": {
     "reviewed": false,
     "source": "zh/meeting/web/events.md",
-    "zh_blob": "2647b40048bdaac2dce81a5ae4965310a8e39281",
-    "zh_commit": "65d8b919a4b116eaf5e16e8e4807dce05e7d86ec"
+    "zh_blob": "75c67aed026f8f3d50136a3af7596cc0cfb263d4",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/meeting/web/integration": {
     "reviewed": true,
@@ -602,8 +602,8 @@
   "en/meeting/web/types": {
     "reviewed": false,
     "source": "zh/meeting/web/types.md",
-    "zh_blob": "edca7deb2b8bbed05482e9f0fdf96415e0f33990",
-    "zh_commit": "412ed3271f43515539a9968b73c51e628ff0b68a"
+    "zh_blob": "c7286c80eb873baf8c8aa525443080de9ec739f5",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/meeting/web/whiteboard": {
     "reviewed": true,
@@ -716,8 +716,8 @@
   "en/product/admin-console": {
     "reviewed": false,
     "source": "zh/product/admin-console.md",
-    "zh_blob": "8543c3f3ce0179d68efd46f49276e242e88cdbdc",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "3e38661988bcbe52d3309152531df77230c816aa",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/product/demos": {
     "reviewed": false,
@@ -740,8 +740,8 @@
   "en/product/deploy/networks": {
     "reviewed": false,
     "source": "zh/product/deploy/networks.md",
-    "zh_blob": "f0c8eeaf558b00fb32bf4ac1bd79e1c3eec89229",
-    "zh_commit": "734d2175309d6c1961fb03b4e650dbfb6b3323f9"
+    "zh_blob": "74ee184903a27725cd533452f8290d2c156bf0b9",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/product/deploy/optical-gap": {
     "reviewed": false,
@@ -1440,10 +1440,10 @@
     "zh_commit": "e562b045ee2a49ff90474cbcfe26a3cfd21e3f1d"
   },
   "en/rtc/web/advanced/multi-channel": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/web/advanced/multi-channel.md",
-    "zh_blob": "a5d9cca56ce984762e7c620bcff689bdaf8246ea",
-    "zh_commit": "e0a1f6a8c95cca4aa120845f2829ce9e22f9cce9"
+    "zh_blob": "b4f7df497dfbe62c438e41e3444b386172355c4e",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/rtc/web/advanced/multi-window-video-layout": {
     "reviewed": true,
@@ -1476,10 +1476,10 @@
     "zh_commit": "f52ddaaf59f9f1c4c30b3ed4960e671faebd0a58"
   },
   "en/rtc/web/api-reference/SRTC": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/web/api-reference/SRTC.md",
-    "zh_blob": "2ee4faaead8ac1629690d2e0e96389a7b9a8704d",
-    "zh_commit": "8b85c0191675b109c9a8e70b280729725efc3abf"
+    "zh_blob": "2a68e9cf9b661fdd48b37aa2f60c3d9def771e43",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/rtc/web/api-reference/media-tracks": {
     "reviewed": true,
@@ -1490,14 +1490,14 @@
   "en/rtc/web/changelog": {
     "reviewed": false,
     "source": "zh/rtc/web/changelog.mdx",
-    "zh_blob": "a2727d62eb87a6f15b675038189f9162e58348c4",
-    "zh_commit": "f31899894620a2296bb51019256f44ff5642b7ff"
+    "zh_blob": "05954333358241d9beddc7faa490bac52e8ea000",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/rtc/web/channel-messages": {
-    "reviewed": true,
+    "reviewed": false,
     "source": "zh/rtc/web/channel-messages.md",
-    "zh_blob": "fc9f4cb1f3ed938016705811ca3bd08124803fa2",
-    "zh_commit": "aa714aca92cba52e24b68c7217d8868266b55342"
+    "zh_blob": "e1a2c81e7c8f07ad5831fcc78f14c9e7a8ebb096",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/rtc/web/error-codes": {
     "reviewed": false,
@@ -1544,8 +1544,8 @@
   "en/rtc/web/types": {
     "reviewed": false,
     "source": "zh/rtc/web/types.md",
-    "zh_blob": "b58bcfeae3a825ddc90f7cbbb4150ab0c12c8d8d",
-    "zh_commit": "369d98c422c5d7d3c984dc15054496aa2efc9859"
+    "zh_blob": "30b079ecaabdc7561e7fc2a78ff17ae0de036723",
+    "zh_commit": "fff22c7713ddfd74dd03326add1c1e556c855469"
   },
   "en/rtc/whiteboard": {
     "reviewed": true,

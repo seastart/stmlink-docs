@@ -29,6 +29,7 @@ The channel-level methods on the Channel object have **exactly the same semantic
 | Publishing | `publishLocalTrack(track, opt?)`, `unpublishLocalTrack(track)`, `getPublishInfo(track)` |
 | Subscribing | `subscribeRemoteAudioMixTrack` / `subscribeRemoteAudioTrack` / `subscribeRemoteVideoTrack` / `subscribeRemoteVideoMcuTrack` / `unsubscribeRemoteTrack` |
 | Quality statistics | `getStreamMetric()`, `getNetworkStats()`, `getConnectionQuality()` |
+| Playback control | `setRemoteUserVolume(uid, volume, rampMs?)`, `getRemoteUserVolume(uid)`, `playAudioClip(data, opt?)` |
 | Events | `onNotifyEvent` callback property, `on()` / `once()` / `off()` typed listeners |
 | Leaving | `leave()` |
 

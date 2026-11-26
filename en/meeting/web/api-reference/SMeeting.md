@@ -27,6 +27,17 @@ SMeeting is the entry point for most operations.
      */
     logout(): Promise<void>;
     /**
+     * Pre-call network check: call it before entering a meeting, without entering; no parameters needed when logged in (since 0.3.8)
+     * The check is done by the SRTC layer and passed through; the meeting layer adds a sub-check meeting_api (whether the meeting API is reachable) to the server item
+     * @param options When not logged in, pass appId + serverUrl, or token; see "Pre-call network check" below
+     * @returns The check result, always 5 items in a fixed order
+     */
+    networkCheck(options?: MeetingNetworkCheckOptions): Promise<NetworkCheckResult>;
+    /**
+     * Cancels the network check in progress; networkCheck then ends with the SRTC-layer 106026 (Cancelled). No-op when no check is running (since 0.3.8)
+     */
+    cancelNetworkCheck(): void;
+    /**
      * Create a meeting
      * @returns Room number
      */
@@ -514,4 +525,121 @@ SMeeting is the entry point for most operations.
      * @param templateId Minutes template id; defaults to the app's template
      */
     adminAiSummaryGenerate(sessionId: string, meetingId?: string, templateId?: string): Promise<void>;
+    /**
+     * Whether simultaneous interpretation is on in the current meeting (since 0.3.9)
+     */
+    isInterpEnabled(): boolean;
+    /**
+     * The host / co-host turns on simultaneous interpretation; transcription is turned on first automatically if it isn't on. All members then get ROOM_INTERP_STATE_CHANGED,
+     * translations and interpretation audio arrive via ASR_TRANSLATION (lang, audio_url), and the built-in player automatically plays interpretation audio in "my language" (since 0.3.9)
+     * @returns The transcription session id, and the volume the speaker's original voice is lowered to while interpretation audio plays (0–1)
+     */
+    startInterp(): Promise<{ session_id: string, duck_volume: number }>;
+    /**
+     * The host / co-host turns off simultaneous interpretation; transcription continues (since 0.3.9)
+     */
+    stopInterp(): Promise<void>;
+    /**
+     * Sets my interpretation language: which language my speech is recognized in, and which language others' speech is translated into for me.
+     * Can be set even when interpretation is off, taking effect once it's on; all members then get USER_INTERP_LANG_CHANGED (since 0.3.9)
+     * @param lang Language code, such as zh / en (codes with a region like zh-CN are treated as zh); an empty string resets to the default language
+     */
+    setMyInterpLang(lang: string): Promise<void>;
+    /**
+     * My interpretation language; the meeting's default language (zh by default) if never set; an empty string when not in a meeting (since 0.3.9)
+     */
+    getMyInterpLang(): string;
+    /**
+     * A member's effective interpretation language; the meeting's default language (zh by default) if never set (since 0.3.9)
+     * @param uid Member user id
+     */
+    getUserInterpLang(uid: string): string;
+    /**
+     * Refreshes and returns the interpretation state and member language table from the server. The SDK already fetches it once after entering and maintains it incrementally from messages, so you usually don't need to call it (since 0.3.9)
+     */
+    getInterpLangs(): Promise<InterpLangs>;
+    /**
+     * Listen to the original only: when on, no interpretation audio plays (any playing audio stops immediately); captions are unaffected. A user preference, kept after exiting the meeting (since 0.3.9)
+     * @param listenOriginal true to listen to the original only, false to listen to interpretation audio in my language
+     */
+    setInterpListenOriginal(listenOriginal: boolean): void;
+    /**
+     * Whether listening to the original only (since 0.3.9)
+     */
+    isInterpListenOriginal(): boolean;
 ```
+
+---
+
+### Pre-call network check
+
+Call `networkCheck` **before entering a meeting**. It doesn't require entering and doesn't use token authentication (since 0.3.8; requires `@seastart/srtc-web-sdk` 0.7.6 or later, which npm installs automatically).
+
+All five checks (network permission, network connection, MTU, DNS resolution, server connectivity) are done by the SRTC layer and passed through as is, with the same types and the same platform limitations as [SRTC · networkCheck](/en/rtc/web/api-reference/SRTC#networkcheck) (on the Web, `permission`, `mtu`, and `dns` are always `unsupported`). The meeting layer only adds one sub-check, `meeting_api`, to the server connectivity item (`server`): whether the meeting API is reachable. For parameters and types, see [Pre-call network check types](/en/meeting/web/types#pre-call-network-check-types-since-0-3-8).
+
+```typescript
+import { SMeeting } from '@seastart/smeeting-web-sdk';
+
+const smeeting = new SMeeting({});
+// Logged in: no need to pass appId / serverUrl; the SDK uses the login info
+// Not logged in: pass token (the meeting token used for login), or appId + serverUrl (the client_api in the meeting token)
+const result = await smeeting.networkCheck({
+  token: meetingToken,
+  onItem: (item) => console.log(item.id, item.status, item.message),
+});
+if (result.status === 'fail') {
+  const bad = result.items.find((i) => i.status === 'fail');
+  showTip(bad?.message); // message is a Chinese description you can show to users directly
+}
+```
+
++ **Total duration**: the meeting API probe runs in parallel with the SRTC checks, adding no extra time; each item times out after 3 seconds by default (adjustable with `timeoutMs`). The four items from `permission` to `dns` are reported one by one as the SRTC checks progress; the `server` item is reported only after the meeting API probe also finishes
++ **How `meeting_api` is judged**: the SDK sends an unsigned request to the meeting API, and any HTTP response counts as reachable. A network error or timeout counts as unreachable; the `server` item is then `fail` with `reason` `meeting_api_unreachable`, and the overall status is recalculated. When `server` has already failed because of an SRTC sub-check (SDK API, signaling, media), the SRTC `reason` and `message` are kept
++ **Service address**: `serverUrl` is most complete as the `client_api` in the meeting token (such as `https://meet.example.com/meeting/client`). You can also use the `client_api` of the SRTC token or the service root address, but neither lets the SDK derive the meeting API address; when not logged in, `meeting_api` is `skipped` (`server_info_unavailable`). Priority: explicit parameters > `token` > login info
++ **Error codes**: an instance can run only one check at a time; calling again while one is in progress throws `106005`. When canceled by `cancelNetworkCheck()`, it throws `106026`; when `token` can't be decoded, it throws `106031`. These three are SRTC-layer codes passed through, the same as when calling SRTC directly. When not logged in and neither `appId` / `serverUrl` nor `token` is passed, it throws the meeting-layer `206001` (`NotLoggedIn`)
+
+---
+
+### Simultaneous interpretation
+
+Simultaneous interpretation (since 0.3.9; requires `@seastart/srtc-web-sdk` 0.7.7 or later, which npm installs automatically) builds on meeting transcription: once the host turns it on, each finalized sentence is translated by the server into the languages of the members in the meeting and synthesized into speech, and each member hears interpretation audio in their own "my language". On the server side, first configure a profile for the app under **AI capabilities → AI services and profiles** in the admin console (a large language model is required; without speech synthesis there are only translated captions, no interpretation audio).
+
+```typescript
+import { CommonRoomEventType } from '@seastart/smeeting-web-sdk';
+
+// Every member: set your own language (you can set it before interpretation is on)
+await smeeting.setMyInterpLang('en');
+
+// Host: turn on / off
+await smeeting.startInterp();
+await smeeting.stopInterp();
+
+smeeting.onNotifyRoomEvent = (evt) => {
+  switch (evt.type) {
+    case CommonRoomEventType.ROOM_INTERP_STATE_CHANGED:
+      // { enabled, duck_volume, err_desc }: refresh the UI state of the interpretation switch
+      break;
+    case CommonRoomEventType.ASR_TRANSLATION:
+      // When interpretation is on, each sentence arrives once per language of the members in the meeting; show only the one in my language as captions
+      if (evt.data.lang === smeeting.getMyInterpLang()) {
+        showSubtitle(evt.data.uid, evt.data.trans_text);
+      }
+      break;
+  }
+};
+
+// The user chooses "listen to the original only": no interpretation audio, captions unaffected
+smeeting.setInterpListenOriginal(true);
+```
+
++ **Automatic interpretation audio playback**: the Web SDK has a built-in interpretation player, so you don't need to handle `audio_url`. It plays only sentences whose language equals my language, that have interpretation audio, when "listen to the original only" isn't selected, and that weren't spoken by me. All speakers share one queue played in order, so two clips never overlap; when more than 4 sentences are waiting, the oldest is dropped
++ **Lowering the original voice**: while someone's interpretation audio plays, that person's original voice is lowered to `duck_volume` (from the AI profile, default 0.2, `0` is muted) and restored afterward; this only affects what you hear locally
++ **When playback stops immediately**: turning interpretation off, switching to "listen to the original only", changing my language, or exiting the meeting immediately stops the current audio, clears the queue, and restores the original voice; when a speaker exits the meeting, their queued sentences are dropped
++ **Captions vs. interpretation audio**: the audio is synthesized from the translation, and captions still come through `ASR_TRANSLATION`; when others use other languages, the same sentence arrives as multiple `ASR_TRANSLATION` events, so filter by `lang`
++ **Reconnecting**: after reconnecting, the SDK automatically refreshes the interpretation state and member language table from the server and re-emits `ROOM_INTERP_STATE_CHANGED` / `USER_INTERP_LANG_CHANGED` for anything that changed
++ **State when entering**: `isInterpEnabled()`, and `interp_enabled` / `interp_duck_volume` / `interp_langs` / `interp_default_lang` from `getRoomInfo()`; see [Types · Room info](/en/meeting/web/types#room-info)
++ **Captions but no interpretation audio**: first make sure the AI profile has speech synthesis configured; then make sure the reverse proxy at deployment allows the `/aiapi/interp-audio/` path (interpretation audio is downloaded from this path and read cross-origin by web pages), see [Internal network and public internet](/en/product/deploy/networks#what-to-prepare-at-deployment)
+
+<Warning>
+When interpretation is on, each sentence is delivered as multiple translations with different `lang` values, and older clients that don't know the `lang` field show all of them as captions. Enable this feature only after all meeting clients (Web, App, desktop) are upgraded to versions that support interpretation.
+</Warning>

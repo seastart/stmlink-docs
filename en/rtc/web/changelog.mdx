@@ -19,9 +19,14 @@ npm info @seastart/srtc-web-sdk version
 
 ### Recent updates
 
+### v0.7.7 - 2026-11-25
+
++ **New per-user playback volume `setRemoteUserVolume` / `getRemoteUserVolume`**: adjusts how loud you hear a given user locally (0 to 1, with a ramp and no popping). It applies to both the user's microphone and screen-sharing audio, audio tracks the user publishes later pick it up automatically, and it's cleared when the user leaves the channel. It only affects you, not other members. Per-user adjustment isn't possible in channels with server-side mixing; the call returns `false`. See [SRTC · setRemoteUserVolume](/en/rtc/web/api-reference/SRTC#setremoteuservolume) for usage
++ **New audio clip playback `playAudioClip`**: plays an audio clip (ArrayBuffer / Blob / URL) into your local audio output. While the mixed audio track is playing, the clip comes out of the same speaker as remote voices. The returned handle gives the duration, lets you stop at any time, and lets you wait for it to finish. Only you hear it; it isn't published to the channel, and it stops automatically when you leave the channel. Suitable for playing interpretation audio for simultaneous interpretation, notification sounds, and similar cases. See [SRTC · playAudioClip](/en/rtc/web/api-reference/SRTC#playaudioclip) for usage and [Audio clip types](/en/rtc/web/types#audio-clip-types) for the types
+
 ### v0.7.6 - 2026-11-24
 
-+ **New pre-call network check `networkCheck`**: call it before joining, without joining a channel. It checks 5 items in order: network permission, network connection, MTU, DNS resolution, and server connectivity (SDK API, signaling, media). `onItem` reports progress item by item, and the call finally returns a summary, with each item carrying a description you can show to users directly. Call `cancelNetworkCheck()` to cancel. On the Web, the network permission, MTU, and DNS resolution items are reported as "not supported" due to browser limitations. The check requires the server to provide the network check API; with an older server version, the server connectivity item fails. See [SRTC · networkCheck (Chinese)](/zh/rtc/web/api-reference/SRTC#networkcheck) for usage and [Pre-call network check types (Chinese)](/zh/rtc/web/types#会前网络检测相关) for the types
++ **New pre-call network check `networkCheck`**: call it before joining, without joining a channel. It checks 5 items in order: network permission, network connection, MTU, DNS resolution, and server connectivity (SDK API, signaling, media). `onItem` reports progress item by item, and the call finally returns a summary, with each item carrying a description you can show to users directly. Call `cancelNetworkCheck()` to cancel. On the Web, the network permission, MTU, and DNS resolution items are reported as "not supported" due to browser limitations. The check requires the server to provide the network check API; with an older server version, the server connectivity item fails. See [SRTC · networkCheck](/en/rtc/web/api-reference/SRTC#networkcheck) for usage and [Pre-call network check types](/en/rtc/web/types#pre-call-network-check-types) for the types
 
 ### v0.7.5 - 2026-11-23
 

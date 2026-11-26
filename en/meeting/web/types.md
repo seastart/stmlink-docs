@@ -427,6 +427,14 @@ export interface RoomInfo {
     extend_info: string;
     /** Whether meeting transcription (captions) is on; absent on older servers (since 0.3.6) */
     asr_enabled?: boolean;
+    /** Whether simultaneous interpretation is on; absent on older servers (since 0.3.9) */
+    interp_enabled?: boolean;
+    /** Volume the speaker's original voice is lowered to while interpretation audio plays (0–1, 0 is muted) (since 0.3.9) */
+    interp_duck_volume?: number;
+    /** Members who have set an interpretation language: uid → language. The SDK fetches the full table from the server after entering and maintains it incrementally with USER_INTERP_LANG_CHANGED (since 0.3.9) */
+    interp_langs?: Record<string, string>;
+    /** Language used for members who haven't set an interpretation language, default zh (since 0.3.9) */
+    interp_default_lang?: string;
 }
 ```
 
@@ -979,3 +987,64 @@ export interface MeetingAiTranscript {
     sentences: AsrSentence[];
 }
 ```
+
+#### Simultaneous interpretation types (since 0.3.9)
+The return value of `getInterpLangs()`. For the event data `RoomInterpStateChangeEventData` and `UserInterpLangChangeEventData`, see [Events](/en/meeting/web/events).
+```typescript
+/** The meeting's simultaneous interpretation state and member language table */
+export interface InterpLangs {
+    /** Whether simultaneous interpretation is on */
+    enabled: boolean;
+    /** Volume the speaker's original voice is lowered to while interpretation audio plays (0–1); 0 when off */
+    duck_volume: number;
+    /** Language used for members who haven't set one, such as zh */
+    default_lang: string;
+    /** Members who have set a language: uid → language */
+    langs: Record<string, string>;
+}
+```
+
+#### Pre-call network check types (since 0.3.8)
+The parameter of `networkCheck()` is `MeetingNetworkCheckOptions`, and it returns the SRTC-layer `NetworkCheckResult`. The result types `NetworkCheckResult`, `NetworkCheckItem`, `NetworkCheckSubResult`, and so on are the same as in SRTC and re-exported as is by the meeting package; for their definitions and the SRTC reason codes, see [SRTC · Pre-call network check types](/en/rtc/web/types#pre-call-network-check-types). The mini program package exports the same types.
+```typescript
+/** Meeting-layer network check parameters (same name and parameters as the SRTC-layer networkCheck; all optional when logged in) */
+export interface MeetingNetworkCheckOptions {
+    /** App ID. Optional when logged in (taken from the login info); when not logged in, pass it with serverUrl, or pass only token */
+    appId?: string;
+    /**
+     * Service address; optional when logged in. Any of these three forms works:
+     * - the client_api in the meeting token (such as https://meet.example.com/meeting/client): both the meeting API and the SRTC API can be derived;
+     * - the client_api in the SRTC token (such as https://meet.example.com/client/);
+     * - the service root address (such as https://meet.example.com).
+     * The last two only determine the SRTC API: when not logged in, the meeting API address isn't available, and meeting_api is skipped (server_info_unavailable)
+     */
+    serverUrl?: string;
+    /**
+     * Meeting login token (the token used for login; an SRTC token also works). When not logged in, you can pass only it, and the SDK takes the app ID and service address from it;
+     * if appId / serverUrl are also passed, the explicitly passed values win. The check doesn't authenticate with the token, so an expired token also works
+     */
+    token?: string;
+    /** Per-item timeout in ms, default 3000 */
+    timeoutMs?: number;
+    /** Progress callback: called once each time an item completes (in the fixed order permission → connectivity → mtu → dns → server) */
+    onItem?: (item: NetworkCheckItem) => void;
+}
+
+/** data of the meeting-layer server item (id is server): the SRTC-layer api / signal / media, plus meeting_api */
+export interface MeetingNetworkCheckServerData extends NetworkCheckServerData {
+    /**
+     * Whether the meeting API is reachable: any HTTP response counts as reachable; a network error / timeout counts as unreachable (reason: meeting_api_unreachable);
+     * skipped (reason: server_info_unavailable) when not logged in and only an SRTC address was given, so the meeting API address isn't available
+     */
+    meeting_api: NetworkCheckSubResult;
+}
+```
+
+Reason codes added by the meeting layer:
+
+| `reason` | Appears in | Meaning | `message` |
+| --- | --- | --- | --- |
+| `meeting_api_unreachable` | server, `data.meeting_api` | The meeting API can't be reached: no network, or the service address is wrong | 无法连接会议服务器，请检查网络或服务器地址 (Can't connect to the meeting server; check the network or server address) |
+| `server_info_unavailable` | `data.meeting_api` (skipped) | Not logged in and only an SRTC address / service root address was given, so the meeting API address can't be derived | — |
+
+When `server` has already failed because of an SRTC sub-check, `reason` / `message` keep the SRTC values, and an unreachable `meeting_api` shows up only in `data.meeting_api`.

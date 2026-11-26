@@ -46,6 +46,7 @@ Usually there are two lines: **internal network** and **public internet**. You c
 2. **Firewall mapping**: map the public-internet line's 443/TCP, 18883/TCP, and 39001/UDP to the platform server, **keeping the same port numbers**
 3. **Domain and certificate**: the internal network and the public internet usually use different access addresses, and the certificate must cover the domain users actually access
 4. **Choose the network mode in the installer**: internal network only, public internet only, or both. After installation, you can view and change each line's entry address under **System configuration → Network** in the admin console
+5. **When there's a reverse proxy / gateway in front of the entry**: besides the API, signaling, and web pages, also allow the `/aiapi/interp-audio/` path (interpretation audio downloads for simultaneous interpretation, read cross-origin by web pages; keep the CORS response headers returned by the server). If it's missing, interpretation only shows captions and no interpretation audio is heard
 
 <Warning>
 **Watch out for data centers whose inbound and outbound IPs differ**: in many data centers, the public IP users come in through isn't the IP the server uses to go out.

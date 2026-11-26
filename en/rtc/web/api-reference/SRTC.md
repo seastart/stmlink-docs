@@ -43,6 +43,50 @@ getEnvInfo(): EnvWebInfo
 
 ---
 
+### networkCheck
+
+Pre-call network check: call it **before joining**. It doesn't require joining a channel and doesn't use token authentication. It checks 5 items in order (network permission, network connection, MTU, DNS resolution, server connectivity), calls `onItem` each time an item completes, and finally returns a summary. Each item times out after 3 seconds by default (adjustable with `timeoutMs`). Within the server connectivity item, the SDK API is tested first, then signaling and media in parallel, so the whole check takes at most about 3 item timeouts (about 9 seconds by default).
+
+```typescript
+networkCheck(options: NetworkCheckOptions): Promise<NetworkCheckResult>
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `options` | `NetworkCheckOptions` | Yes | Check parameters: `appId` + `serverUrl` (the `client_api` in the token), or pass `token` directly; see [NetworkCheckOptions](/en/rtc/web/types#networkcheckoptions) |
+
+**Return value:** `Promise<NetworkCheckResult>`, always 5 items in a fixed order; see [Pre-call network check types](/en/rtc/web/types#pre-call-network-check-types)
+
+```typescript
+const srtc = new SRTC({});
+const result = await srtc.networkCheck({
+  appId: 'your_app_id',
+  serverUrl: 'https://rtc.example.com/client/', // the client_api in the token
+  onItem: (item) => console.log(item.id, item.status, item.message),
+});
+if (result.status === 'fail') {
+  const bad = result.items.find((i) => i.status === 'fail');
+  showTip(bad?.message); // message is a Chinese description you can show to users directly
+}
+```
+
+- Web platform limitations: browsers have no queryable network permission, can't access raw UDP, and can't resolve domain names on their own, so the `permission`, `mtu`, and `dns` items are always `unsupported` (DNS resolution failures show up in the server connectivity item). Signaling is tested over WebSocket only.
+- When the server's streaming media isn't seastart, the media sub-check in the server connectivity item is `skipped` (`vendor_not_supported`).
+- The server must provide the network check API. With an older server version that lacks it, the server connectivity item is `fail` (`api_unreachable`, with `data.api.httpStatus` `404`), and the signaling and media sub-checks are `skipped`.
+- An instance can run only one check at a time; calling it again while a check is in progress throws `106005`. When canceled by [cancelNetworkCheck](#cancelnetworkcheck), it throws `106026`. When `appId` / `serverUrl` is missing and `token` can't be decoded, it throws `106031`. `destroy()` automatically cancels a check in progress.
+
+---
+
+### cancelNetworkCheck
+
+Cancels the network check in progress; `networkCheck` then ends with `106026` (`Cancelled`). Has no effect when no check is running.
+
+```typescript
+cancelNetworkCheck(): void
+```
+
+---
+
 ### onNotifyChannelEvent
 
 In-channel event callback. We recommend registering it before `join`.
@@ -414,6 +458,85 @@ getRemoteTrack(uid: string, id?: string, desc?: string): RemoteAudioTrack | Remo
 | `desc` | `string` | No | Track description; pass either this or `id` |
 
 > You must pass at least one of `id` and `desc`; otherwise it throws.
+
+---
+
+### setRemoteUserVolume
+
+Sets the playback volume of a remote user. It only affects how loud you hear that user locally and does not affect other members. A typical use is simultaneous interpretation: lower the speaker's original voice while the interpretation audio plays, and restore it afterward.
+
+```typescript
+setRemoteUserVolume(uid: string, volume: number, rampMs?: number): boolean
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `uid` | `string` | Yes | Remote user ID |
+| `volume` | `number` | Yes | Volume, from 0 to 1: `0` is muted and `1` is the original volume. Out-of-range values are clamped to the bounds; a non-number throws `InvalidArgument` |
+| `rampMs` | `number` | No | Volume ramp duration (ms), default `150`; pass `0` to apply immediately |
+
+**Return value**: whether the setting took effect. Returns `false` (with a warn log, no exception) when the channel uses server-side mixing or you have already left the channel.
+
++ Applies to **all audio tracks** of the user (microphone + system audio from screen sharing), and audio tracks the user publishes later pick it up automatically. The setting is cleared when the user leaves the channel; the user has the original volume after joining again
++ When playing through [`subscribeRemoteAudioMixTrack`](#subscriberemoteaudiomixtrack), the volume is adjusted per user, with a ramp and no popping, and the setting survives resubscribing to the mixed audio track. When playing tracks individually through `subscribeRemoteAudioTrack`, it sets the playback volume of that track (no ramp)
++ Per-user adjustment isn't possible with server-side mixing (only one mixed audio stream) or the composite video stream; in that case it returns `false`
++ Parameters are validated before the checks above: invalid parameters always throw
+
+> Calling it on the `srtc` instance before joining a channel throws `NotInChannel`.
+
+---
+
+### getRemoteUserVolume
+
+Gets the playback volume of a remote user.
+
+```typescript
+getRemoteUserVolume(uid: string): number
+```
+
+**Return value**: from 0 to 1; returns `1` if never set (or the user has left).
+
+---
+
+### playAudioClip
+
+Plays an audio clip into your local audio output (such as interpretation audio for simultaneous interpretation). Only you hear it; it isn't published to the channel.
+
+```typescript
+playAudioClip(data: AudioClipSource, opt?: AudioClipOptions): Promise<AudioClipHandle>
+```
+
+| Parameter | Type | Required | Description |
+| --- | --- | :---: | --- |
+| `data` | `ArrayBuffer \| Blob \| string` | Yes | Audio file content (wav, mp3, or another format the browser can decode), or an audio URL (cross-origin reads must be allowed) |
+| `opt` | `AudioClipOptions` | No | Clip volume, output device, and whether to disable the autoplay dialog; see [Types · Audio clip](/en/rtc/web/types#audio-clip-types) |
+
+**Return value**: a clip handle `AudioClipHandle`, with `duration` (length in seconds), `stop()` (stops immediately; safe to call repeatedly), and `ended` (resolves when playback finishes or is stopped; never rejects).
+
++ While the mixed audio track from [`subscribeRemoteAudioMixTrack`](#subscriberemoteaudiomixtrack) is playing, the clip is merged into the mix and comes out of the same speaker as remote voices (following the mix's output device)
++ In other cases (server-side mixing, per-track playback, or the mixed audio track not yet started with `startPlay`), the clip plays through a separate `<audio>` element. The output device is `opt.deviceId`; if not passed, it uses the device specified in the last `startPlay` of the mixed audio track
++ When the browser blocks autoplay, the SDK's built-in prompt dialog appears and playback starts after the user clicks. With `opt.disableAutoPlayDialog: true`, no dialog appears and the call rejects with `PlayFailed`
++ **No queuing**: multiple calls play simultaneously on top of each other; queue or interrupt clips in your own code
++ When you leave the channel, all clips in progress stop (and `ended` resolves)
+
+**Exceptions**:
+
+| Error code | When |
+| --- | --- |
+| `NotInChannel` | Called after leaving the channel, or you left the channel while the audio was downloading or decoding (nothing is played) |
+| `PlayFailed` | Download failed (CORS, network down, HTTP status not 200), decoding failed, playback failed, or autoplay was blocked with the dialog disabled |
+| `InvalidArgument` | `data` isn't an `ArrayBuffer` / `Blob` / `string`, or `opt.volume` isn't a number |
+
+```typescript
+const mix = await srtc.subscribeRemoteAudioMixTrack();
+await mix.startPlay();
+
+// Lower the speaker's original voice to 20% while the interpretation audio plays, then restore it
+srtc.setRemoteUserVolume(speakerUid, 0.2);
+const clip = await srtc.playAudioClip(audioUrl);
+await clip.ended;
+srtc.setRemoteUserVolume(speakerUid, 1);
+```
 
 ---
 

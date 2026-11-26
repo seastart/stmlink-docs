@@ -1,6 +1,6 @@
 ---
 title: "Admin console features"
-description: "What the built-in admin console does, menu by menu with screenshots: usage stats, channel and meeting management, in-meeting controls, recording, devices, contacts, VOD, licensing, accounts, and media node and gateway operations. Read when evaluating the product or preparing training."
+description: "What the built-in admin console does, menu by menu with screenshots: usage stats, channel and meeting management, in-meeting controls, recording, devices, contacts, VOD, licensing, AI services and profiles, accounts, and media node and gateway operations. Read when evaluating the product or preparing training."
 ---
 
 Every platform comes with a web-based **admin console** (after deployment, open `https://<your-domain>/admin/`). Administrators can manage apps,
@@ -24,6 +24,7 @@ meetings, recording, devices, and servers without writing code. Switch the **app
 | **Top-up management** | View this platform's platform code (provided when applying for a license), and allocate user concurrency, device concurrency, and validity period to apps | All |
 | **File licenses** | Import license files and view the total and remaining quota of each license | All |
 | **Device licenses** | Activation records and expiry dates of client devices | All |
+| **AI capabilities** | AI services and profiles (speech recognition, large language model, speech synthesis), minutes templates, app AI settings, and meeting minutes | All |
 | **System management** | Console accounts, roles, and menu permissions | All |
 | **Operations management** | Client access addresses (network lines), media nodes, media gateways, MCU alarms, and operation logs | All |
 
@@ -46,6 +47,26 @@ Set the default video layout for cloud recording (auto grid, or a custom layout 
 play back and download recordings under **Recording files**; and view per-speaker audio segments under **Voice recording**.
 
 ![Recording settings](/zh/product/images/admin-record.png)
+
+---
+
+## AI capabilities
+
+The AI services used by meeting transcription, live translation, meeting minutes, and simultaneous interpretation are all configured here, not in configuration files.
+
+**AI services and profiles**: first register **services**—the API address, model, and key of each speech recognition (ASR), large language model (LLM), and speech synthesis (TTS) service;
+you can "Test" the connectivity of each service individually. Then combine services into a **profile**:
+
++ Which speech recognition service to use for each language ("Other languages" can serve as a fallback)
++ Which large language model to use for translation and minutes
++ Which speech synthesis service to use, and the voice and speaking rate for each language
++ During simultaneous interpretation, how low the speaker's original voice is turned down while interpretation audio plays (default 20%; can be set to mute)
+
+You can have multiple profiles, one of which is set as the default. Keys are stored encrypted, and the page only shows masked values. A profile selected by an app can't be deleted or renamed.
+
+**App AI settings**: per app, choose the AI profile (the default profile if none is chosen), the minutes template, whether to generate minutes automatically, whether to translate live and the target language, and recognition hot words.
+
+**Minutes templates / Meeting minutes**: maintain the prompt templates used to generate minutes; view the minutes and raw transcript of each meeting, and regenerate them.
 
 ---
 

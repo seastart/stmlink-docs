@@ -90,6 +90,10 @@ CommonRoomEventType and the corresponding `data` are defined as follows:
     static readonly ASR_TRANSLATION = 'asr_translation';
     /** Meeting minutes finished or failed; data is AiSummaryReadyEventData (since 0.3.6) */
     static readonly AI_SUMMARY_READY = 'ai_summary_ready';
+    /** Simultaneous interpretation on/off state changed; data is RoomInterpStateChangeEventData (since 0.3.9) */
+    static readonly ROOM_INTERP_STATE_CHANGED = 'room_interp_state_changed';
+    /** A member's interpretation language ("my language") changed; data is UserInterpLangChangeEventData (since 0.3.9) */
+    static readonly USER_INTERP_LANG_CHANGED = 'user_interp_lang_changed';
 
     /** In-meeting sign-in; data is SignInActivityEventData */
     static readonly SIGN_IN_ACTIVITY = 'sign_in_activity';
@@ -437,8 +441,13 @@ export interface AsrTranslationEventData {
     text: string;
     /** Translated text */
     trans_text: string;
-    /** Translation language, e.g. en / zh */
+    /** Translation language, e.g. en / zh. When interpretation is on, each sentence arrives once per language of the members in the meeting; for captions, take the one whose lang equals my language */
     lang: string;
+    /**
+     * URL of the synthesized speech for the translation (absolute URL, already built by the SDK), present only when simultaneous interpretation is on and synthesis succeeded; expires after 10 minutes (since 0.3.9).
+     * The interpretation player built into the Web SDK plays it automatically by its rules, so you usually don't need to handle it
+     */
+    audio_url: string;
 }
 
 /** AI_SUMMARY_READY: meeting minutes finished or failed; get the content with aiSummary() */
@@ -447,6 +456,30 @@ export interface AiSummaryReadyEventData {
     session_id: string;
     /** Minutes status: 2 done, 3 failed */
     status: number;
+}
+```
+
+### Simultaneous interpretation (since 0.3.9)
+
+For how to use interpretation and the playback rules of the built-in player, see [SMeeting · Simultaneous interpretation](/en/meeting/web/api-reference/SMeeting#simultaneous-interpretation). For the interpretation state when entering, check `isInterpEnabled()` and `getRoomInfo()`, then update incrementally with the two events below; after reconnecting, the SDK re-emits them if anything changed.
+
+```typescript
+/** ROOM_INTERP_STATE_CHANGED: simultaneous interpretation on/off state changed */
+export interface RoomInterpStateChangeEventData {
+    /** Whether it's on */
+    enabled: boolean;
+    /** Volume the speaker's original voice is lowered to while interpretation audio plays (0–1, 0 is muted) */
+    duck_volume: number;
+    /** Reason for a passive shutdown (such as transcription having stopped) */
+    err_desc: string;
+}
+
+/** USER_INTERP_LANG_CHANGED: a member's interpretation language ("my language") changed */
+export interface UserInterpLangChangeEventData {
+    /** Member user id */
+    uid: string;
+    /** The effective language, such as zh / en (the meeting's default language when the member resets to default) */
+    lang: string;
 }
 ```
 
