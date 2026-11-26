@@ -1177,13 +1177,13 @@ fun enterMeetingByMeetingId(
 fun exitWaitingRoom(callback: MeetingResultCallback)
 ```
 
-方法说明：在尚未完成 SRTC 入会时退出当前等候室。
+方法说明：在尚未完成 SRTC 入会时退出当前等待页。入会返回 `MeetingServerErrorCode.ENTER_WAITING_ROOM`（`2118`，进入等候室）或 `ENTER_BEFORE_HOST`（`2120`，等待主持人，自 `2.0.48` 起）后均可调用，当前用户会同时被移出等候室与等主持人名单。
 
 参数说明：
 
 | 参数 | 说明 |
 | --- | --- |
-| `callback` | 退出结果回调；缺少等候室上下文时返回 `WAITING_ROOM_CONTEXT_MISSING`。 |
+| `callback` | 退出结果回调；缺少等待上下文时返回 `WAITING_ROOM_CONTEXT_MISSING`。 |
 
 返回值说明：无（异步结果见回调）。
 

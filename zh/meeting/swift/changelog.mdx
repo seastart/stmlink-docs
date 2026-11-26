@@ -3,6 +3,23 @@ title: "更新日志"
 description: "Swift SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.14.0] - 2026.11.26
+#### 新增
++ **「等待主持人」支持**：会议开启了「主持人入会前禁止加入」、且主持人 / 联席主持人 / 创建者都未入会时，`enterRoom` 报服务端码 `2120`（新增常量 `SMeetingError.enterBeforeHostCode`）。此时服务端已把本人记入等主持人名单，App 应进入「等待主持人」页，而不是当作失败退出；主持人等任一管理员入会后收到 `meeting(_:imHostEntered:)`，带原密码重新 `enterRoom` 即可。见 [等候室 - 等待主持人入会](/zh/meeting/swift/advanced/waiting-room#等待主持人入会)。
++ **等候室错误码常量** `SMeetingError.waitingRoomCode`（`2118`）：入会被转入等候室。两个开关都开时先报 `2120`、主持人到了再入会才报 `2118`。
++ **两条新的会议外消息事件**（需 `enableIm()`，`SMeetingDelegate` 默认空实现，已有代码无需修改）：
+  + `meeting(_:imHostEntered:)`：主持人 / 联席主持人 / 创建者入会，私发给正在等主持人的成员
+  + `meeting(_:imWaitingMeetingEnd:)`：会议结束或取消，私发给还在等待页（等主持人或等候室）的成员，建议提示「会议已结束」并离开等待页
+  + 数据均为 `ImWaitingMeetingContent`（`meetingId`、`roomNo`、`title`），请按 `meetingId` / `roomNo` 判断是不是当前等待的那场；`ImEventType` 新增 `hostEntered`（`host_entered`）、`waitingMeetingEnd`（`waiting_meeting_end`）
+
+#### 变更
++ `host_entered`、`waiting_meeting_end` 两条消息改为派发到上面的具名事件，**不再走 `imCustomMsg`**。此前自己在 `imCustomMsg` 里按 action 解析这两条消息的，请改用新事件（`imDidReceiveMessage` 原样透传不变）。
++ `exitWaitingRoom` 同时把本人移出等主持人名单，等候室与等主持人两种等待页离开时都调用它。
+
+<Note>
+依赖的 SRTC 仍为 1.10.0，平台下限不变（iOS 16 / macOS 12.3）。「等待主持人」与这两条消息需要会议服务端支持。
+</Note>
+
 ### [1.13.0] - 2026.11.25
 #### 新增
 + **呼叫事件带上强制入会标记**：`ImCallContent` 新增 `forceJoin`（JSON 键 `force_join`，缺省 `false`）。管理员经服务端 `meet-admin/call-users` 带 `force_join=true` 呼叫时为 `true`，建议不弹来电界面、直接进入目标会议（在别的会议里先退出自己）。见 [会议外消息](/zh/meeting/swift/advanced/im#有人呼叫你)。

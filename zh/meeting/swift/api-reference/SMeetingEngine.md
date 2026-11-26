@@ -273,6 +273,7 @@ try await meeting.enterRoom(req)
 + `SMeetingError.notLoggedIn`
 + `SMeetingError.alreadyInMeeting` —— 已经在会议中，需要先 `exitRoom()`
 + `SMeetingError.apiError(code:message:)` —— 密码错误、会议不存在、被限制入会等
+  + `code == SMeetingError.waitingRoomCode`（`2118`）：被转入等候室；`code == SMeetingError.enterBeforeHostCode`（`2120`）：需等待主持人入会。这两种都不是失败，应进入等待页，见 [等候室](/zh/meeting/swift/advanced/waiting-room)（常量 1.14.0 起）
 + 底层连接建立失败时抛出的错误
 
 成功后 SDK 会自动订阅远端音频，视频按需订阅。

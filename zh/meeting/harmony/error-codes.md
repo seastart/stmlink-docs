@@ -63,6 +63,17 @@ description: "SMeeting HarmonyOS SDK 的错误类型 SMeetingError、数字错�
 | `responseParseFailed` | `208356` | `Response parse failed: <detail>` | 响应不是 JSON、缺 `code` 字段或缺必需字段（1.1.0 起，原为 `208200` / `207999`） | 检查服务端与 SDK 版本 |
 | `apiError` | 后端码 | 后端返回的文案 | 业务后端返回错误 | 按后端码排查，文案语言随 `setLanguage` |
 
+### 需要按码分流的后端码
+
+1.10.0 起 SDK 导出 `MeetingServerErrorCode`，收录入会时**不该当作失败**的两个后端码（以 `apiError` 抛出，`code` 即此值）：
+
+| 常量 | `code` | 含义 | 建议处理 |
+| --- | --- | --- | --- |
+| `MeetingServerErrorCode.enterWaitingRoom` | `2118` | 会议开启了等候室，被转入等候室 | 进入等待页；收到 `onImAdminMoveOutWaitingRoom` 后重新入会 |
+| `MeetingServerErrorCode.enterBeforeHost` | `2120` | 会议开启了「主持人入会前禁止加入」，且主持人 / 联席主持人 / 创建者都未入会 | 进入「等待主持人」页；收到 `onImHostEntered` 后重新入会 |
+
+两种等待页离开时都调用 `exitWaitingRoom`；等待期间会议结束或取消会收到 `onImWaitingMeetingEnd`。见 [等候室](/zh/meeting/harmony/advanced/waiting-room#等待主持人入会)。
+
 <Note>
 `unauthorized`（`208004`）是会控接口最常见的错误。所有 `admin*` 方法都要求
 主持人或联席主持人身份 —— UI 上应该按 `Role` 提前隐藏 / 禁用按钮，
@@ -121,7 +132,7 @@ ArkTS 里直接把错误对象序列化进日志会得到空对象。排障时�
 ### 入会失败还有一条独立通路
 
 `enterRoom()` 抛错只覆盖"请求阶段就失败"。**入会请求成功、但后续被服务端拒绝**
-（比如会议已锁定、被移入等候室）走的是事件：
+（比如会议已锁定）走的是事件（入会被转入等候室 `2118`、需等主持人 `2120` 以 `apiError` 抛出，见上文）：
 
 ```typescript
 onRoomJoinFailed: (meeting, data) => {

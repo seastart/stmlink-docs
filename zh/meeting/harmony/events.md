@@ -278,6 +278,8 @@ await meeting.requestShare(shareType, preset, /* byAdmin */ true, /* adminUid */
 | `onImCallCalling` | `base: ImBaseEventData`, `content: ImCallContent` | 收到呼叫 |
 | `onImMeetingRemind` | `base`, `content: ImMeetingRemindContent` | 会议提醒 |
 | `onImAdminMoveOutWaitingRoom` | `base`, `content: ImSubMeetingContent` | 被移出等候室 |
+| `onImHostEntered` | `base`, `content: ImWaitingMeetingContent` | 你在等主持人（入会报 `2120`），主持人 / 联席主持人 / 创建者入会了（1.10.0 起） |
+| `onImWaitingMeetingEnd` | `base`, `content: ImWaitingMeetingContent` | 你在等待页（等主持人或等候室），会议结束或被取消（1.10.0 起） |
 | `onImUserHelpSubMeeting` | `base`, `content: ImSubMeetingContent` | 子会议求助 |
 
 IM 类事件统一是「`base` + `content`」两段结构：

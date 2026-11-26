@@ -902,7 +902,7 @@ MeetingKitRoom *room = [[MeetingKit sharedInstance] createRoomWithDelegate:self]
 
 请求离开等候室
 
-用户离开等候室后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomUserExitWaitingRoom:nickname:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理员用户。
+在等候室或等待主持人入会（入会返回 `2120`）两种等待状态下都可调用，用户主动离开等待页时调用。用户离开等候室后，SDK 会通过 `MeetingKitRoomDelegate` 中的 [meetingRoom:onRoomUserExitWaitingRoom:nickname:()](/zh/meeting/ios/api-reference/MeetingKitRoomDelegate) 回调通知房间内管理员用户。
 
 | 参数 | 描述 |
 | :--- | --- |

@@ -1,13 +1,13 @@
 ---
 title: "MeetingImEvent"
-description: "接收 Meeting IM 连接、重连、原始消息、呼叫、会议提醒、等候室与讨论组求助事件"
+description: "接收 Meeting IM 连接、重连、原始消息、呼叫、会议提醒、等候室、等待主持人与讨论组求助事件"
 ---
 
 `MeetingImEvent` 接收与 Engine 中 IM 连接同生命周期的持续状态和业务消息，通过 `MeetingEngine.imEvent` 注册。可继承 `MeetingImSimpleEvent` 按需覆写。
 
 ## 使用说明
 
-+ IM 连接独立于当前会议；会议提醒、等候室和讨论组求助等会外消息也从该接口分发。
++ IM 连接独立于当前会议；会议提醒、等候室、等待主持人和讨论组求助等会外消息也从该接口分发。
 
 + 先调用 `enableIm()` 建立连接；`disableIm()` 或 `release()` 导致的主动断开不会触发 `onImDisconnected()`。
 + 回调保持 IM 实际来源线程，更新 UI 前应切换到主线程。
@@ -175,5 +175,39 @@ fun onUserHelpSubMeeting(
 | --- | --- |
 | `uid` | 求助成员 UID。 |
 | `userHelpSubMeeting` | 主会议、讨论组及讨论组标题信息。 |
+
+返回值说明：无（`Unit`）。
+
+### onHostEntered(uid, notice)
+
+```kotlin
+fun onHostEntered(uid: String, notice: ImContent.WaitingMeetingNotice) = Unit
+```
+
+方法说明：自 `2.0.48` 起提供，默认空实现。当前用户入会时返回 `MeetingServerErrorCode.ENTER_BEFORE_HOST`（`2120`）、正在等待主持人，主持人（或联席主持人、创建者）已进入会议。收到后应使用原密码重新入会；若会议同时开启了等候室，重新入会会返回 `2118` 进入等候室。
+
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 消息发送方 UID。 |
+| `notice` | 目标会议 ID、会议号与标题，见 [`ImContent.WaitingMeetingNotice`](/zh/meeting/android/types#imcontent-waitingmeetingnotice)。 |
+
+返回值说明：无（`Unit`）。
+
+### onWaitingMeetingEnd(uid, notice)
+
+```kotlin
+fun onWaitingMeetingEnd(uid: String, notice: ImContent.WaitingMeetingNotice) = Unit
+```
+
+方法说明：自 `2.0.48` 起提供，默认空实现。当前用户正在等候室或等待主持人，所等的会议已结束或被取消，应用应离开等待页。
+
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `uid` | 消息发送方 UID。 |
+| `notice` | 目标会议 ID、会议号与标题，见 [`ImContent.WaitingMeetingNotice`](/zh/meeting/android/types#imcontent-waitingmeetingnotice)。 |
 
 返回值说明：无（`Unit`）。

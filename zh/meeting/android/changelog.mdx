@@ -1,9 +1,21 @@
 ---
 title: "更新日志"
-description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.47 的新增能力、修复、依赖升级与兼容性说明"
+description: "Android SMeeting SDK 从 2.0.27-alpha.7 到 2.0.48 的新增能力、修复、依赖升级与兼容性说明"
 ---
 
 > 本页记录 Android SMeeting SDK 的主要版本变化。依赖版本见[集成](/zh/meeting/android/integration)，运行时可通过 `MeetingEngine.version()` 查询实际版本。
+
+## 2.0.48（2026-11-26）
+
+### 新增
+
++ 支持会议「主持人入会前禁止加入」：主持人、联席主持人和创建者都未入会时，入会返回错误码 `2120`，应用应进入「等待主持人」页而不是报错。新增公开常量 `MeetingServerErrorCode.ENTER_BEFORE_HOST`（`2120`）与 `ENTER_WAITING_ROOM`（`2118`，等候室），见[入会等待相关的服务端码](/zh/meeting/android/error-codes#入会等待相关的服务端码)。
++ `MeetingImEvent` 新增 [`onHostEntered()`](/zh/meeting/android/api-reference/MeetingImEvent#onhostentered-uid-notice) 与 [`onWaitingMeetingEnd()`](/zh/meeting/android/api-reference/MeetingImEvent#onwaitingmeetingend-uid-notice)，分别在主持人入会、会议结束或取消时通知仍在等待页（等主持人或等候室）的用户，参数为 [`ImContent.WaitingMeetingNotice`](/zh/meeting/android/types#imcontent-waitingmeetingnotice)。两个方法都有默认空实现；用 Java 直接实现 `MeetingImEvent` 的应用需补上这两个方法，或改为继承 `MeetingImSimpleEvent`。
+
+### 变更
+
++ 主持人入会、等待中的会议结束这两类通知改由上述专用回调分发，不再经 `onImMessage()` 透传。
++ 入会返回 `2120` 时同样可调用 [`exitWaitingRoom()`](/zh/meeting/android/api-reference/MeetingEngine#exitwaitingroom-callback) 离开等待页，当前用户会同时被移出等候室与等主持人名单。
 
 ## 2.0.47（2026-11-25）
 

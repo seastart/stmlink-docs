@@ -166,11 +166,14 @@ enterRoom(req: MeetingEnterReq): Promise<void>
 
 **抛出**：`alreadyInMeeting`（`208006`）/ `apiError`
 
+`apiError` 里有两个码不是失败，而是要进等待页（1.10.0 起有常量 `MeetingServerErrorCode`）：
+`2118`（`enterWaitingRoom`）被转入等候室；`2120`（`enterBeforeHost`）会议禁止在主持人入会前加入，需等待主持人。见[等候室](/zh/meeting/harmony/advanced/waiting-room#等待主持人入会)。
+
 <Warning>
 **入会失败有两条通路，必须都处理。**
 
 `enterRoom()` 抛错只覆盖"请求阶段就失败"。请求成功但被服务端拒绝
-（会议已锁定、被移入等候室等）走的是事件：
+（如会议已锁定）走的是事件（入会被转入等候室 `2118`、需等主持人 `2120` 是以 `apiError` 抛出的，见上文）：
 
 ```typescript
 onRoomJoinFailed: (meeting, data) => {

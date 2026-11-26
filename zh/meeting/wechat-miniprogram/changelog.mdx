@@ -13,6 +13,16 @@ npm info @seastart/smeeting-wx-sdk version
 
 ---
 
+### v0.1.4 - 2026-11-26
+
+#### 新增
++ **等待主持人入会**：会议开启「主持人入会前禁止加入」、主持人 / 联席主持人 / 创建者都还没入会时，`enterRoom` 返回 `2120`，建议进入「等待主持人」页而不是报错。新增会外消息 `CommonImEventType.HOST_ENTERED`（主持人已入会，收到后带原密码重新 `enterRoom`；会议同时开着等候室时会再收到 `2118`）和 `WAITING_MEETING_END`（等候中的会议已结束或取消，提示后离开等待页），data 的 `content` 均为 `{ meeting_id, room_no, title }`。离开等待页（等候室或等主持人）都调用 `exitWaitingRoom()`
++ 这两条消息不再走 `IM_CUSTOM_MSG` 透传；之前按 `IM_CUSTOM_MSG` 的 `action` 自行判断的，升级后改用上面两个事件类型
+
+<Note>
+需要会议服务端支持：旧版服务端不会发出这两条消息，`2120` 时也不记录等待的人。
+</Note>
+
 ### v0.1.3 - 2026-11-24
 
 #### 新增

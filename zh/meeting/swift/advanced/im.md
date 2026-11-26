@@ -10,6 +10,7 @@ description: "SMeeting Swift SDK 的会议外消息通道：启用与停用、�
 + 有人在会议里呼叫你
 + 预约会议快开始了
 + 你在等候室里被放行了
++ 你在等的主持人入会了，或者你在等的会议已经结束（1.14.0 起）
 + 你负责的讨论小组请求协助
 
 会中的聊天消息不走这条通道 —— 那是 [会中消息](/zh/meeting/swift/advanced/messaging)，只在会议期间有效。
@@ -50,7 +51,7 @@ try await meeting.enableIm()
 
 ### 事件
 
-下面四个业务事件都带一个 `base`（`ImBaseEventData`）和一个 `content`：
+下面的业务事件都带一个 `base`（`ImBaseEventData`）和一个 `content`：
 
 | `ImBaseEventData` 字段 | 说明 |
 | --- | --- |
@@ -89,6 +90,25 @@ func meeting(_ meeting: SMeetingEngine, imAdminMoveOutWaitingRoom data: ImAdminM
     // data.content.meetingId 目标会议，可据此进入
 }
 ```
+
+#### 等待页消息
+
+1.14.0 起。入会报 `2120`（等主持人）或 `2118`（等候室）后停在等待页的成员会收到下面两条消息，用法见 [等候室 - 等待主持人入会](/zh/meeting/swift/advanced/waiting-room#等待主持人入会)：
+
+```swift
+// 主持人 / 联席主持人 / 创建者任一入会（只发给等主持人的成员）
+func meeting(_ meeting: SMeetingEngine, imHostEntered data: ImHostEnteredEventData) {
+    // data.content.meetingId / roomNo / title
+    // 是当前等待的会议就带原密码重新 enterRoom；会议还开着等候室时会再拿到 2118
+}
+
+// 会议结束或被取消（等主持人、等候室的成员都会收到）
+func meeting(_ meeting: SMeetingEngine, imWaitingMeetingEnd data: ImWaitingMeetingEndEventData) {
+    // 提示「会议已结束」，离开等待页
+}
+```
+
+同一账号可能先后在等不同的会议，请按 `meetingId` / `roomNo` 判断是不是当前等待的那场。这两条消息走具名事件，不会再派发到 `imCustomMsg`。
 
 #### 小组请求协助
 

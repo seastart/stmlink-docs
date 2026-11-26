@@ -103,6 +103,27 @@ MQTT 的 `mcu_task.err_desc`、`mcu_alarm.alarm_brief` 及聊天、自定义消�
 | `CAMERA_OPEN_TIMEOUT` | `102243` | 打开摄像头超时 |
 | `CAMERA_SESSION_TIMEOUT` | `102244` | 创建摄像头会话超时 |
 
+## 入会等待相关的服务端码
+
+以下两个码由 Meeting 服务端在入会时返回、SDK 原样透传，不属于 `MeetingErrorCode`，表示需要进入等待页而不是入会失败。应用应据此切换界面，不要当作错误提示给用户。自 `2.0.48` 起提供公开常量，完整类名：`cn.seastart.meeting.error.MeetingServerErrorCode`。
+
+| 常量 | 值 | 说明 | 应用处理 |
+| --- | --- | --- | --- |
+| `ENTER_WAITING_ROOM` | `2118` | 会议开启了等候室，需在等候室等待主持人放行 | 进入等候室页，等待 [`onMoveOutWaitingRoom()`](/zh/meeting/android/api-reference/MeetingImEvent#onmoveoutwaitingroom-uid-moveoutwaitingroom) |
+| `ENTER_BEFORE_HOST` | `2120` | 会议开启了「主持人入会前禁止加入」，且主持人、联席主持人和创建者都未入会（自 `2.0.48` 起） | 进入「等待主持人」页，收到 [`onHostEntered()`](/zh/meeting/android/api-reference/MeetingImEvent#onhostentered-uid-notice) 后用原密码重新入会 |
+
+两种等待状态下，会议结束或取消时都会回调 [`onWaitingMeetingEnd()`](/zh/meeting/android/api-reference/MeetingImEvent#onwaitingmeetingend-uid-notice)；用户主动离开等待页时调用 [`exitWaitingRoom()`](/zh/meeting/android/api-reference/MeetingEngine#exitwaitingroom-callback)。
+
+```kotlin
+override fun onFailure(errorCode: Int, message: String?) {
+    when (errorCode) {
+        MeetingServerErrorCode.ENTER_WAITING_ROOM -> showWaitingRoomPage()
+        MeetingServerErrorCode.ENTER_BEFORE_HOST -> showWaitingForHostPage()
+        else -> showError(errorCode, message)
+    }
+}
+```
+
 ## 推荐处理方式
 
 ```kotlin

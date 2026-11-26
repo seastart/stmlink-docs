@@ -81,7 +81,8 @@ UI 必须切到等候页，并停止渲染会议画面 —— 继续渲染会显
 await meeting.exitWaitingRoom(meetingId, roomNo);
 ```
 
-这个方法**不需要主持人权限**。
+这个方法**不需要主持人权限**。1.10.0 起它同时把本人移出等主持人名单，
+等候室与[等待主持人](#等待主持人入会)两种等待页离开时都调用它。
 
 被放行时不会有专门的事件 —— 走的是正常的入会流程，你会收到
 `onUserEnter` 等会中事件。
@@ -90,19 +91,58 @@ await meeting.exitWaitingRoom(meetingId, roomNo);
 
 ### 入会时就被拦在等候室
 
-启用等候室后，`enterRoom()` **不会抛错**，而是走事件：
+会议开启了等候室时，非主持人 `enterRoom()` 会抛 `apiError`，`code` 为 `2118`
+（常量 `MeetingServerErrorCode.enterWaitingRoom`，1.10.0 起）。此时服务端已把本人记入候场名单，
+App 应进入等待页，而不是当作入会失败。主持人放行后收到会议外消息 `onImAdminMoveOutWaitingRoom`，
+再重新 `enterRoom()` 即可（见 [IM 通道](/zh/meeting/harmony/advanced/im#等候室与子会议通知)）。
+
+---
+
+### 等待主持人入会
+
+1.10.0 起。会议开启了「主持人入会前禁止加入」、且主持人 / 联席主持人 / 创建者都未入会时，
+`enterRoom()` 抛 `apiError`，`code` 为 `2120`（常量 `MeetingServerErrorCode.enterBeforeHost`）。
+服务端已把本人记入等主持人名单，App 应进入「等待主持人」页。
 
 ```typescript
-onRoomJoinFailed: (m, data) => {
-  // data.failedType 会指出原因
-  console.info(`未直接入会: ${data.errDesc}`);
+import { MeetingServerErrorCode, SMeetingError, SMeetingErrorKind } from 'smeeting';
+
+try {
+  await meeting.enterRoom(req);
+} catch (e) {
+  const err = e as SMeetingError;
+  if (err.kind === SMeetingErrorKind.apiError && err.code === MeetingServerErrorCode.enterBeforeHost) {
+    this.showWaitingPage('waitingHost');   // 等主持人
+  } else if (err.kind === SMeetingErrorKind.apiError && err.code === MeetingServerErrorCode.enterWaitingRoom) {
+    this.showWaitingPage('waitingRoom');   // 等候室
+  } else {
+    throw e;
+  }
 }
 ```
 
-<Warning>
-所以入会流程的 UI 状态机不能假设「`enterRoom` 成功 = 已在会中」。
-要等 `onUserEnter`（自己）或读 `getRoomInfo()` 才算真进去了。
-</Warning>
+等待期间通过会议外 IM 消息得知进展（登录后 SDK 自动维护 IM 连接，见 [IM 通道](/zh/meeting/harmony/advanced/im#等待页通知)）：
+
+```typescript
+// 主持人 / 联席主持人 / 创建者任一入会
+onImHostEntered: (m, data) => {
+  if (data.content.meetingId !== this.waitingMeetingId) {
+    return;
+  }
+  // 带原密码重新 enterRoom
+},
+
+// 会议结束或取消（等主持人、等候室两种等待页都会收到）
+onImWaitingMeetingEnd: (m, data) => {
+  if (data.content.meetingId !== this.waitingMeetingId) {
+    return;
+  }
+  // 提示「会议已结束」，离开等待页
+}
+```
+
++ 服务端的检查顺序是密码 → `2120` → `2118`：两个开关都开时，先等主持人；主持人到了重新入会，再拿到 `2118` 转入等候室
++ 同一账号可能先后在等不同的会议，收到消息后请按 `meetingId` / `roomNo` 判断是不是当前等待的那场
 
 ---
 

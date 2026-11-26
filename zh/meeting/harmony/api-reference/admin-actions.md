@@ -169,7 +169,7 @@ exitWaitingRoom(meetingId?: string, roomNo?: string): Promise<void>
 
 `adminMoveOutWaitingRoom` 不传参数表示**放行全部**。
 
-`exitWaitingRoom` 是**成员**调用的（不需要主持人权限）—— 在等候室里主动退出。
+`exitWaitingRoom` 是**成员**调用的（不需要主持人权限）—— 在等候室里主动退出。1.10.0 起同时把本人移出等主持人名单（入会报 `2120` 时记入），等候室与等主持人两种等待页离开时都调用它。
 
 详见[等候室](/zh/meeting/harmony/advanced/waiting-room)。
 

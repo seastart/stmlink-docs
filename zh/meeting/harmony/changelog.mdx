@@ -3,6 +3,23 @@ title: "更新日志"
 description: "HarmonyOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [1.10.0] - 2026.11.26
+
+制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.10.0.har`（SHA-256 `ae7750710153c81a41b6c178571d6bdced6633e35c339fe86451de50c3adc328`），依赖 SRTC 1.4.0（与 1.9.0 相同）。接口只新增不删改，1.9.0 的接入代码可直接编译；只需替换 `smeeting` 的 HAR 并同步模块级 `oh-package.json5` 里的文件名。
+
+#### 新增
+
++ **「等待主持人」支持**：会议开启了「主持人入会前禁止加入」、且主持人 / 联席主持人 / 创建者都未入会时，`enterRoom` 抛 `apiError`，`code` 为 `2120`。App 应进入「等待主持人」页，而不是当作入会失败。见 [等候室 - 等待主持人入会](/zh/meeting/harmony/advanced/waiting-room#等待主持人入会)。
++ **错误码常量 `MeetingServerErrorCode`**：`enterWaitingRoom`（`2118`，入会被转入等候室）、`enterBeforeHost`（`2120`，需等待主持人入会）。两个开关都开时先报 `2120`，主持人到了再入会才报 `2118`。
++ **等待页的 IM 回调**：`SMeetingDelegate` 新增两个可选回调，内容都是 `ImWaitingMeetingContent`（`meetingId` / `roomNo` / `title`）：
+  + `onImHostEntered`：主持人 / 联席主持人 / 创建者入会，通知正在等主持人的成员，收到后重新入会
+  + `onImWaitingMeetingEnd`：会议结束或取消，通知仍在等待页（等主持人或等候室）的成员，建议提示「会议已结束」并离开等待页
+
+#### 变更
+
++ `host_entered`、`waiting_meeting_end` 这两条 IM 消息改走上面的专用回调，**不再触发 `onImCustomMsg`**。之前靠 `onImCustomMsg` 自行解析这两条消息的，请改用新回调。
++ `exitWaitingRoom` 同时把本人移出等主持人名单，等候室与等主持人两种等待页离开时都调用它。
+
 ### [1.9.0] - 2026.11.25
 
 制品：`https://repo.open.seastart.cn/repository/vcs-releases/smeeting-harmony-1.9.0.har`（SHA-256 `69ee7722dd19353fa8185b6dcc23d636c5ae0b259e369b683f2945894afcd7e8`），依赖 SRTC 1.4.0（与 1.8.0 相同）。接口只新增不删改，1.8.0 的接入代码可直接编译；只需替换 `smeeting` 的 HAR 并同步模块级 `oh-package.json5` 里的文件名。

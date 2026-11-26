@@ -141,6 +141,37 @@ description: "会议外消息通道的回调协议：连接状态、来电呼叫
 | --- | --- |
 | title | 会议标题 |
 
+### onHostEntered:roomNo:title:()
+`- (void)onHostEntered:(NSString *)meetingId roomNo:(NSString *)roomNo title:(nullable NSString *)title`
+
+主持人已入会回调，2.6.0 起提供（可选实现）。
+
+会议开启了「主持人入会前禁止加入」，您调用 `enterRoom` 被拦下（错误码 `SEAErrorMeetingApiEnterBeforeHostDisabled` = `2120`，App 应进入「等待主持人」页）后，主持人 / 联席主持人 / 创建者任一进入会议时，SDK 通过该回调通知您。
+
+建议收到后带原密码重新入会；若该会议同时开启了等候室，重新入会会返回 `SEAErrorMeetingApiWaitingRoomEnable`（`2118`），转入等候室等待放行。
+
+**参数**
+
+| meetingId | 会议标识 |
+| --- | --- |
+| roomNo | 房间号码 |
+| title | 会议标题 |
+
+
+### onWaitingMeetingEnd:roomNo:title:()
+`- (void)onWaitingMeetingEnd:(NSString *)meetingId roomNo:(NSString *)roomNo title:(nullable NSString *)title`
+
+等待中的会议已结束回调，2.6.0 起提供（可选实现）。
+
+您在等候室或正在等待主持人入会时，会议被结束或取消，SDK 通过该回调通知您。建议提示「会议已结束」并离开等待页。
+
+**参数**
+
+| meetingId | 会议标识 |
+| --- | --- |
+| roomNo | 房间号码 |
+| title | 会议标题 |
+
 
 ## 分组讨论相关回调
 ### onSubMettingAskingHelp:meetingId:title:()

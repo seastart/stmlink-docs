@@ -3,6 +3,22 @@ title: "更新日志"
 description: "iOS SMeeting 会议 SDK 版本更新记录"
 ---
 
+### [2.6.0] - 2026.11.26
+
+#### 新增
++ **等待页通知**：`MeetingKitIMDelegate` 新增两个可选回调，通知仍停留在等待页（等待主持人或等候室）的用户：
+  + `onHostEntered:roomNo:title:`：会议开启「主持人入会前禁止加入」、您入会被拦下后，主持人 / 联席主持人 / 创建者任一入会时回调。建议收到后带原密码重新入会；若会议同时开启了等候室，重新入会会返回 `SEAErrorMeetingApiWaitingRoomEnable`（`2118`），转入等候室等待放行。见 [MeetingKitIMDelegate](/zh/meeting/ios/api-reference/MeetingKitIMDelegate#onhostenteredroomnotitle)。
+  + `onWaitingMeetingEnd:roomNo:title:`：等待中的会议被结束或取消时回调，建议提示「会议已结束」并离开等待页。见 [MeetingKitIMDelegate](/zh/meeting/ios/api-reference/MeetingKitIMDelegate#onwaitingmeetingendroomnotitle)。
++ **会外本地预览**：`MeetingKit` 新增 `startLocalPreview:view:` / `stopLocalPreview`，可在入会前（如等待页）预览摄像头，只做本地采集与预览、不发布到会议。入会前须先调用 `stopLocalPreview`，入会后由房间的 `requestOpenCamera` 重新开启并发布。见 [MeetingKit](/zh/meeting/ios/api-reference/MeetingKit#startlocalpreviewview)。
+
+#### 变更
++ **`SEAErrorMeetingApiEnterBeforeHostDisabled`（`2120`）语义调整**：会议开启「主持人入会前禁止加入」且主持人、联席主持人、创建者都未入会时，入会返回该码。App 应据此进入「等待主持人」页（而不是当作失败报错），收到 `onHostEntered:roomNo:title:` 后再重新入会。见 [错误码](/zh/meeting/ios/error-codes)。
++ `exitWaitingRoom:onSuccess:` 在等候室与等待主持人两种等待状态下都可调用，用户主动离开等待页时调用即可。
+
+<Note>
+本版新增的回调均为 `@optional`，既有接口签名不变，依赖 `RTCEngineKit` 仍为 `>= 3.3.0`。2.5.0 接入方可直接升级；若要支持「等待主持人」，需按上文处理 `2120` 并实现 `onHostEntered:roomNo:title:`。
+</Note>
+
 ### [2.5.0] - 2026.11.25
 
 #### 新增

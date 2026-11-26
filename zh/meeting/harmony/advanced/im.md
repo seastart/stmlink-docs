@@ -112,6 +112,30 @@ onImUserHelpSubMeeting: (m, data) => {
 
 ---
 
+### 等待页通知
+
+1.10.0 起。入会报 `2120`（等主持人）或 `2118`（等候室）后停在等待页的成员会收到下面两条消息，
+两者共用 `ImWaitingMeetingContent`（`meetingId` / `roomNo` / `title`）。用法见
+[等候室 - 等待主持人入会](/zh/meeting/harmony/advanced/waiting-room#等待主持人入会)。
+
+```typescript
+// 主持人 / 联席主持人 / 创建者入会（发给正在等主持人的成员）
+onImHostEntered: (m, data) => {
+  // 是当前等待的会议就带原密码重新 enterRoom；会议还开着等候室时会再拿到 2118
+},
+
+// 会议结束或取消（发给等主持人、等候室两种等待页的成员）
+onImWaitingMeetingEnd: (m, data) => {
+  // 提示「会议已结束」，离开等待页
+}
+```
+
+<Note>
+这两条消息（`host_entered` / `waiting_meeting_end`）1.10.0 起走专用回调，**不再触发 `onImCustomMsg`**。
+</Note>
+
+---
+
 ### 连接状态
 
 ```typescript

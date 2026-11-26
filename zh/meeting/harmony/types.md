@@ -322,6 +322,8 @@ MCU 合流布局，共 20 种：
 | `WaitingRoomUserInfo` | `userId`、`name`、`avatar`、`at` |
 | `SubMeetingUser` | `uid`、`name` |
 | `SubMeetingInfo` | `id`、`mainMeetingId`、`meetingId`、`title`、`users: SubMeetingUser[]`、`status: MeetingStatus` |
+| `ImWaitingMeetingContent` | `meetingId`、`roomNo`、`title`；`onImHostEntered` / `onImWaitingMeetingEnd` 的 `content`（1.10.0 起） |
+| `ImHostEnteredEventData` / `ImWaitingMeetingEndEventData` | `base: ImBaseEventData`、`content: ImWaitingMeetingContent`（1.10.0 起） |
 
 ---
 

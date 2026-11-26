@@ -378,6 +378,8 @@ result.meta      // MetaRes
 | `ImCallCallingEventData` | `base`、`content: ImCallContent`（`roomNo`、`meetingId`、`title`、`forceJoin`（管理员强制入会，缺省 `false`，1.13.0 起）） |
 | `ImMeetingRemindEventData` | `base`、`content: ImMeetingRemindContent`（`roomNo`、`meetingId`、`title`、`creatorName`、`planDur`（分钟）、`planTime`（秒级时间戳）、`creatorId`（创建者用户 ID，1.5.0 起）） |
 | `ImAdminMoveOutWaitingRoomEventData` | `base`、`content: ImMoveOutWaitingRoomContent`（`parent`、`meetingId`、`title`） |
+| `ImHostEnteredEventData` | `base`、`content: ImWaitingMeetingContent`（`meetingId`、`roomNo`、`title`），1.14.0 起 |
+| `ImWaitingMeetingEndEventData` | `base`、`content: ImWaitingMeetingContent`（`meetingId`、`roomNo`、`title`），1.14.0 起 |
 | `ImUserHelpSubMeetingEventData` | `base`、`content: ImHelpSubMeetingContent`（`parent`、`meetingId`、`title`） |
 | `ImDisconnectEventData` | `reason: String?`（文字描述）、`disconnectReason: ImDisconnectReason`、`errorCode: Int?`、`errorMessage: String?`（后三项 1.5.0 起） |
 | `ImConnectEventData` | `uid`（本端用户 ID）、`sid`（本端 IM 会话 ID）（1.5.0 起） |

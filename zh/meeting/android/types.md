@@ -455,6 +455,16 @@ SRTC 频道属性转换得到的当前房间快照。
 | `meetingId` | `String` | 目标会议 ID |
 | `title` | `String` | 目标会议标题 |
 
+### ImContent.WaitingMeetingNotice
+
+自 `2.0.48` 起提供，用于 [`onHostEntered()`](/zh/meeting/android/api-reference/MeetingImEvent#onhostentered-uid-notice) 与 [`onWaitingMeetingEnd()`](/zh/meeting/android/api-reference/MeetingImEvent#onwaitingmeetingend-uid-notice)。
+
+| 属性 | 类型 | 说明 |
+| --- | --- | --- |
+| `meetingId` | `String` | 目标会议 ID |
+| `roomNo` | `String?` | 会议号 |
+| `title` | `String?` | 会议标题 |
+
 ### ImContent.UserHelpSubMeeting
 
 | 属性 | 类型 | 说明 |

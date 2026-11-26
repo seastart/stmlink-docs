@@ -653,6 +653,10 @@ CommonImEventType及对应`data`定义如下：
     static readonly ADMIN_MOVE_OUT_WAITING_ROOM = 'admin_move_out_waiting_room';
     /** 小组请求帮助，对应data为 ImUserHelpSubMeetingEventData */
     static readonly USER_HELP_SUB_MEETING = 'user_help_sub_meeting';
+    /** 主持人已入会，私发给被 2120 拦下、正在等主持人的成员，对应data为 ImHostEnteredEventData（v0.3.10 起） */
+    static readonly HOST_ENTERED = 'host_entered';
+    /** 会议已结束或取消，私发给还在等候室或等主持人的成员，对应data为 ImWaitingMeetingEndEventData（v0.3.10 起） */
+    static readonly WAITING_MEETING_END = 'waiting_meeting_end';
     /** 业务自定义消息（action 不属于以上内置类型），对应data为 ImCustomMsgEventData（v0.3.2 起） */
     static readonly IM_CUSTOM_MSG = 'im_custom_msg';
 ```
@@ -750,6 +754,30 @@ export interface ImAdminMoveOutWaitingRoomEventData extends ImBaseEventData {
         /** 分会场会议ID */
         meeting_id: string;
         /** 小组名称 */
+        title: string;
+    };
+}
+
+/** HOST_ENTERED：主持人已入会（私发给等主持人的成员）。收到后重新 enterRoom（带原密码）；会议同时开着等候室时会再收到 2118 */
+export interface ImHostEnteredEventData extends ImBaseEventData {
+    content: {
+        /** 会议ID */
+        meeting_id: string;
+        /** 房间号 */
+        room_no: string;
+        /** 会议标题 */
+        title: string;
+    };
+}
+
+/** WAITING_MEETING_END：会议已结束或取消（私发给等候室、等主持人的成员）。收到后提示并离开等待页 */
+export interface ImWaitingMeetingEndEventData extends ImBaseEventData {
+    content: {
+        /** 会议ID */
+        meeting_id: string;
+        /** 房间号 */
+        room_no: string;
+        /** 会议标题 */
         title: string;
     };
 }

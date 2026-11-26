@@ -147,7 +147,7 @@ description: "iOS SMeeting 会议 SDK 错误码枚举与处理说明"
 | SEAErrorMeetingApiPasswordFailed | `2115` | 密码错误 |
 | SEAErrorMeetingApiByInviteOnly | `2116` | 会议仅限受邀人加入,请联系主持人 |
 | SEAErrorMeetingApiWaitingRoomEnable | `2118` | 会议开启等候室，需要管理员确认后入会 |
-| SEAErrorMeetingApiEnterBeforeHostDisabled | `2120` | 会议禁止在主持人之前加入 |
+| SEAErrorMeetingApiEnterBeforeHostDisabled | `2120` | 会议开启「主持人入会前禁止加入」且主持人、联席主持人、创建者都未入会。App 应进入「等待主持人」页而非报错，收到 [onHostEntered:roomNo:title:()](/zh/meeting/ios/api-reference/MeetingKitIMDelegate#onhostenteredroomnotitle) 后重新入会 |
 | SEAErrorMeetingApiFileDisabled | `2125` | 文件功能已关闭（部署关闭了文件功能时，预签名上传返回该码） |
 | SEAErrorApiFailed | `10000` | 未归类的通用错误 |
 | SEAErrorApiDatabaseFailed | `10001` | 数据库错误或异常 |

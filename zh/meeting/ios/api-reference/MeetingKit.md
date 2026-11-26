@@ -406,6 +406,31 @@ SEAError code = [[MeetingKit sharedInstance] networkCheck:nil onItem:^(SEANetwor
 | onFailed | 失败回调 |
 
 ## 本地采集相关接口
+### startLocalPreview:view:()
+`- (RTCEngineError)startLocalPreview:(BOOL)frontCamera view:(VIEW_CLASS *)view`
+
+开启本地摄像头的预览画面，2.6.0 起提供。
+
+可在入会前（会外，如等候室 / 等待主持人页）调用，只做本地采集与预览，不发布到会议。入会前须先调用 [stopLocalPreview()](#stoplocalpreview) 停掉，入会后由房间的 `requestOpenCamera` 重新开启并发布。
+
+| 参数 | 描述 |
+| :--- | --- |
+| frontCamera | YES-前置摄像头 NO-后置摄像头 |
+| view | 承载视频画面的控件 |
+
+返回值：无摄像头权限时返回 `RTCEngineErrorCameraNoAuthorized`（`103231`）。
+
+
+### stopLocalPreview()
+`- (RTCEngineError)stopLocalPreview`
+
+停止本地摄像头的预览画面，2.6.0 起提供。
+
+与 [startLocalPreview:view:()](#startlocalpreviewview) 配对使用：离开会外预览页面或入会前调用。
+
+返回值：无摄像头权限时返回 `RTCEngineErrorCameraNoAuthorized`（`103231`）。
+
+
 ### updateLocalView:()
 `- (void)updateLocalView:(VIEW_CLASS *)view`
 

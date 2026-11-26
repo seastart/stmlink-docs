@@ -243,6 +243,8 @@ extension MeetingController: SMeetingDelegate {
 | `meeting(_:imCallCalling:)` | 有人在会议里呼叫你 | `ImCallCallingEventData` |
 | `meeting(_:imMeetingRemind:)` | 会议开始提醒 | `ImMeetingRemindEventData` |
 | `meeting(_:imAdminMoveOutWaitingRoom:)` | 你被放行出等候室 | `ImAdminMoveOutWaitingRoomEventData` |
+| `meeting(_:imHostEntered:)` | 你在等主持人（入会报 `2120`），主持人 / 联席主持人 / 创建者入会了（1.14.0 起） | `ImHostEnteredEventData` |
+| `meeting(_:imWaitingMeetingEnd:)` | 你在等待页（等主持人或等候室），会议结束或被取消（1.14.0 起） | `ImWaitingMeetingEndEventData` |
 | `meeting(_:imUserHelpSubMeeting:)` | 有小组请求协助 | `ImUserHelpSubMeetingEventData` |
 | `meetingImIsReconnecting(_:)` | 会议外消息通道开始重连 | 无 |
 | `meetingImDidReconnect(_:)` | 会议外消息通道重连成功 | 无 |
@@ -262,7 +264,7 @@ extension MeetingController: SMeetingDelegate {
 SDK 另外公开了两个枚举，列出各事件的字符串标识：
 
 + `RoomEventType` —— 会议内事件标识，例如 `user_enter`、`room_share_start`；1.5.0 起新增 `roomHostMoved`（`room_host_moved`），对应 `roomHostDidMove`
-+ `ImEventType` —— 会议外消息事件标识，例如 `call_calling`；1.5.0 起另有 `connected`、`message`，对应 `imDidConnect`、`imDidReceiveMessage`
++ `ImEventType` —— 会议外消息事件标识，例如 `call_calling`；1.5.0 起另有 `connected`、`message`，对应 `imDidConnect`、`imDidReceiveMessage`；1.14.0 起新增 `hostEntered`（`host_entered`）、`waitingMeetingEnd`（`waiting_meeting_end`）
 
 Swift 侧的事件分发走上面的 `SMeetingDelegate` 方法，这两个枚举在正常接入中用不到，只在你需要做日志埋点或与其它端对齐事件命名时才有用。
 

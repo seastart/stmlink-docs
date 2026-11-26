@@ -41,6 +41,17 @@ SDK 对外抛出的错误类型是 `SMeetingError`，一个带语义的 Swift �
 
 `message` 是给开发者和日志看的英文描述，**给终端用户的提示请按 `code` / `baseCode` 自行映射**，不要直接展示 `message`。
 
+#### 需要特殊处理的服务端码
+
+以下两个服务端码由 `enterRoom` 抛出（`apiError`），**不是失败**，SDK 提供了常量（1.14.0 起），用 `error.code == SMeetingError.xxxCode` 判断：
+
+| 常量 | 码 | 含义 | 建议处理 |
+| --- | :---: | --- | --- |
+| `SMeetingError.waitingRoomCode` | `2118` | 会议开启了等候室，被转入等候室 | 进入等待页；收到 `imAdminMoveOutWaitingRoom` 后重新入会 |
+| `SMeetingError.enterBeforeHostCode` | `2120` | 会议开启了「主持人入会前禁止加入」，且主持人 / 联席主持人 / 创建者都未入会 | 进入「等待主持人」页；收到 `imHostEntered` 后带原密码重新入会 |
+
+两种等待页离开时都调用 `exitWaitingRoom`；等待期间会议结束或取消会收到 `imWaitingMeetingEnd`。见 [等候室](/zh/meeting/swift/advanced/waiting-room)。
+
 ---
 
 ### 错误码规则
