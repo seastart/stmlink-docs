@@ -1,7 +1,7 @@
 ---
 title: "AI voice agent and custom agents"
 sidebarTitle: "Voice agent and custom agents"
-description: "Three ways to have AI talk by voice in calls: the media gateway's built-in voice agent (web trial page, prompt / greeting / voice, interruptible, limits), your own agent with the Python SDK or pipecat, and phone lines to AI. Read to pick a route for AI customer service or calls."
+description: "Three ways to have AI talk by voice in calls: the media gateway's built-in voice agent (web trial page, prompt / greeting / voice set in the admin console, interruptible, background-noise resistance and AI noise suppression, limits), your own agent with the Python SDK or pipecat, and phone lines to AI. Read to pick a route for AI customer service or calls."
 ---
 
 There are three ways to let AI talk with people during calls, ordered from least to most development effort:
@@ -28,28 +28,27 @@ The media gateway has a built-in voice agent: a visitor clicks "Start conversati
 | Voice, speaking rate | "Voice" and "Speaking rate" in the AI profile | Chosen per language |
 | Which models to use | Speech recognition / LLM / speech synthesis in the AI profile | See [AI services and profiles](/en/product/ai/models) |
 
-"Settings" on the trial page can also change the prompt, greeting, and voice; changes take effect from the next conversation, which makes on-site tuning easy.
-
-<Note>
-Changes made in "Settings" on the trial page are saved **locally on the media gateway**; with multiple media gateways, each saves its own. For production use, put everything in the AI profile.
-</Note>
+All of these are changed only under "AI services and profiles" in the admin console and take effect from the next conversation; with multiple media gateways they stay consistent automatically. The trial page is for visitors only and has no settings.
 
 ### Trial page
 
 After deployment, open the trial page through the gateway's address, choose a profile, language (中文 / English), and microphone, and click "Start conversation".
-The page shows both sides' text in real time and the AI's state (listening / thinking / speaking).
+The page shows both sides' text in real time and the AI's state (listening / thinking / speaking). "AI noise suppression" on the page is on by default and removes steady noise such as fans, keyboards, and air conditioning;
+if it fails to load, the page falls back to the browser's built-in noise suppression without affecting the call.
 
 + **HTTPS is required**: browsers only allow web pages to use the microphone over HTTPS, so the trial page must be opened over HTTPS through the reverse proxy at the platform entry point; we configure this at deployment
-+ **We recommend setting an access passcode**: without one, anyone who can open the page can start conversations (consuming LLM quota) and change the prompt. With one, visitors enter the passcode the first time they open the page
++ **We recommend setting an access passcode**: without one, anyone who can open the page can start conversations (consuming LLM quota). With one, visitors enter the passcode the first time they open the page
 + We recommend wearing headphones: a computer's built-in microphone picks up people nearby, who may interrupt the AI or be taken as the visitor's speech
 
 ### How it decides "started speaking" and "finished speaking"
 
-+ **Started speaking**: as soon as the recognition service returns its first interim result, the visitor is considered to have started speaking; if the AI is talking, it stops immediately (interruption)
++ **Started speaking**: when the recognition service returns an interim result that still has at least 2 characters after removing filler words such as "um" and "uh", the visitor is considered to have started speaking; if the AI is talking, it stops immediately (interruption).
+  A single "mm" or "OK" does not interrupt the AI
 + **Finished speaking**: once the recognition service decides a sentence has ended (about 0.8 seconds of pause), the sentence is sent to the LLM for an answer
-+ A separate **volume gate** blocks speech from people farther away, to avoid false interruptions
++ **Volume gate**: the threshold adapts to each visitor's background noise level, blocking speech from people farther away and background noise to avoid false interruptions
++ **Greeting protection**: the first 1.5 seconds of the greeting cannot be interrupted, so noise right after a visitor joins doesn't cut it off
 
-This avoids deploying a separate voice activity detection model and keeps the offline package smaller. The trade-offs: interruption is about 0.3 seconds slower than with a dedicated detection model; since "finished" is judged by pauses alone,
+This avoids deploying a separate voice activity detection model and keeps the offline package smaller. AI noise suppression does little against people talking nearby, so headphones are still recommended in noisy open offices. The trade-offs: interruption is about 0.3 seconds slower than with a dedicated detection model; since "finished" is judged by pauses alone,
 a slightly longer pause mid-sentence is taken as the end; **English conversations have no interim results, so the AI can only be interrupted after the visitor finishes a whole sentence**.
 
 ### Limits and duration
